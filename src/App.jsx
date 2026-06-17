@@ -1104,8 +1104,8 @@ function EcraAuth({ onMudar, tipo, isDesktop }) {
       <div style={{ textAlign: 'center', marginBottom: 40 }}>
         <Sparkles size={40} color={CORES.dourado} strokeWidth={1.5} style={{ marginBottom: 16 }} />
         <h1 style={{ ...estilos.titulo, fontSize: 36, letterSpacing: '0.2em' }}>Sidus</h1>
-        <p style={estilos.subtitulo}>
-          {isLogin ? 'Bem-vindo de volta ao cosmos' : 'Inicia a tua jornada astral'}
+        <p style={{ ...estilos.subtitulo, maxWidth: 360, margin: '8px auto 0', lineHeight: 1.55 }}>
+          Onde o mapa do céu se cruza com a sabedoria das cartas para guiar os teus passos.
         </p>
       </div>
 
@@ -2411,6 +2411,35 @@ function Chat({ mapaNatal, isPremium, onUpgrade }) {
   )
 }
 
+function RodapeSidus({ isDesktop, mostrarNavbar }) {
+  return (
+    <footer style={{
+      position: 'relative',
+      zIndex: 1,
+      textAlign: 'center',
+      padding: isDesktop ? '28px 40px 36px' : `22px 20px ${mostrarNavbar ? 96 : 28}px`,
+      maxWidth: isDesktop ? '100%' : MOBILE_MAX,
+      margin: isDesktop ? 0 : '0 auto',
+      width: '100%',
+      boxSizing: 'border-box',
+      borderTop: `1px solid ${CORES.vidroBorda}`,
+      background: 'rgba(11, 7, 30, 0.6)',
+    }}>
+      <p style={{
+        fontSize: isDesktop ? 12 : 11,
+        color: CORES.brancoMuted,
+        lineHeight: 1.65,
+        margin: 0,
+        maxWidth: 640,
+        marginLeft: 'auto',
+        marginRight: 'auto',
+      }}>
+        © 2026 Sidus Arcana. Portais e caminhos revelados através do Tarot e da Astrologia. Todos os direitos reservados.
+      </p>
+    </footer>
+  )
+}
+
 function Navbar({ passo, setPasso, isDesktop }) {
   const [hover, setHover] = useState(null)
   const itens = [
@@ -2804,6 +2833,7 @@ export default function App() {
       }}>
         {renderEcran()}
       </div>
+      <RodapeSidus isDesktop={isDesktop} mostrarNavbar={mostrarNavbar} />
       {mostrarNavbar && (
         <Navbar
           passo={passo}
