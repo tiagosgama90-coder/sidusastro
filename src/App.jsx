@@ -86,6 +86,31 @@ const PLANETAS_AGORA = [
   { key: 'saturno',  nome: 'Saturno',  corpo: Body.Saturn,  sweId: 6, simbolo: '♄' },
 ]
 
+// Mapa natal completo — Swiss Ephemeris (swe_calc_ut) com efemérides licenciadas
+const PLANETAS_NATAL = [
+  ...PLANETAS_AGORA,
+  { key: 'urano',    nome: 'Urano',      corpo: Body.Uranus,  sweId: 7,  simbolo: '♅' },
+  { key: 'netuno',   nome: 'Neptuno',    corpo: Body.Neptune, sweId: 8,  simbolo: '♆' },
+  { key: 'plutao',   nome: 'Plutão',     corpo: Body.Pluto,   sweId: 9,  simbolo: '♇' },
+  { key: 'nodo',     nome: 'Nodo Norte', corpo: null,         sweId: 11, simbolo: '☊' },
+  { key: 'quiron',   nome: 'Quíron',     corpo: null,         sweId: 15, simbolo: '⚷' },
+]
+
+const DESKTOP_BP = 768
+const MOBILE_MAX = 430
+
+function useIsDesktop() {
+  const [isDesktop, setIsDesktop] = useState(
+    () => typeof window !== 'undefined' && window.innerWidth >= DESKTOP_BP
+  )
+  useEffect(() => {
+    const onResize = () => setIsDesktop(window.innerWidth >= DESKTOP_BP)
+    window.addEventListener('resize', onResize)
+    return () => window.removeEventListener('resize', onResize)
+  }, [])
+  return isDesktop
+}
+
 const ASPECTOS_MAIORES = [
   { nome: 'Conjuncao', angulo: 0 },
   { nome: 'Sextil', angulo: 60 },
@@ -103,11 +128,12 @@ const FERRAMENTAS = [
 ]
 
 const BENEFICIOS_VIP = [
-  'Bussola Cosmica 2026 com previsoes mensais',
+  'Mapa Astral completo com Swiss Ephemeris (PDF + email)',
+  'Leituras de Tarot ilimitadas em todos os baralhos',
+  'Bússola Cósmica 2026 com previsões mensais',
   'Radar de Afinidades e Sinastria completa',
-  'Leituras diarias dos Arcanos Virtuais',
-  'Chat ilimitado com o Astrologo IA',
-  'Alertas de transitos planetarios em tempo real',
+  'Chat ilimitado com o Oráculo AuraBot',
+  'Alertas de trânsitos planetários em tempo real',
 ]
 
 const DATA_MAXIMA = new Date().toISOString().slice(0, 10)
@@ -122,6 +148,11 @@ const Position = (corpo, time) => GeoVector(corpo, time, true)
 // 'loading' | 'swisseph-full' | 'swisseph-moshier' | 'astronomy-engine'
 let _motorStatus = 'loading'
 let _sweInstance = null
+let _ephemerisPronto = false
+
+function sweEphemerisPronta() {
+  return _ephemerisPronto && _sweInstance != null
+}
 
 // Efemérides Swiss servidas localmente (public/ephe/) — sem CORS, sem CDN externo
 // Ficheiros: sepl_18.se1 (planetas), semo_18.se1 (Lua), seas_18.se1 (asteróides)
@@ -145,6 +176,7 @@ const _sweReadyPromise = (async () => {
     try {
       await swe.loadEphemerisFiles(_EPHE_FILES)
       _motorStatus = 'swisseph-full'
+      _ephemerisPronto = true
       console.info('[Sidus] Swiss Ephemeris carregado com efemérides completas ✓')
     } catch (epheErr) {
       console.warn('[Sidus] Efemérides locais não carregaram, usando Moshier:', epheErr?.message)
@@ -164,7 +196,7 @@ const estilos = {
   app: {
     minHeight: '100svh',
     width: '100%',
-    maxWidth: window.innerWidth >= 768 ? 520 : 430,
+    maxWidth: MOBILE_MAX,
     margin: '0 auto',
     background: `radial-gradient(ellipse at 20% 0%, rgba(88, 28, 135, 0.35) 0%, transparent 55%),
       radial-gradient(ellipse at 80% 100%, rgba(67, 56, 202, 0.2) 0%, transparent 50%),
@@ -172,12 +204,26 @@ const estilos = {
     color: CORES.branco,
     fontFamily: "'Segoe UI', system-ui, -apple-system, sans-serif",
     position: 'relative',
-    overflow: 'hidden',
+    overflowX: 'hidden',
+    overflowY: 'auto',
     display: 'flex',
     flexDirection: 'column',
     boxSizing: 'border-box',
-    // Desktop: sombra e arredondamento
-    ...(window.innerWidth >= 768 ? { boxShadow:'0 0 80px rgba(139,92,246,0.25)', borderRadius:0 } : {}),
+  },
+  appDesktop: {
+    minHeight: '100vh',
+    width: '100%',
+    maxWidth: 'none',
+    margin: 0,
+    background: `radial-gradient(ellipse at 15% 0%, rgba(88, 28, 135, 0.4) 0%, transparent 50%),
+      radial-gradient(ellipse at 85% 100%, rgba(67, 56, 202, 0.25) 0%, transparent 45%),
+      ${CORES.fundo}`,
+    color: CORES.branco,
+    fontFamily: "'Segoe UI', system-ui, -apple-system, sans-serif",
+    position: 'relative',
+    overflowX: 'hidden',
+    overflowY: 'visible',
+    boxSizing: 'border-box',
   },
   estrelas: {
     position: 'absolute',
@@ -195,12 +241,23 @@ const estilos = {
   },
   conteudo: {
     flex: 1,
-    overflowY: 'auto',
+    overflowY: 'visible',
     padding: '24px 20px',
     paddingBottom: 100,
     position: 'relative',
     zIndex: 1,
     textAlign: 'left',
+  },
+  conteudoDesktop: {
+    maxWidth: 1200,
+    margin: '0 auto',
+    width: '100%',
+    padding: '32px 40px 48px',
+    paddingBottom: 48,
+    position: 'relative',
+    zIndex: 1,
+    textAlign: 'left',
+    boxSizing: 'border-box',
   },
   vidro: {
     background: CORES.vidro,
@@ -264,7 +321,7 @@ const estilos = {
     left: '50%',
     transform: 'translateX(-50%)',
     width: '100%',
-    maxWidth: 430,
+    maxWidth: MOBILE_MAX,
     display: 'flex',
     justifyContent: 'space-around',
     alignItems: 'center',
@@ -275,6 +332,33 @@ const estilos = {
     zIndex: 100,
     boxSizing: 'border-box',
   },
+  navbarDesktop: {
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 'auto',
+    transform: 'none',
+    width: '100%',
+    maxWidth: 'none',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 8,
+    padding: '14px 32px',
+    background: 'rgba(11, 7, 30, 0.96)',
+    backdropFilter: 'blur(20px)',
+    borderBottom: `1px solid ${CORES.vidroBorda}`,
+    borderTop: 'none',
+    zIndex: 100,
+    boxSizing: 'border-box',
+  },
+}
+
+function layoutConteudo(isDesktop, extra = {}) {
+  return isDesktop
+    ? { ...estilos.conteudo, ...estilos.conteudoDesktop, ...extra }
+    : { ...estilos.conteudo, ...extra }
 }
 
 function normalizarNome(nome) {
@@ -311,10 +395,10 @@ function diferencaAngular(a, b) {
   return diff > 180 ? 360 - diff : diff
 }
 
-function calcularPlanetasParaData(dateObj) {
+function calcularPlanetasParaData(dateObj, lista = PLANETAS_AGORA) {
   const time = MakeTime(dateObj)
 
-  return PLANETAS_AGORA.map((p) => {
+  return lista.filter(p => p.corpo).map((p) => {
     const vector = Position(p.corpo, time)
     const ecl = Ecliptic(vector)
     const signo = longitudeParaSigno(ecl.elon)
@@ -323,9 +407,14 @@ function calcularPlanetasParaData(dateObj) {
       vector,
       longitude: ecl.elon,
       signo,
+      retrograde: false,
       texto: `${p.nome} em ${signo.nome} ${signo.simbolo} (${signo.graus}°)`,
     }
   })
+}
+
+function calcularPlanetasNatalParaData(dateObj) {
+  return calcularPlanetasParaData(dateObj, PLANETAS_NATAL.filter(p => p.corpo))
 }
 
 function calcularAspetos(planetas) {
@@ -649,23 +738,31 @@ function calcularMapaNatal(dados) {
 // ─── Swiss Ephemeris — funções de cálculo ────────────────────────────────────
 
 /**
- * Calcula posições planetárias usando swe_calc_ut (Swiss Ephemeris).
- * Inclui detecção de retrogradação (velocidade < 0).
+ * Posições via swe_calc_ut (Swiss Ephemeris) — só após efemérides carregadas.
  */
-function calcularPlanetasComSwe(swe, dateUTC) {
+function calcularPlanetasComSwe(swe, dateUTC, lista = PLANETAS_AGORA) {
+  if (!sweEphemerisPronta() && lista === PLANETAS_NATAL) {
+    return calcularPlanetasNatalParaData(dateUTC)
+  }
   const jd = swe.dateToJulianDay(dateUTC)
-  return PLANETAS_AGORA.map((p) => {
-    const pos = swe.calculatePosition(jd, p.sweId)
-    const signo = longitudeParaSigno(pos.longitude)
-    const retro = pos.speed < 0
-    return {
-      ...p,
-      longitude: pos.longitude,
-      signo,
-      retrograde: retro,
-      texto: `${p.nome} em ${signo.nome} ${signo.simbolo} (${signo.graus}°)${retro ? ' ℞' : ''}`,
+  const resultados = []
+  for (const p of lista) {
+    try {
+      const pos = swe.calculatePosition(jd, p.sweId)
+      const signo = longitudeParaSigno(pos.longitude)
+      const retro = pos.speed < 0
+      resultados.push({
+        ...p,
+        longitude: pos.longitude,
+        signo,
+        retrograde: retro,
+        texto: `${p.nome} em ${signo.nome} ${signo.simbolo} (${signo.graus}°)${retro ? ' ℞' : ''}`,
+      })
+    } catch (e) {
+      console.warn(`[Sidus] swe_calc_ut falhou para ${p.nome}:`, e?.message)
     }
-  })
+  }
+  return resultados
 }
 
 /**
@@ -675,26 +772,25 @@ function calcularPlanetasComSwe(swe, dateUTC) {
  */
 function calcularMapaNatalComSwe(swe, dados) {
   if (!dados.data || !dados.hora || !dados.localizacao) return null
+  if (!swe) return null
 
   const { lat } = dados.localizacao
-  // Longitude OESTE deve ser negativa para a Swiss Ephemeris
-  // Nominatim já devolve negativo para Oeste, mas garantimos aqui por segurança
   const lon = dados.localizacao.lon
-
   const fuso = dados.fuso ?? 0
-  // UTC exacto com DST histórico da zona (via localToUTC ou offset manual)
   const dateUTC = criarDataUTCporLocal(dados.data, dados.hora, fuso)
   const jd = swe.dateToJulianDay(dateUTC)
 
-  const sunPos  = swe.calculatePosition(jd, 0) // Planet.Sun
-  const moonPos = swe.calculatePosition(jd, 1) // Planet.Moon
-  // swe_houses recebe lat (N+, S−) e lon (E+, W−) — igual ao padrão geodésico
-  const houses  = swe.calculateHouses(jd, lat, lon, 'P') // Placidus
+  // swe_calc_ut + swe_houses — só após loadEphemerisFiles concluir
+  const sunPos  = swe.calculatePosition(jd, 0)
+  const moonPos = swe.calculatePosition(jd, 1)
+  const houses  = swe.calculateHouses(jd, lat, lon, 'P')
 
   const motorLabel =
-    _motorStatus === 'swisseph-full'    ? 'Swiss Ephemeris completo + Placidus' :
-    _motorStatus === 'swisseph-moshier' ? 'Swiss Ephemeris Moshier + Placidus' :
-                                          'astronomy-engine + Meeus'
+    _motorStatus === 'swisseph-full'
+      ? 'Swiss Ephemeris · Efemérides NASA (arco-segundo)'
+      : _motorStatus === 'swisseph-moshier'
+        ? 'Swiss Ephemeris Moshier · Placidus'
+        : 'astronomy-engine + Meeus'
 
   console.info(
     `[Sidus] JD=${jd.toFixed(6)} · UTC=${dateUTC.toISOString()} · lat=${lat.toFixed(4)} lon=${lon.toFixed(4)}` +
@@ -951,7 +1047,7 @@ function CampoCidade({ valor, localizacao, onChange, onSelect, erro, onBlur }) {
 
 // ─── Ecrãs de Autenticação Firebase ──────────────────────────────────────────
 
-function EcraAuth({ onMudar, tipo }) {
+function EcraAuth({ onMudar, tipo, isDesktop }) {
   const [email, setEmail]       = useState('')
   const [senha, setSenha]       = useState('')
   const [confirmar, setConfirmar] = useState('')
@@ -1004,7 +1100,7 @@ function EcraAuth({ onMudar, tipo }) {
   const isLogin = tipo === 'login'
 
   return (
-    <div style={{ ...estilos.conteudo, paddingTop: 56, paddingBottom: 40 }}>
+    <div style={layoutConteudo(isDesktop, { paddingTop: 56, paddingBottom: 40, maxWidth: isDesktop ? 480 : undefined, margin: isDesktop ? '0 auto' : undefined })}>
       <div style={{ textAlign: 'center', marginBottom: 40 }}>
         <Sparkles size={40} color={CORES.dourado} strokeWidth={1.5} style={{ marginBottom: 16 }} />
         <h1 style={{ ...estilos.titulo, fontSize: 36, letterSpacing: '0.2em' }}>Sidus</h1>
@@ -1179,7 +1275,7 @@ const FUSOS_FALLBACK = [
   { label: 'UTC+11', value: 11 }, { label: 'UTC+12', value: 12 },
 ]
 
-function Onboarding({ dados, setDados, onSubmit }) {
+function Onboarding({ dados, setDados, onSubmit, isDesktop }) {
   const [tocado, setTocado] = useState({})
   const [fusoCarregando, setFusoCarregando] = useState(false)
   const [fusoErro, setFusoErro] = useState(null)
@@ -1227,11 +1323,11 @@ function Onboarding({ dados, setDados, onSubmit }) {
   }
 
   return (
-    <div style={{ ...estilos.conteudo, paddingTop: 48, paddingBottom: 40 }}>
+    <div style={layoutConteudo(isDesktop, { paddingTop: 48, paddingBottom: 40, maxWidth: isDesktop ? 520 : undefined, margin: isDesktop ? '0 auto' : undefined })}>
       <div style={{ textAlign: 'center', marginBottom: 40 }}>
         <Sparkles size={40} color={CORES.dourado} strokeWidth={1.5} style={{ marginBottom: 16 }} />
         <h1 style={{ ...estilos.titulo, fontSize: 36, letterSpacing: '0.2em' }}>Sidus</h1>
-        <p style={estilos.subtitulo}>Registo natal com calculo astronomico real</p>
+        <p style={estilos.subtitulo}>✦ Decifra o céu que te recebeu — efemérides Swiss Ephemeris e precisão de mestre astrólogo</p>
       </div>
 
       <div style={{ ...estilos.vidro, padding: 24 }}>
@@ -1343,9 +1439,9 @@ function Onboarding({ dados, setDados, onSubmit }) {
   )
 }
 
-function Dashboard({ nome, mapaNatal, ceuAgora, aspetos, onOraculo, onPrivacidade }) {
+function Dashboard({ nome, mapaNatal, ceuAgora, aspetos, onOraculo, onPrivacidade, isDesktop }) {
   return (
-    <div style={estilos.conteudo}>
+    <div style={layoutConteudo(isDesktop)}>
       <header style={{ textAlign: 'center', marginBottom: 28 }}>
         <h1 style={estilos.titulo}>Sidus</h1>
         <p style={{ ...estilos.subtitulo, marginBottom: 0 }}>{nome ? `Bem-vindo, ${nome}` : 'O teu ceu em tempo real'}</p>
@@ -1559,7 +1655,7 @@ function BarraElemento({ label, valor, total, cor }) {
   )
 }
 
-function MapaAstral({ mapaNatal, dados, planetasNascimento, isPremium, onUpgrade, onMapaGerado }) {
+function MapaAstral({ mapaNatal, dados, planetasNascimento, isPremium, onUpgrade, onMapaGerado, isDesktop, ephemerisCarregando, motorAstro }) {
   const [gerandoPdf, setGerandoPdf] = useState(false)
   const [emailEnviado, setEmailEnviado] = useState(false)
   const mapaGeradoRef = useRef(false)
@@ -1617,9 +1713,24 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, isPremium, onUpgrade
     setTimeout(() => setEmailEnviado(false), 4000)
   }
 
+  if (ephemerisCarregando) {
+    return (
+      <div style={layoutConteudo(isDesktop)}>
+        <h1 style={{ ...estilos.titulo, textAlign: 'left', fontSize: 22, marginBottom: 20 }}>Mapa Astral</h1>
+        <div style={{ ...estilos.vidro, padding: 28, textAlign: 'center' }}>
+          <Loader2 size={32} color={CORES.dourado} style={{ animation: 'spin 1s linear infinite', marginBottom: 16 }} />
+          <div style={{ fontSize: 15, color: CORES.branco, fontWeight: 600, marginBottom: 8 }}>A invocar as efemérides Swiss Ephemeris</div>
+          <div style={{ fontSize: 12, color: CORES.brancoMuted, lineHeight: 1.6 }}>
+            A carregar tabelas astronómicas de precisão NASA — Sol, Lua, planetas, asteroides e casas Placidus.
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   if (!mapaNatal) {
     return (
-      <div style={estilos.conteudo}>
+      <div style={layoutConteudo(isDesktop)}>
         <h1 style={{ ...estilos.titulo, textAlign: 'left', fontSize: 22, marginBottom: 20 }}>Mapa Astral</h1>
         <div style={{ ...estilos.vidro, padding: 20, display: 'flex', gap: 8, color: CORES.brancoMuted }}>
           <Info size={15} />
@@ -1652,15 +1763,15 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, isPremium, onUpgrade
     : []
 
   return (
-    <div style={estilos.conteudo}>
+    <div style={layoutConteudo(isDesktop)}>
       <header style={{ marginBottom: 20 }}>
-        <h1 style={{ ...estilos.titulo, textAlign: 'left', fontSize: 22 }}>Mapa Astral</h1>
+        <h1 style={{ ...estilos.titulo, textAlign: 'left', fontSize: isDesktop ? 28 : 22 }}>Mapa Astral</h1>
         <p style={{ ...estilos.subtitulo, textAlign: 'left', marginBottom: 2 }}>
           {dados.nome} · {formatarData(dados.data)} às {dados.hora}
         </p>
         <p style={{ fontSize: 10, color: CORES.brancoMuted, textTransform: 'uppercase', letterSpacing: '0.07em' }}>
-          {mapaNatal.motor || 'astronomy-engine'}
-          {mapaNatal.motor?.includes('completo') ? ' ✓ Máxima precisão' : ''}
+          {mapaNatal.motor || motorAstro || 'astronomy-engine'}
+          {sweEphemerisPronta() ? ' · Efemérides Swiss Ephemeris ✓' : ''}
         </p>
       </header>
 
@@ -1835,9 +1946,9 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, isPremium, onUpgrade
   )
 }
 
-function Ferramentas({ onFerramenta }) {
+function Ferramentas({ onFerramenta, isDesktop }) {
   return (
-    <div style={estilos.conteudo}>
+    <div style={layoutConteudo(isDesktop)}>
       <header style={{ marginBottom: 28 }}>
         <h1 style={{ ...estilos.titulo, textAlign: 'left', fontSize: 22 }}>Ferramentas Ocultas</h1>
       </header>
@@ -1862,9 +1973,9 @@ function Ferramentas({ onFerramenta }) {
   )
 }
 
-function Paywall({ onVoltar, onPagar, onSucesso }) {
+function Paywall({ onVoltar, onPagar, onSucesso, isDesktop }) {
   return (
-    <div style={{ ...estilos.conteudo, paddingTop: 16 }}>
+    <div style={layoutConteudo(isDesktop, { paddingTop: 16 })}>
       <button type="button" onClick={onVoltar} style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'none', border: 'none', color: CORES.dourado, cursor: 'pointer', marginBottom: 20 }}>
         <ChevronLeft size={20} /> Voltar
       </button>
@@ -2300,24 +2411,83 @@ function Chat({ mapaNatal, isPremium, onUpgrade }) {
   )
 }
 
-function Navbar({ passo, setPasso, onLogout }) {
+function Navbar({ passo, setPasso, isDesktop }) {
+  const [hover, setHover] = useState(null)
   const itens = [
-    { id: 'dashboard',   label: 'Início',       icon: Home },
-    { id: 'mapa',        label: 'Mapa',         icon: Map },
-    { id: 'ferramentas', label: 'Arcanos',       icon: Grid3x3 },
-    { id: 'chat',        label: 'Oráculo',       icon: MessageCircle },
-    { id: 'perfil',      label: 'Perfil',        icon: User },
+    { id: 'dashboard',   label: 'Início',       icon: Home,   glow: '#DFB76C' },
+    { id: 'mapa',        label: 'Mapa',         icon: Map,    glow: '#C4B5FD' },
+    { id: 'ferramentas', label: 'Arcanos',      icon: Grid3x3, glow: '#F472B6' },
+    { id: 'chat',        label: 'Oráculo',      icon: MessageCircle, glow: '#34D399' },
+    { id: 'perfil',      label: 'Perfil',       icon: User,   glow: '#93C5FD' },
   ]
+
+  if (isDesktop) {
+    return (
+      <nav style={estilos.navbarDesktop}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, position: 'absolute', left: 40 }}>
+          <Sparkles size={20} color={CORES.dourado} strokeWidth={1.5} />
+          <span style={{ fontSize: 20, fontWeight: 300, letterSpacing: '0.2em', color: CORES.dourado }}>SIDUS</span>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+          {itens.map((item) => {
+            const Icon = item.icon
+            const ativo = passo === item.id
+            const emHover = hover === item.id
+            return (
+              <button
+                key={item.id}
+                type="button"
+                onClick={() => setPasso(item.id)}
+                onMouseEnter={() => setHover(item.id)}
+                onMouseLeave={() => setHover(null)}
+                style={{
+                  background: ativo
+                    ? `linear-gradient(135deg, rgba(223,183,108,0.18), rgba(139,92,246,0.12))`
+                    : emHover ? 'rgba(255,255,255,0.06)' : 'transparent',
+                  border: `1px solid ${ativo ? CORES.dourado : emHover ? 'rgba(223,183,108,0.35)' : 'transparent'}`,
+                  borderRadius: 12,
+                  color: ativo ? CORES.dourado : emHover ? CORES.branco : CORES.brancoMuted,
+                  display: 'flex',
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  gap: 8,
+                  cursor: 'pointer',
+                  padding: '10px 18px',
+                  transition: 'all 0.25s ease',
+                  boxShadow: ativo ? `0 0 20px ${item.glow}33` : emHover ? `0 0 14px ${item.glow}22` : 'none',
+                  transform: emHover && !ativo ? 'translateY(-1px)' : 'none',
+                }}
+              >
+                <Icon size={18} strokeWidth={ativo ? 2.2 : 1.8} />
+                <span style={{ fontSize: 13, fontWeight: ativo ? 700 : 500, letterSpacing: '0.03em' }}>{item.label}</span>
+                {ativo && <span style={{ fontSize: 8, color: CORES.dourado, marginLeft: 2 }}>✦</span>}
+              </button>
+            )
+          })}
+        </div>
+      </nav>
+    )
+  }
+
+  const navStyle = estilos.navbar
   return (
-    <nav style={estilos.navbar}>
+    <nav style={navStyle}>
       {itens.map((item) => {
         const Icon = item.icon
         const ativo = passo === item.id
         return (
           <button key={item.id} type="button" onClick={() => setPasso(item.id)}
-            style={{ background: 'none', border: 'none', color: ativo ? CORES.dourado : CORES.brancoMuted, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3, cursor: 'pointer', padding: '0 4px' }}>
+            style={{
+              background: 'none', border: 'none',
+              color: ativo ? CORES.dourado : CORES.brancoMuted,
+              display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3,
+              cursor: 'pointer', padding: '0 4px',
+              filter: ativo ? 'drop-shadow(0 0 6px rgba(223,183,108,0.5))' : 'none',
+            }}>
             <Icon size={20} />
-            <span style={{ fontSize: 9, textTransform: 'uppercase', letterSpacing:'0.04em' }}>{item.label}</span>
+            <span style={{ fontSize: 9, textTransform: 'uppercase', letterSpacing: '0.04em', fontWeight: ativo ? 700 : 400 }}>
+              {item.label}
+            </span>
           </button>
         )
       })}
@@ -2328,6 +2498,8 @@ function Navbar({ passo, setPasso, onLogout }) {
 const DADOS_VAZIO = { nome: '', data: '', hora: '', cidade: '', localizacao: null, fuso: null }
 
 export default function App() {
+  const isDesktop = useIsDesktop()
+
   // ── Auth ──────────────────────────────────────────────────────────────────
   const [utilizador, setUtilizador] = useState(null)
   const [authCarregando, setAuthCarregando] = useState(true)
@@ -2347,6 +2519,7 @@ export default function App() {
 
   const sweRef = useRef(null)
   const [sweReady, setSweReady] = useState(false)
+  const [motorAstro, setMotorAstro] = useState(_motorStatus)
 
   // ── Escuta o estado de autenticação Firebase ──────────────────────────────
   useEffect(() => {
@@ -2393,10 +2566,11 @@ export default function App() {
   // ── Inicializa Swiss Ephemeris ─────────────────────────────────────────────
   useEffect(() => {
     _sweReadyPromise.then((swe) => {
+      setMotorAstro(_motorStatus)
       if (swe) {
         sweRef.current = swe
         setSweReady(true)
-        const planetas = calcularPlanetasComSwe(swe, new Date())
+        const planetas = calcularPlanetasComSwe(swe, new Date(), PLANETAS_AGORA)
         setCeuAgora(planetas)
         setAspetosAgora(calcularAspetos(planetas))
       }
@@ -2419,24 +2593,38 @@ export default function App() {
     return () => clearInterval(id)
   }, [sweReady])
 
-  // ── Recalcula mapa natal ───────────────────────────────────────────────────
+  // ── Recalcula mapa natal (Swiss Ephemeris prioritário) ─────────────────────
   useEffect(() => {
     const erros = validarOnboarding(dados)
-    if (Object.keys(erros).length === 0) {
-      setMapaNatal(sweRef.current
-        ? calcularMapaNatalComSwe(sweRef.current, dados)
-        : calcularMapaNatal(dados))
-    }
-  }, [dados, sweReady])
+    if (Object.keys(erros).length > 0) return
 
-  // ── Planetas de nascimento ─────────────────────────────────────────────────
+    if (sweRef.current && sweEphemerisPronta()) {
+      const mapa = calcularMapaNatalComSwe(sweRef.current, dados)
+      if (mapa) setMapaNatal(mapa)
+    } else if (sweRef.current && motorAstro === 'swisseph-moshier') {
+      setMapaNatal(calcularMapaNatalComSwe(sweRef.current, dados))
+    } else if (!sweReady) {
+      // Aguarda efemérides — evita valores provisórios incorrectos
+      return
+    } else {
+      setMapaNatal(calcularMapaNatal(dados))
+    }
+  }, [dados, sweReady, motorAstro])
+
+  // ── Planetas de nascimento (mapa completo — 10 corpos + Quíron + Nodo) ───
   useEffect(() => {
     if (!dados.data || !dados.hora || !dados.localizacao) { setPlanetasNascimento([]); return }
     const dataUTC = criarDataUTCporLocal(dados.data, dados.hora, dados.fuso ?? 0)
-    setPlanetasNascimento(sweRef.current
-      ? calcularPlanetasComSwe(sweRef.current, dataUTC)
-      : calcularPlanetasParaData(dataUTC))
-  }, [dados, sweReady])
+    if (sweRef.current && sweEphemerisPronta()) {
+      setPlanetasNascimento(calcularPlanetasComSwe(sweRef.current, dataUTC, PLANETAS_NATAL))
+    } else if (sweRef.current && motorAstro === 'swisseph-moshier') {
+      setPlanetasNascimento(calcularPlanetasComSwe(sweRef.current, dataUTC, PLANETAS_NATAL))
+    } else if (!sweReady) {
+      return
+    } else {
+      setPlanetasNascimento(calcularPlanetasNatalParaData(dataUTC))
+    }
+  }, [dados, sweReady, motorAstro])
 
   // ── Acções ─────────────────────────────────────────────────────────────────
   const handleOnboarding = async () => {
@@ -2512,24 +2700,26 @@ export default function App() {
     )
   }
 
+  const ephemerisCarregando = temDados && !mapaNatal && motorAstro === 'loading'
+
   const renderEcran = () => {
     // Não autenticado → Auth (só se Firebase estiver configurado)
     if (!utilizador && firebaseDisponivel) {
-      return <EcraAuth tipo={tipoAuth} onMudar={setTipoAuth} />
+      return <EcraAuth tipo={tipoAuth} onMudar={setTipoAuth} isDesktop={isDesktop} />
     }
     // Sem dados natais → Onboarding (modo local ou primeiro login)
     if (!temDados) {
-      return <Onboarding dados={dados} setDados={setDados} onSubmit={handleOnboarding} />
+      return <Onboarding dados={dados} setDados={setDados} onSubmit={handleOnboarding} isDesktop={isDesktop} />
     }
     // Autenticado com dados → navegação normal
     switch (passo) {
       case 'dashboard':
-        return <Dashboard nome={dados.nome} mapaNatal={mapaNatal} ceuAgora={ceuAgora} aspetos={aspetosAgora} onOraculo={() => setPasso('chat')} onPrivacidade={() => setPasso('privacidade')} />
+        return <Dashboard nome={dados.nome} mapaNatal={mapaNatal} ceuAgora={ceuAgora} aspetos={aspetosAgora} onOraculo={() => setPasso('chat')} onPrivacidade={() => setPasso('privacidade')} isDesktop={isDesktop} />
       case 'mapa':
-        return <MapaAstral mapaNatal={mapaNatal} dados={dados} planetasNascimento={planetasNascimento} isPremium={isPremium} onUpgrade={() => setPasso('paywall')} onMapaGerado={handleMapaGerado} />
+        return <MapaAstral mapaNatal={mapaNatal} dados={dados} planetasNascimento={planetasNascimento} isPremium={isPremium} onUpgrade={() => setPasso('paywall')} onMapaGerado={handleMapaGerado} isDesktop={isDesktop} ephemerisCarregando={ephemerisCarregando} motorAstro={motorAstro} />
       case 'ferramentas':
         if (tarotAberto)
-          return <EcraTarot mapaNatal={mapaNatal} isPremium={isPremium} onPagar={abrirPagamento} onVoltar={() => setTarotAberto(false)} />
+          return <EcraTarot mapaNatal={mapaNatal} isPremium={isPremium} onPagar={abrirPagamento} onVoltar={() => setTarotAberto(false)} onPremium={() => setPasso('paywall')} />
         if (ferramentaAberta === 'bussola')
           return <BussolaCosmica mapaNatal={mapaNatal} onVoltar={() => setFerramentaAberta(null)} />
         if (ferramentaAberta === 'sinastria')
@@ -2538,9 +2728,9 @@ export default function App() {
           return <Biorritmo dados={dados} onVoltar={() => setFerramentaAberta(null)} />
         if (ferramentaAberta === 'diario')
           return <DiarioAstral mapaNatal={mapaNatal} onVoltar={() => setFerramentaAberta(null)} />
-        return <Ferramentas onFerramenta={handleFerramenta} />
+        return <Ferramentas onFerramenta={handleFerramenta} isDesktop={isDesktop} />
       case 'paywall':
-        return <Paywall onVoltar={() => setPasso('ferramentas')} onPagar={abrirPagamento} onSucesso={() => { setIsPremium(true); setPasso('dashboard') }} />
+        return <Paywall onVoltar={() => setPasso('ferramentas')} onPagar={abrirPagamento} onSucesso={() => { setIsPremium(true); setPasso('mapa') }} isDesktop={isDesktop} />
       case 'chat':
         return <Chat mapaNatal={mapaNatal} isPremium={isPremium} onUpgrade={() => setPasso('paywall')} />
       case 'perfil':
@@ -2551,25 +2741,35 @@ export default function App() {
       case 'privacidade':
         return <PoliticaPrivacidade onVoltar={() => setPasso('dashboard')} />
       default:
-        return <Dashboard nome={dados.nome} mapaNatal={mapaNatal} ceuAgora={ceuAgora} aspetos={aspetosAgora} onOraculo={() => setPasso('chat')} onPrivacidade={() => setPasso('privacidade')} />
+        return <Dashboard nome={dados.nome} mapaNatal={mapaNatal} ceuAgora={ceuAgora} aspetos={aspetosAgora} onOraculo={() => setPasso('chat')} onPrivacidade={() => setPasso('privacidade')} isDesktop={isDesktop} />
     }
   }
 
+  const paddingTopo = isDesktop
+    ? (isDev && temDados ? 28 : 0)
+    : (isDev && temDados ? 30 : 0)
+
+  const shellStyle = isDesktop ? estilos.appDesktop : estilos.app
+  const margemNav = isDesktop && mostrarNavbar ? 68 : 0
+
   return (
-    <div style={estilos.app}>
+    <div style={shellStyle}>
       <div style={estilos.estrelas} />
 
       {/* Barra de dev — só visível em localhost */}
       {isDev && temDados && (
         <div style={{
-          position: 'fixed', top: 0, left: '50%', transform: 'translateX(-50%)',
-          width: '100%', maxWidth: 430, zIndex: 200,
+          position: 'fixed', top: 0, left: 0, right: 0,
+          width: '100%', maxWidth: isDesktop ? 'none' : MOBILE_MAX,
+          ...(isDesktop ? {} : { left: '50%', transform: 'translateX(-50%)' }),
+          zIndex: 200,
           background: 'rgba(30,15,60,0.97)', borderBottom: '1px solid rgba(223,183,108,0.3)',
           padding: '6px 14px', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
           boxSizing: 'border-box', fontSize: 11,
         }}>
           <span style={{ color: CORES.brancoMuted }}>
-            🛠 Dev · Motor: <b style={{ color: CORES.dourado }}>{_motorStatus}</b>
+            🛠 Dev · Motor: <b style={{ color: CORES.dourado }}>{motorAstro}</b>
+            {sweEphemerisPronta() && <span style={{ color: '#34D399', marginLeft: 6 }}>· Efemérides ✓</span>}
           </span>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             <span style={{ color: isPremium ? '#34D399' : '#f87171', fontWeight: 600 }}>
@@ -2592,16 +2792,25 @@ export default function App() {
         </div>
       )}
 
-      {chatFullScreen ? (
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', position: 'relative', zIndex: 1, paddingBottom: 72, paddingTop: isDev && temDados ? 30 : 0 }}>
-          {renderEcran()}
-        </div>
-      ) : (
-        <div style={{ paddingTop: isDev && temDados ? 30 : 0 }}>
-          {renderEcran()}
-        </div>
+      <div style={{
+        paddingTop: paddingTopo,
+        marginTop: margemNav,
+        paddingBottom: chatFullScreen && !isDesktop ? 72 : 0,
+        minHeight: chatFullScreen && isDesktop ? 'calc(100vh - 68px)' : undefined,
+        display: chatFullScreen ? 'flex' : undefined,
+        flexDirection: chatFullScreen ? 'column' : undefined,
+        position: 'relative',
+        zIndex: 1,
+      }}>
+        {renderEcran()}
+      </div>
+      {mostrarNavbar && (
+        <Navbar
+          passo={passo}
+          isDesktop={isDesktop}
+          setPasso={(p) => { setTarotAberto(false); setFerramentaAberta(null); setPasso(p) }}
+        />
       )}
-      {mostrarNavbar && <Navbar passo={passo} setPasso={(p) => { setTarotAberto(false); setFerramentaAberta(null); setPasso(p) }} onLogout={handleLogout} />}
 
       {/* Modal de pagamento — sobrepõe tudo */}
       {modalPagamento && (
