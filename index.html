@@ -1,10 +1,42 @@
 <!doctype html>
-<html lang="en">
+<html lang="pt">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>sidus-app</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="theme-color" content="#0B071E" />
+    <meta name="description" content="Sidus — Astrologia de precisão astronómica. Mapa Astral, Tarot, Oráculo IA e muito mais." />
+    <meta name="keywords" content="astrologia, mapa astral, tarot, ascendente, horóscopo, zodíaco, oráculo, signo" />
+
+    <!-- Open Graph / Social -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Sidus — Astrologia Científica" />
+    <meta property="og:description" content="O teu mapa astral calculado com precisão astronómica real. Tarot, Oráculo IA e muito mais." />
+    <meta property="og:image" content="/og-image.png" />
+
+    <!-- Google AdSense (substituir ca-pub-XXXXXXXXXXXXXXXX pelo teu Publisher ID) -->
+    <!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script> -->
+
+    <!-- PWA manifest -->
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+    <title>Sidus — Astrologia</title>
+
+    <style>
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      html, body, #root {
+        height: 100%;
+        background: #0B071E;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        -webkit-tap-highlight-color: transparent;
+        overscroll-behavior: none;
+      }
+      /* Scrollbar personalizada */
+      ::-webkit-scrollbar { width: 4px; }
+      ::-webkit-scrollbar-track { background: transparent; }
+      ::-webkit-scrollbar-thumb { background: rgba(223,183,108,0.25); border-radius: 2px; }
+    </style>
   </head>
   <body>
     <div id="root"></div>

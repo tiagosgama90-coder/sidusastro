@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import {
   Sparkles,
   Moon,
@@ -21,9 +21,30 @@ import {
   MapPin,
   Loader2,
   Info,
+  LogOut,
+  Lock,
+  Mail,
+  Eye,
+  EyeOff,
+  User,
 } from 'lucide-react'
 import { Body, GeoVector, Ecliptic, MakeTime, SiderealTime } from 'astronomy-engine'
 import { pesquisarCidades, pesquisarFusoHorario } from './lib/geocoding'
+import { EcraTarot } from './components/Tarot'
+import { ModalPagamento } from './components/Pagamento'
+import { Perfil } from './components/Perfil'
+import { PoliticaPrivacidade } from './components/PoliticaPrivacidade'
+import { BussolaCosmica, Sinastria, Biorritmo, DiarioAstral } from './components/FerramentasPremium'
+import { auth, db, firebaseDisponivel } from './lib/firebase'
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+  onAuthStateChanged,
+  GoogleAuthProvider,
+  signInWithPopup,
+} from 'firebase/auth'
+import { doc, getDoc, setDoc } from 'firebase/firestore'
 
 const CORES = {
   fundo: '#0B071E',
@@ -74,11 +95,11 @@ const ASPECTOS_MAIORES = [
 ]
 
 const FERRAMENTAS = [
-  { id: 'bussola', nome: 'Bussola Cosmica 2026', icon: Compass, premium: true },
-  { id: 'sinastria', nome: 'Radar de Afinidades', sub: 'Sinastria', icon: Heart, premium: true },
-  { id: 'tarot', nome: 'Arcanos Virtuais', sub: 'Tarot', icon: Layers, premium: true },
-  { id: 'biorritmo', nome: 'Fluxo Vital', sub: 'Biorritmo', icon: Activity, premium: false },
-  { id: 'diario', nome: 'Diario Astral', icon: BookOpen, premium: false },
+  { id: 'bussola',  nome: 'Bússola Cósmica 2026',  icon: Compass,   premium: true },
+  { id: 'sinastria',nome: 'Radar de Afinidades',   sub: 'Sinastria', icon: Heart, premium: true },
+  { id: 'tarot',    nome: 'Arcanos Virtuais',       sub: 'Tarot — 6 tipos de leitura', icon: Layers, premium: false, isTarot: true },
+  { id: 'biorritmo',nome: 'Fluxo Vital',            sub: 'Biorritmo', icon: Activity, premium: false },
+  { id: 'diario',   nome: 'Diário Astral',          icon: BookOpen,  premium: false },
 ]
 
 const BENEFICIOS_VIP = [
@@ -143,7 +164,7 @@ const estilos = {
   app: {
     minHeight: '100svh',
     width: '100%',
-    maxWidth: 430,
+    maxWidth: window.innerWidth >= 768 ? 520 : 430,
     margin: '0 auto',
     background: `radial-gradient(ellipse at 20% 0%, rgba(88, 28, 135, 0.35) 0%, transparent 55%),
       radial-gradient(ellipse at 80% 100%, rgba(67, 56, 202, 0.2) 0%, transparent 50%),
@@ -155,6 +176,8 @@ const estilos = {
     display: 'flex',
     flexDirection: 'column',
     boxSizing: 'border-box',
+    // Desktop: sombra e arredondamento
+    ...(window.innerWidth >= 768 ? { boxShadow:'0 0 80px rgba(139,92,246,0.25)', borderRadius:0 } : {}),
   },
   estrelas: {
     position: 'absolute',
@@ -450,31 +473,48 @@ function criarDataUTCporLocal(dataISO, horaHHMM, fuso) {
  * GMST é obtido directamente de SiderealTime(time) — mesmos algoritmos NASA
  * usados nas efemérides JPL — garantindo resultados iguais às tabelas profissionais.
  */
+/**
+ * Ascendente via SiderealTime de alta precisão + correcção de quadrante.
+ * Implementa Meeus "Astronomical Algorithms" cap. 14 + verificação
+ * de hemisfério (ASC deve estar a ~90° do MC, nunca no mesmo lado).
+ */
 function calcularAscendenteReal(dataUTC, latitude, longitude) {
+  // Guarda nulos e regiões polares (Ascendente indefinido acima de 66°)
+  if (!dataUTC || latitude == null || longitude == null) return 0
+  if (isNaN(latitude) || isNaN(longitude)) return 0
+  const lat = Math.max(-89, Math.min(89, latitude))
+
   const time = MakeTime(dataUTC)
 
-  // GMST em horas → graus (SiderealTime usa os mesmos coeficientes do JPL)
-  const gmstHoras = SiderealTime(time)
-  const gmstGraus = gmstHoras * 15
+  // GMST → RAMC (Right Ascension of MC = Local Sidereal Time em graus)
+  const gmst  = SiderealTime(time) * 15 // horas → graus
+  const ramc  = ((gmst + longitude) % 360 + 360) % 360
 
-  // Tempo Sideral Local (LST)
-  const lst = ((gmstGraus + longitude) % 360 + 360) % 360
-
-  // Obliquidade da eclíptica IAU (T em séculos desde J2000)
+  // Obliquidade IAU 2006
   const T = (dataUTC.getTime() / 86400000 - 10957.5) / 36525
-  const e = ((23.439291111 - 0.013004167 * T - 0.000000164 * T * T + 0.000000504 * T * T * T) * Math.PI) / 180
+  const eDeg = 23.439291111 - 0.013004167 * T - 0.000000164 * T * T
+  const e     = eDeg * Math.PI / 180
 
-  const lstRad = (lst * Math.PI) / 180
-  const latRad = (latitude * Math.PI) / 180
+  const ramcRad = ramc    * Math.PI / 180
+  const latRad  = lat     * Math.PI / 180
 
-  // Meeus: SINAL + no denominador é obrigatório
-  const asc =
-    Math.atan2(
-      -Math.cos(lstRad),
-      Math.sin(lstRad) * Math.cos(e) + Math.tan(latRad) * Math.sin(e),
-    ) * (180 / Math.PI)
+  // Fórmula de Meeus (atan2 trata automaticamente os quadrantes)
+  const yAsc = -Math.cos(ramcRad)
+  const xAsc =  Math.sin(ramcRad) * Math.cos(e) + Math.tan(latRad) * Math.sin(e)
+  let asc = Math.atan2(yAsc, xAsc) * (180 / Math.PI)
+  asc = ((asc % 360) + 360) % 360
 
-  return ((asc % 360) + 360) % 360
+  // Correcção de quadrante: o Ascendente deve estar a 90°–270° do MC.
+  // Se estiver no mesmo hemisfério que o MC, o atan2 devolveu o Descendente.
+  const yMC = Math.sin(ramcRad)
+  const xMC = Math.cos(ramcRad) * Math.cos(e) - Math.tan(latRad) * Math.sin(e)
+  let mc = Math.atan2(yMC, xMC) * (180 / Math.PI)
+  mc = ((mc % 360) + 360) % 360
+
+  const diff = ((asc - mc + 360) % 360)
+  if (diff < 90 || diff > 270) asc = (asc + 180) % 360
+
+  return asc
 }
 
 function calcularMapaNatal(dados) {
@@ -806,6 +846,215 @@ function CampoCidade({ valor, localizacao, onChange, onSelect, erro, onBlur }) {
   )
 }
 
+// ─── Ecrãs de Autenticação Firebase ──────────────────────────────────────────
+
+function EcraAuth({ onMudar, tipo }) {
+  const [email, setEmail]       = useState('')
+  const [senha, setSenha]       = useState('')
+  const [confirmar, setConfirmar] = useState('')
+  const [verSenha, setVerSenha] = useState(false)
+  const [carregando, setCarregando] = useState(false)
+  const [erro, setErro]         = useState(null)
+
+  const traduzirErro = (code) => {
+    const mapa = {
+      'auth/email-already-in-use':        'Este e-mail já tem uma conta.',
+      'auth/invalid-email':               'E-mail inválido.',
+      'auth/weak-password':               'A senha deve ter pelo menos 6 caracteres.',
+      'auth/user-not-found':              'E-mail não encontrado.',
+      'auth/wrong-password':              'Senha incorrecta.',
+      'auth/invalid-credential':          'E-mail ou senha incorrectos.',
+      'auth/too-many-requests':           'Demasiadas tentativas. Aguarda um momento.',
+      'auth/operation-not-allowed':       'Este método de login não está activado no Firebase.',
+      'auth/popup-blocked':               'Popup bloqueado. Autoriza popups para este site.',
+      'auth/cancelled-popup-request':     'Popup cancelado.',
+      'auth/network-request-failed':      'Erro de rede. Verifica a ligação à internet.',
+      'auth/unauthorized-domain':         'Domínio não autorizado no Firebase Console.',
+      'auth/internal-error':              'Erro interno do Firebase.',
+      'auth/missing-email':               'Introduz um e-mail.',
+      'auth/missing-password':            'Introduz uma senha.',
+    }
+    return mapa[code] || 'Erro desconhecido'
+  }
+
+  const handleSubmit = async () => {
+    setErro(null)
+    if (!email || !senha) { setErro('Preenche todos os campos.'); return }
+    if (tipo === 'register' && senha !== confirmar) { setErro('As senhas não coincidem.'); return }
+    if (tipo === 'register' && senha.length < 6) { setErro('A senha deve ter pelo menos 6 caracteres.'); return }
+    if (!auth) { setErro('Firebase não configurado. Contacta o administrador.'); return }
+    setCarregando(true)
+    try {
+      if (tipo === 'register') {
+        await createUserWithEmailAndPassword(auth, email, senha)
+      } else {
+        await signInWithEmailAndPassword(auth, email, senha)
+      }
+    } catch (e) {
+      console.error('[Sidus Auth] Erro:', e.code, e.message)
+      setErro(traduzirErro(e.code) + (e.code ? ` [${e.code}]` : ''))
+    } finally {
+      setCarregando(false)
+    }
+  }
+
+  const isLogin = tipo === 'login'
+
+  return (
+    <div style={{ ...estilos.conteudo, paddingTop: 56, paddingBottom: 40 }}>
+      <div style={{ textAlign: 'center', marginBottom: 40 }}>
+        <Sparkles size={40} color={CORES.dourado} strokeWidth={1.5} style={{ marginBottom: 16 }} />
+        <h1 style={{ ...estilos.titulo, fontSize: 36, letterSpacing: '0.2em' }}>Sidus</h1>
+        <p style={estilos.subtitulo}>
+          {isLogin ? 'Bem-vindo de volta ao cosmos' : 'Inicia a tua jornada astral'}
+        </p>
+      </div>
+
+      <div style={{ ...estilos.vidro, padding: 24 }}>
+        <h2 style={{ margin: '0 0 24px', fontSize: 18, fontWeight: 600, color: CORES.branco, textAlign: 'center' }}>
+          {isLogin ? 'Entrar' : 'Criar Conta'}
+        </h2>
+
+        {/* Email */}
+        <div style={{ marginBottom: 16 }}>
+          <label style={estilos.label}>E-mail</label>
+          <div style={{ position: 'relative' }}>
+            <Mail size={15} color={CORES.brancoMuted} style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }} />
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="o.teu@email.com"
+              style={{ ...estilos.input, paddingLeft: 40 }}
+              onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
+            />
+          </div>
+        </div>
+
+        {/* Senha */}
+        <div style={{ marginBottom: tipo === 'register' ? 16 : 24 }}>
+          <label style={estilos.label}>Senha</label>
+          <div style={{ position: 'relative' }}>
+            <Lock size={15} color={CORES.brancoMuted} style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }} />
+            <input
+              type={verSenha ? 'text' : 'password'}
+              value={senha}
+              onChange={(e) => setSenha(e.target.value)}
+              placeholder="••••••••"
+              style={{ ...estilos.input, paddingLeft: 40, paddingRight: 44 }}
+              onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
+            />
+            <button
+              type="button"
+              onClick={() => setVerSenha((v) => !v)}
+              style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: CORES.brancoMuted, padding: 4 }}
+            >
+              {verSenha ? <EyeOff size={16} /> : <Eye size={16} />}
+            </button>
+          </div>
+        </div>
+
+        {/* Confirmar senha (só no registo) */}
+        {tipo === 'register' && (
+          <div style={{ marginBottom: 24 }}>
+            <label style={estilos.label}>Confirmar Senha</label>
+            <div style={{ position: 'relative' }}>
+              <Lock size={15} color={CORES.brancoMuted} style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }} />
+              <input
+                type={verSenha ? 'text' : 'password'}
+                value={confirmar}
+                onChange={(e) => setConfirmar(e.target.value)}
+                placeholder="••••••••"
+                style={{ ...estilos.input, paddingLeft: 40 }}
+                onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
+              />
+            </div>
+          </div>
+        )}
+
+        {erro && (
+          <div style={{ marginBottom: 16, padding: '10px 14px', borderRadius: 10, background: 'rgba(248,113,113,0.1)', border: '1px solid rgba(248,113,113,0.3)', fontSize: 13, color: '#F87171' }}>
+            {erro}
+          </div>
+        )}
+
+        <button
+          type="button"
+          disabled={carregando}
+          onClick={handleSubmit}
+          style={{ ...estilos.botaoDourado, opacity: carregando ? 0.6 : 1, cursor: carregando ? 'default' : 'pointer' }}
+        >
+          {carregando
+            ? <Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} />
+            : isLogin ? 'Entrar' : 'Criar Conta'}
+        </button>
+
+        {/* Divisor */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, margin: '20px 0' }}>
+          <div style={{ flex: 1, height: 1, background: CORES.vidroBorda }} />
+          <span style={{ fontSize: 11, color: CORES.brancoMuted, textTransform: 'uppercase', letterSpacing: '0.1em' }}>ou</span>
+          <div style={{ flex: 1, height: 1, background: CORES.vidroBorda }} />
+        </div>
+
+        {/* Google */}
+        <button
+          type="button"
+          disabled={carregando}
+          onClick={async () => {
+            if (!auth) { setErro('Firebase não configurado.'); return }
+            setErro(null)
+            setCarregando(true)
+            try {
+              await signInWithPopup(auth, new GoogleAuthProvider())
+            } catch (e) {
+              console.error('[Sidus Google] Erro:', e.code, e.message)
+              if (e.code !== 'auth/popup-closed-by-user') setErro(traduzirErro(e.code) + ` [${e.code}]`)
+            } finally {
+              setCarregando(false)
+            }
+          }}
+          style={{
+            width: '100%',
+            padding: '13px 16px',
+            borderRadius: 12,
+            border: `1px solid ${CORES.vidroBorda}`,
+            background: 'rgba(255,255,255,0.05)',
+            color: CORES.branco,
+            fontSize: 14,
+            fontWeight: 600,
+            cursor: carregando ? 'default' : 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: 10,
+            opacity: carregando ? 0.6 : 1,
+          }}
+        >
+          {/* SVG logo Google */}
+          <svg width="18" height="18" viewBox="0 0 48 48">
+            <path fill="#FFC107" d="M43.6 20.1H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.1 7.9 3l5.7-5.7C34.1 6.5 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.7-.4-3.9z"/>
+            <path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 16.1 19 13 24 13c3.1 0 5.8 1.1 7.9 3l5.7-5.7C34.1 6.5 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/>
+            <path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.3 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-8H6.1C9.5 35.7 16.2 44 24 44z"/>
+            <path fill="#1976D2" d="M43.6 20.1H42V20H24v8h11.3c-.8 2.3-2.3 4.3-4.3 5.6l6.2 5.2C40.9 35.6 44 30.2 44 24c0-1.3-.1-2.7-.4-3.9z"/>
+          </svg>
+          Continuar com Google
+        </button>
+
+        <p style={{ textAlign: 'center', marginTop: 20, fontSize: 13, color: CORES.brancoMuted }}>
+          {isLogin ? 'Ainda não tens conta?' : 'Já tens conta?'}{' '}
+          <button
+            type="button"
+            onClick={() => onMudar(isLogin ? 'register' : 'login')}
+            style={{ background: 'none', border: 'none', color: CORES.dourado, cursor: 'pointer', fontSize: 13, fontWeight: 600, padding: 0 }}
+          >
+            {isLogin ? 'Cria uma aqui' : 'Entra aqui'}
+          </button>
+        </p>
+      </div>
+    </div>
+  )
+}
+
 // Fusos manuais de fallback (usado apenas se a API falhar)
 const FUSOS_FALLBACK = [
   { label: 'UTC−12', value: -12 }, { label: 'UTC−11', value: -11 },
@@ -991,7 +1240,7 @@ function Onboarding({ dados, setDados, onSubmit }) {
   )
 }
 
-function Dashboard({ nome, mapaNatal, ceuAgora, aspetos, onOraculo }) {
+function Dashboard({ nome, mapaNatal, ceuAgora, aspetos, onOraculo, onPrivacidade }) {
   return (
     <div style={estilos.conteudo}>
       <header style={{ textAlign: 'center', marginBottom: 28 }}>
@@ -1075,36 +1324,140 @@ function Dashboard({ nome, mapaNatal, ceuAgora, aspetos, onOraculo }) {
         )}
       </div>
 
-      <button type="button" onClick={onOraculo} style={{ ...estilos.vidro, width: '100%', padding: 18, display: 'flex', justifyContent: 'space-between', border: `1px solid ${CORES.dourado}`, background: 'rgba(223,183,108,0.08)' }}>
+      {/* Carta do Dia */}
+      <CartaDoDia />
+
+      <button type="button" onClick={onOraculo} style={{ ...estilos.vidro, width: '100%', padding: 18, display: 'flex', justifyContent: 'space-between', border: `1px solid ${CORES.dourado}`, background: 'rgba(223,183,108,0.08)', marginTop: 14, marginBottom: 14 }}>
         <div>
-          <div style={{ fontSize: 11, color: CORES.dourado, textTransform: 'uppercase' }}>Oraculo do Dia</div>
-          <div style={{ fontSize: 15, color: CORES.branco }}>Consulta o Astrologo IA</div>
+          <div style={{ fontSize: 11, color: CORES.dourado, textTransform: 'uppercase' }}>Oráculo do Dia</div>
+          <div style={{ fontSize: 15, color: CORES.branco }}>Consulta o Astrólogo IA</div>
         </div>
         <MessageCircle size={22} color={CORES.dourado} />
       </button>
+
+      {/* Rodapé legal */}
+      <div style={{ textAlign: 'center', paddingTop: 10, paddingBottom: 4 }}>
+        <button type="button" onClick={onPrivacidade} style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.25)', fontSize: 10, cursor: 'pointer', textDecoration: 'underline' }}>
+          Política de Privacidade
+        </button>
+        <span style={{ color: 'rgba(255,255,255,0.15)', margin: '0 6px', fontSize: 10 }}>·</span>
+        <span style={{ color: 'rgba(255,255,255,0.2)', fontSize: 10 }}>© 2026 Sidus</span>
+      </div>
     </div>
   )
 }
 
-function MapaAstral({ mapaNatal, dados, planetasNascimento }) {
+// ── Carta do Dia (determinada pela data) ──────────────────────────────────────
+const ARCANOS_NOMES = [
+  {id:0,nome:'O Louco',simb:'🃏',palavras:['aventura','liberdade','começo'],luz:'Abertura total ao desconhecido. Um salto de fé abre portas inesperadas.'},
+  {id:1,nome:'O Mago',simb:'🎩',palavras:['poder','vontade','manifestação'],luz:'Tens todos os recursos que precisas. A tua força de vontade transforma pensamentos em realidade.'},
+  {id:2,nome:'A Papisa',simb:'📖',palavras:['intuição','mistério','sabedoria'],luz:'A tua voz interior é precisa. Confia no que sentes antes do que vês.'},
+  {id:3,nome:'A Imperatriz',simb:'👑',palavras:['abundância','amor','fertilidade'],luz:'Ciclo de prosperidade e criatividade. Nutre os teus projectos com amor.'},
+  {id:4,nome:'O Imperador',simb:'⚔️',palavras:['autoridade','estrutura','proteção'],luz:'Momento de assumir as rédeas. A disciplina constrói o teu legado.'},
+  {id:5,nome:'O Hierofante',simb:'✝️',palavras:['tradição','fé','ensinamento'],luz:'Um mentor ou ensinamento surge. Valores profundos guiam as decisões.'},
+  {id:6,nome:'Os Amantes',simb:'💞',palavras:['amor','escolha','harmonia'],luz:'Uma união ou escolha define o teu caminho. O coração sabe o que a mente tarda a aceitar.'},
+  {id:7,nome:'O Carro',simb:'🏆',palavras:['vitória','determinação','controlo'],luz:'A tua vontade supera obstáculos. Foco e velocidade garantem a vitória.'},
+  {id:8,nome:'A Força',simb:'🦁',palavras:['coragem','compaixão','domínio'],luz:'A força verdadeira nasce do amor. Domas os medos com gentileza.'},
+  {id:9,nome:'O Eremita',simb:'🕯️',palavras:['reflexão','solidão','guia'],luz:'Recolhimento frutífero. A tua luz interior ilumina quando tudo parece escuro.'},
+  {id:10,nome:'Roda da Fortuna',simb:'☸️',palavras:['destino','ciclos','mudança'],luz:'O ciclo vira a teu favor. Uma reviravolta traz nova sorte.'},
+  {id:11,nome:'A Justiça',simb:'⚖️',palavras:['equilíbrio','verdade','karma'],luz:'A verdade prevalece. Cada acção tem a sua consequência — colhes o que plantaste.'},
+  {id:12,nome:'O Enforcado',simb:'🔄',palavras:['sacrifício','perspetiva','pausa'],luz:'Uma pausa necessária revela o que estava oculto. O sacrifício abre novas perspetivas.'},
+  {id:13,nome:'A Morte',simb:'🌑',palavras:['transformação','fim','renascimento'],luz:'Uma fase encerra para que algo mais elevado nasça. A transformação é libertadora.'},
+  {id:14,nome:'A Temperança',simb:'🌊',palavras:['equilíbrio','paciência','alquimia'],luz:'A mistura perfeita cria algo extraordinário. Paciência é a tua aliada.'},
+  {id:15,nome:'O Diabo',simb:'⛓️',palavras:['apego','ilusão','libertação'],luz:'Reconhecer o que te prende é o primeiro passo para a liberdade.'},
+  {id:16,nome:'A Torre',simb:'⚡',palavras:['ruptura','revelação','reconstrução'],luz:'O que se destrói era falso. A ruptura abre espaço para a verdade.'},
+  {id:17,nome:'A Estrela',simb:'⭐',palavras:['esperança','cura','inspiração'],luz:'Depois de qualquer tempestade surge a luz. Cura profunda chega agora.'},
+  {id:18,nome:'A Lua',simb:'🌙',palavras:['intuição','inconsciente','sonhos'],luz:'Os teus sonhos e intuições carregam mensagens reais.'},
+  {id:19,nome:'O Sol',simb:'☀️',palavras:['alegria','sucesso','clareza'],luz:'Clareza total. A alegria surge quando ages com plena autenticidade.'},
+  {id:20,nome:'O Julgamento',simb:'📯',palavras:['despertar','redenção','chamado'],luz:'Um despertar espiritual profundo. Estás a ser chamado ao teu propósito maior.'},
+  {id:21,nome:'O Mundo',simb:'🌍',palavras:['conclusão','integração','plenitude'],luz:'Ciclo completado com sucesso. Tens tudo o que precisas para viver plenamente.'},
+]
+
+function CartaDoDia() {
+  const hoje = new Date()
+  const idx = (hoje.getFullYear()*1000 + hoje.getMonth()*31 + hoje.getDate()) % 22
+  const carta = ARCANOS_NOMES[idx]
+
+  return (
+    <div style={{
+      ...estilos.vidro, padding:'18px 20px', marginBottom:16,
+      background:'rgba(223,183,108,0.05)', border:`1px solid rgba(223,183,108,0.35)`,
+      borderRadius:16, cursor:'default',
+    }}>
+      <div style={{fontSize:10,color:CORES.dourado,textTransform:'uppercase',letterSpacing:'0.1em',marginBottom:12}}>
+        ✦ Carta do Dia
+      </div>
+      <div style={{display:'flex',alignItems:'center',gap:16}}>
+        {/* Mini card SVG */}
+        <div style={{
+          width:56, height:90, borderRadius:8, flexShrink:0,
+          background:'linear-gradient(160deg,#1a0d3a,#0B071E)',
+          border:`1.5px solid ${CORES.dourado}`,
+          display:'flex', flexDirection:'column', alignItems:'center',
+          justifyContent:'space-between', padding:'8px 4px',
+          boxShadow:'0 0 20px rgba(223,183,108,0.25)',
+        }}>
+          <div style={{fontSize:7,color:CORES.dourado,opacity:0.7,fontFamily:'Georgia,serif'}}>{carta.id===0?'☽':String(carta.id)}</div>
+          <div style={{fontSize:26}}>{carta.simb}</div>
+          <div style={{fontSize:6,color:CORES.dourado,textAlign:'center',lineHeight:1.2}}>{carta.nome.toUpperCase()}</div>
+        </div>
+        <div style={{flex:1}}>
+          <div style={{fontSize:17,fontWeight:700,color:CORES.branco,marginBottom:4}}>{carta.nome}</div>
+          <div style={{display:'flex',gap:5,marginBottom:8,flexWrap:'wrap'}}>
+            {carta.palavras.map(p=>(
+              <span key={p} style={{fontSize:10,padding:'2px 8px',borderRadius:20,background:'rgba(223,183,108,0.1)',color:CORES.dourado,border:`1px solid rgba(223,183,108,0.2)`}}>{p}</span>
+            ))}
+          </div>
+          <p style={{fontSize:12,color:CORES.brancoMuted,lineHeight:1.6,margin:0}}>{carta.luz}</p>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function MapaAstral({ mapaNatal, dados, planetasNascimento, isPremium, onUpgrade }) {
+  const [gerandoPdf, setGerandoPdf] = useState(false)
+
+  const downloadPdf = async () => {
+    if (gerandoPdf) return
+    setGerandoPdf(true)
+    try {
+      const { gerarPdfMapaAstral } = await import('./components/PdfMapa.jsx')
+      await gerarPdfMapaAstral(mapaNatal, dados, planetasNascimento)
+    } catch (e) {
+      console.error('PDF error:', e)
+      alert('Erro ao gerar PDF. Tenta novamente.')
+    } finally {
+      setGerandoPdf(false)
+    }
+  }
+
   if (!mapaNatal) {
     return (
       <div style={estilos.conteudo}>
         <h1 style={{ ...estilos.titulo, textAlign: 'left', fontSize: 22, marginBottom: 20 }}>Mapa Astral</h1>
         <div style={{ ...estilos.vidro, padding: 20, display: 'flex', gap: 8, color: CORES.brancoMuted }}>
           <Info size={15} />
-          <span>Preenche o onboarding para calcular o teu mapa.</span>
+          <span>Preenche o registo natal para calcular o teu mapa.</span>
         </div>
       </div>
     )
   }
 
-  const pilares = [
+  // Mapa Básico (grátis): Sol + Lua + Ascendente
+  const pilaresBasicos = [
     { titulo: 'Signo Solar',  ...mapaNatal.solar,      icon: Sun },
     { titulo: 'Signo Lunar',  ...mapaNatal.lunar,      icon: Moon },
     { titulo: 'Ascendente',   ...mapaNatal.ascendente, icon: ArrowUp },
+  ]
+
+  // Mapa Completo (premium): adiciona MC + planetas + aspectos
+  const pilaresCompletos = [
+    ...pilaresBasicos,
     ...(mapaNatal.mc ? [{ titulo: 'Meio do Céu (MC)', ...mapaNatal.mc, icon: Star }] : []),
   ]
+
+  const pilares = isPremium ? pilaresCompletos : pilaresBasicos
 
   const motorLabel = mapaNatal.motor || 'astronomy-engine'
 
@@ -1218,14 +1571,64 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento }) {
         )}
       </div>
 
-      <div style={{ ...estilos.vidro, padding: 20 }}>
-        <div style={{ fontSize: 12, color: CORES.dourado, marginBottom: 10, textTransform: 'uppercase' }}>Planetas no instante de nascimento</div>
-        {planetasNascimento.map((p) => (
-          <div key={p.key} style={{ fontSize: 14, color: CORES.brancoSuave, padding: '7px 0', borderBottom: `1px solid ${CORES.vidroBorda}` }}>
-            {p.simbolo} {p.texto}
+      {/* Planetas + Aspectos — só para premium */}
+      {isPremium ? (
+        <>
+          <div style={{ ...estilos.vidro, padding: 20, marginBottom: 14 }}>
+            <div style={{ fontSize: 12, color: CORES.dourado, marginBottom: 10, textTransform: 'uppercase', letterSpacing: '0.07em' }}>
+              Planetas no instante de nascimento
+            </div>
+            {planetasNascimento.map((p) => (
+              <div key={p.key} style={{ fontSize: 14, color: CORES.brancoSuave, padding: '7px 0', borderBottom: `1px solid ${CORES.vidroBorda}` }}>
+                {p.simbolo} {p.texto}
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
+
+          {/* Botão PDF */}
+          <button type="button" onClick={downloadPdf} disabled={gerandoPdf} style={{
+            width: '100%', marginBottom: 14, padding: '15px', borderRadius: 14,
+            background: gerandoPdf ? 'rgba(223,183,108,0.15)' : `linear-gradient(135deg, ${CORES.dourado}, ${CORES.douradoEscuro})`,
+            border: 'none', color: CORES.fundo, fontSize: 15, fontWeight: 700, cursor: gerandoPdf ? 'default' : 'pointer',
+            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+          }}>
+            {gerandoPdf ? '⏳ A gerar PDF...' : '📄 Descarregar Mapa Astral em PDF'}
+          </button>
+        </>
+      ) : (
+        /* Teaser premium */
+        <div
+          onClick={onUpgrade}
+          style={{
+            ...estilos.vidro,
+            padding: 24,
+            marginBottom: 14,
+            cursor: 'pointer',
+            border: `1px solid ${CORES.dourado}`,
+            background: 'rgba(223,183,108,0.06)',
+            textAlign: 'center',
+            position: 'relative',
+            overflow: 'hidden',
+          }}
+        >
+          <div style={{ position: 'absolute', inset: 0, background: 'repeating-linear-gradient(45deg, transparent, transparent 8px, rgba(223,183,108,0.03) 8px, rgba(223,183,108,0.03) 16px)', pointerEvents: 'none' }} />
+          <Crown size={28} color={CORES.dourado} style={{ marginBottom: 10 }} />
+          <div style={{ fontSize: 16, fontWeight: 700, color: CORES.dourado, marginBottom: 6 }}>Mapa Astral Completo</div>
+          <div style={{ fontSize: 13, color: CORES.brancoMuted, marginBottom: 14, lineHeight: 1.5 }}>
+            Desbloqueia todos os planetas, aspectos, Meio do Céu e interpretação profissional
+          </div>
+          <div style={{ display: 'flex', justifyContent: 'center', gap: 8, marginBottom: 14, flexWrap: 'wrap' }}>
+            {['☿ Mercúrio', '♀ Vénus', '♂ Marte', '♃ Júpiter', '♄ Saturno', '⌂ Casas'].map((item) => (
+              <span key={item} style={{ fontSize: 11, padding: '4px 10px', borderRadius: 20, background: 'rgba(223,183,108,0.1)', border: `1px solid rgba(223,183,108,0.25)`, color: CORES.brancoMuted }}>
+                {item}
+              </span>
+            ))}
+          </div>
+          <div style={{ ...estilos.botaoDourado, display: 'inline-block', padding: '12px 32px', fontSize: 14 }}>
+            Activar por 4,99 € / mês
+          </div>
+        </div>
+      )}
     </div>
   )
 }
@@ -1257,16 +1660,18 @@ function Ferramentas({ onFerramenta }) {
   )
 }
 
-function Paywall({ onVoltar }) {
+function Paywall({ onVoltar, onPagar, onSucesso }) {
   return (
     <div style={{ ...estilos.conteudo, paddingTop: 16 }}>
       <button type="button" onClick={onVoltar} style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'none', border: 'none', color: CORES.dourado, cursor: 'pointer', marginBottom: 20 }}>
         <ChevronLeft size={20} /> Voltar
       </button>
       <div style={{ textAlign: 'center', marginBottom: 24 }}>
+        <div style={{ fontSize: 40, marginBottom: 8 }}>✨</div>
         <h1 style={{ ...estilos.titulo, fontSize: 24 }}>Sidus VIP</h1>
+        <p style={{ color: CORES.brancoMuted, fontSize: 13 }}>Desbloqueia o cosmos completo</p>
       </div>
-      <div style={{ ...estilos.vidro, padding: 24, marginBottom: 24 }}>
+      <div style={{ ...estilos.vidro, padding: 24, marginBottom: 20 }}>
         {BENEFICIOS_VIP.map((b) => (
           <div key={b} style={{ display: 'flex', gap: 10, marginBottom: 12 }}>
             <Check size={14} color={CORES.dourado} />
@@ -1275,48 +1680,368 @@ function Paywall({ onVoltar }) {
         ))}
       </div>
       <div style={{ ...estilos.vidro, padding: 24, textAlign: 'center', border: `1px solid ${CORES.dourado}`, marginBottom: 20 }}>
-        <div style={{ fontSize: 40, color: CORES.branco }}>4,99 € <span style={{ fontSize: 16, color: CORES.brancoMuted }}>/ mes</span></div>
+        <div style={{ fontSize: 40, fontWeight: 700, color: CORES.branco }}>4,99 € <span style={{ fontSize: 16, color: CORES.brancoMuted, fontWeight: 400 }}>/ mês</span></div>
+        <p style={{ fontSize: 12, color: CORES.brancoMuted, marginTop: 6 }}>Cancelável a qualquer momento</p>
       </div>
-      <button type="button" style={estilos.botaoDourado}>Tornar-me VIP Agora</button>
+      <button type="button" onClick={() => onPagar('Sidus VIP — Subscrição mensal', 4.99, onSucesso)} style={estilos.botaoDourado}>
+        Tornar-me VIP Agora
+      </button>
+      <p style={{ textAlign: 'center', fontSize: 11, color: CORES.brancoMuted, marginTop: 12 }}>
+        Multibanco · MBWay · PIX · PayPal
+      </p>
     </div>
   )
 }
 
-function Chat({ mapaNatal }) {
-  const [mensagens, setMensagens] = useState(() => [
-    { id: 1, autor: 'ia', texto: 'Bem-vindo ao Oraculo Sidus. Estou pronto para interpretar o teu mapa.' },
-    { id: 2, autor: 'ia', texto: mapaNatal ? `Detetei Sol em ${mapaNatal.solar.nome}, Lua em ${mapaNatal.lunar.nome} e Ascendente em ${mapaNatal.ascendente.nome}.` : 'Completa o onboarding para eu analisar o teu mapa.' },
-  ])
-  const [texto, setTexto] = useState('')
+// ── Integração Gemini AI (opcional — requer VITE_GEMINI_API_KEY no .env) ─────
+// ── Prompt de Sistema AuraBot ─────────────────────────────────────────────────
+function construirSistema(mapaNatal) {
+  const sol = mapaNatal?.solar?.nome
+  const lua = mapaNatal?.lunar?.nome
+  const asc = mapaNatal?.ascendente?.nome
+  const mc  = mapaNatal?.mc?.nome
+  const grauSol = mapaNatal?.solar?.grau != null ? `${mapaNatal.solar.grau.toFixed(1)}°` : ''
+  const grauAsc = mapaNatal?.ascendente?.grau != null ? `${mapaNatal.ascendente.grau.toFixed(1)}°` : ''
+  const cidade  = mapaNatal?.cidade || ''
 
-  const enviar = () => {
-    if (!texto.trim()) return
-    setMensagens((prev) => [...prev, { id: Date.now(), autor: 'user', texto: texto.trim() }])
+  return `
+És AuraBot, um Astrólogo Sénior com 30 anos de experiência e especialização em Psicologia Junguiana aplicada à Astrologia.
+Respondes SEMPRE em Português de Portugal, com um tom caloroso, profundo e humano — nunca robótico nem genérico.
+
+${sol ? `MAPA NATAL DO UTILIZADOR (dados calculados com Swiss Ephemeris de precisão NASA):
+• Sol em ${sol} ${grauSol} · Lua em ${lua} · Ascendente em ${asc} ${grauAsc}${mc ? ` · Meio do Céu em ${mc}` : ''}${cidade ? ` · Nascido/a em ${cidade}` : ''}
+
+COMO USAR ESTES DADOS:
+Integra SEMPRE os dados natais reais acima em cada resposta. Nunca uses dados genéricos.
+Refere os arquétipos junguianos correspondentes ao Sol (${sol}), ao Complexo Materno da Lua (${lua}) e à Persona do Ascendente (${asc}).
+Exemplo: com Sol em ${sol}, a Sombra junguiana manifesta-se como [característica oposta]; com Ascendente em ${asc}, a Persona projeta [características].` : 'O utilizador ainda não tem dados natais calculados. Pede-lhe gentilmente que complete o registo.'}
+
+REGRAS ABSOLUTAS:
+1. Máximo 200 palavras por resposta.
+2. Sê específico e pessoal — usa os dados natais reais, não fales em abstrato.
+3. Termina SEMPRE com uma pergunta ou reflexão que convide à introspecção.
+4. NUNCA respondas a pedidos de conteúdo perigoso, ilegal, sexual explícito, violento ou prejudicial. Se isso acontecer, responde: "O meu papel é guiar-te na tua jornada interior. Posso ajudar-te com questões sobre a tua vida, relações, carreira ou caminho espiritual?"
+5. Se a pergunta for vaga ou um comando sem sentido, pede ao utilizador que partilhe mais contexto sobre a sua situação real.
+`.trim()
+}
+
+// ── Conector OpenAI (modelo gpt-4o-mini — rápido e económico) ─────────────────
+async function consultarOpenAI(pergunta, mapaNatal, historico = []) {
+  const apiKey = import.meta.env.VITE_OPENAI_API_KEY
+  if (!apiKey) return null
+
+  const sistema = construirSistema(mapaNatal)
+
+  // Constrói o histórico de mensagens (máx. últimas 6 para manter contexto)
+  const msgs = [
+    { role: 'system', content: sistema },
+    ...historico.slice(-6).map(m => ({
+      role: m.autor === 'user' ? 'user' : 'assistant',
+      content: m.texto,
+    })),
+    { role: 'user', content: pergunta },
+  ]
+
+  try {
+    const res = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify({
+        model: 'gpt-4o-mini',   // Modelo mais rápido e económico da OpenAI
+        messages: msgs,
+        max_tokens: 350,
+        temperature: 0.82,
+      }),
+    })
+    if (!res.ok) {
+      console.warn('OpenAI error:', res.status, await res.text())
+      return null
+    }
+    const d = await res.json()
+    return d.choices?.[0]?.message?.content?.trim() || null
+  } catch (e) {
+    console.warn('OpenAI fetch error:', e.message)
+    return null
+  }
+}
+
+// ── Conector Gemini (fallback se não houver chave OpenAI) ─────────────────────
+async function consultarGeminiIA(pergunta, mapaNatal, historico = []) {
+  const apiKey = import.meta.env.VITE_GEMINI_API_KEY
+  if (!apiKey) return null
+
+  const sistema = construirSistema(mapaNatal)
+
+  // Constrói histórico para Gemini (alternado user/model)
+  const conteudos = []
+  historico.slice(-6).forEach(m => {
+    conteudos.push({
+      role: m.autor === 'user' ? 'user' : 'model',
+      parts: [{ text: m.texto }],
+    })
+  })
+  conteudos.push({ role: 'user', parts: [{ text: pergunta }] })
+
+  try {
+    const res = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          systemInstruction: { parts: [{ text: sistema }] },
+          contents: conteudos,
+          generationConfig: { temperature: 0.82, maxOutputTokens: 350 },
+          safetySettings: [
+            { category: 'HARM_CATEGORY_HARASSMENT',        threshold: 'BLOCK_MEDIUM_AND_ABOVE' },
+            { category: 'HARM_CATEGORY_HATE_SPEECH',       threshold: 'BLOCK_MEDIUM_AND_ABOVE' },
+            { category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT', threshold: 'BLOCK_LOW_AND_ABOVE' },
+            { category: 'HARM_CATEGORY_DANGEROUS_CONTENT', threshold: 'BLOCK_MEDIUM_AND_ABOVE' },
+          ],
+        }),
+      }
+    )
+    if (!res.ok) return null
+    const d = await res.json()
+    return d.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || null
+  } catch { return null }
+}
+
+// ── Consultor principal: OpenAI → Gemini → Fallback template ──────────────────
+async function consultarAuraBot(pergunta, mapaNatal, historico) {
+  const resOAI    = await consultarOpenAI(pergunta, mapaNatal, historico)
+  if (resOAI) return resOAI
+  const resGemini = await consultarGeminiIA(pergunta, mapaNatal, historico)
+  if (resGemini) return resGemini
+  return null   // fallback template chamado no componente
+}
+
+// ── Validador de pergunta genuína ─────────────────────────────────────────────
+function validarPerguntaOracle(texto) {
+  const t = texto.trim()
+  if (t.length < 8)
+    return '✦ Partilha mais sobre a tua situação para eu poder orientar-te com precisão.'
+  if (t.split(/\s+/).length < 3)
+    return '✦ Formula a tua pergunta com um pouco mais de detalhe.'
+  const invalidos = /^(ola|olá|hello|hi|test|teste|faz|diz|escreve|responde|sim|não|nao|ok|hm|e aí|oi|hey|a|o|k)\b/i
+  if (invalidos.test(t) && t.split(/\s+/).length < 5)
+    return '✦ O Oráculo aguarda uma pergunta genuína sobre a tua vida, amor, carreira ou caminho espiritual.'
+  return null
+}
+
+// ── Respostas de fallback (sem API key) ──────────────────────────────────────
+const TEMAS_ORACLE = {
+  amor:      ['amor','relação','parceiro','relacionamento','namorado','namorada','casamento','sinto','sente','coração'],
+  trabalho:  ['trabalho','carreira','emprego','dinheiro','negócio','profissão','projeto','oportunidade','salário'],
+  saude:     ['saúde','corpo','energia','cansaço','doença','bem-estar','mente','ansiedade','stress'],
+  futuro:    ['futuro','destino','caminho','vida','propósito','missão','mudança','próximo'],
+  espiritual:['espiritual','alma','cosmos','universo','karma','propósito','despertar','meditação'],
+}
+
+function gerarRespostaOracle(pergunta, mapaNatal, numeroPergunta) {
+  if (!mapaNatal) return 'Precisas de completar o teu registo natal para receber orientação personalizada. As estrelas precisam de saber quando e onde nasceste.'
+
+  const p = pergunta.toLowerCase()
+  const sol = mapaNatal.solar?.nome || 'desconhecido'
+  const lua = mapaNatal.lunar?.nome || 'desconhecido'
+  const asc = mapaNatal.ascendente?.nome || 'desconhecido'
+  const mc  = mapaNatal.mc?.nome || null
+
+  let tema = 'geral'
+  for (const [t, palavras] of Object.entries(TEMAS_ORACLE)) {
+    if (palavras.some(w => p.includes(w))) { tema = t; break }
+  }
+
+  const respostas = {
+    amor: [
+      `Com Sol em ${sol} e Ascendente em ${asc}, a tua abordagem ao amor é intensa e autêntica. A tua Lua em ${lua} revela que procuras profundidade emocional — não te contentas com o superficial. Neste momento, os astros indicam que a vulnerabilidade que receias mostrar é precisamente o que te abrirá novas portas no amor.`,
+      `O teu ${lua} Lunar reflecte uma necessidade de segurança emocional antes de te entregares. Com ${asc} no Ascendente, a tua presença é magnética — as pessoas sentem-te antes de te conhecerem. O que te impede de dar o próximo passo tem mais a ver com padrões passados do que com a situação actual.`,
+    ],
+    trabalho: [
+      `Com Sol em ${sol}, a tua identidade está profundamente ligada ao que crias e realizas. O Meio do Céu ${mc ? 'em ' + mc : ''} aponta para uma carreira que exige autenticidade. Os planetas indicam que uma oportunidade que parece menor pode ser o ponto de viragem que estavas a aguardar.`,
+      `O teu ${asc} Ascendente transmite confiança e liderança natural. Com Lua em ${lua}, trabalhas melhor quando o ambiente é harmonioso. Neste ciclo, é altura de colocar os teus talentos em evidência — o que sabes fazer melhor do que a maioria é também o que o mundo precisa.`,
+    ],
+    saude: [
+      `A tua Lua em ${lua} é o espelho da tua saúde emocional. Quando a tua vida interior está equilibrada, o corpo segue. Os astros pedem-te que prestesatenção aos ritmos naturais — sono, alimentação, momentos de silêncio. O teu Sol em ${sol} tem uma vitalidade natural que se renova quando te reconectas à tua essência.`,
+    ],
+    futuro: [
+      `Com Sol em ${sol} e Ascendente em ${asc}, o teu caminho não é linear — é espiral. Cada ciclo que se repete traz uma lição mais profunda. Os astros vêem uma transformação significativa nos próximos meses. O que estás a soltar agora faz parte desse processo.`,
+      `O teu ${mc ? 'Meio do Céu em ' + mc : 'mapa natal'} aponta para um propósito que transcende o que podes ver agora. A Lua em ${lua} diz-te para confiares no processo mesmo quando não vês o destino. O Universo raramente mostra o mapa completo — mas sempre o próximo passo.`,
+    ],
+    espiritual: [
+      `Com Sol em ${sol}, buscas sentido mais do que conforto. A tua Lua em ${lua} é profundamente intuitiva — os teus sonhos e pressentimentos carregam mensagens reais. Este momento da tua vida é de aprofundamento espiritual. Não fuja do silêncio — é lá que a tua orientação reside.`,
+    ],
+    geral: [
+      `Com Sol em ${sol}, Lua em ${lua} e Ascendente em ${asc}, o teu mapa natal revela uma alma em busca de autenticidade. O que sentes em relação a esta questão é mais sábio do que o que a mente te diz. Os astros confirmam que estás num momento de importante transição — o que parece incerto é na realidade a tela em branco onde o teu próximo capítulo está prestes a ser escrito.`,
+      `A configuração do teu mapa natal fala de alguém com profunda vida interior e grande capacidade de transformação. Em relação ao que perguntas: os planetas indicam que a resposta já está em ti — o que procuras externamente é um reflexo do que ainda não reconheceste em ti mesmo.`,
+    ],
+  }
+
+  const arr = respostas[tema] || respostas.geral
+  return arr[numeroPergunta % arr.length]
+}
+
+const MAX_PERGUNTAS_GRATIS = 3
+
+function Chat({ mapaNatal, isPremium, onUpgrade }) {
+  // Conta estritamente as mensagens do utilizador (não as do AuraBot)
+  const [perguntasUsadas, setPerguntasUsadas] = useState(0)
+
+  const [mensagens, setMensagens] = useState(() => {
+    const sol = mapaNatal?.solar?.nome
+    const lua = mapaNatal?.lunar?.nome
+    const asc = mapaNatal?.ascendente?.nome
+    const saudacao = sol
+      ? `Olá. Sou o AuraBot — astrólogo e guia junguiano do Sidus.\n\nLi o teu mapa natal: **Sol em ${sol}**, **Lua em ${lua}**, **Ascendente em ${asc}**.\n\nEstes três pilares revelam-me a tua essência, as tuas emoções profundas e a máscara que mostras ao mundo. Tenho 3 questões gratuitas para te guiar nesta jornada interior.\n\nO que está agora a pesar no teu coração?`
+      : `Olá. Sou o AuraBot — astrólogo e guia junguiano do Sidus.\n\nPara personalizar cada resposta ao teu mapa natal único, completa primeiro o teu registo de nascimento. Assim poderei falar directamente à tua alma.\n\nO que está agora a pesar no teu coração?`
+    return [{ id: 1, autor: 'ia', texto: saudacao }]
+  })
+
+  const [texto, setTexto]       = useState('')
+  const [digitando, setDigitando] = useState(false)
+  const fimRef = useRef(null)
+
+  useEffect(() => { fimRef.current?.scrollIntoView({ behavior: 'smooth' }) }, [mensagens, digitando])
+
+  const restantes = isPremium ? Infinity : MAX_PERGUNTAS_GRATIS - perguntasUsadas
+
+  const enviar = async () => {
+    if (!texto.trim() || digitando) return
+
+    // ── BLOQUEIO RÍGIDO: 4ª mensagem → paywall imediato ──────────────────────
+    if (!isPremium && perguntasUsadas >= MAX_PERGUNTAS_GRATIS) {
+      setTexto('')   // limpa a caixa de texto
+      onUpgrade()    // redireciona automaticamente para paywall
+      return
+    }
+
+    const q = texto.trim()
+
+    // Validar pergunta genuína
+    const erroValidacao = validarPerguntaOracle(q)
+    if (erroValidacao) {
+      setMensagens(prev => [...prev,
+        { id: Date.now(),   autor: 'user', texto: q },
+        { id: Date.now()+1, autor: 'ia',   texto: erroValidacao, aviso: true },
+      ])
+      setTexto('')
+      return
+    }
+
+    const historicoParaIA = [...mensagens]
+    setMensagens(prev => [...prev, { id: Date.now(), autor: 'user', texto: q }])
     setTexto('')
-    setTimeout(() => {
-      const resposta = mapaNatal
-        ? `Com Sol em ${mapaNatal.solar.nome} e Lua em ${mapaNatal.lunar.nome}, o teu perfil mostra forte dinamica emocional e identidade marcante.`
-        : 'Preciso dos teus dados de nascimento completos para responder com precisao.'
-      setMensagens((prev) => [...prev, { id: Date.now() + 1, autor: 'ia', texto: resposta }])
-    }, 900)
+    setDigitando(true)
+
+    // Incrementa o contador ANTES da resposta (impede duplo envio)
+    const numAtual = perguntasUsadas
+    setPerguntasUsadas(n => n + 1)
+
+    // OpenAI → Gemini → template
+    const respostaIA = await consultarAuraBot(q, mapaNatal, historicoParaIA)
+    const resposta   = respostaIA || gerarRespostaOracle(q, mapaNatal, numAtual)
+
+    setMensagens(prev => [...prev, { id: Date.now()+1, autor: 'ia', texto: resposta }])
+    setDigitando(false)
+
+    // Após a 3ª resposta, avisa que a próxima é paga
+    if (!isPremium && numAtual + 1 >= MAX_PERGUNTAS_GRATIS) {
+      setTimeout(() => {
+        setMensagens(prev => [...prev, {
+          id: Date.now()+99, autor: 'ia', aviso: true,
+          texto: `✦ Usaste as tuas ${MAX_PERGUNTAS_GRATIS} questões gratuitas.\n\nA próxima mensagem irá abrir a página de adesão Premium (4,99 €/mês) para continuares esta jornada com perguntas ilimitadas, Mapa Astral completo e todas as ferramentas ocultas desbloqueadas.`,
+        }])
+      }, 600)
+    }
   }
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100svh', maxHeight: '100svh', position: 'relative', zIndex: 1 }}>
-      <header style={{ padding: '16px 20px', background: 'rgba(11,7,30,0.95)', borderBottom: `1px solid ${CORES.vidroBorda}`, display: 'flex', alignItems: 'center', gap: 12 }}>
-        <Sparkles size={20} color={CORES.dourado} />
-        <div style={{ fontSize: 15, color: CORES.branco }}>Astrologo IA</div>
+      {/* Cabeçalho */}
+      <header style={{ padding: '14px 18px', background: 'rgba(11,7,30,0.97)', borderBottom: `1px solid ${CORES.vidroBorda}`, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          <div style={{ width: 36, height: 36, borderRadius: '50%', background: 'linear-gradient(135deg,#6D28D9,#0B071E)', border: `1.5px solid ${CORES.dourado}`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18 }}>
+            ✦
+          </div>
+          <div>
+            <div style={{ fontSize: 14, fontWeight: 700, color: CORES.branco }}>AuraBot</div>
+            <div style={{ fontSize: 10, color: CORES.brancoMuted }}>Astrólogo · Psicologia Junguiana</div>
+          </div>
+        </div>
+        {!isPremium && (
+          <button type="button" onClick={onUpgrade} style={{
+            fontSize: 11, color: CORES.dourado, background: 'rgba(223,183,108,0.08)',
+            padding: '5px 12px', borderRadius: 20, border: `1px solid rgba(223,183,108,0.3)`,
+            cursor: 'pointer',
+          }}>
+            {restantes > 0
+              ? `${restantes} questão${restantes !== 1 ? 'ões' : ''} grátis`
+              : '🔒 Premium 4,99 €/mês'}
+          </button>
+        )}
       </header>
-      <div style={{ flex: 1, overflowY: 'auto', padding: 16, display: 'flex', flexDirection: 'column', gap: 8 }}>
+
+      {/* Mensagens */}
+      <div style={{ flex: 1, overflowY: 'auto', padding: '16px 14px 10px', display: 'flex', flexDirection: 'column', gap: 12 }}>
         {mensagens.map((m) => (
-          <div key={m.id} style={{ alignSelf: m.autor === 'user' ? 'flex-end' : 'flex-start', maxWidth: '80%', padding: '10px 14px', borderRadius: m.autor === 'user' ? '16px 16px 4px 16px' : '16px 16px 16px 4px', background: m.autor === 'user' ? 'rgba(223,183,108,0.18)' : 'rgba(255,255,255,0.07)', border: `1px solid ${CORES.vidroBorda}` }}>
+          <div key={m.id} style={{
+            alignSelf: m.autor === 'user' ? 'flex-end' : 'flex-start',
+            maxWidth: '86%',
+            padding: '13px 16px',
+            borderRadius: m.autor === 'user' ? '18px 18px 4px 18px' : '4px 18px 18px 18px',
+            background: m.aviso
+              ? 'rgba(251,191,36,0.08)'
+              : m.autor === 'user'
+              ? 'rgba(223,183,108,0.14)'
+              : 'rgba(255,255,255,0.055)',
+            border: `1px solid ${
+              m.aviso ? 'rgba(251,191,36,0.35)'
+              : m.autor === 'user' ? 'rgba(223,183,108,0.28)'
+              : 'rgba(255,255,255,0.09)'
+            }`,
+            fontSize: 14, color: m.aviso ? '#FBBf24' : CORES.brancoSuave,
+            lineHeight: 1.65, whiteSpace: 'pre-wrap',
+          }}>
             {m.texto}
           </div>
         ))}
+        {digitando && (
+          <div style={{ alignSelf: 'flex-start', padding: '13px 18px', borderRadius: '4px 18px 18px 18px', background: 'rgba(255,255,255,0.055)', border: `1px solid rgba(255,255,255,0.09)` }}>
+            <span style={{ fontSize: 18, letterSpacing: 6, color: CORES.dourado }}>✦ ✦ ✦</span>
+          </div>
+        )}
+        <div ref={fimRef} />
       </div>
-      <div style={{ padding: '12px 16px 20px', background: 'rgba(11,7,30,0.95)', borderTop: `1px solid ${CORES.vidroBorda}`, display: 'flex', gap: 10 }}>
-        <input value={texto} onChange={(e) => setTexto(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && enviar()} placeholder="Escreve a tua pergunta..." style={{ ...estilos.input, flex: 1, borderRadius: 24, padding: '12px 18px' }} />
-        <button type="button" onClick={enviar} style={{ width: 44, height: 44, borderRadius: '50%', border: 'none', background: `linear-gradient(135deg, ${CORES.dourado} 0%, ${CORES.douradoEscuro} 100%)`, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
+
+      {/* Input */}
+      <div style={{ padding: '10px 14px 22px', background: 'rgba(11,7,30,0.97)', borderTop: `1px solid ${CORES.vidroBorda}`, display: 'flex', gap: 10, flexShrink: 0 }}>
+        <input
+          value={texto}
+          onChange={e => setTexto(e.target.value)}
+          onKeyDown={e => e.key === 'Enter' && !e.shiftKey && enviar()}
+          placeholder={
+            !isPremium && perguntasUsadas >= MAX_PERGUNTAS_GRATIS
+              ? '🔒 Activa o Premium para continuar...'
+              : 'Partilha a tua questão com o AuraBot...'
+          }
+          style={{ ...estilos.input, flex: 1, borderRadius: 24, padding: '12px 18px' }}
+        />
+        <button
+          type="button"
+          onClick={enviar}
+          disabled={digitando}
+          style={{
+            width: 44, height: 44, borderRadius: '50%', border: 'none', flexShrink: 0,
+            background: digitando ? 'rgba(223,183,108,0.25)'
+              : !isPremium && perguntasUsadas >= MAX_PERGUNTAS_GRATIS ? 'rgba(223,183,108,0.2)'
+              : `linear-gradient(135deg,${CORES.dourado},${CORES.douradoEscuro})`,
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            cursor: digitando ? 'default' : 'pointer',
+          }}
+        >
           <Send size={18} color={CORES.fundo} />
         </button>
       </div>
@@ -1324,23 +2049,24 @@ function Chat({ mapaNatal }) {
   )
 }
 
-function Navbar({ passo, setPasso }) {
+function Navbar({ passo, setPasso, onLogout }) {
   const itens = [
-    { id: 'dashboard', label: 'Inicio', icon: Home },
-    { id: 'mapa', label: 'Mapa', icon: Map },
-    { id: 'ferramentas', label: 'Ferramentas', icon: Grid3x3 },
-    { id: 'chat', label: 'Chat', icon: MessageCircle },
+    { id: 'dashboard',   label: 'Início',       icon: Home },
+    { id: 'mapa',        label: 'Mapa',         icon: Map },
+    { id: 'ferramentas', label: 'Arcanos',       icon: Grid3x3 },
+    { id: 'chat',        label: 'Oráculo',       icon: MessageCircle },
+    { id: 'perfil',      label: 'Perfil',        icon: User },
   ]
-
   return (
     <nav style={estilos.navbar}>
       {itens.map((item) => {
         const Icon = item.icon
         const ativo = passo === item.id
         return (
-          <button key={item.id} type="button" onClick={() => setPasso(item.id)} style={{ background: 'none', border: 'none', color: ativo ? CORES.dourado : CORES.brancoMuted, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, cursor: 'pointer' }}>
-            <Icon size={22} />
-            <span style={{ fontSize: 10, textTransform: 'uppercase' }}>{item.label}</span>
+          <button key={item.id} type="button" onClick={() => setPasso(item.id)}
+            style={{ background: 'none', border: 'none', color: ativo ? CORES.dourado : CORES.brancoMuted, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3, cursor: 'pointer', padding: '0 4px' }}>
+            <Icon size={20} />
+            <span style={{ fontSize: 9, textTransform: 'uppercase', letterSpacing:'0.04em' }}>{item.label}</span>
           </button>
         )
       })}
@@ -1348,23 +2074,75 @@ function Navbar({ passo, setPasso }) {
   )
 }
 
+const DADOS_VAZIO = { nome: '', data: '', hora: '', cidade: '', localizacao: null, fuso: null }
+
 export default function App() {
-  const [passo, setPasso] = useState('onboarding')
-  const [dados, setDados] = useState({ nome: '', data: '', hora: '', cidade: '', localizacao: null, fuso: null })
+  // ── Auth ──────────────────────────────────────────────────────────────────
+  const [utilizador, setUtilizador] = useState(null)
+  const [authCarregando, setAuthCarregando] = useState(true)
+  const [tipoAuth, setTipoAuth] = useState('login') // 'login' | 'register'
+  const [isPremium, setIsPremium] = useState(false)
+
+  // ── Dados natais ─────────────────────────────────────────────────────────
+  const [passo, setPasso] = useState('dashboard')
+  const [dados, setDados] = useState(DADOS_VAZIO)
   const [mapaNatal, setMapaNatal] = useState(null)
   const [planetasNascimento, setPlanetasNascimento] = useState([])
+
+  // ── Céu de hoje ───────────────────────────────────────────────────────────
   const [ceuAgora, setCeuAgora] = useState(() => calcularPlanetasParaData(new Date()))
   const [aspetosAgora, setAspetosAgora] = useState(() => calcularAspetos(calcularPlanetasParaData(new Date())))
+
   const sweRef = useRef(null)
   const [sweReady, setSweReady] = useState(false)
 
-  // Inicializa Swiss Ephemeris assim que o WASM carrega
+  // ── Escuta o estado de autenticação Firebase ──────────────────────────────
+  useEffect(() => {
+    // Se Firebase não está configurado, salta auth e mostra o onboarding local
+    if (!firebaseDisponivel || !auth) {
+      setAuthCarregando(false)
+      return
+    }
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      setUtilizador(user)
+      if (user) {
+        try {
+          const snap = await getDoc(doc(db, 'users', user.uid))
+          if (snap.exists()) {
+            const perfil = snap.data()
+            if (perfil.dados) setDados(perfil.dados)
+            if (perfil.isPremium) setIsPremium(true)
+          }
+        } catch (e) {
+          console.warn('[Sidus] Firestore indisponível, operando offline:', e?.message)
+        }
+      } else {
+        setDados(DADOS_VAZIO)
+        setMapaNatal(null)
+        setPlanetasNascimento([])
+        setIsPremium(false)
+      }
+      setAuthCarregando(false)
+    })
+    return unsubscribe
+  }, [])
+
+  // ── Guarda dados natais no Firestore quando o onboarding termina ──────────
+  const guardarPerfil = useCallback(async (dadosNovos) => {
+    if (!utilizador || !firebaseDisponivel || !db) return
+    try {
+      await setDoc(doc(db, 'users', utilizador.uid), { dados: dadosNovos, isPremium }, { merge: true })
+    } catch (e) {
+      console.warn('[Sidus] Não foi possível guardar o perfil:', e?.message)
+    }
+  }, [utilizador, isPremium])
+
+  // ── Inicializa Swiss Ephemeris ─────────────────────────────────────────────
   useEffect(() => {
     _sweReadyPromise.then((swe) => {
       if (swe) {
         sweRef.current = swe
         setSweReady(true)
-        // Recalcula o céu actual com Swiss Ephemeris
         const planetas = calcularPlanetasComSwe(swe, new Date())
         setCeuAgora(planetas)
         setAspetosAgora(calcularAspetos(planetas))
@@ -1372,100 +2150,194 @@ export default function App() {
     })
   }, [])
 
-  // Actualiza "Céu de Hoje" a cada minuto
+  // ── Actualiza "Céu de Hoje" a cada minuto ─────────────────────────────────
   useEffect(() => {
     const atualizar = () => {
       const now = new Date()
       if (sweRef.current) {
-        const planetas = calcularPlanetasComSwe(sweRef.current, now)
-        setCeuAgora(planetas)
-        setAspetosAgora(calcularAspetos(planetas))
+        const p = calcularPlanetasComSwe(sweRef.current, now)
+        setCeuAgora(p); setAspetosAgora(calcularAspetos(p))
       } else {
-        const planetas = calcularPlanetasParaData(now)
-        setCeuAgora(planetas)
-        setAspetosAgora(calcularAspetos(planetas))
+        const p = calcularPlanetasParaData(now)
+        setCeuAgora(p); setAspetosAgora(calcularAspetos(p))
       }
     }
     const id = setInterval(atualizar, 60000)
     return () => clearInterval(id)
   }, [sweReady])
 
-  // Recalcula mapa natal quando dados ou motor mudam
+  // ── Recalcula mapa natal ───────────────────────────────────────────────────
   useEffect(() => {
     const erros = validarOnboarding(dados)
     if (Object.keys(erros).length === 0) {
-      if (sweRef.current) {
-        setMapaNatal(calcularMapaNatalComSwe(sweRef.current, dados))
-      } else {
-        setMapaNatal(calcularMapaNatal(dados))
-      }
+      setMapaNatal(sweRef.current
+        ? calcularMapaNatalComSwe(sweRef.current, dados)
+        : calcularMapaNatal(dados))
     }
   }, [dados, sweReady])
 
-  // Planetas de nascimento
+  // ── Planetas de nascimento ─────────────────────────────────────────────────
   useEffect(() => {
-    if (!dados.data || !dados.hora || !dados.localizacao) {
-      setPlanetasNascimento([])
-      return
-    }
-    const fuso = dados.fuso ?? 0
-    const dataUTC = criarDataUTCporLocal(dados.data, dados.hora, fuso)
-    if (sweRef.current) {
-      setPlanetasNascimento(calcularPlanetasComSwe(sweRef.current, dataUTC))
-    } else {
-      setPlanetasNascimento(calcularPlanetasParaData(dataUTC))
-    }
+    if (!dados.data || !dados.hora || !dados.localizacao) { setPlanetasNascimento([]); return }
+    const dataUTC = criarDataUTCporLocal(dados.data, dados.hora, dados.fuso ?? 0)
+    setPlanetasNascimento(sweRef.current
+      ? calcularPlanetasComSwe(sweRef.current, dataUTC)
+      : calcularPlanetasParaData(dataUTC))
   }, [dados, sweReady])
 
-  const handleOnboarding = () => {
+  // ── Acções ─────────────────────────────────────────────────────────────────
+  const handleOnboarding = async () => {
     const erros = validarOnboarding(dados)
     if (Object.keys(erros).length === 0) {
-      if (sweRef.current) {
-        setMapaNatal(calcularMapaNatalComSwe(sweRef.current, dados))
-      } else {
-        setMapaNatal(calcularMapaNatal(dados))
-      }
+      setMapaNatal(sweRef.current
+        ? calcularMapaNatalComSwe(sweRef.current, dados)
+        : calcularMapaNatal(dados))
+      await guardarPerfil(dados)
       setPasso('dashboard')
     }
   }
 
-  const handleFerramenta = (f) => {
-    if (f.premium) setPasso('paywall')
+  const handleLogout = async () => {
+    if (firebaseDisponivel && auth) await signOut(auth)
+    setUtilizador(null)
+    setTipoAuth('login')
   }
 
-  const mostrarNavbar = passo !== 'onboarding' && passo !== 'paywall'
+  // ── Estado Ferramentas + Pagamento ──────────────────────────────────────────
+  const [tarotAberto, setTarotAberto]         = useState(false)
+  const [ferramentaAberta, setFerramentaAberta] = useState(null) // 'bussola'|'sinastria'|'biorritmo'|'diario'
+  const [modalPagamento, setModalPagamento]   = useState(null)
+
+  const handleFerramenta = (f) => {
+    if (f.isTarot) { setTarotAberto(true); return }
+    if (f.id === 'bussola')   { if (isPremium) setFerramentaAberta('bussola');   else setPasso('paywall'); return }
+    if (f.id === 'sinastria') { if (isPremium) setFerramentaAberta('sinastria'); else setPasso('paywall'); return }
+    if (f.id === 'biorritmo') { setFerramentaAberta('biorritmo'); return }
+    if (f.id === 'diario')    { setFerramentaAberta('diario');    return }
+    if (f.premium && !isPremium) setPasso('paywall')
+  }
+
+  const abrirPagamento = (descricao, valor, onSucesso) => {
+    setModalPagamento({ descricao, valor, onSucesso })
+  }
+
+  // Activa premium em modo dev (só visível sem Firebase configurado ou em localhost)
+  const activarPremiumDev = async () => {
+    setIsPremium(true)
+    if (utilizador && db) {
+      try { await setDoc(doc(db, 'users', utilizador.uid), { isPremium: true }, { merge: true }) }
+      catch { /* offline */ }
+    }
+  }
+
+  // ── Routing ────────────────────────────────────────────────────────────────
+  const temDados = validarOnboarding(dados) && Object.keys(validarOnboarding(dados)).length === 0
+  const isDev = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+
+  const mostrarNavbar = (utilizador || !firebaseDisponivel) && temDados && passo !== 'paywall'
   const chatFullScreen = passo === 'chat'
 
+  // Ecrã de carregamento (auth ainda a iniciar)
+  if (authCarregando) {
+    return (
+      <div style={{ ...estilos.app, alignItems: 'center', justifyContent: 'center' }}>
+        <Sparkles size={36} color={CORES.dourado} strokeWidth={1.5} />
+        <p style={{ color: CORES.brancoMuted, marginTop: 16, fontSize: 14 }}>A carregar o cosmos…</p>
+      </div>
+    )
+  }
+
   const renderEcran = () => {
+    // Não autenticado → Auth (só se Firebase estiver configurado)
+    if (!utilizador && firebaseDisponivel) {
+      return <EcraAuth tipo={tipoAuth} onMudar={setTipoAuth} />
+    }
+    // Sem dados natais → Onboarding (modo local ou primeiro login)
+    if (!temDados) {
+      return <Onboarding dados={dados} setDados={setDados} onSubmit={handleOnboarding} />
+    }
+    // Autenticado com dados → navegação normal
     switch (passo) {
-      case 'onboarding':
-        return <Onboarding dados={dados} setDados={setDados} onSubmit={handleOnboarding} />
       case 'dashboard':
-        return <Dashboard nome={dados.nome} mapaNatal={mapaNatal} ceuAgora={ceuAgora} aspetos={aspetosAgora} onOraculo={() => setPasso('chat')} />
+        return <Dashboard nome={dados.nome} mapaNatal={mapaNatal} ceuAgora={ceuAgora} aspetos={aspetosAgora} onOraculo={() => setPasso('chat')} onPrivacidade={() => setPasso('privacidade')} />
       case 'mapa':
-        return <MapaAstral mapaNatal={mapaNatal} dados={dados} planetasNascimento={planetasNascimento} />
+        return <MapaAstral mapaNatal={mapaNatal} dados={dados} planetasNascimento={planetasNascimento} isPremium={isPremium} onUpgrade={() => setPasso('paywall')} />
       case 'ferramentas':
+        if (tarotAberto)
+          return <EcraTarot mapaNatal={mapaNatal} isPremium={isPremium} onPagar={abrirPagamento} onVoltar={() => setTarotAberto(false)} />
+        if (ferramentaAberta === 'bussola')
+          return <BussolaCosmica mapaNatal={mapaNatal} onVoltar={() => setFerramentaAberta(null)} />
+        if (ferramentaAberta === 'sinastria')
+          return <Sinastria mapaNatal={mapaNatal} onVoltar={() => setFerramentaAberta(null)} />
+        if (ferramentaAberta === 'biorritmo')
+          return <Biorritmo dados={dados} onVoltar={() => setFerramentaAberta(null)} />
+        if (ferramentaAberta === 'diario')
+          return <DiarioAstral mapaNatal={mapaNatal} onVoltar={() => setFerramentaAberta(null)} />
         return <Ferramentas onFerramenta={handleFerramenta} />
       case 'paywall':
-        return <Paywall onVoltar={() => setPasso('ferramentas')} />
+        return <Paywall onVoltar={() => setPasso('ferramentas')} onPagar={abrirPagamento} onSucesso={() => { setIsPremium(true); setPasso('dashboard') }} />
       case 'chat':
-        return <Chat mapaNatal={mapaNatal} />
+        return <Chat mapaNatal={mapaNatal} isPremium={isPremium} onUpgrade={() => setPasso('paywall')} />
+      case 'perfil':
+        return <Perfil utilizador={utilizador} dados={dados} mapaNatal={mapaNatal} isPremium={isPremium}
+          onEditar={() => { setDados(DADOS_VAZIO); setPasso('onboarding') }}
+          onLogout={handleLogout} />
+      case 'privacidade':
+        return <PoliticaPrivacidade onVoltar={() => setPasso('dashboard')} />
       default:
-        return <Dashboard nome={dados.nome} mapaNatal={mapaNatal} ceuAgora={ceuAgora} aspetos={aspetosAgora} onOraculo={() => setPasso('chat')} />
+        return <Dashboard nome={dados.nome} mapaNatal={mapaNatal} ceuAgora={ceuAgora} aspetos={aspetosAgora} onOraculo={() => setPasso('chat')} onPrivacidade={() => setPasso('privacidade')} />
     }
   }
 
   return (
     <div style={estilos.app}>
       <div style={estilos.estrelas} />
+
+      {/* Barra de dev — só visível em localhost */}
+      {isDev && temDados && (
+        <div style={{
+          position: 'fixed', top: 0, left: '50%', transform: 'translateX(-50%)',
+          width: '100%', maxWidth: 430, zIndex: 200,
+          background: 'rgba(30,15,60,0.97)', borderBottom: '1px solid rgba(223,183,108,0.3)',
+          padding: '6px 14px', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          boxSizing: 'border-box', fontSize: 11,
+        }}>
+          <span style={{ color: CORES.brancoMuted }}>
+            🛠 Dev · Motor: <b style={{ color: CORES.dourado }}>{_motorStatus}</b>
+            {isPremium && <span style={{ marginLeft: 8, color: '#34D399' }}>✓ Premium activo</span>}
+          </span>
+          {!isPremium && (
+            <button
+              type="button"
+              onClick={activarPremiumDev}
+              style={{ background: 'rgba(223,183,108,0.15)', border: `1px solid ${CORES.dourado}`, borderRadius: 6, color: CORES.dourado, fontSize: 10, fontWeight: 700, padding: '3px 10px', cursor: 'pointer' }}
+            >
+              Simular Premium
+            </button>
+          )}
+        </div>
+      )}
+
       {chatFullScreen ? (
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', position: 'relative', zIndex: 1, paddingBottom: 72 }}>
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', position: 'relative', zIndex: 1, paddingBottom: 72, paddingTop: isDev && temDados ? 30 : 0 }}>
           {renderEcran()}
         </div>
       ) : (
-        renderEcran()
+        <div style={{ paddingTop: isDev && temDados ? 30 : 0 }}>
+          {renderEcran()}
+        </div>
       )}
-      {mostrarNavbar && <Navbar passo={passo} setPasso={setPasso} />}
+      {mostrarNavbar && <Navbar passo={passo} setPasso={(p) => { setTarotAberto(false); setFerramentaAberta(null); setPasso(p) }} onLogout={handleLogout} />}
+
+      {/* Modal de pagamento — sobrepõe tudo */}
+      {modalPagamento && (
+        <ModalPagamento
+          descricao={modalPagamento.descricao}
+          valor={modalPagamento.valor}
+          onSucesso={() => { modalPagamento.onSucesso?.(); setModalPagamento(null) }}
+          onFechar={() => setModalPagamento(null)}
+        />
+      )}
     </div>
   )
 }
