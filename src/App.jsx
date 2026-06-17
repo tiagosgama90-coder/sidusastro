@@ -353,6 +353,109 @@ function calcularAspetos(planetas) {
   return lista.sort((x, y) => parseFloat(x.orbe) - parseFloat(y.orbe))
 }
 
+// ── Helpers de análise do mapa natal ─────────────────────────────────────────
+const ELEMENTO_DO_SIGNO = {
+  'Carneiro': 'Fogo',   'Leão': 'Fogo',   'Sagitário': 'Fogo',
+  'Touro': 'Terra',     'Virgem': 'Terra', 'Capricórnio': 'Terra',
+  'Gémeos': 'Ar',       'Balança': 'Ar',   'Aquário': 'Ar',
+  'Caranguejo': 'Água', 'Escorpião': 'Água', 'Peixes': 'Água',
+}
+
+const MODALIDADE_DO_SIGNO = {
+  'Carneiro': 'Cardinal', 'Caranguejo': 'Cardinal', 'Balança': 'Cardinal', 'Capricórnio': 'Cardinal',
+  'Touro': 'Fixo',       'Leão': 'Fixo',            'Escorpião': 'Fixo',   'Aquário': 'Fixo',
+  'Gémeos': 'Mutável',   'Virgem': 'Mutável',        'Sagitário': 'Mutável','Peixes': 'Mutável',
+}
+
+function calcularBalancaElementos(planetas) {
+  const bal = { Fogo: 0, Terra: 0, Ar: 0, Água: 0 }
+  planetas.forEach(p => { const el = ELEMENTO_DO_SIGNO[p.signo?.nome]; if (el) bal[el]++ })
+  return bal
+}
+
+function calcularBalancaModalidades(planetas) {
+  const bal = { Cardinal: 0, Fixo: 0, Mutável: 0 }
+  planetas.forEach(p => { const mod = MODALIDADE_DO_SIGNO[p.signo?.nome]; if (mod) bal[mod]++ })
+  return bal
+}
+
+const INTERP_PLANETAS = {
+  Sol: {
+    Carneiro: 'Iniciativa, coragem e identidade directa.',
+    Touro: 'Estabilidade, prazer sensorial e perseverança.',
+    Gémeos: 'Curiosidade intelectual e versatilidade comunicativa.',
+    Caranguejo: 'Intuição emocional e profundo instinto de cuidar.',
+    Leão: 'Criatividade, liderança e expressão generosa.',
+    Virgem: 'Análise, perfeicionismo e serviço dedicado.',
+    Balança: 'Harmonia, justiça e crescimento através das relações.',
+    Escorpião: 'Transformação, profundidade e intensidade emocional.',
+    Sagitário: 'Liberdade filosófica e expansão de horizontes.',
+    Capricórnio: 'Ambição disciplinada e construção de legado duradouro.',
+    Aquário: 'Visão inovadora, humanismo e pensamento original.',
+    Peixes: 'Espiritualidade profunda, empatia e conexão com o invisível.',
+  },
+  Lua: {
+    Carneiro: 'Reages com impulso; a independência emocional é vital.',
+    Touro: 'Segurança material e rotinas estáveis alimentam a tua alma.',
+    Gémeos: 'Processas as emoções através do diálogo e da análise.',
+    Caranguejo: 'Natureza profundamente empática; o lar é o teu santuário.',
+    Leão: 'Precisas de reconhecimento e expressão emocional autêntica.',
+    Virgem: 'Expressas amor através do serviço; autocrítica como sombra.',
+    Balança: 'Equilíbrio e harmonia nas relações como necessidade emocional.',
+    Escorpião: 'Emoções intensas e transformadoras; memória emocional profunda.',
+    Sagitário: 'Aventura e liberdade como necessidades emocionais primárias.',
+    Capricórnio: 'Responsabilidade como linguagem do amor; emoções contidas.',
+    Aquário: 'Precisas de espaço emocional e amizade genuína.',
+    Peixes: 'Absorves as emoções ao redor; fronteiras internas são essenciais.',
+  },
+  Mercúrio: {
+    Carneiro: 'Pensamento directo e rápido; mente pioneira.',
+    Touro: 'Mente prática, reflectida e orientada para resultados.',
+    Gémeos: 'Mente ágil, multitasking e comunicadora por natureza.',
+    Caranguejo: 'Pensamento intuitivo com forte memória emocional.',
+    Leão: 'Comunicação carismática, criativa e persuasiva.',
+    Virgem: 'Análise precisa, atenção ao detalhe e clareza no discurso.',
+    Balança: 'Ponderação, diplomacia e visão das múltiplas perspectivas.',
+    Escorpião: 'Mente investigativa, penetrante e perspicaz.',
+    Sagitário: 'Mente filosófica, directa e em busca do sentido.',
+    Capricórnio: 'Pensamento estruturado, estratégico e disciplinado.',
+    Aquário: 'Mente inovadora, independente e visionária.',
+    Peixes: 'Intuição criativa; pensamento simbólico e poético.',
+  },
+  Vénus: {
+    Carneiro: 'Amor apaixonado, directo e aventureiro.',
+    Touro: 'Afecto sensorial, leal e orientado para o prazer.',
+    Gémeos: 'Atraído/a pela inteligência; amor leve e comunicativo.',
+    Caranguejo: 'Amor protetor, nostálgico e profundamente devotado.',
+    Leão: 'Amor dramático, generoso e que procura admiração mútua.',
+    Virgem: 'Amor expresso através do serviço e da atenção.',
+    Balança: 'Amor refinado, idealista e orientado para a parceria.',
+    Escorpião: 'Amor intenso, fusional e transformador.',
+    Sagitário: 'Amor livre, aventureiro e filosófico.',
+    Capricórnio: 'Amor leal e comprometido, construído com paciência.',
+    Aquário: 'Amor intelectual que respeita a liberdade individual.',
+    Peixes: 'Amor incondicional, espiritual e compassivo.',
+  },
+  Marte: {
+    Carneiro: 'Acção directa e corajosa; energia no pico do signo.',
+    Touro: 'Força persistente, lenta mas absolutamente inabalável.',
+    Gémeos: 'Energia táctica dispersa em múltiplas frentes.',
+    Caranguejo: 'Defende com fervor o que e quem amas.',
+    Leão: 'Determinação criativa com orgulho e liderança natural.',
+    Virgem: 'Trabalho disciplinado, meticuloso e altamente eficiente.',
+    Balança: 'Acção mediada pela reflexão e estratégia diplomática.',
+    Escorpião: 'Força intensa e focada; perseverança até transformar.',
+    Sagitário: 'Energia entusiasta; batalha por ideais filosóficos.',
+    Capricórnio: 'Ambição disciplinada; usa a energia de forma estratégica.',
+    Aquário: 'Luta pela mudança social com acção inovadora.',
+    Peixes: 'Energia subtil e criativa, guiada pela intuição.',
+  },
+}
+
+function getInterpPlaneta(nomePlaneta, nomeSigno) {
+  return INTERP_PLANETAS[nomePlaneta]?.[nomeSigno] || null
+}
+
 /**
  * Converte hora local numa dada timezone IANA para UTC.
  * Algoritmo iterativo usando Intl.DateTimeFormat — gere horário de verão
@@ -1415,8 +1518,59 @@ function CartaDoDia() {
   )
 }
 
-function MapaAstral({ mapaNatal, dados, planetasNascimento, isPremium, onUpgrade }) {
+function PilarCard({ titulo, simbolo, nome, graus, elemento, icon: Icon, corBorda, corFundo, corIcone }) {
+  const corEl = elemento === 'Fogo' ? '#FB923C' : elemento === 'Terra' ? '#4ADE80' : elemento === 'Ar' ? '#93C5FD' : '#818CF8'
+  const bgEl  = elemento === 'Fogo' ? 'rgba(251,146,60,0.15)' : elemento === 'Terra' ? 'rgba(74,222,128,0.12)' : elemento === 'Ar' ? 'rgba(147,197,253,0.15)' : 'rgba(129,140,248,0.15)'
+  const bordEl= elemento === 'Fogo' ? 'rgba(251,146,60,0.3)' : elemento === 'Terra' ? 'rgba(74,222,128,0.3)' : elemento === 'Ar' ? 'rgba(147,197,253,0.3)' : 'rgba(129,140,248,0.3)'
+  return (
+    <div style={{ ...estilos.vidro, padding: 18, marginBottom: 12, display: 'flex', gap: 14, alignItems: 'center' }}>
+      <div style={{ width: 54, height: 54, borderRadius: 14, background: corFundo, border: `1px solid ${corBorda}`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 26, flexShrink: 0 }}>
+        {simbolo}
+      </div>
+      <div style={{ flex: 1 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 3 }}>
+          <Icon size={12} color={corIcone} />
+          <span style={{ fontSize: 10, color: corIcone, textTransform: 'uppercase', letterSpacing: '0.09em', fontWeight: 700 }}>{titulo}</span>
+        </div>
+        <div style={{ fontSize: 20, fontWeight: 700, color: CORES.branco, lineHeight: 1.2 }}>{nome}</div>
+        <div style={{ display: 'flex', gap: 8, marginTop: 4, flexWrap: 'wrap' }}>
+          <span style={{ fontSize: 11, color: CORES.brancoMuted }}>{graus != null ? `${typeof graus === 'number' ? graus.toFixed(1) : graus}° no signo` : ''}</span>
+          {elemento && (
+            <span style={{ fontSize: 10, fontWeight: 700, padding: '2px 8px', borderRadius: 6, background: bgEl, color: corEl, border: `1px solid ${bordEl}` }}>{elemento}</span>
+          )}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function BarraElemento({ label, valor, total, cor }) {
+  const pct = total > 0 ? Math.round((valor / total) * 100) : 0
+  return (
+    <div style={{ marginBottom: 10 }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 3 }}>
+        <span style={{ fontSize: 12, color: CORES.brancoSuave }}>{label}</span>
+        <span style={{ fontSize: 11, color: cor, fontWeight: 700 }}>{valor} ({pct}%)</span>
+      </div>
+      <div style={{ height: 6, borderRadius: 3, background: 'rgba(255,255,255,0.08)' }}>
+        <div style={{ height: '100%', borderRadius: 3, width: `${pct}%`, background: cor, transition: 'width 0.6s ease' }} />
+      </div>
+    </div>
+  )
+}
+
+function MapaAstral({ mapaNatal, dados, planetasNascimento, isPremium, onUpgrade, onMapaGerado }) {
   const [gerandoPdf, setGerandoPdf] = useState(false)
+  const [emailEnviado, setEmailEnviado] = useState(false)
+  const mapaGeradoRef = useRef(false)
+
+  // Notifica o pai quando o mapa premium é visualizado pela primeira vez
+  useEffect(() => {
+    if (isPremium && mapaNatal && !mapaGeradoRef.current) {
+      mapaGeradoRef.current = true
+      onMapaGerado?.()
+    }
+  }, [isPremium, mapaNatal, onMapaGerado])
 
   const downloadPdf = async () => {
     if (gerandoPdf) return
@@ -1432,6 +1586,37 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, isPremium, onUpgrade
     }
   }
 
+  const compartilharEmail = () => {
+    const linhasPlanetas = planetasNascimento.map(p =>
+      `  ${p.nome}: ${p.signo?.nome || '—'} (${(p.longitude ?? 0).toFixed(1)}°)${p.retrograde ? ' ℞' : ''}`
+    ).join('\n')
+
+    const corpo = [
+      `✦ MAPA ASTRAL NATAL — ${(dados.nome || '').toUpperCase()}`,
+      `Nascido/a em ${dados.cidade || ''}  •  ${formatarData(dados.data)} às ${dados.hora}`,
+      `Motor de cálculo: ${mapaNatal.motor || 'astronomy-engine'}`,
+      '',
+      '── QUATRO PILARES ──────────────────────────',
+      `☀  Sol:          ${mapaNatal.solar?.nome || '—'} (${(mapaNatal.solar?.grau ?? 0).toFixed(1)}°)`,
+      `☽  Lua:          ${mapaNatal.lunar?.nome || '—'} (${(mapaNatal.lunar?.grau ?? 0).toFixed(1)}°)`,
+      `↑  Ascendente:   ${mapaNatal.ascendente?.nome || '—'} (${(mapaNatal.ascendente?.grau ?? 0).toFixed(1)}°)`,
+      mapaNatal.mc ? `⊕  Meio do Céu:  ${mapaNatal.mc.nome} (${(mapaNatal.mc.grau ?? 0).toFixed(1)}°)` : '',
+      '',
+      '── PLANETAS AO NASCIMENTO ──────────────────',
+      linhasPlanetas,
+      '',
+      '─────────────────────────────────────────────',
+      'Gerado por Sidus — App de Astrologia Natal',
+      'https://sidus.app',
+    ].filter(l => l !== null && l !== undefined).join('\n')
+
+    const assunto = encodeURIComponent(`Mapa Astral de ${dados.nome} — Sidus`)
+    const body    = encodeURIComponent(corpo)
+    window.location.href = `mailto:?subject=${assunto}&body=${body}`
+    setEmailEnviado(true)
+    setTimeout(() => setEmailEnviado(false), 4000)
+  }
+
   if (!mapaNatal) {
     return (
       <div style={estilos.conteudo}>
@@ -1444,181 +1629,198 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, isPremium, onUpgrade
     )
   }
 
-  // Mapa Básico (grátis): Sol + Lua + Ascendente
-  const pilaresBasicos = [
-    { titulo: 'Signo Solar',  ...mapaNatal.solar,      icon: Sun },
-    { titulo: 'Signo Lunar',  ...mapaNatal.lunar,      icon: Moon },
-    { titulo: 'Ascendente',   ...mapaNatal.ascendente, icon: ArrowUp },
+  const pilaresBase = [
+    { titulo: 'Signo Solar',  icon: Sun,      corBorda: CORES.vidroBorda,         corFundo: CORES.roxoClaro,           corIcone: CORES.dourado,  ...mapaNatal.solar },
+    { titulo: 'Signo Lunar',  icon: Moon,     corBorda: CORES.vidroBorda,         corFundo: CORES.roxoClaro,           corIcone: CORES.dourado,  ...mapaNatal.lunar },
+    { titulo: 'Ascendente',   icon: ArrowUp,  corBorda: 'rgba(139,92,246,0.4)',   corFundo: 'rgba(139,92,246,0.18)',   corIcone: '#C4B5FD',      ...mapaNatal.ascendente },
   ]
-
-  // Mapa Completo (premium): adiciona MC + planetas + aspectos
   const pilaresCompletos = [
-    ...pilaresBasicos,
-    ...(mapaNatal.mc ? [{ titulo: 'Meio do Céu (MC)', ...mapaNatal.mc, icon: Star }] : []),
+    ...pilaresBase,
+    ...(mapaNatal.mc ? [{ titulo: 'Meio do Céu (MC)', icon: Star, corBorda: 'rgba(52,211,153,0.35)', corFundo: 'rgba(52,211,153,0.12)', corIcone: '#34D399', ...mapaNatal.mc }] : []),
   ]
 
-  const pilares = isPremium ? pilaresCompletos : pilaresBasicos
+  const pilares = isPremium ? pilaresCompletos : pilaresBase
 
-  const motorLabel = mapaNatal.motor || 'astronomy-engine'
+  // Análise de elementos e modalidades (só premium)
+  const balEl  = isPremium && planetasNascimento.length > 0 ? calcularBalancaElementos(planetasNascimento) : null
+  const balMod = isPremium && planetasNascimento.length > 0 ? calcularBalancaModalidades(planetasNascimento) : null
+  const totalPlanetas = planetasNascimento.length
+
+  // Aspectos natais (só premium)
+  const aspetosNatais = isPremium && planetasNascimento.length > 0
+    ? calcularAspetos(planetasNascimento).slice(0, 8)
+    : []
 
   return (
     <div style={estilos.conteudo}>
-      <header style={{ marginBottom: 22 }}>
+      <header style={{ marginBottom: 20 }}>
         <h1 style={{ ...estilos.titulo, textAlign: 'left', fontSize: 22 }}>Mapa Astral</h1>
         <p style={{ ...estilos.subtitulo, textAlign: 'left', marginBottom: 2 }}>
-          Calculado para {formatarData(dados.data)} às {dados.hora}
+          {dados.nome} · {formatarData(dados.data)} às {dados.hora}
         </p>
-        <p style={{ fontSize: 10, color: CORES.brancoMuted, textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 0 }}>
-          Motor: {motorLabel}
+        <p style={{ fontSize: 10, color: CORES.brancoMuted, textTransform: 'uppercase', letterSpacing: '0.07em' }}>
+          {mapaNatal.motor || 'astronomy-engine'}
+          {mapaNatal.motor?.includes('completo') ? ' ✓ Máxima precisão' : ''}
         </p>
       </header>
 
-      {pilares.map((p) => {
-        const Icon = p.icon
-        const isMC  = p.titulo.startsWith('Meio')
-        const isAsc = p.titulo === 'Ascendente'
-        const corBorda = isAsc ? 'rgba(139,92,246,0.4)' : isMC ? 'rgba(52,211,153,0.35)' : CORES.vidroBorda
-        const corFundo = isAsc ? 'rgba(139,92,246,0.18)' : isMC ? 'rgba(52,211,153,0.12)' : CORES.roxoClaro
-        const corIcone = isAsc ? '#C4B5FD' : isMC ? '#34D399' : CORES.dourado
-        return (
-          <div key={p.titulo} style={{ ...estilos.vidro, padding: 20, marginBottom: 14, display: 'flex', gap: 14, alignItems: 'center' }}>
-            <div style={{ width: 56, height: 56, borderRadius: 14, background: corFundo, border: `1px solid ${corBorda}`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 26, flexShrink: 0 }}>
-              {p.simbolo}
-            </div>
-            <div style={{ flex: 1 }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 4 }}>
-                <Icon size={13} color={corIcone} />
-                <span style={{ fontSize: 10, color: corIcone, textTransform: 'uppercase', letterSpacing: '0.09em', fontWeight: 700 }}>
-                  {p.titulo}
-                </span>
-              </div>
-              <div style={{ fontSize: 21, fontWeight: 600, color: CORES.branco, lineHeight: 1.1 }}>{p.nome}</div>
-              <div style={{ display: 'flex', gap: 10, marginTop: 5 }}>
-                <span style={{ fontSize: 12, color: CORES.brancoMuted }}>
-                  {p.graus}° no signo
-                </span>
-                <span style={{
-                  fontSize: 11,
-                  fontWeight: 700,
-                  padding: '2px 8px',
-                  borderRadius: 6,
-                  background: p.elemento === 'Fogo' ? 'rgba(251,146,60,0.15)' :
-                    p.elemento === 'Terra' ? 'rgba(74,222,128,0.12)' :
-                    p.elemento === 'Ar' ? 'rgba(147,197,253,0.15)' :
-                    'rgba(129,140,248,0.15)',
-                  color: p.elemento === 'Fogo' ? '#FB923C' :
-                    p.elemento === 'Terra' ? '#4ADE80' :
-                    p.elemento === 'Ar' ? '#93C5FD' :
-                    '#818CF8',
-                  border: `1px solid ${p.elemento === 'Fogo' ? 'rgba(251,146,60,0.3)' :
-                    p.elemento === 'Terra' ? 'rgba(74,222,128,0.3)' :
-                    p.elemento === 'Ar' ? 'rgba(147,197,253,0.3)' :
-                    'rgba(129,140,248,0.3)'}`,
-                }}>
-                  {p.elemento}
-                </span>
-              </div>
-            </div>
-          </div>
-        )
-      })}
-
-      {/* Painel de verificação */}
-      <div style={{ ...estilos.vidro, padding: 16, marginBottom: 14 }}>
-        <div style={{ fontSize: 10, color: CORES.dourado, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 10 }}>
-          Verificação de precisão
-        </div>
-
-        {/* Motor activo */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10, padding: '8px 10px', borderRadius: 8,
-          background: mapaNatal.motor?.includes('completo') ? 'rgba(52,211,153,0.1)' : 'rgba(251,191,36,0.08)',
-          border: `1px solid ${mapaNatal.motor?.includes('completo') ? 'rgba(52,211,153,0.3)' : 'rgba(251,191,36,0.2)'}`,
-        }}>
-          <span style={{ fontSize: 16 }}>{mapaNatal.motor?.includes('completo') ? '✅' : '⚠️'}</span>
-          <div>
-            <div style={{ fontSize: 11, fontWeight: 700, color: mapaNatal.motor?.includes('completo') ? '#34D399' : '#FBBf24' }}>
-              {mapaNatal.motor?.includes('completo') ? 'Máxima precisão (arco-segundo)' : 'Precisão padrão (arco-minuto)'}
-            </div>
-            <div style={{ fontSize: 10, color: CORES.brancoMuted, marginTop: 1 }}>{mapaNatal.motor}</div>
-          </div>
-        </div>
-
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px 12px', fontSize: 12 }}>
-          <span style={{ color: CORES.brancoMuted }}>Data UT:</span>
-          <span style={{ color: CORES.branco, fontVariantNumeric: 'tabular-nums' }}>
-            {mapaNatal.instanteUTC ? mapaNatal.instanteUTC.replace('T', ' ').slice(0, 16) + ' UTC' : '—'}
-          </span>
-          <span style={{ color: CORES.brancoMuted }}>Fuso local:</span>
-          <span style={{ color: CORES.branco }}>
-            {typeof mapaNatal.fuso === 'string'
-              ? mapaNatal.fuso + (dados.data && dados.hora ? ' · ' + offsetLabel(mapaNatal.fuso, dados.data, dados.hora) : '')
-              : `UTC${(mapaNatal.fuso ?? 0) >= 0 ? '+' : ''}${mapaNatal.fuso ?? 0}`}
-          </span>
-          <span style={{ color: CORES.brancoMuted }}>Latitude:</span>
-          <span style={{ color: CORES.branco, fontVariantNumeric: 'tabular-nums' }}>
-            {mapaNatal.lat != null ? `${mapaNatal.lat.toFixed(4)}°` : '—'}
-          </span>
-          <span style={{ color: CORES.brancoMuted }}>Longitude:</span>
-          <span style={{ color: CORES.branco, fontVariantNumeric: 'tabular-nums' }}>
-            {mapaNatal.lon != null ? `${mapaNatal.lon.toFixed(4)}°` : '—'}
-          </span>
-        </div>
-
-        {!mapaNatal.motor?.includes('Swiss') && (
-          <div style={{ marginTop: 10, fontSize: 11, color: '#FBBf24', padding: '6px 8px', background: 'rgba(251,191,36,0.07)', borderRadius: 6 }}>
-            ⚠️ O motor Swiss Ephemeris não carregou ainda. Os valores são precisos mas podem diferir em &lt;1' de arco face ao Astro.com. Aguarda 2–3s e recarrega o mapa.
-          </div>
-        )}
+      {/* ── Quatro Pilares ── */}
+      <div style={{ fontSize: 11, color: CORES.dourado, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 10, fontWeight: 700 }}>
+        {isPremium ? '✦ Quatro Pilares Fundamentais' : '✦ Pilares Básicos'}
       </div>
+      {pilares.map(p => <PilarCard key={p.titulo} {...p} />)}
 
-      {/* Planetas + Aspectos — só para premium */}
+      {/* ── Conteúdo Premium ── */}
       {isPremium ? (
         <>
-          <div style={{ ...estilos.vidro, padding: 20, marginBottom: 14 }}>
-            <div style={{ fontSize: 12, color: CORES.dourado, marginBottom: 10, textTransform: 'uppercase', letterSpacing: '0.07em' }}>
-              Planetas no instante de nascimento
+          {/* Elementos & Modalidades */}
+          {balEl && (
+            <div style={{ ...estilos.vidro, padding: 18, marginBottom: 14 }}>
+              <div style={{ fontSize: 11, color: CORES.dourado, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 14, fontWeight: 700 }}>
+                ✦ Equilíbrio de Elementos
+              </div>
+              <BarraElemento label="🔥 Fogo — Acção, entusiasmo, criatividade"  valor={balEl.Fogo}  total={totalPlanetas} cor="#FB923C" />
+              <BarraElemento label="🌍 Terra — Estabilidade, praticidade, perseverança" valor={balEl.Terra} total={totalPlanetas} cor="#4ADE80" />
+              <BarraElemento label="💨 Ar — Intelecto, comunicação, adaptação"   valor={balEl.Ar}   total={totalPlanetas} cor="#93C5FD" />
+              <BarraElemento label="💧 Água — Emoção, intuição, profundidade"   valor={balEl.Água} total={totalPlanetas} cor="#818CF8" />
+              {balMod && (
+                <>
+                  <div style={{ fontSize: 11, color: CORES.dourado, textTransform: 'uppercase', letterSpacing: '0.08em', margin: '16px 0 12px', fontWeight: 700 }}>
+                    ✦ Modalidades
+                  </div>
+                  <BarraElemento label="⚡ Cardinal — Iniciativa, liderança"     valor={balMod.Cardinal} total={totalPlanetas} cor="#F472B6" />
+                  <BarraElemento label="🏔 Fixo — Determinação, resistência"     valor={balMod.Fixo}    total={totalPlanetas} cor="#FBBF24" />
+                  <BarraElemento label="🌊 Mutável — Flexibilidade, adaptação"   valor={balMod.Mutável} total={totalPlanetas} cor="#34D399" />
+                </>
+              )}
             </div>
-            {planetasNascimento.map((p) => (
-              <div key={p.key} style={{ fontSize: 14, color: CORES.brancoSuave, padding: '7px 0', borderBottom: `1px solid ${CORES.vidroBorda}` }}>
-                {p.simbolo} {p.texto}
+          )}
+
+          {/* Posições planetárias com interpretação */}
+          <div style={{ ...estilos.vidro, padding: 18, marginBottom: 14 }}>
+            <div style={{ fontSize: 11, color: CORES.dourado, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 14, fontWeight: 700 }}>
+              ✦ Posições Planetárias ao Nascimento
+            </div>
+            {planetasNascimento.map((p) => {
+              const interp = getInterpPlaneta(p.nome, p.signo?.nome)
+              return (
+                <div key={p.key} style={{ padding: '10px 0', borderBottom: `1px solid ${CORES.vidroBorda}` }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span style={{ fontSize: 14, color: CORES.branco, fontWeight: 600 }}>
+                      {p.simbolo} {p.nome}
+                    </span>
+                    <span style={{ fontSize: 13, color: CORES.dourado }}>
+                      {p.signo?.simbolo} {p.signo?.nome}
+                      {p.retrograde ? <span style={{ color: '#F87171', fontSize: 11, marginLeft: 4 }}> ℞</span> : ''}
+                    </span>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 2 }}>
+                    <span style={{ fontSize: 11, color: CORES.brancoMuted }}>{(p.longitude ?? 0).toFixed(2)}° eclíptica</span>
+                    {interp && <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.45)', maxWidth: '60%', textAlign: 'right', lineHeight: 1.3 }}>{interp}</span>}
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+
+          {/* Aspectos natais */}
+          {aspetosNatais.length > 0 && (
+            <div style={{ ...estilos.vidro, padding: 18, marginBottom: 14 }}>
+              <div style={{ fontSize: 11, color: CORES.dourado, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 14, fontWeight: 700 }}>
+                ✦ Aspectos Principais no Mapa Natal
+              </div>
+              {aspetosNatais.map((a, i) => {
+                const corAsp = a.aspecto === 'Conjunção' ? '#DFB76C' : a.aspecto === 'Trígono' || a.aspecto === 'Sextil' ? '#34D399' : '#F87171'
+                return (
+                  <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '7px 0', borderBottom: `1px solid rgba(255,255,255,0.05)` }}>
+                    <span style={{ fontSize: 12, color: CORES.brancoSuave }}>{a.planetaA} · {a.planetaB}</span>
+                    <span style={{ fontSize: 11, color: corAsp, fontWeight: 600, padding: '2px 8px', borderRadius: 10, background: `${corAsp}18` }}>{a.aspecto} {a.orbe}</span>
+                  </div>
+                )
+              })}
+            </div>
+          )}
+
+          {/* Áreas da Vida */}
+          <div style={{ ...estilos.vidro, padding: 18, marginBottom: 14 }}>
+            <div style={{ fontSize: 11, color: CORES.dourado, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 14, fontWeight: 700 }}>
+              ✦ Áreas da Vida
+            </div>
+            {[
+              {
+                area: '❤ Amor & Relacionamentos',
+                planetas: planetasNascimento.filter(p => ['Vénus', 'Lua'].includes(p.nome)),
+                desc: (ps) => ps.map(p => `${p.nome} em ${p.signo?.nome}`).join(' · '),
+              },
+              {
+                area: '💼 Carreira & Propósito',
+                planetas: planetasNascimento.filter(p => ['Sol', 'Saturno', 'Marte'].includes(p.nome)),
+                desc: (ps) => ps.map(p => `${p.nome} em ${p.signo?.nome}`).join(' · '),
+              },
+              {
+                area: '🔮 Espiritualidade & Alma',
+                planetas: planetasNascimento.filter(p => ['Neptuno', 'Plutão', 'Lua'].includes(p.nome)),
+                desc: (ps) => ps.map(p => `${p.nome} em ${p.signo?.nome}`).join(' · '),
+              },
+            ].map(({ area, planetas: ps, desc }) => (
+              <div key={area} style={{ padding: '10px 0', borderBottom: `1px solid ${CORES.vidroBorda}` }}>
+                <div style={{ fontSize: 13, color: CORES.branco, fontWeight: 600, marginBottom: 3 }}>{area}</div>
+                <div style={{ fontSize: 12, color: CORES.brancoMuted }}>{ps.length > 0 ? desc(ps) : 'Dados em cálculo…'}</div>
               </div>
             ))}
           </div>
 
-          {/* Botão PDF */}
-          <button type="button" onClick={downloadPdf} disabled={gerandoPdf} style={{
-            width: '100%', marginBottom: 14, padding: '15px', borderRadius: 14,
-            background: gerandoPdf ? 'rgba(223,183,108,0.15)' : `linear-gradient(135deg, ${CORES.dourado}, ${CORES.douradoEscuro})`,
-            border: 'none', color: CORES.fundo, fontSize: 15, fontWeight: 700, cursor: gerandoPdf ? 'default' : 'pointer',
-            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-          }}>
-            {gerandoPdf ? '⏳ A gerar PDF...' : '📄 Descarregar Mapa Astral em PDF'}
-          </button>
+          {/* Verificação de precisão (compacta) */}
+          <div style={{ ...estilos.vidro, padding: 14, marginBottom: 14 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '5px 12px', fontSize: 11 }}>
+              <span style={{ color: CORES.brancoMuted }}>Data UT:</span>
+              <span style={{ color: CORES.branco }}>{mapaNatal.instanteUTC ? mapaNatal.instanteUTC.replace('T', ' ').slice(0, 16) + ' UTC' : '—'}</span>
+              <span style={{ color: CORES.brancoMuted }}>Fuso:</span>
+              <span style={{ color: CORES.branco }}>
+                {typeof mapaNatal.fuso === 'string' ? mapaNatal.fuso : `UTC${(mapaNatal.fuso ?? 0) >= 0 ? '+' : ''}${mapaNatal.fuso ?? 0}`}
+              </span>
+              <span style={{ color: CORES.brancoMuted }}>Coordenadas:</span>
+              <span style={{ color: CORES.branco }}>{mapaNatal.lat != null ? `${mapaNatal.lat.toFixed(3)}°N  ${mapaNatal.lon?.toFixed(3)}°E` : '—'}</span>
+            </div>
+          </div>
+
+          {/* Botões de ação */}
+          <div style={{ display: 'flex', gap: 10, marginBottom: 20 }}>
+            <button type="button" onClick={downloadPdf} disabled={gerandoPdf} style={{
+              flex: 1, padding: '14px', borderRadius: 14,
+              background: gerandoPdf ? 'rgba(223,183,108,0.15)' : `linear-gradient(135deg, ${CORES.dourado}, ${CORES.douradoEscuro})`,
+              border: 'none', color: CORES.fundo, fontSize: 14, fontWeight: 700, cursor: gerandoPdf ? 'default' : 'pointer',
+              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
+            }}>
+              {gerandoPdf ? '⏳ A gerar…' : '📄 PDF'}
+            </button>
+            <button type="button" onClick={compartilharEmail} style={{
+              flex: 1, padding: '14px', borderRadius: 14,
+              background: emailEnviado ? 'rgba(52,211,153,0.2)' : 'rgba(223,183,108,0.12)',
+              border: `1px solid ${emailEnviado ? '#34D399' : CORES.dourado}`,
+              color: emailEnviado ? '#34D399' : CORES.dourado,
+              fontSize: 14, fontWeight: 700, cursor: 'pointer',
+              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
+            }}>
+              {emailEnviado ? '✓ Email aberto' : '✉ Email'}
+            </button>
+          </div>
         </>
       ) : (
         /* Teaser premium */
-        <div
-          onClick={onUpgrade}
-          style={{
-            ...estilos.vidro,
-            padding: 24,
-            marginBottom: 14,
-            cursor: 'pointer',
-            border: `1px solid ${CORES.dourado}`,
-            background: 'rgba(223,183,108,0.06)',
-            textAlign: 'center',
-            position: 'relative',
-            overflow: 'hidden',
-          }}
-        >
+        <div onClick={onUpgrade} style={{
+          ...estilos.vidro, padding: 24, marginBottom: 14, cursor: 'pointer',
+          border: `1px solid ${CORES.dourado}`, background: 'rgba(223,183,108,0.06)',
+          textAlign: 'center', position: 'relative', overflow: 'hidden',
+        }}>
           <div style={{ position: 'absolute', inset: 0, background: 'repeating-linear-gradient(45deg, transparent, transparent 8px, rgba(223,183,108,0.03) 8px, rgba(223,183,108,0.03) 16px)', pointerEvents: 'none' }} />
           <Crown size={28} color={CORES.dourado} style={{ marginBottom: 10 }} />
           <div style={{ fontSize: 16, fontWeight: 700, color: CORES.dourado, marginBottom: 6 }}>Mapa Astral Completo</div>
           <div style={{ fontSize: 13, color: CORES.brancoMuted, marginBottom: 14, lineHeight: 1.5 }}>
-            Desbloqueia todos os planetas, aspectos, Meio do Céu e interpretação profissional
+            Desbloqueia todos os planetas, aspectos, elementos, Meio do Céu, interpretações profissionais e exportação em PDF
           </div>
-          <div style={{ display: 'flex', justifyContent: 'center', gap: 8, marginBottom: 14, flexWrap: 'wrap' }}>
-            {['☿ Mercúrio', '♀ Vénus', '♂ Marte', '♃ Júpiter', '♄ Saturno', '⌂ Casas'].map((item) => (
+          <div style={{ display: 'flex', justifyContent: 'center', gap: 8, marginBottom: 16, flexWrap: 'wrap' }}>
+            {['☿ Mercúrio', '♀ Vénus', '♂ Marte', '♃ Júpiter', '♄ Saturno', '📊 Elementos', '📄 PDF', '✉ Email'].map(item => (
               <span key={item} style={{ fontSize: 11, padding: '4px 10px', borderRadius: 20, background: 'rgba(223,183,108,0.1)', border: `1px solid rgba(223,183,108,0.25)`, color: CORES.brancoMuted }}>
                 {item}
               </span>
@@ -1810,25 +2012,74 @@ async function consultarGeminiIA(pergunta, mapaNatal, historico = []) {
   } catch { return null }
 }
 
-// ── Consultor principal: OpenAI → Gemini → Fallback template ──────────────────
+// ── Conector Pollinations.ai (IA GRATUITA — sem chave API necessária) ────────
+async function consultarPollinationsAI(pergunta, mapaNatal, historico = []) {
+  const sistema = construirSistema(mapaNatal)
+  const msgs = [
+    { role: 'system', content: sistema },
+    ...historico.slice(-6).map(m => ({
+      role: m.autor === 'user' ? 'user' : 'assistant',
+      content: m.texto,
+    })),
+    { role: 'user', content: pergunta },
+  ]
+  try {
+    const res = await fetch('https://text.pollinations.ai/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'openai',
+        messages: msgs,
+        seed: Math.floor(Math.random() * 9999),
+        private: true,
+      }),
+    })
+    if (!res.ok) return null
+    const texto = await res.text()
+    return texto?.trim() || null
+  } catch (e) {
+    console.warn('[Pollinations] erro:', e.message)
+    return null
+  }
+}
+
+// ── Consultor principal: OpenAI → Gemini → Pollinations (grátis) → template ──
 async function consultarAuraBot(pergunta, mapaNatal, historico) {
-  const resOAI    = await consultarOpenAI(pergunta, mapaNatal, historico)
+  const resOAI = await consultarOpenAI(pergunta, mapaNatal, historico)
   if (resOAI) return resOAI
   const resGemini = await consultarGeminiIA(pergunta, mapaNatal, historico)
   if (resGemini) return resGemini
+  const resPollinations = await consultarPollinationsAI(pergunta, mapaNatal, historico)
+  if (resPollinations) return resPollinations
   return null   // fallback template chamado no componente
 }
 
 // ── Validador de pergunta genuína ─────────────────────────────────────────────
 function validarPerguntaOracle(texto) {
   const t = texto.trim()
-  if (t.length < 8)
+  const palavras = t.split(/\s+/)
+
+  if (t.length < 10)
     return '✦ Partilha mais sobre a tua situação para eu poder orientar-te com precisão.'
-  if (t.split(/\s+/).length < 3)
-    return '✦ Formula a tua pergunta com um pouco mais de detalhe.'
-  const invalidos = /^(ola|olá|hello|hi|test|teste|faz|diz|escreve|responde|sim|não|nao|ok|hm|e aí|oi|hey|a|o|k)\b/i
-  if (invalidos.test(t) && t.split(/\s+/).length < 5)
+
+  if (palavras.length < 3)
+    return '✦ Formula a tua pergunta com um pouco mais de detalhe — conta-me o contexto.'
+
+  // Rejeitar comandos imperativos (ex: "fazer uma pergunta", "faz algo", "diz-me")
+  const imperativos = /^(faze?r?|dize?r?|escrev[ae]r?|respond[ae]r?|criar?|ger[ae]r?|mostrar?|test[ae]r?|colocar?|fazer?|tentar?|experimentar?)\b/i
+  if (imperativos.test(t) && palavras.length < 6)
+    return '✦ Isso parece um comando, não uma pergunta. Partilha uma situação real da tua vida — o Oráculo responde ao que vives, não ao que mandas.'
+
+  // Rejeitar saudações e ruído semântico
+  const ruido = /^(ola|olá|hello|hi|hey|oi|ok|hm|sim|não|nao|e aí|eai|test|teste|a |o )\b/i
+  if (ruido.test(t) && palavras.length < 5)
     return '✦ O Oráculo aguarda uma pergunta genuína sobre a tua vida, amor, carreira ou caminho espiritual.'
+
+  // Rejeitar frases sem verbo nem contexto (muito genéricas)
+  const semConteudo = /^(uma pergunta|pergunta|algo|qualquer coisa|uma coisa|uma questão|alguma coisa)$/i
+  if (semConteudo.test(t))
+    return '✦ Faz-me uma pergunta verdadeira — sobre o teu amor, carreira, propósito ou qualquer desafio que estejas a viver agora.'
+
   return null
 }
 
@@ -2082,6 +2333,7 @@ export default function App() {
   const [authCarregando, setAuthCarregando] = useState(true)
   const [tipoAuth, setTipoAuth] = useState('login') // 'login' | 'register'
   const [isPremium, setIsPremium] = useState(false)
+  const [mapaGerado, setMapaGerado] = useState(false) // bloqueio: 1 mapa por utilizador
 
   // ── Dados natais ─────────────────────────────────────────────────────────
   const [passo, setPasso] = useState('dashboard')
@@ -2112,6 +2364,7 @@ export default function App() {
             const perfil = snap.data()
             if (perfil.dados) setDados(perfil.dados)
             if (perfil.isPremium) setIsPremium(true)
+            if (perfil.mapaGerado) setMapaGerado(true)
           }
         } catch (e) {
           console.warn('[Sidus] Firestore indisponível, operando offline:', e?.message)
@@ -2222,13 +2475,25 @@ export default function App() {
   }
 
   // Activa premium em modo dev (só visível sem Firebase configurado ou em localhost)
-  const activarPremiumDev = async () => {
-    setIsPremium(true)
+  const togglePremiumDev = async (valor) => {
+    setIsPremium(valor)
     if (utilizador && db) {
-      try { await setDoc(doc(db, 'users', utilizador.uid), { isPremium: true }, { merge: true }) }
+      try { await setDoc(doc(db, 'users', utilizador.uid), { isPremium: valor }, { merge: true }) }
       catch { /* offline */ }
     }
   }
+
+  // Chamado pelo MapaAstral quando o utilizador premium visualiza o mapa pela 1ª vez
+  const handleMapaGerado = useCallback(async () => {
+    if (mapaGerado) return
+    setMapaGerado(true)
+    if (utilizador && firebaseDisponivel && db) {
+      try { await setDoc(doc(db, 'users', utilizador.uid), { mapaGerado: true }, { merge: true }) }
+      catch { /* offline */ }
+    }
+  }, [mapaGerado, utilizador])
+
+  const dadosBloqueados = mapaGerado && isPremium
 
   // ── Routing ────────────────────────────────────────────────────────────────
   const temDados = validarOnboarding(dados) && Object.keys(validarOnboarding(dados)).length === 0
@@ -2261,7 +2526,7 @@ export default function App() {
       case 'dashboard':
         return <Dashboard nome={dados.nome} mapaNatal={mapaNatal} ceuAgora={ceuAgora} aspetos={aspetosAgora} onOraculo={() => setPasso('chat')} onPrivacidade={() => setPasso('privacidade')} />
       case 'mapa':
-        return <MapaAstral mapaNatal={mapaNatal} dados={dados} planetasNascimento={planetasNascimento} isPremium={isPremium} onUpgrade={() => setPasso('paywall')} />
+        return <MapaAstral mapaNatal={mapaNatal} dados={dados} planetasNascimento={planetasNascimento} isPremium={isPremium} onUpgrade={() => setPasso('paywall')} onMapaGerado={handleMapaGerado} />
       case 'ferramentas':
         if (tarotAberto)
           return <EcraTarot mapaNatal={mapaNatal} isPremium={isPremium} onPagar={abrirPagamento} onVoltar={() => setTarotAberto(false)} />
@@ -2280,7 +2545,8 @@ export default function App() {
         return <Chat mapaNatal={mapaNatal} isPremium={isPremium} onUpgrade={() => setPasso('paywall')} />
       case 'perfil':
         return <Perfil utilizador={utilizador} dados={dados} mapaNatal={mapaNatal} isPremium={isPremium}
-          onEditar={() => { setDados(DADOS_VAZIO); setPasso('onboarding') }}
+          dadosBloqueados={dadosBloqueados}
+          onEditar={() => { if (!dadosBloqueados) { setDados(DADOS_VAZIO); setPasso('onboarding') } }}
           onLogout={handleLogout} />
       case 'privacidade':
         return <PoliticaPrivacidade onVoltar={() => setPasso('dashboard')} />
@@ -2304,17 +2570,25 @@ export default function App() {
         }}>
           <span style={{ color: CORES.brancoMuted }}>
             🛠 Dev · Motor: <b style={{ color: CORES.dourado }}>{_motorStatus}</b>
-            {isPremium && <span style={{ marginLeft: 8, color: '#34D399' }}>✓ Premium activo</span>}
           </span>
-          {!isPremium && (
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <span style={{ color: isPremium ? '#34D399' : '#f87171', fontWeight: 600 }}>
+              {isPremium ? '✓ Premium ON' : '✗ Premium OFF'}
+            </span>
             <button
               type="button"
-              onClick={activarPremiumDev}
-              style={{ background: 'rgba(223,183,108,0.15)', border: `1px solid ${CORES.dourado}`, borderRadius: 6, color: CORES.dourado, fontSize: 10, fontWeight: 700, padding: '3px 10px', cursor: 'pointer' }}
+              onClick={() => togglePremiumDev(!isPremium)}
+              style={{
+                background: isPremium ? 'rgba(248,113,113,0.15)' : 'rgba(223,183,108,0.15)',
+                border: `1px solid ${isPremium ? '#f87171' : CORES.dourado}`,
+                borderRadius: 6,
+                color: isPremium ? '#f87171' : CORES.dourado,
+                fontSize: 10, fontWeight: 700, padding: '3px 10px', cursor: 'pointer',
+              }}
             >
-              Simular Premium
+              {isPremium ? '❌ Desativar' : '✅ Ativar'}
             </button>
-          )}
+          </div>
         </div>
       )}
 
