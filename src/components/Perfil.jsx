@@ -18,7 +18,7 @@ function formatarData(iso) {
   return `${d}/${m}/${a}`
 }
 
-export function Perfil({ utilizador, dados, mapaNatal, isPremium, dadosBloqueados, onEditar, onLogout }) {
+export function Perfil({ utilizador, dados, mapaNatal, isPremium, dadosBloqueados, onLogout }) {
   const [foto, setFoto] = useState(() => {
     try { return localStorage.getItem('sidus_foto') || null } catch { return null }
   })
@@ -131,7 +131,7 @@ export function Perfil({ utilizador, dados, mapaNatal, isPremium, dadosBloqueado
           <div>
             <div style={{fontSize:13,fontWeight:700,color:CORES.dourado,marginBottom:3}}>Dados Natais Protegidos</div>
             <div style={{fontSize:11,color:CORES.brancoMuted,lineHeight:1.5}}>
-              O teu Mapa Astral completo já foi gerado e os dados de nascimento estão bloqueados para garantir a autenticidade da leitura. Não é permitido alterar os dados após a geração do mapa premium.
+              Cada conta está associada a um único mapa astral. Os dados de nascimento ficam bloqueados após a primeira criação — não é possível gerar mapas para outras pessoas na mesma conta.
             </div>
           </div>
         </div>
@@ -139,14 +139,6 @@ export function Perfil({ utilizador, dados, mapaNatal, isPremium, dadosBloqueado
 
       {/* Acções */}
       <div style={{display:'flex',flexDirection:'column',gap:10,marginTop:10}}>
-        {!dadosBloqueados && (
-          <button type="button" onClick={onEditar} style={{
-            background:'rgba(255,255,255,0.04)', border:`1px solid ${CORES.vidroBorda}`,
-            borderRadius:12, color:CORES.branco, fontSize:14, padding:'13px', cursor:'pointer',
-          }}>
-            ✏️ Editar dados de nascimento
-          </button>
-        )}
         <button type="button" onClick={onLogout} style={{
           background:'rgba(239,68,68,0.08)', border:'1px solid rgba(239,68,68,0.3)',
           borderRadius:12, color:'#EF4444', fontSize:14, padding:'13px', cursor:'pointer',

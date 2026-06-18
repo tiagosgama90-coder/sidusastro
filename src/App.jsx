@@ -839,6 +839,11 @@ function validarOnboarding(dados) {
   return erros
 }
 
+function dadosNataisCompletos(dados) {
+  if (!dados) return false
+  return Object.keys(validarOnboarding(dados)).length === 0
+}
+
 function Campo({ label, tipo = 'text', valor, onChange, placeholder, erro, onBlur }) {
   return (
     <div style={{ marginBottom: 20 }}>
@@ -1730,13 +1735,13 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, isPremium, onUpgrade
   const [emailEnviado, setEmailEnviado] = useState(false)
   const mapaGeradoRef = useRef(false)
 
-  // Notifica o pai quando o mapa premium é visualizado pela primeira vez
+  // Notifica o pai na primeira visualização do mapa (trava dados natais)
   useEffect(() => {
-    if (isPremium && mapaNatal && !mapaGeradoRef.current) {
+    if (mapaNatal && !mapaGeradoRef.current) {
       mapaGeradoRef.current = true
       onMapaGerado?.()
     }
-  }, [isPremium, mapaNatal, onMapaGerado])
+  }, [mapaNatal, onMapaGerado])
 
   const planetasComCasa = useMemo(
     () => atribuirCasasPlanetas(planetasNascimento, mapaNatal?.cusps),
@@ -2677,8 +2682,20 @@ export default function App() {
           if (snap.exists()) {
             const perfil = snap.data()
             if (perfil.dados) setDados(perfil.dados)
-            if (perfil.isPremium) setIsPremium(true)
-            if (perfil.mapaGerado) setMapaGerado(true)
+            if (perfil.isPremium === true) setIsPremium(true)
+
+            const jaTravado = perfil.dadosTravados === true || perfil.mapaGerado === true
+            const temDadosGuardados = dadosNataisCompletos(perfil.dados)
+
+            if (jaTravado || temDadosGuardados) {
+              setMapaGerado(true)
+              if (temDadosGuardados && !jaTravado) {
+                await setDoc(doc(db, 'users', user.uid), {
+                  dadosTravados: true,
+                  mapaGerado: true,
+                }, { merge: true })
+              }
+            }
           }
         } catch (e) {
           console.warn('[Sidus] Firestore indisponível, operando offline:', e?.message)
@@ -2688,6 +2705,7 @@ export default function App() {
         setMapaNatal(null)
         setPlanetasNascimento([])
         setIsPremium(false)
+        setMapaGerado(false)
       }
       setAuthCarregando(false)
     })
@@ -2731,13 +2749,6 @@ export default function App() {
 
         if (result.productType === 'premium') {
           setIsPremium(true)
-          if (db) {
-            await setDoc(doc(db, 'users', utilizador.uid), {
-              isPremium: true,
-              stripeCustomerId: result.customerId || null,
-              stripeSubscriptionId: result.subscriptionId || null,
-            }, { merge: true })
-          }
           setPasso('mapa')
           navigate('/mapaastral', { replace: true })
           setPagamentoMsg({ tipo: 'sucesso', texto: '✦ Bem-vindo/a ao Sidus VIP! O teu Premium está activo.' })
@@ -2756,15 +2767,19 @@ export default function App() {
     })()
   }, [utilizador, authCarregando, location.search, location.pathname, navigate])
 
-  // ── Guarda dados natais no Firestore quando o onboarding termina ──────────
+  // ── Guarda dados natais no Firestore quando o onboarding termina (1x por conta) ──
   const guardarPerfil = useCallback(async (dadosNovos) => {
-    if (!utilizador || !firebaseDisponivel || !db) return
+    if (!utilizador || !firebaseDisponivel || !db || mapaGerado) return
     try {
-      await setDoc(doc(db, 'users', utilizador.uid), { dados: dadosNovos, isPremium }, { merge: true })
+      await setDoc(doc(db, 'users', utilizador.uid), {
+        dados: dadosNovos,
+        dadosTravados: true,
+        mapaGerado: true,
+      }, { merge: true })
     } catch (e) {
       console.warn('[Sidus] Não foi possível guardar o perfil:', e?.message)
     }
-  }, [utilizador, isPremium])
+  }, [utilizador, mapaGerado])
 
   // ── Inicializa Swiss Ephemeris ─────────────────────────────────────────────
   useEffect(() => {
@@ -2817,12 +2832,17 @@ export default function App() {
 
   // ── Acções ─────────────────────────────────────────────────────────────────
   const handleOnboarding = async () => {
+    if (mapaGerado) {
+      irPara('dashboard', { replace: true })
+      return
+    }
     const erros = validarOnboarding(dados)
     if (Object.keys(erros).length === 0) {
       setMapaNatal(sweRef.current
         ? calcularMapaNatalComSwe(sweRef.current, dados)
         : calcularMapaNatal(dados))
       await guardarPerfil(dados)
+      setMapaGerado(true)
       irPara('dashboard')
     }
   }
@@ -2845,29 +2865,37 @@ export default function App() {
     setModalPagamento({ descricao, valor, onSucesso })
   }
 
-  // Activa premium em modo dev (só visível sem Firebase configurado ou em localhost)
+  // Activa premium em modo dev (só localhost — não escreve isPremium em produção)
   const togglePremiumDev = async (valor) => {
     setIsPremium(valor)
-    if (utilizador && db) {
-      try { await setDoc(doc(db, 'users', utilizador.uid), { isPremium: valor }, { merge: true }) }
-      catch { /* offline */ }
-    }
   }
 
-  // Chamado pelo MapaAstral quando o utilizador premium visualiza o mapa pela 1ª vez
+  // Trava dados natais após o 1.º mapa (1 conta = 1 mapa)
   const handleMapaGerado = useCallback(async () => {
     if (mapaGerado) return
     setMapaGerado(true)
     if (utilizador && firebaseDisponivel && db) {
-      try { await setDoc(doc(db, 'users', utilizador.uid), { mapaGerado: true }, { merge: true }) }
-      catch { /* offline */ }
+      try {
+        await setDoc(doc(db, 'users', utilizador.uid), {
+          dadosTravados: true,
+          mapaGerado: true,
+        }, { merge: true })
+      } catch { /* offline */ }
     }
   }, [mapaGerado, utilizador])
 
-  const dadosBloqueados = mapaGerado && isPremium
+  const dadosBloqueados = mapaGerado
+
+  useEffect(() => {
+    if (authCarregando || !mapaGerado) return
+    if (passo === 'onboarding') {
+      navigate(pathFromPasso('dashboard'), { replace: true })
+      setPasso('dashboard')
+    }
+  }, [authCarregando, mapaGerado, passo, navigate])
 
   // ── Routing ────────────────────────────────────────────────────────────────
-  const temDados = validarOnboarding(dados) && Object.keys(validarOnboarding(dados)).length === 0
+  const temDados = dadosNataisCompletos(dados)
   const isDev = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
 
   const mostrarNavbar = utilizador && temDados && passo !== 'paywall'
@@ -2894,8 +2922,8 @@ export default function App() {
     if (!utilizador) {
       return <EcraAuth tipo={tipoAuth} onMudar={setTipoAuth} isDesktop={isDesktop} firebaseOk={firebaseDisponivel} />
     }
-    // Sem dados natais → Onboarding (modo local ou primeiro login)
-    if (!temDados) {
+    // Sem dados natais → Onboarding (apenas na 1.ª vez, antes de travar)
+    if (!temDados && !mapaGerado) {
       return <Onboarding dados={dados} setDados={setDados} onSubmit={handleOnboarding} isDesktop={isDesktop} />
     }
     // Autenticado com dados → navegação normal
@@ -2923,7 +2951,6 @@ export default function App() {
       case 'perfil':
         return <Perfil utilizador={utilizador} dados={dados} mapaNatal={mapaNatal} isPremium={isPremium}
           dadosBloqueados={dadosBloqueados}
-          onEditar={() => { if (!dadosBloqueados) { setDados(DADOS_VAZIO); irPara('onboarding') } }}
           onLogout={handleLogout} />
       default:
         return <Dashboard nome={dados.nome} mapaNatal={mapaNatal} ceuAgora={ceuAgora} aspetos={aspetosAgora} onOraculo={() => irPara('chat')} onPrivacidade={() => irPara('privacidade')} isDesktop={isDesktop} isPremium={isPremium} onUpgrade={() => irPara('paywall')} onTarot={() => irPara('tarot')} />

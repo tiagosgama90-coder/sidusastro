@@ -1,4 +1,5 @@
 import { getStripe } from './_shared/stripe.mjs'
+import { activarPremium } from './_shared/firebase-admin.mjs'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -43,6 +44,13 @@ export default async (req) => {
 
     const productType = session.metadata?.productType
       || (session.mode === 'subscription' ? 'premium' : 'tarot')
+
+    if (metaUserId && productType === 'premium') {
+      await activarPremium(metaUserId, {
+        stripeCustomerId: session.customer || null,
+        stripeSubscriptionId: session.subscription?.id || session.subscription || null,
+      })
+    }
 
     return new Response(JSON.stringify({
       ok: true,
