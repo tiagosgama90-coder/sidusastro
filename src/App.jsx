@@ -1052,7 +1052,7 @@ function CampoCidade({ valor, localizacao, onChange, onSelect, erro, onBlur }) {
 
 // ─── Ecrãs de Autenticação Firebase ──────────────────────────────────────────
 
-function EcraAuth({ onMudar, tipo, isDesktop }) {
+function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
   const [email, setEmail]       = useState('')
   const [senha, setSenha]       = useState('')
   const [confirmar, setConfirmar] = useState('')
@@ -1115,6 +1115,11 @@ function EcraAuth({ onMudar, tipo, isDesktop }) {
       </div>
 
       <div style={{ ...estilos.vidro, padding: 24 }}>
+        {!firebaseOk && (
+          <div style={{ marginBottom: 16, padding: '10px 14px', borderRadius: 10, background: 'rgba(251,191,36,0.1)', border: '1px solid rgba(251,191,36,0.35)', fontSize: 12, color: '#FCD34D', lineHeight: 1.5 }}>
+            Firebase não está configurado neste ambiente. Define as variáveis <code style={{ fontSize: 11 }}>VITE_FIREBASE_*</code> no Netlify ou no ficheiro <code style={{ fontSize: 11 }}>.env</code> local.
+          </div>
+        )}
         <h2 style={{ margin: '0 0 24px', fontSize: 18, fontWeight: 600, color: CORES.branco, textAlign: 'center' }}>
           {isLogin ? 'Entrar' : 'Criar Conta'}
         </h2>
@@ -2784,7 +2789,7 @@ export default function App() {
   const temDados = validarOnboarding(dados) && Object.keys(validarOnboarding(dados)).length === 0
   const isDev = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
 
-  const mostrarNavbar = (utilizador || !firebaseDisponivel) && temDados && passo !== 'paywall'
+  const mostrarNavbar = utilizador && temDados && passo !== 'paywall'
   const chatFullScreen = passo === 'chat'
 
   // Ecrã de carregamento (auth ainda a iniciar)
@@ -2798,9 +2803,9 @@ export default function App() {
   }
 
   const renderEcran = () => {
-    // Não autenticado → Auth (só se Firebase estiver configurado)
-    if (!utilizador && firebaseDisponivel) {
-      return <EcraAuth tipo={tipoAuth} onMudar={setTipoAuth} isDesktop={isDesktop} />
+    // Sem sessão → ecrã de login (sempre visível, com ou sem Firebase)
+    if (!utilizador) {
+      return <EcraAuth tipo={tipoAuth} onMudar={setTipoAuth} isDesktop={isDesktop} firebaseOk={firebaseDisponivel} />
     }
     // Sem dados natais → Onboarding (modo local ou primeiro login)
     if (!temDados) {
