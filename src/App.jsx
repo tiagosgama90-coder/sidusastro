@@ -2524,6 +2524,14 @@ function RodapeSidus({ isDesktop, mostrarNavbar }) {
       }}>
         © 2026 Sidus Arcana. Portais e caminhos revelados através do Tarot e da Astrologia. Todos os direitos reservados.
       </p>
+      <p style={{ margin: '10px 0 0', fontSize: isDesktop ? 11 : 10 }}>
+        <a
+          href="/privacy.html"
+          style={{ color: 'rgba(255,255,255,0.35)', textDecoration: 'underline' }}
+        >
+          Política de Privacidade
+        </a>
+      </p>
     </footer>
   )
 }
@@ -2795,9 +2803,12 @@ export default function App() {
   // Ecrã de carregamento (auth ainda a iniciar)
   if (authCarregando) {
     return (
-      <div style={{ ...estilos.app, alignItems: 'center', justifyContent: 'center' }}>
-        <Sparkles size={36} color={CORES.dourado} strokeWidth={1.5} />
-        <p style={{ color: CORES.brancoMuted, marginTop: 16, fontSize: 14 }}>A carregar o cosmos…</p>
+      <div style={{ ...estilos.app, flexDirection: 'column' }}>
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+          <Sparkles size={36} color={CORES.dourado} strokeWidth={1.5} />
+          <p style={{ color: CORES.brancoMuted, marginTop: 16, fontSize: 14 }}>A carregar o cosmos…</p>
+        </div>
+        <RodapeSidus isDesktop={isDesktop} mostrarNavbar={false} />
       </div>
     )
   }
