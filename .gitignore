@@ -16,6 +16,11 @@ dist-ssr
 .env.*
 !.env.example
 
+# Firebase / Stripe secrets — nunca commitar
+*firebase-adminsdk*.json
+*serviceAccount*.json
+*service-account*.json
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

@@ -17,7 +17,7 @@ export function PoliticaPrivacidade({ onVoltar }) {
       {[
         {
           titulo:'1. Quem somos',
-          texto:`A aplicação Sidus é um serviço de astrologia digital desenvolvido para fins informativos e de entretenimento espiritual. O responsável pelo tratamento de dados é o operador da aplicação Sidus ("nós", "nosso").\n\nContacto: sidus.app@gmail.com`,
+          texto:`A aplicação Sidus é um serviço de astrologia digital desenvolvido para fins informativos e de entretenimento espiritual. O responsável pelo tratamento de dados é o operador da aplicação Sidus ("nós", "nosso").\n\nContacto: suporte.sidusapp@gmail.com`,
         },
         {
           titulo:'2. Dados recolhidos',
@@ -29,7 +29,7 @@ export function PoliticaPrivacidade({ onVoltar }) {
         },
         {
           titulo:'4. Parceiros e terceiros',
-          texto:`Trabalhamos com os seguintes parceiros:\n\n• Firebase / Google (autenticação e base de dados em nuvem) — Política: firebase.google.com/support/privacy\n• OpenStreetMap Nominatim (geocodificação de cidades) — sem dados pessoais transmitidos\n• Open-Meteo (fuso horário histórico) — sem dados pessoais transmitidos\n• Google Gemini AI (respostas do Oráculo) — as perguntas podem ser processadas pela API do Google\n• Google AdSense (publicidade) — pode utilizar cookies para personalizar anúncios\n• Eupago / PayPal (pagamentos) — os dados de pagamento são processados directamente por estes serviços`,
+          texto:`Trabalhamos com os seguintes parceiros:\n\n• Firebase / Google (autenticação e base de dados em nuvem) — Política: firebase.google.com/support/privacy\n• OpenStreetMap Nominatim (geocodificação de cidades) — sem dados pessoais transmitidos\n• Open-Meteo (fuso horário histórico) — sem dados pessoais transmitidos\n• Google Gemini AI (respostas do Oráculo) — as perguntas podem ser processadas pela API do Google\n• Google AdSense (publicidade) — pode utilizar cookies para personalizar anúncios\n• Stripe (pagamentos) — os dados de pagamento são processados directamente pela Stripe`,
         },
         {
           titulo:'5. Publicidade (Google AdSense)',
@@ -41,7 +41,7 @@ export function PoliticaPrivacidade({ onVoltar }) {
         },
         {
           titulo:'7. Os seus direitos (RGPD)',
-          texto:`Se é residente na União Europeia, tem os seguintes direitos:\n\n• Direito de acesso: obter uma cópia dos seus dados\n• Direito de rectificação: corrigir dados incorrectos\n• Direito ao apagamento: solicitar a eliminação dos seus dados\n• Direito de portabilidade: receber os seus dados em formato legível\n• Direito de oposição: opor-se ao tratamento para fins de marketing\n\nPara exercer qualquer destes direitos, contacte-nos em: sidus.app@gmail.com`,
+          texto:`Se é residente na União Europeia, tem os seguintes direitos:\n\n• Direito de acesso: obter uma cópia dos seus dados\n• Direito de rectificação: corrigir dados incorrectos\n• Direito ao apagamento: solicitar a eliminação dos seus dados\n• Direito de portabilidade: receber os seus dados em formato legível\n• Direito de oposição: opor-se ao tratamento para fins de marketing\n\nPara exercer qualquer destes direitos, contacte-nos em: suporte.sidusapp@gmail.com`,
         },
         {
           titulo:'8. Segurança dos dados',
@@ -61,7 +61,7 @@ export function PoliticaPrivacidade({ onVoltar }) {
         },
         {
           titulo:'12. Contacto',
-          texto:`Para qualquer questão sobre esta política ou sobre os seus dados:\n\nE-mail: sidus.app@gmail.com\nWebsite: sidus.app\n\nTemos o compromisso de responder a qualquer solicitação no prazo de 30 dias.`,
+          texto:`Para qualquer questão sobre esta política ou sobre os seus dados:\n\nE-mail: suporte.sidusapp@gmail.com\nWebsite: sidusastro.com\n\nTemos o compromisso de responder a qualquer solicitação no prazo de 30 dias.`,
         },
       ].map(s=>(
         <div key={s.titulo} style={{marginBottom:24}}>

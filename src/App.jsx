@@ -49,6 +49,10 @@ import { doc, getDoc, setDoc } from 'firebase/firestore'
 import { normalizarCusps, cuspsEqualHouse, atribuirCasasPlanetas } from './lib/casasPlacidus.js'
 import { gerarAnaliseCompleta, gerarResumoGratuito } from './lib/mapaInterpretacao.js'
 import { calcularFaseLua } from './lib/faseLua.js'
+import { useNavigate, useLocation } from 'react-router-dom'
+import { passoFromPath, pathFromPasso } from './lib/routes.js'
+import { initAdSense } from './lib/adsense.js'
+import { AdSenseBanner } from './components/AdSenseBanner.jsx'
 
 const CORES = {
   fundo: '#0B071E',
@@ -2526,7 +2530,7 @@ function RodapeSidus({ isDesktop, mostrarNavbar }) {
       </p>
       <p style={{ margin: '10px 0 0', fontSize: isDesktop ? 11 : 10 }}>
         <a
-          href="/privacy.html"
+          href="/privacidade"
           style={{ color: 'rgba(255,255,255,0.35)', textDecoration: 'underline' }}
         >
           Política de Privacidade
@@ -2634,10 +2638,23 @@ export default function App() {
   const [mapaGerado, setMapaGerado] = useState(false) // bloqueio: 1 mapa por utilizador
 
   // ── Dados natais ─────────────────────────────────────────────────────────
-  const [passo, setPasso] = useState('dashboard')
+  const [passo, setPasso] = useState(() => passoFromPath(window.location.pathname))
   const [dados, setDados] = useState(DADOS_VAZIO)
   const [mapaNatal, setMapaNatal] = useState(null)
   const [planetasNascimento, setPlanetasNascimento] = useState([])
+
+  const [ferramentaAberta, setFerramentaAberta] = useState(null)
+  const [modalPagamento, setModalPagamento] = useState(null)
+  const [pagamentoMsg, setPagamentoMsg] = useState(null)
+
+  const navigate = useNavigate()
+  const location = useLocation()
+
+  const irPara = useCallback((novoPasso, { replace = false } = {}) => {
+    setFerramentaAberta(null)
+    setPasso(novoPasso)
+    navigate(pathFromPasso(novoPasso), { replace })
+  }, [navigate])
 
   // ── Céu de hoje ───────────────────────────────────────────────────────────
   const [ceuAgora, setCeuAgora] = useState(() => calcularPlanetasParaData(new Date()))
@@ -2679,20 +2696,40 @@ export default function App() {
     return unsubscribe
   }, [])
 
+  useEffect(() => { initAdSense() }, [])
+
+  // URL ↔ passo (voltar atrás no browser, links directos)
+  useEffect(() => {
+    if (authCarregando) return
+    const fromUrl = passoFromPath(location.pathname)
+    if (fromUrl !== passo) setPasso(fromUrl)
+  }, [location.pathname, authCarregando])
+
   // ── Retorno Stripe Checkout (?payment=success&session_id=...) ─────────────
   useEffect(() => {
-    if (!utilizador || authCarregando) return
-    const params = new URLSearchParams(window.location.search)
-    if (params.get('payment') !== 'success') return
+    if (authCarregando) return
+    const params = new URLSearchParams(location.search)
+    const payment = params.get('payment')
+    if (!payment) return
+
+    if (payment === 'cancelled') {
+      navigate(pathFromPasso(passoFromPath(location.pathname)), { replace: true })
+      setPagamentoMsg({ tipo: 'info', texto: 'Pagamento cancelado. Podes tentar outra vez quando quiseres.' })
+      return
+    }
+
+    if (payment !== 'success' || !utilizador) return
     const sessionId = params.get('session_id')
     if (!sessionId) return
-
-    window.history.replaceState({}, '', window.location.pathname)
 
     ;(async () => {
       try {
         const result = await verificarSessaoPagamento(sessionId, utilizador.uid)
-        if (!result.ok) return
+        if (!result.ok) {
+          setPagamentoMsg({ tipo: 'erro', texto: 'Pagamento recebido mas ainda a processar. Recarrega a página dentro de 1 minuto ou contacta-nos.' })
+          navigate('/mapaastral', { replace: true })
+          return
+        }
 
         if (result.productType === 'premium') {
           setIsPremium(true)
@@ -2704,16 +2741,22 @@ export default function App() {
             }, { merge: true })
           }
           setPasso('mapa')
+          navigate('/mapaastral', { replace: true })
+          setPagamentoMsg({ tipo: 'sucesso', texto: '✦ Bem-vindo/a ao Sidus VIP! O teu Premium está activo.' })
         } else if (result.productType === 'tarot') {
           sessionStorage.setItem('sidus_tarot_paid', '1')
           setPasso('tarot')
+          navigate('/tarot', { replace: true })
+          setPagamentoMsg({ tipo: 'sucesso', texto: '✦ Pagamento confirmado! A tua leitura de Tarot está desbloqueada.' })
         }
         sessionStorage.removeItem('sidus_payment_pending')
       } catch (e) {
         console.error('[Sidus Pagamento] Verificação falhou:', e?.message)
+        setPagamentoMsg({ tipo: 'erro', texto: 'Não foi possível confirmar o pagamento. Se foste cobrado/a, contacta suporte.sidusapp@gmail.com' })
+        navigate('/mapaastral', { replace: true })
       }
     })()
-  }, [utilizador, authCarregando])
+  }, [utilizador, authCarregando, location.search, location.pathname, navigate])
 
   // ── Guarda dados natais no Firestore quando o onboarding termina ──────────
   const guardarPerfil = useCallback(async (dadosNovos) => {
@@ -2782,7 +2825,7 @@ export default function App() {
         ? calcularMapaNatalComSwe(sweRef.current, dados)
         : calcularMapaNatal(dados))
       await guardarPerfil(dados)
-      setPasso('dashboard')
+      irPara('dashboard')
     }
   }
 
@@ -2792,16 +2835,12 @@ export default function App() {
     setTipoAuth('login')
   }
 
-  // ── Estado Ferramentas + Pagamento ──────────────────────────────────────────
-  const [ferramentaAberta, setFerramentaAberta] = useState(null) // 'bussola'|'sinastria'|'biorritmo'|'diario'
-  const [modalPagamento, setModalPagamento]   = useState(null)
-
   const handleFerramenta = (f) => {
-    if (f.id === 'bussola')   { if (isPremium) setFerramentaAberta('bussola');   else setPasso('paywall'); return }
-    if (f.id === 'sinastria') { if (isPremium) setFerramentaAberta('sinastria'); else setPasso('paywall'); return }
+    if (f.id === 'bussola')   { if (isPremium) setFerramentaAberta('bussola');   else irPara('paywall'); return }
+    if (f.id === 'sinastria') { if (isPremium) setFerramentaAberta('sinastria'); else irPara('paywall'); return }
     if (f.id === 'biorritmo') { setFerramentaAberta('biorritmo'); return }
     if (f.id === 'diario')    { setFerramentaAberta('diario');    return }
-    if (f.premium && !isPremium) setPasso('paywall')
+    if (f.premium && !isPremium) irPara('paywall')
   }
 
   const abrirPagamento = (descricao, valor, onSucesso) => {
@@ -2850,6 +2889,9 @@ export default function App() {
   }
 
   const renderEcran = () => {
+    if (passo === 'privacidade') {
+      return <PoliticaPrivacidade onVoltar={() => irPara('dashboard')} />
+    }
     // Sem sessão → ecrã de login (sempre visível, com ou sem Firebase)
     if (!utilizador) {
       return <EcraAuth tipo={tipoAuth} onMudar={setTipoAuth} isDesktop={isDesktop} firebaseOk={firebaseDisponivel} />
@@ -2861,11 +2903,11 @@ export default function App() {
     // Autenticado com dados → navegação normal
     switch (passo) {
       case 'dashboard':
-        return <Dashboard nome={dados.nome} mapaNatal={mapaNatal} ceuAgora={ceuAgora} aspetos={aspetosAgora} onOraculo={() => setPasso('chat')} onPrivacidade={() => setPasso('privacidade')} isDesktop={isDesktop} isPremium={isPremium} onUpgrade={() => setPasso('paywall')} onTarot={() => setPasso('tarot')} />
+        return <Dashboard nome={dados.nome} mapaNatal={mapaNatal} ceuAgora={ceuAgora} aspetos={aspetosAgora} onOraculo={() => irPara('chat')} onPrivacidade={() => irPara('privacidade')} isDesktop={isDesktop} isPremium={isPremium} onUpgrade={() => irPara('paywall')} onTarot={() => irPara('tarot')} />
       case 'mapa':
-        return <MapaAstral mapaNatal={mapaNatal} dados={dados} planetasNascimento={planetasNascimento} isPremium={isPremium} onUpgrade={() => setPasso('paywall')} onMapaGerado={handleMapaGerado} isDesktop={isDesktop} motorAstro={motorAstro} />
+        return <MapaAstral mapaNatal={mapaNatal} dados={dados} planetasNascimento={planetasNascimento} isPremium={isPremium} onUpgrade={() => irPara('paywall')} onMapaGerado={handleMapaGerado} isDesktop={isDesktop} motorAstro={motorAstro} />
       case 'tarot':
-        return <EcraTarot mapaNatal={mapaNatal} isPremium={isPremium} onPagar={abrirPagamento} onVoltar={() => setPasso('dashboard')} onPremium={() => setPasso('paywall')} />
+        return <EcraTarot mapaNatal={mapaNatal} isPremium={isPremium} onPagar={abrirPagamento} onVoltar={() => irPara('dashboard')} onPremium={() => irPara('paywall')} />
       case 'ferramentas':
         if (ferramentaAberta === 'bussola')
           return <BussolaCosmica mapaNatal={mapaNatal} onVoltar={() => setFerramentaAberta(null)} />
@@ -2877,18 +2919,16 @@ export default function App() {
           return <DiarioAstral mapaNatal={mapaNatal} onVoltar={() => setFerramentaAberta(null)} />
         return <Ferramentas onFerramenta={handleFerramenta} isDesktop={isDesktop} />
       case 'paywall':
-        return <Paywall onVoltar={() => setPasso('ferramentas')} onPagar={abrirPagamento} onSucesso={() => { setIsPremium(true); setPasso('mapa') }} isDesktop={isDesktop} />
+        return <Paywall onVoltar={() => irPara('ferramentas')} onPagar={abrirPagamento} onSucesso={() => { setIsPremium(true); irPara('mapa') }} isDesktop={isDesktop} />
       case 'chat':
-        return <Chat mapaNatal={mapaNatal} isPremium={isPremium} onUpgrade={() => setPasso('paywall')} />
+        return <Chat mapaNatal={mapaNatal} isPremium={isPremium} onUpgrade={() => irPara('paywall')} />
       case 'perfil':
         return <Perfil utilizador={utilizador} dados={dados} mapaNatal={mapaNatal} isPremium={isPremium}
           dadosBloqueados={dadosBloqueados}
-          onEditar={() => { if (!dadosBloqueados) { setDados(DADOS_VAZIO); setPasso('onboarding') } }}
+          onEditar={() => { if (!dadosBloqueados) { setDados(DADOS_VAZIO); irPara('onboarding') } }}
           onLogout={handleLogout} />
-      case 'privacidade':
-        return <PoliticaPrivacidade onVoltar={() => setPasso('dashboard')} />
       default:
-        return <Dashboard nome={dados.nome} mapaNatal={mapaNatal} ceuAgora={ceuAgora} aspetos={aspetosAgora} onOraculo={() => setPasso('chat')} onPrivacidade={() => setPasso('privacidade')} isDesktop={isDesktop} isPremium={isPremium} onUpgrade={() => setPasso('paywall')} onTarot={() => setPasso('tarot')} />
+        return <Dashboard nome={dados.nome} mapaNatal={mapaNatal} ceuAgora={ceuAgora} aspetos={aspetosAgora} onOraculo={() => irPara('chat')} onPrivacidade={() => irPara('privacidade')} isDesktop={isDesktop} isPremium={isPremium} onUpgrade={() => irPara('paywall')} onTarot={() => irPara('tarot')} />
     }
   }
 
@@ -2939,6 +2979,25 @@ export default function App() {
         </div>
       )}
 
+      {pagamentoMsg && (
+        <div style={{
+          position: 'fixed', top: isDev && temDados ? 36 : 12, left: '50%', transform: 'translateX(-50%)',
+          zIndex: 300, maxWidth: 'min(92vw, 420px)', width: '100%',
+          background: pagamentoMsg.tipo === 'sucesso' ? 'rgba(52,211,153,0.15)' : pagamentoMsg.tipo === 'erro' ? 'rgba(248,113,113,0.15)' : 'rgba(223,183,108,0.12)',
+          border: `1px solid ${pagamentoMsg.tipo === 'sucesso' ? '#34D399' : pagamentoMsg.tipo === 'erro' ? '#f87171' : CORES.dourado}`,
+          borderRadius: 10, padding: '12px 16px', boxSizing: 'border-box',
+          color: pagamentoMsg.tipo === 'sucesso' ? '#34D399' : pagamentoMsg.tipo === 'erro' ? '#f87171' : CORES.dourado,
+          fontSize: 13, fontWeight: 600, textAlign: 'center',
+          boxShadow: '0 8px 32px rgba(0,0,0,0.4)',
+        }}>
+          {pagamentoMsg.texto}
+          <button type="button" onClick={() => setPagamentoMsg(null)} style={{
+            display: 'block', margin: '8px auto 0', background: 'transparent', border: 'none',
+            color: 'inherit', opacity: 0.7, fontSize: 11, cursor: 'pointer',
+          }}>Fechar</button>
+        </div>
+      )}
+
       <div style={{
         paddingTop: paddingTopo,
         marginTop: margemNav,
@@ -2951,12 +3010,15 @@ export default function App() {
       }}>
         {renderEcran()}
       </div>
+      {!isPremium && ['dashboard', 'ferramentas', 'tarot'].includes(passo) && (
+        <AdSenseBanner isPremium={isPremium} />
+      )}
       <RodapeSidus isDesktop={isDesktop} mostrarNavbar={mostrarNavbar} />
       {mostrarNavbar && (
         <Navbar
           passo={passo}
           isDesktop={isDesktop}
-          setPasso={(p) => { setFerramentaAberta(null); setPasso(p) }}
+          setPasso={irPara}
         />
       )}
 

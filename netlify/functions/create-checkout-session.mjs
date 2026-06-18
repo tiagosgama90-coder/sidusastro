@@ -32,14 +32,17 @@ export default async (req) => {
       descricao: String(descricao).slice(0, 500),
     }
 
+    const returnPath = isSubscription ? '/mapaastral' : '/tarot'
+    const cancelPath = isSubscription ? '/vip' : '/tarot'
+
     const sessionParams = {
       mode: isSubscription ? 'subscription' : 'payment',
       customer_email: userEmail || undefined,
       client_reference_id: String(userId),
       metadata,
       locale: 'pt',
-      success_url: `${origin}/?payment=success&session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${origin}/?payment=cancelled`,
+      success_url: `${origin}${returnPath}?payment=success&session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${origin}${cancelPath}?payment=cancelled`,
       line_items: [{
         quantity: 1,
         price_data: {
