@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { createPortal } from 'react-dom'
 
 const CORES = {
   fundo: '#0B071E', dourado: '#DFB76C', douradoEscuro: '#B8944F',
@@ -64,7 +65,7 @@ export function ModalPagamento({ valor, descricao, userId, userEmail, onSucesso,
     }
   }
 
-  return (
+  const modal = (
     <Overlay onFechar={onFechar}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
         <div>
@@ -77,7 +78,7 @@ export function ModalPagamento({ valor, descricao, userId, userEmail, onSucesso,
       </div>
 
       <div style={{
-        background: 'rgba(99,91,255,0.1)', border: '1px solid rgba(99,91,255,0.35)',
+        background: 'rgba(223,183,108,0.12)', border: '1px solid rgba(223,183,108,0.45)',
         borderRadius: 12, padding: '12px 14px', marginBottom: 16, display: 'flex', alignItems: 'center', gap: 10,
       }}>
         <span style={{ fontSize: 22 }}>🔒</span>
@@ -111,9 +112,10 @@ export function ModalPagamento({ valor, descricao, userId, userEmail, onSucesso,
 
       <button type="button" disabled={processando} onClick={iniciarStripe} style={{
         width: '100%',
-        background: processando ? 'rgba(99,91,255,0.4)' : 'linear-gradient(135deg, #635BFF, #4F46E5)',
-        border: 'none', borderRadius: 12, color: '#fff', fontSize: 15, fontWeight: 700,
+        background: processando ? 'rgba(223,183,108,0.4)' : `linear-gradient(135deg, ${CORES.dourado}, ${CORES.douradoEscuro})`,
+        border: 'none', borderRadius: 12, color: '#0B071E', fontSize: 15, fontWeight: 700,
         padding: '15px', cursor: processando ? 'default' : 'pointer',
+        boxShadow: '0 4px 24px rgba(223, 183, 108, 0.35)',
       }}>
         {processando ? '⏳ A redirecionar para Stripe…' : `Pagar ${valor.toFixed(2)} € — Stripe Checkout`}
       </button>
@@ -123,18 +125,22 @@ export function ModalPagamento({ valor, descricao, userId, userEmail, onSucesso,
       </p>
     </Overlay>
   )
+
+  return createPortal(modal, document.body)
 }
 
 function Overlay({ children, onFechar }) {
   return (
     <div style={{
-      position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.8)', zIndex: 500,
+      position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.85)', zIndex: 10000,
       display: 'flex', alignItems: 'flex-end', justifyContent: 'center',
     }} onClick={onFechar}>
       <div onClick={e => e.stopPropagation()} style={{
         width: '100%', maxWidth: 430, background: '#12082A',
-        borderTop: `1px solid rgba(223,183,108,0.3)`, borderRadius: '20px 20px 0 0',
-        padding: 24, paddingBottom: 40, maxHeight: '85vh', overflowY: 'auto',
+        borderTop: `2px solid ${CORES.dourado}`, borderRadius: '20px 20px 0 0',
+        padding: 24, paddingBottom: 'max(40px, env(safe-area-inset-bottom))',
+        maxHeight: '90vh', overflowY: 'auto',
+        boxShadow: '0 -8px 40px rgba(223, 183, 108, 0.2)',
       }}>
         {children}
       </div>

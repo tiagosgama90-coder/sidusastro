@@ -30,8 +30,9 @@ import {
 } from 'lucide-react'
 import { Body, GeoVector, Ecliptic, MakeTime, SiderealTime } from 'astronomy-engine'
 import { pesquisarCidades, pesquisarFusoHorario, geocodificarCidade } from './lib/geocoding'
-import { EcraTarot } from './components/Tarot'
+import { EcraTarot, MAX_LEITURAS_GRATIS } from './components/Tarot'
 import { ModalPagamento, verificarSessaoPagamento } from './components/Pagamento'
+import { RecaptchaCheckbox } from './components/Recaptcha'
 import { Perfil } from './components/Perfil'
 import { PoliticaPrivacidade } from './components/PoliticaPrivacidade'
 import { InterpretacaoMapa } from './components/InterpretacaoMapa'
@@ -44,6 +45,8 @@ import {
   onAuthStateChanged,
   GoogleAuthProvider,
   signInWithPopup,
+  sendEmailVerification,
+  reload,
 } from 'firebase/auth'
 import { doc, getDoc, setDoc } from 'firebase/firestore'
 import { normalizarCusps, cuspsEqualHouse, atribuirCasasPlanetas } from './lib/casasPlacidus.js'
@@ -890,7 +893,16 @@ async function repararDadosPerfil(dados) {
 function contaJaConfigurada(perfil, dadosActuais) {
   if (!perfil && !dadosActuais) return false
   if (perfil?.dadosTravados === true || perfil?.mapaGerado === true) return true
-  return dadosNataisMinimos(dadosActuais) || dadosNataisMinimos(perfil?.dados)
+  return dadosNataisCompletos(dadosActuais) || dadosNataisCompletos(perfil?.dados)
+}
+
+function utilizadorGoogle(user) {
+  return user?.providerData?.some((p) => p.providerId === 'google.com') ?? false
+}
+
+function precisaVerificarEmail(user) {
+  if (!user || utilizadorGoogle(user)) return false
+  return !user.emailVerified
 }
 
 function Campo({ label, tipo = 'text', valor, onChange, placeholder, erro, onBlur }) {
@@ -1108,6 +1120,90 @@ function CampoCidade({ valor, localizacao, onChange, onSelect, erro, onBlur }) {
 
 // ─── Ecrãs de Autenticação Firebase ──────────────────────────────────────────
 
+function EcraVerificarEmail({ utilizador, isDesktop, onLogout, onVerificado }) {
+  const [carregando, setCarregando] = useState(false)
+  const [info, setInfo] = useState(null)
+  const [erro, setErro] = useState(null)
+
+  const reenviar = async () => {
+    if (!auth || !utilizador) return
+    setCarregando(true)
+    setErro(null)
+    setInfo(null)
+    try {
+      await sendEmailVerification(utilizador)
+      setInfo('E-mail de confirmação reenviado. Verifica a caixa de entrada e o spam.')
+    } catch (e) {
+      setErro('Não foi possível reenviar o e-mail. Tenta mais tarde.')
+    } finally {
+      setCarregando(false)
+    }
+  }
+
+  const verificarAgora = async () => {
+    if (!auth || !utilizador) return
+    setCarregando(true)
+    setErro(null)
+    setInfo(null)
+    try {
+      await reload(utilizador)
+      if (auth.currentUser?.emailVerified) {
+        onVerificado?.()
+      } else {
+        setErro('O e-mail ainda não foi confirmado. Abre a mensagem que te enviámos e clica no link.')
+      }
+    } catch {
+      setErro('Não foi possível verificar o estado. Tenta outra vez.')
+    } finally {
+      setCarregando(false)
+    }
+  }
+
+  return (
+    <div style={layoutConteudo(isDesktop, { paddingTop: 56, paddingBottom: 40, maxWidth: isDesktop ? 480 : undefined, margin: isDesktop ? '0 auto' : undefined })}>
+      <div style={{ textAlign: 'center', marginBottom: 32 }}>
+        <Mail size={40} color={CORES.dourado} strokeWidth={1.5} style={{ marginBottom: 16 }} />
+        <h1 style={{ ...estilos.titulo, fontSize: 28 }}>Confirma o teu e-mail</h1>
+        <p style={{ ...estilos.subtitulo, maxWidth: 360, margin: '12px auto 0', lineHeight: 1.55 }}>
+          Enviámos um link de confirmação para <strong style={{ color: CORES.branco }}>{utilizador?.email}</strong>.
+          Abre o e-mail e clica no link para activar a tua conta Sidus.
+        </p>
+      </div>
+      <div style={{ ...estilos.vidro, padding: 24 }}>
+        {info && (
+          <div style={{ marginBottom: 14, padding: '10px 14px', borderRadius: 10, background: 'rgba(52,211,153,0.1)', border: '1px solid rgba(52,211,153,0.3)', fontSize: 13, color: '#34D399' }}>
+            {info}
+          </div>
+        )}
+        {erro && (
+          <div style={{ marginBottom: 14, padding: '10px 14px', borderRadius: 10, background: 'rgba(248,113,113,0.1)', border: '1px solid rgba(248,113,113,0.3)', fontSize: 13, color: '#F87171' }}>
+            {erro}
+          </div>
+        )}
+        <button type="button" disabled={carregando} onClick={verificarAgora} style={{ ...estilos.botaoDourado, marginBottom: 12, opacity: carregando ? 0.6 : 1 }}>
+          {carregando ? 'A verificar…' : 'Já confirmei — continuar'}
+        </button>
+        <button type="button" disabled={carregando} onClick={reenviar} style={{
+          width: '100%', padding: '14px', borderRadius: 12, marginBottom: 12,
+          background: 'rgba(255,255,255,0.05)', border: `1px solid ${CORES.vidroBorda}`,
+          color: CORES.branco, fontSize: 14, fontWeight: 600, cursor: carregando ? 'default' : 'pointer',
+        }}>
+          Reenviar e-mail de confirmação
+        </button>
+        <button type="button" onClick={onLogout} style={{
+          width: '100%', padding: '12px', borderRadius: 12, background: 'transparent',
+          border: 'none', color: CORES.brancoMuted, fontSize: 13, cursor: 'pointer',
+        }}>
+          Terminar sessão
+        </button>
+        <p style={{ fontSize: 11, color: CORES.brancoMuted, marginTop: 16, lineHeight: 1.5, textAlign: 'center' }}>
+          Entraste com Google? Esta verificação não se aplica — contacta suporte se vês este ecrã por engano.
+        </p>
+      </div>
+    </div>
+  )
+}
+
 function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
   const [email, setEmail]       = useState('')
   const [senha, setSenha]       = useState('')
@@ -1115,6 +1211,9 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
   const [verSenha, setVerSenha] = useState(false)
   const [carregando, setCarregando] = useState(false)
   const [erro, setErro]         = useState(null)
+  const [info, setInfo]         = useState(null)
+  const [recaptchaOk, setRecaptchaOk] = useState(false)
+  const [recaptchaKey, setRecaptchaKey] = useState(0)
 
   const traduzirErro = (code) => {
     const mapa = {
@@ -1139,20 +1238,25 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
 
   const handleSubmit = async () => {
     setErro(null)
+    setInfo(null)
     if (!email || !senha) { setErro('Preenche todos os campos.'); return }
+    if (!recaptchaOk) { setErro('Confirma que não és um robot.'); return }
     if (tipo === 'register' && senha !== confirmar) { setErro('As senhas não coincidem.'); return }
     if (tipo === 'register' && senha.length < 6) { setErro('A senha deve ter pelo menos 6 caracteres.'); return }
     if (!auth) { setErro('Firebase não configurado. Contacta o administrador.'); return }
     setCarregando(true)
     try {
       if (tipo === 'register') {
-        await createUserWithEmailAndPassword(auth, email, senha)
+        const cred = await createUserWithEmailAndPassword(auth, email, senha)
+        await sendEmailVerification(cred.user)
+        setInfo('Conta criada! Enviámos um e-mail de confirmação — verifica a caixa de entrada (e spam) antes de continuar.')
       } else {
         await signInWithEmailAndPassword(auth, email, senha)
       }
     } catch (e) {
       console.error('[Sidus Auth] Erro:', e.code, e.message)
       setErro(traduzirErro(e.code) + (e.code ? ` [${e.code}]` : ''))
+      setRecaptchaKey((k) => k + 1)
     } finally {
       setCarregando(false)
     }
@@ -1243,9 +1347,19 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
           </div>
         )}
 
+        {info && (
+          <div style={{ marginBottom: 16, padding: '10px 14px', borderRadius: 10, background: 'rgba(52,211,153,0.1)', border: '1px solid rgba(52,211,153,0.3)', fontSize: 13, color: '#34D399', lineHeight: 1.5 }}>
+            {info}
+          </div>
+        )}
+
+        <div style={{ marginBottom: 16 }}>
+          <RecaptchaCheckbox onChange={setRecaptchaOk} resetKey={recaptchaKey} />
+        </div>
+
         <button
           type="button"
-          disabled={carregando}
+          disabled={carregando || !recaptchaOk}
           onClick={handleSubmit}
           style={{ ...estilos.botaoDourado, opacity: carregando ? 0.6 : 1, cursor: carregando ? 'default' : 'pointer' }}
         >
@@ -1267,13 +1381,16 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
           disabled={carregando}
           onClick={async () => {
             if (!auth) { setErro('Firebase não configurado.'); return }
+            if (!recaptchaOk) { setErro('Confirma que não és um robot.'); return }
             setErro(null)
+            setInfo(null)
             setCarregando(true)
             try {
               await signInWithPopup(auth, new GoogleAuthProvider())
             } catch (e) {
               console.error('[Sidus Google] Erro:', e.code, e.message)
               if (e.code !== 'auth/popup-closed-by-user') setErro(traduzirErro(e.code) + ` [${e.code}]`)
+              setRecaptchaKey((k) => k + 1)
             } finally {
               setCarregando(false)
             }
@@ -1798,8 +1915,8 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, isPremium, onUpgrade
   )
 
   const aspetosNatais = useMemo(
-    () => (isPremium && planetasComCasa.length > 0 ? calcularAspetos(planetasComCasa).slice(0, 12) : []),
-    [isPremium, planetasComCasa]
+    () => (planetasComCasa.length > 0 ? calcularAspetos(planetasComCasa).slice(0, 12) : []),
+    [planetasComCasa]
   )
 
   const analiseCompleta = useMemo(
@@ -1811,6 +1928,8 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, isPremium, onUpgrade
     () => (!isPremium && mapaNatal ? gerarResumoGratuito(mapaNatal) : null),
     [isPremium, mapaNatal]
   )
+
+  const mapaCompletoVisivel = planetasComCasa.length > 0
 
   const downloadPdf = async () => {
     if (gerandoPdf) return
@@ -1867,8 +1986,8 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, isPremium, onUpgrade
     ...(mapaNatal.mc ? [{ titulo: 'Meio do Céu (MC)', icon: Star, corBorda: 'rgba(52,211,153,0.35)', corFundo: 'rgba(52,211,153,0.12)', corIcone: '#34D399', ...mapaNatal.mc }] : []),
   ]
 
-  const balEl  = isPremium && planetasComCasa.length > 0 ? calcularBalancaElementos(planetasComCasa) : null
-  const balMod = isPremium && planetasComCasa.length > 0 ? calcularBalancaModalidades(planetasComCasa) : null
+  const balEl  = mapaCompletoVisivel ? calcularBalancaElementos(planetasComCasa) : null
+  const balMod = mapaCompletoVisivel ? calcularBalancaModalidades(planetasComCasa) : null
   const totalPlanetas = planetasComCasa.length
 
   return (
@@ -1884,17 +2003,11 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, isPremium, onUpgrade
         </p>
       </header>
 
-      {/* ── Versão free: mínimo + gancho premium ── */}
+      {/* ── Resumo interpretativo (gratuito) ── */}
       {!isPremium && resumoGratuito && (
         <div style={{ ...estilos.vidro, padding: 16, marginBottom: 14 }}>
-          <div style={{ fontSize: 11, color: CORES.brancoMuted, lineHeight: 1.6, marginBottom: 10 }}>
+          <div style={{ fontSize: 11, color: CORES.brancoMuted, lineHeight: 1.6, marginBottom: 8 }}>
             {resumoGratuito.sol}
-          </div>
-          <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.35)', filter: 'blur(0.5px)', userSelect: 'none', marginBottom: 8 }}>
-            {resumoGratuito.lua}
-          </div>
-          <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.35)', filter: 'blur(0.5px)', userSelect: 'none', marginBottom: 12 }}>
-            {resumoGratuito.asc}
           </div>
           <div style={{ fontSize: 11, color: CORES.brancoMuted, fontStyle: 'italic' }}>
             {resumoGratuito.gancho}
@@ -1904,27 +2017,13 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, isPremium, onUpgrade
 
       {/* ── Quatro Pilares ── */}
       <div style={{ fontSize: 11, color: CORES.dourado, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 10, fontWeight: 700 }}>
-        {isPremium ? '✦ Quatro Pilares Fundamentais' : '✦ Resumo Básico (Sol · Lua · Asc)'}
+        ✦ Quatro Pilares Fundamentais
       </div>
-      {(isPremium ? pilaresCompletos : pilaresBase.slice(0, 1)).map(p => <PilarCard key={p.titulo} {...p} />)}
-      {!isPremium && pilaresBase.slice(1).map(p => (
-        <div key={p.titulo} onClick={onUpgrade} style={{
-          ...estilos.vidro, padding: 16, marginBottom: 12, cursor: 'pointer',
-          border: '1px dashed rgba(223,183,108,0.3)', opacity: 0.7,
-        }}>
-          <div style={{ fontSize: 10, color: CORES.dourado, textTransform: 'uppercase', marginBottom: 4 }}>{p.titulo}</div>
-          <div style={{ fontSize: 16, color: CORES.branco, fontWeight: 600 }}>{p.simbolo} {p.nome}</div>
-          <div style={{ fontSize: 11, color: CORES.brancoMuted, marginTop: 6 }}>🔒 Casa Placidus e interpretação completa no Premium</div>
-        </div>
-      ))}
+      {pilaresCompletos.map(p => <PilarCard key={p.titulo} {...p} />)}
 
-      {/* ── Conteúdo Premium ── */}
-      {isPremium ? (
+      {/* ── Posições planetárias (todos os utilizadores com dados completos) ── */}
+      {mapaCompletoVisivel && (
         <>
-          {/* Interpretação profissional — 5 secções */}
-          <InterpretacaoMapa analise={analiseCompleta} estilosVidro={estilos.vidro} />
-
-          {/* Elementos & Modalidades */}
           {balEl && (
             <div style={{ ...estilos.vidro, padding: 18, marginBottom: 14 }}>
               <div style={{ fontSize: 11, color: CORES.dourado, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 14, fontWeight: 700 }}>
@@ -1947,7 +2046,6 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, isPremium, onUpgrade
             </div>
           )}
 
-          {/* Posições planetárias Placidus */}
           <div style={{ ...estilos.vidro, padding: 18, marginBottom: 14 }}>
             <div style={{ fontSize: 11, color: CORES.dourado, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 14, fontWeight: 700 }}>
               ✦ Posições Planetárias · Casas Placidus
@@ -1971,7 +2069,6 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, isPremium, onUpgrade
             ))}
           </div>
 
-          {/* Aspectos natais */}
           {aspetosNatais.length > 0 && (
             <div style={{ ...estilos.vidro, padding: 18, marginBottom: 14 }}>
               <div style={{ fontSize: 11, color: CORES.dourado, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 14, fontWeight: 700 }}>
@@ -1988,6 +2085,13 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, isPremium, onUpgrade
               })}
             </div>
           )}
+        </>
+      )}
+
+      {/* ── Conteúdo Premium (interpretação profunda + PDF) ── */}
+      {isPremium ? (
+        <>
+          <InterpretacaoMapa analise={analiseCompleta} estilosVidro={estilos.vidro} />
 
           {/* Áreas da Vida — resumo por casa dominante */}
           <div style={{ ...estilos.vidro, padding: 18, marginBottom: 14 }}>
@@ -2688,6 +2792,7 @@ export default function App() {
   const [tipoAuth, setTipoAuth] = useState('login') // 'login' | 'register'
   const [isPremium, setIsPremium] = useState(false)
   const [mapaGerado, setMapaGerado] = useState(false) // bloqueio: 1 mapa por utilizador
+  const [leiturasTarotUsadas, setLeiturasTarotUsadas] = useState(0)
   const [perfilCarregando, setPerfilCarregando] = useState(firebaseDisponivel)
 
   // ── Dados natais ─────────────────────────────────────────────────────────
@@ -2733,6 +2838,9 @@ export default function App() {
           if (snap.exists()) {
             const perfil = snap.data()
             if (perfil.isPremium === true) setIsPremium(true)
+            if (typeof perfil.tarotLeiturasUsadas === 'number') {
+              setLeiturasTarotUsadas(perfil.tarotLeiturasUsadas)
+            }
 
             let dadosPerfil = perfil.dados ? normalizarDadosPerfil(perfil.dados) : null
             if (dadosPerfil && dadosNataisMinimos(dadosPerfil) && !dadosNataisCompletos(dadosPerfil)) {
@@ -2745,8 +2853,9 @@ export default function App() {
 
             if (contaJaConfigurada(perfil, dadosPerfil)) {
               setMapaGerado(true)
-              if (!perfil.dadosTravados && !perfil.mapaGerado) {
+              if (dadosNataisCompletos(dadosPerfil) && (!perfil.dadosTravados || !perfil.mapaGerado)) {
                 await setDoc(doc(db, 'users', user.uid), {
+                  dados: dadosPerfil,
                   dadosTravados: true,
                   mapaGerado: true,
                 }, { merge: true })
@@ -2764,6 +2873,7 @@ export default function App() {
         setPlanetasNascimento([])
         setIsPremium(false)
         setMapaGerado(false)
+        setLeiturasTarotUsadas(0)
         setPerfilCarregando(false)
       }
       setAuthCarregando(false)
@@ -2906,26 +3016,28 @@ export default function App() {
 
   // ── Acções ─────────────────────────────────────────────────────────────────
   const handleOnboarding = async () => {
-    if (mapaGerado || dadosNataisMinimos(dados)) {
-      setMapaGerado(true)
+    if (mapaGerado) {
       irPara('home', { replace: true })
       return
     }
     const erros = validarOnboarding(dados)
-    if (Object.keys(erros).length === 0) {
-      setMapaNatal(sweRef.current
-        ? calcularMapaNatalComSwe(sweRef.current, dados)
-        : calcularMapaNatal(dados))
-      const guardado = await guardarPerfil(dados)
-      if (!guardado) {
-        setMapaGerado(true)
-        irPara('home', { replace: true })
-        return
-      }
-      setMapaGerado(true)
-      irPara('home')
-    }
+    if (Object.keys(erros).length > 0) return
+
+    setMapaNatal(sweRef.current
+      ? calcularMapaNatalComSwe(sweRef.current, dados)
+      : calcularMapaNatal(dados))
+    const guardado = await guardarPerfil(dados)
+    setMapaGerado(true)
+    irPara('home', { replace: !guardado })
   }
+
+  const registarLeituraTarotGratis = useCallback(async (total) => {
+    setLeiturasTarotUsadas(total)
+    if (!utilizador || !firebaseDisponivel || !db) return
+    try {
+      await setDoc(doc(db, 'users', utilizador.uid), { tarotLeiturasUsadas: total }, { merge: true })
+    } catch { /* offline */ }
+  }, [utilizador])
 
   const handleLogout = async () => {
     if (firebaseDisponivel && auth) await signOut(auth)
@@ -2942,6 +3054,10 @@ export default function App() {
   }
 
   const abrirPagamento = (descricao, valor, onSucesso) => {
+    if (!utilizador?.uid) {
+      setPagamentoMsg({ tipo: 'erro', texto: 'Precisas de iniciar sessão antes de pagar.' })
+      return
+    }
     setModalPagamento({ descricao, valor, onSucesso })
   }
 
@@ -2974,7 +3090,7 @@ export default function App() {
     }
   }, [authCarregando, perfilCarregando, mapaGerado, passo, navigate])
 
-  const contaConfigurada = mapaGerado || dadosNataisMinimos(dados)
+  const contaConfigurada = mapaGerado || dadosNataisCompletos(dados)
   const isDev = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
 
   const mostrarNavbar = utilizador && contaConfigurada && passo !== 'paywall'
@@ -3001,6 +3117,16 @@ export default function App() {
     if (!utilizador) {
       return <EcraAuth tipo={tipoAuth} onMudar={setTipoAuth} isDesktop={isDesktop} firebaseOk={firebaseDisponivel} />
     }
+    if (precisaVerificarEmail(utilizador)) {
+      return (
+        <EcraVerificarEmail
+          utilizador={utilizador}
+          isDesktop={isDesktop}
+          onLogout={handleLogout}
+          onVerificado={() => setUtilizador(auth.currentUser)}
+        />
+      )
+    }
     // Onboarding só para contas novas sem mapa criado
     if (!contaConfigurada) {
       return <Onboarding dados={dados} setDados={setDados} onSubmit={handleOnboarding} isDesktop={isDesktop} />
@@ -3013,7 +3139,7 @@ export default function App() {
       case 'mapa':
         return <MapaAstral mapaNatal={mapaNatal} dados={dados} planetasNascimento={planetasNascimento} isPremium={isPremium} onUpgrade={() => irPara('paywall')} onMapaGerado={handleMapaGerado} isDesktop={isDesktop} motorAstro={motorAstro} />
       case 'tarot':
-        return <EcraTarot mapaNatal={mapaNatal} isPremium={isPremium} userId={utilizador?.uid} onPagar={abrirPagamento} onVoltar={() => irPara('home')} onPremium={() => irPara('paywall')} />
+        return <EcraTarot mapaNatal={mapaNatal} isPremium={isPremium} userId={utilizador?.uid} leiturasTarotUsadas={leiturasTarotUsadas} onLeituraGratisUsada={registarLeituraTarotGratis} onPagar={abrirPagamento} onVoltar={() => irPara('home')} onPremium={() => irPara('paywall')} />
       case 'ferramentas':
         if (ferramentaAberta === 'bussola')
           return <BussolaCosmica mapaNatal={mapaNatal} onVoltar={() => setFerramentaAberta(null)} />

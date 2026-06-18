@@ -18,6 +18,7 @@ service cloud.firestore {
         && (
           (!resource.data.get('dadosTravados', false) && !resource.data.get('mapaGerado', false))
           || request.resource.data.get('dados') == resource.data.get('dados')
+          || request.resource.data.diff(resource.data).affectedKeys().hasOnly(['tarotLeiturasUsadas'])
         );
     }
   }
