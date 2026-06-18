@@ -1,7 +1,9 @@
 /**
  * Gerador de PDF do Mapa Astral Completo — Sidus
- * Usa jsPDF para criar um documento A4 com design cósmico.
+ * Tropical · Placidus · 5 secções profissionais
  */
+
+import { gerarAnaliseCompleta } from '../lib/mapaInterpretacao.js'
 
 const ELEMENTO_DO_SIGNO = {
   Carneiro:'Fogo', Leão:'Fogo', Sagitário:'Fogo',
@@ -10,42 +12,14 @@ const ELEMENTO_DO_SIGNO = {
   Caranguejo:'Água', Escorpião:'Água', Peixes:'Água',
 }
 
-const INTERP_SOL = {
-  Áries:'Com o Sol em Áries, és uma alma pioneira e corajosa. Nasceste com uma missão de iniciar, de abrir caminho onde antes não havia nenhum. A tua autenticidade é a tua maior força.',
-  Touro:'O Sol em Touro confere-te uma natureza sólida e conectada aos prazeres da vida. Valorizas a estabilidade e a beleza, e tens um talento natural para construir coisas que durem.',
-  Gémeos:'Com o Sol em Gémeos, a tua mente é o teu instrumento mais poderoso. A comunicação é o teu dom. Tens uma curiosidade insaciável e uma capacidade única de ver múltiplas perspectivas.',
-  Caranguejo:'O Sol em Caranguejo faz de ti uma alma profundamente intuitiva. A família e o lar são o teu universo. A tua missão é criar espaços de segurança emocional para quem amas.',
-  Leão:'O Sol em Leão dá-te uma presença luminosa e magnética. Tens um coração generoso e uma criatividade que precisa de se expressar. Nasceste para liderar e inspirar.',
-  Virgem:'Com o Sol em Virgem, tens uma mente analítica e um senso de serviço notável. A tua missão é trazer ordem ao caos — mas lembra-te: a perfeição é inimiga do bem.',
-  Balança:'O Sol em Balança confere-te um dom natural para a harmonia e a justiça. Tens a capacidade rara de ver todas as perspectivas. A tua missão é construir pontes entre mundos opostos.',
-  Escorpião:'Com o Sol em Escorpião, a tua profundidade é incomum. Não te contentas com o superficial. Cada fim na tua vida é o prenúncio de um renascimento mais poderoso.',
-  Sagitário:'O Sol em Sagitário acende em ti uma chama de liberdade e busca de verdade. Tens a missão de expandir horizontes, teus e dos outros, através da experiência directa da vida.',
-  Capricórnio:'Com o Sol em Capricórnio, trazes a força da montanha: lenta mas inesgotável. O sucesso material é apenas uma expressão do teu domínio interior — construído tijolo a tijolo.',
-  Aquário:'O Sol em Aquário faz de ti um visionário e agente de mudança. A tua missão é criar o amanhã que o mundo ainda não sabe que precisa.',
-  Peixes:'Com o Sol em Peixes, a tua alma é uma porta aberta ao invisível. A tua criatividade e espiritualidade são dons raros. A tua missão é ser uma ponte entre o mundo dos sonhos e o dos homens.',
-}
-
-const INTERP_ASC = {
-  Áries:'Com Ascendente em Áries, a tua presença é enérgica, directa e impossível de ignorar. Tens uma abordagem pioneira à vida — enfrentas desafios de frente, sem hesitar.',
-  Touro:'O Ascendente em Touro dá-te uma presença sólida e de confiança. Tens um charme natural e um estilo que reflecte elegância sem esforço.',
-  Gémeos:'Com Ascendente em Gémeos, és percebido como alguém vivaz, curioso e comunicativo. A tua mente rápida e o teu humor tornam-te magnético nas interacções sociais.',
-  Caranguejo:'O Ascendente em Caranguejo confere-te uma presença calorosa e acolhedora. Tens uma capacidade instintiva de perceber as necessidades emocionais dos outros.',
-  Leão:'Com Ascendente em Leão, entras numa sala e ela sente a tua presença. Tens um porte natural de liderança e uma generosidade que inspira.',
-  Virgem:'O Ascendente em Virgem projecta uma imagem de competência, atenção ao detalhe e humildade genuína. És visto como alguém prático e de confiança.',
-  Balança:'Com Ascendente em Balança, a tua presença é harmoniosa e refinada. És percebido como justo, charmoso e diplomaticamente hábil.',
-  Escorpião:'O Ascendente em Escorpião confere-te uma presença intensa e magnética. Há algo nos teus olhos que as pessoas sentem mas não conseguem definir.',
-  Sagitário:'Com Ascendente em Sagitário, irradias entusiasmo e optimismo. És visto como aventureiro, filosófico e inspirador.',
-  Capricórnio:'O Ascendente em Capricórnio projecta autoridade e seriedade. A tua fiabilidade e determinação ganham respeito profundo ao longo do tempo.',
-  Aquário:'Com Ascendente em Aquário, és visto como singular, progressista e ligeiramente enigmático. Atrais quem busca perspectivas novas.',
-  Peixes:'O Ascendente em Peixes confere-te uma presença etérea e compassiva. Há uma suavidade na tua forma de te mover no mundo que as pessoas encontram profundamente reconfortante.',
-}
-
-export async function gerarPdfMapaAstral(mapaNatal, dados, planetas = []) {
+export async function gerarPdfMapaAstral(mapaNatal, dados, planetas = [], analise = null) {
   const { jsPDF } = await import('jspdf')
 
+  const analiseFinal = analise || gerarAnaliseCompleta(mapaNatal, planetas, [], dados)
+
   const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' })
-  const L = 18   // margem esquerda
-  const W = 174  // largura útil
+  const L = 18
+  const W = 174
   let y = 20
 
   const DOURADO = [223, 183, 108]
@@ -57,8 +31,6 @@ export async function gerarPdfMapaAstral(mapaNatal, dados, planetas = []) {
   const LARANJA = [251, 146, 60]
   const AZUL    = [147, 197, 253]
   const LILAS   = [129, 140, 248]
-  const ROSA    = [244, 114, 182]
-  const AMARELO = [251, 191, 36]
 
   const novaPageSeNecessario = (h = 20) => {
     if (y + h > 275) {
@@ -69,17 +41,27 @@ export async function gerarPdfMapaAstral(mapaNatal, dados, planetas = []) {
     }
   }
 
-  // ── Fundo ──
+  const escreverParagrafo = (texto, indent = 0) => {
+    const linhas = doc.splitTextToSize(texto, W - 4 - indent)
+    doc.setTextColor(...BRANCO)
+    doc.setFontSize(9)
+    doc.setFont('helvetica', 'normal')
+    linhas.forEach(l => {
+      novaPageSeNecessario(7)
+      doc.text(l, L + 2 + indent, y)
+      y += 5
+    })
+    y += 3
+  }
+
   doc.setFillColor(...ESCURO)
   doc.rect(0, 0, 210, 297, 'F')
 
-  // ── Cabeçalho ──
   doc.setFillColor(...ROXO)
-  doc.rect(0, 0, 210, 50, 'F')
-  // linha dourada decorativa
+  doc.rect(0, 0, 210, 52, 'F')
   doc.setDrawColor(...DOURADO)
   doc.setLineWidth(0.5)
-  doc.line(L, 50, 210 - L, 50)
+  doc.line(L, 52, 210 - L, 52)
 
   doc.setTextColor(...DOURADO)
   doc.setFont('helvetica', 'bold')
@@ -90,45 +72,42 @@ export async function gerarPdfMapaAstral(mapaNatal, dados, planetas = []) {
   doc.setTextColor(...MUTED)
   doc.setFont('helvetica', 'normal')
   doc.text('MAPA ASTRAL NATAL COMPLETO', 105, 26, { align: 'center' })
+  doc.text('Efemérides · Tropical · Placidus', 105, 31, { align: 'center' })
 
   doc.setFont('helvetica', 'bold')
   doc.setFontSize(13)
   doc.setTextColor(...BRANCO)
-  doc.text(dados.nome || '', 105, 35, { align: 'center' })
+  doc.text(dados.nome || '', 105, 40, { align: 'center' })
 
   doc.setFont('helvetica', 'normal')
   doc.setFontSize(9)
   doc.setTextColor(...MUTED)
   const localDt = [formatarData(dados.data), dados.hora ? `às ${dados.hora}` : '', dados.cidade ? `· ${dados.cidade}` : ''].filter(Boolean).join(' ')
-  doc.text(localDt, 105, 42, { align: 'center' })
-
+  doc.text(localDt, 105, 46, { align: 'center' })
   doc.setFontSize(7)
-  doc.text(`Motor: ${mapaNatal?.motor || 'astronomy-engine'}`, 105, 48, { align: 'center' })
+  doc.text(`${mapaNatal?.motor || 'Swiss Ephemeris'} · ${mapaNatal?.sistema || 'Placidus'}`, 105, 50, { align: 'center' })
 
-  y = 60
+  y = 62
 
-  // ── Secção: 4 Pilares ──
   secaoTitulo(doc, y, '✦ QUATRO PILARES FUNDAMENTAIS', DOURADO, ROXO, L, W)
   y += 12
 
   const pilares = [
-    { icon: '☀', label: 'Signo Solar',   valor: mapaNatal?.solar?.nome || '—',      grau: mapaNatal?.solar?.grau },
-    { icon: '☽', label: 'Signo Lunar',   valor: mapaNatal?.lunar?.nome || '—',      grau: mapaNatal?.lunar?.grau },
-    { icon: '↑', label: 'Ascendente',    valor: mapaNatal?.ascendente?.nome || '—', grau: mapaNatal?.ascendente?.grau },
-    { icon: '⊕', label: 'Meio do Céu',  valor: mapaNatal?.mc?.nome || '—',         grau: mapaNatal?.mc?.grau },
+    { icon: '☀', label: 'Sol', valor: mapaNatal?.solar?.nome || '—', grau: mapaNatal?.solar?.graus },
+    { icon: '☽', label: 'Lua', valor: mapaNatal?.lunar?.nome || '—', grau: mapaNatal?.lunar?.graus },
+    { icon: '↑', label: 'Ascendente', valor: mapaNatal?.ascendente?.nome || '—', grau: mapaNatal?.ascendente?.graus },
+    { icon: '⊕', label: 'Meio do Céu', valor: mapaNatal?.mc?.nome || '—', grau: mapaNatal?.mc?.graus },
   ]
 
   pilares.forEach((p, i) => {
     const col = i % 2
     const x = L + col * (W / 2 + 2)
     if (col === 0 && i > 0) y += 22
-
     doc.setFillColor(28, 16, 58)
     doc.roundedRect(x, y, W / 2 - 2, 18, 3, 3, 'F')
     doc.setDrawColor(...DOURADO)
     doc.setLineWidth(0.3)
     doc.roundedRect(x, y, W / 2 - 2, 18, 3, 3, 'S')
-
     doc.setTextColor(...DOURADO)
     doc.setFontSize(11)
     doc.setFont('helvetica', 'bold')
@@ -144,15 +123,41 @@ export async function gerarPdfMapaAstral(mapaNatal, dados, planetas = []) {
     if (p.grau != null) {
       doc.setTextColor(...MUTED)
       doc.setFontSize(7)
-      doc.setFont('helvetica', 'normal')
-      doc.text(`${Number(p.grau).toFixed(1)}°`, x + W / 2 - 16, y + 14)
+      doc.text(`${p.grau}°`, x + W / 2 - 16, y + 14)
     }
   })
   y += 28
 
-  // ── Secção: Posições Planetárias ──
-  novaPageSeNecessario(10)
-  secaoTitulo(doc, y, '✦ POSIÇÕES PLANETÁRIAS AO NASCIMENTO', DOURADO, ROXO, L, W)
+  // ── 5 Secções de interpretação ──
+  for (const sec of analiseFinal.seccoes) {
+    novaPageSeNecessario(20)
+    secaoTitulo(doc, y, `✦ ${sec.id}. ${sec.titulo.toUpperCase()}`, DOURADO, ROXO, L, W)
+    y += 12
+
+    for (const bloco of sec.blocos) {
+      novaPageSeNecessario(15)
+      doc.setTextColor(...DOURADO)
+      doc.setFontSize(9)
+      doc.setFont('helvetica', 'bold')
+      const tituloLinhas = doc.splitTextToSize(bloco.subtitulo, W - 4)
+      tituloLinhas.forEach(l => { doc.text(l, L + 2, y); y += 5 })
+      if (bloco.meta) {
+        doc.setTextColor(...MUTED)
+        doc.setFontSize(7)
+        doc.setFont('helvetica', 'normal')
+        doc.text(bloco.meta, L + 2, y)
+        y += 5
+      }
+      y += 2
+      escreverParagrafo(bloco.texto, bloco.destaque ? 2 : 0)
+      y += 2
+    }
+    y += 4
+  }
+
+  // ── Posições planetárias ──
+  novaPageSeNecessario(20)
+  secaoTitulo(doc, y, '✦ POSIÇÕES PLANETÁRIAS · PLACIDUS', DOURADO, ROXO, L, W)
   y += 12
 
   if (planetas.length > 0) {
@@ -161,66 +166,44 @@ export async function gerarPdfMapaAstral(mapaNatal, dados, planetas = []) {
       const col = i % 2
       const x = L + col * (W / 2 + 2)
       if (col === 0 && i > 0) y += 11
-
       doc.setFillColor(20, 12, 45)
       doc.roundedRect(x, y, W / 2 - 2, 10, 2, 2, 'F')
-
       doc.setTextColor(...DOURADO)
       doc.setFontSize(8)
       doc.setFont('helvetica', 'bold')
       doc.text(`${pl.simbolo || ''} ${pl.nome || ''}`, x + 4, y + 7)
-
       doc.setTextColor(...BRANCO)
       doc.setFont('helvetica', 'normal')
-      doc.setFontSize(8)
-      doc.text(pl.signo?.nome || '—', x + 30, y + 7)
-
+      const signoCasa = `${pl.signo?.nome || '—'}${pl.casa ? ` · C${pl.casa}` : ''}`
+      doc.text(signoCasa, x + 28, y + 7)
       doc.setTextColor(...MUTED)
       doc.setFontSize(7)
-      const lon = `${(pl.longitude ?? 0).toFixed(1)}°${pl.retrograde ? ' ℞' : ''}`
-      doc.text(lon, x + W / 2 - 22, y + 7)
+      doc.text(`${(pl.longitude ?? 0).toFixed(1)}°${pl.retrograde ? ' ℞' : ''}`, x + W / 2 - 22, y + 7)
     })
     y += 18
-  } else {
-    doc.setTextColor(...MUTED)
-    doc.setFontSize(9)
-    doc.text('(Dados planetários não disponíveis)', L + 4, y + 6)
-    y += 12
   }
 
-  // ── Secção: Equilíbrio de Elementos ──
+  // ── Elementos ──
   novaPageSeNecessario(50)
-  secaoTitulo(doc, y, '✦ EQUILÍBRIO DE ELEMENTOS E MODALIDADES', DOURADO, ROXO, L, W)
+  secaoTitulo(doc, y, '✦ EQUILÍBRIO DE ELEMENTOS', DOURADO, ROXO, L, W)
   y += 12
 
   if (planetas.length > 0) {
     const balEl = { Fogo: 0, Terra: 0, Ar: 0, Água: 0 }
     planetas.forEach(p => { const el = ELEMENTO_DO_SIGNO[p.signo?.nome]; if (el) balEl[el]++ })
     const total = planetas.length
-
-    const elementes = [
-      { label: 'Fogo', cor: LARANJA, desc: 'Acção, entusiasmo, criatividade' },
-      { label: 'Terra', cor: VERDE, desc: 'Estabilidade, praticidade, perseverança' },
-      { label: 'Ar', cor: AZUL, desc: 'Intelecto, comunicação, adaptação' },
-      { label: 'Água', cor: LILAS, desc: 'Emoção, intuição, profundidade' },
-    ]
-
-    elementes.forEach(({ label, cor, desc }) => {
+    ;[
+      { label: 'Fogo', cor: LARANJA },
+      { label: 'Terra', cor: VERDE },
+      { label: 'Ar', cor: AZUL },
+      { label: 'Água', cor: LILAS },
+    ].forEach(({ label, cor }) => {
       novaPageSeNecessario(12)
       const count = balEl[label] || 0
       const pct = total > 0 ? count / total : 0
       doc.setTextColor(...BRANCO)
       doc.setFontSize(8)
-      doc.setFont('helvetica', 'bold')
-      doc.text(`${label}`, L + 2, y + 5)
-      doc.setFont('helvetica', 'normal')
-      doc.setTextColor(...MUTED)
-      doc.setFontSize(7)
-      doc.text(`${desc}`, L + 20, y + 5)
-      doc.setTextColor(...cor)
-      doc.setFontSize(8)
-      doc.text(`${count}/${total}`, 210 - L - 10, y + 5)
-      // barra de progresso
+      doc.text(`${label}  ${count}/${total}`, L + 2, y + 5)
       doc.setFillColor(255, 255, 255, 0.06)
       doc.roundedRect(L + 2, y + 7, W - 4, 3, 1, 1, 'F')
       if (pct > 0) {
@@ -229,108 +212,28 @@ export async function gerarPdfMapaAstral(mapaNatal, dados, planetas = []) {
       }
       y += 13
     })
-  } else {
-    doc.setTextColor(...MUTED)
-    doc.setFontSize(9)
-    doc.text('(Calcule os planetas de nascimento para ver o equilíbrio)', L + 4, y + 6)
-    y += 12
   }
 
-  // ── Secção: Interpretação do Sol ──
-  novaPageSeNecessario(25)
-  secaoTitulo(doc, y, '✦ INTERPRETAÇÃO DO SIGNO SOLAR', DOURADO, ROXO, L, W)
-  y += 10
-
-  const interpSol = INTERP_SOL[mapaNatal?.solar?.nome] || `O Signo Solar ${mapaNatal?.solar?.nome || ''} confere uma identidade única e valiosa.`
-  const linhasS = doc.splitTextToSize(interpSol, W - 4)
-  doc.setTextColor(...BRANCO)
-  doc.setFontSize(9)
-  doc.setFont('helvetica', 'normal')
-  linhasS.forEach(l => { novaPageSeNecessario(7); doc.text(l, L + 2, y); y += 5 })
-  y += 6
-
-  // ── Secção: Interpretação do Ascendente ──
-  novaPageSeNecessario(25)
-  secaoTitulo(doc, y, '✦ INTERPRETAÇÃO DO ASCENDENTE', DOURADO, ROXO, L, W)
-  y += 10
-
-  const interpAsc = INTERP_ASC[mapaNatal?.ascendente?.nome] || `O Ascendente em ${mapaNatal?.ascendente?.nome || ''} define a máscara que mostras ao mundo.`
-  const linhasA = doc.splitTextToSize(interpAsc, W - 4)
-  doc.setTextColor(...BRANCO)
-  doc.setFontSize(9)
-  linhasA.forEach(l => { novaPageSeNecessario(7); doc.text(l, L + 2, y); y += 5 })
-  y += 6
-
-  // ── Secção: Áreas da Vida ──
-  novaPageSeNecessario(50)
-  secaoTitulo(doc, y, '✦ ÁREAS DA VIDA', DOURADO, ROXO, L, W)
-  y += 12
-
-  const areas = [
-    {
-      area: 'Amor & Relacionamentos',
-      cor: ROSA,
-      planetas: planetas.filter(p => ['Vénus', 'Lua'].includes(p.nome)),
-    },
-    {
-      area: 'Carreira & Propósito',
-      cor: AMARELO,
-      planetas: planetas.filter(p => ['Sol', 'Saturno', 'Marte'].includes(p.nome)),
-    },
-    {
-      area: 'Espiritualidade & Alma',
-      cor: LILAS,
-      planetas: planetas.filter(p => ['Neptuno', 'Plutão', 'Lua'].includes(p.nome)),
-    },
-  ]
-
-  areas.forEach(({ area, cor, planetas: ps }) => {
-    novaPageSeNecessario(16)
-    doc.setFillColor(20, 12, 45)
-    doc.roundedRect(L, y, W, 14, 3, 3, 'F')
-    doc.setDrawColor(...cor)
-    doc.setLineWidth(0.3)
-    doc.roundedRect(L, y, W, 14, 3, 3, 'S')
-    doc.setTextColor(...cor)
-    doc.setFontSize(9)
-    doc.setFont('helvetica', 'bold')
-    doc.text(area, L + 6, y + 6)
-    doc.setTextColor(...BRANCO)
-    doc.setFont('helvetica', 'normal')
-    doc.setFontSize(8)
-    const desc = ps.length > 0
-      ? ps.map(p => `${p.nome} em ${p.signo?.nome || '—'}`).join(' · ')
-      : '—'
-    doc.text(desc, L + 6, y + 12)
-    y += 18
-  })
-
-  // ── Dados técnicos ──
   novaPageSeNecessario(35)
-  secaoTitulo(doc, y, '✦ DADOS TÉCNICOS DO CÁLCULO', DOURADO, ROXO, L, W)
+  secaoTitulo(doc, y, '✦ DADOS TÉCNICOS', DOURADO, ROXO, L, W)
   y += 12
 
-  const tecnicos = [
-    ['Data e hora UT:', mapaNatal?.instanteUTC ? mapaNatal.instanteUTC.replace('T', ' ').slice(0, 16) + ' UTC' : '—'],
-    ['Latitude:', mapaNatal?.lat != null ? `${mapaNatal.lat.toFixed(4)}° N/S` : '—'],
-    ['Longitude:', mapaNatal?.lon != null ? `${mapaNatal.lon.toFixed(4)}° E/W` : '—'],
-    ['Fuso horário:', typeof mapaNatal?.fuso === 'string' ? mapaNatal.fuso : `UTC${(mapaNatal?.fuso ?? 0) >= 0 ? '+' : ''}${mapaNatal?.fuso ?? 0}`],
-    ['Motor de cálculo:', mapaNatal?.motor || 'astronomy-engine'],
-  ]
-
-  tecnicos.forEach(([label, valor]) => {
+  ;[
+    ['Sistema:', mapaNatal?.sistema || 'Tropical · Placidus'],
+    ['Data UT:', mapaNatal?.instanteUTC ? mapaNatal.instanteUTC.replace('T', ' ').slice(0, 16) + ' UTC' : '—'],
+    ['Coordenadas:', mapaNatal?.lat != null ? `${mapaNatal.lat.toFixed(4)}°, ${mapaNatal.lon?.toFixed(4)}°` : '—'],
+    ['Motor:', mapaNatal?.motor || 'astronomy-engine'],
+  ].forEach(([label, valor]) => {
     novaPageSeNecessario(8)
     doc.setTextColor(...MUTED)
     doc.setFontSize(8)
-    doc.setFont('helvetica', 'normal')
     doc.text(label, L + 2, y)
     doc.setTextColor(...BRANCO)
     doc.setFont('helvetica', 'bold')
-    doc.text(String(valor), L + 50, y)
+    doc.text(String(valor), L + 42, y)
     y += 7
   })
 
-  // ── Rodapé em todas as páginas ──
   const totalPaginas = doc.getNumberOfPages()
   for (let i = 1; i <= totalPaginas; i++) {
     doc.setPage(i)
@@ -343,7 +246,7 @@ export async function gerarPdfMapaAstral(mapaNatal, dados, planetas = []) {
     doc.setFontSize(7)
     doc.setFont('helvetica', 'normal')
     doc.text(
-      `Sidus · Mapa Astral de ${dados.nome || ''}  ·  Gerado em ${new Date().toLocaleDateString('pt-PT')}  ·  Pág. ${i}/${totalPaginas}`,
+      `Sidus · Mapa Astral de ${dados.nome || ''} · Tropical Placidus · ${new Date().toLocaleDateString('pt-PT')} · Pág. ${i}/${totalPaginas}`,
       105, 292, { align: 'center' }
     )
   }

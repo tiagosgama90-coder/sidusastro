@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from 'react'
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react'
 import {
   Sparkles,
   Moon,
@@ -34,6 +34,7 @@ import { EcraTarot } from './components/Tarot'
 import { ModalPagamento } from './components/Pagamento'
 import { Perfil } from './components/Perfil'
 import { PoliticaPrivacidade } from './components/PoliticaPrivacidade'
+import { InterpretacaoMapa } from './components/InterpretacaoMapa'
 import { BussolaCosmica, Sinastria, Biorritmo, DiarioAstral } from './components/FerramentasPremium'
 import { auth, db, firebaseDisponivel } from './lib/firebase'
 import {
@@ -45,6 +46,9 @@ import {
   signInWithPopup,
 } from 'firebase/auth'
 import { doc, getDoc, setDoc } from 'firebase/firestore'
+import { normalizarCusps, cuspsEqualHouse, atribuirCasasPlanetas } from './lib/casasPlacidus.js'
+import { gerarAnaliseCompleta, gerarResumoGratuito } from './lib/mapaInterpretacao.js'
+import { calcularFaseLua } from './lib/faseLua.js'
 
 const CORES = {
   fundo: '#0B071E',
@@ -122,13 +126,13 @@ const ASPECTOS_MAIORES = [
 const FERRAMENTAS = [
   { id: 'bussola',  nome: 'Bússola Cósmica 2026',  icon: Compass,   premium: true },
   { id: 'sinastria',nome: 'Radar de Afinidades',   sub: 'Sinastria', icon: Heart, premium: true },
-  { id: 'tarot',    nome: 'Arcanos Virtuais',       sub: 'Tarot — 6 tipos de leitura', icon: Layers, premium: false, isTarot: true },
   { id: 'biorritmo',nome: 'Fluxo Vital',            sub: 'Biorritmo', icon: Activity, premium: false },
   { id: 'diario',   nome: 'Diário Astral',          icon: BookOpen,  premium: false },
 ]
 
 const BENEFICIOS_VIP = [
-  'Mapa Astral completo com Swiss Ephemeris (PDF + email)',
+  'Mapa Astral completo — efemérides, Placidus, PDF profissional + email',
+  'Fases da Lua em tempo real no Céu de Hoje',
   'Leituras de Tarot ilimitadas em todos os baralhos',
   'Bússola Cósmica 2026 com previsões mensais',
   'Radar de Afinidades e Sinastria completa',
@@ -670,19 +674,15 @@ function criarDataUTCporLocal(dataISO, horaHHMM, fuso) {
  * Implementa Meeus "Astronomical Algorithms" cap. 14 + verificação
  * de hemisfério (ASC deve estar a ~90° do MC, nunca no mesmo lado).
  */
-function calcularAscendenteReal(dataUTC, latitude, longitude) {
-  // Guarda nulos e regiões polares (Ascendente indefinido acima de 66°)
-  if (!dataUTC || latitude == null || longitude == null) return 0
-  if (isNaN(latitude) || isNaN(longitude)) return 0
+function calcularAscendenteEMc(dataUTC, latitude, longitude) {
+  if (!dataUTC || latitude == null || longitude == null) return { asc: 0, mc: 0 }
+  if (isNaN(latitude) || isNaN(longitude)) return { asc: 0, mc: 0 }
   const lat = Math.max(-89, Math.min(89, latitude))
 
   const time = MakeTime(dataUTC)
-
-  // GMST → RAMC (Right Ascension of MC = Local Sidereal Time em graus)
-  const gmst  = SiderealTime(time) * 15 // horas → graus
+  const gmst  = SiderealTime(time) * 15
   const ramc  = ((gmst + longitude) % 360 + 360) % 360
 
-  // Obliquidade IAU 2006
   const T = (dataUTC.getTime() / 86400000 - 10957.5) / 36525
   const eDeg = 23.439291111 - 0.013004167 * T - 0.000000164 * T * T
   const e     = eDeg * Math.PI / 180
@@ -690,14 +690,11 @@ function calcularAscendenteReal(dataUTC, latitude, longitude) {
   const ramcRad = ramc    * Math.PI / 180
   const latRad  = lat     * Math.PI / 180
 
-  // Fórmula de Meeus (atan2 trata automaticamente os quadrantes)
   const yAsc = -Math.cos(ramcRad)
   const xAsc =  Math.sin(ramcRad) * Math.cos(e) + Math.tan(latRad) * Math.sin(e)
   let asc = Math.atan2(yAsc, xAsc) * (180 / Math.PI)
   asc = ((asc % 360) + 360) % 360
 
-  // Correcção de quadrante: o Ascendente deve estar a 90°–270° do MC.
-  // Se estiver no mesmo hemisfério que o MC, o atan2 devolveu o Descendente.
   const yMC = Math.sin(ramcRad)
   const xMC = Math.cos(ramcRad) * Math.cos(e) - Math.tan(latRad) * Math.sin(e)
   let mc = Math.atan2(yMC, xMC) * (180 / Math.PI)
@@ -706,7 +703,11 @@ function calcularAscendenteReal(dataUTC, latitude, longitude) {
   const diff = ((asc - mc + 360) % 360)
   if (diff < 90 || diff > 270) asc = (asc + 180) % 360
 
-  return asc
+  return { asc, mc }
+}
+
+function calcularAscendenteReal(dataUTC, latitude, longitude) {
+  return calcularAscendenteEMc(dataUTC, latitude, longitude).asc
 }
 
 function calcularMapaNatal(dados) {
@@ -721,17 +722,21 @@ function calcularMapaNatal(dados) {
   const lonSol = Ecliptic(Position(Body.Sun, time)).elon
   const lonLua = Ecliptic(Position(Body.Moon, time)).elon
 
-  // Ascendente com SiderealTime de alta precisão
-  const lonAsc = calcularAscendenteReal(dataUTC, lat, lon)
+  const { asc: lonAsc, mc: lonMc } = calcularAscendenteEMc(dataUTC, lat, lon)
+  const cusps = cuspsEqualHouse(lonAsc)
 
   return {
     solar:      longitudeParaSigno(lonSol),
     lunar:      longitudeParaSigno(lonLua),
     ascendente: longitudeParaSigno(lonAsc),
+    mc:         longitudeParaSigno(lonMc),
+    cusps,
+    sistema:    'Tropical · Placidus (fallback casas iguais)',
     instanteUTC: dataUTC.toISOString(),
     lat,
     lon,
     fuso,
+    motor: 'astronomy-engine + Meeus',
   }
 }
 
@@ -741,9 +746,6 @@ function calcularMapaNatal(dados) {
  * Posições via swe_calc_ut (Swiss Ephemeris) — só após efemérides carregadas.
  */
 function calcularPlanetasComSwe(swe, dateUTC, lista = PLANETAS_AGORA) {
-  if (!sweEphemerisPronta() && lista === PLANETAS_NATAL) {
-    return calcularPlanetasNatalParaData(dateUTC)
-  }
   const jd = swe.dateToJulianDay(dateUTC)
   const resultados = []
   for (const p of lista) {
@@ -784,12 +786,13 @@ function calcularMapaNatalComSwe(swe, dados) {
   const sunPos  = swe.calculatePosition(jd, 0)
   const moonPos = swe.calculatePosition(jd, 1)
   const houses  = swe.calculateHouses(jd, lat, lon, 'P')
+  const cusps   = normalizarCusps(houses) ?? cuspsEqualHouse(houses.ascendant)
 
   const motorLabel =
     _motorStatus === 'swisseph-full'
-      ? 'Swiss Ephemeris · Efemérides NASA (arco-segundo)'
+      ? 'Swiss Ephemeris · Tropical Placidus'
       : _motorStatus === 'swisseph-moshier'
-        ? 'Swiss Ephemeris Moshier · Placidus'
+        ? 'Swiss Ephemeris Moshier · Tropical Placidus'
         : 'astronomy-engine + Meeus'
 
   console.info(
@@ -802,6 +805,8 @@ function calcularMapaNatalComSwe(swe, dados) {
     lunar:      longitudeParaSigno(moonPos.longitude),
     ascendente: longitudeParaSigno(houses.ascendant),
     mc:         longitudeParaSigno(houses.mc),
+    cusps,
+    sistema:    'Tropical · Placidus',
     instanteUTC: dateUTC.toISOString(),
     lat, lon, fuso,
     motor: motorLabel,
@@ -1439,7 +1444,8 @@ function Onboarding({ dados, setDados, onSubmit, isDesktop }) {
   )
 }
 
-function Dashboard({ nome, mapaNatal, ceuAgora, aspetos, onOraculo, onPrivacidade, isDesktop }) {
+function Dashboard({ nome, mapaNatal, ceuAgora, aspetos, onOraculo, onPrivacidade, isDesktop, isPremium, onUpgrade, onTarot }) {
+  const faseLua = calcularFaseLua(new Date())
   return (
     <div style={layoutConteudo(isDesktop)}>
       <header style={{ textAlign: 'center', marginBottom: 28 }}>
@@ -1492,9 +1498,37 @@ function Dashboard({ nome, mapaNatal, ceuAgora, aspetos, onOraculo, onPrivacidad
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
           <Moon size={22} color={CORES.dourado} />
           <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: CORES.dourado }}>
-            Ceu de Hoje
+            Céu de Hoje
           </span>
         </div>
+
+        {/* Fase lunar — Premium */}
+        {isPremium ? (
+          <div style={{
+            background: 'rgba(139,92,246,0.12)', borderRadius: 12, padding: 14, marginBottom: 14,
+            border: '1px solid rgba(139,92,246,0.3)',
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 8 }}>
+              <span style={{ fontSize: 32 }}>{faseLua.emoji}</span>
+              <div>
+                <div style={{ fontSize: 14, fontWeight: 700, color: CORES.branco }}>{faseLua.nome}</div>
+                <div style={{ fontSize: 11, color: CORES.brancoMuted }}>{faseLua.iluminacao}% iluminada · {faseLua.angulo}° de elongação</div>
+              </div>
+            </div>
+            <p style={{ fontSize: 12, color: CORES.brancoSuave, lineHeight: 1.55, margin: 0 }}>{faseLua.desc}</p>
+          </div>
+        ) : (
+          <div onClick={onUpgrade} style={{
+            background: 'rgba(223,183,108,0.06)', borderRadius: 12, padding: 14, marginBottom: 14,
+            border: '1px dashed rgba(223,183,108,0.35)', cursor: 'pointer', textAlign: 'center',
+          }}>
+            <span style={{ fontSize: 24 }}>🌙</span>
+            <div style={{ fontSize: 12, color: CORES.brancoMuted, marginTop: 6 }}>
+              Fases da Lua em tempo real — <span style={{ color: CORES.dourado, fontWeight: 600 }}>Premium</span>
+            </div>
+          </div>
+        )}
+
         {ceuAgora.map((p) => (
           <div key={p.key} style={{ fontSize: 14, color: CORES.brancoSuave, padding: '7px 0', borderBottom: `1px solid ${CORES.vidroBorda}` }}>
             {p.simbolo} {p.texto}
@@ -1525,6 +1559,22 @@ function Dashboard({ nome, mapaNatal, ceuAgora, aspetos, onOraculo, onPrivacidad
 
       {/* Carta do Dia */}
       <CartaDoDia />
+
+      {onTarot && (
+        <button type="button" onClick={onTarot} style={{
+          ...estilos.vidro, width: '100%', padding: 18, marginBottom: 16, cursor: 'pointer',
+          border: '1px solid rgba(244,114,182,0.35)', background: 'rgba(244,114,182,0.08)',
+          display: 'flex', alignItems: 'center', gap: 14, textAlign: 'left',
+        }}>
+          <span style={{ fontSize: 28 }}>🎴</span>
+          <div style={{ flex: 1 }}>
+            <div style={{ fontSize: 10, color: '#F472B6', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 700 }}>Tarot Online</div>
+            <div style={{ fontSize: 15, color: CORES.branco, fontWeight: 600 }}>Arcanos Virtuais</div>
+            <div style={{ fontSize: 11, color: CORES.brancoMuted }}>6 baralhos · 1 leitura grátis por tipo</div>
+          </div>
+          <Layers size={22} color="#F472B6" />
+        </button>
+      )}
 
       <button type="button" onClick={onOraculo} style={{ ...estilos.vidro, width: '100%', padding: 18, display: 'flex', justifyContent: 'space-between', border: `1px solid ${CORES.dourado}`, background: 'rgba(223,183,108,0.08)', marginTop: 14, marginBottom: 14 }}>
         <div>
@@ -1573,9 +1623,22 @@ const ARCANOS_NOMES = [
 ]
 
 function CartaDoDia() {
-  const hoje = new Date()
-  const idx = (hoje.getFullYear()*1000 + hoje.getMonth()*31 + hoje.getDate()) % 22
+  const [dataHoje, setDataHoje] = useState(() => new Date().toISOString().slice(0, 10))
+
+  useEffect(() => {
+    const verificar = () => {
+      const hoje = new Date().toISOString().slice(0, 10)
+      if (hoje !== dataHoje) setDataHoje(hoje)
+    }
+    verificar()
+    const id = setInterval(verificar, 60000)
+    return () => clearInterval(id)
+  }, [dataHoje])
+
+  const [ano, mes, dia] = dataHoje.split('-').map(Number)
+  const idx = (ano * 1000 + (mes - 1) * 31 + dia) % 22
   const carta = ARCANOS_NOMES[idx]
+  const dataFormatada = `${String(dia).padStart(2, '0')}/${String(mes).padStart(2, '0')}/${ano}`
 
   return (
     <div style={{
@@ -1584,7 +1647,7 @@ function CartaDoDia() {
       borderRadius:16, cursor:'default',
     }}>
       <div style={{fontSize:10,color:CORES.dourado,textTransform:'uppercase',letterSpacing:'0.1em',marginBottom:12}}>
-        ✦ Carta do Dia
+        ✦ Carta do Dia · {dataFormatada}
       </div>
       <div style={{display:'flex',alignItems:'center',gap:16}}>
         {/* Mini card SVG */}
@@ -1655,7 +1718,7 @@ function BarraElemento({ label, valor, total, cor }) {
   )
 }
 
-function MapaAstral({ mapaNatal, dados, planetasNascimento, isPremium, onUpgrade, onMapaGerado, isDesktop, ephemerisCarregando, motorAstro }) {
+function MapaAstral({ mapaNatal, dados, planetasNascimento, isPremium, onUpgrade, onMapaGerado, isDesktop, motorAstro }) {
   const [gerandoPdf, setGerandoPdf] = useState(false)
   const [emailEnviado, setEmailEnviado] = useState(false)
   const mapaGeradoRef = useRef(false)
@@ -1668,12 +1731,32 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, isPremium, onUpgrade
     }
   }, [isPremium, mapaNatal, onMapaGerado])
 
+  const planetasComCasa = useMemo(
+    () => atribuirCasasPlanetas(planetasNascimento, mapaNatal?.cusps),
+    [planetasNascimento, mapaNatal?.cusps]
+  )
+
+  const aspetosNatais = useMemo(
+    () => (isPremium && planetasComCasa.length > 0 ? calcularAspetos(planetasComCasa).slice(0, 12) : []),
+    [isPremium, planetasComCasa]
+  )
+
+  const analiseCompleta = useMemo(
+    () => (isPremium && mapaNatal ? gerarAnaliseCompleta(mapaNatal, planetasComCasa, aspetosNatais, dados) : null),
+    [isPremium, mapaNatal, planetasComCasa, aspetosNatais, dados]
+  )
+
+  const resumoGratuito = useMemo(
+    () => (!isPremium && mapaNatal ? gerarResumoGratuito(mapaNatal) : null),
+    [isPremium, mapaNatal]
+  )
+
   const downloadPdf = async () => {
     if (gerandoPdf) return
     setGerandoPdf(true)
     try {
       const { gerarPdfMapaAstral } = await import('./components/PdfMapa.jsx')
-      await gerarPdfMapaAstral(mapaNatal, dados, planetasNascimento)
+      await gerarPdfMapaAstral(mapaNatal, dados, planetasComCasa, analiseCompleta)
     } catch (e) {
       console.error('PDF error:', e)
       alert('Erro ao gerar PDF. Tenta novamente.')
@@ -1683,49 +1766,22 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, isPremium, onUpgrade
   }
 
   const compartilharEmail = () => {
-    const linhasPlanetas = planetasNascimento.map(p =>
-      `  ${p.nome}: ${p.signo?.nome || '—'} (${(p.longitude ?? 0).toFixed(1)}°)${p.retrograde ? ' ℞' : ''}`
-    ).join('\n')
-
     const corpo = [
-      `✦ MAPA ASTRAL NATAL — ${(dados.nome || '').toUpperCase()}`,
-      `Nascido/a em ${dados.cidade || ''}  •  ${formatarData(dados.data)} às ${dados.hora}`,
-      `Motor de cálculo: ${mapaNatal.motor || 'astronomy-engine'}`,
+      analiseCompleta?.textoPlano || '',
       '',
-      '── QUATRO PILARES ──────────────────────────',
-      `☀  Sol:          ${mapaNatal.solar?.nome || '—'} (${(mapaNatal.solar?.grau ?? 0).toFixed(1)}°)`,
-      `☽  Lua:          ${mapaNatal.lunar?.nome || '—'} (${(mapaNatal.lunar?.grau ?? 0).toFixed(1)}°)`,
-      `↑  Ascendente:   ${mapaNatal.ascendente?.nome || '—'} (${(mapaNatal.ascendente?.grau ?? 0).toFixed(1)}°)`,
-      mapaNatal.mc ? `⊕  Meio do Céu:  ${mapaNatal.mc.nome} (${(mapaNatal.mc.grau ?? 0).toFixed(1)}°)` : '',
+      '── POSIÇÕES PLANETÁRIAS (Placidus) ─────────',
+      ...planetasComCasa.map(p =>
+        `  ${p.simbolo} ${p.nome}: ${p.signo?.nome || '—'}${p.casa ? ` · Casa ${p.casa}` : ''} (${(p.longitude ?? 0).toFixed(1)}°)${p.retrograde ? ' ℞' : ''}`
+      ),
       '',
-      '── PLANETAS AO NASCIMENTO ──────────────────',
-      linhasPlanetas,
-      '',
-      '─────────────────────────────────────────────',
-      'Gerado por Sidus — App de Astrologia Natal',
-      'https://sidus.app',
-    ].filter(l => l !== null && l !== undefined).join('\n')
+      'Gerado por Sidus — https://sidus.app',
+    ].join('\n')
 
-    const assunto = encodeURIComponent(`Mapa Astral de ${dados.nome} — Sidus`)
+    const assunto = encodeURIComponent(`Mapa Astral Completo — ${dados.nome} · Sidus`)
     const body    = encodeURIComponent(corpo)
     window.location.href = `mailto:?subject=${assunto}&body=${body}`
     setEmailEnviado(true)
     setTimeout(() => setEmailEnviado(false), 4000)
-  }
-
-  if (ephemerisCarregando) {
-    return (
-      <div style={layoutConteudo(isDesktop)}>
-        <h1 style={{ ...estilos.titulo, textAlign: 'left', fontSize: 22, marginBottom: 20 }}>Mapa Astral</h1>
-        <div style={{ ...estilos.vidro, padding: 28, textAlign: 'center' }}>
-          <Loader2 size={32} color={CORES.dourado} style={{ animation: 'spin 1s linear infinite', marginBottom: 16 }} />
-          <div style={{ fontSize: 15, color: CORES.branco, fontWeight: 600, marginBottom: 8 }}>A invocar as efemérides Swiss Ephemeris</div>
-          <div style={{ fontSize: 12, color: CORES.brancoMuted, lineHeight: 1.6 }}>
-            A carregar tabelas astronómicas de precisão NASA — Sol, Lua, planetas, asteroides e casas Placidus.
-          </div>
-        </div>
-      </div>
-    )
   }
 
   if (!mapaNatal) {
@@ -1750,17 +1806,9 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, isPremium, onUpgrade
     ...(mapaNatal.mc ? [{ titulo: 'Meio do Céu (MC)', icon: Star, corBorda: 'rgba(52,211,153,0.35)', corFundo: 'rgba(52,211,153,0.12)', corIcone: '#34D399', ...mapaNatal.mc }] : []),
   ]
 
-  const pilares = isPremium ? pilaresCompletos : pilaresBase
-
-  // Análise de elementos e modalidades (só premium)
-  const balEl  = isPremium && planetasNascimento.length > 0 ? calcularBalancaElementos(planetasNascimento) : null
-  const balMod = isPremium && planetasNascimento.length > 0 ? calcularBalancaModalidades(planetasNascimento) : null
-  const totalPlanetas = planetasNascimento.length
-
-  // Aspectos natais (só premium)
-  const aspetosNatais = isPremium && planetasNascimento.length > 0
-    ? calcularAspetos(planetasNascimento).slice(0, 8)
-    : []
+  const balEl  = isPremium && planetasComCasa.length > 0 ? calcularBalancaElementos(planetasComCasa) : null
+  const balMod = isPremium && planetasComCasa.length > 0 ? calcularBalancaModalidades(planetasComCasa) : null
+  const totalPlanetas = planetasComCasa.length
 
   return (
     <div style={layoutConteudo(isDesktop)}>
@@ -1770,20 +1818,51 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, isPremium, onUpgrade
           {dados.nome} · {formatarData(dados.data)} às {dados.hora}
         </p>
         <p style={{ fontSize: 10, color: CORES.brancoMuted, textTransform: 'uppercase', letterSpacing: '0.07em' }}>
-          {mapaNatal.motor || motorAstro || 'astronomy-engine'}
-          {sweEphemerisPronta() ? ' · Efemérides Swiss Ephemeris ✓' : ''}
+          {mapaNatal.sistema || 'Tropical · Placidus'} · {mapaNatal.motor || motorAstro || 'astronomy-engine'}
+          {sweEphemerisPronta() ? ' · Efemérides ✓' : ''}
         </p>
       </header>
 
+      {/* ── Versão free: mínimo + gancho premium ── */}
+      {!isPremium && resumoGratuito && (
+        <div style={{ ...estilos.vidro, padding: 16, marginBottom: 14 }}>
+          <div style={{ fontSize: 11, color: CORES.brancoMuted, lineHeight: 1.6, marginBottom: 10 }}>
+            {resumoGratuito.sol}
+          </div>
+          <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.35)', filter: 'blur(0.5px)', userSelect: 'none', marginBottom: 8 }}>
+            {resumoGratuito.lua}
+          </div>
+          <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.35)', filter: 'blur(0.5px)', userSelect: 'none', marginBottom: 12 }}>
+            {resumoGratuito.asc}
+          </div>
+          <div style={{ fontSize: 11, color: CORES.brancoMuted, fontStyle: 'italic' }}>
+            {resumoGratuito.gancho}
+          </div>
+        </div>
+      )}
+
       {/* ── Quatro Pilares ── */}
       <div style={{ fontSize: 11, color: CORES.dourado, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 10, fontWeight: 700 }}>
-        {isPremium ? '✦ Quatro Pilares Fundamentais' : '✦ Pilares Básicos'}
+        {isPremium ? '✦ Quatro Pilares Fundamentais' : '✦ Resumo Básico (Sol · Lua · Asc)'}
       </div>
-      {pilares.map(p => <PilarCard key={p.titulo} {...p} />)}
+      {(isPremium ? pilaresCompletos : pilaresBase.slice(0, 1)).map(p => <PilarCard key={p.titulo} {...p} />)}
+      {!isPremium && pilaresBase.slice(1).map(p => (
+        <div key={p.titulo} onClick={onUpgrade} style={{
+          ...estilos.vidro, padding: 16, marginBottom: 12, cursor: 'pointer',
+          border: '1px dashed rgba(223,183,108,0.3)', opacity: 0.7,
+        }}>
+          <div style={{ fontSize: 10, color: CORES.dourado, textTransform: 'uppercase', marginBottom: 4 }}>{p.titulo}</div>
+          <div style={{ fontSize: 16, color: CORES.branco, fontWeight: 600 }}>{p.simbolo} {p.nome}</div>
+          <div style={{ fontSize: 11, color: CORES.brancoMuted, marginTop: 6 }}>🔒 Casa Placidus e interpretação completa no Premium</div>
+        </div>
+      ))}
 
       {/* ── Conteúdo Premium ── */}
       {isPremium ? (
         <>
+          {/* Interpretação profissional — 5 secções */}
+          <InterpretacaoMapa analise={analiseCompleta} estilosVidro={estilos.vidro} />
+
           {/* Elementos & Modalidades */}
           {balEl && (
             <div style={{ ...estilos.vidro, padding: 18, marginBottom: 14 }}>
@@ -1807,31 +1886,28 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, isPremium, onUpgrade
             </div>
           )}
 
-          {/* Posições planetárias com interpretação */}
+          {/* Posições planetárias Placidus */}
           <div style={{ ...estilos.vidro, padding: 18, marginBottom: 14 }}>
             <div style={{ fontSize: 11, color: CORES.dourado, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 14, fontWeight: 700 }}>
-              ✦ Posições Planetárias ao Nascimento
+              ✦ Posições Planetárias · Casas Placidus
             </div>
-            {planetasNascimento.map((p) => {
-              const interp = getInterpPlaneta(p.nome, p.signo?.nome)
-              return (
-                <div key={p.key} style={{ padding: '10px 0', borderBottom: `1px solid ${CORES.vidroBorda}` }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <span style={{ fontSize: 14, color: CORES.branco, fontWeight: 600 }}>
-                      {p.simbolo} {p.nome}
-                    </span>
-                    <span style={{ fontSize: 13, color: CORES.dourado }}>
-                      {p.signo?.simbolo} {p.signo?.nome}
-                      {p.retrograde ? <span style={{ color: '#F87171', fontSize: 11, marginLeft: 4 }}> ℞</span> : ''}
-                    </span>
-                  </div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 2 }}>
-                    <span style={{ fontSize: 11, color: CORES.brancoMuted }}>{(p.longitude ?? 0).toFixed(2)}° eclíptica</span>
-                    {interp && <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.45)', maxWidth: '60%', textAlign: 'right', lineHeight: 1.3 }}>{interp}</span>}
-                  </div>
+            {planetasComCasa.map((p) => (
+              <div key={p.key} style={{ padding: '10px 0', borderBottom: `1px solid ${CORES.vidroBorda}` }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 4 }}>
+                  <span style={{ fontSize: 14, color: CORES.branco, fontWeight: 600 }}>
+                    {p.simbolo} {p.nome}
+                  </span>
+                  <span style={{ fontSize: 13, color: CORES.dourado }}>
+                    {p.signo?.simbolo} {p.signo?.nome}
+                    {p.casa ? <span style={{ color: CORES.brancoMuted, fontSize: 11, marginLeft: 6 }}>Casa {p.casa}</span> : ''}
+                    {p.retrograde ? <span style={{ color: '#F87171', fontSize: 11, marginLeft: 4 }}> ℞</span> : ''}
+                  </span>
                 </div>
-              )
-            })}
+                <div style={{ fontSize: 11, color: CORES.brancoMuted, marginTop: 2 }}>
+                  {(p.longitude ?? 0).toFixed(2)}° eclíptica tropical
+                </div>
+              </div>
+            ))}
           </div>
 
           {/* Aspectos natais */}
@@ -1852,33 +1928,39 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, isPremium, onUpgrade
             </div>
           )}
 
-          {/* Áreas da Vida */}
+          {/* Áreas da Vida — resumo por casa dominante */}
           <div style={{ ...estilos.vidro, padding: 18, marginBottom: 14 }}>
             <div style={{ fontSize: 11, color: CORES.dourado, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 14, fontWeight: 700 }}>
-              ✦ Áreas da Vida
+              ✦ Resumo por Esfera de Vida
             </div>
             {[
               {
                 area: '❤ Amor & Relacionamentos',
-                planetas: planetasNascimento.filter(p => ['Vénus', 'Lua'].includes(p.nome)),
-                desc: (ps) => ps.map(p => `${p.nome} em ${p.signo?.nome}`).join(' · '),
+                planetas: planetasComCasa.filter(p => ['Vénus', 'Lua', 'Marte'].includes(p.nome)),
               },
               {
                 area: '💼 Carreira & Propósito',
-                planetas: planetasNascimento.filter(p => ['Sol', 'Saturno', 'Marte'].includes(p.nome)),
-                desc: (ps) => ps.map(p => `${p.nome} em ${p.signo?.nome}`).join(' · '),
+                planetas: planetasComCasa.filter(p => ['Sol', 'Saturno', 'Marte'].includes(p.nome)),
               },
               {
                 area: '🔮 Espiritualidade & Alma',
-                planetas: planetasNascimento.filter(p => ['Neptuno', 'Plutão', 'Lua'].includes(p.nome)),
-                desc: (ps) => ps.map(p => `${p.nome} em ${p.signo?.nome}`).join(' · '),
+                planetas: planetasComCasa.filter(p => ['Neptuno', 'Plutão', 'Lua', 'Quíron'].includes(p.nome)),
               },
-            ].map(({ area, planetas: ps, desc }) => (
+            ].map(({ area, planetas: ps }) => (
               <div key={area} style={{ padding: '10px 0', borderBottom: `1px solid ${CORES.vidroBorda}` }}>
                 <div style={{ fontSize: 13, color: CORES.branco, fontWeight: 600, marginBottom: 3 }}>{area}</div>
-                <div style={{ fontSize: 12, color: CORES.brancoMuted }}>{ps.length > 0 ? desc(ps) : 'Dados em cálculo…'}</div>
+                <div style={{ fontSize: 12, color: CORES.brancoMuted }}>
+                  {ps.length > 0
+                    ? ps.map(p => `${p.nome} em ${p.signo?.nome}${p.casa ? ` (Casa ${p.casa})` : ''}`).join(' · ')
+                    : '—'}
+                </div>
               </div>
             ))}
+          </div>
+
+          {/* Exportar mapa completo */}
+          <div style={{ fontSize: 11, color: CORES.dourado, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 10, fontWeight: 700 }}>
+            ✦ Exportar Mapa Completo
           </div>
 
           {/* Verificação de precisão (compacta) */}
@@ -1928,10 +2010,11 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, isPremium, onUpgrade
           <Crown size={28} color={CORES.dourado} style={{ marginBottom: 10 }} />
           <div style={{ fontSize: 16, fontWeight: 700, color: CORES.dourado, marginBottom: 6 }}>Mapa Astral Completo</div>
           <div style={{ fontSize: 13, color: CORES.brancoMuted, marginBottom: 14, lineHeight: 1.5 }}>
-            Desbloqueia todos os planetas, aspectos, elementos, Meio do Céu, interpretações profissionais e exportação em PDF
+            Interpretação profissional com efemérides, casas Placidus, planetas geracionais,
+            aspectos, síntese evolutiva e exportação PDF + email
           </div>
           <div style={{ display: 'flex', justifyContent: 'center', gap: 8, marginBottom: 16, flexWrap: 'wrap' }}>
-            {['☿ Mercúrio', '♀ Vénus', '♂ Marte', '♃ Júpiter', '♄ Saturno', '📊 Elementos', '📄 PDF', '✉ Email'].map(item => (
+            {['☀ Essência', '☿♀♂ Pessoais', '♃♄ Karma', '⊕ MC', '🌙 Fases Lua', '📄 PDF'].map(item => (
               <span key={item} style={{ fontSize: 11, padding: '4px 10px', borderRadius: 20, background: 'rgba(223,183,108,0.1)', border: `1px solid rgba(223,183,108,0.25)`, color: CORES.brancoMuted }}>
                 {item}
               </span>
@@ -2445,7 +2528,8 @@ function Navbar({ passo, setPasso, isDesktop }) {
   const itens = [
     { id: 'dashboard',   label: 'Início',       icon: Home,   glow: '#DFB76C' },
     { id: 'mapa',        label: 'Mapa',         icon: Map,    glow: '#C4B5FD' },
-    { id: 'ferramentas', label: 'Arcanos',      icon: Grid3x3, glow: '#F472B6' },
+    { id: 'tarot',       label: 'Tarot',        icon: Layers, glow: '#F472B6' },
+    { id: 'ferramentas', label: 'Ferramentas',  icon: Grid3x3, glow: '#93C5FD' },
     { id: 'chat',        label: 'Oráculo',      icon: MessageCircle, glow: '#34D399' },
     { id: 'perfil',      label: 'Perfil',       icon: User,   glow: '#93C5FD' },
   ]
@@ -2622,38 +2706,24 @@ export default function App() {
     return () => clearInterval(id)
   }, [sweReady])
 
-  // ── Recalcula mapa natal (Swiss Ephemeris prioritário) ─────────────────────
+  // ── Recalcula mapa natal ────────────────────────────────────────────────────
   useEffect(() => {
     const erros = validarOnboarding(dados)
-    if (Object.keys(erros).length > 0) return
-
-    if (sweRef.current && sweEphemerisPronta()) {
-      const mapa = calcularMapaNatalComSwe(sweRef.current, dados)
-      if (mapa) setMapaNatal(mapa)
-    } else if (sweRef.current && motorAstro === 'swisseph-moshier') {
-      setMapaNatal(calcularMapaNatalComSwe(sweRef.current, dados))
-    } else if (!sweReady) {
-      // Aguarda efemérides — evita valores provisórios incorrectos
-      return
-    } else {
-      setMapaNatal(calcularMapaNatal(dados))
+    if (Object.keys(erros).length === 0) {
+      setMapaNatal(sweRef.current
+        ? calcularMapaNatalComSwe(sweRef.current, dados)
+        : calcularMapaNatal(dados))
     }
-  }, [dados, sweReady, motorAstro])
+  }, [dados, sweReady])
 
-  // ── Planetas de nascimento (mapa completo — 10 corpos + Quíron + Nodo) ───
+  // ── Planetas de nascimento ──────────────────────────────────────────────────
   useEffect(() => {
     if (!dados.data || !dados.hora || !dados.localizacao) { setPlanetasNascimento([]); return }
     const dataUTC = criarDataUTCporLocal(dados.data, dados.hora, dados.fuso ?? 0)
-    if (sweRef.current && sweEphemerisPronta()) {
-      setPlanetasNascimento(calcularPlanetasComSwe(sweRef.current, dataUTC, PLANETAS_NATAL))
-    } else if (sweRef.current && motorAstro === 'swisseph-moshier') {
-      setPlanetasNascimento(calcularPlanetasComSwe(sweRef.current, dataUTC, PLANETAS_NATAL))
-    } else if (!sweReady) {
-      return
-    } else {
-      setPlanetasNascimento(calcularPlanetasNatalParaData(dataUTC))
-    }
-  }, [dados, sweReady, motorAstro])
+    setPlanetasNascimento(sweRef.current
+      ? calcularPlanetasComSwe(sweRef.current, dataUTC, PLANETAS_NATAL)
+      : calcularPlanetasNatalParaData(dataUTC))
+  }, [dados, sweReady])
 
   // ── Acções ─────────────────────────────────────────────────────────────────
   const handleOnboarding = async () => {
@@ -2674,12 +2744,10 @@ export default function App() {
   }
 
   // ── Estado Ferramentas + Pagamento ──────────────────────────────────────────
-  const [tarotAberto, setTarotAberto]         = useState(false)
   const [ferramentaAberta, setFerramentaAberta] = useState(null) // 'bussola'|'sinastria'|'biorritmo'|'diario'
   const [modalPagamento, setModalPagamento]   = useState(null)
 
   const handleFerramenta = (f) => {
-    if (f.isTarot) { setTarotAberto(true); return }
     if (f.id === 'bussola')   { if (isPremium) setFerramentaAberta('bussola');   else setPasso('paywall'); return }
     if (f.id === 'sinastria') { if (isPremium) setFerramentaAberta('sinastria'); else setPasso('paywall'); return }
     if (f.id === 'biorritmo') { setFerramentaAberta('biorritmo'); return }
@@ -2729,8 +2797,6 @@ export default function App() {
     )
   }
 
-  const ephemerisCarregando = temDados && !mapaNatal && motorAstro === 'loading'
-
   const renderEcran = () => {
     // Não autenticado → Auth (só se Firebase estiver configurado)
     if (!utilizador && firebaseDisponivel) {
@@ -2743,12 +2809,12 @@ export default function App() {
     // Autenticado com dados → navegação normal
     switch (passo) {
       case 'dashboard':
-        return <Dashboard nome={dados.nome} mapaNatal={mapaNatal} ceuAgora={ceuAgora} aspetos={aspetosAgora} onOraculo={() => setPasso('chat')} onPrivacidade={() => setPasso('privacidade')} isDesktop={isDesktop} />
+        return <Dashboard nome={dados.nome} mapaNatal={mapaNatal} ceuAgora={ceuAgora} aspetos={aspetosAgora} onOraculo={() => setPasso('chat')} onPrivacidade={() => setPasso('privacidade')} isDesktop={isDesktop} isPremium={isPremium} onUpgrade={() => setPasso('paywall')} onTarot={() => setPasso('tarot')} />
       case 'mapa':
-        return <MapaAstral mapaNatal={mapaNatal} dados={dados} planetasNascimento={planetasNascimento} isPremium={isPremium} onUpgrade={() => setPasso('paywall')} onMapaGerado={handleMapaGerado} isDesktop={isDesktop} ephemerisCarregando={ephemerisCarregando} motorAstro={motorAstro} />
+        return <MapaAstral mapaNatal={mapaNatal} dados={dados} planetasNascimento={planetasNascimento} isPremium={isPremium} onUpgrade={() => setPasso('paywall')} onMapaGerado={handleMapaGerado} isDesktop={isDesktop} motorAstro={motorAstro} />
+      case 'tarot':
+        return <EcraTarot mapaNatal={mapaNatal} isPremium={isPremium} onPagar={abrirPagamento} onVoltar={() => setPasso('dashboard')} onPremium={() => setPasso('paywall')} />
       case 'ferramentas':
-        if (tarotAberto)
-          return <EcraTarot mapaNatal={mapaNatal} isPremium={isPremium} onPagar={abrirPagamento} onVoltar={() => setTarotAberto(false)} onPremium={() => setPasso('paywall')} />
         if (ferramentaAberta === 'bussola')
           return <BussolaCosmica mapaNatal={mapaNatal} onVoltar={() => setFerramentaAberta(null)} />
         if (ferramentaAberta === 'sinastria')
@@ -2770,7 +2836,7 @@ export default function App() {
       case 'privacidade':
         return <PoliticaPrivacidade onVoltar={() => setPasso('dashboard')} />
       default:
-        return <Dashboard nome={dados.nome} mapaNatal={mapaNatal} ceuAgora={ceuAgora} aspetos={aspetosAgora} onOraculo={() => setPasso('chat')} onPrivacidade={() => setPasso('privacidade')} isDesktop={isDesktop} />
+        return <Dashboard nome={dados.nome} mapaNatal={mapaNatal} ceuAgora={ceuAgora} aspetos={aspetosAgora} onOraculo={() => setPasso('chat')} onPrivacidade={() => setPasso('privacidade')} isDesktop={isDesktop} isPremium={isPremium} onUpgrade={() => setPasso('paywall')} onTarot={() => setPasso('tarot')} />
     }
   }
 
@@ -2838,7 +2904,7 @@ export default function App() {
         <Navbar
           passo={passo}
           isDesktop={isDesktop}
-          setPasso={(p) => { setTarotAberto(false); setFerramentaAberta(null); setPasso(p) }}
+          setPasso={(p) => { setFerramentaAberta(null); setPasso(p) }}
         />
       )}
 
