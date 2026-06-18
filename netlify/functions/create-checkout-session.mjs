@@ -55,12 +55,11 @@ export default async (req) => {
     }
 
     if (isSubscription) {
-      // Subscrições: cartão (MB Way/Multibanco não suportam subscrição mensal na Stripe)
       sessionParams.payment_method_types = ['card']
       sessionParams.subscription_data = { metadata }
     } else {
-      // Pagamento único (Tarot 2€): Stripe mostra métodos activos (cartão, MB Way, etc.)
-      sessionParams.automatic_payment_methods = { enabled: true }
+      // Pagamento único — cartão (MB Way/Multibanco via dashboard Stripe se activos)
+      sessionParams.payment_method_types = ['card']
       sessionParams.payment_intent_data = { metadata }
     }
 
