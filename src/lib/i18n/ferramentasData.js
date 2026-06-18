@@ -1,8 +1,10 @@
-import { Compass, Heart, Activity, BookOpen } from 'lucide-react'
+import { Compass, Heart, Activity, BookOpen, Moon, Hash } from 'lucide-react'
 
 const FERRAMENTAS_PT = [
   { id: 'bussola', nome: 'Bússola Cósmica 2026', icon: Compass, premium: true },
   { id: 'sinastria', nome: 'Radar de Afinidades', sub: 'Sinastria', icon: Heart, premium: true },
+  { id: 'numerologia', nome: 'Mapa de Numerologia', sub: 'Caminho de vida', icon: Hash, premium: false },
+  { id: 'sonhos', nome: 'Interpretação de Sonhos', sub: 'Símbolos e mensagens', icon: Moon, premium: false },
   { id: 'biorritmo', nome: 'Fluxo Vital', sub: 'Biorritmo', icon: Activity, premium: false },
   { id: 'diario', nome: 'Diário Astral', icon: BookOpen, premium: false },
 ]
@@ -10,6 +12,8 @@ const FERRAMENTAS_PT = [
 const FERRAMENTAS_EN = [
   { id: 'bussola', nome: 'Cosmic Compass 2026', icon: Compass, premium: true },
   { id: 'sinastria', nome: 'Affinity Radar', sub: 'Synastry', icon: Heart, premium: true },
+  { id: 'numerologia', nome: 'Numerology Chart', sub: 'Life path', icon: Hash, premium: false },
+  { id: 'sonhos', nome: 'Dream Interpretation', sub: 'Symbols & messages', icon: Moon, premium: false },
   { id: 'biorritmo', nome: 'Vital Flow', sub: 'Biorhythm', icon: Activity, premium: false },
   { id: 'diario', nome: 'Astral Journal', icon: BookOpen, premium: false },
 ]

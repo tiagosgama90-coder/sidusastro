@@ -39,27 +39,23 @@ export function LanguageSwitcher() {
     )
   }
 
-  return createPortal(
-    <div
-      style={{
-        position: 'fixed',
-        top: 8,
-        right: 8,
-        zIndex: 10000,
-        display: 'flex',
-        gap: 4,
-        padding: 3,
-        borderRadius: 8,
-        background: 'rgba(11,7,30,0.92)',
-        backdropFilter: 'blur(8px)',
-        border: `1px solid ${CORES.vidroBorda}`,
-        boxShadow: '0 2px 12px rgba(0,0,0,0.4)',
-        pointerEvents: 'auto',
-      }}
-    >
+  const el = (
+    <div className="lang-switcher-root" style={{
+      display: 'flex',
+      gap: 4,
+      padding: 3,
+      borderRadius: 8,
+      background: 'rgba(11,7,30,0.94)',
+      backdropFilter: 'blur(8px)',
+      WebkitBackdropFilter: 'blur(8px)',
+      border: `1px solid ${CORES.vidroBorda}`,
+      boxShadow: '0 2px 12px rgba(0,0,0,0.45)',
+    }}>
       {btn('pt', '🇵🇹', 'Português')}
       {btn('en', '🇬🇧', 'English')}
-    </div>,
-    document.body,
+    </div>
   )
+
+  if (typeof document === 'undefined') return el
+  return createPortal(el, document.body)
 }

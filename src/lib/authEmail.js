@@ -7,8 +7,8 @@ export function emailActionSettings() {
     ? window.location.origin
     : 'https://sidusastro.com'
   return {
-    url: `${origin}/home`,
-    handleCodeInApp: false,
+    url: `${origin}/login`,
+    handleCodeInApp: true,
   }
 }
 

@@ -12,6 +12,8 @@ import {
   TIPO_ICO, IMPACTO_COR,
 } from '../lib/i18n/ferramentasPremiumData.js'
 import { diasVidaDesdeNascimento } from '../lib/datetime.js'
+import { calcularMapaNumerologia } from '../lib/numerologia.js'
+import { interpretarSonho } from '../lib/sonhosInterpretacao.js'
 
 function BotaoVoltar({ onVoltar, t }) {
   if (!onVoltar) return null
@@ -129,8 +131,26 @@ export function BussolaCosmica({ mapaNatal }) {
   )
 }
 
-// ── Sinastria ─────────────────────────────────────────────────────────────────
-export function Sinastria({ mapaNatal }) {
+// ── Sinastria (Radar de Afinidades) ───────────────────────────────────────────
+const MODAL = {
+  'Áries': 'Cardinal', 'Caranguejo': 'Cardinal', 'Balança': 'Cardinal', 'Capricórnio': 'Cardinal',
+  'Touro': 'Fixo', 'Leão': 'Fixo', 'Escorpião': 'Fixo', 'Aquário': 'Fixo',
+  'Gémeos': 'Mutável', 'Virgem': 'Mutável', 'Sagitário': 'Mutável', 'Peixes': 'Mutável',
+}
+
+function scoreDimensao(elemA, elemB, tipo) {
+  const par = [elemA, elemB].sort().join('-')
+  const tabelas = {
+    passion: { 'Fogo-Fogo': 95, 'Fogo-Água': 88, 'Fogo-Ar': 82, 'Fogo-Terra': 70, 'Água-Água': 75, 'Ar-Ar': 65, 'Terra-Terra': 60 },
+    emotional: { 'Água-Água': 96, 'Água-Terra': 90, 'Fogo-Água': 85, 'Ar-Água': 80, 'Terra-Terra': 72, 'Fogo-Fogo': 68 },
+    communication: { 'Ar-Ar': 95, 'Fogo-Ar': 90, 'Ar-Água': 85, 'Terra-Ar': 78, 'Fogo-Fogo': 70, 'Terra-Terra': 65 },
+    stability: { 'Terra-Terra': 94, 'Terra-Água': 88, 'Terra-Ar': 75, 'Fogo-Terra': 68, 'Água-Água': 70, 'Ar-Ar': 55 },
+  }
+  const rev = [elemB, elemA].sort().join('-')
+  return tabelas[tipo]?.[par] ?? tabelas[tipo]?.[rev] ?? 72
+}
+
+export function Sinastria({ mapaNatal, onVoltar }) {
   const { lang, t, ts, te } = useLanguage()
   const [parceiro, setParceiro] = useState({nome:'',data:'',hora:'',signo:''})
   const [analise, setAnalise]   = useState(null)
@@ -140,10 +160,13 @@ export function Sinastria({ mapaNatal }) {
     if (!parceiro.nome || (!parceiro.signo && !parceiro.data)) return
     setCalculando(true)
     setTimeout(()=>{
-      const meu = mapaNatal?.solar?.nome
+      const meuSol = mapaNatal?.solar?.nome
+      const meuLua = mapaNatal?.lunar?.nome
+      const meuAsc = mapaNatal?.ascendente?.nome
       const dele = parceiro.signo || 'Áries'
 
-      const elemA = ELEM[meu], elemB = ELEM[dele]
+      const elemA = ELEM[meuSol], elemB = ELEM[dele]
+      const elemLuaA = ELEM[meuLua], elemLuaB = elemB
       const chave = elemA&&elemB ? [elemA,elemB].sort().join('-') : ''
       const compatDesc = getCompatDesc(chave, lang, t('ferramentasPremium.sinastria.uniqueBond'))
 
@@ -151,14 +174,54 @@ export function Sinastria({ mapaNatal }) {
         ['Fogo-Ar','Terra-Água','Ar-Água'].some(c=>c===chave||c===[elemB,elemA].join('-')) ? 88 :
         ['Fogo-Terra','Ar-Ar','Água-Água'].some(c=>c===chave) ? 78 : 70
 
-      const aspectos = getAspectosAmor(lang).slice(0, 3+Math.floor(Math.random()*3))
-      setAnalise({pontuacao, elemA, elemB, compatDesc, aspectos, dele})
+      const aspectos = getAspectosAmor(lang).slice(0, 5 + Math.floor(Math.random() * 3))
+      const passion = scoreDimensao(elemA, elemB, 'passion')
+      const emotional = scoreDimensao(elemLuaA || elemA, elemLuaB, 'emotional')
+      const communication = scoreDimensao(elemA, elemB, 'communication')
+      const stability = scoreDimensao(elemA, elemB, 'stability')
+      const modalA = MODAL[meuSol], modalB = MODAL[dele]
+      const modalNote = modalA === modalB
+        ? t('ferramentasPremium.sinastria.modalSame', { mod: modalA })
+        : t('ferramentasPremium.sinastria.modalDiff', { a: modalA, b: modalB })
+
+      const luaNote = elemLuaA && elemLuaB
+        ? (elemLuaA === elemLuaB
+          ? t('ferramentasPremium.sinastria.moonHarmony')
+          : t('ferramentasPremium.sinastria.moonTension', { mine: te(elemLuaA), theirs: te(elemLuaB) }))
+        : ''
+
+      const challenge = pontuacao >= 85
+        ? t('ferramentasPremium.sinastria.challengeHigh')
+        : t('ferramentasPremium.sinastria.challengeMid')
+      const growth = t('ferramentasPremium.sinastria.growth', {
+        solar: ts(meuSol || '—'), partner: ts(dele),
+      })
+
+      setAnalise({
+        pontuacao, elemA, elemB, compatDesc, aspectos, dele,
+        passion, emotional, communication, stability,
+        modalNote, luaNote, challenge, growth,
+        meuSol, meuLua, meuAsc,
+      })
       setCalculando(false)
     }, 1800)
   }
 
+  const DimBar = ({ label, val, cor }) => (
+    <div style={{ marginBottom: 10 }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, marginBottom: 4 }}>
+        <span style={{ color: CORES.brancoSuave }}>{label}</span>
+        <span style={{ color: cor, fontWeight: 700 }}>{val}%</span>
+      </div>
+      <div style={{ height: 5, background: 'rgba(255,255,255,0.08)', borderRadius: 3 }}>
+        <div style={{ height: '100%', width: `${val}%`, background: cor, borderRadius: 3 }} />
+      </div>
+    </div>
+  )
+
   return (
     <div style={{padding:'20px 20px 110px'}}>
+      <BotaoVoltar onVoltar={onVoltar} t={t} />
       <h2 style={{fontSize:20,fontWeight:700,color:CORES.dourado,marginBottom:4}}>{t('ferramentasPremium.sinastria.title')}</h2>
       <p style={{fontSize:13,color:CORES.brancoMuted,marginBottom:24}}>{t('ferramentasPremium.sinastria.subtitle')}</p>
 
@@ -219,8 +282,24 @@ export function Sinastria({ mapaNatal }) {
           </div>
 
           <div style={{background:'rgba(255,255,255,0.04)',border:`1px solid ${CORES.vidroBorda}`,borderRadius:14,padding:18,marginBottom:14}}>
+            <div style={{fontSize:11,color:CORES.dourado,textTransform:'uppercase',letterSpacing:'0.08em',marginBottom:12}}>{t('ferramentasPremium.sinastria.dimensions')}</div>
+            <DimBar label={t('ferramentasPremium.sinastria.passion')} val={analise.passion} cor="#F87171" />
+            <DimBar label={t('ferramentasPremium.sinastria.emotional')} val={analise.emotional} cor="#818CF8" />
+            <DimBar label={t('ferramentasPremium.sinastria.communication')} val={analise.communication} cor="#60A5FA" />
+            <DimBar label={t('ferramentasPremium.sinastria.stability')} val={analise.stability} cor="#4ADE80" />
+          </div>
+
+          <div style={{background:'rgba(255,255,255,0.04)',border:`1px solid ${CORES.vidroBorda}`,borderRadius:14,padding:18,marginBottom:14}}>
             <div style={{fontSize:11,color:CORES.dourado,textTransform:'uppercase',letterSpacing:'0.08em',marginBottom:10}}>{t('ferramentasPremium.sinastria.connectionAnalysis')}</div>
-            <p style={{fontSize:14,color:CORES.brancoSuave,lineHeight:1.7,margin:0}}>{analise.compatDesc}</p>
+            <p style={{fontSize:14,color:CORES.brancoSuave,lineHeight:1.7,margin:'0 0 12px'}}>{analise.compatDesc}</p>
+            {analise.luaNote && <p style={{fontSize:13,color:CORES.brancoMuted,lineHeight:1.6,margin:'0 0 10px'}}>{analise.luaNote}</p>}
+            <p style={{fontSize:13,color:CORES.brancoMuted,lineHeight:1.6,margin:'0 0 10px'}}>{analise.modalNote}</p>
+            <p style={{fontSize:13,color:'#34D399',lineHeight:1.6,margin:0}}>{analise.growth}</p>
+          </div>
+
+          <div style={{background:'rgba(248,113,113,0.06)',border:'1px solid rgba(248,113,113,0.25)',borderRadius:14,padding:16,marginBottom:14}}>
+            <div style={{fontSize:11,color:'#F87171',textTransform:'uppercase',letterSpacing:'0.08em',marginBottom:8}}>{t('ferramentasPremium.sinastria.challenges')}</div>
+            <p style={{fontSize:13,color:CORES.brancoSuave,lineHeight:1.6,margin:0}}>{analise.challenge}</p>
           </div>
 
           <div style={{background:'rgba(255,255,255,0.04)',border:`1px solid ${CORES.vidroBorda}`,borderRadius:14,padding:18}}>
@@ -450,4 +529,101 @@ const inputStyle = {
   width:'100%',padding:'12px 14px',background:'rgba(255,255,255,0.05)',
   border:'1px solid rgba(223,183,108,0.2)',borderRadius:10,color:'#FFFFFF',
   fontSize:14,outline:'none',boxSizing:'border-box',
+}
+
+// ── Numerologia ───────────────────────────────────────────────────────────────
+export function Numerologia({ dados, onVoltar }) {
+  const { lang, t } = useLanguage()
+  const mapa = dados?.nome && dados?.data ? calcularMapaNumerologia(dados.nome, dados.data, lang) : null
+
+  if (!mapa) return (
+    <div style={{ padding: 24 }}>
+      <BotaoVoltar onVoltar={onVoltar} t={t} />
+      <p style={{ color: CORES.brancoMuted, textAlign: 'center' }}>{t('ferramentasPremium.numerologia.fillNatal')}</p>
+    </div>
+  )
+
+  const blocos = [
+    { key: 'caminhoVida', num: mapa.caminhoVida, label: t('ferramentasPremium.numerologia.lifePath') },
+    { key: 'destino', num: mapa.destino, label: t('ferramentasPremium.numerologia.destiny') },
+    { key: 'alma', num: mapa.alma, label: t('ferramentasPremium.numerologia.soul') },
+    { key: 'personalidade', num: mapa.personalidade, label: t('ferramentasPremium.numerologia.personality') },
+    { key: 'anoPessoal', num: mapa.anoPessoal, label: t('ferramentasPremium.numerologia.personalYear') },
+    { key: 'mesPessoal', num: mapa.mesPessoal, label: t('ferramentasPremium.numerologia.personalMonth') },
+  ]
+
+  return (
+    <div style={{ padding: '20px 20px 110px' }}>
+      <BotaoVoltar onVoltar={onVoltar} t={t} />
+      <h2 style={{ fontSize: 20, fontWeight: 700, color: CORES.dourado, marginBottom: 4 }}>{t('ferramentasPremium.numerologia.title')}</h2>
+      <p style={{ fontSize: 13, color: CORES.brancoMuted, marginBottom: 20 }}>{t('ferramentasPremium.numerologia.subtitle', { name: dados.nome })}</p>
+
+      {blocos.map((b) => (
+        <div key={b.key} style={{ background: 'rgba(255,255,255,0.04)', border: `1px solid ${CORES.vidroBorda}`, borderRadius: 14, padding: 18, marginBottom: 12 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 10 }}>
+            <div style={{ fontSize: 32, fontWeight: 700, color: CORES.dourado, minWidth: 44, textAlign: 'center' }}>{b.num}</div>
+            <div style={{ fontSize: 14, fontWeight: 700, color: CORES.branco }}>{b.label}</div>
+          </div>
+          <p style={{ fontSize: 13, color: CORES.brancoSuave, lineHeight: 1.7, margin: 0 }}>{mapa.textos[b.key]}</p>
+        </div>
+      ))}
+
+      {mapa.ciclos && (
+        <div style={{ background: 'rgba(223,183,108,0.06)', border: `1px solid rgba(223,183,108,0.25)`, borderRadius: 14, padding: 18 }}>
+          <div style={{ fontSize: 11, color: CORES.dourado, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 10 }}>{t('ferramentasPremium.numerologia.lifeCycles')}</div>
+          <p style={{ fontSize: 13, color: CORES.brancoSuave, lineHeight: 1.7, margin: 0 }}>
+            {t('ferramentasPremium.numerologia.cyclesDesc', {
+              first: mapa.ciclos.primeiro, second: mapa.ciclos.segundo, third: mapa.ciclos.terceiro,
+            })}
+          </p>
+        </div>
+      )}
+    </div>
+  )
+}
+
+// ── Interpretação de Sonhos ───────────────────────────────────────────────────
+export function InterpretacaoSonhos({ mapaNatal, onVoltar }) {
+  const { lang, t } = useLanguage()
+  const [sonho, setSonho] = useState('')
+  const [resultado, setResultado] = useState(null)
+
+  const interpretar = () => {
+    setResultado(interpretarSonho(sonho, mapaNatal, lang))
+  }
+
+  return (
+    <div style={{ padding: '20px 20px 110px' }}>
+      <BotaoVoltar onVoltar={onVoltar} t={t} />
+      <h2 style={{ fontSize: 20, fontWeight: 700, color: CORES.dourado, marginBottom: 4 }}>{t('ferramentasPremium.sonhos.title')}</h2>
+      <p style={{ fontSize: 13, color: CORES.brancoMuted, marginBottom: 20 }}>{t('ferramentasPremium.sonhos.subtitle')}</p>
+
+      <textarea
+        value={sonho}
+        onChange={(e) => setSonho(e.target.value)}
+        placeholder={t('ferramentasPremium.sonhos.placeholder')}
+        style={{ ...inputStyle, height: 140, resize: 'none', marginBottom: 14 }}
+      />
+      <button type="button" disabled={!sonho.trim()} onClick={interpretar} style={{
+        width: '100%', background: `linear-gradient(135deg,#DFB76C,#B8944F)`, border: 'none',
+        borderRadius: 12, color: '#0B071E', fontSize: 15, fontWeight: 700, padding: '14px',
+        cursor: sonho.trim() ? 'pointer' : 'not-allowed', opacity: sonho.trim() ? 1 : 0.5, marginBottom: 20,
+      }}>
+        {t('ferramentasPremium.sonhos.interpret')}
+      </button>
+
+      {resultado && (
+        <div>
+          <p style={{ fontSize: 14, color: CORES.brancoSuave, lineHeight: 1.75, marginBottom: 16 }}>{resultado.intro}{resultado.contextoAstro}</p>
+          {resultado.simbolos.map((s, i) => (
+            <div key={i} style={{ background: 'rgba(255,255,255,0.04)', border: `1px solid ${CORES.vidroBorda}`, borderRadius: 14, padding: 18, marginBottom: 12 }}>
+              <div style={{ fontSize: 13, fontWeight: 700, color: CORES.dourado, marginBottom: 8 }}>✦ {s.tema}</div>
+              <p style={{ fontSize: 13, color: CORES.brancoSuave, lineHeight: 1.7, margin: 0, whiteSpace: 'pre-wrap' }}>{s.texto}</p>
+            </div>
+          ))}
+          <p style={{ fontSize: 13, color: CORES.brancoMuted, lineHeight: 1.75, fontStyle: 'italic' }}>{resultado.sintese}</p>
+        </div>
+      )}
+    </div>
+  )
 }
