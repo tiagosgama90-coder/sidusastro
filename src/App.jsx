@@ -31,7 +31,7 @@ import {
 import { Body, GeoVector, Ecliptic, MakeTime, SiderealTime } from 'astronomy-engine'
 import { pesquisarCidades, pesquisarFusoHorario } from './lib/geocoding'
 import { EcraTarot } from './components/Tarot'
-import { ModalPagamento } from './components/Pagamento'
+import { ModalPagamento, verificarSessaoPagamento } from './components/Pagamento'
 import { Perfil } from './components/Perfil'
 import { PoliticaPrivacidade } from './components/PoliticaPrivacidade'
 import { InterpretacaoMapa } from './components/InterpretacaoMapa'
@@ -2088,7 +2088,7 @@ function Paywall({ onVoltar, onPagar, onSucesso, isDesktop }) {
         Tornar-me VIP Agora
       </button>
       <p style={{ textAlign: 'center', fontSize: 11, color: CORES.brancoMuted, marginTop: 12 }}>
-        Multibanco · MBWay · PIX · PayPal
+        Cartão · MB Way · Multibanco · PayPal · PIX — via Stripe
       </p>
     </div>
   )
@@ -2679,6 +2679,42 @@ export default function App() {
     return unsubscribe
   }, [])
 
+  // ── Retorno Stripe Checkout (?payment=success&session_id=...) ─────────────
+  useEffect(() => {
+    if (!utilizador || authCarregando) return
+    const params = new URLSearchParams(window.location.search)
+    if (params.get('payment') !== 'success') return
+    const sessionId = params.get('session_id')
+    if (!sessionId) return
+
+    window.history.replaceState({}, '', window.location.pathname)
+
+    ;(async () => {
+      try {
+        const result = await verificarSessaoPagamento(sessionId, utilizador.uid)
+        if (!result.ok) return
+
+        if (result.productType === 'premium') {
+          setIsPremium(true)
+          if (db) {
+            await setDoc(doc(db, 'users', utilizador.uid), {
+              isPremium: true,
+              stripeCustomerId: result.customerId || null,
+              stripeSubscriptionId: result.subscriptionId || null,
+            }, { merge: true })
+          }
+          setPasso('mapa')
+        } else if (result.productType === 'tarot') {
+          sessionStorage.setItem('sidus_tarot_paid', '1')
+          setPasso('tarot')
+        }
+        sessionStorage.removeItem('sidus_payment_pending')
+      } catch (e) {
+        console.error('[Sidus Pagamento] Verificação falhou:', e?.message)
+      }
+    })()
+  }, [utilizador, authCarregando])
+
   // ── Guarda dados natais no Firestore quando o onboarding termina ──────────
   const guardarPerfil = useCallback(async (dadosNovos) => {
     if (!utilizador || !firebaseDisponivel || !db) return
@@ -2929,6 +2965,8 @@ export default function App() {
         <ModalPagamento
           descricao={modalPagamento.descricao}
           valor={modalPagamento.valor}
+          userId={utilizador?.uid}
+          userEmail={utilizador?.email}
           onSucesso={() => { modalPagamento.onSucesso?.(); setModalPagamento(null) }}
           onFechar={() => setModalPagamento(null)}
         />

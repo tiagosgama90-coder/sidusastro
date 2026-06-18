@@ -1,0 +1,66 @@
+import { getStripe } from './_shared/stripe.mjs'
+
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'Content-Type',
+  'Access-Control-Allow-Methods': 'POST, OPTIONS',
+}
+
+export default async (req) => {
+  if (req.method === 'OPTIONS') {
+    return new Response(null, { status: 204, headers: corsHeaders })
+  }
+  if (req.method !== 'POST') {
+    return new Response(JSON.stringify({ error: 'Method not allowed' }), { status: 405, headers: corsHeaders })
+  }
+
+  try {
+    const { sessionId, userId } = await req.json()
+    if (!sessionId) {
+      return new Response(JSON.stringify({ error: 'sessionId em falta' }), { status: 400, headers: corsHeaders })
+    }
+
+    const stripe = getStripe()
+    const session = await stripe.checkout.sessions.retrieve(sessionId, {
+      expand: ['subscription', 'payment_intent'],
+    })
+
+    const paid = session.payment_status === 'paid' || session.status === 'complete'
+    if (!paid) {
+      return new Response(JSON.stringify({ ok: false, status: session.payment_status }), {
+        status: 200,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      })
+    }
+
+    const metaUserId = session.metadata?.userId || session.client_reference_id
+    if (userId && metaUserId && metaUserId !== userId) {
+      return new Response(JSON.stringify({ error: 'Sessão não pertence a este utilizador' }), {
+        status: 403,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      })
+    }
+
+    const productType = session.metadata?.productType
+      || (session.mode === 'subscription' ? 'premium' : 'tarot')
+
+    return new Response(JSON.stringify({
+      ok: true,
+      productType,
+      userId: metaUserId,
+      subscriptionId: session.subscription?.id || session.subscription || null,
+      customerId: session.customer || null,
+    }), {
+      status: 200,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    })
+  } catch (e) {
+    console.error('[verify-session]', e?.message)
+    return new Response(JSON.stringify({ error: e?.message || 'Erro ao verificar sessão' }), {
+      status: 500,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    })
+  }
+}
+
+export const config = { path: '/api/verify-session' }

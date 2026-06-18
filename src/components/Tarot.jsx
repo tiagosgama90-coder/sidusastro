@@ -298,6 +298,13 @@ export function EcraTarot({ mapaNatal, isPremium, onPagar, onVoltar, onPremium }
   const [resultado, setResultado]       = useState(null)
   const [leituraPaga, setLeituraPaga]   = useState(false)
 
+  useEffect(() => {
+    if (sessionStorage.getItem('sidus_tarot_paid') === '1') {
+      sessionStorage.removeItem('sidus_tarot_paid')
+      setLeituraPaga(true)
+    }
+  }, [])
+
   const tipo = TIPOS.find(t=>t.id===tipoId)
   const posicoes = POSICOES[tipoId]||[]
   const podeLer = tipoId ? podeLerTipo(tipoId, isPremium) : false
@@ -505,7 +512,7 @@ function TelaPergunta({ tipo, pergunta, setPergunta, onVoltar, podeLer, isPremiu
               ✦ Sidus Premium 4,99 €/mês · Mapa completo + Tarot ilimitado
             </button>
           )}
-          <p style={{fontSize:11,color:CORES.brancoMuted}}>Multibanco · MBWay · PIX · PayPal</p>
+          <p style={{fontSize:11,color:CORES.brancoMuted}}>Cartão · MB Way · Multibanco · PayPal · PIX — Stripe</p>
         </div>
       )}
     </div>

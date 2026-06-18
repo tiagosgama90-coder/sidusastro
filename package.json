@@ -11,14 +11,17 @@
   },
   "dependencies": {
     "@originjs/vite-plugin-commonjs": "^1.0.3",
+    "@stripe/stripe-js": "^9.8.0",
     "@swisseph/browser": "^1.1.1",
     "astrology-js": "^0.6.0",
     "astronomy-engine": "^2.1.19",
     "firebase": "^12.15.0",
+    "firebase-admin": "^14.0.0",
     "jspdf": "^4.2.1",
     "lucide-react": "^1.18.0",
     "react": "^19.2.6",
-    "react-dom": "^19.2.6"
+    "react-dom": "^19.2.6",
+    "stripe": "^22.2.1"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
