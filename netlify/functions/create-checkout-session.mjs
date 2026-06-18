@@ -40,7 +40,6 @@ export default async (req) => {
       locale: 'pt',
       success_url: `${origin}/?payment=success&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}/?payment=cancelled`,
-      automatic_payment_methods: { enabled: true },
       line_items: [{
         quantity: 1,
         price_data: {
@@ -53,8 +52,12 @@ export default async (req) => {
     }
 
     if (isSubscription) {
+      // Subscrições: cartão (MB Way/Multibanco não suportam subscrição mensal na Stripe)
+      sessionParams.payment_method_types = ['card']
       sessionParams.subscription_data = { metadata }
     } else {
+      // Pagamento único (Tarot 2€): Stripe mostra métodos activos (cartão, MB Way, etc.)
+      sessionParams.automatic_payment_methods = { enabled: true }
       sessionParams.payment_intent_data = { metadata }
     }
 
