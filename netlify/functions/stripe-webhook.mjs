@@ -1,4 +1,5 @@
 import { getStripe } from './_shared/stripe.mjs'
+import { env } from './_shared/env.mjs'
 import { activarPremium, desactivarPremium } from './_shared/firebase-admin.mjs'
 
 export default async (req) => {
@@ -7,7 +8,7 @@ export default async (req) => {
   }
 
   const stripe = getStripe()
-  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET
+  const webhookSecret = env('STRIPE_WEBHOOK_SECRET')
   if (!webhookSecret) {
     console.error('[stripe-webhook] STRIPE_WEBHOOK_SECRET em falta')
     return new Response('Webhook secret not configured', { status: 500 })

@@ -1,10 +1,11 @@
 import admin from 'firebase-admin'
+import { env } from './env.mjs'
 
 let initialized = false
 
 export function getFirestore() {
   if (!initialized) {
-    const raw = process.env.FIREBASE_SERVICE_ACCOUNT
+    const raw = env('FIREBASE_SERVICE_ACCOUNT')
     if (!raw) return null
     try {
       const serviceAccount = JSON.parse(raw)
