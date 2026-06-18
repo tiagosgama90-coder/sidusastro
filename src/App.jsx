@@ -38,6 +38,7 @@ import { PoliticaPrivacidade } from './components/PoliticaPrivacidade'
 import { InterpretacaoMapa } from './components/InterpretacaoMapa'
 import { BussolaCosmica, Sinastria, Biorritmo, DiarioAstral } from './components/FerramentasPremium'
 import { auth, db, firebaseDisponivel } from './lib/firebase'
+import { enviarEmailVerificacao, traduzirErroEmail } from './lib/authEmail'
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -45,7 +46,6 @@ import {
   onAuthStateChanged,
   GoogleAuthProvider,
   signInWithPopup,
-  sendEmailVerification,
   reload,
 } from 'firebase/auth'
 import { doc, getDoc, setDoc } from 'firebase/firestore'
@@ -1124,21 +1124,37 @@ function EcraVerificarEmail({ utilizador, isDesktop, onLogout, onVerificado }) {
   const [carregando, setCarregando] = useState(false)
   const [info, setInfo] = useState(null)
   const [erro, setErro] = useState(null)
+  const enviadoRef = useRef(false)
 
   const reenviar = async () => {
-    if (!auth || !utilizador) return
+    if (!auth) return
     setCarregando(true)
     setErro(null)
     setInfo(null)
     try {
-      await sendEmailVerification(utilizador)
-      setInfo('E-mail de confirmação reenviado. Verifica a caixa de entrada e o spam.')
+      const email = await enviarEmailVerificacao(utilizador)
+      setInfo(`E-mail de confirmação enviado para ${email}. Verifica a caixa de entrada e o spam.`)
     } catch (e) {
-      setErro('Não foi possível reenviar o e-mail. Tenta mais tarde.')
+      console.error('[Sidus Email]', e?.code, e?.message)
+      setErro(traduzirErroEmail(e?.code, e?.message))
     } finally {
       setCarregando(false)
     }
   }
+
+  // Envia automaticamente ao entrar neste ecrã (registo ou login sem verificar)
+  useEffect(() => {
+    if (enviadoRef.current || !auth?.currentUser || auth.currentUser.emailVerified) return
+    enviadoRef.current = true
+    enviarEmailVerificacao(auth.currentUser)
+      .then((email) => {
+        setInfo(`Enviámos um e-mail de confirmação para ${email}. Abre o link para activar a tua conta.`)
+      })
+      .catch((e) => {
+        console.warn('[Sidus Email] Envio automático:', e?.code, e?.message)
+        setErro(traduzirErroEmail(e?.code, e?.message))
+      })
+  }, [utilizador])
 
   const verificarAgora = async () => {
     if (!auth || !utilizador) return
@@ -1248,7 +1264,7 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
     try {
       if (tipo === 'register') {
         const cred = await createUserWithEmailAndPassword(auth, email, senha)
-        await sendEmailVerification(cred.user)
+        await enviarEmailVerificacao(cred.user)
         setInfo('Conta criada! Enviámos um e-mail de confirmação — verifica a caixa de entrada (e spam) antes de continuar.')
       } else {
         await signInWithEmailAndPassword(auth, email, senha)
