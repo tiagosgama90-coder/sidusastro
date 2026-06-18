@@ -30,7 +30,7 @@ import {
 } from 'lucide-react'
 import { Body, GeoVector, Ecliptic, MakeTime, SiderealTime } from 'astronomy-engine'
 import { pesquisarCidades, pesquisarFusoHorario, geocodificarCidade } from './lib/geocoding'
-import { EcraTarot, MAX_LEITURAS_GRATIS } from './components/Tarot'
+import { EcraTarot } from './components/Tarot'
 import { ModalPagamento, verificarSessaoPagamento } from './components/Pagamento'
 import { RecaptchaCheckbox } from './components/Recaptcha'
 import { Perfil } from './components/Perfil'
