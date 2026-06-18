@@ -11,6 +11,19 @@ import {
   getTransitos2026, getCompatDesc, getAspectosAmor, SIGNOS_LIST, ELEM,
   TIPO_ICO, IMPACTO_COR,
 } from '../lib/i18n/ferramentasPremiumData.js'
+import { diasVidaDesdeNascimento } from '../lib/datetime.js'
+
+function BotaoVoltar({ onVoltar, t }) {
+  if (!onVoltar) return null
+  return (
+    <button type="button" onClick={onVoltar} style={{
+      background: 'none', border: 'none', color: CORES.dourado, cursor: 'pointer',
+      marginBottom: 14, fontSize: 13, padding: 0,
+    }}>
+      {t('common.back')}
+    </button>
+  )
+}
 
 const CORES = {
   fundo:'#0B071E', dourado:'#DFB76C', douradoEscuro:'#B8944F',
@@ -227,20 +240,30 @@ export function Sinastria({ mapaNatal }) {
   )
 }
 
-// ── Biorritmo ─────────────────────────────────────────────────────────────────
-export function Biorritmo({ dados }) {
-  const { lang, t } = useLanguage()
-  if (!dados?.data) return (
-    <div style={{padding:24,color:CORES.brancoMuted,textAlign:'center'}}>{t('ferramentasPremium.biorritmo.fillNatal')}</div>
+// ── Biorritmo (Fluxo Vital) ───────────────────────────────────────────────────
+const CICLO_FISICO = 23
+const CICLO_EMOCIONAL = 28
+const CICLO_INTELECTUAL = 33
+
+function valorBiorritmo(diasVida, ciclo) {
+  return Math.sin((2 * Math.PI * diasVida) / ciclo) * 100
+}
+
+export function Biorritmo({ dados, mapaNatal, onVoltar }) {
+  const { lang, t, ts } = useLanguage()
+  const diasVida = diasVidaDesdeNascimento(dados)
+
+  if (diasVida == null || diasVida < 0) return (
+    <div style={{ padding: 24 }}>
+      <BotaoVoltar onVoltar={onVoltar} t={t} />
+      <p style={{ color: CORES.brancoMuted, textAlign: 'center' }}>{t('ferramentasPremium.biorritmo.fillNatal')}</p>
+    </div>
   )
 
-  const nascimento = new Date(dados.data)
-  const hoje = new Date()
-  const diasVida = Math.floor((hoje - nascimento) / 86400000)
-
-  const fisico      = Math.sin(2*Math.PI*diasVida/23) * 100
-  const emocional   = Math.sin(2*Math.PI*diasVida/28) * 100
-  const intelectual = Math.sin(2*Math.PI*diasVida/33) * 100
+  const fisico = valorBiorritmo(diasVida, CICLO_FISICO)
+  const emocional = valorBiorritmo(diasVida, CICLO_EMOCIONAL)
+  const intelectual = valorBiorritmo(diasVida, CICLO_INTELECTUAL)
+  const diasVidaInt = Math.floor(diasVida)
 
   const biorritmos = [
     {nome: t('ferramentasPremium.biorritmo.physical'),       val:fisico,      cor:'#FB923C', desc: t('ferramentasPremium.biorritmo.physicalDesc')},
@@ -253,11 +276,28 @@ export function Biorritmo({ dados }) {
   const locale = lang === 'en' ? 'en-US' : 'pt-PT'
 
   return (
-    <div style={{padding:'20px 20px 110px'}}>
-      <h2 style={{fontSize:20,fontWeight:700,color:CORES.dourado,marginBottom:4}}>{t('ferramentasPremium.biorritmo.title')}</h2>
-      <p style={{fontSize:13,color:CORES.brancoMuted,marginBottom:24}}>
-        {t('ferramentasPremium.biorritmo.subtitle', { days: diasVida.toLocaleString(locale) })}
+    <div style={{ padding: '20px 20px 110px' }}>
+      <BotaoVoltar onVoltar={onVoltar} t={t} />
+      <h2 style={{ fontSize: 20, fontWeight: 700, color: CORES.dourado, marginBottom: 4 }}>{t('ferramentasPremium.biorritmo.title')}</h2>
+      <p style={{ fontSize: 13, color: CORES.brancoMuted, marginBottom: 12 }}>
+        {t('ferramentasPremium.biorritmo.subtitle', { days: diasVidaInt.toLocaleString(locale) })}
       </p>
+      {dados?.hora && (
+        <p style={{ fontSize: 11, color: CORES.brancoMuted, marginBottom: 16, lineHeight: 1.5 }}>
+          {t('ferramentasPremium.biorritmo.precisionNote', { time: dados.hora })}
+        </p>
+      )}
+      {mapaNatal?.solar?.nome && (
+        <div style={{
+          background: 'rgba(223,183,108,0.07)', border: `1px solid rgba(223,183,108,0.25)`,
+          borderRadius: 12, padding: '10px 14px', marginBottom: 20, fontSize: 12, color: CORES.brancoSuave,
+        }}>
+          {t('ferramentasPremium.biorritmo.astroContext', {
+            solar: ts(mapaNatal.solar.nome),
+            lunar: ts(mapaNatal.lunar?.nome || '—'),
+          })}
+        </div>
+      )}
 
       <div style={{display:'flex',flexDirection:'column',gap:14}}>
         {biorritmos.map(b=>{

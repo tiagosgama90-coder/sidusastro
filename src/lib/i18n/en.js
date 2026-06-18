@@ -54,13 +54,14 @@ export default {
     intro: 'We sent a confirmation link to {email}. Open the email and click the link to activate your Sidus account.',
     sentAuto: 'We sent a confirmation email to {email}. Open the link to activate your account.',
     sentManual: 'Confirmation email sent to {email}. Check your inbox and spam folder.',
+    checkSpam: 'Account created! We sent a confirmation email to {email}. Check your inbox and also your spam or junk folder before continuing.',
     confirmBtn: 'I confirmed — continue',
     resendBtn: 'Resend confirmation email',
     googleNote: 'Signed in with Google? This verification does not apply — contact support if you see this screen by mistake.',
     notConfirmed: 'Email not confirmed yet. Open the message we sent and click the link.',
     verifyFailed: 'Could not verify status. Please try again.',
     errors: {
-      tooMany: 'Too many requests. Wait a few minutes before resending.',
+      tooMany: 'The confirmation email may already have been sent. Check your inbox and spam folder. If you cannot find it, wait a few minutes and try resending.',
       sessionExpired: 'Session expired. Please sign in again.',
       network: 'Network error. Check your internet connection.',
       internal: 'Firebase internal error. Confirm the domain is authorized in Firebase Console.',
@@ -177,8 +178,8 @@ export default {
     time: 'Time:',
     place: 'Place:',
     dominantElements: 'Dominant elements',
-    lockedTitle: 'Protected Natal Data',
-    lockedDesc: 'Each account is linked to a single natal chart. Birth data is locked after first creation — you cannot generate charts for other people on the same account.',
+    lockedTitle: 'Birth date and place protected',
+    lockedDesc: 'Birth date, time and city cannot be changed after your chart is created. The rest of your profile (photo, chart, tools) stays fully accessible.',
   },
   pagamento: {
     cancelled: 'Payment cancelled. You can try again whenever you like.',
@@ -213,7 +214,7 @@ export default {
     unavailable: 'Google reCAPTCHA unavailable on this domain — use the verification below.',
   },
   footer: {
-    tagline: '© 2026 Sidus Arcana. Portals and paths revealed through Tarot and Astrology. All rights reserved.',
+    tagline: '© 2026 Sidus Astro. Portals and paths revealed through Tarot and Astrology. All rights reserved.',
     privacy: 'Privacy Policy',
   },
   tarot: {
@@ -298,6 +299,8 @@ export default {
       dayExceptional: '✦ Exceptional day! All cycles in high phase. Take important decisions, socialise and exercise. Your capacities are at their peak.',
       dayRest: '✦ Day for care and rest. Some cycles in critical phase — prefer quiet activities and avoid impulsive decisions. Take care of yourself first.',
       dayModerate: '✦ Moderate day with highs and lows. Focus on areas where you are in high phase and save energy where you are in transition. Balance is the keyword.',
+      precisionNote: 'Calculated with birth time ({time}) and time zone from your natal chart.',
+      astroContext: 'Astrological context: Sun in {solar} · Moon in {lunar} — biorhythm cycles complement your natal chart rhythm.',
     },
     diario: {
       title: 'Astral Journal',

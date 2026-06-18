@@ -192,12 +192,15 @@ const ARCANOS = [
 ]
 
 function baralhoCompleto() {
-  const d=[]
-  ARCANOS.forEach(c=>{
-    d.push({...c,invertida:false,uid:c.id*2})
-    d.push({...c,invertida:true, uid:c.id*2+1})
-  })
-  return d
+  return ARCANOS.map((c) => ({ ...c, invertida: false }))
+}
+
+function sortearCartas(n) {
+  const deck = embaralhar(baralhoCompleto())
+  return deck.slice(0, n).map((c) => ({
+    ...c,
+    invertida: Math.random() < 0.35,
+  }))
 }
 
 function embaralhar(arr) {
@@ -360,8 +363,7 @@ export function EcraTarot({ mapaNatal, isPremium, userId, leiturasTarotUsadas = 
     }
     setEmbaralhando(true)
     setTimeout(()=>{
-      const deck = embaralhar(baralhoCompleto())
-      const sel  = deck.slice(0,tipo.n)
+      const sel = sortearCartas(tipo.n)
       setCartas(sel)
       setReveladas(new Array(tipo.n).fill(false))
       setEmbaralhando(false)
@@ -486,7 +488,7 @@ function TelaSeleccionar({ tipos, onSeleccionar, isPremium, gratisEsgotada, rest
                 </div>
               )}
             </div>
-            <div style={{fontSize:11,color:CORES.dourado,fontWeight:700}}>{tipo.n} {tipo.n>1 ? t('tarot.cardsPlural', { n: tipo.n }) : t('tarot.cards', { n: tipo.n })}</div>
+            <div style={{fontSize:11,color:CORES.dourado,fontWeight:700}}>{tipo.n > 1 ? t('tarot.cardsPlural', { n: tipo.n }) : t('tarot.cards', { n: tipo.n })}</div>
           </button>
         ))}
       </div>

@@ -54,13 +54,14 @@ export default {
     intro: 'Enviámos um link de confirmação para {email}. Abre o e-mail e clica no link para activar a tua conta Sidus.',
     sentAuto: 'Enviámos um e-mail de confirmação para {email}. Abre o link para activar a tua conta.',
     sentManual: 'E-mail de confirmação enviado para {email}. Verifica a caixa de entrada e o spam.',
+    checkSpam: 'Conta criada! Enviámos um e-mail de confirmação para {email}. Abre a caixa de entrada e verifica também a pasta de spam ou lixo eletrónico antes de continuar.',
     confirmBtn: 'Já confirmei — continuar',
     resendBtn: 'Reenviar e-mail de confirmação',
     googleNote: 'Entraste com Google? Esta verificação não se aplica — contacta suporte se vês este ecrã por engano.',
     notConfirmed: 'O e-mail ainda não foi confirmado. Abre a mensagem que te enviámos e clica no link.',
     verifyFailed: 'Não foi possível verificar o estado. Tenta outra vez.',
     errors: {
-      tooMany: 'Demasiados pedidos. Aguarda alguns minutos antes de reenviar.',
+      tooMany: 'O e-mail de confirmação pode já ter sido enviado. Verifica a caixa de entrada e a pasta de spam. Se não encontrares, aguarda alguns minutos e tenta reenviar.',
       sessionExpired: 'Sessão expirada. Inicia sessão novamente.',
       network: 'Erro de rede. Verifica a ligação à internet.',
       internal: 'Erro interno do Firebase. Confirma que o domínio está autorizado no Firebase Console.',
@@ -177,8 +178,8 @@ export default {
     time: 'Hora:',
     place: 'Local:',
     dominantElements: 'Elementos dominantes',
-    lockedTitle: 'Dados Natais Protegidos',
-    lockedDesc: 'Cada conta está associada a um único mapa astral. Os dados de nascimento ficam bloqueados após a primeira criação — não é possível gerar mapas para outras pessoas na mesma conta.',
+    lockedTitle: 'Data e local de nascimento protegidos',
+    lockedDesc: 'A data, hora e cidade de nascimento não podem ser alteradas após o mapa ser criado. O resto do teu perfil (foto, mapa, ferramentas) permanece totalmente acessível.',
   },
   pagamento: {
     cancelled: 'Pagamento cancelado. Podes tentar outra vez quando quiseres.',
@@ -213,7 +214,7 @@ export default {
     unavailable: 'reCAPTCHA Google indisponível neste domínio — usa a verificação abaixo.',
   },
   footer: {
-    tagline: '© 2026 Sidus Arcana. Portais e caminhos revelados através do Tarot e da Astrologia. Todos os direitos reservados.',
+    tagline: '© 2026 Sidus Astro. Portais e caminhos revelados através do Tarot e da Astrologia. Todos os direitos reservados.',
     privacy: 'Política de Privacidade',
   },
   tarot: {
@@ -298,6 +299,8 @@ export default {
       dayExceptional: '✦ Dia excepcional! Todos os ciclos em fase alta. Aproveita para tomar decisões importantes, socializar e exercitar o corpo. As tuas capacidades estão no máximo.',
       dayRest: '✦ Dia de cuidado e descanso. Alguns ciclos em fase crítica — prefere actividades tranquilas e evita decisões impulsivas. Cuida de ti mesmo em primeiro lugar.',
       dayModerate: '✦ Dia moderado com altos e baixos. Foca-te nas áreas onde estás em fase alta e poupa energia nas que estão em transição. Equilíbrio é a palavra-chave.',
+      precisionNote: 'Cálculo com hora de nascimento ({time}) e fuso horário do teu mapa natal.',
+      astroContext: 'Contexto astrológico: Sol em {solar} · Lua em {lunar} — os ciclos bio-rítmicos complementam o ritmo do teu mapa natal.',
     },
     diario: {
       title: 'Diário Astral',
