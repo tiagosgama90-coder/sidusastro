@@ -213,9 +213,8 @@ const estilos = {
     fontFamily: "'Segoe UI', system-ui, -apple-system, sans-serif",
     position: 'relative',
     overflowX: 'hidden',
-    overflowY: 'auto',
-    display: 'flex',
-    flexDirection: 'column',
+    overflowY: 'visible',
+    display: 'block',
     boxSizing: 'border-box',
   },
   appDesktop: {
@@ -248,7 +247,6 @@ const estilos = {
     zIndex: 0,
   },
   conteudo: {
-    flex: 1,
     overflowY: 'visible',
     padding: '24px 20px',
     paddingBottom: 100,

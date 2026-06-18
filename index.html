@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="theme-color" content="#0B071E" />
     <meta name="description" content="Sidus — Astrologia de precisão astronómica. Mapa Astral, Tarot, Oráculo IA e muito mais." />
     <meta name="keywords" content="astrologia, mapa astral, tarot, ascendente, horóscopo, zodíaco, oráculo, signo" />
@@ -25,12 +25,22 @@
 
     <style>
       * { box-sizing: border-box; margin: 0; padding: 0; }
-      html, body, #root {
-        height: 100%;
+      html {
+        background: #0B071E;
+        overflow-x: hidden;
+        overflow-y: scroll;
+        -webkit-overflow-scrolling: touch;
+      }
+      body, #root {
+        min-height: 100%;
         background: #0B071E;
         font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         -webkit-tap-highlight-color: transparent;
-        overscroll-behavior: none;
+      }
+      body {
+        overflow-x: hidden;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
       }
       /* Scrollbar personalizada */
       ::-webkit-scrollbar { width: 4px; }
