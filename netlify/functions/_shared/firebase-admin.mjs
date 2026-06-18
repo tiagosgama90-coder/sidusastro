@@ -23,7 +23,17 @@ export async function activarPremium(userId, extra = {}) {
   const db = getFirestore()
   if (!db || !userId) return false
   await db.collection('users').doc(userId).set(
-    { isPremium: true, premiumAt: admin.firestore.FieldValue.serverTimestamp(), ...extra },
+    { isPremium: true, mapaCompleto: true, premiumAt: admin.firestore.FieldValue.serverTimestamp(), ...extra },
+    { merge: true }
+  )
+  return true
+}
+
+export async function activarMapaCompleto(userId) {
+  const db = getFirestore()
+  if (!db || !userId) return false
+  await db.collection('users').doc(userId).set(
+    { mapaCompleto: true, mapaCompletoAt: admin.firestore.FieldValue.serverTimestamp() },
     { merge: true }
   )
   return true

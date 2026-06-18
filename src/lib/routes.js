@@ -33,5 +33,6 @@ export function pathFromPasso(passo) {
 }
 
 export function paymentReturnPath(productType) {
-  return productType === 'premium' ? '/mapaastral' : '/tarot'
+  if (productType === 'tarot') return '/tarot'
+  return '/mapaastral'
 }

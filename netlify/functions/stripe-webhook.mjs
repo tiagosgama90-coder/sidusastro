@@ -1,6 +1,6 @@
 import { getStripe } from './_shared/stripe.mjs'
 import { env } from './_shared/env.mjs'
-import { activarPremium, desactivarPremium } from './_shared/firebase-admin.mjs'
+import { activarPremium, desactivarPremium, activarMapaCompleto } from './_shared/firebase-admin.mjs'
 
 export default async (req) => {
   if (req.method !== 'POST') {
@@ -38,6 +38,8 @@ export default async (req) => {
             stripeCustomerId: session.customer || null,
             stripeSubscriptionId: session.subscription || null,
           })
+        } else if (userId && productType === 'mapa') {
+          await activarMapaCompleto(userId)
         }
         break
       }

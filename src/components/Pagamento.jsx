@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { createPortal } from 'react-dom'
 import { useLanguage } from '../lib/i18n/LanguageContext.jsx'
+import { inferProductType } from '../lib/pricing.js'
 
 const CORES = {
   fundo: '#0B071E', dourado: '#DFB76C', douradoEscuro: '#B8944F',
@@ -9,29 +10,38 @@ const CORES = {
   vidroBorda: 'rgba(223,183,108,0.22)',
 }
 
-function productTypeFromValor(valor, descricao) {
-  if (valor >= 4.99 || /vip|premium|subscri/i.test(descricao || '')) return 'premium'
-  return 'tarot'
-}
-
 async function criarSessaoStripe({ valor, descricao, userId, userEmail, productType }) {
   const res = await fetch('/api/create-checkout-session', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ valor, descricao, userId, userEmail, productType }),
   })
-  const data = await res.json()
+  const data = await res.json().catch(() => ({}))
   if (!res.ok) throw new Error(data.error || 'sessionFail')
   if (!data.url) throw new Error('invalidUrl')
   return data
 }
 
-export function ModalPagamento({ valor, descricao, userId, userEmail, onSucesso, onFechar }) {
+/** Redireciona directamente para o Stripe Checkout (sem modal). */
+export async function iniciarCheckoutStripe({ valor, descricao, userId, userEmail, productType, onBeforeRedirect }) {
+  if (!userId) throw new Error('needLogin')
+  const tipo = inferProductType(valor, descricao, productType)
+  sessionStorage.setItem('sidus_payment_pending', JSON.stringify({
+    productType: tipo,
+    descricao,
+    ts: Date.now(),
+  }))
+  onBeforeRedirect?.()
+  const { url } = await criarSessaoStripe({ valor, descricao, userId, userEmail, productType: tipo })
+  window.location.assign(url)
+}
+
+export function ModalPagamento({ valor, descricao, userId, userEmail, productType: productTypeProp, onSucesso, onFechar }) {
   const { t } = useLanguage()
   const [processando, setProcessando] = useState(false)
   const [erro, setErro] = useState(null)
 
-  const productType = productTypeFromValor(valor, descricao)
+  const productType = inferProductType(valor, descricao, productTypeProp)
   const isSubscription = productType === 'premium'
 
   const METODOS_STRIPE = [
@@ -47,28 +57,25 @@ export function ModalPagamento({ valor, descricao, userId, userEmail, onSucesso,
     const map = {
       sessionFail: t('pagamento.sessionFail'),
       invalidUrl: t('pagamento.invalidUrl'),
+      needLogin: t('pagamento.needLogin'),
     }
     return map[code] || code || t('pagamento.stripeFail')
   }
 
   const iniciarStripe = async () => {
-    if (!userId) {
-      setErro(t('pagamento.needLogin'))
-      return
-    }
     setErro(null)
     setProcessando(true)
     try {
-      sessionStorage.setItem('sidus_payment_pending', JSON.stringify({
-        productType,
+      await iniciarCheckoutStripe({
+        valor,
         descricao,
-        ts: Date.now(),
-      }))
-      const { url } = await criarSessaoStripe({ valor, descricao, userId, userEmail, productType })
-      if (onSucesso) {
-        sessionStorage.setItem('sidus_payment_callback', '1')
-      }
-      window.location.href = url
+        userId,
+        userEmail,
+        productType,
+        onBeforeRedirect: () => {
+          if (onSucesso) sessionStorage.setItem('sidus_payment_callback', '1')
+        },
+      })
     } catch (e) {
       setErro(msgErro(e.message))
       setProcessando(false)

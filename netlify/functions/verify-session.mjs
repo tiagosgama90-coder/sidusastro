@@ -1,5 +1,5 @@
 import { getStripe } from './_shared/stripe.mjs'
-import { activarPremium } from './_shared/firebase-admin.mjs'
+import { activarPremium, activarMapaCompleto } from './_shared/firebase-admin.mjs'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -50,6 +50,8 @@ export default async (req) => {
         stripeCustomerId: session.customer || null,
         stripeSubscriptionId: session.subscription?.id || session.subscription || null,
       })
+    } else if (metaUserId && productType === 'mapa') {
+      await activarMapaCompleto(metaUserId)
     }
 
     return new Response(JSON.stringify({

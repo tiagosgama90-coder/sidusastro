@@ -6,6 +6,9 @@ const corsHeaders = {
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
 }
 
+const RETURN_PATH = { premium: '/mapaastral', mapa: '/mapaastral', tarot: '/tarot' }
+const CANCEL_PATH = { premium: '/vip', mapa: '/mapaastral', tarot: '/tarot' }
+
 export default async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { status: 204, headers: corsHeaders })
@@ -16,7 +19,7 @@ export default async (req) => {
 
   try {
     const body = await req.json()
-    const { valor, descricao, userId, userEmail, productType } = body
+    const { valor, descricao, userId, userEmail, productType: productTypeRaw } = body
 
     if (!valor || !descricao || !userId) {
       return new Response(JSON.stringify({ error: 'Parâmetros em falta' }), { status: 400, headers: corsHeaders })
@@ -24,16 +27,21 @@ export default async (req) => {
 
     const stripe = getStripe()
     const origin = siteOrigin(req)
-    const isSubscription = productType === 'premium' || valor >= 4.99
+    const v = Number(valor)
+    const productType = productTypeRaw
+      || (v >= 9.99 || /vip|premium|subscri/i.test(descricao || '') ? 'premium'
+        : v >= 10 || /mapa.*completo|natal chart/i.test(descricao || '') ? 'mapa'
+          : 'tarot')
+    const isSubscription = productType === 'premium'
 
     const metadata = {
       userId: String(userId),
-      productType: isSubscription ? 'premium' : 'tarot',
+      productType,
       descricao: String(descricao).slice(0, 500),
     }
 
-    const returnPath = isSubscription ? '/mapaastral' : '/tarot'
-    const cancelPath = isSubscription ? '/vip' : '/tarot'
+    const returnPath = RETURN_PATH[productType] || '/tarot'
+    const cancelPath = CANCEL_PATH[productType] || '/tarot'
 
     const sessionParams = {
       mode: isSubscription ? 'subscription' : 'payment',
@@ -48,18 +56,16 @@ export default async (req) => {
         price_data: {
           currency: 'eur',
           product_data: { name: descricao },
-          unit_amount: Math.round(Number(valor) * 100),
+          unit_amount: Math.round(v * 100),
           ...(isSubscription ? { recurring: { interval: 'month' } } : {}),
         },
       }],
+      payment_method_types: ['card'],
     }
 
     if (isSubscription) {
-      sessionParams.payment_method_types = ['card']
       sessionParams.subscription_data = { metadata }
     } else {
-      // Pagamento único — cartão (MB Way/Multibanco via dashboard Stripe se activos)
-      sessionParams.payment_method_types = ['card']
       sessionParams.payment_intent_data = { metadata }
     }
 

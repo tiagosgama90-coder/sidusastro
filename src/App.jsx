@@ -31,7 +31,8 @@ import {
 import { Body, GeoVector, Ecliptic, MakeTime, SiderealTime } from 'astronomy-engine'
 import { pesquisarCidades, pesquisarFusoHorario, geocodificarCidade } from './lib/geocoding'
 import { EcraTarot } from './components/Tarot'
-import { ModalPagamento, verificarSessaoPagamento } from './components/Pagamento'
+import { ModalPagamento, verificarSessaoPagamento, iniciarCheckoutStripe } from './components/Pagamento'
+import { PRECO_MAPA_COMPLETO, PRECO_PREMIUM_MENSAL } from './lib/pricing.js'
 import { RecaptchaCheckbox } from './components/Recaptcha'
 import { Perfil } from './components/Perfil'
 import { PoliticaPrivacidade } from './components/PoliticaPrivacidade'
@@ -1887,7 +1888,7 @@ function BarraElemento({ label, valor, total, cor }) {
   )
 }
 
-function MapaAstral({ mapaNatal, dados, planetasNascimento, isPremium, onUpgrade, onMapaGerado, isDesktop, motorAstro }) {
+function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, isPremium, onUpgrade, onComprarMapa, onMapaGerado, isDesktop, motorAstro }) {
   const { lang, t, ts, tp, te, ta } = useLanguage()
   const [gerandoPdf, setGerandoPdf] = useState(false)
   const [emailEnviado, setEmailEnviado] = useState(false)
@@ -1912,13 +1913,13 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, isPremium, onUpgrade
   )
 
   const analiseCompleta = useMemo(
-    () => (isPremium && mapaNatal ? gerarAnaliseCompleta(mapaNatal, planetasComCasa, aspetosNatais, dados, lang) : null),
-    [isPremium, mapaNatal, planetasComCasa, aspetosNatais, dados, lang]
+    () => (mapaDesbloqueado && mapaNatal ? gerarAnaliseCompleta(mapaNatal, planetasComCasa, aspetosNatais, dados, lang) : null),
+    [mapaDesbloqueado, mapaNatal, planetasComCasa, aspetosNatais, dados, lang]
   )
 
   const resumoGratuito = useMemo(
-    () => (!isPremium && mapaNatal ? gerarResumoGratuito(mapaNatal, lang) : null),
-    [isPremium, mapaNatal, lang]
+    () => (!mapaDesbloqueado && mapaNatal ? gerarResumoGratuito(mapaNatal, lang) : null),
+    [mapaDesbloqueado, mapaNatal, lang]
   )
 
   const mapaCompletoVisivel = planetasComCasa.length > 0
@@ -1996,7 +1997,7 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, isPremium, onUpgrade
       </header>
 
       {/* ── Resumo interpretativo (gratuito) ── */}
-      {!isPremium && resumoGratuito && (
+      {!mapaDesbloqueado && resumoGratuito && (
         <div style={{ ...estilos.vidro, padding: 16, marginBottom: 14 }}>
           <div style={{ fontSize: 11, color: CORES.brancoMuted, lineHeight: 1.6, marginBottom: 8 }}>
             {resumoGratuito.sol}
@@ -2081,7 +2082,7 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, isPremium, onUpgrade
       )}
 
       {/* ── Conteúdo Premium (interpretação profunda + PDF) ── */}
-      {isPremium ? (
+      {mapaDesbloqueado ? (
         <>
           <InterpretacaoMapa analise={analiseCompleta} estilosVidro={estilos.vidro} lang={lang} />
 
@@ -2157,11 +2158,10 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, isPremium, onUpgrade
           </div>
         </>
       ) : (
-        /* Teaser premium */
-        <div onClick={onUpgrade} style={{
-          ...estilos.vidro, padding: 24, marginBottom: 14, cursor: 'pointer',
+        <div style={{
+          ...estilos.vidro, padding: 24, marginBottom: 14,
           border: `1px solid ${CORES.dourado}`, background: 'rgba(223,183,108,0.06)',
-          textAlign: 'center', position: 'relative', overflow: 'hidden',
+          textAlign: 'center', position: 'relative',
         }}>
           <div style={{ position: 'absolute', inset: 0, background: 'repeating-linear-gradient(45deg, transparent, transparent 8px, rgba(223,183,108,0.03) 8px, rgba(223,183,108,0.03) 16px)', pointerEvents: 'none' }} />
           <Crown size={28} color={CORES.dourado} style={{ marginBottom: 10 }} />
@@ -2176,9 +2176,16 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, isPremium, onUpgrade
               </span>
             ))}
           </div>
-          <div style={{ ...estilos.botaoDourado, display: 'inline-block', padding: '12px 32px', fontSize: 14 }}>
-            {t('mapa.activate')}
-          </div>
+          <button type="button" onClick={onComprarMapa} style={{ ...estilos.botaoDourado, width: '100%', marginBottom: 10 }}>
+            {t('mapa.buyOnce')}
+          </button>
+          <button type="button" onClick={onUpgrade} style={{
+            width: '100%', padding: '13px', borderRadius: 12,
+            background: 'rgba(139,92,246,0.15)', border: '1px solid rgba(139,92,246,0.4)',
+            color: CORES.dourado, fontSize: 14, fontWeight: 700, cursor: 'pointer',
+          }}>
+            {t('mapa.premiumOption')}
+          </button>
         </div>
       )}
     </div>
@@ -2239,7 +2246,7 @@ function Paywall({ onVoltar, onPagar, onSucesso, isDesktop }) {
         <div style={{ fontSize: 40, fontWeight: 700, color: CORES.branco }}>{t('vip.price')} <span style={{ fontSize: 16, color: CORES.brancoMuted, fontWeight: 400 }}>{t('common.perMonth')}</span></div>
         <p style={{ fontSize: 12, color: CORES.brancoMuted, marginTop: 6 }}>{t('vip.cancelAnytime')}</p>
       </div>
-      <button type="button" onClick={() => onPagar(lang === 'en' ? 'Sidus VIP — Monthly subscription' : 'Sidus VIP — Subscrição mensal', 4.99, onSucesso)} style={estilos.botaoDourado}>
+      <button type="button" onClick={() => onPagar(lang === 'en' ? 'Sidus VIP — Monthly subscription' : 'Sidus VIP — Subscrição mensal', PRECO_PREMIUM_MENSAL, onSucesso, { direto: true, productType: 'premium' })} style={estilos.botaoDourado}>
         {t('vip.cta')}
       </button>
       <p style={{ textAlign: 'center', fontSize: 11, color: CORES.brancoMuted, marginTop: 12 }}>
@@ -2668,6 +2675,7 @@ export default function App() {
   const [authCarregando, setAuthCarregando] = useState(true)
   const [tipoAuth, setTipoAuth] = useState('login') // 'login' | 'register'
   const [isPremium, setIsPremium] = useState(false)
+  const [mapaCompleto, setMapaCompleto] = useState(false)
   const [mapaGerado, setMapaGerado] = useState(false) // bloqueio: 1 mapa por utilizador
   const [leiturasTarotUsadas, setLeiturasTarotUsadas] = useState(0)
   const [perfilCarregando, setPerfilCarregando] = useState(firebaseDisponivel)
@@ -2686,6 +2694,7 @@ export default function App() {
   const location = useLocation()
 
   const contaConfigurada = mapaGerado || dadosNataisCompletos(dados)
+  const mapaDesbloqueado = isPremium || mapaCompleto
 
   const irPara = useCallback((novoPasso, { replace = false } = {}) => {
     setFerramentaAberta(null)
@@ -2718,6 +2727,7 @@ export default function App() {
           if (snap.exists()) {
             const perfil = snap.data()
             if (perfil.isPremium === true) setIsPremium(true)
+            if (perfil.mapaCompleto === true) setMapaCompleto(true)
             if (typeof perfil.tarotLeiturasUsadas === 'number') {
               setLeiturasTarotUsadas(perfil.tarotLeiturasUsadas)
             }
@@ -2752,6 +2762,7 @@ export default function App() {
         setMapaNatal(null)
         setPlanetasNascimento([])
         setIsPremium(false)
+        setMapaCompleto(false)
         setMapaGerado(false)
         setLeiturasTarotUsadas(0)
         setPerfilCarregando(false)
@@ -2846,9 +2857,15 @@ export default function App() {
 
         if (result.productType === 'premium') {
           setIsPremium(true)
+          setMapaCompleto(true)
           setPasso('mapa')
           navigate('/mapaastral', { replace: true })
           setPagamentoMsg({ tipo: 'sucesso', texto: t('payment.premiumWelcome') })
+        } else if (result.productType === 'mapa') {
+          setMapaCompleto(true)
+          setPasso('mapa')
+          navigate('/mapaastral', { replace: true })
+          setPagamentoMsg({ tipo: 'sucesso', texto: t('payment.mapaUnlocked') })
         } else if (result.productType === 'tarot') {
           sessionStorage.setItem('sidus_tarot_paid', '1')
           setPasso('tarot')
@@ -2976,17 +2993,40 @@ export default function App() {
     if (f.premium && !isPremium) irPara('paywall')
   }
 
-  const abrirPagamento = (descricao, valor, onSucesso) => {
+  const abrirPagamento = async (descricao, valor, onSucesso, opts = {}) => {
     if (!utilizador?.uid) {
       setPagamentoMsg({ tipo: 'erro', texto: t('pagamento.needLogin') })
-      return
+      return false
     }
-    setModalPagamento({ descricao, valor, onSucesso })
+    const productType = opts.productType || null
+    if (opts.direto) {
+      try {
+        setPagamentoMsg({ tipo: 'info', texto: t('pagamento.redirecting') })
+        await iniciarCheckoutStripe({
+          valor,
+          descricao,
+          userId: utilizador.uid,
+          userEmail: utilizador.email,
+          productType,
+          onBeforeRedirect: () => {
+            if (onSucesso) sessionStorage.setItem('sidus_payment_callback', '1')
+          },
+        })
+        return true
+      } catch (e) {
+        console.error('[Sidus Pagamento]', e?.message)
+        setPagamentoMsg({ tipo: 'erro', texto: t('pagamento.sessionFail') })
+        return false
+      }
+    }
+    setModalPagamento({ descricao, valor, onSucesso, productType })
+    return true
   }
 
   // Activa premium em modo dev (só localhost — não escreve isPremium em produção)
   const togglePremiumDev = async (valor) => {
     setIsPremium(valor)
+    if (valor) setMapaCompleto(true)
   }
 
   // Trava dados natais após o 1.º mapa (1 conta = 1 mapa)
@@ -3054,7 +3094,7 @@ export default function App() {
       case 'dashboard':
         return <Dashboard nome={dados.nome} mapaNatal={mapaNatal} ceuAgora={ceuAgora} aspetos={aspetosAgora} onOraculo={() => irPara('chat')} onPrivacidade={() => irPara('privacidade')} isDesktop={isDesktop} isPremium={isPremium} onUpgrade={() => irPara('paywall')} onTarot={() => irPara('tarot')} />
       case 'mapa':
-        return <MapaAstral mapaNatal={mapaNatal} dados={dados} planetasNascimento={planetasNascimento} isPremium={isPremium} onUpgrade={() => irPara('paywall')} onMapaGerado={handleMapaGerado} isDesktop={isDesktop} motorAstro={motorAstro} />
+        return <MapaAstral mapaNatal={mapaNatal} dados={dados} planetasNascimento={planetasNascimento} mapaDesbloqueado={mapaDesbloqueado} isPremium={isPremium} onUpgrade={() => irPara('paywall')} onComprarMapa={() => abrirPagamento(t('mapa.buyDesc'), PRECO_MAPA_COMPLETO, null, { direto: true, productType: 'mapa' })} onMapaGerado={handleMapaGerado} isDesktop={isDesktop} motorAstro={motorAstro} />
       case 'tarot':
         return <EcraTarot mapaNatal={mapaNatal} isPremium={isPremium} userId={utilizador?.uid} leiturasTarotUsadas={leiturasTarotUsadas} onLeituraGratisUsada={registarLeituraTarotGratis} onPagar={abrirPagamento} onVoltar={() => irPara('home')} onPremium={() => irPara('paywall')} />
       case 'ferramentas':
@@ -3068,7 +3108,7 @@ export default function App() {
           return <DiarioAstral mapaNatal={mapaNatal} onVoltar={() => setFerramentaAberta(null)} />
         return <Ferramentas onFerramenta={handleFerramenta} isDesktop={isDesktop} />
       case 'paywall':
-        return <Paywall onVoltar={() => irPara('ferramentas')} onPagar={abrirPagamento} onSucesso={() => { setIsPremium(true); irPara('mapa') }} isDesktop={isDesktop} />
+        return <Paywall onVoltar={() => irPara('ferramentas')} onPagar={abrirPagamento} onSucesso={() => { setIsPremium(true); setMapaCompleto(true); irPara('mapa') }} isDesktop={isDesktop} />
       case 'chat':
         return <Chat mapaNatal={mapaNatal} isPremium={isPremium} onUpgrade={() => irPara('paywall')} />
       case 'perfil':
@@ -3178,6 +3218,7 @@ export default function App() {
           valor={modalPagamento.valor}
           userId={utilizador?.uid}
           userEmail={utilizador?.email}
+          productType={modalPagamento.productType}
           onSucesso={() => { modalPagamento.onSucesso?.(); setModalPagamento(null) }}
           onFechar={() => setModalPagamento(null)}
         />

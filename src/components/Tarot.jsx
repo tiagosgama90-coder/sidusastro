@@ -8,11 +8,18 @@
 import { useState, useEffect } from 'react'
 import { useLanguage } from '../lib/i18n/LanguageContext.jsx'
 import { localizeArcano, TIPOS_EN, POSICOES_EN } from '../lib/i18n/tarotArcana.js'
+import { PRECO_TAROT } from '../lib/pricing.js'
 
 const CORES = {
   fundo:'#0B071E', dourado:'#DFB76C', douradoEscuro:'#B8944F',
   branco:'#FFFFFF', brancoSuave:'rgba(255,255,255,0.85)',
   brancoMuted:'rgba(255,255,255,0.55)', vidroBorda:'rgba(223,183,108,0.22)',
+}
+
+const btnDourado = {
+  background:'linear-gradient(135deg,#DFB76C,#B8944F)',border:'none',borderRadius:12,
+  color:'#0B071E',fontSize:15,fontWeight:700,padding:'14px 24px',cursor:'pointer',
+  position:'relative',zIndex:2,pointerEvents:'auto',
 }
 
 // ── Roman numerals ────────────────────────────────────────────────────────────
@@ -405,10 +412,10 @@ export function EcraTarot({ mapaNatal, isPremium, userId, leiturasTarotUsadas = 
           setLeituraPaga(false)
           comecarEmbaralhar()
         } else {
-          onPagar(t('tarot.payDesc', { tipo: tipo?.nome || '' }), 2, () => {
+          onPagar(t('tarot.payDesc', { tipo: tipo?.nome || '' }), PRECO_TAROT, () => {
             setLeituraPaga(true)
             comecarEmbaralhar()
-          })
+          }, { direto: true, productType: 'tarot' })
         }
       }}
       onPremium={onPremium}
@@ -488,6 +495,25 @@ function TelaSeleccionar({ tipos, onSeleccionar, isPremium, gratisEsgotada, rest
 }
 
 function TelaPergunta({ tipo, pergunta, setPergunta, onVoltar, podeLer, isPremium, restantes, onComecar, onPagar, onComecarPago, onPremium, t }) {
+  const [aPagar, setAPagar] = useState(false)
+
+  const handlePagarLeitura = async (e) => {
+    e.preventDefault()
+    e.stopPropagation()
+    if (aPagar || typeof onPagar !== 'function') return
+    setAPagar(true)
+    try {
+      await onPagar(
+        t('tarot.payDesc', { tipo: tipo?.nome || '' }),
+        PRECO_TAROT,
+        onComecarPago,
+        { direto: true, productType: 'tarot' },
+      )
+    } finally {
+      setAPagar(false)
+    }
+  }
+
   return (
     <div style={{padding:'28px 20px 110px'}}>
       <button type="button" onClick={onVoltar} style={{background:'none',border:'none',color:CORES.brancoMuted,cursor:'pointer',fontSize:13,marginBottom:20,padding:0}}>{t('common.back')}</button>
@@ -510,13 +536,13 @@ function TelaPergunta({ tipo, pergunta, setPergunta, onVoltar, podeLer, isPremiu
           {restantes === 1 ? t('tarot.shuffleFree', { count: restantes }) : t('tarot.shuffleFreePlural', { count: restantes })}
         </button>
       ) : (
-        <div style={{background:'rgba(223,183,108,0.06)',border:`1px solid ${CORES.dourado}`,borderRadius:14,padding:20,textAlign:'center'}}>
+        <div style={{background:'rgba(223,183,108,0.06)',border:`1px solid ${CORES.dourado}`,borderRadius:14,padding:20,textAlign:'center',position:'relative',zIndex:1}}>
           <div style={{fontSize:28,fontWeight:700,color:CORES.dourado,marginBottom:8}}>{t('tarot.price')}</div>
           <p style={{fontSize:13,color:CORES.brancoMuted,marginBottom:16,lineHeight:1.5}}>
             {t('tarot.paywallText', { max: MAX_LEITURAS_GRATIS })}
           </p>
-          <button type="button" onClick={()=>onPagar(t('tarot.payDesc', { tipo: tipo?.nome || '' }), 2, onComecarPago)} style={{...btnDourado,width:'100%',marginBottom:10}}>
-            {t('tarot.payOne')}
+          <button type="button" disabled={aPagar} onClick={handlePagarLeitura} style={{...btnDourado,width:'100%',marginBottom:10,opacity:aPagar?0.6:1}}>
+            {aPagar ? t('pagamento.redirecting') : t('tarot.payOne')}
           </button>
           {onPremium && (
             <button type="button" onClick={onPremium} style={{
@@ -665,7 +691,4 @@ function TelaRevelar({ cartas, reveladas, onRevelar, posicoes, tipo, pergunta, r
   )
 }
 
-const btnDourado = {
-  background:'linear-gradient(135deg,#DFB76C,#B8944F)',border:'none',borderRadius:12,
-  color:'#0B071E',fontSize:15,fontWeight:700,padding:'14px 24px',cursor:'pointer',
-}
+// btnDourado moved to top of file

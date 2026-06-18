@@ -7,13 +7,15 @@ service cloud.firestore {
       allow create: if request.auth != null
         && request.auth.uid == userId
         && !request.resource.data.keys().hasAny([
-          'isPremium', 'premiumAt', 'stripeCustomerId', 'stripeSubscriptionId'
+          'isPremium', 'premiumAt', 'stripeCustomerId', 'stripeSubscriptionId',
+          'mapaCompleto', 'mapaCompletoAt'
         ]);
 
       allow update: if request.auth != null
         && request.auth.uid == userId
         && !request.resource.data.diff(resource.data).affectedKeys().hasAny([
-          'isPremium', 'premiumAt', 'stripeCustomerId', 'stripeSubscriptionId'
+          'isPremium', 'premiumAt', 'stripeCustomerId', 'stripeSubscriptionId',
+          'mapaCompleto', 'mapaCompletoAt'
         ])
         && (
           (!resource.data.get('dadosTravados', false) && !resource.data.get('mapaGerado', false))
