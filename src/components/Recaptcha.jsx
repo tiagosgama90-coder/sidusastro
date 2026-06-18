@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, useCallback } from 'react'
+import { useLanguage } from '../lib/i18n/LanguageContext.jsx'
 
 const TEST_KEY = '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI'
 const SITE_KEY = import.meta.env.VITE_RECAPTCHA_SITE_KEY || TEST_KEY
@@ -15,7 +16,6 @@ function hostnameLocal() {
   return h === 'localhost' || h === '127.0.0.1'
 }
 
-/** Chave de teste Google só funciona em localhost — em produção exige chave real no Netlify. */
 function deveUsarGoogleRecaptcha() {
   if (!SITE_KEY) return false
   if (SITE_KEY === TEST_KEY && !hostnameLocal()) return false
@@ -70,8 +70,8 @@ function aguardarGrecaptcha() {
   return scriptPromise
 }
 
-/** Checkbox nativo — funciona sempre (produção sem chave Google registada). */
 function VerificacaoHumana({ onChange }) {
+  const { t } = useLanguage()
   const [marcado, setMarcado] = useState(false)
   const [honeypot, setHoneypot] = useState('')
 
@@ -90,7 +90,6 @@ function VerificacaoHumana({ onChange }) {
       gap: 12,
       userSelect: 'none',
     }}>
-      {/* Honeypot — bots preenchem, humanos não vêem */}
       <input
         type="text"
         name="company"
@@ -109,9 +108,9 @@ function VerificacaoHumana({ onChange }) {
         style={{ width: 18, height: 18, accentColor: CORES.dourado, cursor: 'pointer' }}
       />
       <label htmlFor="sidus-nao-robot" style={{ fontSize: 13, color: CORES.branco, cursor: 'pointer', flex: 1 }}>
-        Não sou um robot
+        {t('auth.notRobot')}
       </label>
-      <span style={{ fontSize: 10, color: CORES.brancoMuted }}>✓ Verificação</span>
+      <span style={{ fontSize: 10, color: CORES.brancoMuted }}>{t('auth.verification')}</span>
     </div>
   )
 }
@@ -164,6 +163,7 @@ function GoogleRecaptcha({ onChange, resetKey }) {
 }
 
 export function RecaptchaCheckbox({ onChange, resetKey = 0 }) {
+  const { t } = useLanguage()
   const [modo, setModo] = useState(() => (deveUsarGoogleRecaptcha() ? 'google' : 'humano'))
   const [googleFalhou, setGoogleFalhou] = useState(false)
 
@@ -188,7 +188,7 @@ export function RecaptchaCheckbox({ onChange, resetKey = 0 }) {
       <div>
         {googleFalhou && deveUsarGoogleRecaptcha() && (
           <p style={{ fontSize: 11, color: CORES.brancoMuted, marginBottom: 8, lineHeight: 1.4 }}>
-            reCAPTCHA Google indisponível neste domínio — usa a verificação abaixo.
+            {t('recaptcha.unavailable')}
           </p>
         )}
         <VerificacaoHumana onChange={onChange} key={resetKey} />

@@ -17,7 +17,7 @@ const FASES = [
   { max: 360,   nome: 'Lua Nova',        emoji: '🌑', desc: 'Renovação e semeadura de intenções. Momento de introspecção e novos começos silenciosos.' },
 ]
 
-export function calcularFaseLua(date = new Date()) {
+export function calcularFaseLua(date = new Date(), lang = 'pt') {
   const time = MakeTime(date)
   const sunLon  = Ecliptic(Position(Body.Sun,  time)).elon
   const moonLon = Ecliptic(Position(Body.Moon, time)).elon
@@ -26,8 +26,23 @@ export function calcularFaseLua(date = new Date()) {
 
   const fase = FASES.find(f => angulo < f.max) || FASES[FASES.length - 1]
 
+  const FASES_EN = [
+    { max: 22.5,  nome: 'New Moon',        emoji: '🌑', desc: 'Renewal and planting intentions. A time for introspection and quiet new beginnings.' },
+    { max: 67.5,  nome: 'Waxing Crescent', emoji: '🌒', desc: 'Energy of building and initial action. Plant the first steps with courage.' },
+    { max: 112.5, nome: 'First Quarter',   emoji: '🌓', desc: 'Decision point and overcoming obstacles. Adjust course with clarity.' },
+    { max: 157.5, nome: 'Waxing Gibbous',  emoji: '🌔', desc: 'Refinement and preparation. Adjust details before fullness.' },
+    { max: 202.5, nome: 'Full Moon',       emoji: '🌕', desc: 'Emotional culmination and revelation. What was sown manifests intensely.' },
+    { max: 247.5, nome: 'Waning Gibbous',  emoji: '🌖', desc: 'Sharing and gratitude. Integrate what you learned in the cycle.' },
+    { max: 292.5, nome: 'Last Quarter',    emoji: '🌗', desc: 'Liberation and conscious detachment. Release what has completed its cycle.' },
+    { max: 337.5, nome: 'Waning Crescent', emoji: '🌘', desc: 'Withdrawal and purification. Prepare the ground for the next rebirth.' },
+    { max: 360,   nome: 'New Moon',        emoji: '🌑', desc: 'Renewal and planting intentions. A time for introspection and quiet new beginnings.' },
+  ]
+
+  const lista = lang === 'en' ? FASES_EN : FASES
+  const faseFinal = lista.find(f => angulo < f.max) || lista[lista.length - 1]
+
   return {
-    ...fase,
+    ...faseFinal,
     angulo: angulo.toFixed(1),
     iluminacao,
     longitudeLua: moonLon,

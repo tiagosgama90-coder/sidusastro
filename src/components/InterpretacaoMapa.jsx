@@ -12,8 +12,12 @@ const CORES = {
   roxoClaro: 'rgba(139, 92, 246, 0.12)',
 }
 
-export function InterpretacaoMapa({ analise, estilosVidro }) {
+export function InterpretacaoMapa({ analise, estilosVidro, lang = 'pt' }) {
   if (!analise?.seccoes?.length) return null
+
+  const titulo = lang === 'en'
+    ? '✦ Professional Interpretation · Ephemerides · Placidus'
+    : '✦ Interpretação Profissional · Efemérides · Placidus'
 
   return (
     <div style={{ marginBottom: 14 }}>
@@ -21,7 +25,7 @@ export function InterpretacaoMapa({ analise, estilosVidro }) {
         fontSize: 11, color: CORES.dourado, textTransform: 'uppercase',
         letterSpacing: '0.1em', marginBottom: 12, fontWeight: 700,
       }}>
-        ✦ Interpretação Profissional · Efemérides · Placidus
+        {titulo}
       </div>
 
       {analise.seccoes.map(sec => (

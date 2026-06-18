@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { createPortal } from 'react-dom'
+import { useLanguage } from '../lib/i18n/LanguageContext.jsx'
 
 const CORES = {
   fundo: '#0B071E', dourado: '#DFB76C', douradoEscuro: '#B8944F',
@@ -7,15 +8,6 @@ const CORES = {
   brancoMuted: 'rgba(255,255,255,0.55)', vidro: 'rgba(255,255,255,0.06)',
   vidroBorda: 'rgba(223,183,108,0.22)',
 }
-
-const METODOS_STRIPE = [
-  { icone: '💳', nome: 'Cartão', desc: 'Visa, Mastercard, Amex' },
-  { icone: '📱', nome: 'MB Way', desc: 'Portugal — pagamento instantâneo' },
-  { icone: '🏧', nome: 'Multibanco', desc: 'Portugal — referência ou ATM' },
-  { icone: '🅿️', nome: 'PayPal', desc: 'Conta PayPal internacional' },
-  { icone: '💚', nome: 'PIX', desc: 'Brasil — quando disponível na tua região' },
-  { icone: '🔗', nome: 'Link / Apple Pay / Google Pay', desc: 'Checkout rápido Stripe' },
-]
 
 function productTypeFromValor(valor, descricao) {
   if (valor >= 4.99 || /vip|premium|subscri/i.test(descricao || '')) return 'premium'
@@ -29,21 +21,39 @@ async function criarSessaoStripe({ valor, descricao, userId, userEmail, productT
     body: JSON.stringify({ valor, descricao, userId, userEmail, productType }),
   })
   const data = await res.json()
-  if (!res.ok) throw new Error(data.error || 'Não foi possível iniciar o pagamento')
-  if (!data.url) throw new Error('URL de pagamento inválida')
+  if (!res.ok) throw new Error(data.error || 'sessionFail')
+  if (!data.url) throw new Error('invalidUrl')
   return data
 }
 
 export function ModalPagamento({ valor, descricao, userId, userEmail, onSucesso, onFechar }) {
+  const { t } = useLanguage()
   const [processando, setProcessando] = useState(false)
   const [erro, setErro] = useState(null)
 
   const productType = productTypeFromValor(valor, descricao)
   const isSubscription = productType === 'premium'
 
+  const METODOS_STRIPE = [
+    { icone: '💳', nome: t('pagamento.methods.card.nome'), desc: t('pagamento.methods.card.desc') },
+    { icone: '📱', nome: t('pagamento.methods.mbway.nome'), desc: t('pagamento.methods.mbway.desc') },
+    { icone: '🏧', nome: t('pagamento.methods.multibanco.nome'), desc: t('pagamento.methods.multibanco.desc') },
+    { icone: '🅿️', nome: t('pagamento.methods.paypal.nome'), desc: t('pagamento.methods.paypal.desc') },
+    { icone: '💚', nome: t('pagamento.methods.pix.nome'), desc: t('pagamento.methods.pix.desc') },
+    { icone: '🔗', nome: t('pagamento.methods.link.nome'), desc: t('pagamento.methods.link.desc') },
+  ]
+
+  const msgErro = (code) => {
+    const map = {
+      sessionFail: t('pagamento.sessionFail'),
+      invalidUrl: t('pagamento.invalidUrl'),
+    }
+    return map[code] || code || t('pagamento.stripeFail')
+  }
+
   const iniciarStripe = async () => {
     if (!userId) {
-      setErro('Precisas de iniciar sessão antes de pagar.')
+      setErro(t('pagamento.needLogin'))
       return
     }
     setErro(null)
@@ -60,7 +70,7 @@ export function ModalPagamento({ valor, descricao, userId, userEmail, onSucesso,
       }
       window.location.href = url
     } catch (e) {
-      setErro(e.message || 'Erro ao ligar ao Stripe')
+      setErro(msgErro(e.message))
       setProcessando(false)
     }
   }
@@ -69,11 +79,11 @@ export function ModalPagamento({ valor, descricao, userId, userEmail, onSucesso,
     <Overlay onFechar={onFechar}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
         <div>
-          <h3 style={{ margin: 0, color: CORES.dourado, fontSize: 18 }}>Pagamento seguro</h3>
+          <h3 style={{ margin: 0, color: CORES.dourado, fontSize: 18 }}>{t('pagamento.secureTitle')}</h3>
           <p style={{ margin: 0, color: CORES.brancoMuted, fontSize: 13 }}>{descricao}</p>
         </div>
         <div style={{ fontSize: 24, fontWeight: 700, color: CORES.dourado }}>
-          {valor.toFixed(2)} €{isSubscription ? <span style={{ fontSize: 12, fontWeight: 400 }}>/mês</span> : null}
+          {valor.toFixed(2)} €{isSubscription ? <span style={{ fontSize: 12, fontWeight: 400 }}>{t('common.perMonth')}</span> : null}
         </div>
       </div>
 
@@ -83,13 +93,13 @@ export function ModalPagamento({ valor, descricao, userId, userEmail, onSucesso,
       }}>
         <span style={{ fontSize: 22 }}>🔒</span>
         <p style={{ margin: 0, fontSize: 12, color: CORES.brancoMuted, lineHeight: 1.5 }}>
-          Processado por <strong style={{ color: CORES.branco }}>Stripe</strong>.
-          {isSubscription ? ' Subscrição mensal cancelável a qualquer momento.' : ' Pagamento único.'}
+          {t('pagamento.processedBy')} <strong style={{ color: CORES.branco }}>Stripe</strong>.
+          {isSubscription ? t('pagamento.subscriptionNote') : t('pagamento.oneTimeNote')}
         </p>
       </div>
 
       <p style={{ fontSize: 11, color: CORES.brancoMuted, marginBottom: 10, textTransform: 'uppercase', letterSpacing: '0.08em' }}>
-        Métodos disponíveis (conforme região)
+        {t('pagamento.methodsTitle')}
       </p>
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 20 }}>
         {METODOS_STRIPE.map(m => (
@@ -117,11 +127,11 @@ export function ModalPagamento({ valor, descricao, userId, userEmail, onSucesso,
         padding: '15px', cursor: processando ? 'default' : 'pointer',
         boxShadow: '0 4px 24px rgba(223, 183, 108, 0.35)',
       }}>
-        {processando ? '⏳ A redirecionar para Stripe…' : `Pagar ${valor.toFixed(2)} € — Stripe Checkout`}
+        {processando ? t('pagamento.redirecting') : t('pagamento.payBtn', { valor: valor.toFixed(2) })}
       </button>
 
       <p style={{ textAlign: 'center', fontSize: 10, color: CORES.brancoMuted, marginTop: 12, lineHeight: 1.5 }}>
-        MB Way, Multibanco, PayPal e PIX aparecem automaticamente se estiverem activos na tua conta Stripe e disponíveis para o teu país.
+        {t('pagamento.methodsFootnote')}
       </p>
     </Overlay>
   )
@@ -148,7 +158,6 @@ function Overlay({ children, onFechar }) {
   )
 }
 
-/** Verifica sessão Stripe após redirect de sucesso */
 export async function verificarSessaoPagamento(sessionId, userId) {
   const res = await fetch('/api/verify-session', {
     method: 'POST',
@@ -156,6 +165,6 @@ export async function verificarSessaoPagamento(sessionId, userId) {
     body: JSON.stringify({ sessionId, userId }),
   })
   const data = await res.json()
-  if (!res.ok) throw new Error(data.error || 'Erro na verificação')
+  if (!res.ok) throw new Error(data.error || 'verifyError')
   return data
 }

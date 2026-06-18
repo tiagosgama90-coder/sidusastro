@@ -1,6 +1,6 @@
 import { sendEmailVerification } from 'firebase/auth'
 import { auth } from './firebase'
-
+import { traduzirErroEmail as traduzirErroEmailFromAuth } from './i18n/authErrors.js'
 /** URL de retorno após clicar no link do e-mail (domínio tem de estar autorizado no Firebase). */
 export function emailActionSettings() {
   const origin = typeof window !== 'undefined'
@@ -53,16 +53,6 @@ export async function enviarEmailVerificacao(user) {
   }
 }
 
-export function traduzirErroEmail(code, message) {
-  const mapa = {
-    'auth/too-many-requests': 'Demasiados pedidos. Aguarda alguns minutos antes de reenviar.',
-    'auth/user-token-expired': 'Sessão expirada. Inicia sessão novamente.',
-    'auth/network-request-failed': 'Erro de rede. Verifica a ligação à internet.',
-    'auth/internal-error': 'Erro interno do Firebase. Confirma que o domínio está autorizado no Firebase Console.',
-    'auth/missing-email': 'E-mail em falta na conta.',
-  }
-  const texto = message || ''
-  if (/TOO_MANY_ATTEMPTS/i.test(texto)) return mapa['auth/too-many-requests']
-  if (/OPERATION_NOT_ALLOWED/i.test(texto)) return 'Verificação por e-mail não está activa no Firebase Console.'
-  return mapa[code] || texto || 'Não foi possível enviar o e-mail de confirmação.'
+export function traduzirErroEmail(code, message, lang = 'pt') {
+  return traduzirErroEmailFromAuth(code, message, lang)
 }

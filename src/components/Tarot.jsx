@@ -6,6 +6,8 @@
  * ─ 6 tipos de leitura · interpretações personalizadas com mapa natal
  */
 import { useState, useEffect } from 'react'
+import { useLanguage } from '../lib/i18n/LanguageContext.jsx'
+import { localizeArcano, TIPOS_EN, POSICOES_EN } from '../lib/i18n/tarotArcana.js'
 
 const CORES = {
   fundo:'#0B071E', dourado:'#DFB76C', douradoEscuro:'#B8944F',
@@ -84,7 +86,7 @@ function CartaSVG({ carta, size=90, virada=false }) {
       {[18,34,56,72].map(x=><text key={x} x={x} y="134" fontSize="6" fill="#DFB76C" opacity="0.35" textAnchor="middle">✦</text>)}
       {/* Invertida badge */}
       {carta.invertida && (
-        <text x="45" y="141" fontSize="5.5" fill="#EF4444" textAnchor="middle" opacity="0.9">INVERTIDA</text>
+        <text x="45" y="141" fontSize="5.5" fill="#EF4444" textAnchor="middle" opacity="0.9">{carta.invertidaLabel || (carta.invertida ? 'INVERTIDA' : '')}</text>
       )}
     </svg>
   )
@@ -253,34 +255,47 @@ const POSICOES={
 }
 
 // ── Interpretação final da leitura ────────────────────────────────────────────
-function interpretarLeitura(cartas, tipoId, pergunta, mapaNatal) {
+function interpretarLeitura(cartas, tipoId, pergunta, mapaNatal, lang = 'pt', t) {
+  const tr = (key, vars) => (t ? t(key, vars) : key)
   const astro = mapaNatal
-    ? `\nLendo o teu mapa natal: Sol em ${mapaNatal.solar?.nome}, Lua em ${mapaNatal.lunar?.nome}, Ascendente em ${mapaNatal.ascendente?.nome}.`
+    ? `\n${tr('tarot.natalContext', { solar: mapaNatal.solar?.nome, lunar: mapaNatal.lunar?.nome, asc: mapaNatal.ascendente?.nome })}`
     : ''
 
   if (tipoId === 'simnao') {
     const cartasPositivas = new Set([0,1,3,4,6,7,8,10,11,14,17,19,20,21])
     const positiva = !cartas[0].invertida && cartasPositivas.has(cartas[0].id)
     return {
-      resposta: positiva ? '🟢 SIM' : '🔴 NÃO',
+      resposta: positiva ? tr('tarot.yes') : tr('tarot.no'),
       detalhe: `${astro}\n\n${cartas[0].invertida ? cartas[0].sombra : cartas[0].luz}\n\n${cartas[0].conselho}`,
     }
   }
 
   const posicoes = POSICOES[tipoId] || []
   const linhas = cartas.map((c,i) => {
-    const pos = posicoes[i] || `Carta ${i+1}`
+    const pos = posicoes[i] || tr('tarot.cardN', { n: i + 1 })
+    const revLabel = tr('tarot.reversedLabel')
     const txt = c.invertida ? c.sombra : c.luz
-    return `**${pos}**: ${c.nome} ${c.invertida?'(Invertida)':''}\n${txt}`
+    return `**${pos}**: ${c.nome} ${c.invertida ? revLabel : ''}\n${txt}`
   })
 
   let conclusao = ''
   if (tipoId === 'amor') {
-    conclusao = `\n\n✦ Síntese: O conjunto das cartas revela ${cartas[0].palavras[0]} como tema central da vossa ligação. ${cartas[2].invertida?'Existem desafios a resolver antes de avançar.':'O caminho está aberto para algo significativo.'}`
+    conclusao = `\n\n${tr('tarot.synthesisAmor', {
+      theme: cartas[0].palavras[0],
+      outcome: cartas[2].invertida ? tr('tarot.synthesisAmorChallenge') : tr('tarot.synthesisAmorOpen'),
+    })}`
   } else if (tipoId === 'geral') {
-    conclusao = `\n\n✦ Síntese: O teu ciclo de transformação tem raízes no ${cartas[0].nome.toLowerCase()}, cresce no presente através de ${cartas[1].palavras[0]}, e aponta para ${cartas[2].palavras[1]}.`
+    conclusao = `\n\n${tr('tarot.synthesisGeral', {
+      root: cartas[0].nome.toLowerCase(),
+      present: cartas[1].palavras[0],
+      future: cartas[2].palavras[1],
+    })}`
   } else if (tipoId==='cigano'||tipoId==='oraculo') {
-    conclusao = `\n\n✦ Síntese: As cinco cartas formam um mapa: o ponto de partida é ${cartas[0].nome}, o destino é ${cartas[4].nome}. O caminho entre eles exige ${cartas[2].palavras[0]}.`
+    conclusao = `\n\n${tr('tarot.synthesisCigano', {
+      start: cartas[0].nome,
+      end: cartas[4].nome,
+      path: cartas[2].palavras[0],
+    })}`
   }
 
   return { resposta: null, detalhe: `${astro}\n\n${linhas.join('\n\n')}${conclusao}` }
@@ -288,6 +303,7 @@ function interpretarLeitura(cartas, tipoId, pergunta, mapaNatal) {
 
 // ── Componente principal ──────────────────────────────────────────────────────
 export function EcraTarot({ mapaNatal, isPremium, userId, leiturasTarotUsadas = 0, onLeituraGratisUsada, onPagar, onVoltar, onPremium }) {
+  const { lang, t } = useLanguage()
   const [fase, setFase]           = useState('seleccionar')
   const [tipoId, setTipoId]       = useState(null)
   const [pergunta, setPergunta]   = useState('')
@@ -307,7 +323,10 @@ export function EcraTarot({ mapaNatal, isPremium, userId, leiturasTarotUsadas = 
   }, [])
 
   const tipo = TIPOS.find(t=>t.id===tipoId)
-  const posicoes = POSICOES[tipoId]||[]
+  const tipoLabel = tipo && lang === 'en' && TIPOS_EN[tipo.id]
+    ? { ...tipo, nome: TIPOS_EN[tipo.id].nome, desc: TIPOS_EN[tipo.id].desc }
+    : tipo
+  const posicoes = (lang === 'en' ? POSICOES_EN[tipoId] : null) || POSICOES[tipoId] || []
   const usadas = leiturasGratisUsadas(userId, leiturasTarotUsadas)
   const restantes = leiturasGratisRestantes(isPremium, userId, leiturasTarotUsadas)
   const podeLer = podeLerGratis(isPremium, userId, leiturasTarotUsadas)
@@ -356,7 +375,7 @@ export function EcraTarot({ mapaNatal, isPremium, userId, leiturasTarotUsadas = 
     if(reveladas[i]) return
     const novo = [...reveladas]; novo[i]=true; setReveladas(novo)
     if(novo.every(Boolean)) {
-      setResultado(interpretarLeitura(cartas, tipoId, pergunta, mapaNatal))
+      setResultado(interpretarLeitura(cartas, tipoId, pergunta, mapaNatal, lang, t))
     }
   }
 
@@ -374,18 +393,18 @@ export function EcraTarot({ mapaNatal, isPremium, userId, leiturasTarotUsadas = 
 
   // ────────────────────────── RENDER ────────────────────────────────────────
   if (fase==='seleccionar') return (
-    <TelaSeleccionar tipos={TIPOS} onSeleccionar={iniciarLeitura} isPremium={isPremium} gratisEsgotada={gratisEsgotada} restantes={restantes} tick={tick} onVoltar={onVoltar}/>
+    <TelaSeleccionar tipos={TIPOS.map(t => lang === 'en' && TIPOS_EN[t.id] ? { ...t, nome: TIPOS_EN[t.id].nome, desc: TIPOS_EN[t.id].desc } : t)} lang={lang} t={t} onSeleccionar={iniciarLeitura} isPremium={isPremium} gratisEsgotada={gratisEsgotada} restantes={restantes} tick={tick} onVoltar={onVoltar}/>
   )
 
   if (fase==='pergunta') return (
-    <TelaPergunta tipo={tipo} pergunta={pergunta} setPergunta={setPergunta}
+    <TelaPergunta tipo={tipoLabel} lang={lang} t={t} pergunta={pergunta} setPergunta={setPergunta}
       onVoltar={voltar} podeLer={podeLer} isPremium={isPremium} restantes={restantes}
       onComecar={() => {
         if (isPremium || podeLer) {
           setLeituraPaga(false)
           comecarEmbaralhar()
         } else {
-          onPagar('Leitura de Tarot · ' + (tipo?.nome || ''), 2, () => {
+          onPagar(t('tarot.payDesc', { tipo: tipo?.nome || '' }), 2, () => {
             setLeituraPaga(true)
             comecarEmbaralhar()
           })
@@ -396,15 +415,15 @@ export function EcraTarot({ mapaNatal, isPremium, userId, leiturasTarotUsadas = 
     />
   )
 
-  if (embaralhando) return <TelaEmbaralhar/>
+  if (embaralhando) return <TelaEmbaralhar t={t}/>
 
   if (distribuindo>=0) return (
-    <TelaDistribuir cartas={cartas} posicoes={posicoes} distribuindo={distribuindo}/>
+    <TelaDistribuir cartas={cartas} posicoes={posicoes} distribuindo={distribuindo} t={t}/>
   )
 
   if (fase==='revelar') return (
-    <TelaRevelar cartas={cartas} reveladas={reveladas} onRevelar={revelarCarta}
-      posicoes={posicoes} tipo={tipo} pergunta={pergunta} resultado={resultado}
+    <TelaRevelar cartas={cartas.map(c => localizeArcano(c, lang))} reveladas={reveladas} onRevelar={revelarCarta}
+      posicoes={posicoes} tipo={tipoLabel} lang={lang} t={t} pergunta={pergunta} resultado={resultado}
       onVoltar={voltar} isPremium={isPremium} onPagar={onPagar}/>
   )
 
@@ -412,13 +431,13 @@ export function EcraTarot({ mapaNatal, isPremium, userId, leiturasTarotUsadas = 
 }
 
 // ── Sub-telas ─────────────────────────────────────────────────────────────────
-function TelaSeleccionar({ tipos, onSeleccionar, isPremium, gratisEsgotada, restantes, tick, onVoltar }) {
+function TelaSeleccionar({ tipos, onSeleccionar, isPremium, gratisEsgotada, restantes, tick, onVoltar, t }) {
   void tick
   return (
     <div style={{ padding:'20px 20px 110px' }}>
       {onVoltar && (
         <button type="button" onClick={onVoltar} style={{ background:'none', border:'none', color:CORES.dourado, cursor:'pointer', marginBottom:12, fontSize:13 }}>
-          ← Voltar
+          {t('common.back')}
         </button>
       )}
       <div style={{
@@ -426,40 +445,40 @@ function TelaSeleccionar({ tipos, onSeleccionar, isPremium, gratisEsgotada, rest
         border:`1px solid rgba(223,183,108,0.35)`, borderRadius:14, padding:'14px 18px', marginBottom:16,
       }}>
         <div style={{fontSize:10,color:CORES.dourado,textTransform:'uppercase',letterSpacing:'0.12em',marginBottom:4,fontWeight:700}}>
-          ✦ Tarot Online
+          {t('tarot.title')}
         </div>
-        <h2 style={{fontSize:20,fontWeight:700,color:CORES.branco,margin:'0 0 4px'}}>Arcanos Virtuais</h2>
-        <p style={{fontSize:12,color:CORES.brancoMuted,margin:0}}>6 baralhos · interpretação personalizada com o teu mapa natal</p>
+        <h2 style={{fontSize:20,fontWeight:700,color:CORES.branco,margin:'0 0 4px'}}>{t('tarot.subtitle')}</h2>
+        <p style={{fontSize:12,color:CORES.brancoMuted,margin:0}}>{t('tarot.desc')}</p>
       </div>
       {!isPremium && (
         <div style={{background:'rgba(223,183,108,0.07)',border:`1px solid rgba(223,183,108,0.25)`,borderRadius:10,padding:'8px 14px',marginBottom:18,display:'flex',alignItems:'center',gap:8}}>
           <span style={{fontSize:16}}>✦</span>
           <span style={{fontSize:12,color:CORES.brancoMuted}}>
             {gratisEsgotada
-              ? <><b style={{color:'#EF4444'}}>3 leituras grátis esgotadas</b> · 2 € por leitura ou Premium 4,99 €/mês</>
-              : <><b style={{color:CORES.dourado}}>{restantes} leitura{restantes !== 1 ? 's' : ''} grátis</b> · depois 2 € ou Premium</>}
+              ? <><b style={{color:'#EF4444'}}>{t('tarot.freeExhausted')}</b>{t('tarot.thenPaid')}</>
+              : <><b style={{color:CORES.dourado}}>{restantes === 1 ? t('tarot.freeRemaining', { count: restantes }) : t('tarot.freeRemainingPlural', { count: restantes })}</b>{t('tarot.thenPaidShort')}</>}
           </span>
         </div>
       )}
       <div style={{display:'flex',flexDirection:'column',gap:10}}>
-        {tipos.map(t=>(
-          <button key={t.id} type="button" onClick={()=>onSeleccionar(t)} style={{
+        {tipos.map(tipo=>(
+          <button key={tipo.id} type="button" onClick={()=>onSeleccionar(tipo)} style={{
             background: 'rgba(255,255,255,0.04)',
             border:'1px solid rgba(223,183,108,0.18)',
             borderRadius:14,padding:'15px 18px',cursor:'pointer',textAlign:'left',
             display:'flex',alignItems:'center',gap:14,
           }}>
-            <span style={{fontSize:28}}>{t.icone}</span>
+            <span style={{fontSize:28}}>{tipo.icone}</span>
             <div style={{flex:1}}>
-              <div style={{fontSize:14,fontWeight:600,color:CORES.branco}}>{t.nome}</div>
-              <div style={{fontSize:11,color:CORES.brancoMuted}}>{t.desc}</div>
+              <div style={{fontSize:14,fontWeight:600,color:CORES.branco}}>{tipo.nome}</div>
+              <div style={{fontSize:11,color:CORES.brancoMuted}}>{tipo.desc}</div>
               {!isPremium && (
                 <div style={{fontSize:10,marginTop:4,color: gratisEsgotada ? '#F87171' : '#34D399'}}>
-                  {gratisEsgotada ? '✗ Pago · 2 € ou Premium' : `✓ Incluído nas ${MAX_LEITURAS_GRATIS} leituras grátis`}
+                  {gratisEsgotada ? t('tarot.paidOption') : t('tarot.includedFree', { max: MAX_LEITURAS_GRATIS })}
                 </div>
               )}
             </div>
-            <div style={{fontSize:11,color:CORES.dourado,fontWeight:700}}>{t.n} carta{t.n>1?'s':''}</div>
+            <div style={{fontSize:11,color:CORES.dourado,fontWeight:700}}>{tipo.n} {tipo.n>1 ? t('tarot.cardsPlural', { n: tipo.n }) : t('tarot.cards', { n: tipo.n })}</div>
           </button>
         ))}
       </div>
@@ -467,10 +486,10 @@ function TelaSeleccionar({ tipos, onSeleccionar, isPremium, gratisEsgotada, rest
   )
 }
 
-function TelaPergunta({ tipo, pergunta, setPergunta, onVoltar, podeLer, isPremium, restantes, onComecar, onPagar, onComecarPago, onPremium }) {
+function TelaPergunta({ tipo, pergunta, setPergunta, onVoltar, podeLer, isPremium, restantes, onComecar, onPagar, onComecarPago, onPremium, t }) {
   return (
     <div style={{padding:'28px 20px 110px'}}>
-      <button type="button" onClick={onVoltar} style={{background:'none',border:'none',color:CORES.brancoMuted,cursor:'pointer',fontSize:13,marginBottom:20,padding:0}}>← Voltar</button>
+      <button type="button" onClick={onVoltar} style={{background:'none',border:'none',color:CORES.brancoMuted,cursor:'pointer',fontSize:13,marginBottom:20,padding:0}}>{t('common.back')}</button>
       <div style={{textAlign:'center',marginBottom:28}}>
         <div style={{fontSize:44}}>{tipo?.icone}</div>
         <h2 style={{color:CORES.dourado,margin:'8px 0 4px'}}>{tipo?.nome}</h2>
@@ -478,26 +497,25 @@ function TelaPergunta({ tipo, pergunta, setPergunta, onVoltar, podeLer, isPremiu
       </div>
       <div style={{background:'rgba(255,255,255,0.04)',borderRadius:14,border:`1px solid rgba(223,183,108,0.2)`,padding:18,marginBottom:20}}>
         <label style={{fontSize:11,color:CORES.dourado,textTransform:'uppercase',letterSpacing:'0.08em',display:'block',marginBottom:10}}>
-          Qual é a tua questão? (opcional)
+          {t('tarot.questionLabel')}
         </label>
-        <textarea value={pergunta} onChange={e=>setPergunta(e.target.value)} placeholder="Escreve a tua pergunta ao Universo..." maxLength={200}
+        <textarea value={pergunta} onChange={e=>setPergunta(e.target.value)} placeholder={t('tarot.questionPlaceholder')} maxLength={200}
           style={{width:'100%',background:'rgba(255,255,255,0.05)',border:`1px solid rgba(223,183,108,0.2)`,borderRadius:10,color:CORES.branco,fontSize:14,padding:12,resize:'none',height:80,boxSizing:'border-box',outline:'none'}}/>
       </div>
       {isPremium ? (
-        <button type="button" onClick={onComecar} style={{...btnDourado,width:'100%'}}>✦ Baralhar e Revelar</button>
+        <button type="button" onClick={onComecar} style={{...btnDourado,width:'100%'}}>{t('tarot.shuffleReveal')}</button>
       ) : podeLer ? (
         <button type="button" onClick={onComecar} style={{...btnDourado,width:'100%'}}>
-          ✦ Baralhar · leitura gratuita ({restantes} restante{restantes !== 1 ? 's' : ''})
+          {restantes === 1 ? t('tarot.shuffleFree', { count: restantes }) : t('tarot.shuffleFreePlural', { count: restantes })}
         </button>
       ) : (
         <div style={{background:'rgba(223,183,108,0.06)',border:`1px solid ${CORES.dourado}`,borderRadius:14,padding:20,textAlign:'center'}}>
-          <div style={{fontSize:28,fontWeight:700,color:CORES.dourado,marginBottom:8}}>2,00 €</div>
+          <div style={{fontSize:28,fontWeight:700,color:CORES.dourado,marginBottom:8}}>{t('tarot.price')}</div>
           <p style={{fontSize:13,color:CORES.brancoMuted,marginBottom:16,lineHeight:1.5}}>
-            Já usaste as tuas <b style={{color:CORES.branco}}>{MAX_LEITURAS_GRATIS} leituras gratuitas</b> de Tarot.
-            Paga 2 € por esta leitura ou activa o <b style={{color:CORES.dourado}}>Sidus Premium (4,99 €/mês)</b> para Tarot ilimitado + Mapa Astral completo em PDF.
+            {t('tarot.paywallText', { max: MAX_LEITURAS_GRATIS })}
           </p>
-          <button type="button" onClick={()=>onPagar('Leitura de Tarot · ' + (tipo?.nome || ''), 2, onComecarPago)} style={{...btnDourado,width:'100%',marginBottom:10}}>
-            💳 Pagar 2 € · Uma leitura
+          <button type="button" onClick={()=>onPagar(t('tarot.payDesc', { tipo: tipo?.nome || '' }), 2, onComecarPago)} style={{...btnDourado,width:'100%',marginBottom:10}}>
+            {t('tarot.payOne')}
           </button>
           {onPremium && (
             <button type="button" onClick={onPremium} style={{
@@ -505,17 +523,17 @@ function TelaPergunta({ tipo, pergunta, setPergunta, onVoltar, podeLer, isPremiu
               background:'rgba(139,92,246,0.15)',border:`1px solid rgba(139,92,246,0.4)`,
               color:CORES.dourado,fontSize:14,fontWeight:700,cursor:'pointer',
             }}>
-              ✦ Sidus Premium 4,99 €/mês · Mapa completo + Tarot ilimitado
+              {t('tarot.premiumBtn')}
             </button>
           )}
-          <p style={{fontSize:11,color:CORES.brancoMuted}}>Cartão · MB Way · Multibanco · PayPal · PIX — Stripe</p>
+          <p style={{fontSize:11,color:CORES.brancoMuted}}>{t('tarot.paymentMethods')}</p>
         </div>
       )}
     </div>
   )
 }
 
-function TelaEmbaralhar() {
+function TelaEmbaralhar({ t }) {
   return (
     <div style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',minHeight:'50vh',padding:20,gap:20}}>
       <style>{`
@@ -534,17 +552,17 @@ function TelaEmbaralhar() {
         ))}
       </div>
       <p style={{fontSize:15,color:CORES.brancoMuted,fontStyle:'italic',textAlign:'center',animation:'float 2s ease-in-out infinite'}}>
-        A baralhar as cartas do destino...
+        {t('tarot.shuffling')}
       </p>
     </div>
   )
 }
 
-function TelaDistribuir({ cartas, posicoes, distribuindo }) {
+function TelaDistribuir({ cartas, posicoes, distribuindo, t }) {
   return (
     <div style={{padding:'30px 20px',textAlign:'center'}}>
       <style>{`@keyframes deal{from{transform:translateY(-60px) scale(0.7);opacity:0}to{transform:translateY(0) scale(1);opacity:1}}`}</style>
-      <p style={{fontSize:13,color:CORES.brancoMuted,marginBottom:20}}>A distribuir as cartas...</p>
+      <p style={{fontSize:13,color:CORES.brancoMuted,marginBottom:20}}>{t('tarot.dealing')}</p>
       <div style={{display:'flex',justifyContent:'center',flexWrap:'wrap',gap:10}}>
         {posicoes.map((pos,i)=>(
           <div key={i} style={{textAlign:'center',
@@ -560,7 +578,7 @@ function TelaDistribuir({ cartas, posicoes, distribuindo }) {
   )
 }
 
-function TelaRevelar({ cartas, reveladas, onRevelar, posicoes, tipo, pergunta, resultado, onVoltar, isPremium, onPagar }) {
+function TelaRevelar({ cartas, reveladas, onRevelar, posicoes, tipo, pergunta, resultado, onVoltar, isPremium, onPagar, t }) {
   const todasReveladas = reveladas.every(Boolean)
 
   return (
@@ -590,7 +608,7 @@ function TelaRevelar({ cartas, reveladas, onRevelar, posicoes, tipo, pergunta, r
               {reveladas[i] ? <CartaSVG carta={c} size={80}/> : <CartaSVG carta={c} virada size={80}/>}
             </div>
             <div style={{fontSize:9,color:CORES.brancoMuted,marginTop:4,width:80,lineHeight:1.3}}>
-              {reveladas[i] ? (c.invertida?'↓ Inv.':'↑ Dir.') : posicoes[i]}
+              {reveladas[i] ? (c.invertida ? t('tarot.reversedShort') : t('tarot.uprightShort')) : posicoes[i]}
             </div>
           </div>
         ))}
@@ -598,7 +616,7 @@ function TelaRevelar({ cartas, reveladas, onRevelar, posicoes, tipo, pergunta, r
 
       {/* Dica */}
       {!todasReveladas && (
-        <p style={{textAlign:'center',fontSize:12,color:CORES.brancoMuted,marginBottom:16}}>✦ Toca numa carta para a revelar</p>
+        <p style={{textAlign:'center',fontSize:12,color:CORES.brancoMuted,marginBottom:16}}>{t('tarot.tapToReveal')}</p>
       )}
 
       {/* Interpretações individuais após revelar */}
@@ -609,7 +627,7 @@ function TelaRevelar({ cartas, reveladas, onRevelar, posicoes, tipo, pergunta, r
             <div>
               <div style={{fontSize:8,color:CORES.brancoMuted,textTransform:'uppercase',letterSpacing:'0.1em',marginBottom:4}}>{posicoes[i]}</div>
               <div style={{fontSize:16,fontWeight:700,color:CORES.branco,lineHeight:1.2}}>
-                {c.nome} {c.invertida&&<span style={{fontSize:11,color:'#EF4444'}}>Invertida</span>}
+                {c.nome} {c.invertida&&<span style={{fontSize:11,color:'#EF4444'}}>{t('tarot.reversed')}</span>}
               </div>
               <div style={{display:'flex',gap:5,flexWrap:'wrap',marginTop:6}}>
                 {c.palavras.map(p=>(
@@ -640,7 +658,7 @@ function TelaRevelar({ cartas, reveladas, onRevelar, posicoes, tipo, pergunta, r
       )}
 
       <button type="button" onClick={onVoltar} style={{width:'100%',marginTop:16,background:'rgba(255,255,255,0.04)',border:`1px solid rgba(255,255,255,0.1)`,borderRadius:12,color:CORES.brancoMuted,fontSize:14,padding:'12px',cursor:'pointer'}}>
-        Nova leitura
+        {t('tarot.newReading')}
       </button>
     </div>
   )
