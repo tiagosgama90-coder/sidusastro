@@ -2907,7 +2907,7 @@ export default function App() {
       case 'mapa':
         return <MapaAstral mapaNatal={mapaNatal} dados={dados} planetasNascimento={planetasNascimento} isPremium={isPremium} onUpgrade={() => irPara('paywall')} onMapaGerado={handleMapaGerado} isDesktop={isDesktop} motorAstro={motorAstro} />
       case 'tarot':
-        return <EcraTarot mapaNatal={mapaNatal} isPremium={isPremium} onPagar={abrirPagamento} onVoltar={() => irPara('dashboard')} onPremium={() => irPara('paywall')} />
+        return <EcraTarot mapaNatal={mapaNatal} isPremium={isPremium} userId={utilizador?.uid} onPagar={abrirPagamento} onVoltar={() => irPara('dashboard')} onPremium={() => irPara('paywall')} />
       case 'ferramentas':
         if (ferramentaAberta === 'bussola')
           return <BussolaCosmica mapaNatal={mapaNatal} onVoltar={() => setFerramentaAberta(null)} />

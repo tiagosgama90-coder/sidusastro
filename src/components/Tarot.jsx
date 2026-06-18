@@ -2,7 +2,7 @@
  * Sistema de Tarot Sidus
  * ─ Animação de embaralhar (fan + shuffle)
  * ─ Arte SVG única para cada Arcano
- * ─ 3 leituras gratuitas/dia · depois 2 € por leitura ou Premium
+ * ─ 1 tentativa gratuita (total) · depois 2 € por leitura ou Premium
  * ─ 6 tipos de leitura · interpretações personalizadas com mapa natal
  */
 import { useState, useEffect } from 'react'
@@ -197,41 +197,36 @@ function embaralhar(arr) {
   return a
 }
 
-// ── 1 leitura gratuita por baralho (Diária renova cada dia) ─────────────────
-const STORAGE_PREFIX = 'sidus_tarot_free_v2_'
+// ── 1 tentativa gratuita total por conta (localStorage) ─────────────────────
+const STORAGE_KEY = 'sidus_tarot_free_v3'
 
-function chaveLeitura(tipoId) {
-  if (tipoId === 'diaria') {
-    const hoje = new Date()
-    const data = `${hoje.getFullYear()}-${String(hoje.getMonth() + 1).padStart(2, '0')}-${String(hoje.getDate()).padStart(2, '0')}`
-    return `${STORAGE_PREFIX}diaria_${data}`
-  }
-  return `${STORAGE_PREFIX}${tipoId}`
+function chaveTentativaGratis(userId) {
+  return userId ? `${STORAGE_KEY}_${userId}` : STORAGE_KEY
 }
 
-function tipoJaUsado(tipoId) {
-  if (!tipoId) return false
+function tentativaGratisUsada(userId) {
   try {
-    return localStorage.getItem(chaveLeitura(tipoId)) === '1'
+    if (localStorage.getItem(chaveTentativaGratis(userId)) === '1') return true
+    // Migração v2: quem já usou leitura grátis antiga não ganha outra
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i)
+      if (key?.startsWith('sidus_tarot_free_v2_')) return true
+    }
+    return false
   } catch {
     return false
   }
 }
 
-function registarTipoUsado(tipoId) {
-  if (!tipoId) return
+function marcarTentativaGratisUsada(userId) {
   try {
-    localStorage.setItem(chaveLeitura(tipoId), '1')
+    localStorage.setItem(chaveTentativaGratis(userId), '1')
   } catch { /* quota ou modo privado */ }
 }
 
-function contarTiposDisponiveis(tipos) {
-  return tipos.filter(t => !tipoJaUsado(t.id)).length
-}
-
-function podeLerTipo(tipoId, isPremium) {
+function podeLerGratis(isPremium, userId) {
   if (isPremium === true) return true
-  return !tipoJaUsado(tipoId)
+  return !tentativaGratisUsada(userId)
 }
 
 const TIPOS = [
@@ -286,7 +281,7 @@ function interpretarLeitura(cartas, tipoId, pergunta, mapaNatal) {
 }
 
 // ── Componente principal ──────────────────────────────────────────────────────
-export function EcraTarot({ mapaNatal, isPremium, onPagar, onVoltar, onPremium }) {
+export function EcraTarot({ mapaNatal, isPremium, userId, onPagar, onVoltar, onPremium }) {
   const [fase, setFase]           = useState('seleccionar')
   const [tipoId, setTipoId]       = useState(null)
   const [pergunta, setPergunta]   = useState('')
@@ -307,12 +302,22 @@ export function EcraTarot({ mapaNatal, isPremium, onPagar, onVoltar, onPremium }
 
   const tipo = TIPOS.find(t=>t.id===tipoId)
   const posicoes = POSICOES[tipoId]||[]
-  const podeLer = tipoId ? podeLerTipo(tipoId, isPremium) : false
-  const tiposDisponiveis = contarTiposDisponiveis(TIPOS)
+  const podeLer = podeLerGratis(isPremium, userId)
+  const gratisEsgotada = !isPremium && tentativaGratisUsada(userId)
 
   const refrescar = () => setTick(n => n + 1)
 
   const iniciarLeitura = (t) => {
+    if (!isPremium && tentativaGratisUsada(userId)) {
+      setLeituraPaga(false)
+      setTipoId(t.id)
+      setPergunta('')
+      setCartas([])
+      setReveladas([])
+      setResultado(null)
+      setFase('pergunta')
+      return
+    }
     setLeituraPaga(false)
     setTipoId(t.id)
     setPergunta('')
@@ -324,6 +329,10 @@ export function EcraTarot({ mapaNatal, isPremium, onPagar, onVoltar, onPremium }
 
   const comecarEmbaralhar = () => {
     if (!tipo?.n) return
+    if (!isPremium && !leituraPaga && !tentativaGratisUsada(userId)) {
+      marcarTentativaGratisUsada(userId)
+      refrescar()
+    }
     setEmbaralhando(true)
     setTimeout(()=>{
       const deck = embaralhar(baralhoCompleto())
@@ -349,18 +358,10 @@ export function EcraTarot({ mapaNatal, isPremium, onPagar, onVoltar, onPremium }
     const novo = [...reveladas]; novo[i]=true; setReveladas(novo)
     if(novo.every(Boolean)) {
       setResultado(interpretarLeitura(cartas, tipoId, pergunta, mapaNatal))
-      if (!isPremium && tipoId && !leituraPaga) {
-        registarTipoUsado(tipoId)
-        refrescar()
-      }
     }
   }
 
   const voltar = () => {
-    // Se baralhou mas não completou, consome a tentativa grátis (evita abuso)
-    if (!isPremium && tipoId && cartas.length > 0 && !resultado && !leituraPaga) {
-      registarTipoUsado(tipoId)
-    }
     setLeituraPaga(false)
     setFase('seleccionar')
     setTipoId(null)
@@ -374,7 +375,7 @@ export function EcraTarot({ mapaNatal, isPremium, onPagar, onVoltar, onPremium }
 
   // ────────────────────────── RENDER ────────────────────────────────────────
   if (fase==='seleccionar') return (
-    <TelaSeleccionar tipos={TIPOS} onSeleccionar={iniciarLeitura} isPremium={isPremium} tick={tick} onVoltar={onVoltar}/>
+    <TelaSeleccionar tipos={TIPOS} onSeleccionar={iniciarLeitura} isPremium={isPremium} gratisEsgotada={gratisEsgotada} tick={tick} onVoltar={onVoltar}/>
   )
 
   if (fase==='pergunta') return (
@@ -412,10 +413,8 @@ export function EcraTarot({ mapaNatal, isPremium, onPagar, onVoltar, onPremium }
 }
 
 // ── Sub-telas ─────────────────────────────────────────────────────────────────
-function TelaSeleccionar({ tipos, onSeleccionar, isPremium, tick, onVoltar }) {
+function TelaSeleccionar({ tipos, onSeleccionar, isPremium, gratisEsgotada, tick, onVoltar }) {
   void tick
-  const disponiveis = contarTiposDisponiveis(tipos)
-  const hoje = new Date().toLocaleDateString('pt-PT')
   return (
     <div style={{ padding:'20px 20px 110px' }}>
       {onVoltar && (
@@ -437,35 +436,33 @@ function TelaSeleccionar({ tipos, onSeleccionar, isPremium, tick, onVoltar }) {
         <div style={{background:'rgba(223,183,108,0.07)',border:`1px solid rgba(223,183,108,0.25)`,borderRadius:10,padding:'8px 14px',marginBottom:18,display:'flex',alignItems:'center',gap:8}}>
           <span style={{fontSize:16}}>✦</span>
           <span style={{fontSize:12,color:CORES.brancoMuted}}>
-            {disponiveis > 0
-              ? <><b style={{color:CORES.dourado}}>1 leitura grátis</b> por baralho · {disponiveis} disponível{disponiveis>1?'eis':''} · Leitura Diária renova {hoje}</>
-              : <><b style={{color:'#EF4444'}}>Leituras gratuitas esgotadas</b> · 2 € por leitura ou Premium 4,99 €/mês</>}
+            {gratisEsgotada
+              ? <><b style={{color:'#EF4444'}}>Tentativa grátis já usada</b> · 2 € por leitura ou Premium 4,99 €/mês</>
+              : <><b style={{color:CORES.dourado}}>1 tentativa grátis</b> (única) · depois 2 € ou Premium</>}
           </span>
         </div>
       )}
       <div style={{display:'flex',flexDirection:'column',gap:10}}>
-        {tipos.map(t=>{
-          const usado = !isPremium && tipoJaUsado(t.id)
-          return (
+        {tipos.map(t=>(
           <button key={t.id} type="button" onClick={()=>onSeleccionar(t)} style={{
-            background: usado ? 'rgba(255,255,255,0.02)' : 'rgba(255,255,255,0.04)',
-            border:`1px solid ${usado ? 'rgba(239,68,68,0.25)' : 'rgba(223,183,108,0.18)'}`,
+            background: 'rgba(255,255,255,0.04)',
+            border:'1px solid rgba(223,183,108,0.18)',
             borderRadius:14,padding:'15px 18px',cursor:'pointer',textAlign:'left',
-            display:'flex',alignItems:'center',gap:14,opacity: usado ? 0.75 : 1,
+            display:'flex',alignItems:'center',gap:14,
           }}>
             <span style={{fontSize:28}}>{t.icone}</span>
             <div style={{flex:1}}>
               <div style={{fontSize:14,fontWeight:600,color:CORES.branco}}>{t.nome}</div>
               <div style={{fontSize:11,color:CORES.brancoMuted}}>{t.desc}</div>
               {!isPremium && (
-                <div style={{fontSize:10,marginTop:4,color: usado ? '#F87171' : '#34D399'}}>
-                  {usado ? '✗ Grátis já usada · 2 € ou Premium' : '✓ 1 tentativa gratuita disponível'}
+                <div style={{fontSize:10,marginTop:4,color: gratisEsgotada ? '#F87171' : '#34D399'}}>
+                  {gratisEsgotada ? '✗ Pago · 2 € ou Premium' : '✓ Podes usar na tua tentativa grátis'}
                 </div>
               )}
             </div>
             <div style={{fontSize:11,color:CORES.dourado,fontWeight:700}}>{t.n} carta{t.n>1?'s':''}</div>
           </button>
-        )})}
+        ))}
       </div>
     </div>
   )
@@ -491,13 +488,13 @@ function TelaPergunta({ tipo, pergunta, setPergunta, onVoltar, podeLer, isPremiu
         <button type="button" onClick={onComecar} style={{...btnDourado,width:'100%'}}>✦ Baralhar e Revelar</button>
       ) : podeLer ? (
         <button type="button" onClick={onComecar} style={{...btnDourado,width:'100%'}}>
-          ✦ Baralhar · 1ª leitura gratuita deste baralho
+          ✦ Baralhar · tentativa gratuita (única)
         </button>
       ) : (
         <div style={{background:'rgba(223,183,108,0.06)',border:`1px solid ${CORES.dourado}`,borderRadius:14,padding:20,textAlign:'center'}}>
           <div style={{fontSize:28,fontWeight:700,color:CORES.dourado,marginBottom:8}}>2,00 €</div>
           <p style={{fontSize:13,color:CORES.brancoMuted,marginBottom:16,lineHeight:1.5}}>
-            Já usaste a tua leitura gratuita de <b style={{color:CORES.branco}}>{tipo?.nome}</b>.
+            Já usaste a tua <b style={{color:CORES.branco}}>única tentativa gratuita</b> de Tarot.
             Paga 2 € por esta leitura ou activa o <b style={{color:CORES.dourado}}>Sidus Premium (4,99 €/mês)</b> para Tarot ilimitado + Mapa Astral completo em PDF.
           </p>
           <button type="button" onClick={()=>onPagar('Leitura de Tarot · ' + (tipo?.nome || ''), 2, onComecarPago)} style={{...btnDourado,width:'100%',marginBottom:10}}>
