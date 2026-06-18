@@ -1,6 +1,6 @@
 /** Mapeamento passo interno ↔ URL pública (SEO e partilha). */
 export const PASSO_TO_PATH = {
-  dashboard: '/',
+  home: '/home',
   mapa: '/mapaastral',
   tarot: '/tarot',
   ferramentas: '/ferramentas',
@@ -16,14 +16,15 @@ const PATH_TO_PASSO = Object.fromEntries(
 )
 
 /** Aliases legíveis */
-PATH_TO_PASSO['/inicio'] = 'dashboard'
+PATH_TO_PASSO['/'] = 'home'
+PATH_TO_PASSO['/inicio'] = 'home'
 PATH_TO_PASSO['/mapa'] = 'mapa'
 PATH_TO_PASSO['/chat'] = 'chat'
 PATH_TO_PASSO['/premium'] = 'paywall'
 
 export function passoFromPath(pathname) {
   const path = (pathname || '/').replace(/\/$/, '') || '/'
-  return PATH_TO_PASSO[path] || 'dashboard'
+  return PATH_TO_PASSO[path] || 'home'
 }
 
 export function pathFromPasso(passo) {

@@ -29,7 +29,7 @@ import {
   User,
 } from 'lucide-react'
 import { Body, GeoVector, Ecliptic, MakeTime, SiderealTime } from 'astronomy-engine'
-import { pesquisarCidades, pesquisarFusoHorario } from './lib/geocoding'
+import { pesquisarCidades, pesquisarFusoHorario, geocodificarCidade } from './lib/geocoding'
 import { EcraTarot } from './components/Tarot'
 import { ModalPagamento, verificarSessaoPagamento } from './components/Pagamento'
 import { Perfil } from './components/Perfil'
@@ -842,6 +842,55 @@ function validarOnboarding(dados) {
 function dadosNataisCompletos(dados) {
   if (!dados) return false
   return Object.keys(validarOnboarding(dados)).length === 0
+}
+
+/** Mínimo para considerar conta já configurada (1 mapa por conta). */
+function dadosNataisMinimos(dados) {
+  if (!dados) return false
+  return Boolean(
+    dados.nome?.trim()
+    && dados.data
+    && dados.hora
+    && dados.cidade?.trim(),
+  )
+}
+
+function normalizarDadosPerfil(dados) {
+  if (!dados) return null
+  const d = { ...dados }
+  if (!d.localizacao && d.lat != null && d.lon != null) {
+    d.localizacao = {
+      lat: Number(d.lat),
+      lon: Number(d.lon),
+      nome: d.cidade || `${d.lat}, ${d.lon}`,
+      placeId: d.placeId || 'legacy',
+    }
+  }
+  return d
+}
+
+async function repararDadosPerfil(dados) {
+  const d = normalizarDadosPerfil(dados)
+  if (!d || dadosNataisCompletos(d)) return d
+  if (!dadosNataisMinimos(d)) return d
+  try {
+    if (!d.localizacao && d.cidade) {
+      const loc = await geocodificarCidade(d.cidade)
+      if (loc) d.localizacao = loc
+    }
+    if (d.localizacao && d.fuso == null) {
+      d.fuso = await pesquisarFusoHorario(d.localizacao.lat, d.localizacao.lon)
+    }
+  } catch (e) {
+    console.warn('[Sidus] Reparação de perfil falhou:', e?.message)
+  }
+  return d
+}
+
+function contaJaConfigurada(perfil, dadosActuais) {
+  if (!perfil && !dadosActuais) return false
+  if (perfil?.dadosTravados === true || perfil?.mapaGerado === true) return true
+  return dadosNataisMinimos(dadosActuais) || dadosNataisMinimos(perfil?.dados)
 }
 
 function Campo({ label, tipo = 'text', valor, onChange, placeholder, erro, onBlur }) {
@@ -2546,7 +2595,7 @@ function RodapeSidus({ isDesktop, mostrarNavbar }) {
 function Navbar({ passo, setPasso, isDesktop }) {
   const [hover, setHover] = useState(null)
   const itens = [
-    { id: 'dashboard',   label: 'Início',       icon: Home,   glow: '#DFB76C' },
+    { id: 'home',        label: 'Home',         icon: Home,   glow: '#DFB76C' },
     { id: 'mapa',        label: 'Mapa',         icon: Map,    glow: '#C4B5FD' },
     { id: 'tarot',       label: 'Tarot',        icon: Layers, glow: '#F472B6' },
     { id: 'ferramentas', label: 'Ferramentas',  icon: Grid3x3, glow: '#93C5FD' },
@@ -2639,6 +2688,7 @@ export default function App() {
   const [tipoAuth, setTipoAuth] = useState('login') // 'login' | 'register'
   const [isPremium, setIsPremium] = useState(false)
   const [mapaGerado, setMapaGerado] = useState(false) // bloqueio: 1 mapa por utilizador
+  const [perfilCarregando, setPerfilCarregando] = useState(firebaseDisponivel)
 
   // ── Dados natais ─────────────────────────────────────────────────────────
   const [passo, setPasso] = useState(() => passoFromPath(window.location.pathname))
@@ -2669,27 +2719,33 @@ export default function App() {
 
   // ── Escuta o estado de autenticação Firebase ──────────────────────────────
   useEffect(() => {
-    // Se Firebase não está configurado, salta auth e mostra o onboarding local
     if (!firebaseDisponivel || !auth) {
       setAuthCarregando(false)
+      setPerfilCarregando(false)
       return
     }
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       setUtilizador(user)
       if (user) {
+        setPerfilCarregando(true)
         try {
           const snap = await getDoc(doc(db, 'users', user.uid))
           if (snap.exists()) {
             const perfil = snap.data()
-            if (perfil.dados) setDados(perfil.dados)
             if (perfil.isPremium === true) setIsPremium(true)
 
-            const jaTravado = perfil.dadosTravados === true || perfil.mapaGerado === true
-            const temDadosGuardados = dadosNataisCompletos(perfil.dados)
+            let dadosPerfil = perfil.dados ? normalizarDadosPerfil(perfil.dados) : null
+            if (dadosPerfil && dadosNataisMinimos(dadosPerfil) && !dadosNataisCompletos(dadosPerfil)) {
+              dadosPerfil = await repararDadosPerfil(dadosPerfil)
+              if (dadosNataisCompletos(dadosPerfil)) {
+                await setDoc(doc(db, 'users', user.uid), { dados: dadosPerfil }, { merge: true })
+              }
+            }
+            if (dadosPerfil) setDados(dadosPerfil)
 
-            if (jaTravado || temDadosGuardados) {
+            if (contaJaConfigurada(perfil, dadosPerfil)) {
               setMapaGerado(true)
-              if (temDadosGuardados && !jaTravado) {
+              if (!perfil.dadosTravados && !perfil.mapaGerado) {
                 await setDoc(doc(db, 'users', user.uid), {
                   dadosTravados: true,
                   mapaGerado: true,
@@ -2699,6 +2755,8 @@ export default function App() {
           }
         } catch (e) {
           console.warn('[Sidus] Firestore indisponível, operando offline:', e?.message)
+        } finally {
+          setPerfilCarregando(false)
         }
       } else {
         setDados(DADOS_VAZIO)
@@ -2706,6 +2764,7 @@ export default function App() {
         setPlanetasNascimento([])
         setIsPremium(false)
         setMapaGerado(false)
+        setPerfilCarregando(false)
       }
       setAuthCarregando(false)
     })
@@ -2713,6 +2772,13 @@ export default function App() {
   }, [])
 
   useEffect(() => { initAdSense() }, [])
+
+  // URL raiz → /home
+  useEffect(() => {
+    if (authCarregando) return
+    const path = (location.pathname || '/').replace(/\/$/, '') || '/'
+    if (path === '/') navigate('/home', { replace: true })
+  }, [authCarregando, location.pathname, navigate])
 
   // URL ↔ passo (voltar atrás no browser, links directos)
   useEffect(() => {
@@ -2769,17 +2835,25 @@ export default function App() {
 
   // ── Guarda dados natais no Firestore quando o onboarding termina (1x por conta) ──
   const guardarPerfil = useCallback(async (dadosNovos) => {
-    if (!utilizador || !firebaseDisponivel || !db || mapaGerado) return
+    if (!utilizador || !firebaseDisponivel || !db) return false
     try {
-      await setDoc(doc(db, 'users', utilizador.uid), {
+      const ref = doc(db, 'users', utilizador.uid)
+      const snap = await getDoc(ref)
+      if (snap.exists()) {
+        const perfil = snap.data()
+        if (contaJaConfigurada(perfil, dadosNovos)) return false
+      }
+      await setDoc(ref, {
         dados: dadosNovos,
         dadosTravados: true,
         mapaGerado: true,
       }, { merge: true })
+      return true
     } catch (e) {
       console.warn('[Sidus] Não foi possível guardar o perfil:', e?.message)
+      return false
     }
-  }, [utilizador, mapaGerado])
+  }, [utilizador])
 
   // ── Inicializa Swiss Ephemeris ─────────────────────────────────────────────
   useEffect(() => {
@@ -2832,8 +2906,9 @@ export default function App() {
 
   // ── Acções ─────────────────────────────────────────────────────────────────
   const handleOnboarding = async () => {
-    if (mapaGerado) {
-      irPara('dashboard', { replace: true })
+    if (mapaGerado || dadosNataisMinimos(dados)) {
+      setMapaGerado(true)
+      irPara('home', { replace: true })
       return
     }
     const erros = validarOnboarding(dados)
@@ -2841,9 +2916,14 @@ export default function App() {
       setMapaNatal(sweRef.current
         ? calcularMapaNatalComSwe(sweRef.current, dados)
         : calcularMapaNatal(dados))
-      await guardarPerfil(dados)
+      const guardado = await guardarPerfil(dados)
+      if (!guardado) {
+        setMapaGerado(true)
+        irPara('home', { replace: true })
+        return
+      }
       setMapaGerado(true)
-      irPara('dashboard')
+      irPara('home')
     }
   }
 
@@ -2887,22 +2967,21 @@ export default function App() {
   const dadosBloqueados = mapaGerado
 
   useEffect(() => {
-    if (authCarregando || !mapaGerado) return
+    if (authCarregando || perfilCarregando || !mapaGerado) return
     if (passo === 'onboarding') {
-      navigate(pathFromPasso('dashboard'), { replace: true })
-      setPasso('dashboard')
+      navigate(pathFromPasso('home'), { replace: true })
+      setPasso('home')
     }
-  }, [authCarregando, mapaGerado, passo, navigate])
+  }, [authCarregando, perfilCarregando, mapaGerado, passo, navigate])
 
-  // ── Routing ────────────────────────────────────────────────────────────────
-  const temDados = dadosNataisCompletos(dados)
+  const contaConfigurada = mapaGerado || dadosNataisMinimos(dados)
   const isDev = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
 
-  const mostrarNavbar = utilizador && temDados && passo !== 'paywall'
+  const mostrarNavbar = utilizador && contaConfigurada && passo !== 'paywall'
   const chatFullScreen = passo === 'chat'
 
-  // Ecrã de carregamento (auth ainda a iniciar)
-  if (authCarregando) {
+  // Ecrã de carregamento (auth ou perfil Firestore)
+  if (authCarregando || (utilizador && perfilCarregando)) {
     return (
       <div style={{ ...estilos.app, flexDirection: 'column' }}>
         <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
@@ -2916,24 +2995,25 @@ export default function App() {
 
   const renderEcran = () => {
     if (passo === 'privacidade') {
-      return <PoliticaPrivacidade onVoltar={() => irPara('dashboard')} />
+      return <PoliticaPrivacidade onVoltar={() => irPara('home')} />
     }
     // Sem sessão → ecrã de login (sempre visível, com ou sem Firebase)
     if (!utilizador) {
       return <EcraAuth tipo={tipoAuth} onMudar={setTipoAuth} isDesktop={isDesktop} firebaseOk={firebaseDisponivel} />
     }
-    // Sem dados natais → Onboarding (apenas na 1.ª vez, antes de travar)
-    if (!temDados && !mapaGerado) {
+    // Onboarding só para contas novas sem mapa criado
+    if (!contaConfigurada) {
       return <Onboarding dados={dados} setDados={setDados} onSubmit={handleOnboarding} isDesktop={isDesktop} />
     }
-    // Autenticado com dados → navegação normal
+    // Autenticado com mapa → navegação normal
     switch (passo) {
+      case 'home':
       case 'dashboard':
         return <Dashboard nome={dados.nome} mapaNatal={mapaNatal} ceuAgora={ceuAgora} aspetos={aspetosAgora} onOraculo={() => irPara('chat')} onPrivacidade={() => irPara('privacidade')} isDesktop={isDesktop} isPremium={isPremium} onUpgrade={() => irPara('paywall')} onTarot={() => irPara('tarot')} />
       case 'mapa':
         return <MapaAstral mapaNatal={mapaNatal} dados={dados} planetasNascimento={planetasNascimento} isPremium={isPremium} onUpgrade={() => irPara('paywall')} onMapaGerado={handleMapaGerado} isDesktop={isDesktop} motorAstro={motorAstro} />
       case 'tarot':
-        return <EcraTarot mapaNatal={mapaNatal} isPremium={isPremium} userId={utilizador?.uid} onPagar={abrirPagamento} onVoltar={() => irPara('dashboard')} onPremium={() => irPara('paywall')} />
+        return <EcraTarot mapaNatal={mapaNatal} isPremium={isPremium} userId={utilizador?.uid} onPagar={abrirPagamento} onVoltar={() => irPara('home')} onPremium={() => irPara('paywall')} />
       case 'ferramentas':
         if (ferramentaAberta === 'bussola')
           return <BussolaCosmica mapaNatal={mapaNatal} onVoltar={() => setFerramentaAberta(null)} />
@@ -2958,8 +3038,8 @@ export default function App() {
   }
 
   const paddingTopo = isDesktop
-    ? (isDev && temDados ? 28 : 0)
-    : (isDev && temDados ? 30 : 0)
+    ? (isDev && contaConfigurada ? 28 : 0)
+    : (isDev && contaConfigurada ? 30 : 0)
 
   const shellStyle = isDesktop ? estilos.appDesktop : estilos.app
   const margemNav = isDesktop && mostrarNavbar ? 68 : 0
@@ -2969,7 +3049,7 @@ export default function App() {
       <div style={estilos.estrelas} />
 
       {/* Barra de dev — só visível em localhost */}
-      {isDev && temDados && (
+      {isDev && contaConfigurada && (
         <div style={{
           position: 'fixed', top: 0, left: 0, right: 0,
           width: '100%', maxWidth: isDesktop ? 'none' : MOBILE_MAX,
@@ -3006,7 +3086,7 @@ export default function App() {
 
       {pagamentoMsg && (
         <div style={{
-          position: 'fixed', top: isDev && temDados ? 36 : 12, left: '50%', transform: 'translateX(-50%)',
+          position: 'fixed', top: isDev && contaConfigurada ? 36 : 12, left: '50%', transform: 'translateX(-50%)',
           zIndex: 300, maxWidth: 'min(92vw, 420px)', width: '100%',
           background: pagamentoMsg.tipo === 'sucesso' ? 'rgba(52,211,153,0.15)' : pagamentoMsg.tipo === 'erro' ? 'rgba(248,113,113,0.15)' : 'rgba(223,183,108,0.12)',
           border: `1px solid ${pagamentoMsg.tipo === 'sucesso' ? '#34D399' : pagamentoMsg.tipo === 'erro' ? '#f87171' : CORES.dourado}`,
@@ -3035,7 +3115,7 @@ export default function App() {
       }}>
         {renderEcran()}
       </div>
-      {!isPremium && ['dashboard', 'ferramentas', 'tarot'].includes(passo) && (
+      {!isPremium && ['home', 'ferramentas', 'tarot'].includes(passo) && (
         <AdSenseBanner isPremium={isPremium} />
       )}
       <RodapeSidus isDesktop={isDesktop} mostrarNavbar={mostrarNavbar} />

@@ -49,3 +49,9 @@ export async function pesquisarCidades(termo) {
       tipo: r.type,
     }))
 }
+
+/** Primeiro resultado de geocoding para reparar perfis guardados sem coordenadas. */
+export async function geocodificarCidade(cidade) {
+  const resultados = await pesquisarCidades(cidade)
+  return resultados[0] || null
+}

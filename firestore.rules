@@ -16,7 +16,7 @@ service cloud.firestore {
           'isPremium', 'premiumAt', 'stripeCustomerId', 'stripeSubscriptionId'
         ])
         && (
-          !resource.data.get('dadosTravados', false)
+          (!resource.data.get('dadosTravados', false) && !resource.data.get('mapaGerado', false))
           || request.resource.data.get('dados') == resource.data.get('dados')
         );
     }
