@@ -399,6 +399,7 @@ export function EcraTarot({ mapaNatal, isPremium, userId, leiturasTarotUsadas = 
   if (fase==='pergunta') return (
     <TelaPergunta tipo={tipoLabel} lang={lang} t={t} pergunta={pergunta} setPergunta={setPergunta}
       onVoltar={voltar} podeLer={podeLer} isPremium={isPremium} restantes={restantes}
+      onPagar={onPagar}
       onComecar={() => {
         if (isPremium || podeLer) {
           setLeituraPaga(false)

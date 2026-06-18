@@ -1217,6 +1217,11 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
   const isLogin = tipo === 'login'
   const precisaRecaptcha = !isLogin
 
+  useEffect(() => {
+    document.title = isLogin ? `Sidus — ${t('auth.login')}` : `Sidus — ${t('auth.register')}`
+    return () => { document.title = 'Sidus — Astrologia' }
+  }, [isLogin, t])
+
   const handleSubmit = async () => {
     setErro(null)
     setInfo(null)
@@ -2680,6 +2685,8 @@ export default function App() {
   const navigate = useNavigate()
   const location = useLocation()
 
+  const contaConfigurada = mapaGerado || dadosNataisCompletos(dados)
+
   const irPara = useCallback((novoPasso, { replace = false } = {}) => {
     setFerramentaAberta(null)
     setPasso(novoPasso)
@@ -2693,6 +2700,7 @@ export default function App() {
   const sweRef = useRef(null)
   const [sweReady, setSweReady] = useState(false)
   const [motorAstro, setMotorAstro] = useState(_motorStatus)
+  const prevUserRef = useRef(undefined)
 
   // ── Escuta o estado de autenticação Firebase ──────────────────────────────
   useEffect(() => {
@@ -2755,12 +2763,53 @@ export default function App() {
 
   useEffect(() => { initAdSense() }, [])
 
-  // URL raiz → /home
+  const rotasPublicasSemAuth = new Set(['/login', '/privacidade'])
+
+  // Visitante → /login (exceto privacidade)
   useEffect(() => {
     if (authCarregando) return
+    if (utilizador) return
     const path = (location.pathname || '/').replace(/\/$/, '') || '/'
-    if (path === '/') navigate('/home', { replace: true })
-  }, [authCarregando, location.pathname, navigate])
+    if (rotasPublicasSemAuth.has(path)) return
+    navigate('/login', { replace: true })
+  }, [authCarregando, utilizador, location.pathname, navigate])
+
+  // Após login: contas existentes → perfil; contas novas → onboarding (1x)
+  useEffect(() => {
+    if (authCarregando || perfilCarregando) return
+    const hadUser = prevUserRef.current
+    prevUserRef.current = utilizador
+    if (!utilizador) return
+
+    const path = (location.pathname || '/').replace(/\/$/, '') || '/'
+    if (path === '/login') {
+      navigate(contaConfigurada ? '/perfil' : '/comecar', { replace: true })
+      return
+    }
+
+    const acabouDeEntrar = hadUser === null || hadUser === undefined
+    if (!acabouDeEntrar) return
+
+    if (!contaConfigurada) {
+      navigate('/comecar', { replace: true })
+      return
+    }
+
+    const irParaPerfil = ['/login', '/home', '/', '/inicio', '/comecar', '/perfil'].includes(path)
+    if (irParaPerfil) {
+      navigate('/perfil', { replace: true })
+      setPasso('perfil')
+    }
+  }, [authCarregando, perfilCarregando, utilizador, location.pathname, navigate, contaConfigurada])
+
+  // Conta com mapa: bloquear onboarding e edição de dados
+  useEffect(() => {
+    if (authCarregando || perfilCarregando || !utilizador || !mapaGerado) return
+    if (passo === 'onboarding') {
+      navigate('/perfil', { replace: true })
+      setPasso('perfil')
+    }
+  }, [authCarregando, perfilCarregando, utilizador, mapaGerado, passo, navigate])
 
   // URL ↔ passo (voltar atrás no browser, links directos)
   useEffect(() => {
@@ -2889,7 +2938,7 @@ export default function App() {
   // ── Acções ─────────────────────────────────────────────────────────────────
   const handleOnboarding = async () => {
     if (mapaGerado) {
-      irPara('home', { replace: true })
+      irPara('perfil', { replace: true })
       return
     }
     const erros = validarOnboarding(dados)
@@ -2900,7 +2949,7 @@ export default function App() {
       : calcularMapaNatal(dados))
     const guardado = await guardarPerfil(dados)
     setMapaGerado(true)
-    irPara('home', { replace: !guardado })
+    irPara('perfil', { replace: !guardado })
   }
 
   const registarLeituraTarotGratis = useCallback(async (total) => {
@@ -2915,6 +2964,8 @@ export default function App() {
     if (firebaseDisponivel && auth) await signOut(auth)
     setUtilizador(null)
     setTipoAuth('login')
+    navigate('/login', { replace: true })
+    setPasso('login')
   }
 
   const handleFerramenta = (f) => {
@@ -2954,15 +3005,6 @@ export default function App() {
 
   const dadosBloqueados = mapaGerado
 
-  useEffect(() => {
-    if (authCarregando || perfilCarregando || !mapaGerado) return
-    if (passo === 'onboarding') {
-      navigate(pathFromPasso('home'), { replace: true })
-      setPasso('home')
-    }
-  }, [authCarregando, perfilCarregando, mapaGerado, passo, navigate])
-
-  const contaConfigurada = mapaGerado || dadosNataisCompletos(dados)
   const isDev = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
 
   const mostrarNavbar = utilizador && contaConfigurada && passo !== 'paywall'
@@ -2982,11 +3024,14 @@ export default function App() {
   }
 
   const renderEcran = () => {
-    if (passo === 'privacidade') {
-      return <PoliticaPrivacidade onVoltar={() => irPara('home')} />
+    if (passo === 'privacidade' && utilizador) {
+      return <PoliticaPrivacidade onVoltar={() => irPara('perfil')} />
     }
-    // Sem sessão → ecrã de login (sempre visível, com ou sem Firebase)
+    // Sem sessão → ecrã de login em /login
     if (!utilizador) {
+      if (passo === 'privacidade') {
+        return <PoliticaPrivacidade onVoltar={() => navigate('/login', { replace: true })} />
+      }
       return <EcraAuth tipo={tipoAuth} onMudar={setTipoAuth} isDesktop={isDesktop} firebaseOk={firebaseDisponivel} />
     }
     if (precisaVerificarEmail(utilizador)) {
