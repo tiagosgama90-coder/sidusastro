@@ -1,7 +1,8 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { useLanguage } from '../lib/i18n/LanguageContext.jsx'
 import { inferProductType } from '../lib/pricing.js'
+import { metodosParaProduto } from '../lib/paymentMethods.js'
 
 const CORES = {
   fundo: '#0B071E', dourado: '#DFB76C', douradoEscuro: '#B8944F',
@@ -10,11 +11,11 @@ const CORES = {
   vidroBorda: 'rgba(223,183,108,0.22)',
 }
 
-async function criarSessaoStripe({ valor, descricao, userId, userEmail, productType }) {
+async function criarSessaoStripe({ valor, descricao, userId, userEmail, productType, paymentMethod }) {
   const res = await fetch('/api/create-checkout-session', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ valor, descricao, userId, userEmail, productType }),
+    body: JSON.stringify({ valor, descricao, userId, userEmail, productType, paymentMethod }),
   })
   const data = await res.json().catch(() => ({}))
   if (!res.ok) throw new Error(data.error || 'sessionFail')
@@ -22,17 +23,19 @@ async function criarSessaoStripe({ valor, descricao, userId, userEmail, productT
   return data
 }
 
-/** Redireciona directamente para o Stripe Checkout (sem modal). */
-export async function iniciarCheckoutStripe({ valor, descricao, userId, userEmail, productType, onBeforeRedirect }) {
+/** Redireciona para o Stripe Checkout com o método escolhido. */
+export async function iniciarCheckoutStripe({ valor, descricao, userId, userEmail, productType, paymentMethod, onBeforeRedirect }) {
   if (!userId) throw new Error('needLogin')
+  if (!paymentMethod) throw new Error('selectMethod')
   const tipo = inferProductType(valor, descricao, productType)
   sessionStorage.setItem('sidus_payment_pending', JSON.stringify({
     productType: tipo,
     descricao,
+    paymentMethod,
     ts: Date.now(),
   }))
   onBeforeRedirect?.()
-  const { url } = await criarSessaoStripe({ valor, descricao, userId, userEmail, productType: tipo })
+  const { url } = await criarSessaoStripe({ valor, descricao, userId, userEmail, productType: tipo, paymentMethod })
   window.location.assign(url)
 }
 
@@ -44,25 +47,35 @@ export function ModalPagamento({ valor, descricao, userId, userEmail, productTyp
   const productType = inferProductType(valor, descricao, productTypeProp)
   const isSubscription = productType === 'premium'
 
-  const METODOS_STRIPE = [
-    { icone: '💳', nome: t('pagamento.methods.card.nome'), desc: t('pagamento.methods.card.desc') },
-    { icone: '📱', nome: t('pagamento.methods.mbway.nome'), desc: t('pagamento.methods.mbway.desc') },
-    { icone: '🏧', nome: t('pagamento.methods.multibanco.nome'), desc: t('pagamento.methods.multibanco.desc') },
-    { icone: '🅿️', nome: t('pagamento.methods.paypal.nome'), desc: t('pagamento.methods.paypal.desc') },
-    { icone: '💚', nome: t('pagamento.methods.pix.nome'), desc: t('pagamento.methods.pix.desc') },
-    { icone: '🔗', nome: t('pagamento.methods.link.nome'), desc: t('pagamento.methods.link.desc') },
-  ]
+  const metodosDisponiveis = useMemo(
+    () => metodosParaProduto(isSubscription).map((m) => ({
+      ...m,
+      nome: t(`pagamento.methods.${m.i18nKey}.nome`),
+      desc: t(`pagamento.methods.${m.i18nKey}.desc`),
+    })),
+    [isSubscription, t],
+  )
+
+  const [metodoSelecionado, setMetodoSelecionado] = useState(() => metodosDisponiveis[0]?.stripeType || 'card')
+
+  const metodoActivo = metodosDisponiveis.find((m) => m.stripeType === metodoSelecionado) || metodosDisponiveis[0]
 
   const msgErro = (code) => {
     const map = {
       sessionFail: t('pagamento.sessionFail'),
       invalidUrl: t('pagamento.invalidUrl'),
       needLogin: t('pagamento.needLogin'),
+      selectMethod: t('pagamento.selectMethod'),
+      methodNotSubscription: t('pagamento.methodNotSubscription'),
     }
     return map[code] || code || t('pagamento.stripeFail')
   }
 
   const iniciarStripe = async () => {
+    if (!metodoActivo) {
+      setErro(t('pagamento.selectMethod'))
+      return
+    }
     setErro(null)
     setProcessando(true)
     try {
@@ -72,6 +85,7 @@ export function ModalPagamento({ valor, descricao, userId, userEmail, productTyp
         userId,
         userEmail,
         productType,
+        paymentMethod: metodoActivo.stripeType,
         onBeforeRedirect: () => {
           if (onSucesso) sessionStorage.setItem('sidus_payment_callback', '1')
         },
@@ -109,17 +123,37 @@ export function ModalPagamento({ valor, descricao, userId, userEmail, productTyp
         {t('pagamento.methodsTitle')}
       </p>
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 20 }}>
-        {METODOS_STRIPE.map(m => (
-          <div key={m.nome} style={{
-            background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)',
-            borderRadius: 10, padding: '10px 12px',
-          }}>
-            <div style={{ fontSize: 18, marginBottom: 4 }}>{m.icone}</div>
-            <div style={{ fontSize: 12, fontWeight: 600, color: CORES.branco }}>{m.nome}</div>
-            <div style={{ fontSize: 10, color: CORES.brancoMuted, lineHeight: 1.4 }}>{m.desc}</div>
-          </div>
-        ))}
+        {metodosDisponiveis.map((m) => {
+          const seleccionado = metodoActivo?.stripeType === m.stripeType
+          return (
+            <button
+              key={m.stripeType}
+              type="button"
+              onClick={() => setMetodoSelecionado(m.stripeType)}
+              aria-pressed={seleccionado}
+              style={{
+                background: seleccionado ? 'rgba(223,183,108,0.14)' : 'rgba(255,255,255,0.03)',
+                border: seleccionado ? `2px solid ${CORES.dourado}` : '1px solid rgba(255,255,255,0.08)',
+                borderRadius: 10,
+                padding: '10px 12px',
+                cursor: 'pointer',
+                textAlign: 'left',
+                boxShadow: seleccionado ? '0 0 16px rgba(223,183,108,0.2)' : 'none',
+              }}
+            >
+              <div style={{ fontSize: 18, marginBottom: 4 }}>{m.icone}</div>
+              <div style={{ fontSize: 12, fontWeight: 600, color: seleccionado ? CORES.dourado : CORES.branco }}>{m.nome}</div>
+              <div style={{ fontSize: 10, color: CORES.brancoMuted, lineHeight: 1.4 }}>{m.desc}</div>
+            </button>
+          )
+        })}
       </div>
+
+      {isSubscription && (
+        <p style={{ fontSize: 10, color: CORES.brancoMuted, marginBottom: 14, lineHeight: 1.5 }}>
+          {t('pagamento.subscriptionMethodsNote')}
+        </p>
+      )}
 
       {erro && (
         <div style={{ marginBottom: 14, padding: '10px 14px', borderRadius: 10, background: 'rgba(248,113,113,0.1)', border: '1px solid rgba(248,113,113,0.3)', fontSize: 13, color: '#F87171' }}>
@@ -127,14 +161,16 @@ export function ModalPagamento({ valor, descricao, userId, userEmail, productTyp
         </div>
       )}
 
-      <button type="button" disabled={processando} onClick={iniciarStripe} style={{
+      <button type="button" disabled={processando || !metodoActivo} onClick={iniciarStripe} style={{
         width: '100%',
         background: processando ? 'rgba(223,183,108,0.4)' : `linear-gradient(135deg, ${CORES.dourado}, ${CORES.douradoEscuro})`,
         border: 'none', borderRadius: 12, color: '#0B071E', fontSize: 15, fontWeight: 700,
         padding: '15px', cursor: processando ? 'default' : 'pointer',
         boxShadow: '0 4px 24px rgba(223, 183, 108, 0.35)',
       }}>
-        {processando ? t('pagamento.redirecting') : t('pagamento.payBtn', { valor: valor.toFixed(2) })}
+        {processando
+          ? t('pagamento.redirecting')
+          : t('pagamento.payBtnWithMethod', { valor: valor.toFixed(2), method: metodoActivo?.nome || '' })}
       </button>
 
       <p style={{ textAlign: 'center', fontSize: 10, color: CORES.brancoMuted, marginTop: 12, lineHeight: 1.5 }}>

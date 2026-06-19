@@ -417,7 +417,7 @@ export function EcraTarot({ mapaNatal, isPremium, userId, leiturasTarotUsadas = 
           onPagar(t('tarot.payDesc', { tipo: tipo?.nome || '' }), PRECO_TAROT, () => {
             setLeituraPaga(true)
             comecarEmbaralhar()
-          }, { direto: true, productType: 'tarot' })
+          }, { productType: 'tarot' })
         }
       }}
       onPremium={onPremium}
@@ -509,7 +509,7 @@ function TelaPergunta({ tipo, pergunta, setPergunta, onVoltar, podeLer, isPremiu
         t('tarot.payDesc', { tipo: tipo?.nome || '' }),
         PRECO_TAROT,
         onComecarPago,
-        { direto: true, productType: 'tarot' },
+        { productType: 'tarot' },
       )
     } finally {
       setAPagar(false)

@@ -33,7 +33,7 @@ import {
 import { Body, GeoVector, Ecliptic, MakeTime, SiderealTime } from 'astronomy-engine'
 import { pesquisarCidades, pesquisarFusoHorario, geocodificarCidade } from './lib/geocoding'
 import { EcraTarot } from './components/Tarot'
-import { ModalPagamento, verificarSessaoPagamento, iniciarCheckoutStripe } from './components/Pagamento'
+import { ModalPagamento, verificarSessaoPagamento } from './components/Pagamento'
 import { PRECO_MAPA_COMPLETO, PRECO_PREMIUM_MENSAL } from './lib/pricing.js'
 import { RecaptchaCheckbox } from './components/Recaptcha'
 import { Perfil } from './components/Perfil'
@@ -2414,7 +2414,7 @@ function Paywall({ onVoltar, onPagar, onSucesso, isDesktop }) {
         <div style={{ fontSize: 40, fontWeight: 700, color: CORES.branco }}>{t('vip.price')} <span style={{ fontSize: 16, color: CORES.brancoMuted, fontWeight: 400 }}>{t('common.perMonth')}</span></div>
         <p style={{ fontSize: 12, color: CORES.brancoMuted, marginTop: 6 }}>{t('vip.cancelAnytime')}</p>
       </div>
-      <button type="button" onClick={() => onPagar(lang === 'en' ? 'Sidus VIP — Monthly subscription' : 'Sidus VIP — Subscrição mensal', PRECO_PREMIUM_MENSAL, onSucesso, { direto: true, productType: 'premium' })} style={estilos.botaoDourado}>
+      <button type="button" onClick={() => onPagar(lang === 'en' ? 'Sidus VIP — Monthly subscription' : 'Sidus VIP — Subscrição mensal', PRECO_PREMIUM_MENSAL, onSucesso, { productType: 'premium' })} style={estilos.botaoDourado}>
         {t('vip.cta')}
       </button>
       <p style={{ textAlign: 'center', fontSize: 11, color: CORES.brancoMuted, marginTop: 12 }}>
@@ -2746,23 +2746,63 @@ function RodapeSidus({ isDesktop, mostrarNavbar }) {
   )
 }
 
+function LogoSidus({ onClick, compact = false }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-label="Sidus — Home"
+      style={{
+        background: 'none',
+        border: 'none',
+        cursor: 'pointer',
+        display: 'flex',
+        alignItems: 'center',
+        gap: compact ? 8 : 10,
+        padding: compact ? '4px 2px' : '4px 8px',
+        flexShrink: 0,
+      }}
+    >
+      <Sparkles size={compact ? 16 : 20} color={CORES.dourado} strokeWidth={1.5} />
+      <span style={{ fontSize: compact ? 15 : 20, fontWeight: 300, letterSpacing: compact ? '0.18em' : '0.2em', color: CORES.dourado }}>SIDUS</span>
+    </button>
+  )
+}
+
 function Navbar({ passo, setPasso, isDesktop }) {
-  const { t } = useLanguage()
+  const { lang, t } = useLanguage()
   const [hover, setHover] = useState(null)
   const [menuAberto, setMenuAberto] = useState(false)
+
+  const irHome = () => {
+    setPasso('home')
+    setMenuAberto(false)
+  }
+
+  const ferramentasNav = getFerramentas(lang).map((f) => ({
+    id: f.id,
+    label: f.nome,
+    icon: f.icon,
+    glow: f.premium ? CORES.dourado : '#93C5FD',
+  }))
+
   const itens = [
-    { id: 'home',        label: t('nav.home'),         icon: Home,   glow: '#DFB76C' },
-    { id: 'mapa',        label: t('nav.mapa'),         icon: Map,    glow: '#C4B5FD' },
-    { id: 'tarot',       label: t('nav.tarot'),        icon: Layers, glow: '#F472B6' },
-    { id: 'ferramentas', label: t('nav.ferramentas'),  icon: Grid3x3, glow: '#93C5FD' },
-    { id: 'chat',        label: t('nav.oraculo'),      icon: MessageCircle, glow: '#34D399' },
-    { id: 'perfil',      label: t('nav.perfil'),       icon: User,   glow: '#93C5FD' },
+    { id: 'home',        label: t('nav.home'),    icon: Home,          glow: '#DFB76C' },
+    { id: 'mapa',        label: t('nav.mapa'),    icon: Map,           glow: '#C4B5FD' },
+    { id: 'tarot',       label: t('nav.tarot'),   icon: Layers,        glow: '#F472B6' },
+    ...ferramentasNav,
+    { id: 'chat',        label: t('nav.oraculo'), icon: MessageCircle, glow: '#34D399' },
+    { id: 'perfil',      label: t('nav.perfil'),  icon: User,          glow: '#93C5FD' },
   ]
+
+  const passosFerramenta = new Set(ferramentasNav.map((f) => f.id))
 
   const navegar = (id) => {
     setPasso(id)
     setMenuAberto(false)
   }
+
+  const itemAtivo = (item) => passo === item.id || (item.id === 'ferramentas' && passosFerramenta.has(passo))
 
   useEffect(() => {
     setMenuAberto(false)
@@ -2771,14 +2811,20 @@ function Navbar({ passo, setPasso, isDesktop }) {
   if (isDesktop) {
     return (
       <nav style={estilos.navbarDesktop}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10, position: 'absolute', left: 40 }}>
-          <Sparkles size={20} color={CORES.dourado} strokeWidth={1.5} />
-          <span style={{ fontSize: 20, fontWeight: 300, letterSpacing: '0.2em', color: CORES.dourado }}>SIDUS</span>
-        </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: 4,
+          flex: 1,
+          overflowX: 'auto',
+          justifyContent: 'flex-start',
+          paddingRight: 16,
+          paddingLeft: 24,
+          scrollbarWidth: 'thin',
+        }}>
           {itens.map((item) => {
             const Icon = item.icon
-            const ativo = passo === item.id
+            const ativo = itemAtivo(item)
             const emHover = hover === item.id
             return (
               <button
@@ -2797,26 +2843,31 @@ function Navbar({ passo, setPasso, isDesktop }) {
                   display: 'flex',
                   flexDirection: 'row',
                   alignItems: 'center',
-                  gap: 8,
+                  gap: 6,
                   cursor: 'pointer',
-                  padding: '10px 18px',
+                  padding: '8px 12px',
                   transition: 'all 0.25s ease',
                   boxShadow: ativo ? `0 0 20px ${item.glow}33` : emHover ? `0 0 14px ${item.glow}22` : 'none',
                   transform: emHover && !ativo ? 'translateY(-1px)' : 'none',
+                  flexShrink: 0,
+                  whiteSpace: 'nowrap',
                 }}
               >
-                <Icon size={18} strokeWidth={ativo ? 2.2 : 1.8} />
-                <span style={{ fontSize: 13, fontWeight: ativo ? 700 : 500, letterSpacing: '0.03em' }}>{item.label}</span>
-                {ativo && <span style={{ fontSize: 8, color: CORES.dourado, marginLeft: 2 }}>✦</span>}
+                <Icon size={16} strokeWidth={ativo ? 2.2 : 1.8} />
+                <span style={{ fontSize: 12, fontWeight: ativo ? 700 : 500, letterSpacing: '0.02em' }}>{item.label}</span>
+                {ativo && <span style={{ fontSize: 8, color: CORES.dourado }}>✦</span>}
               </button>
             )
           })}
+        </div>
+        <div style={{ position: 'absolute', right: 32, top: '50%', transform: 'translateY(-50%)' }}>
+          <LogoSidus onClick={irHome} />
         </div>
       </nav>
     )
   }
 
-  const itemAtivo = itens.find((i) => i.id === passo)
+  const itemAtivoMobile = itens.find((i) => itemAtivo(i))
 
   return (
     <>
@@ -2843,11 +2894,8 @@ function Navbar({ passo, setPasso, isDesktop }) {
         >
           {menuAberto ? <X size={22} /> : <Menu size={22} />}
         </button>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 0, flex: 1, justifyContent: 'center' }}>
-          <Sparkles size={16} color={CORES.dourado} strokeWidth={1.5} />
-          <span style={{ fontSize: 15, fontWeight: 300, letterSpacing: '0.18em', color: CORES.dourado }}>SIDUS</span>
-        </div>
-        <div style={{ width: 42, flexShrink: 0 }} aria-hidden />
+        <div style={{ flex: 1 }} />
+        <LogoSidus onClick={irHome} compact />
       </header>
 
       {menuAberto && (
@@ -2864,13 +2912,13 @@ function Navbar({ passo, setPasso, isDesktop }) {
           <div style={{ fontSize: 10, color: CORES.brancoMuted, textTransform: 'uppercase', letterSpacing: '0.1em' }}>
             {t('nav.menu')}
           </div>
-          {itemAtivo && (
-            <div style={{ fontSize: 13, color: CORES.dourado, marginTop: 4, fontWeight: 600 }}>{itemAtivo.label}</div>
+          {itemAtivoMobile && (
+            <div style={{ fontSize: 13, color: CORES.dourado, marginTop: 4, fontWeight: 600 }}>{itemAtivoMobile.label}</div>
           )}
         </div>
         {itens.map((item) => {
           const Icon = item.icon
-          const ativo = passo === item.id
+          const ativo = itemAtivo(item)
           return (
             <button
               key={item.id}
@@ -2938,9 +2986,16 @@ export default function App() {
 
   const irPara = useCallback((novoPasso, { replace = false } = {}) => {
     setFerramentaAberta(null)
-    setPasso(novoPasso)
-    navigate(pathFromPasso(novoPasso), { replace })
-  }, [navigate])
+    let destino = novoPasso
+    if (destino === 'onboarding' && utilizador && contaConfigurada) {
+      destino = 'home'
+    }
+    if ((destino === 'bussola' || destino === 'sinastria') && !acessoVip) {
+      destino = 'paywall'
+    }
+    setPasso(destino)
+    navigate(pathFromPasso(destino), { replace })
+  }, [navigate, utilizador, contaConfigurada, acessoVip])
 
   // ── Céu de hoje ───────────────────────────────────────────────────────────
   const [ceuAgora, setCeuAgora] = useState(() => calcularPlanetasParaData(new Date()))
@@ -3172,6 +3227,16 @@ export default function App() {
     if (fromUrl !== passo) setPasso(fromUrl)
   }, [location.pathname, authCarregando])
 
+  // Utilizador autenticado com conta configurada — nunca voltar a /comecar
+  useEffect(() => {
+    if (authCarregando || perfilCarregando || !utilizador || !contaConfigurada) return
+    const path = (location.pathname || '/').replace(/\/$/, '') || '/'
+    if (path === '/comecar' || passo === 'onboarding') {
+      navigate('/home', { replace: true })
+      setPasso('home')
+    }
+  }, [authCarregando, perfilCarregando, utilizador, contaConfigurada, location.pathname, passo, navigate])
+
   // ── Retorno Stripe Checkout (?payment=success&session_id=...) ─────────────
   useEffect(() => {
     if (authCarregando) return
@@ -3382,42 +3447,15 @@ export default function App() {
   }
 
   const handleFerramenta = (f) => {
-    if (f.id === 'bussola')   { if (acessoVip) setFerramentaAberta('bussola');   else irPara('paywall'); return }
-    if (f.id === 'sinastria') { if (acessoVip) setFerramentaAberta('sinastria'); else irPara('paywall'); return }
-    if (f.id === 'biorritmo') { setFerramentaAberta('biorritmo'); return }
-    if (f.id === 'horasIguais') { setFerramentaAberta('horasIguais'); return }
-    if (f.id === 'diario')    { setFerramentaAberta('diario');    return }
-    if (f.id === 'numerologia') { setFerramentaAberta('numerologia'); return }
-    if (f.id === 'sonhos')    { setFerramentaAberta('sonhos');    return }
-    if (f.premium && !acessoVip) irPara('paywall')
+    irPara(f.id)
   }
 
-  const abrirPagamento = async (descricao, valor, onSucesso, opts = {}) => {
+  const abrirPagamento = (descricao, valor, onSucesso, opts = {}) => {
     if (!utilizador?.uid) {
       setPagamentoMsg({ tipo: 'erro', texto: t('pagamento.needLogin') })
       return false
     }
     const productType = opts.productType || null
-    if (opts.direto) {
-      try {
-        setPagamentoMsg({ tipo: 'info', texto: t('pagamento.redirecting') })
-        await iniciarCheckoutStripe({
-          valor,
-          descricao,
-          userId: utilizador.uid,
-          userEmail: utilizador.email,
-          productType,
-          onBeforeRedirect: () => {
-            if (onSucesso) sessionStorage.setItem('sidus_payment_callback', '1')
-          },
-        })
-        return true
-      } catch (e) {
-        console.error('[Sidus Pagamento]', e?.message)
-        setPagamentoMsg({ tipo: 'erro', texto: t('pagamento.sessionFail') })
-        return false
-      }
-    }
     setModalPagamento({ descricao, valor, onSucesso, productType })
     return true
   }
@@ -3487,7 +3525,7 @@ export default function App() {
         />
       )
     }
-    // /comecar — sempre mostrar formulário até submeter (não expulsar ao escrever cidade)
+    // /comecar — só contas novas sem mapa (utilizadores com sessão activa redireccionados)
     if (passo === 'onboarding') {
       return <Onboarding dados={dados} setDados={setDados} onSubmit={handleOnboarding} isDesktop={isDesktop} />
     }
@@ -3500,24 +3538,24 @@ export default function App() {
       case 'dashboard':
         return <Dashboard nome={dados.nome} mapaNatal={mapaNatal} ceuAgora={ceuAgora} aspetos={aspetosAgora} onOraculo={() => irPara('chat')} onPrivacidade={() => irPara('privacidade')} isDesktop={isDesktop} isPremium={isPremium} onUpgrade={() => irPara('paywall')} onTarot={() => irPara('tarot')} />
       case 'mapa':
-        return <MapaAstral mapaNatal={mapaNatal} dados={dados} planetasNascimento={planetasNascimento} mapaDesbloqueado={isPremium || mapaCompleto} isPremium={isPremium} onUpgrade={() => irPara('paywall')} onComprarMapa={() => abrirPagamento(t('mapa.buyDesc'), PRECO_MAPA_COMPLETO, null, { direto: true, productType: 'mapa' })} onMapaGerado={handleMapaGerado} isDesktop={isDesktop} motorAstro={motorAstro} perfilCarregando={perfilCarregando} reparandoDados={reparandoDados} mapaGerado={mapaGerado} onCompletarNatal={() => irPara('onboarding')} />
+        return <MapaAstral mapaNatal={mapaNatal} dados={dados} planetasNascimento={planetasNascimento} mapaDesbloqueado={isPremium || mapaCompleto} isPremium={isPremium} onUpgrade={() => irPara('paywall')} onComprarMapa={() => abrirPagamento(t('mapa.buyDesc'), PRECO_MAPA_COMPLETO, null, { productType: 'mapa' })} onMapaGerado={handleMapaGerado} isDesktop={isDesktop} motorAstro={motorAstro} perfilCarregando={perfilCarregando} reparandoDados={reparandoDados} mapaGerado={mapaGerado} onCompletarNatal={() => irPara('home')} />
       case 'tarot':
         return <EcraTarot mapaNatal={mapaNatal} isPremium={acessoVip} userId={utilizador?.uid} leiturasTarotUsadas={leiturasTarotUsadas} onLeituraGratisUsada={registarLeituraTarotGratis} onPagar={abrirPagamento} onVoltar={() => irPara('home')} onPremium={() => irPara('paywall')} />
+      case 'bussola':
+        return <BussolaCosmica mapaNatal={mapaNatal} onVoltar={() => irPara('home')} />
+      case 'sinastria':
+        return <Sinastria mapaNatal={mapaNatal} onVoltar={() => irPara('home')} />
+      case 'biorritmo':
+        return <Biorritmo dados={dados} utilizador={utilizador} mapaNatal={mapaNatal} onVoltar={() => irPara('home')} />
+      case 'horasIguais':
+        return <HorasIguais onVoltar={() => irPara('home')} />
+      case 'numerologia':
+        return <Numerologia dados={dados} utilizador={utilizador} mapaNatal={mapaNatal} onVoltar={() => irPara('home')} />
+      case 'sonhos':
+        return <InterpretacaoSonhos mapaNatal={mapaNatal} onVoltar={() => irPara('home')} />
+      case 'diario':
+        return <DiarioAstral mapaNatal={mapaNatal} onVoltar={() => irPara('home')} />
       case 'ferramentas':
-        if (ferramentaAberta === 'bussola')
-          return <BussolaCosmica mapaNatal={mapaNatal} onVoltar={() => setFerramentaAberta(null)} />
-        if (ferramentaAberta === 'sinastria')
-          return <Sinastria mapaNatal={mapaNatal} onVoltar={() => setFerramentaAberta(null)} />
-        if (ferramentaAberta === 'biorritmo')
-          return <Biorritmo dados={dados} utilizador={utilizador} mapaNatal={mapaNatal} onVoltar={() => setFerramentaAberta(null)} />
-        if (ferramentaAberta === 'horasIguais')
-          return <HorasIguais onVoltar={() => setFerramentaAberta(null)} />
-        if (ferramentaAberta === 'numerologia')
-          return <Numerologia dados={dados} utilizador={utilizador} mapaNatal={mapaNatal} onVoltar={() => setFerramentaAberta(null)} />
-        if (ferramentaAberta === 'sonhos')
-          return <InterpretacaoSonhos mapaNatal={mapaNatal} onVoltar={() => setFerramentaAberta(null)} />
-        if (ferramentaAberta === 'diario')
-          return <DiarioAstral mapaNatal={mapaNatal} onVoltar={() => setFerramentaAberta(null)} />
         return <Ferramentas onFerramenta={handleFerramenta} isDesktop={isDesktop} acessoVip={acessoVip} />
       case 'paywall':
         return <Paywall onVoltar={() => irPara('ferramentas')} onPagar={abrirPagamento} onSucesso={() => { setIsPremium(true); setMapaCompleto(true); irPara(dadosNataisMinimos(dados) ? 'mapa' : 'onboarding') }} isDesktop={isDesktop} />

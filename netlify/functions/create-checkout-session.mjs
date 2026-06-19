@@ -1,5 +1,24 @@
 import { getStripe, siteOrigin } from './_shared/stripe.mjs'
 
+const METODOS_STRIPE = {
+  card: { subscription: true },
+  mb_way: { subscription: false },
+  multibanco: { subscription: false },
+  paypal: { subscription: true },
+  pix: { subscription: false },
+  link: { subscription: true },
+}
+
+function resolverMetodoPagamento(raw, isSubscription) {
+  const key = String(raw || 'card').trim().toLowerCase().replace(/-/g, '_')
+  const config = METODOS_STRIPE[key]
+  if (!config) return 'card'
+  if (isSubscription && !config.subscription) {
+    throw new Error('methodNotSubscription')
+  }
+  return key
+}
+
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'Content-Type',
@@ -19,7 +38,7 @@ export default async (req) => {
 
   try {
     const body = await req.json()
-    const { valor, descricao, userId, userEmail, productType: productTypeRaw } = body
+    const { valor, descricao, userId, userEmail, productType: productTypeRaw, paymentMethod } = body
 
     if (!valor || !descricao || !userId) {
       return new Response(JSON.stringify({ error: 'Parâmetros em falta' }), { status: 400, headers: corsHeaders })
@@ -43,11 +62,13 @@ export default async (req) => {
     const returnPath = RETURN_PATH[productType] || '/tarot'
     const cancelPath = CANCEL_PATH[productType] || '/tarot'
 
+    const metodo = resolverMetodoPagamento(paymentMethod, isSubscription)
+
     const sessionParams = {
       mode: isSubscription ? 'subscription' : 'payment',
       customer_email: userEmail || undefined,
       client_reference_id: String(userId),
-      metadata,
+      metadata: { ...metadata, paymentMethod: metodo },
       locale: 'pt',
       success_url: `${origin}${returnPath}?payment=success&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}${cancelPath}?payment=cancelled`,
@@ -60,7 +81,7 @@ export default async (req) => {
           ...(isSubscription ? { recurring: { interval: 'month' } } : {}),
         },
       }],
-      payment_method_types: ['card'],
+      payment_method_types: [metodo],
     }
 
     if (isSubscription) {
@@ -77,8 +98,9 @@ export default async (req) => {
     })
   } catch (e) {
     console.error('[create-checkout-session]', e?.message)
+    const status = e?.message === 'methodNotSubscription' ? 400 : 500
     return new Response(JSON.stringify({ error: e?.message || 'Erro ao criar sessão' }), {
-      status: 500,
+      status,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     })
   }
