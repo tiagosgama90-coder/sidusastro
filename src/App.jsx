@@ -869,12 +869,25 @@ function dadosNataisMinimos(dados) {
 function normalizarDadosPerfil(dados) {
   if (!dados) return null
   const d = { ...dados }
+  if (d.hora && typeof d.hora === 'string') {
+    const partes = d.hora.trim().split(':')
+    if (partes.length >= 2) {
+      d.hora = `${partes[0].padStart(2, '0')}:${partes[1].padStart(2, '0')}`
+    }
+  }
   if (!d.localizacao && d.lat != null && d.lon != null) {
     d.localizacao = {
       lat: Number(d.lat),
       lon: Number(d.lon),
       nome: d.cidade || `${d.lat}, ${d.lon}`,
       placeId: d.placeId || 'legacy',
+    }
+  }
+  if (d.localizacao?.lat != null && d.localizacao?.lon != null) {
+    d.localizacao = {
+      ...d.localizacao,
+      lat: Number(d.localizacao.lat),
+      lon: Number(d.localizacao.lon),
     }
   }
   return d
@@ -1972,7 +1985,7 @@ function BarraElemento({ label, valor, total, cor }) {
   )
 }
 
-function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, isPremium, onUpgrade, onComprarMapa, onMapaGerado, isDesktop, motorAstro }) {
+function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, isPremium, onUpgrade, onComprarMapa, onMapaGerado, isDesktop, motorAstro, perfilCarregando, mapaGerado, onCompletarNatal }) {
   const { lang, t, ts, tp, te, ta } = useLanguage()
   const [gerandoPdf, setGerandoPdf] = useState(false)
   const [emailEnviado, setEmailEnviado] = useState(false)
@@ -2044,12 +2057,39 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
   }
 
   if (!mapaNatal) {
+    const temDadosMinimos = dadosNataisMinimos(dados)
+    const prontosParaMapa = Boolean(dadosProntosParaMapa(dados))
+
+    let mensagem = t('mapa.fillNatal')
+    let mostrarCtaPremium = false
+    let mostrarCalculando = false
+
+    if (perfilCarregando) {
+      mostrarCalculando = true
+      mensagem = t('mapa.calculating')
+    } else if (temDadosMinimos && (prontosParaMapa || mapaGerado || isPremium)) {
+      mostrarCalculando = true
+      mensagem = t('mapa.calculating')
+    } else if ((isPremium || mapaGerado) && !temDadosMinimos) {
+      mensagem = t('mapa.premiumCompleteNatal')
+      mostrarCtaPremium = true
+    }
+
     return (
       <div style={layoutConteudo(isDesktop)}>
         <h1 style={{ ...estilos.titulo, textAlign: 'left', fontSize: 22, marginBottom: 20 }}>{t('mapa.title')}</h1>
-        <div style={{ ...estilos.vidro, padding: 20, display: 'flex', gap: 8, color: CORES.brancoMuted }}>
-          <Info size={15} />
-          <span>{t('mapa.fillNatal')}</span>
+        <div style={{ ...estilos.vidro, padding: 20, display: 'flex', flexDirection: 'column', gap: 14 }}>
+          <div style={{ display: 'flex', gap: 8, color: CORES.brancoMuted, lineHeight: 1.6 }}>
+            {mostrarCalculando
+              ? <Loader2 size={15} color={CORES.dourado} style={{ flexShrink: 0, animation: 'spin 1s linear infinite' }} />
+              : <Info size={15} style={{ flexShrink: 0, marginTop: 2 }} />}
+            <span>{mensagem}</span>
+          </div>
+          {mostrarCtaPremium && onCompletarNatal && (
+            <button type="button" onClick={onCompletarNatal} style={{ ...estilos.botaoDourado, alignSelf: 'flex-start' }}>
+              {t('mapa.completeNatalCta')}
+            </button>
+          )}
         </div>
       </div>
     )
@@ -2914,9 +2954,11 @@ export default function App() {
           doc(db, 'users', user.uid),
           (snap) => {
             clearPerfilTimeout()
-            setPerfilCarregando(false)
 
-            if (!snap.exists()) return
+            if (!snap.exists()) {
+              setPerfilCarregando(false)
+              return
+            }
 
             ;(async () => {
               try {
@@ -2956,6 +2998,8 @@ export default function App() {
                 }
               } catch (e) {
                 console.warn('[Sidus] Firestore indisponível, operando offline:', e?.message)
+              } finally {
+                setPerfilCarregando(false)
               }
             })()
           },
@@ -3100,13 +3144,15 @@ export default function App() {
         if (result.productType === 'premium') {
           setIsPremium(true)
           setMapaCompleto(true)
-          setPasso('mapa')
-          navigate('/mapaastral', { replace: true })
+          const destino = dadosNataisMinimos(dados) ? 'mapa' : 'onboarding'
+          setPasso(destino)
+          navigate(destino === 'mapa' ? '/mapaastral' : '/comecar', { replace: true })
           setPagamentoMsg({ tipo: 'sucesso', texto: t('payment.premiumWelcome') })
         } else if (result.productType === 'mapa') {
           setMapaCompleto(true)
-          setPasso('mapa')
-          navigate('/mapaastral', { replace: true })
+          const destino = dadosNataisMinimos(dados) ? 'mapa' : 'onboarding'
+          setPasso(destino)
+          navigate(destino === 'mapa' ? '/mapaastral' : '/comecar', { replace: true })
           setPagamentoMsg({ tipo: 'sucesso', texto: t('payment.mapaUnlocked') })
         } else if (result.productType === 'tarot') {
           sessionStorage.setItem('sidus_tarot_paid', '1')
@@ -3376,8 +3422,9 @@ export default function App() {
         />
       )
     }
-    // Onboarding só para contas novas sem acesso VIP
-    if (passo === 'onboarding' && !mapaGerado) {
+    // Onboarding: contas novas ou Premium sem registo natal
+    const precisaRegistoNatal = !mapaGerado && !dadosNataisMinimos(dados)
+    if (passo === 'onboarding' && precisaRegistoNatal) {
       return <Onboarding dados={dados} setDados={setDados} onSubmit={handleOnboarding} isDesktop={isDesktop} />
     }
     if (!contaConfigurada) {
@@ -3389,7 +3436,7 @@ export default function App() {
       case 'dashboard':
         return <Dashboard nome={dados.nome} mapaNatal={mapaNatal} ceuAgora={ceuAgora} aspetos={aspetosAgora} onOraculo={() => irPara('chat')} onPrivacidade={() => irPara('privacidade')} isDesktop={isDesktop} isPremium={acessoVip} onUpgrade={() => irPara('paywall')} onTarot={() => irPara('tarot')} />
       case 'mapa':
-        return <MapaAstral mapaNatal={mapaNatal} dados={dados} planetasNascimento={planetasNascimento} mapaDesbloqueado={isPremium || mapaCompleto} isPremium={isPremium} onUpgrade={() => irPara('paywall')} onComprarMapa={() => abrirPagamento(t('mapa.buyDesc'), PRECO_MAPA_COMPLETO, null, { direto: true, productType: 'mapa' })} onMapaGerado={handleMapaGerado} isDesktop={isDesktop} motorAstro={motorAstro} />
+        return <MapaAstral mapaNatal={mapaNatal} dados={dados} planetasNascimento={planetasNascimento} mapaDesbloqueado={isPremium || mapaCompleto} isPremium={isPremium} onUpgrade={() => irPara('paywall')} onComprarMapa={() => abrirPagamento(t('mapa.buyDesc'), PRECO_MAPA_COMPLETO, null, { direto: true, productType: 'mapa' })} onMapaGerado={handleMapaGerado} isDesktop={isDesktop} motorAstro={motorAstro} perfilCarregando={perfilCarregando} mapaGerado={mapaGerado} onCompletarNatal={() => irPara('onboarding')} />
       case 'tarot':
         return <EcraTarot mapaNatal={mapaNatal} isPremium={acessoVip} userId={utilizador?.uid} leiturasTarotUsadas={leiturasTarotUsadas} onLeituraGratisUsada={registarLeituraTarotGratis} onPagar={abrirPagamento} onVoltar={() => irPara('home')} onPremium={() => irPara('paywall')} />
       case 'ferramentas':
@@ -3409,7 +3456,7 @@ export default function App() {
           return <DiarioAstral mapaNatal={mapaNatal} onVoltar={() => setFerramentaAberta(null)} />
         return <Ferramentas onFerramenta={handleFerramenta} isDesktop={isDesktop} acessoVip={acessoVip} />
       case 'paywall':
-        return <Paywall onVoltar={() => irPara('ferramentas')} onPagar={abrirPagamento} onSucesso={() => { setIsPremium(true); setMapaCompleto(true); irPara('mapa') }} isDesktop={isDesktop} />
+        return <Paywall onVoltar={() => irPara('ferramentas')} onPagar={abrirPagamento} onSucesso={() => { setIsPremium(true); setMapaCompleto(true); irPara(dadosNataisMinimos(dados) ? 'mapa' : 'onboarding') }} isDesktop={isDesktop} />
       case 'chat':
         return <Chat mapaNatal={mapaNatal} isPremium={acessoVip} onUpgrade={() => irPara('paywall')} />
       case 'perfil':

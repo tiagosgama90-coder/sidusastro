@@ -1,6 +1,22 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
+
+    function dadosNataisCoreIguais(antigos, novos) {
+      return antigos.get('nome', null) == novos.get('nome', null)
+        && antigos.get('data', null) == novos.get('data', null)
+        && antigos.get('hora', null) == novos.get('hora', null)
+        && antigos.get('cidade', null) == novos.get('cidade', null);
+    }
+
+    function podeActualizarDadosNatais() {
+      return !resource.data.get('dadosTravados', false) && !resource.data.get('mapaGerado', false)
+        || !request.resource.data.keys().hasAll(['dados'])
+        || !resource.data.keys().hasAll(['dados'])
+        || request.resource.data.get('dados') == resource.data.get('dados')
+        || dadosNataisCoreIguais(resource.data.get('dados'), request.resource.data.get('dados'));
+    }
+
     match /users/{userId} {
       allow read: if request.auth != null && request.auth.uid == userId;
 
@@ -18,8 +34,7 @@ service cloud.firestore {
           'mapaCompleto', 'mapaCompletoAt'
         ])
         && (
-          (!resource.data.get('dadosTravados', false) && !resource.data.get('mapaGerado', false))
-          || request.resource.data.get('dados') == resource.data.get('dados')
+          podeActualizarDadosNatais()
           || request.resource.data.diff(resource.data).affectedKeys().hasOnly(['tarotLeiturasUsadas'])
         );
     }
