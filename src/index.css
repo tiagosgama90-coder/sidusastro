@@ -80,11 +80,12 @@ html {
   box-sizing: border-box;
 }
 
-/* Seletor de idioma — fixo em mobile/Android (evita scroll com transform parents) */
+/* Seletor de idioma — fixo (mobile / login); desktop com navbar usa variant inline */
 .lang-switcher-root {
   position: fixed !important;
   top: max(8px, env(safe-area-inset-top, 8px));
   right: max(8px, env(safe-area-inset-right, 8px));
+  left: auto;
   z-index: 2147483646;
   transform: translateZ(0);
   -webkit-transform: translateZ(0);
@@ -93,6 +94,14 @@ html {
   backface-visibility: hidden;
   pointer-events: auto;
   touch-action: manipulation;
+}
+
+@media (min-width: 768px) {
+  .lang-switcher-root {
+    top: max(12px, env(safe-area-inset-top, 12px));
+    left: max(16px, env(safe-area-inset-left, 16px));
+    right: auto;
+  }
 }
 
 /* Menu hamburger mobile */

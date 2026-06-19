@@ -2860,7 +2860,17 @@ function Navbar({ passo, setPasso, isDesktop }) {
             )
           })}
         </div>
-        <div style={{ position: 'absolute', right: 32, top: '50%', transform: 'translateY(-50%)' }}>
+        <div style={{
+          position: 'absolute',
+          right: 32,
+          top: '50%',
+          transform: 'translateY(-50%)',
+          display: 'flex',
+          alignItems: 'center',
+          gap: 12,
+          flexShrink: 0,
+        }}>
+          <LanguageSwitcher variant="inline" />
           <LogoSidus onClick={irHome} />
         </div>
       </nav>
@@ -3579,7 +3589,7 @@ export default function App() {
 
   return (
     <div style={shellStyle}>
-      <LanguageSwitcher />
+      {!(isDesktop && mostrarNavbar) && <LanguageSwitcher />}
       <div style={estilos.estrelas} />
 
       {/* Barra de dev — só visível em localhost */}

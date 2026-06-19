@@ -7,9 +7,7 @@ const CORES = {
   vidroBorda: 'rgba(223, 183, 108, 0.22)',
 }
 
-export function LanguageSwitcher() {
-  const { lang, setLang } = useLanguage()
-
+function SwitcherButtons({ lang, setLang }) {
   const btn = (code, flag, label) => {
     const active = lang === code
     return (
@@ -39,20 +37,40 @@ export function LanguageSwitcher() {
     )
   }
 
-  const el = (
-    <div className="lang-switcher-root" style={{
-      display: 'flex',
-      gap: 4,
-      padding: 3,
-      borderRadius: 8,
-      background: 'rgba(11,7,30,0.94)',
-      backdropFilter: 'blur(8px)',
-      WebkitBackdropFilter: 'blur(8px)',
-      border: `1px solid ${CORES.vidroBorda}`,
-      boxShadow: '0 2px 12px rgba(0,0,0,0.45)',
-    }}>
+  return (
+    <div
+      className={undefined}
+      style={{
+        display: 'flex',
+        gap: 4,
+        padding: 3,
+        borderRadius: 8,
+        background: 'rgba(11,7,30,0.94)',
+        backdropFilter: 'blur(8px)',
+        WebkitBackdropFilter: 'blur(8px)',
+        border: `1px solid ${CORES.vidroBorda}`,
+        boxShadow: '0 2px 12px rgba(0,0,0,0.45)',
+        flexShrink: 0,
+      }}
+    >
       {btn('pt', '🇵🇹', 'Português')}
       {btn('en', '🇬🇧', 'English')}
+    </div>
+  )
+}
+
+/** variant=fixed: canto superior (mobile / páginas sem navbar). variant=inline: ao lado do logo desktop. */
+export function LanguageSwitcher({ variant = 'fixed' }) {
+  const { lang, setLang } = useLanguage()
+  const inner = <SwitcherButtons lang={lang} setLang={setLang} />
+
+  if (variant === 'inline') {
+    return inner
+  }
+
+  const el = (
+    <div className="lang-switcher-root">
+      {inner}
     </div>
   )
 
