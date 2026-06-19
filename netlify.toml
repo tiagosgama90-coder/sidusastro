@@ -1,6 +1,8 @@
 [build]
   command = "npm run build"
   publish = "dist"
+  # ca-pub-... é público (index.html + AdSense) — não falhar scan de "secrets"
+  environment = { SECRETS_SCAN_OMIT_KEYS = "VITE_ADSENSE_CLIENT" }
 
 [functions]
   directory = "netlify/functions"
