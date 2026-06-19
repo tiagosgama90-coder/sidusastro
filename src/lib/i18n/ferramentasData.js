@@ -1,9 +1,9 @@
-import { Compass, Heart, Activity, BookOpen, Moon, Hash, Clock } from 'lucide-react'
+import { Compass, Heart, Activity, BookOpen, Moon, Sparkles, Clock } from 'lucide-react'
 
 const FERRAMENTAS_PT = [
   { id: 'bussola', nome: 'Bússola Cósmica 2026', icon: Compass, premium: true },
   { id: 'sinastria', nome: 'Radar de Afinidades', sub: 'Sinastria', icon: Heart, premium: true },
-  { id: 'numerologia', nome: 'Mapa de Numerologia', sub: 'Caminho de vida', icon: Hash, premium: false },
+  { id: 'numerologia', nome: 'Mapa de Numerologia', sub: 'Caminho de vida', icon: Sparkles, premium: false },
   { id: 'sonhos', nome: 'Interpretação de Sonhos', sub: 'Símbolos e mensagens', icon: Moon, premium: false },
   { id: 'biorritmo', nome: 'Fluxo Vital', sub: 'Biorritmo', icon: Activity, premium: false },
   { id: 'horasIguais', nome: 'Horas Iguais', sub: 'Mensagens angélicas', icon: Clock, premium: false },
@@ -13,7 +13,7 @@ const FERRAMENTAS_PT = [
 const FERRAMENTAS_EN = [
   { id: 'bussola', nome: 'Cosmic Compass 2026', icon: Compass, premium: true },
   { id: 'sinastria', nome: 'Affinity Radar', sub: 'Synastry', icon: Heart, premium: true },
-  { id: 'numerologia', nome: 'Numerology Chart', sub: 'Life path', icon: Hash, premium: false },
+  { id: 'numerologia', nome: 'Numerology Chart', sub: 'Life path', icon: Sparkles, premium: false },
   { id: 'sonhos', nome: 'Dream Interpretation', sub: 'Symbols & messages', icon: Moon, premium: false },
   { id: 'biorritmo', nome: 'Vital Flow', sub: 'Biorhythm', icon: Activity, premium: false },
   { id: 'horasIguais', nome: 'Mirror Hours', sub: 'Angelic messages', icon: Clock, premium: false },
@@ -26,7 +26,7 @@ const BENEFICIOS_VIP_PT = [
   'Leituras de Tarot ilimitadas em todos os baralhos',
   'Bússola Cósmica 2026 com previsões mensais',
   'Radar de Afinidades e Sinastria completa',
-  'Chat ilimitado com o Oráculo AuraBot',
+  'Chat ilimitado com o Oráculo Sírius — astrólogo profissional',
   'Alertas de trânsitos planetários em tempo real',
 ]
 
@@ -36,7 +36,7 @@ const BENEFICIOS_VIP_EN = [
   'Unlimited Tarot readings across all decks',
   'Cosmic Compass 2026 with monthly forecasts',
   'Affinity Radar and full Synastry',
-  'Unlimited chat with Oracle AuraBot',
+  'Unlimited chat with Oracle Sirius — professional astrologer',
   'Real-time planetary transit alerts',
 ]
 

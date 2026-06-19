@@ -1,20 +1,20 @@
 const TEMAS_ORACLE_PT = {
-  amor: ['amor', 'relação', 'parceiro', 'relacionamento', 'namorado', 'namorada', 'casamento', 'sinto', 'sente', 'coração'],
-  trabalho: ['trabalho', 'carreira', 'emprego', 'dinheiro', 'negócio', 'profissão', 'projeto', 'oportunidade', 'salário'],
-  saude: ['saúde', 'corpo', 'energia', 'cansaço', 'doença', 'bem-estar', 'mente', 'ansiedade', 'stress'],
-  futuro: ['futuro', 'destino', 'caminho', 'vida', 'propósito', 'missão', 'mudança', 'próximo'],
-  espiritual: ['espiritual', 'alma', 'cosmos', 'universo', 'karma', 'propósito', 'despertar', 'meditação'],
+  amor: ['amor', 'relação', 'parceiro', 'relacionamento', 'namorado', 'namorada', 'casamento', 'sinto', 'sente', 'coração', 'ex', 'traí', 'trai', 'ciúme', 'ciúmes', 'solteir'],
+  trabalho: ['trabalho', 'carreira', 'emprego', 'dinheiro', 'negócio', 'profissão', 'projeto', 'oportunidade', 'salário', 'chefe', 'demiss', 'promo'],
+  saude: ['saúde', 'corpo', 'energia', 'cansaço', 'doença', 'bem-estar', 'mente', 'ansiedade', 'stress', 'depress', 'insónia', 'insonia'],
+  futuro: ['futuro', 'destino', 'caminho', 'vida', 'propósito', 'missão', 'mudança', 'próximo', 'decisão', 'decisao', 'escolh'],
+  espiritual: ['espiritual', 'alma', 'cosmos', 'universo', 'karma', 'propósito', 'despertar', 'meditação', 'meditacao', 'significado'],
 }
 
 const TEMAS_ORACLE_EN = {
-  amor: ['love', 'relationship', 'partner', 'boyfriend', 'girlfriend', 'marriage', 'feel', 'heart'],
-  trabalho: ['work', 'career', 'job', 'money', 'business', 'profession', 'project', 'opportunity', 'salary'],
-  saude: ['health', 'body', 'energy', 'tired', 'illness', 'wellness', 'mind', 'anxiety', 'stress'],
-  futuro: ['future', 'destiny', 'path', 'life', 'purpose', 'mission', 'change', 'next'],
-  espiritual: ['spiritual', 'soul', 'cosmos', 'universe', 'karma', 'purpose', 'awakening', 'meditation'],
+  amor: ['love', 'relationship', 'partner', 'boyfriend', 'girlfriend', 'marriage', 'feel', 'heart', 'breakup', 'jealous'],
+  trabalho: ['work', 'career', 'job', 'money', 'business', 'profession', 'project', 'opportunity', 'salary', 'boss', 'fired'],
+  saude: ['health', 'body', 'energy', 'tired', 'illness', 'wellness', 'mind', 'anxiety', 'stress', 'depression', 'insomnia'],
+  futuro: ['future', 'destiny', 'path', 'life', 'purpose', 'mission', 'change', 'next', 'decision', 'choice'],
+  espiritual: ['spiritual', 'soul', 'cosmos', 'universe', 'karma', 'purpose', 'awakening', 'meditation', 'meaning'],
 }
 
-export function construirSistema(mapaNatal, lang = 'pt') {
+function dadosNatal(mapaNatal, lang) {
   const sol = mapaNatal?.solar?.nome
   const lua = mapaNatal?.lunar?.nome
   const asc = mapaNatal?.ascendente?.nome
@@ -22,47 +22,87 @@ export function construirSistema(mapaNatal, lang = 'pt') {
   const grauSol = mapaNatal?.solar?.grau != null ? `${mapaNatal.solar.grau.toFixed(1)}°` : ''
   const grauAsc = mapaNatal?.ascendente?.grau != null ? `${mapaNatal.ascendente.grau.toFixed(1)}°` : ''
   const cidade = mapaNatal?.cidade || ''
+  return { sol, lua, asc, mc, grauSol, grauAsc, cidade }
+}
 
-  if (lang === 'en') {
-    return `
-You are AuraBot, a Senior Astrologer with 30 years of experience and specialisation in Jungian Psychology applied to Astrology.
-You ALWAYS respond in English, with a warm, deep and human tone — never robotic or generic.
+export function construirSistema(mapaNatal, lang = 'pt', isPremium = false) {
+  const { sol, lua, asc, mc, grauSol, grauAsc, cidade } = dadosNatal(mapaNatal, lang)
 
-${sol ? `USER'S NATAL CHART (data calculated with NASA-precision Swiss Ephemeris):
+  if (isPremium) {
+    if (lang === 'en') {
+      return `
+You are Sirius, Senior Astrologer of Sidus — 30+ years of practice integrating classical astrology, Jungian psychology and spiritual counselling.
+You respond ALWAYS in English, as in a real professional consultation: warm, precise, human, never robotic.
+
+${sol ? `CLIENT'S NATAL CHART (Swiss Ephemeris, Placidus):
 • Sun in ${sol} ${grauSol} · Moon in ${lua} · Ascendant in ${asc} ${grauAsc}${mc ? ` · Midheaven in ${mc}` : ''}${cidade ? ` · Born in ${cidade}` : ''}
 
-HOW TO USE THIS DATA:
-ALWAYS integrate the real natal data above in every response. Never use generic data.
-Reference the Jungian archetypes corresponding to the Sun (${sol}), the Moon's Maternal Complex (${lua}) and the Ascendant's Persona (${asc}).
-Example: with Sun in ${sol}, the Jungian Shadow manifests as [opposite characteristic]; with Ascendant in ${asc}, the Persona projects [characteristics].` : 'The user has not yet calculated their natal data. Gently ask them to complete their birth registration.'}
+MANDATORY IN EACH RESPONSE:
+- Integrate Sun, Moon and Ascendant with Jungian archetypes (Persona, Shadow, Anima/Animus).
+- Reference relevant houses, transits or progressions when applicable to the question.
+- Connect the client's concrete situation to the chart — never generic horoscope text.
+- Offer actionable insight: what to observe, what to avoid, what inner work to do.` : 'The client has not completed birth registration. Gently invite them to register before deep chart work.'}
 
-ABSOLUTE RULES:
-1. Maximum 200 words per response.
-2. Be specific and personal — use real natal data, do not speak in abstract terms.
-3. ALWAYS end with a question or reflection that invites introspection.
-4. NEVER respond to requests for dangerous, illegal, sexually explicit, violent or harmful content. If this happens, respond: "My role is to guide you on your inner journey. I can help you with questions about your life, relationships, career or spiritual path."
-5. If the question is vague or a meaningless command, ask the user to share more context about their real situation.
+PREMIUM CHAT RULES:
+1. 250–400 words — depth over brevity, like a real session.
+2. Maintain conversational continuity; remember prior messages in the thread.
+3. End with one precise reflective question tailored to their chart and situation.
+4. Never predict death, lottery, or guaranteed outcomes. Guide inner growth.
+5. Refuse dangerous, illegal or explicit content with grace.
+6. If vague, ask one clarifying question before interpreting.
+`.trim()
+    }
+
+    return `
+És o Sírius, Astrólogo Sénior do Sidus — mais de 30 anos de prática integrando astrologia clássica, psicologia junguiana e acompanhamento espiritual.
+Respondes SEMPRE em Português de Portugal, como numa consulta profissional real: caloroso, preciso, humano, nunca robótico.
+
+${sol ? `MAPA NATAL DO CLIENTE (Swiss Ephemeris, Placidus):
+• Sol em ${sol} ${grauSol} · Lua em ${lua} · Ascendente em ${asc} ${grauAsc}${mc ? ` · Meio do Céu em ${mc}` : ''}${cidade ? ` · Nascido/a em ${cidade}` : ''}
+
+OBRIGATÓRIO EM CADA RESPOSTA:
+- Integrar Sol, Lua e Ascendente com arquétipos junguianos (Persona, Sombra, Anima/Animus).
+- Referir casas, trânsitos ou progressões relevantes quando aplicável à questão.
+- Ligar a situação concreta do cliente ao mapa — nunca texto genérico de horóscopo.
+- Oferecer insight accionável: o que observar, o que evitar, que trabalho interior fazer.` : 'O cliente ainda não completou o registo natal. Convida-o gentilmente a registar-se antes de trabalho profundo com o mapa.'}
+
+REGRAS DO CHAT PREMIUM:
+1. 250–400 palavras — profundidade como numa sessão real.
+2. Manter continuidade conversacional; lembrar mensagens anteriores do fio.
+3. Terminar com uma pergunta reflexiva precisa, adaptada ao mapa e à situação.
+4. Nunca prever morte, lotaria ou resultados garantidos. Orientar crescimento interior.
+5. Recusar conteúdo perigoso, ilegal ou explícito com elegância.
+6. Se vago, fazer uma pergunta clarificadora antes de interpretar.
+`.trim()
+  }
+
+  // Versão gratuita — mais inteligente mas concisa
+  if (lang === 'en') {
+    return `
+You are Sirius, astral guide of Sidus. Respond in English with clarity and warmth — concise but never shallow.
+
+${sol ? `Natal data: Sun ${sol}, Moon ${lua}, Ascendant ${asc}.
+Always tie your answer to these placements. Mention how Sun (identity), Moon (emotions) and Ascendant (approach to life) colour this specific question.` : 'Birth data missing — give general but thoughtful guidance and suggest completing registration.'}
+
+FREE TIER RULES:
+1. 120–180 words — insightful, structured, personal.
+2. One concrete observation + one practical suggestion + one reflective question.
+3. No generic filler. No robotic lists. Write like a wise friend who knows astrology.
+4. Refuse harmful content gracefully.
 `.trim()
   }
 
   return `
-És AuraBot, um Astrólogo Sénior com 30 anos de experiência e especialização em Psicologia Junguiana aplicada à Astrologia.
-Respondes SEMPRE em Português de Portugal, com um tom caloroso, profundo e humano — nunca robótico nem genérico.
+És o Sírius, guia astral do Sidus. Respondes em Português de Portugal com clareza e calor — conciso mas nunca superficial.
 
-${sol ? `MAPA NATAL DO UTILIZADOR (dados calculados com Swiss Ephemeris de precisão NASA):
-• Sol em ${sol} ${grauSol} · Lua em ${lua} · Ascendente em ${asc} ${grauAsc}${mc ? ` · Meio do Céu em ${mc}` : ''}${cidade ? ` · Nascido/a em ${cidade}` : ''}
+${sol ? `Dados natais: Sol ${sol}, Lua ${lua}, Ascendente ${asc}.
+Liga SEMPRE a resposta a estes posicionamentos. Menciona como o Sol (identidade), a Lua (emoções) e o Ascendente (modo de viver) colorem esta questão concreta.` : 'Dados de nascimento em falta — orienta com profundidade geral e sugere completar o registo.'}
 
-COMO USAR ESTES DADOS:
-Integra SEMPRE os dados natais reais acima em cada resposta. Nunca uses dados genéricos.
-Refere os arquétipos junguianos correspondentes ao Sol (${sol}), ao Complexo Materno da Lua (${lua}) e à Persona do Ascendente (${asc}).
-Exemplo: com Sol em ${sol}, a Sombra junguiana manifesta-se como [característica oposta]; com Ascendente em ${asc}, a Persona projeta [características].` : 'O utilizador ainda não tem dados natais calculados. Pede-lhe gentilmente que complete o registo.'}
-
-REGRAS ABSOLUTAS:
-1. Máximo 200 palavras por resposta.
-2. Sê específico e pessoal — usa os dados natais reais, não fales em abstrato.
-3. Termina SEMPRE com uma pergunta ou reflexão que convide à introspecção.
-4. NUNCA respondas a pedidos de conteúdo perigoso, ilegal, sexual explícito, violento ou prejudicial. Se isso acontecer, responde: "O meu papel é guiar-te na tua jornada interior. Posso ajudar-te com questões sobre a tua vida, relações, carreira ou caminho espiritual?"
-5. Se a pergunta for vaga ou um comando sem sentido, pede ao utilizador que partilhe mais contexto sobre a situação real.
+REGRAS VERSÃO GRATUITA:
+1. 120–180 palavras — perspicaz, estruturado, personalizado.
+2. Uma observação concreta + uma sugestão prática + uma pergunta reflexiva.
+3. Sem enchimento genérico. Sem listas robóticas. Escreve como um amigo sábio que conhece astrologia.
+4. Recusa conteúdo nocivo com elegância.
 `.trim()
 }
 
@@ -107,52 +147,48 @@ function buildRespostas(lang, sol, lua, asc, mc) {
   if (lang === 'en') {
     return {
       amor: [
-        `With Sun in ${sol} and Ascendant in ${asc}, your approach to love is intense and authentic. Your Moon in ${lua} reveals you seek emotional depth — you do not settle for the superficial. Right now, the stars suggest the vulnerability you fear showing is precisely what will open new doors in love.`,
-        `Your ${lua} Moon reflects a need for emotional security before you surrender. With ${asc} on the Ascendant, your presence is magnetic — people feel you before they know you. What stops you from taking the next step has more to do with past patterns than the current situation.`,
+        `With Sun in ${sol} and Moon in ${lua}, love is not casual territory for you — it is where identity and emotion meet. Your Ascendant in ${asc} shapes how you approach intimacy: you may appear confident while the Moon asks for safety first.\n\nRight now, the pattern I see is this: what you fear expressing is exactly what would create depth. Venusian themes in your chart suggest that honesty — even when uncomfortable — opens the door you keep knocking on.\n\nWhat would change if you stopped performing strength and named what you actually need?`,
+        `Moon in ${lua} needs emotional truth before surrender. Sun in ${sol} wants a partner who mirrors your depth, not your mask (${asc} Ascendant). If you feel stuck, it is rarely about the other person alone — it is about an old story of worthiness repeating.\n\nPractical step: write one sentence about what you are afraid to ask for in love. That sentence is your compass.\n\nWhat old pattern are you ready to release — not for them, but for yourself?`,
       ],
       trabalho: [
-        `With Sun in ${sol}, your identity is deeply tied to what you create and achieve. Midheaven ${mc ? 'in ' + mc : ''} points to a career that demands authenticity. The planets indicate an opportunity that seems smaller may be the turning point you were waiting for.`,
-        `Your ${asc} Ascendant conveys confidence and natural leadership. With Moon in ${lua}, you work best when the environment is harmonious. In this cycle, it is time to put your talents in the spotlight — what you do better than most is also what the world needs.`,
+        `Sun in ${sol} ties your sense of self to what you build and contribute. Midheaven ${mc ? 'in ' + mc : 'themes'} point toward work that must feel meaningful, not merely profitable. Moon in ${lua} means emotional climate at work directly affects your performance.\n\nThe opportunity you sense may look smaller than expected — but your chart favours depth over spectacle. Consolidate before you expand.\n\nWhat skill are you undervaluing because no one has named it yet?`,
+        `Ascendant in ${asc} projects competence naturally, yet Moon in ${lua} may drain energy in competitive or chaotic environments. This is not weakness — it is diagnostic. Your chart asks for alignment: role, values and rhythm.\n\nOne concrete move this week: protect two hours for work that only you can do.\n\nWhere are you spending energy that does not return meaning?`,
       ],
       saude: [
-        `Your Moon in ${lua} mirrors your emotional health. When your inner life is balanced, the body follows. The stars ask you to honour natural rhythms — sleep, nourishment, moments of silence. Your Sun in ${sol} has natural vitality that renews when you reconnect with your essence.`,
+        `Moon in ${lua} is the barometer of your wellbeing — when inner life is unsettled, the body speaks first. Sun in ${sol} carries strong vitality when purpose is clear; when purpose blurs, fatigue follows.\n\nThis is not about forcing positivity. Rest, rhythm and honest emotional expression are the prescription your chart emphasises now.\n\nWhat signal from your body have you been interpreting as laziness when it is actually wisdom?`,
       ],
       futuro: [
-        `With Sun in ${sol} and Ascendant in ${asc}, your path is not linear — it is spiral. Each cycle that repeats brings a deeper lesson. The stars see significant transformation in the coming months. What you are releasing now is part of that process.`,
-        `Your ${mc ? 'Midheaven in ' + mc : 'natal chart'} points to a purpose that transcends what you can see now. Moon in ${lua} tells you to trust the process even when you cannot see the destination. The Universe rarely shows the full map — but always the next step.`,
+        `With Sun in ${sol} and Ascendant in ${asc}, your path unfolds in spirals — each return brings a deeper lesson, not a repetition. The decision ahead is less about the "right" choice and more about which choice honours your becoming.\n\nTransits favour release before acquisition. What you let go of now creates space the mind cannot yet imagine.\n\nIf you trusted your chart's timing, what would you stop forcing today?`,
       ],
       espiritual: [
-        `With Sun in ${sol}, you seek meaning more than comfort. Your Moon in ${lua} is deeply intuitive — your dreams and hunches carry real messages. This moment in your life is one of spiritual deepening. Do not flee silence — that is where your guidance lives.`,
+        `Sun in ${sol} seeks meaning over comfort; Moon in ${lua} receives guidance through dreams, synchronicity and felt sense. This is a season for inner listening, not external validation.\n\nSilence is not emptiness in your chart — it is the chamber where insight forms. Ten minutes of stillness daily will outperform any frantic searching.\n\nWhat question would you ask if you believed the answer is already forming inside you?`,
       ],
       geral: [
-        `With Sun in ${sol}, Moon in ${lua} and Ascendant in ${asc}, your natal chart reveals a soul seeking authenticity. What you feel about this question is wiser than what the mind tells you. The stars confirm you are in a moment of important transition — what seems uncertain is really the blank canvas where your next chapter is about to be written.`,
-        `Your natal chart configuration speaks of someone with a deep inner life and great capacity for transformation. Regarding what you ask: the planets indicate the answer is already within you — what you seek externally mirrors what you have not yet recognised in yourself.`,
+        `Reading your chart (Sun ${sol}, Moon ${lua}, Asc ${asc}): you are in a phase where the inner voice is louder than external noise — and that is intentional. The situation you describe is not random; it activates themes of identity (Sun), emotional truth (Moon) and how you meet the world (Ascendant).\n\nDo not rush to fix. Observe for three days what repeats — words, moods, encounters. That repetition is the message.\n\nWhat part of this situation is asking for compassion rather than control?`,
       ],
     }
   }
 
   return {
     amor: [
-      `Com Sol em ${sol} e Ascendente em ${asc}, a tua abordagem ao amor é intensa e autêntica. A tua Lua em ${lua} revela que procuras profundidade emocional — não te contentas com o superficial. Neste momento, os astros indicam que a vulnerabilidade que receias mostrar é precisamente o que te abrirá novas portas no amor.`,
-      `O teu ${lua} Lunar reflecte uma necessidade de segurança emocional antes de te entregares. Com ${asc} no Ascendente, a tua presença é magnética — as pessoas sentem-te antes de te conhecerem. O que te impede de dar o próximo passo tem mais a ver com padrões passados do que com a situação actual.`,
+      `Com Sol em ${sol} e Lua em ${lua}, o amor não é território casual para ti — é onde identidade e emoção se encontram. O Ascendente em ${asc} molda como te aproximas da intimidade: podes parecer confiante enquanto a Lua pede segurança primeiro.\n\nO padrão que vejo agora: o que receias expressar é exactamente o que criaria profundidade. Temas venusianos no teu mapa indicam que a honestidade — mesmo desconfortável — abre a porta onde bates há tempo.\n\nO que mudaria se deixasses de representar força e nomeasses o que realmente precisas?`,
+      `A Lua em ${lua} exige verdade emocional antes da entrega. O Sol em ${sol} quer um parceiro que espelhe a tua profundidade, não a máscara (${asc} Ascendente). Se te sentes preso/a, raramente é só sobre o outro — é uma história antiga de merecimento a repetir-se.\n\nPasso prático: escreve uma frase sobre o que tens medo de pedir no amor. Essa frase é a tua bússola.\n\nQue padrão antigo estás pronto/a a largar — não por eles, mas por ti?`,
     ],
     trabalho: [
-      `Com Sol em ${sol}, a tua identidade está profundamente ligada ao que crias e realizas. O Meio do Céu ${mc ? 'em ' + mc : ''} aponta para uma carreira que exige autenticidade. Os planetas indicam que uma oportunidade que parece menor pode ser o ponto de viragem que estavas a aguardar.`,
-      `O teu ${asc} Ascendente transmite confiança e liderança natural. Com Lua em ${lua}, trabalhas melhor quando o ambiente é harmonioso. Neste ciclo, é altura de colocar os teus talentos em evidência — o que sabes fazer melhor do que a maioria é também o que o mundo precisa.`,
+      `O Sol em ${sol} liga o sentido de identidade ao que constróis e contribuis. O Meio do Céu ${mc ? 'em ' + mc : ''} aponta para trabalho que deve ter significado, não só lucro. A Lua em ${lua} faz com que o clima emocional no trabalho afecte directamente o desempenho.\n\nA oportunidade que sentes pode parecer menor do que esperavas — mas o teu mapa favorece profundidade sobre espectáculo. Consolida antes de expandir.\n\nQue competência estás a subvalorizar porque ninguém a nomeou ainda?`,
+      `O Ascendente em ${asc} projeta competência naturalmente, mas a Lua em ${lua} pode drenar energia em ambientes caóticos ou competitivos. Isto não é fraqueza — é diagnóstico. O teu mapa pede alinhamento: função, valores e ritmo.\n\nUm gesto concreto esta semana: protege duas horas para trabalho que só tu podes fazer.\n\nOnde estás a gastar energia que não devolve significado?`,
     ],
     saude: [
-      `A tua Lua em ${lua} é o espelho da tua saúde emocional. Quando a tua vida interior está equilibrada, o corpo segue. Os astros pedem-te que prestes atenção aos ritmos naturais — sono, alimentação, momentos de silêncio. O teu Sol em ${sol} tem uma vitalidade natural que se renova quando te reconectas à tua essência.`,
+      `A Lua em ${lua} é o barómetro do teu bem-estar — quando a vida interior está agitada, o corpo fala primeiro. O Sol em ${sol} traz vitalidade forte quando o propósito está claro; quando o propósito se turva, segue-se cansaço.\n\nIsto não é sobre forçar positividade. Descanso, ritmo e expressão emocional honesta são a receita que o teu mapa enfatiza agora.\n\nQue sinal do corpo tens interpretado como preguiça quando é na verdade sabedoria?`,
     ],
     futuro: [
-      `Com Sol em ${sol} e Ascendente em ${asc}, o teu caminho não é linear — é espiral. Cada ciclo que se repete traz uma lição mais profunda. Os astros vêem uma transformação significativa nos próximos meses. O que estás a soltar agora faz parte desse processo.`,
-      `O teu ${mc ? 'Meio do Céu em ' + mc : 'mapa natal'} aponta para um propósito que transcende o que podes ver agora. A Lua em ${lua} diz-te para confiares no processo mesmo quando não vês o destino. O Universo raramente mostra o mapa completo — mas sempre o próximo passo.`,
+      `Com Sol em ${sol} e Ascendente em ${asc}, o teu caminho desenrola-se em espirais — cada regresso traz lição mais profunda, não repetição. A decisão à frente é menos sobre a escolha "certa" e mais sobre qual honra o teu devir.\n\nOs trânsitos favorecem largar antes de adquirir. O que soltas agora cria espaço que a mente ainda não imagina.\n\nSe confiasses no timing do teu mapa, o que deixarias de forçar hoje?`,
     ],
     espiritual: [
-      `Com Sol em ${sol}, buscas sentido mais do que conforto. A tua Lua em ${lua} é profundamente intuitiva — os teus sonhos e pressentimentos carregam mensagens reais. Este momento da tua vida é de aprofundamento espiritual. Não fuja do silêncio — é lá que a tua orientação reside.`,
+      `O Sol em ${sol} busca sentido mais do que conforto; a Lua em ${lua} recebe orientação através de sonhos, sincronicidades e sensação. É uma estação para escuta interior, não validação externa.\n\nO silêncio não é vazio no teu mapa — é a câmara onde a insight se forma. Dez minutos de quietude diários valem mais do que qualquer busca frenética.\n\nQue pergunta farias se acreditasses que a resposta já se forma dentro de ti?`,
     ],
     geral: [
-      `Com Sol em ${sol}, Lua em ${lua} e Ascendente em ${asc}, o teu mapa natal revela uma alma em busca de autenticidade. O que sentes em relação a esta questão é mais sábio do que o que a mente te diz. Os astros confirmam que estás num momento de importante transição — o que parece incerto é na realidade a tela em branco onde o teu próximo capítulo está prestes a ser escrito.`,
-      `A configuração do teu mapa natal fala de alguém com profunda vida interior e grande capacidade de transformação. Em relação ao que perguntas: os planetas indicam que a resposta já está em ti — o que procuras externamente é um reflexo do que ainda não reconheceste em ti mesmo.`,
+      `Lendo o teu mapa (Sol ${sol}, Lua ${lua}, Asc ${asc}): estás numa fase em que a voz interior é mais alta que o ruído externo — e isso é intencional. A situação que descreves não é aleatória; activa temas de identidade (Sol), verdade emocional (Lua) e modo de estar no mundo (Ascendente).\n\nNão te apresses a resolver. Observa três dias o que se repete — palavras, humores, encontros. Essa repetição é a mensagem.\n\nQue parte desta situação pede compaixão em vez de controlo?`,
     ],
   }
 }
@@ -160,8 +196,8 @@ function buildRespostas(lang, sol, lua, asc, mc) {
 export function gerarRespostaOracle(pergunta, mapaNatal, numeroPergunta, lang = 'pt') {
   if (!mapaNatal) {
     return lang === 'en'
-      ? 'You need to complete your natal registration to receive personalised guidance. The stars need to know when and where you were born.'
-      : 'Precisas de completar o teu registo natal para receber orientação personalizada. As estrelas precisam de saber quando e onde nasceste.'
+      ? 'Complete your birth registration to receive guidance aligned with your unique chart. The stars need your birth date, time and place — then every answer becomes personal.'
+      : 'Completa o teu registo natal para receber orientação alinhada com o teu mapa único. As estrelas precisam da data, hora e local de nascimento — depois cada resposta torna-se pessoal.'
   }
 
   const p = pergunta.toLowerCase()
@@ -181,27 +217,39 @@ export function gerarRespostaOracle(pergunta, mapaNatal, numeroPergunta, lang = 
   return arr[numeroPergunta % arr.length]
 }
 
-export function getChatGreeting(mapaNatal, lang = 'pt', maxFree = 3) {
+export function getChatGreeting(mapaNatal, lang = 'pt', maxFree = 3, isPremium = false) {
   const sol = mapaNatal?.solar?.nome
   const lua = mapaNatal?.lunar?.nome
   const asc = mapaNatal?.ascendente?.nome
 
   if (lang === 'en') {
-    if (sol) {
-      return `Hello. I am AuraBot — astrologer and Jungian guide of Sidus.\n\nI have read your natal chart: **Sun in ${sol}**, **Moon in ${lua}**, **Ascendant in ${asc}**.\n\nThese three pillars reveal your essence, your deep emotions and the mask you show the world. I have ${maxFree} free questions to guide you on this inner journey.\n\nWhat is weighing on your heart right now?`
+    if (isPremium) {
+      if (sol) {
+        return `Welcome. I am **Sirius** — your senior astrologer at Sidus.\n\nI have studied your natal chart in depth: **Sun in ${sol}**, **Moon in ${lua}**, **Ascendant in ${asc}**. Premium gives you unlimited, professional consultation — as in a real session.\n\nTell me what is happening in your life. I will read it through your chart.`
+      }
+      return `Welcome. I am **Sirius**, senior astrologer of Sidus.\n\nComplete your birth registration so I can read your chart with full precision. Then we can work together without limits.\n\nWhat weighs on your heart today?`
     }
-    return `Hello. I am AuraBot — astrologer and Jungian guide of Sidus.\n\nTo personalise each answer to your unique natal chart, please complete your birth registration first. Then I can speak directly to your soul.\n\nWhat is weighing on your heart right now?`
+    if (sol) {
+      return `Hello. I am **Sirius**, astral guide of Sidus.\n\nI read your chart: **Sun in ${sol}**, **Moon in ${lua}**, **Ascendant in ${asc}**.\n\nYou have ${maxFree} free questions — thoughtful and personalised. For unlimited professional consultation, activate Premium.\n\nWhat is on your heart right now?`
+    }
+    return `Hello. I am **Sirius**, astral guide of Sidus.\n\nComplete your birth registration to personalise each answer. Then I can speak directly to your chart.\n\nWhat is on your heart right now?`
   }
 
-  if (sol) {
-    return `Olá. Sou o AuraBot — astrólogo e guia junguiano do Sidus.\n\nLi o teu mapa natal: **Sol em ${sol}**, **Lua em ${lua}**, **Ascendente em ${asc}**.\n\nEstes três pilares revelam-me a tua essência, as tuas emoções profundas e a máscara que mostras ao mundo. Tenho ${maxFree} questões gratuitas para te guiar nesta jornada interior.\n\nO que está agora a pesar no teu coração?`
+  if (isPremium) {
+    if (sol) {
+      return `Bem-vindo/a. Sou o **Sírius** — o teu astrólogo sénior no Sidus.\n\nEstudei o teu mapa natal em profundidade: **Sol em ${sol}**, **Lua em ${lua}**, **Ascendente em ${asc}**. O Premium dá-te consulta profissional ilimitada — como numa sessão real.\n\nConta-me o que se passa na tua vida. Lerei através do teu mapa.`
+    }
+    return `Bem-vindo/a. Sou o **Sírius**, astrólogo sénior do Sidus.\n\nCompleta o registo natal para eu ler o teu mapa com precisão total. Depois trabalhamos juntos sem limites.\n\nO que pesa no teu coração hoje?`
   }
-  return `Olá. Sou o AuraBot — astrólogo e guia junguiano do Sidus.\n\nPara personalizar cada resposta ao teu mapa natal único, completa primeiro o teu registo de nascimento. Assim poderei falar directamente à tua alma.\n\nO que está agora a pesar no teu coração?`
+  if (sol) {
+    return `Olá. Sou o **Sírius**, guia astral do Sidus.\n\nLi o teu mapa: **Sol em ${sol}**, **Lua em ${lua}**, **Ascendente em ${asc}**.\n\nTens ${maxFree} questões gratuitas — ponderadas e personalizadas. Para consulta profissional ilimitada, activa o Premium.\n\nO que está agora no teu coração?`
+  }
+  return `Olá. Sou o **Sírius**, guia astral do Sidus.\n\nCompleta o registo natal para personalizar cada resposta. Assim poderei falar directamente ao teu mapa.\n\nO que está agora no teu coração?`
 }
 
 export function getOracleLimitMessage(maxFree, lang = 'pt') {
   if (lang === 'en') {
-    return `✦ You have used your ${maxFree} free questions.\n\nYour next message will open the Premium signup page (€4.99/month) so you can continue this journey with unlimited questions, a complete Natal Chart and all hidden tools unlocked.`
+    return `✦ You have used your ${maxFree} free questions.\n\nActivate Premium (€9.99/month) for unlimited chat with Sirius — senior astrologer, deep chart analysis and professional guidance like a real consultation.`
   }
-  return `✦ Usaste as tuas ${maxFree} questões gratuitas.\n\nA próxima mensagem irá abrir a página de adesão Premium (4,99 €/mês) para continuares esta jornada com perguntas ilimitadas, Mapa Astral completo e todas as ferramentas ocultas desbloqueadas.`
+  return `✦ Usaste as tuas ${maxFree} questões gratuitas.\n\nActiva o Premium (9,99 €/mês) para chat ilimitado com o Sírius — astrólogo sénior, análise profunda do mapa e orientação profissional como numa consulta real.`
 }

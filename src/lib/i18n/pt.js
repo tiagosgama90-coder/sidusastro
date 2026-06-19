@@ -1,7 +1,7 @@
 export default {
   nav: {
-    home: 'Home', mapa: 'Mapa', tarot: 'Tarot', ferramentas: 'Ferramentas',
-    oraculo: 'Oráculo', perfil: 'Perfil',
+    home: 'Home', mapa: 'Mapa', tarot: 'Tarot Online', ferramentas: 'Ferramentas',
+    oraculo: 'Chat Oráculo', perfil: 'Perfil',
     menu: 'Menu', openMenu: 'Abrir menu', closeMenu: 'Fechar menu',
   },
   common: {
@@ -164,13 +164,14 @@ export default {
     paymentMethods: 'Cartão · MB Way · Multibanco · PayPal · PIX — via Stripe',
   },
   oracle: {
-    title: 'AuraBot',
-    subtitle: 'Astrólogo · Psicologia Junguiana',
+    title: 'Sírius',
+    subtitle: 'Oráculo Astral · Matriz Hermenêutica',
     freeQuestions: '{count} questão grátis',
     freeQuestionsPlural: '{count} questões grátis',
     premiumBadge: '🔒 Premium 9,99 €/mês',
-    placeholder: 'Partilha a tua questão com o AuraBot...',
+    placeholder: 'Partilha a tua questão com o Oráculo...',
     placeholderLocked: '🔒 Activa o Premium para continuar...',
+    premiumSubtitle: 'Astrólogo Sénior · Chat profissional ilimitado',
   },
   perfil: {
     altPhoto: 'Perfil',
@@ -314,7 +315,8 @@ export default {
     },
     numerologia: {
       title: 'Mapa de Numerologia',
-      subtitle: 'Análise numerológica de {name}',
+      subtitle: '{name}',
+      subtitleHint: 'Mapa numerológico personalizado',
       fillNatal: 'Preenche nome e data de nascimento no teu perfil.',
       fillForm: 'Introduz o teu nome completo e data de nascimento para calcular o mapa numerológico.',
       nameLabel: 'Nome completo',
@@ -332,9 +334,17 @@ export default {
     },
     sonhos: {
       title: 'Interpretação de Sonhos',
-      subtitle: 'Descreve o sonho com o máximo de detalhe — imagens, emoções e personagens.',
-      placeholder: 'Escreve aqui o sonho que queres compreender...',
-      interpret: '✦ Interpretar sonho',
+      subtitle: 'Relata o sonho e toca nos símbolos que emergiram — a leitura segue a Matriz Hermenêutica de Psicologia Espiritual Integrativa.',
+      placeholder: 'Começa a relatar o sonho…',
+      interpret: '✦ Revelar significado',
+      symbolsHint: 'Símbolos frequentes',
+      feelingLabel: 'Sentimento dominante no sonho',
+      feelings: { peace: 'Paz', fear: 'Medo', sadness: 'Tristeza', joy: 'Alegria', confusion: 'Confusão', anger: 'Raiva' },
+      section1: 'Análise do Estado da Alma',
+      section2: 'O Alerta Interno',
+      section3: 'O Caminho de Cura Espiritual',
+      section4: 'Pergunta para Meditação',
+      addSymbol: 'Adicionar símbolo',
     },
     biorritmo: {
       title: 'Fluxo Vital',

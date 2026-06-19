@@ -2425,11 +2425,11 @@ function Paywall({ onVoltar, onPagar, onSucesso, isDesktop }) {
 }
 
 // ── Integração AI (OpenAI → Gemini → Pollinations) ───────────────────────────
-async function consultarOpenAI(pergunta, mapaNatal, historico = [], lang = 'pt') {
+async function consultarOpenAI(pergunta, mapaNatal, historico = [], lang = 'pt', isPremium = false) {
   const apiKey = import.meta.env.VITE_OPENAI_API_KEY
   if (!apiKey) return null
 
-  const sistema = construirSistema(mapaNatal, lang)
+  const sistema = construirSistema(mapaNatal, lang, isPremium)
   const msgs = [
     { role: 'system', content: sistema },
     ...historico.slice(-6).map(m => ({
@@ -2447,10 +2447,10 @@ async function consultarOpenAI(pergunta, mapaNatal, historico = [], lang = 'pt')
         'Authorization': `Bearer ${apiKey}`,
       },
       body: JSON.stringify({
-        model: 'gpt-4o-mini',
+        model: isPremium ? 'gpt-4o' : 'gpt-4o-mini',
         messages: msgs,
-        max_tokens: 350,
-        temperature: 0.82,
+        max_tokens: isPremium ? 550 : 280,
+        temperature: isPremium ? 0.75 : 0.82,
       }),
     })
     if (!res.ok) {
@@ -2465,11 +2465,11 @@ async function consultarOpenAI(pergunta, mapaNatal, historico = [], lang = 'pt')
   }
 }
 
-async function consultarGeminiIA(pergunta, mapaNatal, historico = [], lang = 'pt') {
+async function consultarGeminiIA(pergunta, mapaNatal, historico = [], lang = 'pt', isPremium = false) {
   const apiKey = import.meta.env.VITE_GEMINI_API_KEY
   if (!apiKey) return null
 
-  const sistema = construirSistema(mapaNatal, lang)
+  const sistema = construirSistema(mapaNatal, lang, isPremium)
   const conteudos = []
   historico.slice(-6).forEach(m => {
     conteudos.push({
@@ -2488,7 +2488,10 @@ async function consultarGeminiIA(pergunta, mapaNatal, historico = [], lang = 'pt
         body: JSON.stringify({
           systemInstruction: { parts: [{ text: sistema }] },
           contents: conteudos,
-          generationConfig: { temperature: 0.82, maxOutputTokens: 350 },
+          generationConfig: {
+            temperature: isPremium ? 0.75 : 0.82,
+            maxOutputTokens: isPremium ? 550 : 280,
+          },
           safetySettings: [
             { category: 'HARM_CATEGORY_HARASSMENT',        threshold: 'BLOCK_MEDIUM_AND_ABOVE' },
             { category: 'HARM_CATEGORY_HATE_SPEECH',       threshold: 'BLOCK_MEDIUM_AND_ABOVE' },
@@ -2504,8 +2507,8 @@ async function consultarGeminiIA(pergunta, mapaNatal, historico = [], lang = 'pt
   } catch { return null }
 }
 
-async function consultarPollinationsAI(pergunta, mapaNatal, historico = [], lang = 'pt') {
-  const sistema = construirSistema(mapaNatal, lang)
+async function consultarPollinationsAI(pergunta, mapaNatal, historico = [], lang = 'pt', isPremium = false) {
+  const sistema = construirSistema(mapaNatal, lang, isPremium)
   const msgs = [
     { role: 'system', content: sistema },
     ...historico.slice(-6).map(m => ({
@@ -2534,12 +2537,12 @@ async function consultarPollinationsAI(pergunta, mapaNatal, historico = [], lang
   }
 }
 
-async function consultarAuraBot(pergunta, mapaNatal, historico, lang = 'pt') {
-  const resOAI = await consultarOpenAI(pergunta, mapaNatal, historico, lang)
+async function consultarSirius(pergunta, mapaNatal, historico, lang = 'pt', isPremium = false) {
+  const resOAI = await consultarOpenAI(pergunta, mapaNatal, historico, lang, isPremium)
   if (resOAI) return resOAI
-  const resGemini = await consultarGeminiIA(pergunta, mapaNatal, historico, lang)
+  const resGemini = await consultarGeminiIA(pergunta, mapaNatal, historico, lang, isPremium)
   if (resGemini) return resGemini
-  const resPollinations = await consultarPollinationsAI(pergunta, mapaNatal, historico, lang)
+  const resPollinations = await consultarPollinationsAI(pergunta, mapaNatal, historico, lang, isPremium)
   if (resPollinations) return resPollinations
   return null
 }
@@ -2551,7 +2554,7 @@ function Chat({ mapaNatal, isPremium, onUpgrade }) {
   const [perguntasUsadas, setPerguntasUsadas] = useState(0)
 
   const [mensagens, setMensagens] = useState(() => [
-    { id: 1, autor: 'ia', texto: getChatGreeting(mapaNatal, 'pt', MAX_PERGUNTAS_GRATIS) },
+    { id: 1, autor: 'ia', texto: getChatGreeting(mapaNatal, 'pt', MAX_PERGUNTAS_GRATIS, isPremium) },
   ])
 
   const [texto, setTexto]       = useState('')
@@ -2559,9 +2562,9 @@ function Chat({ mapaNatal, isPremium, onUpgrade }) {
   const fimRef = useRef(null)
 
   useEffect(() => {
-    setMensagens([{ id: 1, autor: 'ia', texto: getChatGreeting(mapaNatal, lang, MAX_PERGUNTAS_GRATIS) }])
+    setMensagens([{ id: 1, autor: 'ia', texto: getChatGreeting(mapaNatal, lang, MAX_PERGUNTAS_GRATIS, isPremium) }])
     setPerguntasUsadas(0)
-  }, [lang, mapaNatal])
+  }, [lang, mapaNatal, isPremium])
 
   useEffect(() => { fimRef.current?.scrollIntoView({ behavior: 'smooth' }) }, [mensagens, digitando])
 
@@ -2600,7 +2603,7 @@ function Chat({ mapaNatal, isPremium, onUpgrade }) {
     setPerguntasUsadas(n => n + 1)
 
     // OpenAI → Gemini → template
-    const respostaIA = await consultarAuraBot(q, mapaNatal, historicoParaIA, lang)
+    const respostaIA = await consultarSirius(q, mapaNatal, historicoParaIA, lang, isPremium)
     const resposta   = respostaIA || gerarRespostaOracle(q, mapaNatal, numAtual, lang)
 
     setMensagens(prev => [...prev, { id: Date.now()+1, autor: 'ia', texto: resposta }])
@@ -2627,7 +2630,9 @@ function Chat({ mapaNatal, isPremium, onUpgrade }) {
           </div>
           <div>
             <div style={{ fontSize: 14, fontWeight: 700, color: CORES.branco }}>{t('oracle.title')}</div>
-            <div style={{ fontSize: 10, color: CORES.brancoMuted }}>{t('oracle.subtitle')}</div>
+            <div style={{ fontSize: 10, color: CORES.brancoMuted }}>
+              {isPremium ? t('oracle.premiumSubtitle') : t('oracle.subtitle')}
+            </div>
           </div>
         </div>
         {!isPremium && (

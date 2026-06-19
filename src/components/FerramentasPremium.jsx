@@ -13,7 +13,7 @@ import {
 } from '../lib/i18n/ferramentasPremiumData.js'
 import { diasVidaDesdeNascimento } from '../lib/datetime.js'
 import { calcularMapaNumerologia } from '../lib/numerologia.js'
-import { interpretarSonho } from '../lib/sonhosInterpretacao.js'
+import { interpretarSonho, CHIPS_SIMBOLOS_PT, CHIPS_SIMBOLOS_EN } from '../lib/sonhosInterpretacao.js'
 import {
   resolverDadosFerramentas,
   dadosMinimosFerramentas,
@@ -640,7 +640,8 @@ export function Numerologia({ dados, utilizador, mapaNatal, onVoltar }) {
     <div style={{ padding: '20px 20px 110px' }}>
       <BotaoVoltar onVoltar={onVoltar} t={t} />
       <h2 style={{ fontSize: 20, fontWeight: 700, color: CORES.dourado, marginBottom: 4 }}>{t('ferramentasPremium.numerologia.title')}</h2>
-      <p style={{ fontSize: 13, color: CORES.brancoMuted, marginBottom: 20 }}>{t('ferramentasPremium.numerologia.subtitle', { name: resolvido.nome })}</p>
+      <p style={{ fontSize: 18, fontWeight: 600, color: CORES.branco, marginBottom: 4 }}>{resolvido.nome}</p>
+      <p style={{ fontSize: 12, color: CORES.brancoMuted, marginBottom: 20 }}>{t('ferramentasPremium.numerologia.subtitleHint')}</p>
 
       {blocos.map((b) => (
         <div key={b.key} style={{ background: 'rgba(255,255,255,0.04)', border: `1px solid ${CORES.vidroBorda}`, borderRadius: 14, padding: 18, marginBottom: 12 }}>
@@ -671,41 +672,130 @@ export function InterpretacaoSonhos({ mapaNatal, onVoltar }) {
   const { lang, t } = useLanguage()
   const [sonho, setSonho] = useState('')
   const [resultado, setResultado] = useState(null)
+  const [chipsSel, setChipsSel] = useState([])
+  const [feeling, setFeeling] = useState(null)
+
+  const chips = lang === 'en' ? CHIPS_SIMBOLOS_EN : CHIPS_SIMBOLOS_PT
+  const feelings = ['peace', 'fear', 'sadness', 'joy', 'confusion', 'anger']
+
+  const toggleChip = (chip) => {
+    setChipsSel((prev) => prev.includes(chip) ? prev.filter((c) => c !== chip) : [...prev, chip])
+  }
 
   const interpretar = () => {
-    setResultado(interpretarSonho(sonho, mapaNatal, lang))
+    setResultado(interpretarSonho(sonho, mapaNatal, lang, feeling, chipsSel))
   }
+
+  const pronto = sonho.trim().length > 8 || chipsSel.length > 0
 
   return (
     <div style={{ padding: '20px 20px 110px' }}>
       <BotaoVoltar onVoltar={onVoltar} t={t} />
       <h2 style={{ fontSize: 20, fontWeight: 700, color: CORES.dourado, marginBottom: 4 }}>{t('ferramentasPremium.sonhos.title')}</h2>
-      <p style={{ fontSize: 13, color: CORES.brancoMuted, marginBottom: 20 }}>{t('ferramentasPremium.sonhos.subtitle')}</p>
+      <p style={{ fontSize: 13, color: CORES.brancoMuted, marginBottom: 20, lineHeight: 1.6 }}>{t('ferramentasPremium.sonhos.subtitle')}</p>
 
-      <textarea
-        value={sonho}
-        onChange={(e) => setSonho(e.target.value)}
-        placeholder={t('ferramentasPremium.sonhos.placeholder')}
-        style={{ ...inputStyle, height: 140, resize: 'none', marginBottom: 14 }}
-      />
-      <button type="button" disabled={!sonho.trim()} onClick={interpretar} style={{
+      <div style={{
+        background: 'linear-gradient(160deg, rgba(109,40,217,0.12), rgba(11,7,30,0.6))',
+        border: `1px solid rgba(223,183,108,0.25)`,
+        borderRadius: 18, padding: 18, marginBottom: 16,
+        boxShadow: '0 0 40px rgba(109,40,217,0.08)',
+      }}>
+        <div style={{ fontSize: 10, color: CORES.dourado, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 10 }}>
+          {t('ferramentasPremium.sonhos.symbolsHint')}
+        </div>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 16 }}>
+          {chips.map((chip) => {
+            const sel = chipsSel.includes(chip)
+            return (
+              <button key={chip} type="button" onClick={() => toggleChip(chip)} style={{
+                fontSize: 12, padding: '6px 14px', borderRadius: 20, cursor: 'pointer',
+                background: sel ? 'rgba(223,183,108,0.22)' : 'rgba(255,255,255,0.05)',
+                border: sel ? `1px solid ${CORES.dourado}` : `1px solid ${CORES.vidroBorda}`,
+                color: sel ? CORES.dourado : CORES.brancoMuted,
+                transition: 'all 0.2s',
+              }}>
+                {sel ? '✦ ' : ''}{chip}
+              </button>
+            )
+          })}
+        </div>
+
+        <div style={{ fontSize: 10, color: CORES.dourado, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 8 }}>
+          {t('ferramentasPremium.sonhos.feelingLabel')}
+        </div>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 16 }}>
+          {feelings.map((f) => (
+            <button key={f} type="button" onClick={() => setFeeling(feeling === f ? null : f)} style={{
+              fontSize: 11, padding: '5px 12px', borderRadius: 16, cursor: 'pointer',
+              background: feeling === f ? 'rgba(139,92,246,0.25)' : 'transparent',
+              border: feeling === f ? '1px solid rgba(139,92,246,0.5)' : `1px solid ${CORES.vidroBorda}`,
+              color: feeling === f ? '#C4B5FD' : CORES.brancoMuted,
+            }}>
+              {t(`ferramentasPremium.sonhos.feelings.${f}`)}
+            </button>
+          ))}
+        </div>
+
+        <div style={{
+          display: 'flex', alignItems: 'flex-end', gap: 10,
+          background: 'rgba(0,0,0,0.25)', borderRadius: 14,
+          border: `1px solid rgba(255,255,255,0.08)`, padding: '10px 14px',
+        }}>
+          <span style={{ fontSize: 20, opacity: 0.5, flexShrink: 0 }}>🌙</span>
+          <textarea
+            value={sonho}
+            onChange={(e) => setSonho(e.target.value)}
+            placeholder={t('ferramentasPremium.sonhos.placeholder')}
+            rows={2}
+            style={{
+              flex: 1, background: 'transparent', border: 'none', outline: 'none',
+              color: CORES.branco, fontSize: 14, lineHeight: 1.55, resize: 'none',
+              minHeight: 44, maxHeight: 120, fontFamily: 'inherit',
+            }}
+          />
+        </div>
+      </div>
+
+      <button type="button" disabled={!pronto} onClick={interpretar} style={{
         width: '100%', background: `linear-gradient(135deg,#DFB76C,#B8944F)`, border: 'none',
         borderRadius: 12, color: '#0B071E', fontSize: 15, fontWeight: 700, padding: '14px',
-        cursor: sonho.trim() ? 'pointer' : 'not-allowed', opacity: sonho.trim() ? 1 : 0.5, marginBottom: 20,
+        cursor: pronto ? 'pointer' : 'not-allowed', opacity: pronto ? 1 : 0.5, marginBottom: 24,
       }}>
         {t('ferramentasPremium.sonhos.interpret')}
       </button>
 
       {resultado && (
-        <div>
-          <p style={{ fontSize: 14, color: CORES.brancoSuave, lineHeight: 1.75, marginBottom: 16 }}>{resultado.intro}{resultado.contextoAstro}</p>
-          {resultado.simbolos.map((s, i) => (
-            <div key={i} style={{ background: 'rgba(255,255,255,0.04)', border: `1px solid ${CORES.vidroBorda}`, borderRadius: 14, padding: 18, marginBottom: 12 }}>
-              <div style={{ fontSize: 13, fontWeight: 700, color: CORES.dourado, marginBottom: 8 }}>✦ {s.tema}</div>
-              <p style={{ fontSize: 13, color: CORES.brancoSuave, lineHeight: 1.7, margin: 0, whiteSpace: 'pre-wrap' }}>{s.texto}</p>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+          {resultado.simbolos.length > 0 && (
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 4 }}>
+              {resultado.simbolos.map((s, i) => (
+                <span key={i} style={{
+                  fontSize: 11, padding: '4px 10px', borderRadius: 12,
+                  background: 'rgba(223,183,108,0.1)', border: `1px solid rgba(223,183,108,0.25)`,
+                  color: CORES.dourado,
+                }}>{s.tema}</span>
+              ))}
+            </div>
+          )}
+          {resultado.seccoes.map((sec, i) => (
+            <div key={sec.key} style={{
+              background: 'rgba(255,255,255,0.04)',
+              border: `1px solid ${i === 3 ? 'rgba(139,92,246,0.3)' : CORES.vidroBorda}`,
+              borderRadius: 14, padding: 18,
+            }}>
+              <div style={{
+                fontSize: 11, fontWeight: 700, color: CORES.dourado,
+                textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 10,
+              }}>
+                {i + 1}. {t(`ferramentasPremium.sonhos.${sec.key}`)}
+              </div>
+              <p style={{
+                fontSize: 13, color: i === 3 ? '#C4B5FD' : CORES.brancoSuave,
+                lineHeight: 1.75, margin: 0,
+                fontStyle: i === 3 ? 'italic' : 'normal',
+              }}>{sec.texto}</p>
             </div>
           ))}
-          <p style={{ fontSize: 13, color: CORES.brancoMuted, lineHeight: 1.75, fontStyle: 'italic' }}>{resultado.sintese}</p>
         </div>
       )}
     </div>

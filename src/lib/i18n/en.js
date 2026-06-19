@@ -1,7 +1,7 @@
 export default {
   nav: {
-    home: 'Home', mapa: 'Chart', tarot: 'Tarot', ferramentas: 'Tools',
-    oraculo: 'Oracle', perfil: 'Profile',
+    home: 'Home', mapa: 'Chart', tarot: 'Tarot Online', ferramentas: 'Tools',
+    oraculo: 'Chat Oracle', perfil: 'Profile',
     menu: 'Menu', openMenu: 'Open menu', closeMenu: 'Close menu',
   },
   common: {
@@ -164,13 +164,14 @@ export default {
     paymentMethods: 'Card · MB Way · Multibanco · PayPal · PIX — via Stripe',
   },
   oracle: {
-    title: 'AuraBot',
-    subtitle: 'Astrologer · Jungian Psychology',
+    title: 'Sirius',
+    subtitle: 'Astral Oracle · Hermeneutic Matrix',
     freeQuestions: '{count} free question',
     freeQuestionsPlural: '{count} free questions',
     premiumBadge: '🔒 Premium €9.99/mo',
-    placeholder: 'Share your question with AuraBot...',
+    placeholder: 'Share your question with the Oracle...',
     placeholderLocked: '🔒 Activate Premium to continue...',
+    premiumSubtitle: 'Senior Astrologer · Unlimited professional chat',
   },
   perfil: {
     altPhoto: 'Profile',
@@ -314,7 +315,8 @@ export default {
     },
     numerologia: {
       title: 'Numerology Chart',
-      subtitle: 'Numerological analysis of {name}',
+      subtitle: '{name}',
+      subtitleHint: 'Personal numerology chart',
       fillNatal: 'Complete your name and birth date in your profile.',
       fillForm: 'Enter your full name and birth date to calculate your numerology chart.',
       nameLabel: 'Full name',
@@ -332,9 +334,17 @@ export default {
     },
     sonhos: {
       title: 'Dream Interpretation',
-      subtitle: 'Describe the dream in as much detail as possible — images, emotions and characters.',
-      placeholder: 'Write here the dream you want to understand...',
-      interpret: '✦ Interpret dream',
+      subtitle: 'Tell your dream and tap the symbols that emerged — reading follows the Integrative Spiritual Psychology Hermeneutic Matrix.',
+      placeholder: 'Begin telling your dream…',
+      interpret: '✦ Reveal meaning',
+      symbolsHint: 'Common symbols',
+      feelingLabel: 'Dominant feeling in the dream',
+      feelings: { peace: 'Peace', fear: 'Fear', sadness: 'Sadness', joy: 'Joy', confusion: 'Confusion', anger: 'Anger' },
+      section1: 'Analysis of the Soul\'s State',
+      section2: 'The Inner Alert',
+      section3: 'The Path of Spiritual Healing',
+      section4: 'Question for Meditation',
+      addSymbol: 'Add symbol',
     },
     biorritmo: {
       title: 'Vital Flow',
