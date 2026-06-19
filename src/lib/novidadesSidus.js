@@ -1,0 +1,23 @@
+/** Changelog Sidus — actualizar quando houver deploy relevante. */
+export const NOVIDADES_SIDUS = [
+  {
+    date: '2026-06-18',
+    pt: 'Oráculo renomeado para Sidus · Sitemap PT/EN para Google',
+    en: 'Oracle renamed to Sidus · PT/EN sitemap for Google',
+  },
+  {
+    date: '2026-06-17',
+    pt: 'Gemini limitado a astrologia · Motor IA gratuito (Groq/Gemini)',
+    en: 'Gemini scoped to astrology · Free AI stack (Groq/Gemini)',
+  },
+  {
+    date: '2026-06-15',
+    pt: 'Interpretação de sonhos · IA no servidor (mais seguro)',
+    en: 'Dream interpretation · Server-side AI (more secure)',
+  },
+  {
+    date: '2026-06-10',
+    pt: 'Chat Oráculo Sidus · Tarot online · Ferramentas Premium',
+    en: 'Sidus Oracle chat · Online Tarot · Premium tools',
+  },
+]

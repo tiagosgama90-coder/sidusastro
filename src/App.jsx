@@ -40,6 +40,7 @@ import { Perfil } from './components/Perfil'
 import { PoliticaPrivacidade } from './components/PoliticaPrivacidade'
 import { InterpretacaoMapa } from './components/InterpretacaoMapa'
 import { BussolaCosmica, Sinastria, Biorritmo, DiarioAstral, Numerologia, InterpretacaoSonhos, HorasIguais } from './components/FerramentasPremium'
+import { ConteudoDinamicoSidus } from './components/ConteudoDinamicoSidus'
 import { auth, db, firebaseDisponivel } from './lib/firebase'
 import { enviarEmailVerificacao, traduzirErroEmail } from './lib/authEmail'
 import {
@@ -1843,6 +1844,8 @@ function Dashboard({ nome, mapaNatal, ceuAgora, aspetos, onOraculo, onPrivacidad
           ))
         )}
       </div>
+
+      <ConteudoDinamicoSidus mapaNatal={mapaNatal} aspetos={aspetos} />
 
       {/* Carta do Dia */}
       <CartaDoDia />
