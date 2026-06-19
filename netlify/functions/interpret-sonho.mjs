@@ -4,6 +4,7 @@ import {
   construirSistemaSonhos,
   construirPedidoSonhos,
   parseRespostaSonhos,
+  gerarInterpretacaoLocal,
 } from '../../src/lib/sonhosPrompt.js'
 
 const corsHeaders = {
@@ -28,12 +29,13 @@ export default async (req) => {
       return new Response(JSON.stringify({ error: 'Relato demasiado curto' }), { status: 400, headers: corsHeaders })
     }
 
+    const feelingLabel = labelSentimento(feeling, lang)
     const simbolosDetectados = extrairSimbolos(texto, chips)
     const system = construirSistemaSonhos(lang)
     const userPrompt = construirPedidoSonhos({
       texto: texto.trim(),
       lang,
-      feeling: labelSentimento(feeling, lang),
+      feeling: feelingLabel,
       simbolosDetectados,
       mapaNatal,
     })
@@ -43,17 +45,17 @@ export default async (req) => {
       messages: [{ role: 'user', content: userPrompt }],
       maxTokens: 520,
       temperature: 0.85,
-      model: 'gpt-4o-mini',
+      tier: 'free',
     })
 
-    if (!raw) {
-      return new Response(JSON.stringify({ error: 'IA indisponível' }), { status: 503, headers: corsHeaders })
+    const simbolos = simbolosDetectados.map((s) => ({ tema: s.tema, resumo: s.resumo }))
+    let seccoes = raw ? parseRespostaSonhos(raw, lang) : null
+
+    if (!seccoes?.some((s) => s.texto?.length > 20)) {
+      seccoes = gerarInterpretacaoLocal(texto.trim(), lang, feelingLabel, simbolosDetectados, mapaNatal)
     }
 
-    const seccoes = parseRespostaSonhos(raw, lang)
-    const simbolos = simbolosDetectados.map((s) => ({ tema: s.tema, resumo: s.resumo }))
-
-    return new Response(JSON.stringify({ seccoes, simbolos, raw }), {
+    return new Response(JSON.stringify({ seccoes, simbolos, fonte: raw ? 'ia' : 'lexicon' }), {
       status: 200,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     })

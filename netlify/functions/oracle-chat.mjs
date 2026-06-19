@@ -37,7 +37,7 @@ export default async (req) => {
       messages,
       maxTokens: isPremium ? 550 : 300,
       temperature: isPremium ? 0.75 : 0.82,
-      model: isPremium ? 'gpt-4o' : 'gpt-4o-mini',
+      tier: isPremium ? 'premium' : 'free',
     })
 
     if (!resposta) {

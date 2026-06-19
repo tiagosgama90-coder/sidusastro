@@ -137,3 +137,45 @@ export function parseRespostaSonhos(texto, lang = 'pt') {
   }
   return seccoes
 }
+
+/** Fallback gratuito offline — único por relato (léxico + excerto do texto). */
+export function gerarInterpretacaoLocal(texto, lang, feelingLabel, simbolosDetectados, mapaNatal) {
+  const e = lang === 'en'
+  const excerto = texto.trim().slice(0, 120) + (texto.length > 120 ? '…' : '')
+  const temas = simbolosDetectados.map((s) => s.tema).join(', ') || (e ? 'inner images' : 'imagens interiores')
+  const detalhes = simbolosDetectados.slice(0, 4).map((s) => `${s.tema}: ${s.resumo}`).join(' ')
+  const solar = mapaNatal?.solar?.nome
+  const lunar = mapaNatal?.lunar?.nome
+  const astro = solar && lunar
+    ? (e ? ` With Sun in ${solar} and Moon in ${lunar}, the emotional tone aligns with your natal rhythm.` : ` Com Sol em ${solar} e Lua em ${lunar}, o tom emocional alinha-se com o teu ritmo natal.`)
+    : ''
+
+  const medo = /medo|terror|pavor|fear|terror|nightmare|pesadelo/i.test(texto + feelingLabel)
+
+  const s1 = e
+    ? `Your dream ("${excerpto}") is not fortune-telling — it mirrors your soul's current processing. Feeling noted: ${feelingLabel}. Symbols emerging: ${temas}. ${detalhes}${astro}`
+    : `O teu sonho ("${excerpto}") não é adivinhação — espelha o processamento actual da alma. Sentimento: ${feelingLabel}. Símbolos emergentes: ${temas}. ${detalhes}${astro}`
+
+  const s2 = medo
+    ? (e
+      ? 'The tension or nightmare quality is a merciful alert — not punishment. Something avoided in waking life returns symbolically so you may face it with honesty rather than control.'
+      : 'A tensão ou qualidade de pesadelo é um alerta misericordioso — não castigo. Algo evitado na vida acordada regressa simbolicamente para o enfrentares com honestidade, não controlo.')
+    : (e
+      ? 'Even calmer dreams invite attention: comfort may hide stagnation. Ask whether this image confirms needed rest or gently warns against postponing a necessary step.'
+      : 'Mesmo sonhos mais calmos pedem atenção: o conforto pode esconder estagnação. Pergunta se esta imagem confirma descanso necessário ou avisa contra adiar um passo necessário.')
+
+  const s3 = e
+    ? 'Practical path: (1) Name honestly what you feel today about this dream. (2) Ten minutes of silence or journaling. (3) One small reconciling gesture — with yourself or someone the dream touched. No lucky numbers; healing comes through attitude and quietude.'
+    : 'Caminho prático: (1) Nomeia honestamente o que sentes hoje sobre este sonho. (2) Dez minutos de silêncio ou escrita. (3) Um pequeno gesto de reconciliação — contigo ou com quem o sonho tocou. Sem números da sorte; a cura vem pela actitude e quietude.'
+
+  const s4 = e
+    ? `Which image from "${excerpto}" asks you for a softer gaze upon yourself — not answers, but compassion?`
+    : `Que imagem de "${excerpto}" te pede um olhar mais suave sobre ti — não respostas, mas compaixão?`
+
+  return [
+    { key: 'section1', texto: s1 },
+    { key: 'section2', texto: s2 },
+    { key: 'section3', texto: s3 },
+    { key: 'section4', texto: s4 },
+  ]
+}
