@@ -46,9 +46,12 @@ export default async (req) => {
       || (session.mode === 'subscription' ? 'premium' : 'tarot')
 
     if (metaUserId && productType === 'premium') {
+      const billingType = session.metadata?.billingType
+      const isRecurring = session.mode === 'subscription' || session.subscription
       await activarPremium(metaUserId, {
         stripeCustomerId: session.customer || null,
-        stripeSubscriptionId: session.subscription?.id || session.subscription || null,
+        stripeSubscriptionId: isRecurring ? (session.subscription?.id || session.subscription || null) : null,
+        billingType: isRecurring ? 'recurring' : (billingType === 'prepaid_month' ? 'prepaid_month' : undefined),
       })
     } else if (metaUserId && productType === 'mapa') {
       await activarMapaCompleto(metaUserId)

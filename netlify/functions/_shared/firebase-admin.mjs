@@ -19,13 +19,44 @@ export function getFirestore() {
   return admin.firestore()
 }
 
+function premiumUntilFromExisting(existingUntil, dias = 30) {
+  let base = new Date()
+  if (existingUntil) {
+    const ex = existingUntil.toDate ? existingUntil.toDate() : new Date(existingUntil)
+    if (ex > base) base = ex
+  }
+  const until = new Date(base)
+  until.setDate(until.getDate() + dias)
+  return admin.firestore.Timestamp.fromDate(until)
+}
+
 export async function activarPremium(userId, extra = {}) {
   const db = getFirestore()
   if (!db || !userId) return false
-  await db.collection('users').doc(userId).set(
-    { isPremium: true, mapaCompleto: true, premiumAt: admin.firestore.FieldValue.serverTimestamp(), ...extra },
-    { merge: true }
-  )
+
+  const updates = {
+    isPremium: true,
+    mapaCompleto: true,
+    premiumAt: admin.firestore.FieldValue.serverTimestamp(),
+  }
+
+  if (extra.stripeSubscriptionId) {
+    updates.stripeSubscriptionId = extra.stripeSubscriptionId
+    updates.stripeCustomerId = extra.stripeCustomerId || null
+    updates.premiumBilling = 'recurring'
+  } else if (extra.billingType === 'prepaid_month') {
+    const snap = await db.collection('users').doc(userId).get()
+    const data = snap.exists ? snap.data() : {}
+    updates.premiumUntil = premiumUntilFromExisting(data.premiumUntil, 30)
+    updates.premiumBilling = 'prepaid'
+    if (extra.stripeCustomerId) updates.stripeCustomerId = extra.stripeCustomerId
+  }
+
+  if (extra.stripeCustomerId && !updates.stripeCustomerId) {
+    updates.stripeCustomerId = extra.stripeCustomerId
+  }
+
+  await db.collection('users').doc(userId).set(updates, { merge: true })
   return true
 }
 

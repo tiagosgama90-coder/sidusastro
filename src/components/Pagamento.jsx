@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { useLanguage } from '../lib/i18n/LanguageContext.jsx'
 import { inferProductType } from '../lib/pricing.js'
-import { metodosParaProduto } from '../lib/paymentMethods.js'
+import { metodosParaProduto, metodoUsaSubscricaoRecorrente } from '../lib/paymentMethods.js'
 
 const CORES = {
   fundo: '#0B071E', dourado: '#DFB76C', douradoEscuro: '#B8944F',
@@ -45,20 +45,20 @@ export function ModalPagamento({ valor, descricao, userId, userEmail, productTyp
   const [erro, setErro] = useState(null)
 
   const productType = inferProductType(valor, descricao, productTypeProp)
-  const isSubscription = productType === 'premium'
+  const isVip = productType === 'premium'
 
   const metodosDisponiveis = useMemo(
-    () => metodosParaProduto(isSubscription).map((m) => ({
+    () => metodosParaProduto().map((m) => ({
       ...m,
       nome: t(`pagamento.methods.${m.i18nKey}.nome`),
       desc: t(`pagamento.methods.${m.i18nKey}.desc`),
     })),
-    [isSubscription, t],
+    [t],
   )
 
-  const [metodoSelecionado, setMetodoSelecionado] = useState(() => metodosDisponiveis[0]?.stripeType || 'card')
-
+  const [metodoSelecionado, setMetodoSelecionado] = useState('card')
   const metodoActivo = metodosDisponiveis.find((m) => m.stripeType === metodoSelecionado) || metodosDisponiveis[0]
+  const vipRecorrente = isVip && metodoActivo && metodoUsaSubscricaoRecorrente(metodoActivo.stripeType)
 
   const msgErro = (code) => {
     const map = {
@@ -66,7 +66,6 @@ export function ModalPagamento({ valor, descricao, userId, userEmail, productTyp
       invalidUrl: t('pagamento.invalidUrl'),
       needLogin: t('pagamento.needLogin'),
       selectMethod: t('pagamento.selectMethod'),
-      methodNotSubscription: t('pagamento.methodNotSubscription'),
     }
     return map[code] || code || t('pagamento.stripeFail')
   }
@@ -104,7 +103,7 @@ export function ModalPagamento({ valor, descricao, userId, userEmail, productTyp
           <p style={{ margin: 0, color: CORES.brancoMuted, fontSize: 13 }}>{descricao}</p>
         </div>
         <div style={{ fontSize: 24, fontWeight: 700, color: CORES.dourado }}>
-          {valor.toFixed(2)} €{isSubscription ? <span style={{ fontSize: 12, fontWeight: 400 }}>{t('common.perMonth')}</span> : null}
+          {valor.toFixed(2)} €{isVip ? <span style={{ fontSize: 12, fontWeight: 400 }}>{t('common.perMonth')}</span> : null}
         </div>
       </div>
 
@@ -115,7 +114,7 @@ export function ModalPagamento({ valor, descricao, userId, userEmail, productTyp
         <span style={{ fontSize: 22 }}>🔒</span>
         <p style={{ margin: 0, fontSize: 12, color: CORES.brancoMuted, lineHeight: 1.5 }}>
           {t('pagamento.processedBy')} <strong style={{ color: CORES.branco }}>Stripe</strong>.
-          {isSubscription ? t('pagamento.subscriptionNote') : t('pagamento.oneTimeNote')}
+          {isVip && vipRecorrente ? t('pagamento.subscriptionNote') : t('pagamento.oneTimeNote')}
         </p>
       </div>
 
@@ -149,9 +148,9 @@ export function ModalPagamento({ valor, descricao, userId, userEmail, productTyp
         })}
       </div>
 
-      {isSubscription && (
-        <p style={{ fontSize: 10, color: CORES.brancoMuted, marginBottom: 14, lineHeight: 1.5 }}>
-          {t('pagamento.subscriptionMethodsNote')}
+      {isVip && metodoActivo && !vipRecorrente && (
+        <p style={{ fontSize: 10, color: CORES.dourado, marginBottom: 14, lineHeight: 1.5 }}>
+          {t('pagamento.vipPrepaidNote')}
         </p>
       )}
 
