@@ -1978,11 +1978,13 @@ function BarraElemento({ label, valor, total, cor }) {
   )
 }
 
-function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, isPremium, onUpgrade, onComprarMapa, onMapaGerado, onCompletarNatal, reparandoMapa, isDesktop, motorAstro }) {
+function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, isPremium, onUpgrade, onComprarMapa, onMapaGerado, isDesktop, motorAstro }) {
   const { lang, t, ts, tp, te, ta } = useLanguage()
   const [gerandoPdf, setGerandoPdf] = useState(false)
   const [emailEnviado, setEmailEnviado] = useState(false)
   const mapaGeradoRef = useRef(false)
+
+  const mapaCompletoDesbloqueado = mapaDesbloqueado || isPremium
 
   // Notifica o pai na primeira visualização do mapa (trava dados natais)
   useEffect(() => {
@@ -2003,13 +2005,13 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
   )
 
   const analiseCompleta = useMemo(
-    () => (mapaDesbloqueado && mapaNatal ? gerarAnaliseCompleta(mapaNatal, planetasComCasa, aspetosNatais, dados, lang) : null),
-    [mapaDesbloqueado, mapaNatal, planetasComCasa, aspetosNatais, dados, lang]
+    () => (mapaCompletoDesbloqueado && mapaNatal ? gerarAnaliseCompleta(mapaNatal, planetasComCasa, aspetosNatais, dados, lang) : null),
+    [mapaCompletoDesbloqueado, mapaNatal, planetasComCasa, aspetosNatais, dados, lang]
   )
 
   const resumoGratuito = useMemo(
-    () => (!mapaDesbloqueado && mapaNatal ? gerarResumoGratuito(mapaNatal, lang) : null),
-    [mapaDesbloqueado, mapaNatal, lang]
+    () => (!mapaCompletoDesbloqueado && mapaNatal ? gerarResumoGratuito(mapaNatal, lang) : null),
+    [mapaCompletoDesbloqueado, mapaNatal, lang]
   )
 
   const mapaCompletoVisivel = planetasComCasa.length > 0
@@ -2048,31 +2050,12 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
   }
 
   if (!mapaNatal) {
-    const temDadosMin = Boolean(dados?.data && dados?.hora)
     return (
       <div style={layoutConteudo(isDesktop)}>
         <h1 style={{ ...estilos.titulo, textAlign: 'left', fontSize: 22, marginBottom: 20 }}>{t('mapa.title')}</h1>
-        <div style={{ ...estilos.vidro, padding: 20 }}>
-          {reparandoMapa || (isPremium && temDadosMin) ? (
-            <div style={{ display: 'flex', gap: 10, alignItems: 'center', color: CORES.brancoSuave }}>
-              <Loader2 size={18} color={CORES.dourado} style={{ animation: 'spin 1s linear infinite', flexShrink: 0 }} />
-              <span>{t('mapa.calculating')}</span>
-            </div>
-          ) : isPremium && onCompletarNatal ? (
-            <>
-              <p style={{ color: CORES.brancoSuave, lineHeight: 1.65, margin: '0 0 16px', fontSize: 14 }}>
-                {t('mapa.premiumCompleteNatal')}
-              </p>
-              <button type="button" onClick={onCompletarNatal} style={estilos.botaoDourado}>
-                {t('mapa.completeNatalCta')}
-              </button>
-            </>
-          ) : (
-            <div style={{ display: 'flex', gap: 8, color: CORES.brancoMuted }}>
-              <Info size={15} style={{ flexShrink: 0, marginTop: 2 }} />
-              <span>{t('mapa.fillNatal')}</span>
-            </div>
-          )}
+        <div style={{ ...estilos.vidro, padding: 20, display: 'flex', gap: 8, color: CORES.brancoMuted }}>
+          <Info size={15} />
+          <span>{t('mapa.fillNatal')}</span>
         </div>
       </div>
     )
@@ -2106,7 +2089,7 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
       </header>
 
       {/* ── Resumo interpretativo (gratuito) ── */}
-      {!mapaDesbloqueado && resumoGratuito && (
+      {!mapaCompletoDesbloqueado && resumoGratuito && (
         <div style={{ ...estilos.vidro, padding: 16, marginBottom: 14 }}>
           <div style={{ fontSize: 11, color: CORES.brancoMuted, lineHeight: 1.6, marginBottom: 8 }}>
             {resumoGratuito.sol}
@@ -2191,7 +2174,7 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
       )}
 
       {/* ── Conteúdo Premium (interpretação profunda + PDF) ── */}
-      {mapaDesbloqueado ? (
+      {mapaCompletoDesbloqueado ? (
         <>
           <InterpretacaoMapa analise={analiseCompleta} estilosVidro={estilos.vidro} lang={lang} />
 
@@ -2857,7 +2840,6 @@ export default function App() {
   const [isPremium, setIsPremium] = useState(false)
   const [mapaCompleto, setMapaCompleto] = useState(false)
   const [mapaGerado, setMapaGerado] = useState(false) // bloqueio: 1 mapa por utilizador
-  const [reparandoDados, setReparandoDados] = useState(false)
   const [leiturasTarotUsadas, setLeiturasTarotUsadas] = useState(0)
   const [perfilCarregando, setPerfilCarregando] = useState(false)
 
@@ -3221,13 +3203,12 @@ export default function App() {
     }
   }, [dados, sweReady])
 
-  // Premium com dados parciais: reparar localização/fuso e recalcular mapa
+  // Reparar dados natais incompletos e recalcular mapa
   useEffect(() => {
-    if (!utilizador || !acessoVip || mapaNatal) return
+    if (!utilizador || mapaNatal) return
     if (!dadosNataisMinimos(dados)) return
 
     let cancelled = false
-    setReparandoDados(true)
     ;(async () => {
       try {
         const reparado = await repararDadosPerfil(dados)
@@ -3240,14 +3221,12 @@ export default function App() {
           }
         }
       } catch (e) {
-        console.warn('[Sidus] Reparação premium:', e?.message)
-      } finally {
-        if (!cancelled) setReparandoDados(false)
+        console.warn('[Sidus] Reparação de dados:', e?.message)
       }
     })()
 
     return () => { cancelled = true }
-  }, [utilizador, acessoVip, mapaNatal, dados?.data, dados?.hora, dados?.cidade, dados?.localizacao, dados?.fuso])
+  }, [utilizador, mapaNatal, dados?.data, dados?.hora, dados?.cidade, dados?.localizacao, dados?.fuso])
 
   // ── Planetas de nascimento ──────────────────────────────────────────────────
   useEffect(() => {
@@ -3352,7 +3331,7 @@ export default function App() {
     }
   }, [mapaGerado, utilizador])
 
-  const dadosBloqueados = mapaGerado && dadosNataisMinimos(dados)
+  const dadosBloqueados = mapaGerado
 
   const isDev = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
 
@@ -3410,7 +3389,7 @@ export default function App() {
       case 'dashboard':
         return <Dashboard nome={dados.nome} mapaNatal={mapaNatal} ceuAgora={ceuAgora} aspetos={aspetosAgora} onOraculo={() => irPara('chat')} onPrivacidade={() => irPara('privacidade')} isDesktop={isDesktop} isPremium={acessoVip} onUpgrade={() => irPara('paywall')} onTarot={() => irPara('tarot')} />
       case 'mapa':
-        return <MapaAstral mapaNatal={mapaNatal} dados={dados} planetasNascimento={planetasNascimento} mapaDesbloqueado={mapaDesbloqueado} isPremium={acessoVip} onUpgrade={() => irPara('paywall')} onComprarMapa={() => abrirPagamento(t('mapa.buyDesc'), PRECO_MAPA_COMPLETO, null, { direto: true, productType: 'mapa' })} onMapaGerado={handleMapaGerado} onCompletarNatal={() => irPara('onboarding')} reparandoMapa={reparandoDados} isDesktop={isDesktop} motorAstro={motorAstro} />
+        return <MapaAstral mapaNatal={mapaNatal} dados={dados} planetasNascimento={planetasNascimento} mapaDesbloqueado={mapaDesbloqueado} isPremium={isPremium || mapaCompleto} onUpgrade={() => irPara('paywall')} onComprarMapa={() => abrirPagamento(t('mapa.buyDesc'), PRECO_MAPA_COMPLETO, null, { direto: true, productType: 'mapa' })} onMapaGerado={handleMapaGerado} isDesktop={isDesktop} motorAstro={motorAstro} />
       case 'tarot':
         return <EcraTarot mapaNatal={mapaNatal} isPremium={acessoVip} userId={utilizador?.uid} leiturasTarotUsadas={leiturasTarotUsadas} onLeituraGratisUsada={registarLeituraTarotGratis} onPagar={abrirPagamento} onVoltar={() => irPara('home')} onPremium={() => irPara('paywall')} />
       case 'ferramentas':
@@ -3434,9 +3413,8 @@ export default function App() {
       case 'chat':
         return <Chat mapaNatal={mapaNatal} isPremium={acessoVip} onUpgrade={() => irPara('paywall')} />
       case 'perfil':
-        return <Perfil utilizador={utilizador} dados={dados} mapaNatal={mapaNatal} isPremium={acessoVip}
+        return <Perfil utilizador={utilizador} dados={dados} mapaNatal={mapaNatal} isPremium={isPremium}
           dadosBloqueados={dadosBloqueados}
-          onCompletarNatal={!mapaGerado ? () => irPara('onboarding') : null}
           onLogout={handleLogout} />
       default:
         return <Dashboard nome={dados.nome} mapaNatal={mapaNatal} ceuAgora={ceuAgora} aspetos={aspetosAgora} onOraculo={() => irPara('chat')} onPrivacidade={() => irPara('privacidade')} isDesktop={isDesktop} isPremium={acessoVip} onUpgrade={() => irPara('paywall')} onTarot={() => irPara('tarot')} />
