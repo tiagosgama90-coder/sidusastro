@@ -1,5 +1,6 @@
 import { useState, useRef } from 'react'
 import { useLanguage } from '../lib/i18n/LanguageContext.jsx'
+import { getBeneficiosVip } from '../lib/i18n/ferramentasData.js'
 
 const CORES = {
   fundo:'#0B071E', dourado:'#DFB76C', douradoEscuro:'#B8944F',
@@ -20,8 +21,9 @@ function formatarData(iso) {
   return `${d}/${m}/${a}`
 }
 
-export function Perfil({ utilizador, dados, mapaNatal, isPremium, dadosBloqueados, onLogout }) {
-  const { t, ts, te } = useLanguage()
+export function Perfil({ utilizador, dados, mapaNatal, isPremium, dadosBloqueados, onCompletarNatal, onLogout }) {
+  const { lang, t, ts, te } = useLanguage()
+  const beneficios = getBeneficiosVip(lang)
   const [foto, setFoto] = useState(() => {
     try { return localStorage.getItem('sidus_foto') || null } catch { return null }
   })
@@ -41,6 +43,7 @@ export function Perfil({ utilizador, dados, mapaNatal, isPremium, dadosBloqueado
 
   const nome = dados?.nome || utilizador?.displayName || t('perfil.defaultName')
   const email = utilizador?.email || ''
+  const temDadosNatais = Boolean(dados?.data || dados?.hora || dados?.cidade)
 
   return (
     <div style={{ padding:'24px 20px 110px' }}>
@@ -87,7 +90,24 @@ export function Perfil({ utilizador, dados, mapaNatal, isPremium, dadosBloqueado
         </div>
       </div>
 
-      {mapaNatal && (
+      {isPremium && (
+        <div style={{
+          background:'linear-gradient(135deg, rgba(223,183,108,0.12), rgba(139,92,246,0.1))',
+          border:`1px solid rgba(223,183,108,0.35)`, borderRadius:16, padding:18, marginBottom:20,
+        }}>
+          <div style={{ fontSize:11, color:CORES.dourado, textTransform:'uppercase', letterSpacing:'0.08em', marginBottom:12 }}>
+            {t('perfil.vipActive')}
+          </div>
+          {beneficios.slice(0, 4).map((b) => (
+            <div key={b} style={{ display:'flex', gap:8, marginBottom:8, fontSize:12, color:CORES.brancoSuave, lineHeight:1.5 }}>
+              <span style={{ color:CORES.dourado }}>✦</span>
+              <span>{b}</span>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {mapaNatal ? (
         <div style={{background:'rgba(255,255,255,0.04)',border:`1px solid ${CORES.vidroBorda}`,borderRadius:16,padding:20,marginBottom:20}}>
           <div style={{fontSize:11,color:CORES.dourado,textTransform:'uppercase',letterSpacing:'0.08em',marginBottom:14}}>
             {t('perfil.natalChart')}
@@ -107,16 +127,31 @@ export function Perfil({ utilizador, dados, mapaNatal, isPremium, dadosBloqueado
               </div>
             ))}
           </div>
-          <div style={{marginTop:14,paddingTop:14,borderTop:`1px solid ${CORES.vidroBorda}`,display:'grid',gridTemplateColumns:'1fr 1fr',gap:8,fontSize:12}}>
-            <span style={{color:CORES.brancoMuted}}>{t('perfil.birth')}</span>
-            <span style={{color:CORES.branco}}>{formatarData(dados?.data)}</span>
-            <span style={{color:CORES.brancoMuted}}>{t('perfil.time')}</span>
-            <span style={{color:CORES.branco}}>{dados?.hora || '—'}</span>
-            <span style={{color:CORES.brancoMuted}}>{t('perfil.place')}</span>
-            <span style={{color:CORES.branco,fontSize:11}}>{dados?.cidade || '—'}</span>
-          </div>
+          <PainelDadosNatais dados={dados} t={t} formatarData={formatarData} />
         </div>
-      )}
+      ) : temDadosNatais ? (
+        <div style={{background:'rgba(255,255,255,0.04)',border:`1px solid ${CORES.vidroBorda}`,borderRadius:16,padding:20,marginBottom:20}}>
+          <div style={{fontSize:11,color:CORES.dourado,textTransform:'uppercase',letterSpacing:'0.08em',marginBottom:10}}>
+            {t('perfil.natalData')}
+          </div>
+          <p style={{ fontSize:13, color:CORES.brancoMuted, lineHeight:1.6, margin:'0 0 14px' }}>
+            {t('perfil.natalPending')}
+          </p>
+          <PainelDadosNatais dados={dados} t={t} formatarData={formatarData} />
+        </div>
+      ) : isPremium && onCompletarNatal ? (
+        <div style={{background:'rgba(255,255,255,0.04)',border:`1px solid ${CORES.vidroBorda}`,borderRadius:16,padding:20,marginBottom:20}}>
+          <p style={{ fontSize:14, color:CORES.brancoSuave, lineHeight:1.65, margin:'0 0 16px' }}>
+            {t('perfil.premiumNoNatal')}
+          </p>
+          <button type="button" onClick={onCompletarNatal} style={{
+            width:'100%', background:'linear-gradient(135deg,#DFB76C,#B8944F)', border:'none',
+            borderRadius:12, color:'#0B071E', fontSize:14, fontWeight:700, padding:'13px', cursor:'pointer',
+          }}>
+            {t('perfil.completeNatalCta')}
+          </button>
+        </div>
+      ) : null}
 
       {mapaNatal && <PainelElementos mapaNatal={mapaNatal} t={t} te={te}/>}
 
@@ -144,6 +179,19 @@ export function Perfil({ utilizador, dados, mapaNatal, isPremium, dadosBloqueado
           {t('common.logout')}
         </button>
       </div>
+    </div>
+  )
+}
+
+function PainelDadosNatais({ dados, t, formatarData }) {
+  return (
+    <div style={{marginTop:14,paddingTop:14,borderTop:`1px solid ${CORES.vidroBorda}`,display:'grid',gridTemplateColumns:'1fr 1fr',gap:8,fontSize:12}}>
+      <span style={{color:CORES.brancoMuted}}>{t('perfil.birth')}</span>
+      <span style={{color:CORES.branco}}>{formatarData(dados?.data)}</span>
+      <span style={{color:CORES.brancoMuted}}>{t('perfil.time')}</span>
+      <span style={{color:CORES.branco}}>{dados?.hora || '—'}</span>
+      <span style={{color:CORES.brancoMuted}}>{t('perfil.place')}</span>
+      <span style={{color:CORES.branco,fontSize:11}}>{dados?.cidade || '—'}</span>
     </div>
   )
 }

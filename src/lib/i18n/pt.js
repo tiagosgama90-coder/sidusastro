@@ -115,6 +115,9 @@ export default {
   },
   mapa: {
     title: 'Mapa Astral', fillNatal: 'Preenche o registo natal para calcular o teu mapa.',
+    calculating: 'A calcular o teu mapa astral…',
+    premiumCompleteNatal: 'Como membro Premium, tens acesso total. Completa o registo natal uma única vez para gerar o teu mapa personalizado.',
+    completeNatalCta: '✦ Completar registo natal',
     sunSign: 'Signo Solar', moonSign: 'Signo Lunar', ascendant: 'Ascendente', mc: 'Meio do Céu (MC)',
     fourPillars: '✦ Quatro Pilares Fundamentais',
     elementBalance: '✦ Equilíbrio de Elementos',
@@ -184,6 +187,11 @@ export default {
     dominantElements: 'Elementos dominantes',
     lockedTitle: 'Data e local de nascimento protegidos',
     lockedDesc: 'A data, hora e cidade de nascimento não podem ser alteradas após o mapa ser criado. O resto do teu perfil (foto, mapa, ferramentas) permanece totalmente acessível.',
+    vipActive: 'Sidus VIP activo',
+    natalData: 'Dados natais',
+    natalPending: 'Os teus dados estão registados. O mapa será calculado automaticamente.',
+    premiumNoNatal: 'Tens acesso Premium completo. Regista os teus dados de nascimento uma única vez para personalizar mapa, oráculo e ferramentas.',
+    completeNatalCta: '✦ Completar registo natal',
   },
   pagamento: {
     cancelled: 'Pagamento cancelado. Podes tentar outra vez quando quiseres.',

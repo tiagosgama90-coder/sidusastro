@@ -115,6 +115,9 @@ export default {
   },
   mapa: {
     title: 'Natal Chart', fillNatal: 'Complete your birth data to calculate your chart.',
+    calculating: 'Calculating your natal chart…',
+    premiumCompleteNatal: 'As a Premium member, you have full access. Complete your birth registration once to generate your personalized chart.',
+    completeNatalCta: '✦ Complete birth registration',
     sunSign: 'Sun Sign', moonSign: 'Moon Sign', ascendant: 'Ascendant', mc: 'Midheaven (MC)',
     fourPillars: '✦ Four Fundamental Pillars',
     elementBalance: '✦ Element Balance',
@@ -184,6 +187,11 @@ export default {
     dominantElements: 'Dominant elements',
     lockedTitle: 'Birth date and place protected',
     lockedDesc: 'Birth date, time and city cannot be changed after your chart is created. The rest of your profile (photo, chart, tools) stays fully accessible.',
+    vipActive: 'Sidus VIP active',
+    natalData: 'Birth data',
+    natalPending: 'Your data is saved. Your chart will be calculated automatically.',
+    premiumNoNatal: 'You have full Premium access. Register your birth data once to personalize your chart, oracle and tools.',
+    completeNatalCta: '✦ Complete birth registration',
   },
   pagamento: {
     cancelled: 'Payment cancelled. You can try again whenever you like.',

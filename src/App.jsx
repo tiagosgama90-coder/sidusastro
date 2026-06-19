@@ -906,7 +906,16 @@ function contaJaConfigurada(perfil, dadosActuais) {
 
 function dadosParaCalculoMapa(dados) {
   const d = normalizarDadosPerfil(dados)
-  if (!d?.data || !d?.hora || !d?.localizacao) return null
+  if (!d?.data || !d?.hora) return null
+  if (!d.localizacao && d.lat != null && d.lon != null) {
+    d.localizacao = {
+      lat: Number(d.lat),
+      lon: Number(d.lon),
+      nome: d.cidade || `${d.lat}, ${d.lon}`,
+      placeId: d.placeId || 'legacy',
+    }
+  }
+  if (!d.localizacao) return null
   return { ...d, fuso: d.fuso ?? 0 }
 }
 
@@ -1969,7 +1978,7 @@ function BarraElemento({ label, valor, total, cor }) {
   )
 }
 
-function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, isPremium, onUpgrade, onComprarMapa, onMapaGerado, isDesktop, motorAstro }) {
+function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, isPremium, onUpgrade, onComprarMapa, onMapaGerado, onCompletarNatal, reparandoMapa, isDesktop, motorAstro }) {
   const { lang, t, ts, tp, te, ta } = useLanguage()
   const [gerandoPdf, setGerandoPdf] = useState(false)
   const [emailEnviado, setEmailEnviado] = useState(false)
@@ -2039,12 +2048,31 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
   }
 
   if (!mapaNatal) {
+    const temDadosMin = Boolean(dados?.data && dados?.hora)
     return (
       <div style={layoutConteudo(isDesktop)}>
         <h1 style={{ ...estilos.titulo, textAlign: 'left', fontSize: 22, marginBottom: 20 }}>{t('mapa.title')}</h1>
-        <div style={{ ...estilos.vidro, padding: 20, display: 'flex', gap: 8, color: CORES.brancoMuted }}>
-          <Info size={15} />
-          <span>{t('mapa.fillNatal')}</span>
+        <div style={{ ...estilos.vidro, padding: 20 }}>
+          {reparandoMapa || (isPremium && temDadosMin) ? (
+            <div style={{ display: 'flex', gap: 10, alignItems: 'center', color: CORES.brancoSuave }}>
+              <Loader2 size={18} color={CORES.dourado} style={{ animation: 'spin 1s linear infinite', flexShrink: 0 }} />
+              <span>{t('mapa.calculating')}</span>
+            </div>
+          ) : isPremium && onCompletarNatal ? (
+            <>
+              <p style={{ color: CORES.brancoSuave, lineHeight: 1.65, margin: '0 0 16px', fontSize: 14 }}>
+                {t('mapa.premiumCompleteNatal')}
+              </p>
+              <button type="button" onClick={onCompletarNatal} style={estilos.botaoDourado}>
+                {t('mapa.completeNatalCta')}
+              </button>
+            </>
+          ) : (
+            <div style={{ display: 'flex', gap: 8, color: CORES.brancoMuted }}>
+              <Info size={15} style={{ flexShrink: 0, marginTop: 2 }} />
+              <span>{t('mapa.fillNatal')}</span>
+            </div>
+          )}
         </div>
       </div>
     )
@@ -2829,6 +2857,7 @@ export default function App() {
   const [isPremium, setIsPremium] = useState(false)
   const [mapaCompleto, setMapaCompleto] = useState(false)
   const [mapaGerado, setMapaGerado] = useState(false) // bloqueio: 1 mapa por utilizador
+  const [reparandoDados, setReparandoDados] = useState(false)
   const [leiturasTarotUsadas, setLeiturasTarotUsadas] = useState(0)
   const [perfilCarregando, setPerfilCarregando] = useState(false)
 
@@ -2845,9 +2874,9 @@ export default function App() {
   const navigate = useNavigate()
   const location = useLocation()
 
-  const contaConfigurada = mapaGerado || dadosNataisCompletos(dados)
   const mapaDesbloqueado = isPremium || mapaCompleto
   const acessoVip = mapaDesbloqueado
+  const contaConfigurada = mapaGerado || dadosNataisCompletos(dados) || acessoVip
 
   const irPara = useCallback((novoPasso, { replace = false } = {}) => {
     setFerramentaAberta(null)
@@ -2932,9 +2961,11 @@ export default function App() {
                 }
                 if (dadosPerfil) setDados(dadosPerfil)
 
-                if (contaJaConfigurada(perfil, dadosPerfil)) {
+                if (perfil.mapaGerado === true || perfil.dadosTravados === true) {
                   setMapaGerado(true)
-                  if (dadosNataisCompletos(dadosPerfil) && (!perfil.dadosTravados || !perfil.mapaGerado)) {
+                } else if (dadosNataisCompletos(dadosPerfil)) {
+                  setMapaGerado(true)
+                  if (!perfil.dadosTravados || !perfil.mapaGerado) {
                     await setDoc(doc(db, 'users', user.uid), {
                       dados: dadosPerfil,
                       dadosTravados: true,
@@ -3036,19 +3067,19 @@ export default function App() {
       return
     }
 
-    const irParaHome = ['/login', '/home', '/', '/inicio', '/comecar', '/perfil'].includes(path)
+    const irParaHome = ['/login', '/home', '/', '/inicio', '/perfil'].includes(path)
     if (irParaHome) {
       navigate('/home', { replace: true })
       setPasso('home')
     }
   }, [authCarregando, perfilCarregando, utilizador, location.pathname, navigate, contaConfigurada])
 
-  // Conta com mapa: bloquear onboarding e edição de dados
+  // Conta com mapa: bloquear re-onboarding (edição de dados natal)
   useEffect(() => {
     if (authCarregando || perfilCarregando || !utilizador || !mapaGerado) return
     if (passo === 'onboarding') {
-      navigate('/perfil', { replace: true })
-      setPasso('perfil')
+      navigate('/home', { replace: true })
+      setPasso('home')
     }
   }, [authCarregando, perfilCarregando, utilizador, mapaGerado, passo, navigate])
 
@@ -3190,6 +3221,34 @@ export default function App() {
     }
   }, [dados, sweReady])
 
+  // Premium com dados parciais: reparar localização/fuso e recalcular mapa
+  useEffect(() => {
+    if (!utilizador || !acessoVip || mapaNatal) return
+    if (!dadosNataisMinimos(dados)) return
+
+    let cancelled = false
+    setReparandoDados(true)
+    ;(async () => {
+      try {
+        const reparado = await repararDadosPerfil(dados)
+        if (cancelled || !reparado) return
+        const mudou = JSON.stringify(reparado) !== JSON.stringify(dados)
+        if (mudou) {
+          setDados(reparado)
+          if (firebaseDisponivel && db) {
+            await setDoc(doc(db, 'users', utilizador.uid), { dados: reparado }, { merge: true })
+          }
+        }
+      } catch (e) {
+        console.warn('[Sidus] Reparação premium:', e?.message)
+      } finally {
+        if (!cancelled) setReparandoDados(false)
+      }
+    })()
+
+    return () => { cancelled = true }
+  }, [utilizador, acessoVip, mapaNatal, dados?.data, dados?.hora, dados?.cidade, dados?.localizacao, dados?.fuso])
+
   // ── Planetas de nascimento ──────────────────────────────────────────────────
   useEffect(() => {
     if (!dados.data || !dados.hora || !dados.localizacao) { setPlanetasNascimento([]); return }
@@ -3293,7 +3352,7 @@ export default function App() {
     }
   }, [mapaGerado, utilizador])
 
-  const dadosBloqueados = mapaGerado
+  const dadosBloqueados = mapaGerado && dadosNataisMinimos(dados)
 
   const isDev = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
 
@@ -3338,7 +3397,10 @@ export default function App() {
         />
       )
     }
-    // Onboarding só para contas novas sem mapa criado
+    // Onboarding só para contas novas sem acesso VIP
+    if (passo === 'onboarding' && !mapaGerado) {
+      return <Onboarding dados={dados} setDados={setDados} onSubmit={handleOnboarding} isDesktop={isDesktop} />
+    }
     if (!contaConfigurada) {
       return <Onboarding dados={dados} setDados={setDados} onSubmit={handleOnboarding} isDesktop={isDesktop} />
     }
@@ -3348,7 +3410,7 @@ export default function App() {
       case 'dashboard':
         return <Dashboard nome={dados.nome} mapaNatal={mapaNatal} ceuAgora={ceuAgora} aspetos={aspetosAgora} onOraculo={() => irPara('chat')} onPrivacidade={() => irPara('privacidade')} isDesktop={isDesktop} isPremium={acessoVip} onUpgrade={() => irPara('paywall')} onTarot={() => irPara('tarot')} />
       case 'mapa':
-        return <MapaAstral mapaNatal={mapaNatal} dados={dados} planetasNascimento={planetasNascimento} mapaDesbloqueado={mapaDesbloqueado} isPremium={acessoVip} onUpgrade={() => irPara('paywall')} onComprarMapa={() => abrirPagamento(t('mapa.buyDesc'), PRECO_MAPA_COMPLETO, null, { direto: true, productType: 'mapa' })} onMapaGerado={handleMapaGerado} isDesktop={isDesktop} motorAstro={motorAstro} />
+        return <MapaAstral mapaNatal={mapaNatal} dados={dados} planetasNascimento={planetasNascimento} mapaDesbloqueado={mapaDesbloqueado} isPremium={acessoVip} onUpgrade={() => irPara('paywall')} onComprarMapa={() => abrirPagamento(t('mapa.buyDesc'), PRECO_MAPA_COMPLETO, null, { direto: true, productType: 'mapa' })} onMapaGerado={handleMapaGerado} onCompletarNatal={() => irPara('onboarding')} reparandoMapa={reparandoDados} isDesktop={isDesktop} motorAstro={motorAstro} />
       case 'tarot':
         return <EcraTarot mapaNatal={mapaNatal} isPremium={acessoVip} userId={utilizador?.uid} leiturasTarotUsadas={leiturasTarotUsadas} onLeituraGratisUsada={registarLeituraTarotGratis} onPagar={abrirPagamento} onVoltar={() => irPara('home')} onPremium={() => irPara('paywall')} />
       case 'ferramentas':
@@ -3374,6 +3436,7 @@ export default function App() {
       case 'perfil':
         return <Perfil utilizador={utilizador} dados={dados} mapaNatal={mapaNatal} isPremium={acessoVip}
           dadosBloqueados={dadosBloqueados}
+          onCompletarNatal={!mapaGerado ? () => irPara('onboarding') : null}
           onLogout={handleLogout} />
       default:
         return <Dashboard nome={dados.nome} mapaNatal={mapaNatal} ceuAgora={ceuAgora} aspetos={aspetosAgora} onOraculo={() => irPara('chat')} onPrivacidade={() => irPara('privacidade')} isDesktop={isDesktop} isPremium={acessoVip} onUpgrade={() => irPara('paywall')} onTarot={() => irPara('tarot')} />
