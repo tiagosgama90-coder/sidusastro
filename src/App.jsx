@@ -691,7 +691,7 @@ function criarDataUTCporLocal(dataISO, horaHHMM, fuso) {
 
 /**
  * Ascendente e MC via SiderealTime (Meeus cap. 14) + correcção de quadrante.
- * Mesma lógica usada ontem às 15h — ASC a ~90° do MC.
+ * Motor único para gratuito e Premium — MC deriva do mesmo RAMC/obliquidade que o ASC.
  */
 function calcularAscendenteEMc(dataUTC, latitude, longitude) {
   if (!dataUTC || latitude == null || longitude == null) return { asc: 0, mc: 0 }
@@ -715,7 +715,7 @@ function calcularAscendenteEMc(dataUTC, latitude, longitude) {
   asc = ((asc % 360) + 360) % 360
 
   const yMC = Math.sin(ramcRad)
-  const xMC = Math.cos(ramcRad) * Math.cos(e) - Math.tan(latRad) * Math.sin(e)
+  const xMC = Math.cos(ramcRad) * Math.cos(e)
   let mc = Math.atan2(yMC, xMC) * (180 / Math.PI)
   mc = ((mc % 360) + 360) % 360
 
@@ -789,7 +789,8 @@ function calcularPlanetasComSwe(swe, dateUTC, lista = PLANETAS_AGORA) {
 /**
  * Calcula mapa natal completo usando:
  * - swe_calc_ut para Sol, Lua e todos os planetas
- * - swe_houses (Placidus, 'P') para Ascendente e Meio do Céu exactos
+ * - swe_houses (Placidus, 'P') para cúspides intermediárias
+ * - calcularAscendenteEMc para Ascendente e MC (mesma matemática em todos os modos)
  */
 function calcularMapaNatalComSwe(swe, dados) {
   if (!dados.data || !dados.hora || !dados.localizacao) return null
@@ -801,12 +802,18 @@ function calcularMapaNatalComSwe(swe, dados) {
     const fuso = dados.fuso ?? 0
     const dateUTC = criarDataUTCporLocal(dados.data, dados.hora, fuso)
     const jd = swe.dateToJulianDay(dateUTC)
+    const { asc: lonAsc, mc: lonMc } = calcularAscendenteEMc(dateUTC, lat, lon)
 
     // swe_calc_ut + swe_houses — só após loadEphemerisFiles concluir
     const sunPos  = swe.calculatePosition(jd, 0)
     const moonPos = swe.calculatePosition(jd, 1)
     const houses  = swe.calculateHouses(jd, lat, lon, 'P')
-    const cusps   = normalizarCusps(houses) ?? cuspsEqualHouse(houses.ascendant)
+    let cusps = normalizarCusps(houses) ?? cuspsEqualHouse(lonAsc)
+    if (cusps) {
+      cusps = cusps.slice()
+      cusps[0] = lonAsc
+      cusps[9] = lonMc
+    }
 
     const motorLabel =
       _motorStatus === 'swisseph-full'
@@ -817,14 +824,14 @@ function calcularMapaNatalComSwe(swe, dados) {
 
     console.info(
       `[Sidus] JD=${jd.toFixed(6)} · UTC=${dateUTC.toISOString()} · lat=${lat.toFixed(4)} lon=${lon.toFixed(4)}` +
-      ` · Sol=${sunPos.longitude.toFixed(3)}° Lua=${moonPos.longitude.toFixed(3)}° Asc=${houses.ascendant.toFixed(3)}°`
+      ` · Sol=${sunPos.longitude.toFixed(3)}° Lua=${moonPos.longitude.toFixed(3)}° Asc=${lonAsc.toFixed(3)}° MC=${lonMc.toFixed(3)}°`
     )
 
     return {
       solar:      longitudeParaSigno(sunPos.longitude),
       lunar:      longitudeParaSigno(moonPos.longitude),
-      ascendente: longitudeParaSigno(houses.ascendant),
-      mc:         longitudeParaSigno(houses.mc),
+      ascendente: longitudeParaSigno(lonAsc),
+      mc:         longitudeParaSigno(lonMc),
       cusps,
       sistema:    'Tropical · Placidus',
       instanteUTC: dateUTC.toISOString(),
