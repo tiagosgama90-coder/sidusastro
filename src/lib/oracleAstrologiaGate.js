@@ -35,6 +35,8 @@ const ASTRO_PT = [
   'casa 7', 'casa 8', 'casa 9', 'casa 10', 'casa 11', 'casa 12', 'sinastria',
   'compatib', 'efemérides', 'efemerides', 'placidus', 'regente', 'elemento', 'modalidade',
   'eclipse', 'lua nova', 'lua cheia', 'fase lunar', 'ciclo saturno', 'retorno de saturno',
+  'previsão', 'previsao', 'previsões', 'previsoes', 'prever', 'prognóstico', 'prognostico',
+  'oráculo', 'oraculo', 'ciclos planet', 'revolução solar', 'revolucao solar', 'progress',
 ]
 
 const ASTRO_EN = [
@@ -43,6 +45,7 @@ const ASTRO_EN = [
   'conjunction', 'square', 'sextile', 'house 1', 'synastry', 'compatibility',
   'saturn', 'venus', 'mars', 'jupiter', 'mercury', 'neptune', 'uranus', 'pluto',
   'eclipse', 'lunar phase', 'saturn return',
+  'prediction', 'forecast', 'foresee', 'solar return', 'progressed',
 ]
 
 const VIDA_VIA_MAPA_PT = [
@@ -62,10 +65,54 @@ const VIDA_VIA_MAPA_EN = [
   'change', 'cycle', 'chart', 'natal', 'born',
 ]
 
+const RESPOSTA_FORA_PT = [
+  'aqui está a receita', 'ingredientes:', 'modo de preparação', 'modo de preparacao',
+  '```python', '```javascript', '```html', 'def main(', 'function(',
+  'a capital de', 'lotaria', 'euromilhões', 'euromilhoes', 'números da sorte',
+  'como assistente de ia', 'como assistente ai', 'language model',
+  'traduz para', 'translate to', 'escreve um email', 'write an email',
+]
+
+const RESPOSTA_FORA_EN = [
+  'here is the recipe', 'ingredients:', '```python', '```javascript',
+  'capital of', 'lottery', 'lucky numbers', 'as an ai assistant',
+  'translate to', 'write an email',
+]
+
 export function mensagemForaEscopo(lang = 'pt') {
   return lang === 'en'
-    ? '✦ I am Sirius, Sidus Astral Oracle. I only guide questions about astrology and life read through your natal chart (love, career, purpose, cycles, transits, compatibility). Please rephrase your question in that scope.'
-    : '✦ Sou o Sírius, Oráculo Astral do Sidus. Só oriento questões de astrologia e de vida lidas pelo teu mapa natal (amor, carreira, propósito, ciclos, trânsitos, compatibilidade). Reformula a tua pergunta nesse âmbito.'
+    ? '✦ I am Sirius, Sidus Astral Oracle. I only guide astrology, predictions and life read through your natal chart (love, career, purpose, cycles, transits, compatibility). Please rephrase your question in that scope.'
+    : '✦ Sou o Sírius, Oráculo Astral do Sidus. Só oriento astrologia, previsões e vida lidas pelo teu mapa natal (amor, carreira, propósito, ciclos, trânsitos, compatibilidade). Reformula a tua pergunta nesse âmbito.'
+}
+
+/** Instrução extra injectada apenas nas chamadas Gemini (Oráculo). */
+export function reforcoInstrucaoGeminiAstrologia(lang = 'pt') {
+  if (lang === 'en') {
+    return `
+GEMINI RESTRICTION — MANDATORY:
+You are NOT a general-purpose AI. You ONLY answer: natal chart, transits, predictions, synastry, planetary cycles, and life areas READ THROUGH astrology.
+If the user asks anything else (recipes, code, trivia, medicine, homework, sports, politics, general chat), reply ONLY with the refusal sentence from your system prompt — do NOT answer the off-topic question even partially.
+Never use Gemini as a generic chatbot. Astrology and chart-based predictions only.
+`.trim()
+  }
+  return `
+RESTRIÇÃO GEMINI — OBRIGATÓRIO:
+NÃO és IA genérica. Respondes SÓ a: mapa natal, trânsitos, previsões, sinastria, ciclos planetários e áreas de vida LIDAS PELA ASTROLOGIA.
+Se o utilizador pedir outro tema (receitas, código, trivia, medicina, trabalhos escolares, desporto, política, conversa geral), responde APENAS com a frase de recusa do system prompt — NÃO respondas parcialmente ao tema errado.
+Nunca actues como chatbot genérico. Apenas astrologia e previsões via mapa.
+`.trim()
+}
+
+/** Detecta se a IA respondeu fora de astrologia (pós-validação servidor). */
+export function respostaPareceForaEscopoAstrologia(texto, lang = 'pt') {
+  if (!texto?.trim()) return true
+  const lower = texto.toLowerCase()
+  const lista = lang === 'en' ? RESPOSTA_FORA_EN : RESPOSTA_FORA_PT
+  if (lista.some((k) => lower.includes(k))) return true
+  const recusa = lower.includes('sírius') || lower.includes('sirius')
+  const recusaEscopo = lower.includes('só oriento') || lower.includes('only guide') || lower.includes('reformula')
+  if (recusa && recusaEscopo) return false
+  return false
 }
 
 export function perguntaDentroEscopoAstrologia(texto, lang = 'pt') {

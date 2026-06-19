@@ -1,5 +1,6 @@
 import { chatCompletion } from './_shared/ai.mjs'
 import { construirSistema, validarPerguntaOracle, gerarRespostaOracle } from '../../src/lib/i18n/oracle.js'
+import { respostaPareceForaEscopoAstrologia, mensagemForaEscopo } from '../../src/lib/oracleAstrologiaGate.js'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -46,7 +47,16 @@ export default async (req) => {
       maxTokens: isPremium ? 550 : 300,
       temperature: isPremium ? 0.75 : 0.82,
       tier: isPremium ? 'premium' : 'free',
+      escopo: 'astrologia',
+      lang,
     })
+
+    if (resposta && respostaPareceForaEscopoAstrologia(resposta, lang)) {
+      return new Response(JSON.stringify({ resposta: mensagemForaEscopo(lang), recusado: true }), {
+        status: 200,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      })
+    }
 
     if (!resposta) {
       const fallback = gerarRespostaOracle(pergunta.trim(), mapaNatal, 0, lang)

@@ -1,8 +1,9 @@
 import { env } from './env.mjs'
+import { reforcoInstrucaoGeminiAstrologia } from '../../../src/lib/oracleAstrologiaGate.js'
 
 /**
  * Motor IA 100% gratuito por defeito.
- * Ordem: Pollinations (sem chave) → Groq (chave grátis) → Gemini (chave grátis) → OpenRouter (modelos free)
+ * Ordem: Groq → Gemini (SÓ escopo astrologia) → Pollinations → OpenRouter
  * OpenAI só se OPENAI_API_KEY existir E ALLOW_PAID_OPENAI=true
  */
 
@@ -43,14 +44,20 @@ export async function chatCompletion({
   maxTokens = 400,
   temperature = 0.78,
   tier = 'free',
+  /** 'astrologia' = Gemini permitido (Oráculo). Outros valores = Gemini bloqueado. */
+  escopo = null,
+  lang = 'pt',
 }) {
   const msgs = [{ role: 'system', content: system }, ...messages]
 
   const groq = await callGroq(msgs, { maxTokens, temperature, tier })
   if (groq) return groq
 
-  const gem = await callGemini(system, messages, { maxTokens, temperature })
-  if (gem) return gem
+  if (escopo === 'astrologia') {
+    const gemSystem = `${system}\n\n${reforcoInstrucaoGeminiAstrologia(lang)}`
+    const gem = await callGemini(gemSystem, messages, { maxTokens, temperature })
+    if (gem) return gem
+  }
 
   const poll = await callPollinations(msgs, { temperature })
   if (poll) return poll

@@ -46,6 +46,8 @@ export default async (req) => {
       maxTokens: 520,
       temperature: 0.85,
       tier: 'free',
+      escopo: 'sonhos',
+      lang,
     })
 
     const simbolos = simbolosDetectados.map((s) => ({ tema: s.tema, resumo: s.resumo }))
