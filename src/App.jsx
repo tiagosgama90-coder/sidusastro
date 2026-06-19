@@ -2383,7 +2383,7 @@ function Chat({ mapaNatal, isPremium, userId, oracleRemotas, onOracleUsada, onUp
     const numAtual = perguntasUsadas
     const idToken = obterIdToken ? await obterIdToken() : null
 
-    if (!isPremium && !idToken) {
+    if (!idToken) {
       setDigitando(false)
       setMensagens(prev => [...prev, {
         id: Date.now()+1, autor: 'ia', aviso: true,
@@ -2394,7 +2394,16 @@ function Chat({ mapaNatal, isPremium, userId, oracleRemotas, onOracleUsada, onUp
 
     const resultado = await consultarSidus(q, mapaNatal, historicoParaIA, lang, idToken)
 
-    if (resultado?.limite) {
+    if (resultado?.auth) {
+      setDigitando(false)
+      setMensagens(prev => [...prev, {
+        id: Date.now()+1, autor: 'ia', aviso: true,
+        texto: t('oracle.sessionError'),
+      }])
+      return
+    }
+
+    if (resultado?.limite && !isPremium) {
       const total = resultado.usadas ?? MAX_ORACLE_GRATIS
       setPerguntasUsadas(total)
       onOracleUsada?.(total)
@@ -3346,7 +3355,7 @@ export default function App() {
       case 'paywall':
         return <Paywall onVoltar={() => irPara('ferramentas')} onPagar={abrirPagamento} onSucesso={() => { setIsPremium(true); setMapaCompleto(true); irPara(dadosNataisMinimos(dados) ? 'mapa' : 'onboarding') }} isDesktop={isDesktop} />
       case 'chat':
-        return <Chat mapaNatal={mapaNatal} isPremium={acessoVip} userId={utilizador?.uid} oracleRemotas={oraclePerguntasUsadas} onOracleUsada={registarOraclePerguntaUsada} onUpgrade={() => irPara('paywall')} obterIdToken={obterIdTokenOracle} />
+        return <Chat mapaNatal={mapaNatal} isPremium={isPremium} userId={utilizador?.uid} oracleRemotas={oraclePerguntasUsadas} onOracleUsada={registarOraclePerguntaUsada} onUpgrade={() => irPara('paywall')} obterIdToken={obterIdTokenOracle} />
       case 'perfil':
         return <Perfil utilizador={utilizador} dados={dados} mapaNatal={mapaNatal} isPremium={isPremium}
           dadosBloqueados={dadosBloqueados}

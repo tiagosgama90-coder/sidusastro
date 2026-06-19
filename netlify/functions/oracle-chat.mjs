@@ -26,7 +26,7 @@ export default async (req) => {
     }
 
     if (!idToken) {
-      return new Response(JSON.stringify({ error: 'Sessão em falta', limite: true }), {
+      return new Response(JSON.stringify({ error: 'Sessão em falta', auth: true }), {
         status: 401,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       })
@@ -34,7 +34,7 @@ export default async (req) => {
 
     const acesso = await obterAcessoOracle(idToken)
     if (acesso.erro === 'auth') {
-      return new Response(JSON.stringify({ error: 'Sessão inválida', limite: true }), {
+      return new Response(JSON.stringify({ error: 'Sessão inválida', auth: true }), {
         status: 401,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       })

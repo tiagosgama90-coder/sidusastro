@@ -24,6 +24,9 @@ export async function consultarOracleServidor(pergunta, mapaNatal, historico, la
       historico,
       lang,
     }, idToken)
+    if (data.auth || (!data.ok && data.status === 401)) {
+      return { auth: true, resposta: null }
+    }
     if (data.limite) return { limite: true, usadas: data.usadas, max: data.max, resposta: null }
     if (!data.ok && data.status === 402) return { limite: true, usadas: data.usadas, max: data.max, resposta: null }
     return {
