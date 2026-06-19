@@ -1242,11 +1242,6 @@ function EcraVerificarEmail({ utilizador, isDesktop, onLogout, onVerificado }) {
             {info}
           </div>
         )}
-        {!isLogin && (
-          <div style={{ marginBottom: 14, padding: '10px 14px', borderRadius: 10, background: 'rgba(223,183,108,0.08)', border: '1px solid rgba(223,183,108,0.25)', fontSize: 12, color: CORES.dourado, lineHeight: 1.5 }}>
-            {t('emailVerify.spamReminder')}
-          </div>
-        )}
         {erro && (
           <div style={{ marginBottom: 14, padding: '10px 14px', borderRadius: 10, background: 'rgba(248,113,113,0.1)', border: '1px solid rgba(248,113,113,0.3)', fontSize: 13, color: '#F87171' }}>
             {erro}
@@ -2877,6 +2872,14 @@ export default function App() {
 
     let unsubPerfil = null
     let authResolvido = false
+    let perfilTimeoutId = null
+
+    const clearPerfilTimeout = () => {
+      if (perfilTimeoutId) {
+        clearTimeout(perfilTimeoutId)
+        perfilTimeoutId = null
+      }
+    }
 
     const timeoutId = setTimeout(() => {
       if (authResolvido) return
@@ -2888,15 +2891,22 @@ export default function App() {
     const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
       authResolvido = true
       clearTimeout(timeoutId)
+      clearPerfilTimeout()
       unsubPerfil?.()
       unsubPerfil = null
       setUtilizador(user)
 
       if (user) {
         setPerfilCarregando(true)
+        perfilTimeoutId = setTimeout(() => {
+          console.warn('[Sidus] Perfil cloud demorou — a continuar sem bloquear a interface')
+          setPerfilCarregando(false)
+        }, 8000)
+
         unsubPerfil = onSnapshot(
           doc(db, 'users', user.uid),
           (snap) => {
+            clearPerfilTimeout()
             setPerfilCarregando(false)
 
             if (!snap.exists()) return
@@ -2936,11 +2946,13 @@ export default function App() {
             })()
           },
           (e) => {
+            clearPerfilTimeout()
             console.warn('[Sidus] Listener perfil:', e?.message)
             setPerfilCarregando(false)
           },
         )
       } else {
+        clearPerfilTimeout()
         setDados(DADOS_VAZIO)
         setMapaNatal(null)
         setPlanetasNascimento([])
@@ -2955,6 +2967,7 @@ export default function App() {
 
     return () => {
       clearTimeout(timeoutId)
+      clearPerfilTimeout()
       unsubPerfil?.()
       unsubscribeAuth()
     }
