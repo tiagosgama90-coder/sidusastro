@@ -1092,7 +1092,12 @@ function CampoCidade({ valor, localizacao, onChange, onSelect, erro, onBlur }) {
   const containerRef = useRef(null)
 
   useEffect(() => {
-    if (!valor || valor.length < 2 || localizacao?.nome === valor) {
+    const cidadeJaSelecionada = localizacao && (
+      localizacao.nome === valor
+      || localizacao.nome?.startsWith(`${valor},`)
+      || localizacao.nome?.startsWith(valor)
+    )
+    if (!valor || valor.length < 2 || cidadeJaSelecionada) {
       setSugestoes([])
       return undefined
     }
@@ -1119,8 +1124,8 @@ function CampoCidade({ valor, localizacao, onChange, onSelect, erro, onBlur }) {
     const fechar = (e) => {
       if (containerRef.current && !containerRef.current.contains(e.target)) setAberto(false)
     }
-    document.addEventListener('mousedown', fechar)
-    return () => document.removeEventListener('mousedown', fechar)
+    document.addEventListener('pointerdown', fechar)
+    return () => document.removeEventListener('pointerdown', fechar)
   }, [])
 
   return (
@@ -1165,8 +1170,9 @@ function CampoCidade({ valor, localizacao, onChange, onSelect, erro, onBlur }) {
             <li key={s.placeId}>
               <button
                 type="button"
-                onMouseDown={(e) => e.preventDefault()}
-                onClick={() => {
+                onPointerDown={(e) => {
+                  e.preventDefault()
+                  e.stopPropagation()
                   onSelect(s)
                   setAberto(false)
                 }}
@@ -1589,7 +1595,8 @@ function Onboarding({ dados, setDados, onSubmit, isDesktop }) {
   const tocar = (campo) => () => setTocado((p) => ({ ...p, [campo]: true }))
 
   const handleSelectCidade = async (loc) => {
-    setDados((p) => ({ ...p, cidade: loc.nome, localizacao: loc, fuso: null }))
+    const cidadeCurta = loc.nome?.split(',')[0]?.trim() || loc.nome
+    setDados((p) => ({ ...p, cidade: cidadeCurta, localizacao: { ...loc, nome: loc.nome }, fuso: null }))
     setFusoCarregando(true)
     setFusoErro(null)
     try {
@@ -2019,13 +2026,26 @@ function BarraElemento({ label, valor, total, cor }) {
   )
 }
 
-function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, isPremium, onUpgrade, onComprarMapa, onMapaGerado, isDesktop, motorAstro, perfilCarregando, mapaGerado, onCompletarNatal }) {
+function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, isPremium, onUpgrade, onComprarMapa, onMapaGerado, isDesktop, motorAstro, perfilCarregando, reparandoDados, mapaGerado, onCompletarNatal }) {
   const { lang, t, ts, tp, te, ta } = useLanguage()
   const [gerandoPdf, setGerandoPdf] = useState(false)
   const [emailEnviado, setEmailEnviado] = useState(false)
+  const [calcExpirado, setCalcExpirado] = useState(false)
   const mapaGeradoRef = useRef(false)
 
   const mapaCompletoDesbloqueado = mapaDesbloqueado || isPremium
+
+  useEffect(() => {
+    if (mapaNatal) {
+      setCalcExpirado(false)
+      return undefined
+    }
+    const prontos = Boolean(dadosProntosParaMapa(dados))
+    const aguardar = perfilCarregando || reparandoDados || prontos
+    if (!aguardar) return undefined
+    const timer = setTimeout(() => setCalcExpirado(true), 8000)
+    return () => clearTimeout(timer)
+  }, [mapaNatal, dados, perfilCarregando, reparandoDados])
 
   // Notifica o pai na primeira visualização do mapa (trava dados natais)
   useEffect(() => {
@@ -2098,16 +2118,19 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
     let mostrarCtaPremium = false
     let mostrarCalculando = false
 
-    if (perfilCarregando) {
+    if (calcExpirado) {
+      mensagem = t('mapa.repairNatal')
+      mostrarCtaPremium = true
+    } else if (perfilCarregando || reparandoDados) {
       mostrarCalculando = true
       mensagem = t('mapa.calculating')
-    } else if (temDadosMinimos && (prontosParaMapa || mapaGerado || isPremium)) {
+    } else if (prontosParaMapa) {
       mostrarCalculando = true
       mensagem = t('mapa.calculating')
     } else if ((isPremium || mapaGerado) && !temDadosMinimos) {
       mensagem = t('mapa.premiumCompleteNatal')
       mostrarCtaPremium = true
-    } else if (temDadosMinimos && (mapaGerado || isPremium) && !prontosParaMapa) {
+    } else if (temDadosMinimos && (mapaGerado || isPremium)) {
       mensagem = t('mapa.repairNatal')
       mostrarCtaPremium = true
     }
@@ -2913,6 +2936,7 @@ export default function App() {
   const [mapaGerado, setMapaGerado] = useState(false) // bloqueio: 1 mapa por utilizador
   const [leiturasTarotUsadas, setLeiturasTarotUsadas] = useState(0)
   const [perfilCarregando, setPerfilCarregando] = useState(false)
+  const [reparandoDados, setReparandoDados] = useState(false)
 
   // ── Dados natais ─────────────────────────────────────────────────────────
   const [passo, setPasso] = useState(() => passoFromPath(window.location.pathname))
@@ -3143,15 +3167,16 @@ export default function App() {
     }
   }, [authCarregando, perfilCarregando, utilizador, location.pathname, navigate, contaConfigurada])
 
-  // Conta com mapa: bloquear re-onboarding (edição de dados natal)
+  // Conta com mapa: bloquear re-onboarding só quando o mapa já está calculado
   useEffect(() => {
     if (authCarregando || perfilCarregando || !utilizador || !mapaGerado) return
-    if (!dadosNataisMinimos(dados)) return
+    if (!dadosNataisCompletos(dados)) return
+    if (!mapaNatal) return
     if (passo === 'onboarding') {
       navigate('/home', { replace: true })
       setPasso('home')
     }
-  }, [authCarregando, perfilCarregando, utilizador, mapaGerado, passo, navigate, dados])
+  }, [authCarregando, perfilCarregando, utilizador, mapaGerado, mapaNatal, passo, navigate, dados])
 
   // URL ↔ passo (voltar atrás no browser, links directos)
   useEffect(() => {
@@ -3307,6 +3332,7 @@ export default function App() {
     if (dadosProntosParaMapa(dados)) return
 
     let cancelled = false
+    setReparandoDados(true)
     ;(async () => {
       try {
         const reparado = await repararDadosPerfil(dados)
@@ -3319,10 +3345,15 @@ export default function App() {
         }
       } catch (e) {
         console.warn('[Sidus] Reparação de dados:', e?.message)
+      } finally {
+        if (!cancelled) setReparandoDados(false)
       }
     })()
 
-    return () => { cancelled = true }
+    return () => {
+      cancelled = true
+      setReparandoDados(false)
+    }
   }, [utilizador, mapaNatal, dados])
 
   // ── Planetas de nascimento ──────────────────────────────────────────────────
@@ -3337,7 +3368,7 @@ export default function App() {
 
   // ── Acções ─────────────────────────────────────────────────────────────────
   const handleOnboarding = async () => {
-    if (mapaGerado && dadosNataisMinimos(dados)) {
+    if (mapaGerado && dadosNataisCompletos(dados) && mapaNatal) {
       irPara('perfil', { replace: true })
       return
     }
@@ -3352,7 +3383,7 @@ export default function App() {
       : calcularMapaNatal(prontos))
     const guardado = await guardarPerfil(dados)
     setMapaGerado(true)
-    irPara('perfil', { replace: !guardado })
+    irPara('mapa', { replace: !guardado })
   }
 
   const registarLeituraTarotGratis = useCallback(async (total) => {
@@ -3477,9 +3508,11 @@ export default function App() {
         />
       )
     }
-    // Onboarding: contas novas ou Premium sem registo natal (incl. dados corrompidos)
-    const precisaRegistoNatal = !dadosNataisMinimos(dados) && (!mapaGerado || acessoVip)
-    if (passo === 'onboarding' && precisaRegistoNatal) {
+    // Onboarding: até dados completos e mapa calculado
+    const mostrarOnboarding = passo === 'onboarding' && (
+      !dadosNataisCompletos(dados) || !mapaNatal
+    )
+    if (mostrarOnboarding) {
       return <Onboarding dados={dados} setDados={setDados} onSubmit={handleOnboarding} isDesktop={isDesktop} />
     }
     if (!contaConfigurada) {
@@ -3487,11 +3520,13 @@ export default function App() {
     }
     // Autenticado com mapa → navegação normal
     switch (passo) {
+      case 'onboarding':
+        return <Onboarding dados={dados} setDados={setDados} onSubmit={handleOnboarding} isDesktop={isDesktop} />
       case 'home':
       case 'dashboard':
         return <Dashboard nome={dados.nome} mapaNatal={mapaNatal} ceuAgora={ceuAgora} aspetos={aspetosAgora} onOraculo={() => irPara('chat')} onPrivacidade={() => irPara('privacidade')} isDesktop={isDesktop} isPremium={acessoVip} onUpgrade={() => irPara('paywall')} onTarot={() => irPara('tarot')} />
       case 'mapa':
-        return <MapaAstral mapaNatal={mapaNatal} dados={dados} planetasNascimento={planetasNascimento} mapaDesbloqueado={isPremium || mapaCompleto} isPremium={isPremium} onUpgrade={() => irPara('paywall')} onComprarMapa={() => abrirPagamento(t('mapa.buyDesc'), PRECO_MAPA_COMPLETO, null, { direto: true, productType: 'mapa' })} onMapaGerado={handleMapaGerado} isDesktop={isDesktop} motorAstro={motorAstro} perfilCarregando={perfilCarregando} mapaGerado={mapaGerado} onCompletarNatal={() => irPara('onboarding')} />
+        return <MapaAstral mapaNatal={mapaNatal} dados={dados} planetasNascimento={planetasNascimento} mapaDesbloqueado={isPremium || mapaCompleto} isPremium={isPremium} onUpgrade={() => irPara('paywall')} onComprarMapa={() => abrirPagamento(t('mapa.buyDesc'), PRECO_MAPA_COMPLETO, null, { direto: true, productType: 'mapa' })} onMapaGerado={handleMapaGerado} isDesktop={isDesktop} motorAstro={motorAstro} perfilCarregando={perfilCarregando} reparandoDados={reparandoDados} mapaGerado={mapaGerado} onCompletarNatal={() => irPara('onboarding')} />
       case 'tarot':
         return <EcraTarot mapaNatal={mapaNatal} isPremium={acessoVip} userId={utilizador?.uid} leiturasTarotUsadas={leiturasTarotUsadas} onLeituraGratisUsada={registarLeituraTarotGratis} onPagar={abrirPagamento} onVoltar={() => irPara('home')} onPremium={() => irPara('paywall')} />
       case 'ferramentas':
