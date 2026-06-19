@@ -1,5 +1,6 @@
 const NOMINATIM_URL = 'https://nominatim.openstreetmap.org/search'
 const FETCH_TIMEOUT_MS = 8000
+const USER_AGENT = 'SidusAstro/1.0 (https://sidusastro.com; support@sidusastro.com)'
 
 async function fetchComTimeout(url, options = {}, timeoutMs = FETCH_TIMEOUT_MS) {
   const controller = new AbortController()
@@ -43,6 +44,7 @@ export async function pesquisarCidades(termo) {
     headers: {
       Accept: 'application/json',
       'Accept-Language': 'pt',
+      'User-Agent': USER_AGENT,
     },
   })
 
@@ -61,8 +63,26 @@ export async function pesquisarCidades(termo) {
     }))
 }
 
+async function geocodificarViaServidor(cidade) {
+  try {
+    const resp = await fetchComTimeout(`/api/geocode?q=${encodeURIComponent(cidade)}`)
+    if (!resp.ok) return null
+    const data = await resp.json()
+    return data?.result || null
+  } catch {
+    return null
+  }
+}
+
 /** Primeiro resultado de geocoding para reparar perfis guardados sem coordenadas. */
 export async function geocodificarCidade(cidade) {
-  const resultados = await pesquisarCidades(cidade)
-  return resultados[0] || null
+  const limpo = cidade?.trim()
+  if (!limpo) return null
+  try {
+    const resultados = await pesquisarCidades(limpo)
+    if (resultados[0]) return resultados[0]
+  } catch (e) {
+    console.warn('[Sidus] Geocoding cliente falhou:', e?.message)
+  }
+  return geocodificarViaServidor(limpo)
 }

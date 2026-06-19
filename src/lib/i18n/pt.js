@@ -116,6 +116,7 @@ export default {
   mapa: {
     title: 'Mapa Astral', fillNatal: 'Preenche o registo natal para calcular o teu mapa.',
     calculating: 'A calcular o teu mapa astral…',
+    repairNatal: 'Não conseguimos carregar as coordenadas da tua cidade. Repara o registo natal para restaurar o mapa completo com PDF.',
     premiumCompleteNatal: 'Como membro Premium, tens acesso total. Completa o registo natal uma única vez para gerar o teu mapa personalizado.',
     completeNatalCta: '✦ Completar registo natal',
     sunSign: 'Signo Solar', moonSign: 'Signo Lunar', ascendant: 'Ascendente', mc: 'Meio do Céu (MC)',

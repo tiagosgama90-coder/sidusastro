@@ -116,6 +116,7 @@ export default {
   mapa: {
     title: 'Natal Chart', fillNatal: 'Complete your birth data to calculate your chart.',
     calculating: 'Calculating your natal chart…',
+    repairNatal: 'We could not load your city coordinates. Repair your birth registration to restore your full chart with PDF.',
     premiumCompleteNatal: 'As a Premium member, you have full access. Complete your birth registration once to generate your personalized chart.',
     completeNatalCta: '✦ Complete birth registration',
     sunSign: 'Sun Sign', moonSign: 'Moon Sign', ascendant: 'Ascendant', mc: 'Midheaven (MC)',

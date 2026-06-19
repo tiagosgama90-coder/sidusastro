@@ -70,6 +70,7 @@ import {
   getChatGreeting, getOracleLimitMessage,
 } from './lib/i18n/oracle.js'
 import { localizeArcano } from './lib/i18n/tarotArcana.js'
+import { normalizarDataISO } from './lib/datetime.js'
 
 const CORES = {
   fundo: '#0B071E',
@@ -869,6 +870,8 @@ function dadosNataisMinimos(dados) {
 function normalizarDadosPerfil(dados) {
   if (!dados) return null
   const d = { ...dados }
+  const dataNorm = normalizarDataISO(d.data)
+  if (dataNorm) d.data = dataNorm
   if (d.hora && typeof d.hora === 'string') {
     const partes = d.hora.trim().split(':')
     if (partes.length >= 2) {
@@ -891,6 +894,33 @@ function normalizarDadosPerfil(dados) {
     }
   }
   return d
+}
+
+function chaveCacheDados(uid) { return `sidus_dados_${uid}` }
+function chaveCacheMapa(uid) { return `sidus_mapa_${uid}` }
+
+function guardarCachePerfil(uid, dados, mapa) {
+  if (!uid) return
+  try {
+    if (dados && dadosNataisMinimos(dados)) {
+      localStorage.setItem(chaveCacheDados(uid), JSON.stringify(dados))
+    }
+    if (mapa) localStorage.setItem(chaveCacheMapa(uid), JSON.stringify(mapa))
+  } catch { /* quota */ }
+}
+
+function restaurarCachePerfil(uid) {
+  if (!uid) return { dados: null, mapa: null }
+  try {
+    const dadosRaw = localStorage.getItem(chaveCacheDados(uid))
+    const mapaRaw = localStorage.getItem(chaveCacheMapa(uid))
+    return {
+      dados: dadosRaw ? normalizarDadosPerfil(JSON.parse(dadosRaw)) : null,
+      mapa: mapaRaw ? JSON.parse(mapaRaw) : null,
+    }
+  } catch {
+    return { dados: null, mapa: null }
+  }
 }
 
 async function repararDadosPerfil(dados) {
@@ -916,8 +946,12 @@ async function repararDadosPerfil(dados) {
 
 function dadosProntosParaMapa(dados) {
   const d = normalizarDadosPerfil(dados)
-  if (!d?.data || !d?.hora || !d.localizacao) return null
-  return { ...d, fuso: d.fuso ?? 0 }
+  if (!d) return null
+  const data = normalizarDataISO(d.data)
+  if (!data || !d.hora) return null
+  if (d.localizacao?.lat == null || d.localizacao?.lon == null) return null
+  if (Number.isNaN(d.localizacao.lat) || Number.isNaN(d.localizacao.lon)) return null
+  return { ...d, data, fuso: d.fuso ?? 0 }
 }
 
 function contaJaConfigurada(perfil, dadosActuais) {
@@ -2073,6 +2107,9 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
     } else if ((isPremium || mapaGerado) && !temDadosMinimos) {
       mensagem = t('mapa.premiumCompleteNatal')
       mostrarCtaPremium = true
+    } else if (temDadosMinimos && (mapaGerado || isPremium) && !prontosParaMapa) {
+      mensagem = t('mapa.repairNatal')
+      mostrarCtaPremium = true
     }
 
     return (
@@ -2971,6 +3008,13 @@ export default function App() {
                 }
 
                 let dadosPerfil = perfil.dados ? normalizarDadosPerfil(perfil.dados) : null
+                const cache = restaurarCachePerfil(user.uid)
+
+                if ((perfil.mapaGerado || perfil.dadosTravados) && cache.mapa) {
+                  setMapaNatal(cache.mapa)
+                }
+                if (!dadosPerfil && cache.dados) dadosPerfil = cache.dados
+
                 if (dadosPerfil && dadosNataisMinimos(dadosPerfil)) {
                   const reparado = await repararDadosPerfil(dadosPerfil)
                   if (reparado) {
@@ -3102,11 +3146,12 @@ export default function App() {
   // Conta com mapa: bloquear re-onboarding (edição de dados natal)
   useEffect(() => {
     if (authCarregando || perfilCarregando || !utilizador || !mapaGerado) return
+    if (!dadosNataisMinimos(dados)) return
     if (passo === 'onboarding') {
       navigate('/home', { replace: true })
       setPasso('home')
     }
-  }, [authCarregando, perfilCarregando, utilizador, mapaGerado, passo, navigate])
+  }, [authCarregando, perfilCarregando, utilizador, mapaGerado, passo, navigate, dados])
 
   // URL ↔ passo (voltar atrás no browser, links directos)
   useEffect(() => {
@@ -3172,15 +3217,19 @@ export default function App() {
   // ── Guarda dados natais no Firestore quando o onboarding termina (1x por conta) ──
   const guardarPerfil = useCallback(async (dadosNovos) => {
     if (!utilizador || !firebaseDisponivel || !db) return false
+    const prontos = dadosProntosParaMapa(dadosNovos)
+    if (!prontos) return false
     try {
       const ref = doc(db, 'users', utilizador.uid)
       const snap = await getDoc(ref)
       if (snap.exists()) {
         const perfil = snap.data()
-        if (contaJaConfigurada(perfil, dadosNovos)) return false
+        const dadosFirestore = normalizarDadosPerfil(perfil.dados)
+        const perfilCompleto = perfil.mapaGerado === true && dadosNataisCompletos(dadosFirestore)
+        if (perfilCompleto) return false
       }
       await setDoc(ref, {
-        dados: dadosNovos,
+        dados: prontos,
         dadosTravados: true,
         mapaGerado: true,
       }, { merge: true })
@@ -3246,6 +3295,12 @@ export default function App() {
     }
   }, [dados, sweReady])
 
+  // Cache local do mapa (fallback quando Firestore tem dados incompletos)
+  useEffect(() => {
+    if (!utilizador?.uid || !mapaNatal) return
+    guardarCachePerfil(utilizador.uid, dados, mapaNatal)
+  }, [utilizador, mapaNatal, dados])
+
   // Reparar dados incompletos (ex.: cidade sem coordenadas no Firestore)
   useEffect(() => {
     if (!utilizador || mapaNatal || !dadosNataisMinimos(dados)) return
@@ -3282,7 +3337,7 @@ export default function App() {
 
   // ── Acções ─────────────────────────────────────────────────────────────────
   const handleOnboarding = async () => {
-    if (mapaGerado) {
+    if (mapaGerado && dadosNataisMinimos(dados)) {
       irPara('perfil', { replace: true })
       return
     }
@@ -3422,8 +3477,8 @@ export default function App() {
         />
       )
     }
-    // Onboarding: contas novas ou Premium sem registo natal
-    const precisaRegistoNatal = !mapaGerado && !dadosNataisMinimos(dados)
+    // Onboarding: contas novas ou Premium sem registo natal (incl. dados corrompidos)
+    const precisaRegistoNatal = !dadosNataisMinimos(dados) && (!mapaGerado || acessoVip)
     if (passo === 'onboarding' && precisaRegistoNatal) {
       return <Onboarding dados={dados} setDados={setDados} onSubmit={handleOnboarding} isDesktop={isDesktop} />
     }

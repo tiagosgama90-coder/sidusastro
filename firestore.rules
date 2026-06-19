@@ -9,12 +9,19 @@ service cloud.firestore {
         && antigos.get('cidade', null) == novos.get('cidade', null);
     }
 
+    function dadosPermitemReparacao(antigos) {
+      return antigos == null
+        || !antigos.keys().hasAll(['nome', 'data', 'hora', 'cidade'])
+        || !antigos.keys().hasAll(['localizacao']);
+    }
+
     function podeActualizarDadosNatais() {
-      return !resource.data.get('dadosTravados', false) && !resource.data.get('mapaGerado', false)
+      let antigos = resource.data.get('dados', null);
+      return (!resource.data.get('dadosTravados', false) && !resource.data.get('mapaGerado', false))
+        || dadosPermitemReparacao(antigos)
         || !request.resource.data.keys().hasAll(['dados'])
-        || !resource.data.keys().hasAll(['dados'])
-        || request.resource.data.get('dados') == resource.data.get('dados')
-        || dadosNataisCoreIguais(resource.data.get('dados'), request.resource.data.get('dados'));
+        || request.resource.data.get('dados') == antigos
+        || dadosNataisCoreIguais(antigos, request.resource.data.get('dados'));
     }
 
     match /users/{userId} {
