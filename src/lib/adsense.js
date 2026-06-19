@@ -1,5 +1,7 @@
 /** Publisher ID público — igual ao index.html (AdSense sidusastro.com). */
 export const ADSENSE_PUBLISHER = 'ca-pub-2807052149540484'
+/** Bloco Display horizontal — sidusastro.com */
+export const ADSENSE_SLOT_DEFAULT = '7205155875'
 
 export function getAdsenseClient() {
   const fromEnv = import.meta.env.VITE_ADSENSE_CLIENT
@@ -8,7 +10,7 @@ export function getAdsenseClient() {
 }
 
 export function getAdsenseSlot() {
-  const slot = import.meta.env.VITE_ADSENSE_SLOT
+  const slot = import.meta.env.VITE_ADSENSE_SLOT || ADSENSE_SLOT_DEFAULT
   if (!slot) return ''
   return String(slot).trim()
 }
