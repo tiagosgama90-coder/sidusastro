@@ -2,6 +2,7 @@ export default {
   nav: {
     home: 'Home', mapa: 'Chart', tarot: 'Tarot', ferramentas: 'Tools',
     oraculo: 'Oracle', perfil: 'Profile',
+    menu: 'Menu', openMenu: 'Open menu', closeMenu: 'Close menu',
   },
   common: {
     back: '← Back',
@@ -302,6 +303,11 @@ export default {
       title: 'Numerology Chart',
       subtitle: 'Numerological analysis of {name}',
       fillNatal: 'Complete your name and birth date in your profile.',
+      fillForm: 'Enter your full name and birth date to calculate your numerology chart.',
+      nameLabel: 'Full name',
+      namePlaceholder: 'E.g. Maria Silva',
+      dateLabel: 'Date of birth',
+      calculate: '✦ Calculate chart',
       lifePath: 'Life Path',
       destiny: 'Destiny Number',
       soul: 'Soul Number',
@@ -336,6 +342,11 @@ export default {
       dayModerate: '✦ Moderate day with highs and lows. Focus on areas where you are in high phase and save energy where you are in transition. Balance is the keyword.',
       precisionNote: 'Calculated with birth time ({time}) and time zone from your natal chart.',
       astroContext: 'Astrological context: Sun in {solar} · Moon in {lunar} — biorhythm cycles complement your natal chart rhythm.',
+      lunarPhase: 'Today\'s lunar phase',
+      astroRhythm: 'Astrological rhythm',
+      strategy: 'Daily strategy',
+      peak: 'Dominant peak',
+      valley: 'Dominant valley',
     },
     diario: {
       title: 'Astral Journal',

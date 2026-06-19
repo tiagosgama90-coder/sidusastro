@@ -15,9 +15,17 @@ function parseFusoNumerico(fuso) {
  * Milissegundos UTC do instante de nascimento a partir dos dados do perfil.
  * Usa hora e fuso quando disponíveis; caso contrário meio-dia UTC.
  */
+function parseDataPartes(dataISO) {
+  if (!dataISO) return null
+  const [ano, mes, dia] = String(dataISO).split('-').map(Number)
+  if (!ano || !mes || !dia) return null
+  return { ano, mes, dia }
+}
+
 export function instanteNascimentoMs(dados) {
-  if (!dados?.data) return null
-  const [ano, mes, dia] = dados.data.split('-').map(Number)
+  const partes = parseDataPartes(dados?.data)
+  if (!partes) return null
+  const { ano, mes, dia } = partes
   if (!ano || !mes || !dia) return null
 
   const hora = dados.hora || '12:00'

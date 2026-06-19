@@ -14,6 +14,13 @@ import {
 import { diasVidaDesdeNascimento } from '../lib/datetime.js'
 import { calcularMapaNumerologia } from '../lib/numerologia.js'
 import { interpretarSonho } from '../lib/sonhosInterpretacao.js'
+import {
+  resolverDadosFerramentas,
+  dadosMinimosFerramentas,
+  dadosNumerologiaProntos,
+  normalizarDataISO,
+} from '../lib/dadosFerramentas.js'
+import { analisarFluxoVital } from '../lib/fluxoVital.js'
 
 function BotaoVoltar({ onVoltar, t }) {
   if (!onVoltar) return null
@@ -328,14 +335,15 @@ function valorBiorritmo(diasVida, ciclo) {
   return Math.sin((2 * Math.PI * diasVida) / ciclo) * 100
 }
 
-export function Biorritmo({ dados, mapaNatal, onVoltar }) {
+export function Biorritmo({ dados, utilizador, mapaNatal, onVoltar }) {
   const { lang, t, ts } = useLanguage()
-  const diasVida = diasVidaDesdeNascimento(dados)
+  const resolvido = resolverDadosFerramentas(dados, utilizador, mapaNatal)
+  const diasVida = diasVidaDesdeNascimento(resolvido)
 
-  if (diasVida == null || diasVida < 0) return (
+  if (!dadosMinimosFerramentas(resolvido) || diasVida == null || diasVida < 0) return (
     <div style={{ padding: 24 }}>
       <BotaoVoltar onVoltar={onVoltar} t={t} />
-      <p style={{ color: CORES.brancoMuted, textAlign: 'center' }}>{t('ferramentasPremium.biorritmo.fillNatal')}</p>
+      <p style={{ color: CORES.brancoMuted, textAlign: 'center', lineHeight: 1.6 }}>{t('ferramentasPremium.biorritmo.fillNatal')}</p>
     </div>
   )
 
@@ -343,6 +351,7 @@ export function Biorritmo({ dados, mapaNatal, onVoltar }) {
   const emocional = valorBiorritmo(diasVida, CICLO_EMOCIONAL)
   const intelectual = valorBiorritmo(diasVida, CICLO_INTELECTUAL)
   const diasVidaInt = Math.floor(diasVida)
+  const astro = analisarFluxoVital({ fisico, emocional, intelectual, mapaNatal, lang })
 
   const biorritmos = [
     {nome: t('ferramentasPremium.biorritmo.physical'),       val:fisico,      cor:'#FB923C', desc: t('ferramentasPremium.biorritmo.physicalDesc')},
@@ -361,9 +370,9 @@ export function Biorritmo({ dados, mapaNatal, onVoltar }) {
       <p style={{ fontSize: 13, color: CORES.brancoMuted, marginBottom: 12 }}>
         {t('ferramentasPremium.biorritmo.subtitle', { days: diasVidaInt.toLocaleString(locale) })}
       </p>
-      {dados?.hora && (
+      {resolvido?.hora && (
         <p style={{ fontSize: 11, color: CORES.brancoMuted, marginBottom: 16, lineHeight: 1.5 }}>
-          {t('ferramentasPremium.biorritmo.precisionNote', { time: dados.hora })}
+          {t('ferramentasPremium.biorritmo.precisionNote', { time: resolvido.hora })}
         </p>
       )}
       {mapaNatal?.solar?.nome && (
@@ -411,9 +420,37 @@ export function Biorritmo({ dados, mapaNatal, onVoltar }) {
         })}
       </div>
 
-      <div style={{marginTop:20,background:'rgba(255,255,255,0.03)',border:`1px solid rgba(255,255,255,0.07)`,borderRadius:14,padding:18}}>
-        <div style={{fontSize:11,color:CORES.dourado,textTransform:'uppercase',letterSpacing:'0.08em',marginBottom:10}}>{t('ferramentasPremium.biorritmo.recommendation')}</div>
-        <p style={{fontSize:13,color:CORES.brancoSuave,lineHeight:1.7,margin:0}}>
+      <div style={{ marginTop: 20, background: 'rgba(223,183,108,0.06)', border: `1px solid rgba(223,183,108,0.25)`, borderRadius: 14, padding: 18, marginBottom: 14 }}>
+        <div style={{ fontSize: 11, color: CORES.dourado, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 10 }}>{t('ferramentasPremium.biorritmo.lunarPhase')}</div>
+        <p style={{ fontSize: 13, color: CORES.brancoSuave, lineHeight: 1.7, margin: 0 }}>{astro.faseLunar}</p>
+      </div>
+
+      {astro.ritmoElementar && (
+        <div style={{ background: 'rgba(255,255,255,0.04)', border: `1px solid ${CORES.vidroBorda}`, borderRadius: 14, padding: 18, marginBottom: 12 }}>
+          <div style={{ fontSize: 11, color: CORES.dourado, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 10 }}>{t('ferramentasPremium.biorritmo.astroRhythm')}</div>
+          <p style={{ fontSize: 13, color: CORES.brancoSuave, lineHeight: 1.7, margin: 0 }}>{astro.ritmoElementar}</p>
+          {astro.luaNatal && <p style={{ fontSize: 13, color: CORES.brancoMuted, lineHeight: 1.7, margin: '12px 0 0' }}>{astro.luaNatal}</p>}
+          {astro.ascendenteNota && <p style={{ fontSize: 13, color: CORES.brancoMuted, lineHeight: 1.7, margin: '12px 0 0' }}>{astro.ascendenteNota}</p>}
+        </div>
+      )}
+
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 14 }}>
+        <div style={{ background: 'rgba(52,211,153,0.08)', border: '1px solid rgba(52,211,153,0.25)', borderRadius: 12, padding: 14 }}>
+          <div style={{ fontSize: 10, color: '#34D399', textTransform: 'uppercase', marginBottom: 6 }}>{t('ferramentasPremium.biorritmo.peak')}</div>
+          <div style={{ fontSize: 14, fontWeight: 700, color: CORES.branco }}>{astro.picoDominante.nome}</div>
+          <div style={{ fontSize: 18, fontWeight: 700, color: astro.picoDominante.cor }}>{astro.picoDominante.val > 0 ? '+' : ''}{Math.round(astro.picoDominante.val)}%</div>
+        </div>
+        <div style={{ background: 'rgba(248,113,113,0.08)', border: '1px solid rgba(248,113,113,0.25)', borderRadius: 12, padding: 14 }}>
+          <div style={{ fontSize: 10, color: '#F87171', textTransform: 'uppercase', marginBottom: 6 }}>{t('ferramentasPremium.biorritmo.valley')}</div>
+          <div style={{ fontSize: 14, fontWeight: 700, color: CORES.branco }}>{astro.valeDominante.nome}</div>
+          <div style={{ fontSize: 18, fontWeight: 700, color: astro.valeDominante.cor }}>{astro.valeDominante.val > 0 ? '+' : ''}{Math.round(astro.valeDominante.val)}%</div>
+        </div>
+      </div>
+
+      <div style={{marginTop:4,background:'rgba(255,255,255,0.03)',border:`1px solid rgba(255,255,255,0.07)`,borderRadius:14,padding:18}}>
+        <div style={{fontSize:11,color:CORES.dourado,textTransform:'uppercase',letterSpacing:'0.08em',marginBottom:10}}>{t('ferramentasPremium.biorritmo.strategy')}</div>
+        <p style={{fontSize:13,color:CORES.brancoSuave,lineHeight:1.7,margin:0}}>{astro.estrategia}</p>
+        <p style={{fontSize:12,color:CORES.brancoMuted,lineHeight:1.6,margin:'12px 0 0'}}>
           {fisico>50&&emocional>50&&intelectual>50
             ? t('ferramentasPremium.biorritmo.dayExceptional')
             : fisico<-50||emocional<-50
@@ -532,14 +569,54 @@ const inputStyle = {
 }
 
 // ── Numerologia ───────────────────────────────────────────────────────────────
-export function Numerologia({ dados, onVoltar }) {
+function FormularioNumerologia({ t, onCalcular }) {
+  const [nome, setNome] = useState('')
+  const [dia, setDia] = useState('')
+  const [mes, setMes] = useState('')
+  const [ano, setAno] = useState('')
+
+  const calcular = () => {
+    const data = normalizarDataISO(`${ano}-${mes}-${dia}`)
+    if (!nome.trim() || !data) return
+    onCalcular({ nome: nome.trim(), data })
+  }
+
+  const pronto = nome.trim() && dia.length === 2 && mes.length === 2 && ano.length === 4
+
+  return (
+    <div style={{ background: 'rgba(255,255,255,0.04)', border: `1px solid ${CORES.vidroBorda}`, borderRadius: 14, padding: 20, maxWidth: 400, margin: '0 auto' }}>
+      <p style={{ fontSize: 13, color: CORES.brancoMuted, textAlign: 'center', marginBottom: 16, lineHeight: 1.6 }}>{t('ferramentasPremium.numerologia.fillForm')}</p>
+      <label style={{ display: 'block', fontSize: 11, color: CORES.dourado, marginBottom: 6, textTransform: 'uppercase', letterSpacing: '0.06em' }}>{t('ferramentasPremium.numerologia.nameLabel')}</label>
+      <input value={nome} onChange={(e) => setNome(e.target.value)} placeholder={t('ferramentasPremium.numerologia.namePlaceholder')} style={{ ...inputStyle, marginBottom: 14 }} />
+      <label style={{ display: 'block', fontSize: 11, color: CORES.dourado, marginBottom: 6, textTransform: 'uppercase', letterSpacing: '0.06em' }}>{t('ferramentasPremium.numerologia.dateLabel')}</label>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 2fr', gap: 8, marginBottom: 16 }}>
+        <input inputMode="numeric" maxLength={2} placeholder="DD" value={dia} onChange={(e) => setDia(e.target.value.replace(/\D/g, '').slice(0, 2))} style={{ ...inputStyle, textAlign: 'center' }} />
+        <input inputMode="numeric" maxLength={2} placeholder="MM" value={mes} onChange={(e) => setMes(e.target.value.replace(/\D/g, '').slice(0, 2))} style={{ ...inputStyle, textAlign: 'center' }} />
+        <input inputMode="numeric" maxLength={4} placeholder="AAAA" value={ano} onChange={(e) => setAno(e.target.value.replace(/\D/g, '').slice(0, 4))} style={{ ...inputStyle, textAlign: 'center' }} />
+      </div>
+      <button type="button" disabled={!pronto} onClick={calcular} style={{
+        width: '100%', background: `linear-gradient(135deg,#DFB76C,#B8944F)`, border: 'none',
+        borderRadius: 12, color: '#0B071E', fontSize: 14, fontWeight: 700, padding: '13px',
+        cursor: pronto ? 'pointer' : 'not-allowed', opacity: pronto ? 1 : 0.5,
+      }}>
+        {t('ferramentasPremium.numerologia.calculate')}
+      </button>
+    </div>
+  )
+}
+
+export function Numerologia({ dados, utilizador, mapaNatal, onVoltar }) {
   const { lang, t } = useLanguage()
-  const mapa = dados?.nome && dados?.data ? calcularMapaNumerologia(dados.nome, dados.data, lang) : null
+  const [manual, setManual] = useState(null)
+  const resolvido = manual || resolverDadosFerramentas(dados, utilizador, mapaNatal)
+  const mapa = dadosNumerologiaProntos(resolvido)
+    ? calcularMapaNumerologia(resolvido.nome, resolvido.data, lang)
+    : null
 
   if (!mapa) return (
     <div style={{ padding: 24 }}>
       <BotaoVoltar onVoltar={onVoltar} t={t} />
-      <p style={{ color: CORES.brancoMuted, textAlign: 'center' }}>{t('ferramentasPremium.numerologia.fillNatal')}</p>
+      <FormularioNumerologia t={t} onCalcular={setManual} />
     </div>
   )
 
@@ -556,7 +633,7 @@ export function Numerologia({ dados, onVoltar }) {
     <div style={{ padding: '20px 20px 110px' }}>
       <BotaoVoltar onVoltar={onVoltar} t={t} />
       <h2 style={{ fontSize: 20, fontWeight: 700, color: CORES.dourado, marginBottom: 4 }}>{t('ferramentasPremium.numerologia.title')}</h2>
-      <p style={{ fontSize: 13, color: CORES.brancoMuted, marginBottom: 20 }}>{t('ferramentasPremium.numerologia.subtitle', { name: dados.nome })}</p>
+      <p style={{ fontSize: 13, color: CORES.brancoMuted, marginBottom: 20 }}>{t('ferramentasPremium.numerologia.subtitle', { name: resolvido.nome })}</p>
 
       {blocos.map((b) => (
         <div key={b.key} style={{ background: 'rgba(255,255,255,0.04)', border: `1px solid ${CORES.vidroBorda}`, borderRadius: 14, padding: 18, marginBottom: 12 }}>

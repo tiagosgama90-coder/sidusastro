@@ -2,6 +2,7 @@ export default {
   nav: {
     home: 'Home', mapa: 'Mapa', tarot: 'Tarot', ferramentas: 'Ferramentas',
     oraculo: 'Oráculo', perfil: 'Perfil',
+    menu: 'Menu', openMenu: 'Abrir menu', closeMenu: 'Fechar menu',
   },
   common: {
     back: '← Voltar',
@@ -302,6 +303,11 @@ export default {
       title: 'Mapa de Numerologia',
       subtitle: 'Análise numerológica de {name}',
       fillNatal: 'Preenche nome e data de nascimento no teu perfil.',
+      fillForm: 'Introduz o teu nome completo e data de nascimento para calcular o mapa numerológico.',
+      nameLabel: 'Nome completo',
+      namePlaceholder: 'Ex.: Maria Silva',
+      dateLabel: 'Data de nascimento',
+      calculate: '✦ Calcular mapa',
       lifePath: 'Caminho de Vida',
       destiny: 'Número de Destino',
       soul: 'Número da Alma',
@@ -336,6 +342,11 @@ export default {
       dayModerate: '✦ Dia moderado com altos e baixos. Foca-te nas áreas onde estás em fase alta e poupa energia nas que estão em transição. Equilíbrio é a palavra-chave.',
       precisionNote: 'Cálculo com hora de nascimento ({time}) e fuso horário do teu mapa natal.',
       astroContext: 'Contexto astrológico: Sol em {solar} · Lua em {lunar} — os ciclos bio-rítmicos complementam o ritmo do teu mapa natal.',
+      lunarPhase: 'Fase lunar do dia',
+      astroRhythm: 'Ritmo astrológico',
+      strategy: 'Estratégia do dia',
+      peak: 'Pico dominante',
+      valley: 'Vale dominante',
     },
     diario: {
       title: 'Diário Astral',

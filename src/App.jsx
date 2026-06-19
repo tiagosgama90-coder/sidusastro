@@ -27,6 +27,8 @@ import {
   Eye,
   EyeOff,
   User,
+  Menu,
+  X,
 } from 'lucide-react'
 import { Body, GeoVector, Ecliptic, MakeTime, SiderealTime } from 'astronomy-engine'
 import { pesquisarCidades, pesquisarFusoHorario, geocodificarCidade } from './lib/geocoding'
@@ -247,7 +249,7 @@ const estilos = {
   conteudo: {
     overflowY: 'visible',
     padding: '24px 20px',
-    paddingBottom: 100,
+    paddingBottom: 40,
     position: 'relative',
     zIndex: 1,
     textAlign: 'left',
@@ -318,6 +320,24 @@ const estilos = {
     textAlign: 'center',
     marginTop: 8,
     marginBottom: 32,
+  },
+  navbarMobileTop: {
+    position: 'fixed',
+    top: 0,
+    left: '50%',
+    transform: 'translateX(-50%)',
+    width: '100%',
+    maxWidth: MOBILE_MAX,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: '10px 14px',
+    paddingTop: 'max(10px, env(safe-area-inset-top, 10px))',
+    background: 'rgba(11, 7, 30, 0.96)',
+    backdropFilter: 'blur(20px)',
+    borderBottom: `1px solid ${CORES.vidroBorda}`,
+    zIndex: 150,
+    boxSizing: 'border-box',
   },
   navbar: {
     position: 'fixed',
@@ -2601,7 +2621,7 @@ function RodapeSidus({ isDesktop, mostrarNavbar }) {
       position: 'relative',
       zIndex: 1,
       textAlign: 'center',
-      padding: isDesktop ? '28px 40px 36px' : `22px 20px ${mostrarNavbar ? 96 : 28}px`,
+      padding: isDesktop ? '28px 40px 36px' : `22px 20px 28px`,
       maxWidth: isDesktop ? '100%' : MOBILE_MAX,
       margin: isDesktop ? 0 : '0 auto',
       width: '100%',
@@ -2635,6 +2655,7 @@ function RodapeSidus({ isDesktop, mostrarNavbar }) {
 function Navbar({ passo, setPasso, isDesktop }) {
   const { t } = useLanguage()
   const [hover, setHover] = useState(null)
+  const [menuAberto, setMenuAberto] = useState(false)
   const itens = [
     { id: 'home',        label: t('nav.home'),         icon: Home,   glow: '#DFB76C' },
     { id: 'mapa',        label: t('nav.mapa'),         icon: Map,    glow: '#C4B5FD' },
@@ -2643,6 +2664,15 @@ function Navbar({ passo, setPasso, isDesktop }) {
     { id: 'chat',        label: t('nav.oraculo'),      icon: MessageCircle, glow: '#34D399' },
     { id: 'perfil',      label: t('nav.perfil'),       icon: User,   glow: '#93C5FD' },
   ]
+
+  const navegar = (id) => {
+    setPasso(id)
+    setMenuAberto(false)
+  }
+
+  useEffect(() => {
+    setMenuAberto(false)
+  }, [passo])
 
   if (isDesktop) {
     return (
@@ -2692,29 +2722,89 @@ function Navbar({ passo, setPasso, isDesktop }) {
     )
   }
 
-  const navStyle = estilos.navbar
+  const itemAtivo = itens.find((i) => i.id === passo)
+
   return (
-    <nav style={navStyle}>
-      {itens.map((item) => {
-        const Icon = item.icon
-        const ativo = passo === item.id
-        return (
-          <button key={item.id} type="button" onClick={() => setPasso(item.id)}
-            style={{
-              background: 'none', border: 'none',
-              color: ativo ? CORES.dourado : CORES.brancoMuted,
-              display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3,
-              cursor: 'pointer', padding: '0 4px',
-              filter: ativo ? 'drop-shadow(0 0 6px rgba(223,183,108,0.5))' : 'none',
-            }}>
-            <Icon size={20} />
-            <span style={{ fontSize: 9, textTransform: 'uppercase', letterSpacing: '0.04em', fontWeight: ativo ? 700 : 400 }}>
-              {item.label}
-            </span>
-          </button>
-        )
-      })}
-    </nav>
+    <>
+      <header style={estilos.navbarMobileTop}>
+        <button
+          type="button"
+          className="mobile-menu-btn"
+          aria-label={menuAberto ? t('nav.closeMenu') : t('nav.openMenu')}
+          aria-expanded={menuAberto}
+          onClick={() => setMenuAberto((v) => !v)}
+          style={{
+            background: menuAberto ? 'rgba(223,183,108,0.15)' : 'rgba(255,255,255,0.05)',
+            border: `1px solid ${menuAberto ? CORES.dourado : CORES.vidroBorda}`,
+            borderRadius: 10,
+            color: CORES.dourado,
+            width: 42,
+            height: 42,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            cursor: 'pointer',
+            flexShrink: 0,
+          }}
+        >
+          {menuAberto ? <X size={22} /> : <Menu size={22} />}
+        </button>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 0, flex: 1, justifyContent: 'center' }}>
+          <Sparkles size={16} color={CORES.dourado} strokeWidth={1.5} />
+          <span style={{ fontSize: 15, fontWeight: 300, letterSpacing: '0.18em', color: CORES.dourado }}>SIDUS</span>
+        </div>
+        <div style={{ width: 42, flexShrink: 0 }} aria-hidden />
+      </header>
+
+      {menuAberto && (
+        <button
+          type="button"
+          className="mobile-menu-overlay"
+          aria-label={t('nav.closeMenu')}
+          onClick={() => setMenuAberto(false)}
+        />
+      )}
+
+      <nav className={`mobile-menu-drawer${menuAberto ? ' mobile-menu-drawer--open' : ''}`} aria-hidden={!menuAberto}>
+        <div style={{ padding: '8px 16px 12px', borderBottom: `1px solid ${CORES.vidroBorda}` }}>
+          <div style={{ fontSize: 10, color: CORES.brancoMuted, textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+            {t('nav.menu')}
+          </div>
+          {itemAtivo && (
+            <div style={{ fontSize: 13, color: CORES.dourado, marginTop: 4, fontWeight: 600 }}>{itemAtivo.label}</div>
+          )}
+        </div>
+        {itens.map((item) => {
+          const Icon = item.icon
+          const ativo = passo === item.id
+          return (
+            <button
+              key={item.id}
+              type="button"
+              className="mobile-menu-item"
+              onClick={() => navegar(item.id)}
+              style={{
+                background: ativo ? 'rgba(223,183,108,0.12)' : 'transparent',
+                border: 'none',
+                borderBottom: `1px solid rgba(255,255,255,0.05)`,
+                color: ativo ? CORES.dourado : CORES.brancoSuave,
+                display: 'flex',
+                alignItems: 'center',
+                gap: 14,
+                cursor: 'pointer',
+                padding: '16px 20px',
+                width: '100%',
+                textAlign: 'left',
+              }}
+            >
+              <Icon size={20} strokeWidth={ativo ? 2.2 : 1.8} />
+              <span style={{ fontSize: 15, fontWeight: ativo ? 700 : 500, flex: 1 }}>{item.label}</span>
+              {ativo && <span style={{ fontSize: 10, color: CORES.dourado }}>✦</span>}
+            </button>
+          )
+        })}
+      </nav>
+    </>
   )
 }
 
@@ -3210,9 +3300,9 @@ export default function App() {
         if (ferramentaAberta === 'sinastria')
           return <Sinastria mapaNatal={mapaNatal} onVoltar={() => setFerramentaAberta(null)} />
         if (ferramentaAberta === 'biorritmo')
-          return <Biorritmo dados={dados} mapaNatal={mapaNatal} onVoltar={() => setFerramentaAberta(null)} />
+          return <Biorritmo dados={dados} utilizador={utilizador} mapaNatal={mapaNatal} onVoltar={() => setFerramentaAberta(null)} />
         if (ferramentaAberta === 'numerologia')
-          return <Numerologia dados={dados} onVoltar={() => setFerramentaAberta(null)} />
+          return <Numerologia dados={dados} utilizador={utilizador} mapaNatal={mapaNatal} onVoltar={() => setFerramentaAberta(null)} />
         if (ferramentaAberta === 'sonhos')
           return <InterpretacaoSonhos mapaNatal={mapaNatal} onVoltar={() => setFerramentaAberta(null)} />
         if (ferramentaAberta === 'diario')
@@ -3233,7 +3323,7 @@ export default function App() {
 
   const paddingTopo = isDesktop
     ? (isDev && contaConfigurada ? 28 : 0)
-    : (isDev && contaConfigurada ? 30 : 0)
+    : (mostrarNavbar ? 56 : (isDev && contaConfigurada ? 30 : 0))
 
   const shellStyle = isDesktop ? estilos.appDesktop : estilos.app
   const margemNav = isDesktop && mostrarNavbar ? 68 : 0
