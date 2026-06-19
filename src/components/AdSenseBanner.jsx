@@ -3,23 +3,23 @@ import { adsenseEnabled } from '../lib/adsense'
 
 const CORES = { brancoMuted: 'rgba(255,255,255,0.35)' }
 
-/** Anúncio discreto — só renderiza se env configurado e utilizador não Premium. */
-export function AdSenseBanner({ isPremium }) {
+/** Anúncio discreto — todos os utilizadores (incl. Premium) se env configurado. */
+export function AdSenseBanner() {
   const ref = useRef(null)
   const client = import.meta.env.VITE_ADSENSE_CLIENT
   const slot = import.meta.env.VITE_ADSENSE_SLOT
 
   useEffect(() => {
-    if (!adsenseEnabled() || isPremium || !ref.current) return
+    if (!adsenseEnabled() || !ref.current) return
     try {
       // eslint-disable-next-line no-undef
       ;(window.adsbygoogle = window.adsbygoogle || []).push({})
     } catch {
       /* bloqueador de anúncios */
     }
-  }, [isPremium, client, slot])
+  }, [client, slot])
 
-  if (!adsenseEnabled() || isPremium) return null
+  if (!adsenseEnabled()) return null
 
   return (
     <div style={{ maxWidth: 728, margin: '0 auto 12px', padding: '0 16px', boxSizing: 'border-box' }}>

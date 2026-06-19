@@ -3649,8 +3649,8 @@ export default function App() {
       }}>
         {renderEcran()}
       </div>
-      {!acessoVip && ['home', 'ferramentas', 'tarot'].includes(passo) && (
-        <AdSenseBanner isPremium={acessoVip} />
+      {['home', 'ferramentas', 'tarot'].includes(passo) && (
+        <AdSenseBanner />
       )}
       <RodapeSidus isDesktop={isDesktop} mostrarNavbar={mostrarNavbar} />
       {mostrarNavbar && (
