@@ -169,7 +169,7 @@ export default {
     freeQuestions: '{count} free question',
     freeQuestionsPlural: '{count} free questions',
     premiumBadge: '🔒 Premium €9.99/mo',
-    placeholder: 'Share your question with the Oracle...',
+    placeholder: 'Astrology question — love, career, transits, natal chart…',
     placeholderLocked: '🔒 Activate Premium to continue...',
     premiumSubtitle: 'Senior Astrologer · Unlimited professional chat',
   },

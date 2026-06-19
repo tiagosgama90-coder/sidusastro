@@ -1,3 +1,5 @@
+import { perguntaDentroEscopoAstrologia, mensagemForaEscopo } from '../oracleAstrologiaGate.js'
+
 const TEMAS_ORACLE_PT = {
   amor: ['amor', 'relação', 'parceiro', 'relacionamento', 'namorado', 'namorada', 'casamento', 'sinto', 'sente', 'coração', 'ex', 'traí', 'trai', 'ciúme', 'ciúmes', 'solteir'],
   trabalho: ['trabalho', 'carreira', 'emprego', 'dinheiro', 'negócio', 'profissão', 'projeto', 'oportunidade', 'salário', 'chefe', 'demiss', 'promo'],
@@ -25,6 +27,27 @@ function dadosNatal(mapaNatal, lang) {
   return { sol, lua, asc, mc, grauSol, grauAsc, cidade }
 }
 
+function blocoEscopoAstrologia(lang) {
+  if (lang === 'en') {
+    return `
+EXCLUSIVE SCOPE — ASTROLOGY ONLY:
+- You ONLY answer astrology, natal chart, planetary cycles, synastry, transits, and life areas (love, career, purpose, family, spiritual path) READ THROUGH the chart.
+- NEVER act as a general assistant: no recipes, code, trivia, politics, sports, lottery, clinical medicine, homework, translations or unrelated topics.
+- If the question is outside astrology, reply ONLY with: "✦ I am Sirius, Sidus Astral Oracle. I only guide astrology and life through your natal chart. Please rephrase."
+- Every answer MUST cite Sun, Moon and Ascendant (or invite completing birth data).
+- Each answer is UNIQUE to this person and question — never copy generic horoscope text.
+`.trim()
+  }
+  return `
+ESCOPO EXCLUSIVO — APENAS ASTROLOGIA:
+- Respondes SÓ a astrologia, mapa natal, ciclos planetários, sinastria, trânsitos e áreas de vida (amor, carreira, propósito, família, caminho espiritual) LIDAS PELO MAPA.
+- NUNCA actues como assistente genérico: sem receitas, código, trivia, política, desporto, lotaria, medicina clínica, trabalhos escolares, traduções ou temas aleatórios.
+- Se a pergunta estiver fora de astrologia, responde APENAS: "✦ Sou o Sírius, Oráculo Astral do Sidus. Só oriento astrologia e vida através do teu mapa natal. Reformula a pergunta."
+- Cada resposta DEVE citar Sol, Lua e Ascendente (ou convidar a completar dados de nascimento).
+- Cada resposta é ÚNICA a esta pessoa e pergunta — nunca copies horóscopo genérico.
+`.trim()
+}
+
 export function construirSistema(mapaNatal, lang = 'pt', isPremium = false) {
   const { sol, lua, asc, mc, grauSol, grauAsc, cidade } = dadosNatal(mapaNatal, lang)
 
@@ -50,6 +73,7 @@ PREMIUM CHAT RULES:
 4. Never predict death, lottery, or guaranteed outcomes. Guide inner growth.
 5. Refuse dangerous, illegal or explicit content with grace.
 6. If vague, ask one clarifying question before interpreting.
+${blocoEscopoAstrologia('en')}
 `.trim()
     }
 
@@ -73,6 +97,7 @@ REGRAS DO CHAT PREMIUM:
 4. Nunca prever morte, lotaria ou resultados garantidos. Orientar crescimento interior.
 5. Recusar conteúdo perigoso, ilegal ou explícito com elegância.
 6. Se vago, fazer uma pergunta clarificadora antes de interpretar.
+${blocoEscopoAstrologia('pt')}
 `.trim()
   }
 
@@ -89,6 +114,7 @@ FREE TIER RULES:
 2. One concrete observation + one practical suggestion + one reflective question.
 3. No generic filler. No robotic lists. Write like a wise friend who knows astrology.
 4. Refuse harmful content gracefully.
+${blocoEscopoAstrologia('en')}
 `.trim()
   }
 
@@ -103,6 +129,7 @@ REGRAS VERSÃO GRATUITA:
 2. Uma observação concreta + uma sugestão prática + uma pergunta reflexiva.
 3. Sem enchimento genérico. Sem listas robóticas. Escreve como um amigo sábio que conhece astrologia.
 4. Recusa conteúdo nocivo com elegância.
+${blocoEscopoAstrologia('pt')}
 `.trim()
 }
 
@@ -124,6 +151,8 @@ export function validarPerguntaOracle(texto, lang = 'pt') {
     const semConteudo = /^(a question|question|something|anything|some thing)$/i
     if (semConteudo.test(t))
       return '✦ Ask me a real question — about your love, career, purpose or any challenge you are living now.'
+    if (!perguntaDentroEscopoAstrologia(t, 'en'))
+      return mensagemForaEscopo('en')
     return null
   }
 
@@ -140,6 +169,8 @@ export function validarPerguntaOracle(texto, lang = 'pt') {
   const semConteudo = /^(uma pergunta|pergunta|algo|qualquer coisa|uma coisa|uma questão|alguma coisa)$/i
   if (semConteudo.test(t))
     return '✦ Faz-me uma pergunta verdadeira — sobre o teu amor, carreira, propósito ou qualquer desafio que estejas a viver agora.'
+  if (!perguntaDentroEscopoAstrologia(t, 'pt'))
+    return mensagemForaEscopo('pt')
   return null
 }
 
@@ -242,9 +273,9 @@ export function getChatGreeting(mapaNatal, lang = 'pt', maxFree = 3, isPremium =
     return `Bem-vindo/a. Sou o **Sírius**, astrólogo sénior do Sidus.\n\nCompleta o registo natal para eu ler o teu mapa com precisão total. Depois trabalhamos juntos sem limites.\n\nO que pesa no teu coração hoje?`
   }
   if (sol) {
-    return `Olá. Sou o **Sírius**, guia astral do Sidus.\n\nLi o teu mapa: **Sol em ${sol}**, **Lua em ${lua}**, **Ascendente em ${asc}**.\n\nTens ${maxFree} questões gratuitas — ponderadas e personalizadas. Para consulta profissional ilimitada, activa o Premium.\n\nO que está agora no teu coração?`
+    return `Olá. Sou o **Sírius**, Oráculo Astral do Sidus — **só astrologia e vida via mapa natal**.\n\nLi o teu mapa: **Sol em ${sol}**, **Lua em ${lua}**, **Ascendente em ${asc}**.\n\nTens ${maxFree} questões gratuitas. Pergunta sobre amor, carreira, propósito, ciclos ou trânsitos — sempre ligado ao teu mapa.\n\nO que queres ler nas estrelas agora?`
   }
-  return `Olá. Sou o **Sírius**, guia astral do Sidus.\n\nCompleta o registo natal para personalizar cada resposta. Assim poderei falar directamente ao teu mapa.\n\nO que está agora no teu coração?`
+  return `Olá. Sou o **Sírius**, Oráculo Astral do Sidus — **só astrologia e vida via mapa natal**.\n\nCompleta o registo natal para respostas personalizadas ao teu mapa.\n\nPergunta sobre amor, carreira, propósito ou ciclos planetários.\n\nO que queres ler nas estrelas agora?`
 }
 
 export function getOracleLimitMessage(maxFree, lang = 'pt') {

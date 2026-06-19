@@ -169,7 +169,7 @@ export default {
     freeQuestions: '{count} questão grátis',
     freeQuestionsPlural: '{count} questões grátis',
     premiumBadge: '🔒 Premium 9,99 €/mês',
-    placeholder: 'Partilha a tua questão com o Oráculo...',
+    placeholder: 'Pergunta de astrologia — amor, carreira, trânsitos, mapa natal…',
     placeholderLocked: '🔒 Activa o Premium para continuar...',
     premiumSubtitle: 'Astrólogo Sénior · Chat profissional ilimitado',
   },

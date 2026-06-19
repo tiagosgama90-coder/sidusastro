@@ -1,5 +1,5 @@
 import { chatCompletion } from './_shared/ai.mjs'
-import { construirSistema } from '../../src/lib/i18n/oracle.js'
+import { construirSistema, validarPerguntaOracle, gerarRespostaOracle } from '../../src/lib/i18n/oracle.js'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -23,6 +23,14 @@ export default async (req) => {
       return new Response(JSON.stringify({ error: 'Pergunta em falta' }), { status: 400, headers: corsHeaders })
     }
 
+    const erroValidacao = validarPerguntaOracle(pergunta.trim(), lang)
+    if (erroValidacao) {
+      return new Response(JSON.stringify({ resposta: erroValidacao, recusado: true }), {
+        status: 200,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      })
+    }
+
     const system = construirSistema(mapaNatal, lang, isPremium)
     const messages = [
       ...historico.slice(-6).map((m) => ({
@@ -41,10 +49,14 @@ export default async (req) => {
     })
 
     if (!resposta) {
-      return new Response(JSON.stringify({ error: 'IA indisponível' }), { status: 503, headers: corsHeaders })
+      const fallback = gerarRespostaOracle(pergunta.trim(), mapaNatal, 0, lang)
+      return new Response(JSON.stringify({ resposta: fallback, fonte: 'mapa' }), {
+        status: 200,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      })
     }
 
-    return new Response(JSON.stringify({ resposta }), {
+    return new Response(JSON.stringify({ resposta, fonte: 'ia' }), {
       status: 200,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     })

@@ -27,7 +27,7 @@ function allowPaidOpenAI() {
 }
 
 const GROQ_MODELS = {
-  free: 'llama-3.1-8b-instant',
+  free: 'llama-3.3-70b-versatile',
   premium: 'llama-3.3-70b-versatile',
 }
 
@@ -46,14 +46,14 @@ export async function chatCompletion({
 }) {
   const msgs = [{ role: 'system', content: system }, ...messages]
 
-  const poll = await callPollinations(msgs, { temperature })
-  if (poll) return poll
-
   const groq = await callGroq(msgs, { maxTokens, temperature, tier })
   if (groq) return groq
 
   const gem = await callGemini(system, messages, { maxTokens, temperature })
   if (gem) return gem
+
+  const poll = await callPollinations(msgs, { temperature })
+  if (poll) return poll
 
   const or = await callOpenRouter(msgs, { maxTokens, temperature })
   if (or) return or
