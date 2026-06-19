@@ -882,15 +882,18 @@ function normalizarDadosPerfil(dados) {
 
 async function repararDadosPerfil(dados) {
   const d = normalizarDadosPerfil(dados)
-  if (!d || dadosNataisCompletos(d)) return d
-  if (!dadosNataisMinimos(d)) return d
+  if (!d || !dadosNataisMinimos(d)) return d
   try {
     if (!d.localizacao && d.cidade) {
       const loc = await geocodificarCidade(d.cidade)
       if (loc) d.localizacao = loc
     }
-    if (d.localizacao && d.fuso == null) {
-      d.fuso = await pesquisarFusoHorario(d.localizacao.lat, d.localizacao.lon)
+    if (d.localizacao && (d.fuso == null || d.fuso === '')) {
+      try {
+        d.fuso = await pesquisarFusoHorario(d.localizacao.lat, d.localizacao.lon)
+      } catch {
+        d.fuso = 0
+      }
     }
   } catch (e) {
     console.warn('[Sidus] Reparação de perfil falhou:', e?.message)
@@ -898,25 +901,16 @@ async function repararDadosPerfil(dados) {
   return d
 }
 
+function dadosProntosParaMapa(dados) {
+  const d = normalizarDadosPerfil(dados)
+  if (!d?.data || !d?.hora || !d.localizacao) return null
+  return { ...d, fuso: d.fuso ?? 0 }
+}
+
 function contaJaConfigurada(perfil, dadosActuais) {
   if (!perfil && !dadosActuais) return false
   if (perfil?.dadosTravados === true || perfil?.mapaGerado === true) return true
   return dadosNataisCompletos(dadosActuais) || dadosNataisCompletos(perfil?.dados)
-}
-
-function dadosParaCalculoMapa(dados) {
-  const d = normalizarDadosPerfil(dados)
-  if (!d?.data || !d?.hora) return null
-  if (!d.localizacao && d.lat != null && d.lon != null) {
-    d.localizacao = {
-      lat: Number(d.lat),
-      lon: Number(d.lon),
-      nome: d.cidade || `${d.lat}, ${d.lon}`,
-      placeId: d.placeId || 'legacy',
-    }
-  }
-  if (!d.localizacao) return null
-  return { ...d, fuso: d.fuso ?? 0 }
 }
 
 function perfilTemPremium(perfil) {
@@ -2935,10 +2929,15 @@ export default function App() {
                 }
 
                 let dadosPerfil = perfil.dados ? normalizarDadosPerfil(perfil.dados) : null
-                if (dadosPerfil && dadosNataisMinimos(dadosPerfil) && !dadosNataisCompletos(dadosPerfil)) {
-                  dadosPerfil = await repararDadosPerfil(dadosPerfil)
-                  if (dadosNataisCompletos(dadosPerfil)) {
-                    await setDoc(doc(db, 'users', user.uid), { dados: dadosPerfil }, { merge: true })
+                if (dadosPerfil && dadosNataisMinimos(dadosPerfil)) {
+                  const reparado = await repararDadosPerfil(dadosPerfil)
+                  if (reparado) {
+                    dadosPerfil = reparado
+                    const precisaGuardar = JSON.stringify(reparado) !== JSON.stringify(perfil.dados)
+                      || !dadosNataisCompletos(perfil.dados)
+                    if (precisaGuardar && dadosProntosParaMapa(reparado)) {
+                      await setDoc(doc(db, 'users', user.uid), { dados: reparado }, { merge: true })
+                    }
                   }
                 }
                 if (dadosPerfil) setDados(dadosPerfil)
@@ -3182,41 +3181,38 @@ export default function App() {
     return () => clearInterval(id)
   }, [sweReady])
 
-  // ── Recalcula mapa natal ────────────────────────────────────────────────────
+  // ── Recalcula mapa natal (lógica original — nunca apaga mapa existente) ─────
   useEffect(() => {
-    const d = dadosParaCalculoMapa(dados)
-    if (!d) {
-      setMapaNatal(null)
-      return
-    }
+    const prontos = dadosProntosParaMapa(dados)
+    if (!prontos) return
+
     try {
-      setMapaNatal(sweRef.current
-        ? calcularMapaNatalComSwe(sweRef.current, d)
-        : calcularMapaNatal(d))
+      const mapa = sweRef.current
+        ? calcularMapaNatalComSwe(sweRef.current, prontos)
+        : calcularMapaNatal(prontos)
+      if (mapa) setMapaNatal(mapa)
     } catch (e) {
       console.warn('[Sidus] Erro ao calcular mapa natal:', e?.message)
       try {
-        setMapaNatal(calcularMapaNatal(d))
-      } catch {
-        setMapaNatal(null)
-      }
+        const mapa = calcularMapaNatal(prontos)
+        if (mapa) setMapaNatal(mapa)
+      } catch { /* mantém mapa anterior se existir */ }
     }
   }, [dados, sweReady])
 
-  // Reparar dados natais incompletos e recalcular mapa
+  // Reparar dados incompletos (ex.: cidade sem coordenadas no Firestore)
   useEffect(() => {
-    if (!utilizador || mapaNatal) return
-    if (!dadosNataisMinimos(dados)) return
+    if (!utilizador || mapaNatal || !dadosNataisMinimos(dados)) return
+    if (dadosProntosParaMapa(dados)) return
 
     let cancelled = false
     ;(async () => {
       try {
         const reparado = await repararDadosPerfil(dados)
         if (cancelled || !reparado) return
-        const mudou = JSON.stringify(reparado) !== JSON.stringify(dados)
-        if (mudou) {
+        if (JSON.stringify(reparado) !== JSON.stringify(dados)) {
           setDados(reparado)
-          if (firebaseDisponivel && db) {
+          if (firebaseDisponivel && db && dadosProntosParaMapa(reparado)) {
             await setDoc(doc(db, 'users', utilizador.uid), { dados: reparado }, { merge: true })
           }
         }
@@ -3226,12 +3222,13 @@ export default function App() {
     })()
 
     return () => { cancelled = true }
-  }, [utilizador, mapaNatal, dados?.data, dados?.hora, dados?.cidade, dados?.localizacao, dados?.fuso])
+  }, [utilizador, mapaNatal, dados])
 
   // ── Planetas de nascimento ──────────────────────────────────────────────────
   useEffect(() => {
-    if (!dados.data || !dados.hora || !dados.localizacao) { setPlanetasNascimento([]); return }
-    const dataUTC = criarDataUTCporLocal(dados.data, dados.hora, dados.fuso ?? 0)
+    const prontos = dadosProntosParaMapa(dados)
+    if (!prontos) { setPlanetasNascimento([]); return }
+    const dataUTC = criarDataUTCporLocal(prontos.data, prontos.hora, prontos.fuso ?? 0)
     setPlanetasNascimento(sweRef.current
       ? calcularPlanetasComSwe(sweRef.current, dataUTC, PLANETAS_NATAL)
       : calcularPlanetasNatalParaData(dataUTC))
@@ -3246,9 +3243,12 @@ export default function App() {
     const erros = validarOnboarding(dados)
     if (Object.keys(erros).length > 0) return
 
+    const prontos = dadosProntosParaMapa(dados)
+    if (!prontos) return
+
     setMapaNatal(sweRef.current
-      ? calcularMapaNatalComSwe(sweRef.current, dados)
-      : calcularMapaNatal(dados))
+      ? calcularMapaNatalComSwe(sweRef.current, prontos)
+      : calcularMapaNatal(prontos))
     const guardado = await guardarPerfil(dados)
     setMapaGerado(true)
     irPara('perfil', { replace: !guardado })
@@ -3389,7 +3389,7 @@ export default function App() {
       case 'dashboard':
         return <Dashboard nome={dados.nome} mapaNatal={mapaNatal} ceuAgora={ceuAgora} aspetos={aspetosAgora} onOraculo={() => irPara('chat')} onPrivacidade={() => irPara('privacidade')} isDesktop={isDesktop} isPremium={acessoVip} onUpgrade={() => irPara('paywall')} onTarot={() => irPara('tarot')} />
       case 'mapa':
-        return <MapaAstral mapaNatal={mapaNatal} dados={dados} planetasNascimento={planetasNascimento} mapaDesbloqueado={mapaDesbloqueado} isPremium={isPremium || mapaCompleto} onUpgrade={() => irPara('paywall')} onComprarMapa={() => abrirPagamento(t('mapa.buyDesc'), PRECO_MAPA_COMPLETO, null, { direto: true, productType: 'mapa' })} onMapaGerado={handleMapaGerado} isDesktop={isDesktop} motorAstro={motorAstro} />
+        return <MapaAstral mapaNatal={mapaNatal} dados={dados} planetasNascimento={planetasNascimento} mapaDesbloqueado={isPremium || mapaCompleto} isPremium={isPremium} onUpgrade={() => irPara('paywall')} onComprarMapa={() => abrirPagamento(t('mapa.buyDesc'), PRECO_MAPA_COMPLETO, null, { direto: true, productType: 'mapa' })} onMapaGerado={handleMapaGerado} isDesktop={isDesktop} motorAstro={motorAstro} />
       case 'tarot':
         return <EcraTarot mapaNatal={mapaNatal} isPremium={acessoVip} userId={utilizador?.uid} leiturasTarotUsadas={leiturasTarotUsadas} onLeituraGratisUsada={registarLeituraTarotGratis} onPagar={abrirPagamento} onVoltar={() => irPara('home')} onPremium={() => irPara('paywall')} />
       case 'ferramentas':
