@@ -3,20 +3,33 @@ import { env } from './env.mjs'
 
 let initialized = false
 
-export function getFirestore() {
-  if (!initialized) {
-    const raw = env('FIREBASE_SERVICE_ACCOUNT')
-    if (!raw) return null
-    try {
-      const serviceAccount = JSON.parse(raw)
-      admin.initializeApp({ credential: admin.credential.cert(serviceAccount) })
-      initialized = true
-    } catch (e) {
-      console.error('[Firebase Admin] init failed:', e?.message)
-      return null
-    }
+function ensureInit() {
+  if (initialized) return true
+  const raw = env('FIREBASE_SERVICE_ACCOUNT')
+  if (!raw) return false
+  try {
+    const serviceAccount = JSON.parse(raw)
+    admin.initializeApp({ credential: admin.credential.cert(serviceAccount) })
+    initialized = true
+    return true
+  } catch (e) {
+    console.error('[Firebase Admin] init failed:', e?.message)
+    return false
   }
+}
+
+export function getFirestore() {
+  if (!ensureInit()) return null
   return admin.firestore()
+}
+
+export async function verifyIdToken(idToken) {
+  if (!ensureInit() || !idToken) return null
+  try {
+    return await admin.auth().verifyIdToken(idToken)
+  } catch {
+    return null
+  }
 }
 
 function premiumUntilFromExisting(existingUntil, dias = 30) {

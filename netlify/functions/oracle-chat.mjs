@@ -1,10 +1,11 @@
 import { chatCompletion } from './_shared/ai.mjs'
 import { construirSistema, validarPerguntaOracle, gerarRespostaOracle } from '../../src/lib/i18n/oracle.js'
 import { respostaPareceForaEscopoAstrologia, mensagemForaEscopo } from '../../src/lib/oracleAstrologiaGate.js'
+import { obterAcessoOracle, incrementarOraclePergunta, MAX_ORACLE_GRATIS } from './_shared/oracleAccess.mjs'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'Content-Type',
+  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
 }
 
@@ -18,10 +19,45 @@ export default async (req) => {
 
   try {
     const body = await req.json()
-    const { pergunta, mapaNatal, historico = [], lang = 'pt', isPremium = false } = body
+    const { pergunta, mapaNatal, historico = [], lang = 'pt', idToken } = body
 
     if (!pergunta?.trim()) {
       return new Response(JSON.stringify({ error: 'Pergunta em falta' }), { status: 400, headers: corsHeaders })
+    }
+
+    if (!idToken) {
+      return new Response(JSON.stringify({ error: 'Sessão em falta', limite: true }), {
+        status: 401,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      })
+    }
+
+    const acesso = await obterAcessoOracle(idToken)
+    if (acesso.erro === 'auth') {
+      return new Response(JSON.stringify({ error: 'Sessão inválida', limite: true }), {
+        status: 401,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      })
+    }
+    if (acesso.erro === 'db') {
+      return new Response(JSON.stringify({ error: 'Serviço indisponível' }), {
+        status: 503,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      })
+    }
+
+    const { uid, isPremium, usadas } = acesso
+
+    if (!isPremium && usadas >= MAX_ORACLE_GRATIS) {
+      return new Response(JSON.stringify({
+        limite: true,
+        usadas,
+        max: MAX_ORACLE_GRATIS,
+        resposta: null,
+      }), {
+        status: 402,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      })
     }
 
     const erroValidacao = validarPerguntaOracle(pergunta.trim(), lang)
@@ -58,15 +94,25 @@ export default async (req) => {
       })
     }
 
-    if (!resposta) {
-      const fallback = gerarRespostaOracle(pergunta.trim(), mapaNatal, 0, lang)
-      return new Response(JSON.stringify({ resposta: fallback, fonte: 'mapa' }), {
-        status: 200,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      })
+    let respostaFinal = resposta
+    let fonte = 'ia'
+
+    if (!respostaFinal) {
+      respostaFinal = gerarRespostaOracle(pergunta.trim(), mapaNatal, usadas, lang)
+      fonte = 'mapa'
     }
 
-    return new Response(JSON.stringify({ resposta, fonte: 'ia' }), {
+    if (!isPremium) {
+      await incrementarOraclePergunta(uid)
+    }
+
+    return new Response(JSON.stringify({
+      resposta: respostaFinal,
+      fonte,
+      usadas: isPremium ? usadas : usadas + 1,
+      max: MAX_ORACLE_GRATIS,
+      isPremium,
+    }), {
       status: 200,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     })

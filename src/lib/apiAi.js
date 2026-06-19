@@ -1,27 +1,39 @@
 /** Chamadas IA via Netlify Functions — chaves secretas só no servidor. */
 
-async function postJson(path, body) {
+async function postJson(path, body, idToken = null) {
+  const headers = { 'Content-Type': 'application/json' }
+  if (idToken) headers.Authorization = `Bearer ${idToken}`
   const res = await fetch(path, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body),
+    headers,
+    body: JSON.stringify({ ...body, idToken }),
   })
-  if (!res.ok) return null
-  return res.json()
+  if (!res.ok) {
+    const data = await res.json().catch(() => ({}))
+    return { ok: false, status: res.status, ...data }
+  }
+  const data = await res.json()
+  return { ok: true, ...data }
 }
 
-export async function consultarOracleServidor(pergunta, mapaNatal, historico, lang, isPremium) {
+export async function consultarOracleServidor(pergunta, mapaNatal, historico, lang, idToken) {
   try {
     const data = await postJson('/api/oracle-chat', {
       pergunta,
       mapaNatal,
       historico,
       lang,
-      isPremium,
-    })
-    return data?.resposta || null
+    }, idToken)
+    if (data.limite) return { limite: true, usadas: data.usadas, max: data.max, resposta: null }
+    if (!data.ok && data.status === 402) return { limite: true, usadas: data.usadas, max: data.max, resposta: null }
+    return {
+      resposta: data.resposta || null,
+      usadas: data.usadas,
+      max: data.max,
+      isPremium: data.isPremium,
+    }
   } catch {
-    return null
+    return { resposta: null }
   }
 }
 

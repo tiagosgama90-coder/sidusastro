@@ -123,6 +123,11 @@ export default {
     copyPost: 'Copiar texto',
     copied: 'Copiado!',
     loadingContent: 'A carregar conteúdo do dia…',
+    horoscopeFreeHint: 'Grátis: horóscopo do teu signo solar. Premium desbloqueia os 12 signos + Oráculo ilimitado.',
+    horoscopePremiumAll: 'Ver horóscopo dos 12 signos — Premium',
+    horoscopeNoMap: 'O teu mapa natal personaliza o horóscopo. Completa o registo para ver o teu signo.',
+    askOracleToday: 'Perguntar ao Oráculo Sidus (3 grátis)',
+    adminSocialOnly: 'Só admin · sugestão redes sociais',
   },
   mapa: {
     title: 'Mapa Astral', fillNatal: 'Preenche o registo natal para calcular o teu mapa.',
@@ -182,6 +187,7 @@ export default {
     premiumBadge: '🔒 Premium 9,99 €/mês',
     placeholder: 'Pergunta de astrologia — amor, carreira, trânsitos, mapa natal…',
     placeholderLocked: '🔒 Activa o Premium para continuar...',
+    sessionError: '✦ Sessão expirada. Recarrega a página e tenta outra vez.',
     premiumSubtitle: 'Astrólogo Sénior · Chat profissional ilimitado',
   },
   perfil: {

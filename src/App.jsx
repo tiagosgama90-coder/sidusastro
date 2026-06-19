@@ -74,6 +74,9 @@ import { consultarOracleServidor } from './lib/apiAi.js'
 import { localizeArcano } from './lib/i18n/tarotArcana.js'
 import { normalizarDataISO } from './lib/datetime.js'
 import { utilizadorTemPremium, emailTemPremiumPrivilegiado } from './lib/premiumAccess.js'
+import {
+  MAX_ORACLE_GRATIS, oraclePerguntasUsadas, sincronizarOraclePerguntas, oracleRestantes,
+} from './lib/oracleLimit.js'
 
 const CORES = {
   fundo: '#0B071E',
@@ -1743,7 +1746,7 @@ function Onboarding({ dados, setDados, onSubmit, isDesktop }) {
   )
 }
 
-function Dashboard({ nome, mapaNatal, ceuAgora, aspetos, onOraculo, onPrivacidade, isDesktop, isPremium, onUpgrade, onTarot }) {
+function Dashboard({ nome, mapaNatal, ceuAgora, aspetos, onOraculo, onPrivacidade, isDesktop, isPremium, onUpgrade, onTarot, userEmail }) {
   const { t, ts, te, tp, ta, lang } = useLanguage()
   const faseLua = calcularFaseLua(new Date(), lang)
   return (
@@ -1845,7 +1848,7 @@ function Dashboard({ nome, mapaNatal, ceuAgora, aspetos, onOraculo, onPrivacidad
         )}
       </div>
 
-      <ConteudoDinamicoSidus mapaNatal={mapaNatal} aspetos={aspetos} />
+      <ConteudoDinamicoSidus mapaNatal={mapaNatal} aspetos={aspetos} isPremium={isPremium} onUpgrade={onUpgrade} onOraculo={onOraculo} userEmail={userEmail} />
 
       {/* Carta do Dia */}
       <CartaDoDia />
@@ -2429,18 +2432,16 @@ function Paywall({ onVoltar, onPagar, onSucesso, isDesktop }) {
 }
 
 // ── Integração AI (servidor Netlify — chaves secretas) ─────────────────────────
-async function consultarSidus(pergunta, mapaNatal, historico, lang = 'pt', isPremium = false) {
-  return consultarOracleServidor(pergunta, mapaNatal, historico, lang, isPremium)
+async function consultarSidus(pergunta, mapaNatal, historico, lang, idToken) {
+  return consultarOracleServidor(pergunta, mapaNatal, historico, lang, idToken)
 }
 
-const MAX_PERGUNTAS_GRATIS = 3
-
-function Chat({ mapaNatal, isPremium, onUpgrade }) {
+function Chat({ mapaNatal, isPremium, userId, oracleRemotas, onOracleUsada, onUpgrade, obterIdToken }) {
   const { lang, t } = useLanguage()
-  const [perguntasUsadas, setPerguntasUsadas] = useState(0)
+  const [perguntasUsadas, setPerguntasUsadas] = useState(() => oraclePerguntasUsadas(userId, oracleRemotas))
 
   const [mensagens, setMensagens] = useState(() => [
-    { id: 1, autor: 'ia', texto: getChatGreeting(mapaNatal, 'pt', MAX_PERGUNTAS_GRATIS, isPremium) },
+    { id: 1, autor: 'ia', texto: getChatGreeting(mapaNatal, 'pt', MAX_ORACLE_GRATIS, isPremium) },
   ])
 
   const [texto, setTexto]       = useState('')
@@ -2448,27 +2449,28 @@ function Chat({ mapaNatal, isPremium, onUpgrade }) {
   const fimRef = useRef(null)
 
   useEffect(() => {
-    setMensagens([{ id: 1, autor: 'ia', texto: getChatGreeting(mapaNatal, lang, MAX_PERGUNTAS_GRATIS, isPremium) }])
-    setPerguntasUsadas(0)
+    setPerguntasUsadas(oraclePerguntasUsadas(userId, oracleRemotas))
+  }, [userId, oracleRemotas])
+
+  useEffect(() => {
+    setMensagens([{ id: 1, autor: 'ia', texto: getChatGreeting(mapaNatal, lang, MAX_ORACLE_GRATIS, isPremium) }])
   }, [lang, mapaNatal, isPremium])
 
   useEffect(() => { fimRef.current?.scrollIntoView({ behavior: 'smooth' }) }, [mensagens, digitando])
 
-  const restantes = isPremium ? Infinity : MAX_PERGUNTAS_GRATIS - perguntasUsadas
+  const restantes = oracleRestantes(isPremium, userId, oracleRemotas)
 
   const enviar = async () => {
     if (!texto.trim() || digitando) return
 
-    // ── BLOQUEIO RÍGIDO: 4ª mensagem → paywall imediato ──────────────────────
-    if (!isPremium && perguntasUsadas >= MAX_PERGUNTAS_GRATIS) {
-      setTexto('')   // limpa a caixa de texto
-      onUpgrade()    // redireciona automaticamente para paywall
+    if (!isPremium && perguntasUsadas >= MAX_ORACLE_GRATIS) {
+      setTexto('')
+      onUpgrade()
       return
     }
 
     const q = texto.trim()
 
-    // Validar pergunta genuína
     const erroValidacao = validarPerguntaOracle(q, lang)
     if (erroValidacao) {
       setMensagens(prev => [...prev,
@@ -2484,23 +2486,48 @@ function Chat({ mapaNatal, isPremium, onUpgrade }) {
     setTexto('')
     setDigitando(true)
 
-    // Incrementa o contador ANTES da resposta (impede duplo envio)
     const numAtual = perguntasUsadas
-    setPerguntasUsadas(n => n + 1)
+    const idToken = obterIdToken ? await obterIdToken() : null
 
-    // OpenAI → Gemini → template
-    const respostaIA = await consultarSidus(q, mapaNatal, historicoParaIA, lang, isPremium)
-    const resposta   = respostaIA || gerarRespostaOracle(q, mapaNatal, numAtual, lang)
+    if (!isPremium && !idToken) {
+      setDigitando(false)
+      setMensagens(prev => [...prev, {
+        id: Date.now()+1, autor: 'ia', aviso: true,
+        texto: t('oracle.sessionError'),
+      }])
+      return
+    }
 
+    const resultado = await consultarSidus(q, mapaNatal, historicoParaIA, lang, idToken)
+
+    if (resultado?.limite) {
+      const total = resultado.usadas ?? MAX_ORACLE_GRATIS
+      setPerguntasUsadas(total)
+      onOracleUsada?.(total)
+      setDigitando(false)
+      setMensagens(prev => [...prev, {
+        id: Date.now()+1, autor: 'ia', aviso: true,
+        texto: getOracleLimitMessage(MAX_ORACLE_GRATIS, lang),
+      }])
+      setTimeout(onUpgrade, 800)
+      return
+    }
+
+    const resposta = resultado?.resposta || gerarRespostaOracle(q, mapaNatal, numAtual, lang)
     setMensagens(prev => [...prev, { id: Date.now()+1, autor: 'ia', texto: resposta }])
     setDigitando(false)
 
-    // Após a 3ª resposta, avisa que a próxima é paga
-    if (!isPremium && numAtual + 1 >= MAX_PERGUNTAS_GRATIS) {
+    if (!isPremium && resultado?.usadas != null) {
+      const total = sincronizarOraclePerguntas(userId, resultado.usadas)
+      setPerguntasUsadas(total)
+      onOracleUsada?.(total)
+    }
+
+    if (!isPremium && (resultado?.usadas ?? numAtual + 1) >= MAX_ORACLE_GRATIS) {
       setTimeout(() => {
         setMensagens(prev => [...prev, {
           id: Date.now()+99, autor: 'ia', aviso: true,
-          texto: getOracleLimitMessage(MAX_PERGUNTAS_GRATIS, lang),
+          texto: getOracleLimitMessage(MAX_ORACLE_GRATIS, lang),
         }])
       }, 600)
     }
@@ -2573,7 +2600,7 @@ function Chat({ mapaNatal, isPremium, onUpgrade }) {
           onChange={e => setTexto(e.target.value)}
           onKeyDown={e => e.key === 'Enter' && !e.shiftKey && enviar()}
           placeholder={
-            !isPremium && perguntasUsadas >= MAX_PERGUNTAS_GRATIS
+            !isPremium && perguntasUsadas >= MAX_ORACLE_GRATIS
               ? t('oracle.placeholderLocked')
               : t('oracle.placeholder')
           }
@@ -2586,7 +2613,7 @@ function Chat({ mapaNatal, isPremium, onUpgrade }) {
           style={{
             width: 44, height: 44, borderRadius: '50%', border: 'none', flexShrink: 0,
             background: digitando ? 'rgba(223,183,108,0.25)'
-              : !isPremium && perguntasUsadas >= MAX_PERGUNTAS_GRATIS ? 'rgba(223,183,108,0.2)'
+              : !isPremium && perguntasUsadas >= MAX_ORACLE_GRATIS ? 'rgba(223,183,108,0.2)'
               : `linear-gradient(135deg,${CORES.dourado},${CORES.douradoEscuro})`,
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             cursor: digitando ? 'default' : 'pointer',
@@ -2863,6 +2890,7 @@ export default function App() {
   const [mapaCompleto, setMapaCompleto] = useState(false)
   const [mapaGerado, setMapaGerado] = useState(false) // bloqueio: 1 mapa por utilizador
   const [leiturasTarotUsadas, setLeiturasTarotUsadas] = useState(0)
+  const [oraclePerguntasUsadas, setOraclePerguntasUsadas] = useState(0)
   const [perfilCarregando, setPerfilCarregando] = useState(false)
   const [reparandoDados, setReparandoDados] = useState(false)
 
@@ -2971,6 +2999,9 @@ export default function App() {
                 setMapaCompleto(premium || perfil.mapaCompleto === true)
                 if (typeof perfil.tarotLeiturasUsadas === 'number') {
                   setLeiturasTarotUsadas(perfil.tarotLeiturasUsadas)
+                }
+                if (typeof perfil.oraclePerguntasUsadas === 'number') {
+                  setOraclePerguntasUsadas(perfil.oraclePerguntasUsadas)
                 }
 
                 let dadosPerfil = perfil.dados ? normalizarDadosPerfil(perfil.dados) : null
@@ -3344,6 +3375,23 @@ export default function App() {
     } catch { /* offline */ }
   }, [utilizador])
 
+  const registarOraclePerguntaUsada = useCallback(async (total) => {
+    setOraclePerguntasUsadas(total)
+    if (!utilizador || !firebaseDisponivel || !db) return
+    try {
+      await setDoc(doc(db, 'users', utilizador.uid), { oraclePerguntasUsadas: total }, { merge: true })
+    } catch { /* offline */ }
+  }, [utilizador])
+
+  const obterIdTokenOracle = useCallback(async () => {
+    if (!utilizador) return null
+    try {
+      return await utilizador.getIdToken()
+    } catch {
+      return null
+    }
+  }, [utilizador])
+
   const handleLogout = async () => {
     if (firebaseDisponivel && auth) await signOut(auth)
     setUtilizador(null)
@@ -3442,7 +3490,7 @@ export default function App() {
     switch (passo) {
       case 'home':
       case 'dashboard':
-        return <Dashboard nome={dados.nome} mapaNatal={mapaNatal} ceuAgora={ceuAgora} aspetos={aspetosAgora} onOraculo={() => irPara('chat')} onPrivacidade={() => irPara('privacidade')} isDesktop={isDesktop} isPremium={isPremium} onUpgrade={() => irPara('paywall')} onTarot={() => irPara('tarot')} />
+        return <Dashboard nome={dados.nome} mapaNatal={mapaNatal} ceuAgora={ceuAgora} aspetos={aspetosAgora} onOraculo={() => irPara('chat')} onPrivacidade={() => irPara('privacidade')} isDesktop={isDesktop} isPremium={isPremium} onUpgrade={() => irPara('paywall')} onTarot={() => irPara('tarot')} userEmail={utilizador?.email} />
       case 'mapa':
         return <MapaAstral mapaNatal={mapaNatal} dados={dados} planetasNascimento={planetasNascimento} mapaDesbloqueado={isPremium || mapaCompleto} isPremium={isPremium} onUpgrade={() => irPara('paywall')} onComprarMapa={() => abrirPagamento(t('mapa.buyDesc'), PRECO_MAPA_COMPLETO, null, { productType: 'mapa' })} onMapaGerado={handleMapaGerado} isDesktop={isDesktop} motorAstro={motorAstro} perfilCarregando={perfilCarregando} reparandoDados={reparandoDados} mapaGerado={mapaGerado} onCompletarNatal={() => irPara('home')} />
       case 'tarot':
@@ -3466,13 +3514,13 @@ export default function App() {
       case 'paywall':
         return <Paywall onVoltar={() => irPara('ferramentas')} onPagar={abrirPagamento} onSucesso={() => { setIsPremium(true); setMapaCompleto(true); irPara(dadosNataisMinimos(dados) ? 'mapa' : 'onboarding') }} isDesktop={isDesktop} />
       case 'chat':
-        return <Chat mapaNatal={mapaNatal} isPremium={acessoVip} onUpgrade={() => irPara('paywall')} />
+        return <Chat mapaNatal={mapaNatal} isPremium={acessoVip} userId={utilizador?.uid} oracleRemotas={oraclePerguntasUsadas} onOracleUsada={registarOraclePerguntaUsada} onUpgrade={() => irPara('paywall')} obterIdToken={obterIdTokenOracle} />
       case 'perfil':
         return <Perfil utilizador={utilizador} dados={dados} mapaNatal={mapaNatal} isPremium={isPremium}
           dadosBloqueados={dadosBloqueados}
           onLogout={handleLogout} />
       default:
-        return <Dashboard nome={dados.nome} mapaNatal={mapaNatal} ceuAgora={ceuAgora} aspetos={aspetosAgora} onOraculo={() => irPara('chat')} onPrivacidade={() => irPara('privacidade')} isDesktop={isDesktop} isPremium={isPremium} onUpgrade={() => irPara('paywall')} onTarot={() => irPara('tarot')} />
+        return <Dashboard nome={dados.nome} mapaNatal={mapaNatal} ceuAgora={ceuAgora} aspetos={aspetosAgora} onOraculo={() => irPara('chat')} onPrivacidade={() => irPara('privacidade')} isDesktop={isDesktop} isPremium={isPremium} onUpgrade={() => irPara('paywall')} onTarot={() => irPara('tarot')} userEmail={utilizador?.email} />
     }
   }
 

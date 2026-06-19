@@ -123,6 +123,11 @@ export default {
     copyPost: 'Copy text',
     copied: 'Copied!',
     loadingContent: 'Loading today\'s content…',
+    horoscopeFreeHint: 'Free: your Sun sign horoscope. Premium unlocks all 12 signs + unlimited Oracle.',
+    horoscopePremiumAll: 'All 12 signs horoscope — Premium',
+    horoscopeNoMap: 'Your natal chart personalises the horoscope. Complete registration to see your sign.',
+    askOracleToday: 'Ask Sidus Oracle (3 free)',
+    adminSocialOnly: 'Admin only · social post draft',
   },
   mapa: {
     title: 'Natal Chart', fillNatal: 'Complete your birth data to calculate your chart.',
@@ -182,6 +187,7 @@ export default {
     premiumBadge: '🔒 Premium €9.99/mo',
     placeholder: 'Astrology question — love, career, transits, natal chart…',
     placeholderLocked: '🔒 Activate Premium to continue...',
+    sessionError: '✦ Session expired. Reload the page and try again.',
     premiumSubtitle: 'Senior Astrologer · Unlimited professional chat',
   },
   perfil: {
