@@ -792,7 +792,7 @@ function guardarCachePerfil(uid, dados, mapa) {
     if (dados && dadosNataisMinimos(dados)) {
       localStorage.setItem(chaveCacheDados(uid), JSON.stringify(dados))
     }
-    if (mapa) localStorage.setItem(chaveCacheMapa(uid), JSON.stringify(mapa))
+    if (mapaNatalValido(mapa)) localStorage.setItem(chaveCacheMapa(uid), JSON.stringify(mapa))
   } catch { /* quota */ }
 }
 
@@ -803,7 +803,7 @@ function restaurarCachePerfil(uid) {
     const mapaRaw = localStorage.getItem(chaveCacheMapa(uid))
     return {
       dados: dadosRaw ? normalizarDadosPerfil(JSON.parse(dadosRaw)) : null,
-      mapa: mapaRaw ? JSON.parse(mapaRaw) : null,
+      mapa: mapaRaw ? (() => { const m = JSON.parse(mapaRaw); return mapaNatalValido(m) ? m : null })() : null,
     }
   } catch {
     return { dados: null, mapa: null }
@@ -1701,7 +1701,7 @@ function Dashboard({ nome, mapaNatal, ceuAgora, aspetos, onOraculo, onPrivacidad
           <p style={{ fontSize: 12, color: CORES.brancoSuave, lineHeight: 1.55, margin: 0 }}>{faseLua.desc}</p>
         </div>
 
-        {ceuAgora.map((p) => (
+        {(ceuAgora || []).map((p) => (
           <div key={p.key} style={{ fontSize: 14, color: CORES.brancoSuave, padding: '7px 0', borderBottom: `1px solid ${CORES.vidroBorda}` }}>
             {p.simbolo} {p.texto}
           </div>
@@ -1815,6 +1815,8 @@ function CartaDoDia() {
   const cartaBase = ARCANOS_NOMES[idx]
   const carta = localizeArcano(cartaBase, lang)
   const dataFormatada = `${String(dia).padStart(2, '0')}/${String(mes).padStart(2, '0')}/${ano}`
+
+  if (!carta?.nome) return null
 
   return (
     <div style={{
@@ -1934,15 +1936,25 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
     [planetasComCasa]
   )
 
-  const analiseCompleta = useMemo(
-    () => (mapaCompletoDesbloqueado && mapaNatal ? gerarAnaliseCompleta(mapaNatal, planetasComCasa, aspetosNatais, dados, lang) : null),
-    [mapaCompletoDesbloqueado, mapaNatal, planetasComCasa, aspetosNatais, dados, lang]
-  )
+  const analiseCompleta = useMemo(() => {
+    if (!mapaCompletoDesbloqueado || !mapaNatal) return null
+    try {
+      return gerarAnaliseCompleta(mapaNatal, planetasComCasa, aspetosNatais, dados, lang)
+    } catch (e) {
+      console.warn('[Sidus] Análise mapa:', e?.message)
+      return null
+    }
+  }, [mapaCompletoDesbloqueado, mapaNatal, planetasComCasa, aspetosNatais, dados, lang])
 
-  const resumoGratuito = useMemo(
-    () => (!mapaCompletoDesbloqueado && mapaNatal ? gerarResumoGratuito(mapaNatal, lang) : null),
-    [mapaCompletoDesbloqueado, mapaNatal, lang]
-  )
+  const resumoGratuito = useMemo(() => {
+    if (mapaCompletoDesbloqueado || !mapaNatal) return null
+    try {
+      return gerarResumoGratuito(mapaNatal, lang)
+    } catch (e) {
+      console.warn('[Sidus] Resumo mapa:', e?.message)
+      return null
+    }
+  }, [mapaCompletoDesbloqueado, mapaNatal, lang])
 
   const mapaCompletoVisivel = planetasComCasa.length > 0
 
@@ -2683,7 +2695,7 @@ function Navbar({ passo, setPasso, isDesktop }) {
                 textAlign: 'left',
               }}
             >
-              <Icon size={20} strokeWidth={ativo ? 2.2 : 1.8} />
+              {Icon ? <Icon size={20} strokeWidth={ativo ? 2.2 : 1.8} /> : <span style={{ width: 20 }} />}
               <span style={{ fontSize: 15, fontWeight: ativo ? 700 : 500, flex: 1 }}>{item.label}</span>
               {ativo && <span style={{ fontSize: 10, color: CORES.dourado }}>✦</span>}
             </button>

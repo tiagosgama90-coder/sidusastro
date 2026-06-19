@@ -90,7 +90,7 @@ export function calcularAngulosCasas(swe, dateUTC, latitude, longitude) {
     }
   }
   try {
-    return calcularAngulosCasasMeeus(dataUTC, latitude, longitude)
+    return calcularAngulosCasasMeeus(dateUTC, latitude, longitude)
   } catch (e) {
     console.warn('[Sidus] Meeus houses falhou:', e?.message)
     return null
