@@ -225,6 +225,7 @@ export default {
   },
   recaptcha: {
     unavailable: 'reCAPTCHA Google indisponível neste domínio — usa a verificação abaixo.',
+    verified: 'Verificado',
   },
   footer: {
     tagline: '© 2026 Sidus Astro. Portais e caminhos revelados através do Tarot e da Astrologia. Todos os direitos reservados.',

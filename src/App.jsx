@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback, useMemo } from 'react'
+﻿import { useState, useEffect, useRef, useCallback, useMemo } from 'react'
 import {
   Sparkles,
   Moon,
@@ -2981,6 +2981,7 @@ export default function App() {
   const [sweReady, setSweReady] = useState(false)
   const [motorAstro, setMotorAstro] = useState(_motorStatus)
   const prevUserRef = useRef(undefined)
+  const oobCodeTratado = useRef(false)
   const passoRef = useRef(passo)
   useEffect(() => { passoRef.current = passo }, [passo])
 
@@ -3118,11 +3119,13 @@ export default function App() {
 
   // Firebase email verification link (?mode=verifyEmail&oobCode=...)
   useEffect(() => {
-    if (!auth || !firebaseDisponivel) return
+    if (!auth || !firebaseDisponivel || oobCodeTratado.current) return
     const params = new URLSearchParams(location.search)
     const mode = params.get('mode')
     const oobCode = params.get('oobCode')
     if (mode !== 'verifyEmail' || !oobCode) return
+
+    oobCodeTratado.current = true
 
     ;(async () => {
       try {
@@ -3133,12 +3136,17 @@ export default function App() {
           setUtilizador(auth.currentUser)
         }
         setPagamentoMsg({ tipo: 'sucesso', texto: t('emailVerify.confirmedAuto') })
-        navigate(contaConfigurada ? '/perfil' : '/comecar', { replace: true })
-        setPasso(contaConfigurada ? 'perfil' : 'onboarding')
+        const destino = contaConfigurada ? '/home' : '/comecar'
+        navigate(destino, { replace: true })
+        setPasso(contaConfigurada ? 'home' : 'onboarding')
       } catch (e) {
         console.error('[Sidus] verifyEmail:', e?.message)
+        oobCodeTratado.current = false
         setPagamentoMsg({ tipo: 'info', texto: t('emailVerify.confirmedLogin') })
-        navigate('/login', { replace: true })
+        if (!auth.currentUser) {
+          setTipoAuth('login')
+          navigate('/login', { replace: true })
+        }
       }
     })()
   }, [location.search, navigate, t, contaConfigurada])
@@ -3149,10 +3157,12 @@ export default function App() {
   useEffect(() => {
     if (authCarregando) return
     if (utilizador) return
+    const params = new URLSearchParams(location.search)
+    if (params.get('mode') === 'verifyEmail' && params.get('oobCode')) return
     const path = (location.pathname || '/').replace(/\/$/, '') || '/'
     if (rotasPublicasSemAuth.has(path)) return
     navigate('/login', { replace: true })
-  }, [authCarregando, utilizador, location.pathname, navigate])
+  }, [authCarregando, utilizador, location.pathname, location.search, navigate])
 
   // Após login: contas existentes → perfil; contas novas → onboarding (1x)
   useEffect(() => {
@@ -3311,19 +3321,25 @@ export default function App() {
     const prontos = dadosProntosParaMapa(dados)
     if (!prontos) return
 
+    if (sweRef.current) {
+      try {
+        const mapa = calcularMapaNatalComSwe(sweRef.current, prontos)
+        if (mapa) setMapaNatal(mapa)
+      } catch (e) {
+        console.warn('[Sidus] Erro SWE mapa natal:', e?.message)
+      }
+      return
+    }
+
+    if (!sweReady) return
+
     try {
-      const mapa = sweRef.current
-        ? calcularMapaNatalComSwe(sweRef.current, prontos)
-        : calcularMapaNatal(prontos)
+      const mapa = calcularMapaNatal(prontos)
       if (mapa) setMapaNatal(mapa)
     } catch (e) {
       console.warn('[Sidus] Erro ao calcular mapa natal:', e?.message)
-      try {
-        const mapa = calcularMapaNatal(prontos)
-        if (mapa) setMapaNatal(mapa)
-      } catch { /* mantém mapa anterior se existir */ }
     }
-  }, [dados, sweReady, passo])
+  }, [dados, sweReady, passo, motorAstro])
 
   // Cache local do mapa (fallback quando Firestore tem dados incompletos)
   useEffect(() => {
@@ -3367,10 +3383,13 @@ export default function App() {
     const prontos = dadosProntosParaMapa(dados)
     if (!prontos) { setPlanetasNascimento([]); return }
     const dataUTC = criarDataUTCporLocal(prontos.data, prontos.hora, prontos.fuso ?? 0)
-    setPlanetasNascimento(sweRef.current
-      ? calcularPlanetasComSwe(sweRef.current, dataUTC, PLANETAS_NATAL)
-      : calcularPlanetasNatalParaData(dataUTC))
-  }, [dados, sweReady])
+    if (sweRef.current) {
+      setPlanetasNascimento(calcularPlanetasComSwe(sweRef.current, dataUTC, PLANETAS_NATAL))
+      return
+    }
+    if (!sweReady) return
+    setPlanetasNascimento(calcularPlanetasNatalParaData(dataUTC))
+  }, [dados, sweReady, motorAstro])
 
   // ── Acções ─────────────────────────────────────────────────────────────────
   const handleOnboarding = async () => {
@@ -3384,9 +3403,13 @@ export default function App() {
     const prontos = dadosProntosParaMapa(dados)
     if (!prontos) return
 
-    setMapaNatal(sweRef.current
-      ? calcularMapaNatalComSwe(sweRef.current, prontos)
-      : calcularMapaNatal(prontos))
+    let mapa = null
+    if (sweRef.current) {
+      mapa = calcularMapaNatalComSwe(sweRef.current, prontos)
+    } else if (sweReady) {
+      mapa = calcularMapaNatal(prontos)
+    }
+    if (mapa) setMapaNatal(mapa)
     const guardado = await guardarPerfil(dados)
     setMapaGerado(true)
     irPara('mapa', { replace: !guardado })

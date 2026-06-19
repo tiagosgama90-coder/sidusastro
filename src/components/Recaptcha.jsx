@@ -81,8 +81,8 @@ function VerificacaoHumana({ onChange }) {
 
   return (
     <div style={{
-      background: 'rgba(255,255,255,0.04)',
-      border: '1px solid rgba(255,255,255,0.12)',
+      background: marcado ? 'rgba(52,211,153,0.08)' : 'rgba(255,255,255,0.04)',
+      border: marcado ? '1px solid rgba(52,211,153,0.35)' : '1px solid rgba(255,255,255,0.12)',
       borderRadius: 8,
       padding: '12px 14px',
       display: 'flex',
@@ -110,7 +110,13 @@ function VerificacaoHumana({ onChange }) {
       <label htmlFor="sidus-nao-robot" style={{ fontSize: 13, color: CORES.branco, cursor: 'pointer', flex: 1 }}>
         {t('auth.notRobot')}
       </label>
-      <span style={{ fontSize: 10, color: CORES.brancoMuted }}>{t('auth.verification')}</span>
+      {marcado ? (
+        <span style={{ fontSize: 11, color: '#34D399', fontWeight: 600, whiteSpace: 'nowrap' }}>
+          ✓ {t('recaptcha.verified')}
+        </span>
+      ) : (
+        <span style={{ fontSize: 10, color: CORES.brancoMuted }}>{t('auth.verification')}</span>
+      )}
     </div>
   )
 }
