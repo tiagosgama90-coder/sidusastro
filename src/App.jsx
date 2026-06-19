@@ -690,42 +690,9 @@ function criarDataUTCporLocal(dataISO, horaHHMM, fuso) {
 }
 
 /**
- * Ascendente Verdadeiro usando SiderealTime() de alta precisão da astronomy-engine.
- *
- * Fórmula de Meeus ("Astronomical Algorithms", cap. 14):
- *   Asc = atan2(−cos(LST),  sin(LST)·cos(ε) + tan(φ)·sin(ε))
- *
- * GMST é obtido directamente de SiderealTime(time) — mesmos algoritmos NASA
- * usados nas efemérides JPL — garantindo resultados iguais às tabelas profissionais.
+ * Ascendente e MC via SiderealTime (Meeus cap. 14) + correcção de quadrante.
+ * Mesma lógica usada ontem às 15h — ASC a ~90° do MC.
  */
-/**
- * Ascendente via SiderealTime de alta precisão + correcção de quadrante.
- * Implementa Meeus "Astronomical Algorithms" cap. 14 + verificação
- * de hemisfério (ASC deve estar a ~90° do MC, nunca no mesmo lado).
- */
-function calcularAscendenteReal(dataUTC, latitude, longitude) {
-  if (!dataUTC || latitude == null || longitude == null) return 0
-  if (Number.isNaN(latitude) || Number.isNaN(longitude)) return 0
-  const lat = Math.max(-89, Math.min(89, latitude))
-
-  const time = MakeTime(dataUTC)
-  const gmstGraus = SiderealTime(time) * 15
-  const lst = ((gmstGraus + longitude) % 360 + 360) % 360
-
-  const T = (dataUTC.getTime() / 86400000 - 10957.5) / 36525
-  const e = ((23.439291111 - 0.013004167 * T - 0.000000164 * T * T) * Math.PI) / 180
-
-  const lstRad = (lst * Math.PI) / 180
-  const latRad = (lat * Math.PI) / 180
-
-  const asc = Math.atan2(
-    -Math.cos(lstRad),
-    Math.sin(lstRad) * Math.cos(e) + Math.tan(latRad) * Math.sin(e),
-  ) * (180 / Math.PI)
-
-  return ((asc % 360) + 360) % 360
-}
-
 function calcularAscendenteEMc(dataUTC, latitude, longitude) {
   if (!dataUTC || latitude == null || longitude == null) return { asc: 0, mc: 0 }
   if (Number.isNaN(latitude) || Number.isNaN(longitude)) return { asc: 0, mc: 0 }
@@ -738,17 +705,28 @@ function calcularAscendenteEMc(dataUTC, latitude, longitude) {
   const T = (dataUTC.getTime() / 86400000 - 10957.5) / 36525
   const eDeg = 23.439291111 - 0.013004167 * T - 0.000000164 * T * T
   const e = eDeg * Math.PI / 180
+
   const ramcRad = ramc * Math.PI / 180
   const latRad = lat * Math.PI / 180
 
-  const asc = calcularAscendenteReal(dataUTC, latitude, longitude)
+  const yAsc = -Math.cos(ramcRad)
+  const xAsc = Math.sin(ramcRad) * Math.cos(e) + Math.tan(latRad) * Math.sin(e)
+  let asc = Math.atan2(yAsc, xAsc) * (180 / Math.PI)
+  asc = ((asc % 360) + 360) % 360
 
   const yMC = Math.sin(ramcRad)
   const xMC = Math.cos(ramcRad) * Math.cos(e) - Math.tan(latRad) * Math.sin(e)
   let mc = Math.atan2(yMC, xMC) * (180 / Math.PI)
   mc = ((mc % 360) + 360) % 360
 
+  const diff = ((asc - mc + 360) % 360)
+  if (diff < 90 || diff > 270) asc = (asc + 180) % 360
+
   return { asc, mc }
+}
+
+function calcularAscendenteReal(dataUTC, latitude, longitude) {
+  return calcularAscendenteEMc(dataUTC, latitude, longitude).asc
 }
 
 function calcularMapaNatal(dados) {
@@ -855,8 +833,18 @@ function calcularMapaNatalComSwe(swe, dados) {
     }
   } catch (e) {
     console.warn('[Sidus] Swiss Ephemeris mapa natal falhou:', e?.message)
-    return calcularMapaNatal(dados)
+    return null
   }
+}
+
+/** Motor único — mesma matemática para gratuito e Premium (SWE → Meeus fallback). */
+function calcularMapaNatalMotor(dados, swe) {
+  if (!dados?.data || !dados?.hora || !dados?.localizacao) return null
+  if (swe) {
+    const mapaSwe = calcularMapaNatalComSwe(swe, dados)
+    if (mapaSwe) return mapaSwe
+  }
+  return calcularMapaNatal(dados)
 }
 
 function formatarData(dataISO) {
@@ -940,10 +928,7 @@ async function repararDadosPerfil(dados) {
   const d = normalizarDadosPerfil(dados)
   if (!d || !dadosNataisMinimos(d)) return d
   try {
-    if (!d.localizacao && d.cidade) {
-      const loc = await geocodificarCidade(d.cidade)
-      if (loc) d.localizacao = loc
-    }
+    // Não geocodificar — preservar lat/lon escolhidos no onboarding
     if (d.localizacao && (d.fuso == null || d.fuso === '')) {
       try {
         d.fuso = await pesquisarFusoHorario(d.localizacao.lat, d.localizacao.lon)
@@ -3305,26 +3290,14 @@ export default function App() {
     return () => clearInterval(id)
   }, [sweReady])
 
-  // ── Recalcula mapa natal (Swiss Ephemeris prioritário; fallback após init) ──
+  // ── Recalcula mapa natal (motor único — gratuito = Premium) ──
   useEffect(() => {
     if (passo === 'onboarding') return
     const prontos = dadosProntosParaMapa(dados)
     if (!prontos) return
-    if (!sweReady) return
-
-    try {
-      const mapa = sweRef.current
-        ? calcularMapaNatalComSwe(sweRef.current, prontos)
-        : calcularMapaNatal(prontos)
-      if (mapa) setMapaNatal(mapa)
-    } catch (e) {
-      console.warn('[Sidus] Erro ao calcular mapa natal:', e?.message)
-      try {
-        const mapa = calcularMapaNatal(prontos)
-        if (mapa) setMapaNatal(mapa)
-      } catch { /* mantém mapa anterior se existir */ }
-    }
-  }, [dados, sweReady, passo, motorAstro])
+    const mapa = calcularMapaNatalMotor(prontos, sweRef.current)
+    if (mapa) setMapaNatal(mapa)
+  }, [dados, sweReady, passo])
 
   // Cache local do mapa (fallback quando Firestore tem dados incompletos)
   useEffect(() => {
@@ -3367,12 +3340,11 @@ export default function App() {
   useEffect(() => {
     const prontos = dadosProntosParaMapa(dados)
     if (!prontos) { setPlanetasNascimento([]); return }
-    if (!sweReady) return
     const dataUTC = criarDataUTCporLocal(prontos.data, prontos.hora, prontos.fuso ?? 0)
     setPlanetasNascimento(sweRef.current
       ? calcularPlanetasComSwe(sweRef.current, dataUTC, PLANETAS_NATAL)
       : calcularPlanetasNatalParaData(dataUTC))
-  }, [dados, sweReady, motorAstro])
+  }, [dados, sweReady])
 
   // ── Acções ─────────────────────────────────────────────────────────────────
   const handleOnboarding = async () => {
@@ -3386,12 +3358,7 @@ export default function App() {
     const prontos = dadosProntosParaMapa(dados)
     if (!prontos) return
 
-    let mapa = null
-    if (sweReady) {
-      mapa = sweRef.current
-        ? calcularMapaNatalComSwe(sweRef.current, prontos)
-        : calcularMapaNatal(prontos)
-    }
+    const mapa = calcularMapaNatalMotor(prontos, sweRef.current)
     if (mapa) setMapaNatal(mapa)
     const guardado = await guardarPerfil(dados)
     setMapaGerado(true)
