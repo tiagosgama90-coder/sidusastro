@@ -1,0 +1,18 @@
+{
+  "name": "Sidus — Astrologia",
+  "short_name": "Sidus",
+  "description": "Mapa Astral, Tarot, Oráculo IA e ferramentas astrológicas.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0B071E",
+  "theme_color": "#0B071E",
+  "lang": "pt",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

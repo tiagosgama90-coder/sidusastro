@@ -1,4 +1,15 @@
 const NOMINATIM_URL = 'https://nominatim.openstreetmap.org/search'
+const FETCH_TIMEOUT_MS = 8000
+
+async function fetchComTimeout(url, options = {}, timeoutMs = FETCH_TIMEOUT_MS) {
+  const controller = new AbortController()
+  const timer = setTimeout(() => controller.abort(), timeoutMs)
+  try {
+    return await fetch(url, { ...options, signal: controller.signal })
+  } finally {
+    clearTimeout(timer)
+  }
+}
 
 /**
  * Devolve o nome IANA do fuso horário para as coordenadas dadas.
@@ -9,7 +20,7 @@ export async function pesquisarFusoHorario(lat, lon) {
   const url =
     `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}` +
     `&timezone=auto&forecast_days=0`
-  const resp = await fetch(url)
+  const resp = await fetchComTimeout(url)
   if (!resp.ok) throw new Error(`Timezone API: ${resp.status}`)
   const data = await resp.json()
   if (!data.timezone) throw new Error('Fuso horário não encontrado na resposta')
@@ -28,7 +39,7 @@ export async function pesquisarCidades(termo) {
     featuretype: 'settlement',
   })
 
-  const resposta = await fetch(`${NOMINATIM_URL}?${params}`, {
+  const resposta = await fetchComTimeout(`${NOMINATIM_URL}?${params}`, {
     headers: {
       Accept: 'application/json',
       'Accept-Language': 'pt',

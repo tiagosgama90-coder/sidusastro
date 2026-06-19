@@ -171,13 +171,20 @@ const _EPHE_FILES = [
   { name: 'seas_18.se1', url: '/ephe/seas_18.se1' },
 ]
 
+const _SWE_INIT_TIMEOUT_MS = 15000
+
 const _sweReadyPromise = (async () => {
   try {
     const mod = await import('@swisseph/browser')
     const SweClass = mod.default || mod.SwissEphemeris
     if (typeof SweClass !== 'function') throw new Error('SwissEphemeris class not found')
     const swe = new SweClass()
-    await swe.init()
+
+    const initPromise = swe.init()
+    const timeoutPromise = new Promise((_, reject) => {
+      setTimeout(() => reject(new Error('Swiss Ephemeris init timeout')), _SWE_INIT_TIMEOUT_MS)
+    })
+    await Promise.race([initPromise, timeoutPromise])
 
     // Carrega efemérides completas do servidor local (public/ephe/)
     // Só avança para os cálculos depois deste await terminar com sucesso
@@ -796,40 +803,45 @@ function calcularMapaNatalComSwe(swe, dados) {
   if (!dados.data || !dados.hora || !dados.localizacao) return null
   if (!swe) return null
 
-  const { lat } = dados.localizacao
-  const lon = dados.localizacao.lon
-  const fuso = dados.fuso ?? 0
-  const dateUTC = criarDataUTCporLocal(dados.data, dados.hora, fuso)
-  const jd = swe.dateToJulianDay(dateUTC)
+  try {
+    const { lat } = dados.localizacao
+    const lon = dados.localizacao.lon
+    const fuso = dados.fuso ?? 0
+    const dateUTC = criarDataUTCporLocal(dados.data, dados.hora, fuso)
+    const jd = swe.dateToJulianDay(dateUTC)
 
-  // swe_calc_ut + swe_houses — só após loadEphemerisFiles concluir
-  const sunPos  = swe.calculatePosition(jd, 0)
-  const moonPos = swe.calculatePosition(jd, 1)
-  const houses  = swe.calculateHouses(jd, lat, lon, 'P')
-  const cusps   = normalizarCusps(houses) ?? cuspsEqualHouse(houses.ascendant)
+    // swe_calc_ut + swe_houses — só após loadEphemerisFiles concluir
+    const sunPos  = swe.calculatePosition(jd, 0)
+    const moonPos = swe.calculatePosition(jd, 1)
+    const houses  = swe.calculateHouses(jd, lat, lon, 'P')
+    const cusps   = normalizarCusps(houses) ?? cuspsEqualHouse(houses.ascendant)
 
-  const motorLabel =
-    _motorStatus === 'swisseph-full'
-      ? 'Swiss Ephemeris · Tropical Placidus'
-      : _motorStatus === 'swisseph-moshier'
-        ? 'Swiss Ephemeris Moshier · Tropical Placidus'
-        : 'astronomy-engine + Meeus'
+    const motorLabel =
+      _motorStatus === 'swisseph-full'
+        ? 'Swiss Ephemeris · Tropical Placidus'
+        : _motorStatus === 'swisseph-moshier'
+          ? 'Swiss Ephemeris Moshier · Tropical Placidus'
+          : 'astronomy-engine + Meeus'
 
-  console.info(
-    `[Sidus] JD=${jd.toFixed(6)} · UTC=${dateUTC.toISOString()} · lat=${lat.toFixed(4)} lon=${lon.toFixed(4)}` +
-    ` · Sol=${sunPos.longitude.toFixed(3)}° Lua=${moonPos.longitude.toFixed(3)}° Asc=${houses.ascendant.toFixed(3)}°`
-  )
+    console.info(
+      `[Sidus] JD=${jd.toFixed(6)} · UTC=${dateUTC.toISOString()} · lat=${lat.toFixed(4)} lon=${lon.toFixed(4)}` +
+      ` · Sol=${sunPos.longitude.toFixed(3)}° Lua=${moonPos.longitude.toFixed(3)}° Asc=${houses.ascendant.toFixed(3)}°`
+    )
 
-  return {
-    solar:      longitudeParaSigno(sunPos.longitude),
-    lunar:      longitudeParaSigno(moonPos.longitude),
-    ascendente: longitudeParaSigno(houses.ascendant),
-    mc:         longitudeParaSigno(houses.mc),
-    cusps,
-    sistema:    'Tropical · Placidus',
-    instanteUTC: dateUTC.toISOString(),
-    lat, lon, fuso,
-    motor: motorLabel,
+    return {
+      solar:      longitudeParaSigno(sunPos.longitude),
+      lunar:      longitudeParaSigno(moonPos.longitude),
+      ascendente: longitudeParaSigno(houses.ascendant),
+      mc:         longitudeParaSigno(houses.mc),
+      cusps,
+      sistema:    'Tropical · Placidus',
+      instanteUTC: dateUTC.toISOString(),
+      lat, lon, fuso,
+      motor: motorLabel,
+    }
+  } catch (e) {
+    console.warn('[Sidus] Swiss Ephemeris mapa natal falhou:', e?.message)
+    return calcularMapaNatal(dados)
   }
 }
 
@@ -2822,7 +2834,7 @@ export default function App() {
   const [mapaCompleto, setMapaCompleto] = useState(false)
   const [mapaGerado, setMapaGerado] = useState(false) // bloqueio: 1 mapa por utilizador
   const [leiturasTarotUsadas, setLeiturasTarotUsadas] = useState(0)
-  const [perfilCarregando, setPerfilCarregando] = useState(firebaseDisponivel)
+  const [perfilCarregando, setPerfilCarregando] = useState(false)
 
   // ── Dados natais ─────────────────────────────────────────────────────────
   const [passo, setPasso] = useState(() => passoFromPath(window.location.pathname))
@@ -2864,8 +2876,18 @@ export default function App() {
     }
 
     let unsubPerfil = null
+    let authResolvido = false
+
+    const timeoutId = setTimeout(() => {
+      if (authResolvido) return
+      console.warn('[Sidus] Auth demorou demasiado — a continuar sem bloquear a interface')
+      setAuthCarregando(false)
+      setPerfilCarregando(false)
+    }, 10000)
 
     const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
+      authResolvido = true
+      clearTimeout(timeoutId)
       unsubPerfil?.()
       unsubPerfil = null
       setUtilizador(user)
@@ -2874,41 +2896,44 @@ export default function App() {
         setPerfilCarregando(true)
         unsubPerfil = onSnapshot(
           doc(db, 'users', user.uid),
-          async (snap) => {
-            try {
-              if (!snap.exists()) return
-              const perfil = snap.data()
-              const premium = perfilTemPremium(perfil)
-              setIsPremium(premium)
-              setMapaCompleto(premium || perfil.mapaCompleto === true)
-              if (typeof perfil.tarotLeiturasUsadas === 'number') {
-                setLeiturasTarotUsadas(perfil.tarotLeiturasUsadas)
-              }
+          (snap) => {
+            setPerfilCarregando(false)
 
-              let dadosPerfil = perfil.dados ? normalizarDadosPerfil(perfil.dados) : null
-              if (dadosPerfil && dadosNataisMinimos(dadosPerfil) && !dadosNataisCompletos(dadosPerfil)) {
-                dadosPerfil = await repararDadosPerfil(dadosPerfil)
-                if (dadosNataisCompletos(dadosPerfil)) {
-                  await setDoc(doc(db, 'users', user.uid), { dados: dadosPerfil }, { merge: true })
-                }
-              }
-              if (dadosPerfil) setDados(dadosPerfil)
+            if (!snap.exists()) return
 
-              if (contaJaConfigurada(perfil, dadosPerfil)) {
-                setMapaGerado(true)
-                if (dadosNataisCompletos(dadosPerfil) && (!perfil.dadosTravados || !perfil.mapaGerado)) {
-                  await setDoc(doc(db, 'users', user.uid), {
-                    dados: dadosPerfil,
-                    dadosTravados: true,
-                    mapaGerado: true,
-                  }, { merge: true })
+            ;(async () => {
+              try {
+                const perfil = snap.data()
+                const premium = perfilTemPremium(perfil)
+                setIsPremium(premium)
+                setMapaCompleto(premium || perfil.mapaCompleto === true)
+                if (typeof perfil.tarotLeiturasUsadas === 'number') {
+                  setLeiturasTarotUsadas(perfil.tarotLeiturasUsadas)
                 }
+
+                let dadosPerfil = perfil.dados ? normalizarDadosPerfil(perfil.dados) : null
+                if (dadosPerfil && dadosNataisMinimos(dadosPerfil) && !dadosNataisCompletos(dadosPerfil)) {
+                  dadosPerfil = await repararDadosPerfil(dadosPerfil)
+                  if (dadosNataisCompletos(dadosPerfil)) {
+                    await setDoc(doc(db, 'users', user.uid), { dados: dadosPerfil }, { merge: true })
+                  }
+                }
+                if (dadosPerfil) setDados(dadosPerfil)
+
+                if (contaJaConfigurada(perfil, dadosPerfil)) {
+                  setMapaGerado(true)
+                  if (dadosNataisCompletos(dadosPerfil) && (!perfil.dadosTravados || !perfil.mapaGerado)) {
+                    await setDoc(doc(db, 'users', user.uid), {
+                      dados: dadosPerfil,
+                      dadosTravados: true,
+                      mapaGerado: true,
+                    }, { merge: true })
+                  }
+                }
+              } catch (e) {
+                console.warn('[Sidus] Firestore indisponível, operando offline:', e?.message)
               }
-            } catch (e) {
-              console.warn('[Sidus] Firestore indisponível, operando offline:', e?.message)
-            } finally {
-              setPerfilCarregando(false)
-            }
+            })()
           },
           (e) => {
             console.warn('[Sidus] Listener perfil:', e?.message)
@@ -2929,6 +2954,7 @@ export default function App() {
     })
 
     return () => {
+      clearTimeout(timeoutId)
       unsubPerfil?.()
       unsubscribeAuth()
     }
@@ -3096,13 +3122,19 @@ export default function App() {
   useEffect(() => {
     _sweReadyPromise.then((swe) => {
       setMotorAstro(_motorStatus)
-      if (swe) {
+      if (!swe) return
+      try {
         sweRef.current = swe
         setSweReady(true)
         const planetas = calcularPlanetasComSwe(swe, new Date(), PLANETAS_AGORA)
         setCeuAgora(planetas)
         setAspetosAgora(calcularAspetos(planetas))
+      } catch (e) {
+        console.warn('[Sidus] Swiss Ephemeris céu de hoje:', e?.message)
       }
+    }).catch((e) => {
+      console.warn('[Sidus] Swiss Ephemeris init:', e?.message)
+      setMotorAstro('astronomy-engine')
     })
   }, [])
 
@@ -3129,9 +3161,18 @@ export default function App() {
       setMapaNatal(null)
       return
     }
-    setMapaNatal(sweRef.current
-      ? calcularMapaNatalComSwe(sweRef.current, d)
-      : calcularMapaNatal(d))
+    try {
+      setMapaNatal(sweRef.current
+        ? calcularMapaNatalComSwe(sweRef.current, d)
+        : calcularMapaNatal(d))
+    } catch (e) {
+      console.warn('[Sidus] Erro ao calcular mapa natal:', e?.message)
+      try {
+        setMapaNatal(calcularMapaNatal(d))
+      } catch {
+        setMapaNatal(null)
+      }
+    }
   }, [dados, sweReady])
 
   // ── Planetas de nascimento ──────────────────────────────────────────────────
@@ -3246,10 +3287,10 @@ export default function App() {
   // Ecrã de carregamento (auth ou perfil Firestore)
   if (authCarregando || (utilizador && perfilCarregando)) {
     return (
-      <div style={{ ...estilos.app, flexDirection: 'column' }}>
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-          <Sparkles size={36} color={CORES.dourado} strokeWidth={1.5} />
-          <p style={{ color: CORES.brancoMuted, marginTop: 16, fontSize: 14 }}>{t('common.loading')}</p>
+      <div style={{ ...estilos.app, display: 'flex', flexDirection: 'column', minHeight: '100svh' }}>
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '24px 20px' }}>
+          <Loader2 size={36} color={CORES.dourado} strokeWidth={1.5} style={{ animation: 'spin 1s linear infinite' }} />
+          <p style={{ color: CORES.brancoMuted, marginTop: 16, fontSize: 14, textAlign: 'center' }}>{t('common.loading')}</p>
         </div>
         <RodapeSidus isDesktop={isDesktop} mostrarNavbar={false} />
       </div>
