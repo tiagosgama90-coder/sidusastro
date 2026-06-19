@@ -39,7 +39,7 @@ import { RecaptchaCheckbox } from './components/Recaptcha'
 import { Perfil } from './components/Perfil'
 import { PoliticaPrivacidade } from './components/PoliticaPrivacidade'
 import { InterpretacaoMapa } from './components/InterpretacaoMapa'
-import { BussolaCosmica, Sinastria, Biorritmo, DiarioAstral, Numerologia, InterpretacaoSonhos } from './components/FerramentasPremium'
+import { BussolaCosmica, Sinastria, Biorritmo, DiarioAstral, Numerologia, InterpretacaoSonhos, HorasIguais } from './components/FerramentasPremium'
 import { auth, db, firebaseDisponivel } from './lib/firebase'
 import { enviarEmailVerificacao, traduzirErroEmail } from './lib/authEmail'
 import {
@@ -2273,7 +2273,7 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
   )
 }
 
-function Ferramentas({ onFerramenta, isDesktop }) {
+function Ferramentas({ onFerramenta, isDesktop, acessoVip }) {
   const { lang, t } = useLanguage()
   const ferramentas = getFerramentas(lang)
   return (
@@ -2284,8 +2284,9 @@ function Ferramentas({ onFerramenta, isDesktop }) {
       <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
         {ferramentas.map((f) => {
           const Icon = f.icon
+          const bloqueada = f.premium && !acessoVip
           return (
-            <button key={f.id} type="button" onClick={() => onFerramenta(f)} style={{ ...estilos.vidro, padding: '18px 20px', display: 'flex', alignItems: 'center', gap: 16, cursor: 'pointer', width: '100%', textAlign: 'left' }}>
+            <button key={f.id} type="button" onClick={() => onFerramenta(f)} style={{ ...estilos.vidro, padding: '18px 20px', display: 'flex', alignItems: 'center', gap: 16, cursor: 'pointer', width: '100%', textAlign: 'left', opacity: bloqueada ? 0.85 : 1 }}>
               <div style={{ width: 48, height: 48, borderRadius: 12, background: f.premium ? 'rgba(223,183,108,0.12)' : CORES.roxoClaro, border: `1px solid ${f.premium ? CORES.dourado : CORES.vidroBorda}`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <Icon size={22} color={f.premium ? CORES.dourado : CORES.brancoSuave} />
               </div>
@@ -2293,7 +2294,7 @@ function Ferramentas({ onFerramenta, isDesktop }) {
                 <div style={{ fontSize: 15, color: CORES.branco }}>{f.nome}</div>
                 {f.sub && <div style={{ fontSize: 12, color: CORES.brancoMuted }}>{f.sub}</div>}
               </div>
-              {f.premium && <Crown size={16} color={CORES.dourado} />}
+              {f.premium && !acessoVip && <Crown size={16} color={CORES.dourado} />}
             </button>
           )
         })}
@@ -2846,6 +2847,7 @@ export default function App() {
 
   const contaConfigurada = mapaGerado || dadosNataisCompletos(dados)
   const mapaDesbloqueado = isPremium || mapaCompleto
+  const acessoVip = mapaDesbloqueado
 
   const irPara = useCallback((novoPasso, { replace = false } = {}) => {
     setFerramentaAberta(null)
@@ -3022,7 +3024,7 @@ export default function App() {
 
     const path = (location.pathname || '/').replace(/\/$/, '') || '/'
     if (path === '/login') {
-      navigate(contaConfigurada ? '/perfil' : '/comecar', { replace: true })
+      navigate(contaConfigurada ? '/home' : '/comecar', { replace: true })
       return
     }
 
@@ -3034,10 +3036,10 @@ export default function App() {
       return
     }
 
-    const irParaPerfil = ['/login', '/home', '/', '/inicio', '/comecar', '/perfil'].includes(path)
-    if (irParaPerfil) {
-      navigate('/perfil', { replace: true })
-      setPasso('perfil')
+    const irParaHome = ['/login', '/home', '/', '/inicio', '/comecar', '/perfil'].includes(path)
+    if (irParaHome) {
+      navigate('/home', { replace: true })
+      setPasso('home')
     }
   }, [authCarregando, perfilCarregando, utilizador, location.pathname, navigate, contaConfigurada])
 
@@ -3231,13 +3233,14 @@ export default function App() {
   }
 
   const handleFerramenta = (f) => {
-    if (f.id === 'bussola')   { if (isPremium) setFerramentaAberta('bussola');   else irPara('paywall'); return }
-    if (f.id === 'sinastria') { if (isPremium) setFerramentaAberta('sinastria'); else irPara('paywall'); return }
+    if (f.id === 'bussola')   { if (acessoVip) setFerramentaAberta('bussola');   else irPara('paywall'); return }
+    if (f.id === 'sinastria') { if (acessoVip) setFerramentaAberta('sinastria'); else irPara('paywall'); return }
     if (f.id === 'biorritmo') { setFerramentaAberta('biorritmo'); return }
+    if (f.id === 'horasIguais') { setFerramentaAberta('horasIguais'); return }
     if (f.id === 'diario')    { setFerramentaAberta('diario');    return }
     if (f.id === 'numerologia') { setFerramentaAberta('numerologia'); return }
     if (f.id === 'sonhos')    { setFerramentaAberta('sonhos');    return }
-    if (f.premium && !isPremium) irPara('paywall')
+    if (f.premium && !acessoVip) irPara('paywall')
   }
 
   const abrirPagamento = async (descricao, valor, onSucesso, opts = {}) => {
@@ -3343,11 +3346,11 @@ export default function App() {
     switch (passo) {
       case 'home':
       case 'dashboard':
-        return <Dashboard nome={dados.nome} mapaNatal={mapaNatal} ceuAgora={ceuAgora} aspetos={aspetosAgora} onOraculo={() => irPara('chat')} onPrivacidade={() => irPara('privacidade')} isDesktop={isDesktop} isPremium={isPremium} onUpgrade={() => irPara('paywall')} onTarot={() => irPara('tarot')} />
+        return <Dashboard nome={dados.nome} mapaNatal={mapaNatal} ceuAgora={ceuAgora} aspetos={aspetosAgora} onOraculo={() => irPara('chat')} onPrivacidade={() => irPara('privacidade')} isDesktop={isDesktop} isPremium={acessoVip} onUpgrade={() => irPara('paywall')} onTarot={() => irPara('tarot')} />
       case 'mapa':
-        return <MapaAstral mapaNatal={mapaNatal} dados={dados} planetasNascimento={planetasNascimento} mapaDesbloqueado={mapaDesbloqueado} isPremium={isPremium} onUpgrade={() => irPara('paywall')} onComprarMapa={() => abrirPagamento(t('mapa.buyDesc'), PRECO_MAPA_COMPLETO, null, { direto: true, productType: 'mapa' })} onMapaGerado={handleMapaGerado} isDesktop={isDesktop} motorAstro={motorAstro} />
+        return <MapaAstral mapaNatal={mapaNatal} dados={dados} planetasNascimento={planetasNascimento} mapaDesbloqueado={mapaDesbloqueado} isPremium={acessoVip} onUpgrade={() => irPara('paywall')} onComprarMapa={() => abrirPagamento(t('mapa.buyDesc'), PRECO_MAPA_COMPLETO, null, { direto: true, productType: 'mapa' })} onMapaGerado={handleMapaGerado} isDesktop={isDesktop} motorAstro={motorAstro} />
       case 'tarot':
-        return <EcraTarot mapaNatal={mapaNatal} isPremium={isPremium} userId={utilizador?.uid} leiturasTarotUsadas={leiturasTarotUsadas} onLeituraGratisUsada={registarLeituraTarotGratis} onPagar={abrirPagamento} onVoltar={() => irPara('home')} onPremium={() => irPara('paywall')} />
+        return <EcraTarot mapaNatal={mapaNatal} isPremium={acessoVip} userId={utilizador?.uid} leiturasTarotUsadas={leiturasTarotUsadas} onLeituraGratisUsada={registarLeituraTarotGratis} onPagar={abrirPagamento} onVoltar={() => irPara('home')} onPremium={() => irPara('paywall')} />
       case 'ferramentas':
         if (ferramentaAberta === 'bussola')
           return <BussolaCosmica mapaNatal={mapaNatal} onVoltar={() => setFerramentaAberta(null)} />
@@ -3355,23 +3358,25 @@ export default function App() {
           return <Sinastria mapaNatal={mapaNatal} onVoltar={() => setFerramentaAberta(null)} />
         if (ferramentaAberta === 'biorritmo')
           return <Biorritmo dados={dados} utilizador={utilizador} mapaNatal={mapaNatal} onVoltar={() => setFerramentaAberta(null)} />
+        if (ferramentaAberta === 'horasIguais')
+          return <HorasIguais onVoltar={() => setFerramentaAberta(null)} />
         if (ferramentaAberta === 'numerologia')
           return <Numerologia dados={dados} utilizador={utilizador} mapaNatal={mapaNatal} onVoltar={() => setFerramentaAberta(null)} />
         if (ferramentaAberta === 'sonhos')
           return <InterpretacaoSonhos mapaNatal={mapaNatal} onVoltar={() => setFerramentaAberta(null)} />
         if (ferramentaAberta === 'diario')
           return <DiarioAstral mapaNatal={mapaNatal} onVoltar={() => setFerramentaAberta(null)} />
-        return <Ferramentas onFerramenta={handleFerramenta} isDesktop={isDesktop} />
+        return <Ferramentas onFerramenta={handleFerramenta} isDesktop={isDesktop} acessoVip={acessoVip} />
       case 'paywall':
         return <Paywall onVoltar={() => irPara('ferramentas')} onPagar={abrirPagamento} onSucesso={() => { setIsPremium(true); setMapaCompleto(true); irPara('mapa') }} isDesktop={isDesktop} />
       case 'chat':
-        return <Chat mapaNatal={mapaNatal} isPremium={isPremium} onUpgrade={() => irPara('paywall')} />
+        return <Chat mapaNatal={mapaNatal} isPremium={acessoVip} onUpgrade={() => irPara('paywall')} />
       case 'perfil':
-        return <Perfil utilizador={utilizador} dados={dados} mapaNatal={mapaNatal} isPremium={isPremium}
+        return <Perfil utilizador={utilizador} dados={dados} mapaNatal={mapaNatal} isPremium={acessoVip}
           dadosBloqueados={dadosBloqueados}
           onLogout={handleLogout} />
       default:
-        return <Dashboard nome={dados.nome} mapaNatal={mapaNatal} ceuAgora={ceuAgora} aspetos={aspetosAgora} onOraculo={() => irPara('chat')} onPrivacidade={() => irPara('privacidade')} isDesktop={isDesktop} isPremium={isPremium} onUpgrade={() => irPara('paywall')} onTarot={() => irPara('tarot')} />
+        return <Dashboard nome={dados.nome} mapaNatal={mapaNatal} ceuAgora={ceuAgora} aspetos={aspetosAgora} onOraculo={() => irPara('chat')} onPrivacidade={() => irPara('privacidade')} isDesktop={isDesktop} isPremium={acessoVip} onUpgrade={() => irPara('paywall')} onTarot={() => irPara('tarot')} />
     }
   }
 
@@ -3454,8 +3459,8 @@ export default function App() {
       }}>
         {renderEcran()}
       </div>
-      {!isPremium && ['home', 'ferramentas', 'tarot'].includes(passo) && (
-        <AdSenseBanner isPremium={isPremium} />
+      {!acessoVip && ['home', 'ferramentas', 'tarot'].includes(passo) && (
+        <AdSenseBanner isPremium={acessoVip} />
       )}
       <RodapeSidus isDesktop={isDesktop} mostrarNavbar={mostrarNavbar} />
       {mostrarNavbar && (

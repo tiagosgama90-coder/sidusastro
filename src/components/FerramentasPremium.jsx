@@ -5,7 +5,7 @@
  * ─ Biorritmo (ciclos físico/emocional/intelectual)
  * ─ Diário Astral (registo pessoal)
  */
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useLanguage } from '../lib/i18n/LanguageContext.jsx'
 import {
   getTransitos2026, getCompatDesc, getAspectosAmor, SIGNOS_LIST, ELEM,
@@ -21,6 +21,11 @@ import {
   normalizarDataISO,
 } from '../lib/dadosFerramentas.js'
 import { analisarFluxoVital } from '../lib/fluxoVital.js'
+import {
+  interpretarAgora,
+  interpretarHorario,
+  proximaHoraIgual,
+} from '../lib/horasIguais.js'
 
 function BotaoVoltar({ onVoltar, t }) {
   if (!onVoltar) return null
@@ -703,6 +708,160 @@ export function InterpretacaoSonhos({ mapaNatal, onVoltar }) {
           <p style={{ fontSize: 13, color: CORES.brancoMuted, lineHeight: 1.75, fontStyle: 'italic' }}>{resultado.sintese}</p>
         </div>
       )}
+    </div>
+  )
+}
+
+// ── Horas Iguais (Doreen Virtue) ─────────────────────────────────────────────
+export function HorasIguais({ onVoltar }) {
+  const { lang, t } = useLanguage()
+  const [agora, setAgora] = useState(() => new Date())
+  const [horaManual, setHoraManual] = useState('')
+  const [modoManual, setModoManual] = useState(false)
+  const [interpretacao, setInterpretacao] = useState(() => interpretarAgora(lang))
+
+  useEffect(() => {
+    const tick = () => {
+      const d = new Date()
+      setAgora(d)
+      if (!modoManual) setInterpretacao(interpretarHorario(d.getHours(), d.getMinutes(), lang))
+    }
+    tick()
+    const id = setInterval(tick, 15000)
+    return () => clearInterval(id)
+  }, [lang, modoManual])
+
+  const locale = lang === 'en' ? 'en-US' : 'pt-PT'
+  const horaActual = agora.toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' })
+  const proxima = proximaHoraIgual(agora)
+  const horasPopulares = ['11:11', '22:22', '12:12', '01:01', '04:04']
+
+  const consultarManual = () => {
+    const m = horaManual.trim().match(/^(\d{1,2}):(\d{2})$/)
+    if (!m) return
+    const h = Math.min(23, Math.max(0, +m[1]))
+    const min = Math.min(59, Math.max(0, +m[2]))
+    setModoManual(true)
+    setInterpretacao(interpretarHorario(h, min, lang))
+  }
+
+  const seleccionarHora = (chave) => {
+    setHoraManual(chave)
+    setModoManual(true)
+    const [h, min] = chave.split(':').map(Number)
+    setInterpretacao(interpretarHorario(h, min, lang))
+  }
+
+  const voltarAoAgora = () => {
+    setModoManual(false)
+    setHoraManual('')
+    const d = new Date()
+    setInterpretacao(interpretarHorario(d.getHours(), d.getMinutes(), lang))
+  }
+
+  const tipoLabel = interpretacao.tipo === 'igual'
+    ? t('ferramentasPremium.horasIguais.typeEqual')
+    : interpretacao.tipo === 'espelho'
+      ? t('ferramentasPremium.horasIguais.typeMirror')
+      : t('ferramentasPremium.horasIguais.typeNeutral')
+
+  return (
+    <div style={{ padding: '20px 20px 110px' }}>
+      <BotaoVoltar onVoltar={onVoltar} t={t} />
+      <h2 style={{ fontSize: 20, fontWeight: 700, color: CORES.dourado, marginBottom: 4 }}>
+        {t('ferramentasPremium.horasIguais.title')}
+      </h2>
+      <p style={{ fontSize: 13, color: CORES.brancoMuted, marginBottom: 20, lineHeight: 1.6 }}>
+        {t('ferramentasPremium.horasIguais.subtitle')}
+      </p>
+
+      <div style={{
+        background: 'linear-gradient(135deg, rgba(139,92,246,0.18), rgba(223,183,108,0.1))',
+        border: `1px solid rgba(223,183,108,0.35)`,
+        borderRadius: 16, padding: 20, marginBottom: 16, textAlign: 'center',
+      }}>
+        <div style={{ fontSize: 11, color: CORES.dourado, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 8 }}>
+          {modoManual ? interpretacao.chave : t('ferramentasPremium.horasIguais.now')}
+        </div>
+        <div style={{ fontSize: 42, fontWeight: 700, color: CORES.branco, letterSpacing: '0.06em', marginBottom: 6 }}>
+          {modoManual ? interpretacao.chave : horaActual}
+        </div>
+        <div style={{ fontSize: 12, color: CORES.brancoMuted }}>
+          {t('ferramentasPremium.horasIguais.nextMirror')}: <span style={{ color: CORES.dourado }}>{proxima}</span>
+        </div>
+        {modoManual && (
+          <button type="button" onClick={voltarAoAgora} style={{
+            marginTop: 12, background: 'none', border: `1px solid ${CORES.vidroBorda}`,
+            borderRadius: 8, color: CORES.dourado, fontSize: 11, padding: '6px 12px', cursor: 'pointer',
+          }}>
+            ↻ {t('ferramentasPremium.horasIguais.now')}
+          </button>
+        )}
+      </div>
+
+      <div style={{ background: 'rgba(255,255,255,0.04)', border: `1px solid ${CORES.vidroBorda}`, borderRadius: 14, padding: 18, marginBottom: 16 }}>
+        <div style={{ display: 'flex', gap: 8, marginBottom: 10 }}>
+          <input
+            type="text"
+            inputMode="numeric"
+            value={horaManual}
+            onChange={(e) => setHoraManual(e.target.value)}
+            placeholder={t('ferramentasPremium.horasIguais.timePlaceholder')}
+            style={{
+              flex: 1, background: 'rgba(255,255,255,0.06)', border: `1px solid ${CORES.vidroBorda}`,
+              borderRadius: 10, color: CORES.branco, padding: '10px 12px', fontSize: 14,
+            }}
+          />
+          <button type="button" onClick={consultarManual} style={{
+            background: `linear-gradient(135deg,#DFB76C,#B8944F)`, border: 'none',
+            borderRadius: 10, color: '#0B071E', fontSize: 13, fontWeight: 700, padding: '10px 14px', cursor: 'pointer',
+          }}>
+            {t('ferramentasPremium.horasIguais.consult')}
+          </button>
+        </div>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+          {horasPopulares.map((h) => (
+            <button key={h} type="button" onClick={() => seleccionarHora(h)} style={{
+              background: interpretacao.chave === h ? 'rgba(223,183,108,0.2)' : 'rgba(255,255,255,0.04)',
+              border: `1px solid ${interpretacao.chave === h ? CORES.dourado : CORES.vidroBorda}`,
+              borderRadius: 20, color: CORES.brancoSuave, fontSize: 12, padding: '5px 12px', cursor: 'pointer',
+            }}>
+              {h}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div style={{ background: 'rgba(255,255,255,0.04)', border: `1px solid ${CORES.vidroBorda}`, borderRadius: 14, padding: 18, marginBottom: 14 }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+          <div style={{ fontSize: 16, fontWeight: 700, color: CORES.branco }}>{interpretacao.titulo}</div>
+          <span style={{
+            fontSize: 10, padding: '3px 8px', borderRadius: 12,
+            background: 'rgba(139,92,246,0.15)', color: '#C4B5FD', border: '1px solid rgba(139,92,246,0.3)',
+          }}>
+            {tipoLabel}
+          </span>
+        </div>
+        <div style={{ fontSize: 11, color: CORES.dourado, marginBottom: 10 }}>
+          ✦ {t('ferramentasPremium.horasIguais.angel')}: {interpretacao.anjo}
+        </div>
+        <p style={{ fontSize: 14, color: CORES.brancoSuave, lineHeight: 1.75, margin: '0 0 14px' }}>
+          {interpretacao.mensagem}
+        </p>
+        <div style={{ background: 'rgba(223,183,108,0.08)', borderRadius: 10, padding: 12, marginBottom: 10 }}>
+          <div style={{ fontSize: 10, color: CORES.dourado, textTransform: 'uppercase', marginBottom: 6 }}>
+            {t('ferramentasPremium.horasIguais.advice')}
+          </div>
+          <p style={{ fontSize: 13, color: CORES.brancoSuave, lineHeight: 1.65, margin: 0 }}>{interpretacao.conselho}</p>
+        </div>
+        <div style={{ fontSize: 12, color: CORES.brancoMuted }}>
+          {t('ferramentasPremium.horasIguais.keyword')}: <span style={{ color: CORES.dourado }}>{interpretacao.palavraChave}</span>
+        </div>
+      </div>
+
+      <p style={{ fontSize: 11, color: CORES.brancoMuted, lineHeight: 1.6, fontStyle: 'italic', margin: 0 }}>
+        {t('ferramentasPremium.horasIguais.attribution')}
+      </p>
     </div>
   )
 }

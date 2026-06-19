@@ -1,138 +1,170 @@
 /**
- * Análise estratégica do Fluxo Vital — combina biorritmo com contexto astrológico.
+ * Fluxo Vital — biorritmo + astrologia profissional (efemérides reais).
+ * Combina ciclos físico/emocional/intelectual com trânsitos do Sol e Lua,
+ * fase lunar precisa e eixo natal (Sol · Lua · Ascendente).
  */
+import { Body, Ecliptic, GeoVector, MakeTime } from 'astronomy-engine'
+import { calcularFaseLua } from './faseLua.js'
+import { SIGNOS_PT, SIGNO_EN_TO_PT } from './i18n/astro.js'
 
-const SIGNOS = [
-  'Áries', 'Touro', 'Gémeos', 'Caranguejo', 'Leão', 'Virgem',
-  'Balança', 'Escorpião', 'Sagitário', 'Capricórnio', 'Aquário', 'Peixes',
-]
+const ALIAS_SIGNO = {
+  Áries: 'Carneiro', Aries: 'Carneiro',
+  Câncer: 'Caranguejo', Cancer: 'Caranguejo',
+  Gêmeos: 'Gémeos', Gemeos: 'Gémeos', Gemini: 'Gémeos',
+  Escorpião: 'Escorpião', Escorpiao: 'Escorpião', Scorpio: 'Escorpião',
+}
+
+const Position = (corpo, time) => GeoVector(corpo, time, true)
 
 const ELEMENTO = {
-  Áries: 'Fogo', Touro: 'Terra', Gémeos: 'Ar', Caranguejo: 'Água',
+  Carneiro: 'Fogo', Touro: 'Terra', Gémeos: 'Ar', Caranguejo: 'Água',
   Leão: 'Fogo', Virgem: 'Terra', Balança: 'Ar', Escorpião: 'Água',
   Sagitário: 'Fogo', Capricórnio: 'Terra', Aquário: 'Ar', Peixes: 'Água',
 }
 
+function normalizarSigno(nome) {
+  if (!nome) return nome
+  if (ELEMENTO[nome]) return nome
+  if (ALIAS_SIGNO[nome]) return ALIAS_SIGNO[nome]
+  if (SIGNO_EN_TO_PT[nome]) return SIGNO_EN_TO_PT[nome]
+  return nome
+}
+
 const MODALIDADE = {
-  Áries: 'Cardinal', Touro: 'Fixo', Gémeos: 'Mutável', Caranguejo: 'Cardinal',
+  Carneiro: 'Cardinal', Touro: 'Fixo', Gémeos: 'Mutável', Caranguejo: 'Cardinal',
   Leão: 'Fixo', Virgem: 'Mutável', Balança: 'Cardinal', Escorpião: 'Fixo',
   Sagitário: 'Mutável', Capricórnio: 'Cardinal', Aquário: 'Fixo', Peixes: 'Mutável',
 }
 
+const PLANETA_REGENTE = {
+  Carneiro: 'Marte', Touro: 'Vénus', Gémeos: 'Mercúrio', Caranguejo: 'Lua',
+  Leão: 'Sol', Virgem: 'Mercúrio', Balança: 'Vénus', Escorpião: 'Marte',
+  Sagitário: 'Júpiter', Capricórnio: 'Saturno', Aquário: 'Saturno', Peixes: 'Júpiter',
+}
+
+function longitudeParaSigno(longitude) {
+  const lon = ((longitude % 360) + 360) % 360
+  const idx = Math.floor(lon / 30)
+  return SIGNOS_PT[idx]
+}
+
 function indiceSigno(nome) {
-  const i = SIGNOS.indexOf(nome)
+  const i = SIGNOS_PT.indexOf(nome)
   return i >= 0 ? i : 0
 }
 
-function signoDoDia(date = new Date()) {
-  const start = new Date(date.getFullYear(), 2, 21)
-  const diff = (date - start) / 86400000
-  const idx = Math.floor(((diff % 365.25) + 365.25) % 365.25 / 30.44)
-  return SIGNOS[((idx % 12) + 12) % 12]
+function diferencaAngular(a, b) {
+  const diff = Math.abs(a - b) % 360
+  return diff > 180 ? 360 - diff : diff
 }
 
-function aspectoEntreSignos(a, b) {
-  const diff = Math.abs(indiceSigno(a) - indiceSigno(b)) % 12
-  const d = diff > 6 ? 12 - diff : diff
-  if (d === 0) return { tipo: 'conjunção', score: 85 }
-  if (d === 6) return { tipo: 'oposição', score: 35 }
-  if (d === 4) return { tipo: 'quadratura', score: 40 }
-  if (d === 3) return { tipo: 'trígono', score: 90 }
-  if (d === 2) return { tipo: 'sextil', score: 75 }
-  return { tipo: 'neutro', score: 55 }
+function aspectoPorAngulo(angle) {
+  if (angle <= 8) return { tipo: 'conjunção', score: 88, natureza: 'fusão' }
+  if (Math.abs(angle - 60) <= 6) return { tipo: 'sextil', score: 78, natureza: 'oportunidade' }
+  if (Math.abs(angle - 90) <= 7) return { tipo: 'quadratura', score: 42, natureza: 'tensão' }
+  if (Math.abs(angle - 120) <= 7) return { tipo: 'trígono', score: 92, natureza: 'fluidez' }
+  if (Math.abs(angle - 180) <= 8) return { tipo: 'oposição', score: 38, natureza: 'polaridade' }
+  return { tipo: 'neutro', score: 55, natureza: 'estável' }
 }
 
-function faseLunarAproximada(date = new Date()) {
-  const synodic = 29.53058867
-  const known = new Date('2000-01-06T18:14:00Z').getTime()
-  const age = ((date.getTime() - known) / 86400000) % synodic
-  const norm = age < 0 ? age + synodic : age
-  if (norm < 1.85) return 'nova'
-  if (norm < 7.38) return 'crescente'
-  if (norm < 14.77) return 'gibosaCrescente'
-  if (norm < 16.61) return 'cheia'
-  if (norm < 22.15) return 'gibosaMinguante'
-  if (norm < 28.53) return 'minguante'
-  return 'nova'
+function aspectoEntreLongitudes(lonA, lonB) {
+  return aspectoPorAngulo(diferencaAngular(lonA, lonB))
+}
+
+function calcularCeuMomento(date = new Date()) {
+  const time = MakeTime(date)
+  const lonSol = Ecliptic(Position(Body.Sun, time)).elon
+  const lonLua = Ecliptic(Position(Body.Moon, time)).elon
+  return {
+    sol: { longitude: lonSol, signo: longitudeParaSigno(lonSol) },
+    lua: { longitude: lonLua, signo: longitudeParaSigno(lonLua) },
+  }
+}
+
+function signoNatalLongitude(nomeSigno, mapaNatal) {
+  if (!nomeSigno || !mapaNatal) return null
+  if (mapaNatal.solar?.nome === nomeSigno) return ((mapaNatal.solar.graus ?? 0) + indiceSigno(nomeSigno) * 30) % 360
+  if (mapaNatal.lunar?.nome === nomeSigno) return ((mapaNatal.lunar.graus ?? 0) + indiceSigno(nomeSigno) * 30) % 360
+  return indiceSigno(nomeSigno) * 30 + 15
 }
 
 export function analisarFluxoVital({ fisico, emocional, intelectual, mapaNatal, lang = 'pt' }) {
   const pt = lang !== 'en'
-  const solar = mapaNatal?.solar?.nome
-  const lunar = mapaNatal?.lunar?.nome
-  const ascendente = mapaNatal?.ascendente?.nome
   const hoje = new Date()
-  const signoHoje = signoDoDia(hoje)
-  const fase = faseLunarAproximada(hoje)
+  const ceu = calcularCeuMomento(hoje)
+  const faseLua = calcularFaseLua(hoje, lang)
+
+  const solar = normalizarSigno(mapaNatal?.solar?.nome)
+  const lunar = normalizarSigno(mapaNatal?.lunar?.nome)
+  const ascendente = normalizarSigno(mapaNatal?.ascendente?.nome)
 
   const cruzCritica = [fisico, emocional, intelectual].filter((v) => Math.abs(v) < 15).length >= 2
   const todosAltos = fisico > 50 && emocional > 50 && intelectual > 50
   const algumBaixo = fisico < -40 || emocional < -40 || intelectual < -40
 
-  const aspectoSol = solar ? aspectoEntreSignos(signoHoje, solar) : null
-  const aspectoLua = lunar ? aspectoEntreSignos(signoHoje, lunar) : null
+  const lonSolNatal = solar ? signoNatalLongitude(solar, mapaNatal) : null
+  const lonLuaNatal = lunar ? signoNatalLongitude(lunar, mapaNatal) : null
 
-  const FASE_PT = {
-    nova: 'Lua Nova — início de ciclo, ideal para intenção e planeamento.',
-    crescente: 'Lua Crescente — fase de acção e construção progressiva.',
-    gibosaCrescente: 'Lua Gibosa Crescente — refinamento e ajuste antes do clímax.',
-    cheia: 'Lua Cheia — culminação emocional e máxima visibilidade.',
-    gibosaMinguante: 'Lua Gibosa Minguante — partilha de sabedoria e integração.',
-    minguante: 'Lua Minguante — libertação, conclusão e descanso activo.',
-  }
-  const FASE_EN = {
-    nova: 'New Moon — cycle start; ideal for intention and planning.',
-    crescente: 'Waxing Moon — action and progressive building phase.',
-    gibosaCrescente: 'Waxing Gibbous — refinement before the peak.',
-    cheia: 'Full Moon — emotional culmination and peak visibility.',
-    gibosaMinguante: 'Waning Gibbous — sharing wisdom and integration.',
-    minguante: 'Waning Moon — release, completion and active rest.',
-  }
-  const faseTxt = (pt ? FASE_PT : FASE_EN)[fase]
+  const aspectoSol = lonSolNatal != null
+    ? aspectoEntreLongitudes(ceu.sol.longitude, lonSolNatal)
+    : aspectoEntreSignos(ceu.sol.signo, solar)
+
+  const aspectoLua = lonLuaNatal != null
+    ? aspectoEntreLongitudes(ceu.lua.longitude, lonLuaNatal)
+    : aspectoEntreSignos(ceu.lua.signo, lunar)
+
+  const faseTxt = pt
+    ? `${faseLua.emoji} ${faseLua.nome} — ${faseLua.iluminacao}% iluminada. ${faseLua.desc}`
+    : `${faseLua.emoji} ${faseLua.nome} — ${faseLua.iluminacao}% illuminated. ${faseLua.desc}`
 
   let ritmoElementar = ''
   if (solar && lunar) {
     const elSol = ELEMENTO[solar]
     const elLua = ELEMENTO[lunar]
     const modSol = MODALIDADE[solar]
+    const regente = PLANETA_REGENTE[ceu.sol.signo]
     ritmoElementar = pt
-      ? `O teu eixo natal (${elSol}/${elLua}, modalidade ${modSol}) define o ritmo base. Hoje o Sol transita ${signoHoje} (${ELEMENTO[signoHoje]}), ${aspectoSol?.tipo === 'trígono' || aspectoSol?.tipo === 'sextil' ? 'facilitando fluidez' : aspectoSol?.tipo === 'quadratura' || aspectoSol?.tipo === 'oposição' ? 'pedindo ajuste consciente' : 'mantendo ritmo estável'}.`
-      : `Your natal axis (${elSol}/${elLua}, ${modSol} modality) sets the base rhythm. Today the Sun transits ${signoHoje} (${ELEMENTO[signoHoje]}), ${aspectoSol?.tipo === 'trígono' || aspectoSol?.tipo === 'sextil' ? 'supporting flow' : aspectoSol?.tipo === 'quadratura' || aspectoSol?.tipo === 'oposição' ? 'asking for conscious adjustment' : 'keeping a steady pace'}.`
+      ? `Eixo natal ${elSol}/${elLua} (${modSol}). Hoje o Sol transita ${ceu.sol.signo} (${ELEMENTO[ceu.sol.signo]}), regido por ${regente}, em ${aspectoSol.tipo} com o teu Sol natal — ${aspectoSol.natureza} de energia. A Lua em ${ceu.lua.signo} modula o ritmo emocional do dia.`
+      : `Natal axis ${elSol}/${elLua} (${modSol}). Today the Sun transits ${ceu.sol.signo} (${ELEMENTO[ceu.sol.signo]}), ruled by ${regente}, ${aspectoSol.tipo} your natal Sun — ${aspectoSol.natureza} energy. The Moon in ${ceu.lua.signo} shapes today's emotional rhythm.`
+  } else {
+    ritmoElementar = pt
+      ? `Sol em ${ceu.sol.signo}, Lua em ${ceu.lua.signo}. Observa como o elemento ${ELEMENTO[ceu.sol.signo]} colore a tua energia hoje.`
+      : `Sun in ${ceu.sol.signo}, Moon in ${ceu.lua.signo}. Notice how ${ELEMENTO[ceu.sol.signo]} colours your energy today.`
   }
 
   let luaNatal = ''
   if (lunar && aspectoLua) {
     luaNatal = pt
-      ? `A Lua natal em ${lunar} responde hoje com tom ${aspectoLua.tipo} (${aspectoLua.score}% de harmonia). ${aspectoLua.score >= 75 ? 'Bom dia para expressar emoções com clareza.' : aspectoLua.score <= 45 ? 'Protege a sensibilidade; evita exposição desnecessária.' : 'Equilibra razão e emoção nas decisões.'}`
-      : `Natal Moon in ${lunar} responds today with a ${aspectoLua.tipo} tone (${aspectoLua.score}% harmony). ${aspectoLua.score >= 75 ? 'Good day to express feelings clearly.' : aspectoLua.score <= 45 ? 'Protect sensitivity; avoid unnecessary exposure.' : 'Balance reason and emotion in decisions.'}`
+      ? `Lua natal em ${lunar} (${ELEMENTO[lunar]}): trânsito lunar em ${aspectoLua.tipo} (${aspectoLua.score}% harmonia). ${aspectoLua.score >= 75 ? 'Emoções fluem com clareza — bom momento para diálogo íntimo.' : aspectoLua.score <= 45 ? 'Sensibilidade amplificada; protege o espaço emocional.' : 'Equilíbrio entre razão e sentimento nas decisões.'}`
+      : `Natal Moon in ${lunar} (${ELEMENTO[lunar]}): lunar transit ${aspectoLua.tipo} (${aspectoLua.score}% harmony). ${aspectoLua.score >= 75 ? 'Emotions flow clearly — good for intimate dialogue.' : aspectoLua.score <= 45 ? 'Heightened sensitivity; protect emotional space.' : 'Balance reason and feeling in decisions.'}`
   }
 
   let ascendenteNota = ''
   if (ascendente) {
     ascendenteNota = pt
-      ? `Ascendente em ${ascendente}: a energia física (${Math.round(fisico)}%) reflecte-se na forma como te apresentas ao mundo — ${fisico > 30 ? 'aproveita para iniciativas visíveis' : fisico < -30 ? 'privilegia rotinas discretas' : 'mantém presença equilibrada'}.`
-      : `Ascendant in ${ascendente}: physical energy (${Math.round(fisico)}%) shows in how you present yourself — ${fisico > 30 ? 'favour visible initiatives' : fisico < -30 ? 'favour discreet routines' : 'keep balanced presence'}.`
+      ? `Ascendente em ${ascendente}: ciclo físico a ${Math.round(fisico)}% — ${fisico > 30 ? 'corpo pede expressão visível e movimento' : fisico < -30 ? 'privilegia descanso e rotinas suaves' : 'presença equilibrada no mundo exterior'}.`
+      : `Ascendant in ${ascendente}: physical cycle at ${Math.round(fisico)}% — ${fisico > 30 ? 'body asks for visible expression and movement' : fisico < -30 ? 'favour rest and gentle routines' : 'balanced presence outward'}.`
   }
 
   let estrategia = ''
   if (cruzCritica) {
     estrategia = pt
-      ? '⚠ Cruz crítica bio-rítmica: dois ou mais ciclos em transição. Evita decisões irreversíveis, competições intensas e cirurgias eletivas. Prioriza sono, hidratação e tarefas de baixo risco.'
-      : '⚠ Biorhythm critical cross: two or more cycles in transition. Avoid irreversible decisions, intense competition and elective surgery. Prioritise sleep, hydration and low-risk tasks.'
+      ? '⚠ Cruz crítica bio-rítmica: dois ou mais ciclos em transição. Evita decisões irreversíveis e competição intensa. Prioriza sono, hidratação e tarefas de baixo risco. A Lua aconselha recolhimento.'
+      : '⚠ Biorhythm critical cross: two or more cycles in transition. Avoid irreversible decisions and intense competition. Prioritise sleep, hydration and low-risk tasks. The Moon advises withdrawal.'
   } else if (todosAltos) {
     estrategia = pt
-      ? '✦ Janela de alto rendimento: físico, emocional e intelectual alinhados. Agenda negociações, apresentações e treino intenso. O cosmos e o biorritmo convergem a teu favor.'
-      : '✦ High-performance window: physical, emotional and intellectual cycles aligned. Schedule negotiations, presentations and intense training. Cosmos and biorhythm converge in your favour.'
+      ? '✦ Janela de alto rendimento: físico, emocional e intelectual alinhados. O trânsito solar favorável sustenta negociações, apresentações e treino. Aproveita a fase lunar para materializar intenções.'
+      : '✦ High-performance window: physical, emotional and intellectual cycles aligned. Favourable solar transit supports negotiations, presentations and training. Use the lunar phase to manifest intentions.'
   } else if (algumBaixo) {
     const foco = fisico <= emocional && fisico <= intelectual ? (pt ? 'corpo' : 'body')
       : emocional <= intelectual ? (pt ? 'emoções' : 'emotions') : (pt ? 'mente' : 'mind')
     estrategia = pt
-      ? `✦ Ritmo em recuperação no eixo ${foco}. Delega o que puderes, reduz estímulos e centra-te numa única prioridade. A astrologia sugere ${fase === 'cheia' || fase === 'minguante' ? 'introspecção' : 'acção moderada'}.`
-      : `✦ Rhythm in recovery on the ${foco} axis. Delegate what you can, reduce stimuli and focus on one priority. Astrology suggests ${fase === 'cheia' || fase === 'minguante' ? 'introspection' : 'moderate action'}.`
+      ? `✦ Recuperação no eixo ${foco}. Delega, reduz estímulos e foca numa prioridade. Astrologia: ${faseLua.iluminacao > 50 ? 'Lua gibosa/cheia pede integração antes de agir' : 'Lua minguante favorece libertação do que esgota'}.`
+      : `✦ Recovery on the ${foco} axis. Delegate, reduce stimuli and focus on one priority. Astrology: ${faseLua.iluminacao > 50 ? 'gibbous/full Moon asks integration before action' : 'waning Moon favours releasing what drains you'}.`
   } else {
     estrategia = pt
-      ? '✦ Dia misto: usa o ciclo intelectual para planear, o emocional para relações e o físico para rotinas leves. Sincroniza tarefas com o pico de cada onda.'
-      : '✦ Mixed day: use the intellectual cycle to plan, the emotional for relationships and the physical for light routines. Sync tasks with each wave peak.'
+      ? '✦ Dia misto: usa o pico intelectual para planear, o emocional para relações e o físico para rotinas leves. Sincroniza com o trânsito lunar actual.'
+      : '✦ Mixed day: use intellectual peak to plan, emotional for relationships and physical for light routines. Sync with the current lunar transit.'
   }
 
   const picos = [
@@ -150,6 +182,17 @@ export function analisarFluxoVital({ fisico, emocional, intelectual, mapaNatal, 
     cruzCritica,
     picoDominante: picos[0],
     valeDominante: picos[2],
-    signoTransito: signoHoje,
+    signoTransito: ceu.sol.signo,
+    signoLuaTransito: ceu.lua.signo,
+    aspectoSol,
+    aspectoLua,
   }
+}
+
+function aspectoEntreSignos(a, b) {
+  if (!a || !b) return { tipo: 'neutro', score: 55, natureza: 'estável' }
+  const diff = Math.abs(indiceSigno(a) - indiceSigno(b)) % 12
+  const d = diff > 6 ? 12 - diff : diff
+  const angulo = [0, 60, 90, 120, 180].find((x) => x === d * 30) ?? d * 30
+  return aspectoPorAngulo(angulo === 0 && d === 0 ? 0 : d * 30)
 }
