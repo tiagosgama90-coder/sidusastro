@@ -97,6 +97,7 @@ export function Perfil({ utilizador, dados, mapaNatal, isPremium, dadosBloqueado
               {label: t('perfil.sunSign'),   val:mapaNatal.solar?.nome,      icon:'☀️'},
               {label: t('perfil.moonSign'),   val:mapaNatal.lunar?.nome,      icon:'🌙'},
               {label: t('perfil.ascendant'),    val:mapaNatal.ascendente?.nome, icon:'↑'},
+              {label: t('perfil.descendant'),   val:mapaNatal.descendente?.nome, icon:'↓'},
               {label: t('perfil.midheaven'),   val:mapaNatal.mc?.nome,         icon:'⊕'},
             ].filter(r=>r.val).map(r=>(
               <div key={r.label} style={{background:'rgba(255,255,255,0.03)',borderRadius:10,padding:'10px 12px'}}>

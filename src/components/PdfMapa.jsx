@@ -96,6 +96,7 @@ export async function gerarPdfMapaAstral(mapaNatal, dados, planetas = [], analis
     { icon: '☀', label: 'Sol', valor: mapaNatal?.solar?.nome || '—', grau: mapaNatal?.solar?.graus },
     { icon: '☽', label: 'Lua', valor: mapaNatal?.lunar?.nome || '—', grau: mapaNatal?.lunar?.graus },
     { icon: '↑', label: 'Ascendente', valor: mapaNatal?.ascendente?.nome || '—', grau: mapaNatal?.ascendente?.graus },
+    { icon: '↓', label: 'Descendente', valor: mapaNatal?.descendente?.nome || '—', grau: mapaNatal?.descendente?.graus },
     { icon: '⊕', label: 'Meio do Céu', valor: mapaNatal?.mc?.nome || '—', grau: mapaNatal?.mc?.graus },
   ]
 

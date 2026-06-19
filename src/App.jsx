@@ -18,6 +18,7 @@ import {
   MessageCircle,
   Sun,
   ArrowUp,
+  ArrowDown,
   MapPin,
   Loader2,
   Info,
@@ -54,7 +55,7 @@ import {
   applyActionCode,
 } from 'firebase/auth'
 import { doc, getDoc, setDoc, onSnapshot } from 'firebase/firestore'
-import { normalizarCusps, cuspsEqualHouse, atribuirCasasPlanetas } from './lib/casasPlacidus.js'
+import { atribuirCasasPlanetas } from './lib/casasPlacidus.js'
 import { gerarAnaliseCompleta, gerarResumoGratuito } from './lib/mapaInterpretacao.js'
 import { calcularFaseLua } from './lib/faseLua.js'
 import { useNavigate, useLocation } from 'react-router-dom'
@@ -72,7 +73,8 @@ import {
 } from './lib/i18n/oracle.js'
 import { consultarOracleServidor } from './lib/apiAi.js'
 import { localizeArcano } from './lib/i18n/tarotArcana.js'
-import { normalizarDataISO } from './lib/datetime.js'
+import { normalizarDataISO, criarDataUTCporLocal, localToUTC } from './lib/datetime.js'
+import { calcularAngulosCasas } from './lib/natalHouses.js'
 import { utilizadorTemPremium, emailTemPremiumPrivilegiado } from './lib/premiumAccess.js'
 import {
   MAX_ORACLE_GRATIS, oraclePerguntasUsadas, sincronizarOraclePerguntas, oracleRestantes,
@@ -423,7 +425,8 @@ function validarDataNascimento(data) {
 function longitudeParaSigno(longitude) {
   const lon = ((longitude % 360) + 360) % 360
   const idx = Math.floor(lon / 30)
-  return { ...SIGNOS[idx], graus: (lon % 30).toFixed(1) }
+  const grausNoSigno = lon % 30
+  return { ...SIGNOS[idx], graus: grausNoSigno.toFixed(4), longitude: lon }
 }
 
 function diferencaAngular(a, b) {
@@ -582,36 +585,6 @@ function getInterpPlaneta(nomePlaneta, nomeSigno) {
 }
 
 /**
- * Converte hora local numa dada timezone IANA para UTC.
- * Algoritmo iterativo usando Intl.DateTimeFormat — gere horário de verão
- * histórico automaticamente (ex: Portugal em 1988, Brasil em 1972…).
- */
-function localToUTC(ianaTimezone, year, month, day, hour, minute) {
-  const pad = (n) => String(n).padStart(2, '0')
-  const localStr = `${year}-${pad(month)}-${pad(day)}T${pad(hour)}:${pad(minute)}:00`
-  const fmt = new Intl.DateTimeFormat('en-CA', {
-    timeZone: ianaTimezone,
-    year: 'numeric', month: '2-digit', day: '2-digit',
-    hour: '2-digit', minute: '2-digit', hour12: false,
-  })
-
-  let utcGuess = new Date(localStr + 'Z')
-  for (let i = 0; i < 5; i++) {
-    const parts = {}
-    fmt.formatToParts(utcGuess).forEach((p) => { parts[p.type] = p.value })
-    const h = parts.hour === '24' ? '00' : parts.hour
-    const localAsUTC = new Date(
-      `${parts.year}-${parts.month}-${parts.day}T${h}:${parts.minute}:00Z`,
-    )
-    if (parts.hour === '24') localAsUTC.setUTCDate(localAsUTC.getUTCDate() + 1)
-    const diff = new Date(localStr + 'Z') - localAsUTC
-    if (Math.abs(diff) < 30000) break // convergiu (< 30 s)
-    utcGuess = new Date(utcGuess.getTime() + diff)
-  }
-  return utcGuess
-}
-
-/**
  * Devolve "UTC+1", "UTC-3:30", etc. para uma timezone IANA numa data específica.
  */
 function offsetLabel(ianaTimezone, dataISO, horaHHMM) {
@@ -631,107 +604,6 @@ function offsetLabel(ianaTimezone, dataISO, horaHHMM) {
   }
 }
 
-function ajustarDataUTC(ano, mes, dia, horasUTC) {
-  let y = ano
-  let m = mes
-  let d = dia
-  let h = horasUTC
-
-  while (h < 0) {
-    h += 24
-    d -= 1
-    if (d < 1) {
-      m -= 1
-      if (m < 1) {
-        m = 12
-        y -= 1
-      }
-      d = new Date(y, m, 0).getDate()
-    }
-  }
-
-  while (h >= 24) {
-    h -= 24
-    d += 1
-    const diasMes = new Date(y, m, 0).getDate()
-    if (d > diasMes) {
-      d = 1
-      m += 1
-      if (m > 12) {
-        m = 1
-        y += 1
-      }
-    }
-  }
-
-  return { y, m, d, h }
-}
-
-/**
- * Converte data + hora local para um objeto Date UTC.
- * @param {string} dataISO  — "YYYY-MM-DD"
- * @param {string} horaHHMM — "HH:MM"
- * @param {string|number} fuso — IANA string ("Europe/Lisbon") ou offset numérico (0, 1, -3…)
- */
-function criarDataUTCporLocal(dataISO, horaHHMM, fuso) {
-  const [ano, mes, dia] = dataISO.split('-').map(Number)
-  const [h, min] = horaHHMM.split(':').map(Number)
-
-  // IANA timezone → algoritmo iterativo com DST histórico real
-  if (typeof fuso === 'string' && fuso.includes('/')) {
-    return localToUTC(fuso, ano, mes, dia, h, min)
-  }
-
-  // Offset numérico simples (fallback ou override manual)
-  const offset = Number(fuso) || 0
-  const horaLocal = h + min / 60
-  const horaUTC = horaLocal - offset
-  const { y, m, d, h: hu } = ajustarDataUTC(ano, mes, dia, horaUTC)
-  const minutos = Math.round((hu % 1) * 60)
-  const horasInt = Math.floor(hu)
-  return new Date(Date.UTC(y, m - 1, d, horasInt, minutos, 0))
-}
-
-/**
- * Ascendente e MC via SiderealTime (Meeus cap. 14) + correcção de quadrante.
- * Mesma lógica usada ontem às 15h — ASC a ~90° do MC.
- */
-function calcularAscendenteEMc(dataUTC, latitude, longitude) {
-  if (!dataUTC || latitude == null || longitude == null) return { asc: 0, mc: 0 }
-  if (Number.isNaN(latitude) || Number.isNaN(longitude)) return { asc: 0, mc: 0 }
-  const lat = Math.max(-89, Math.min(89, latitude))
-
-  const time = MakeTime(dataUTC)
-  const gmst = SiderealTime(time) * 15
-  const ramc = ((gmst + longitude) % 360 + 360) % 360
-
-  const T = (dataUTC.getTime() / 86400000 - 10957.5) / 36525
-  const eDeg = 23.439291111 - 0.013004167 * T - 0.000000164 * T * T
-  const e = eDeg * Math.PI / 180
-
-  const ramcRad = ramc * Math.PI / 180
-  const latRad = lat * Math.PI / 180
-
-  const yAsc = -Math.cos(ramcRad)
-  const xAsc = Math.sin(ramcRad) * Math.cos(e) + Math.tan(latRad) * Math.sin(e)
-  let asc = Math.atan2(yAsc, xAsc) * (180 / Math.PI)
-  asc = ((asc % 360) + 360) % 360
-
-  const yMC = Math.sin(ramcRad)
-  const xMC = Math.cos(ramcRad) * Math.cos(e) - Math.tan(latRad) * Math.sin(e)
-  let mc = Math.atan2(yMC, xMC) * (180 / Math.PI)
-  mc = ((mc % 360) + 360) % 360
-
-  const diff = ((asc - mc + 360) % 360)
-  if (diff < 90 || diff > 270) asc = (asc + 180) % 360
-
-  return { asc, mc }
-}
-
-function calcularAscendenteReal(dataUTC, latitude, longitude) {
-  return calcularAscendenteEMc(dataUTC, latitude, longitude).asc
-}
-
 function calcularMapaNatal(dados) {
   if (!dados.data || !dados.hora || !dados.localizacao) return null
 
@@ -740,20 +612,21 @@ function calcularMapaNatal(dados) {
   const dataUTC = criarDataUTCporLocal(dados.data, dados.hora, fuso)
   const time = MakeTime(dataUTC)
 
-  // Posições solares e lunares via GeoVector + Ecliptic (precisão JPL)
   const lonSol = Ecliptic(Position(Body.Sun, time)).elon
   const lonLua = Ecliptic(Position(Body.Moon, time)).elon
 
-  const { asc: lonAsc, mc: lonMc } = calcularAscendenteEMc(dataUTC, lat, lon)
-  const cusps = cuspsEqualHouse(lonAsc)
+  const angulos = calcularAngulosCasas(null, dataUTC, lat, lon)
+  if (!angulos) return null
 
   return {
     solar:      longitudeParaSigno(lonSol),
     lunar:      longitudeParaSigno(lonLua),
-    ascendente: longitudeParaSigno(lonAsc),
-    mc:         longitudeParaSigno(lonMc),
-    cusps,
-    sistema:    'Tropical · Placidus (fallback casas iguais)',
+    ascendente: longitudeParaSigno(angulos.ascendant),
+    descendente: longitudeParaSigno(angulos.descendente),
+    mc:         longitudeParaSigno(angulos.mc),
+    ic:         longitudeParaSigno(angulos.ic),
+    cusps:      angulos.cusps,
+    sistema:    angulos.sistema,
     instanteUTC: dataUTC.toISOString(),
     lat,
     lon,
@@ -803,33 +676,35 @@ function calcularMapaNatalComSwe(swe, dados) {
     const lon = dados.localizacao.lon
     const fuso = dados.fuso ?? 0
     const dateUTC = criarDataUTCporLocal(dados.data, dados.hora, fuso)
-    const jd = swe.dateToJulianDay(dateUTC)
+    const angulos = calcularAngulosCasas(swe, dateUTC, lat, lon)
+    if (!angulos) return null
 
-    // swe_calc_ut + swe_houses — só após loadEphemerisFiles concluir
+    const jd = angulos.jd ?? swe.dateToJulianDay(dateUTC)
     const sunPos  = swe.calculatePosition(jd, 0)
     const moonPos = swe.calculatePosition(jd, 1)
-    const houses  = swe.calculateHouses(jd, lat, lon, 'P')
-    const cusps   = normalizarCusps(houses) ?? cuspsEqualHouse(houses.ascendant)
 
     const motorLabel =
       _motorStatus === 'swisseph-full'
-        ? 'Swiss Ephemeris · Tropical Placidus'
+        ? 'Swiss Ephemeris JPL · Tropical Placidus'
         : _motorStatus === 'swisseph-moshier'
           ? 'Swiss Ephemeris Moshier · Tropical Placidus'
           : 'astronomy-engine + Meeus'
 
     console.info(
-      `[Sidus] JD=${jd.toFixed(6)} · UTC=${dateUTC.toISOString()} · lat=${lat.toFixed(4)} lon=${lon.toFixed(4)}` +
-      ` · Sol=${sunPos.longitude.toFixed(3)}° Lua=${moonPos.longitude.toFixed(3)}° Asc=${houses.ascendant.toFixed(3)}°`
+      `[Sidus] JD=${jd.toFixed(8)} · UTC=${dateUTC.toISOString()} · lat=${lat.toFixed(6)} lon=${lon.toFixed(6)}` +
+      ` · fuso=${typeof fuso === 'string' ? fuso : fuso}` +
+      ` · Asc=${angulos.ascendant.toFixed(6)}° DC=${angulos.descendente.toFixed(6)}° MC=${angulos.mc.toFixed(6)}°`
     )
 
     return {
       solar:      longitudeParaSigno(sunPos.longitude),
       lunar:      longitudeParaSigno(moonPos.longitude),
-      ascendente: longitudeParaSigno(houses.ascendant),
-      mc:         longitudeParaSigno(houses.mc),
-      cusps,
-      sistema:    'Tropical · Placidus',
+      ascendente: longitudeParaSigno(angulos.ascendant),
+      descendente: longitudeParaSigno(angulos.descendente),
+      mc:         longitudeParaSigno(angulos.mc),
+      ic:         longitudeParaSigno(angulos.ic),
+      cusps:      angulos.cusps,
+      sistema:    angulos.sistema,
       instanteUTC: dateUTC.toISOString(),
       lat, lon, fuso,
       motor: motorLabel,
@@ -2145,6 +2020,7 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
     { titulo: t('mapa.sunSign'),  icon: Sun,      corBorda: CORES.vidroBorda,         corFundo: CORES.roxoClaro,           corIcone: CORES.dourado,  ...mapaNatal.solar, nome: ts(mapaNatal.solar.nome), elemento: te(mapaNatal.solar.elemento) },
     { titulo: t('mapa.moonSign'),  icon: Moon,     corBorda: CORES.vidroBorda,         corFundo: CORES.roxoClaro,           corIcone: CORES.dourado,  ...mapaNatal.lunar, nome: ts(mapaNatal.lunar.nome), elemento: te(mapaNatal.lunar.elemento) },
     { titulo: t('mapa.ascendant'),   icon: ArrowUp,  corBorda: 'rgba(139,92,246,0.4)',   corFundo: 'rgba(139,92,246,0.18)',   corIcone: '#C4B5FD',      ...mapaNatal.ascendente, nome: ts(mapaNatal.ascendente.nome), elemento: te(mapaNatal.ascendente.elemento) },
+    ...(mapaNatal.descendente ? [{ titulo: t('mapa.descendant'), icon: ArrowDown, corBorda: 'rgba(244,114,182,0.35)', corFundo: 'rgba(244,114,182,0.12)', corIcone: '#F472B6', ...mapaNatal.descendente, nome: ts(mapaNatal.descendente.nome), elemento: te(mapaNatal.descendente.elemento) }] : []),
   ]
   const pilaresCompletos = [
     ...pilaresBase,
@@ -2182,7 +2058,7 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
 
       {/* ── Quatro Pilares ── */}
       <div style={{ fontSize: 11, color: CORES.dourado, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 10, fontWeight: 700 }}>
-        {t('mapa.fourPillars')}
+        {t('mapa.angularAxes')}
       </div>
       {pilaresCompletos.map(p => <PilarCard key={p.titulo} {...p} />)}
 
