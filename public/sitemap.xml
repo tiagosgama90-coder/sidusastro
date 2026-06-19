@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+
+  <!-- Página principal -->
+  <url>
+    <loc>https://sidusastro.com/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="pt-PT" href="https://sidusastro.com/pt/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://sidusastro.com/en/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://sidusastro.com/"/>
+  </url>
+  <url>
+    <loc>https://sidusastro.com/pt/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+    <xhtml:link rel="alternate" hreflang="pt-PT" href="https://sidusastro.com/pt/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://sidusastro.com/en/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://sidusastro.com/"/>
+  </url>
+  <url>
+    <loc>https://sidusastro.com/en/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+    <xhtml:link rel="alternate" hreflang="pt-PT" href="https://sidusastro.com/pt/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://sidusastro.com/en/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://sidusastro.com/"/>
+  </url>
+
+  <!-- Tarot -->
+  <url>
+    <loc>https://sidusastro.com/tarot</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="pt-PT" href="https://sidusastro.com/pt/tarot"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://sidusastro.com/en/tarot"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://sidusastro.com/tarot"/>
+  </url>
+  <url>
+    <loc>https://sidusastro.com/pt/tarot</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="pt-PT" href="https://sidusastro.com/pt/tarot"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://sidusastro.com/en/tarot"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://sidusastro.com/tarot"/>
+  </url>
+  <url>
+    <loc>https://sidusastro.com/en/tarot</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="pt-PT" href="https://sidusastro.com/pt/tarot"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://sidusastro.com/en/tarot"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://sidusastro.com/tarot"/>
+  </url>
+
+  <!-- Horóscopo / Horoscope (início + oráculo do dia) -->
+  <url>
+    <loc>https://sidusastro.com/horoscopo</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="pt-PT" href="https://sidusastro.com/pt/horoscopo"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://sidusastro.com/en/horoscope"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://sidusastro.com/horoscopo"/>
+  </url>
+  <url>
+    <loc>https://sidusastro.com/pt/horoscopo</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="pt-PT" href="https://sidusastro.com/pt/horoscopo"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://sidusastro.com/en/horoscope"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://sidusastro.com/horoscopo"/>
+  </url>
+  <url>
+    <loc>https://sidusastro.com/en/horoscope</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="pt-PT" href="https://sidusastro.com/pt/horoscopo"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://sidusastro.com/en/horoscope"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://sidusastro.com/horoscopo"/>
+  </url>
+
+  <!-- Oráculo Sidus (consulta IA) -->
+  <url>
+    <loc>https://sidusastro.com/oraculo</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.88</priority>
+    <xhtml:link rel="alternate" hreflang="pt-PT" href="https://sidusastro.com/pt/oraculo"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://sidusastro.com/en/oraculo"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://sidusastro.com/oraculo"/>
+  </url>
+  <url>
+    <loc>https://sidusastro.com/pt/oraculo</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.82</priority>
+    <xhtml:link rel="alternate" hreflang="pt-PT" href="https://sidusastro.com/pt/oraculo"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://sidusastro.com/en/oraculo"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://sidusastro.com/oraculo"/>
+  </url>
+  <url>
+    <loc>https://sidusastro.com/en/oraculo</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.82</priority>
+    <xhtml:link rel="alternate" hreflang="pt-PT" href="https://sidusastro.com/pt/oraculo"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://sidusastro.com/en/oraculo"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://sidusastro.com/oraculo"/>
+  </url>
+
+  <!-- Mapa astral -->
+  <url>
+    <loc>https://sidusastro.com/mapaastral</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.88</priority>
+    <xhtml:link rel="alternate" hreflang="pt-PT" href="https://sidusastro.com/pt/mapaastral"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://sidusastro.com/en/mapaastral"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://sidusastro.com/mapaastral"/>
+  </url>
+  <url>
+    <loc>https://sidusastro.com/pt/mapaastral</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="pt-PT" href="https://sidusastro.com/pt/mapaastral"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://sidusastro.com/en/mapaastral"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://sidusastro.com/mapaastral"/>
+  </url>
+  <url>
+    <loc>https://sidusastro.com/en/mapaastral</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="pt-PT" href="https://sidusastro.com/pt/mapaastral"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://sidusastro.com/en/mapaastral"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://sidusastro.com/mapaastral"/>
+  </url>
+
+</urlset>

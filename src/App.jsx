@@ -57,7 +57,7 @@ import { normalizarCusps, cuspsEqualHouse, atribuirCasasPlanetas } from './lib/c
 import { gerarAnaliseCompleta, gerarResumoGratuito } from './lib/mapaInterpretacao.js'
 import { calcularFaseLua } from './lib/faseLua.js'
 import { useNavigate, useLocation } from 'react-router-dom'
-import { passoFromPath, pathFromPasso } from './lib/routes.js'
+import { passoFromPath, pathFromPasso, langFromPath } from './lib/routes.js'
 import { initAdSense } from './lib/adsense.js'
 import { AdSenseBanner } from './components/AdSenseBanner.jsx'
 import { LanguageSwitcher } from './components/LanguageSwitcher.jsx'
@@ -2852,9 +2852,7 @@ const DADOS_VAZIO = { nome: '', data: '', hora: '', cidade: '', localizacao: nul
 
 export default function App() {
   const isDesktop = useIsDesktop()
-  const { t } = useLanguage()
-
-  // ── Auth ──────────────────────────────────────────────────────────────────
+  const { t, lang, setLang } = useLanguage()
   const [utilizador, setUtilizador] = useState(null)
   const [authCarregando, setAuthCarregando] = useState(true)
   const [tipoAuth, setTipoAuth] = useState('login') // 'login' | 'register'
@@ -2892,8 +2890,8 @@ export default function App() {
       destino = 'paywall'
     }
     setPasso(destino)
-    navigate(pathFromPasso(destino), { replace })
-  }, [navigate, utilizador, contaConfigurada, acessoVip])
+    navigate(pathFromPasso(destino, lang), { replace })
+  }, [navigate, utilizador, contaConfigurada, acessoVip, lang])
 
   // ── Céu de hoje ───────────────────────────────────────────────────────────
   const [ceuAgora, setCeuAgora] = useState(() => calcularPlanetasParaData(new Date()))
@@ -3118,12 +3116,19 @@ export default function App() {
     }
   }, [authCarregando, perfilCarregando, utilizador, location.pathname, navigate, contaConfigurada])
 
+  // Idioma na URL (/pt/... /en/...)
+  useEffect(() => {
+    if (authCarregando) return
+    const urlLang = langFromPath(location.pathname)
+    if (urlLang && urlLang !== lang) setLang(urlLang)
+  }, [location.pathname, authCarregando, lang, setLang])
+
   // URL ↔ passo (voltar atrás no browser, links directos)
   useEffect(() => {
     if (authCarregando) return
     const fromUrl = passoFromPath(location.pathname)
     if (fromUrl !== passo) setPasso(fromUrl)
-  }, [location.pathname, authCarregando])
+  }, [location.pathname, authCarregando, passo])
 
   // Utilizador autenticado com conta configurada — nunca voltar a /comecar
   useEffect(() => {
