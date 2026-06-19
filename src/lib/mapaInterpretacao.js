@@ -5,7 +5,6 @@
 
 import { planetaPorNome } from './casasPlacidus.js'
 import { getMapaCopy } from './i18n/mapaCopy.js'
-import { translatePlaneta } from './i18n/astro.js'
 
 function aspectoTenso(aspetos) {
   const tensos = (aspetos || []).filter(a =>

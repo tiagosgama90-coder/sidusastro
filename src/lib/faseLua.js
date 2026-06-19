@@ -24,8 +24,6 @@ export function calcularFaseLua(date = new Date(), lang = 'pt') {
   const angulo  = ((moonLon - sunLon) % 360 + 360) % 360
   const iluminacao = Math.round((1 - Math.cos(angulo * Math.PI / 180)) / 2 * 100)
 
-  const fase = FASES.find(f => angulo < f.max) || FASES[FASES.length - 1]
-
   const FASES_EN = [
     { max: 22.5,  nome: 'New Moon',        emoji: '🌑', desc: 'Renewal and planting intentions. A time for introspection and quiet new beginnings.' },
     { max: 67.5,  nome: 'Waxing Crescent', emoji: '🌒', desc: 'Energy of building and initial action. Plant the first steps with courage.' },

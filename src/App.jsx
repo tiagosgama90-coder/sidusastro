@@ -1230,11 +1230,6 @@ function EcraVerificarEmail({ utilizador, isDesktop, onLogout, onVerificado }) {
             {info}
           </div>
         )}
-        {!isLogin && (
-          <div style={{ marginBottom: 14, padding: '10px 14px', borderRadius: 10, background: 'rgba(223,183,108,0.08)', border: '1px solid rgba(223,183,108,0.25)', fontSize: 12, color: CORES.dourado, lineHeight: 1.5 }}>
-            {t('emailVerify.spamReminder')}
-          </div>
-        )}
         {erro && (
           <div style={{ marginBottom: 14, padding: '10px 14px', borderRadius: 10, background: 'rgba(248,113,113,0.1)', border: '1px solid rgba(248,113,113,0.3)', fontSize: 13, color: '#F87171' }}>
             {erro}

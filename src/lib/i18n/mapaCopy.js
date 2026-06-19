@@ -1,7 +1,7 @@
 /**
  * Textos de interpretação do mapa natal — PT e EN.
  */
-import { translateSigno } from './astro.js'
+import { translateSigno, translateAspecto } from './astro.js'
 
 const TEMAS_CASA_PT = {
   1:  { nome: 'Identidade e Aparência',       foco: 'quem és, o corpo, a primeira impressão e a forma como inicias a vida' },
