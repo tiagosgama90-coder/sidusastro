@@ -7,7 +7,7 @@ const CORES = {
   vidroBorda: 'rgba(223, 183, 108, 0.22)',
 }
 
-function SwitcherButtons({ lang, setLang }) {
+function SwitcherButtons({ lang, setLang, compact = false }) {
   const btn = (code, flag, label) => {
     const active = lang === code
     return (
@@ -18,20 +18,20 @@ function SwitcherButtons({ lang, setLang }) {
         style={{
           display: 'flex',
           alignItems: 'center',
-          gap: 3,
-          padding: '3px 6px',
-          borderRadius: 6,
+          gap: compact ? 2 : 3,
+          padding: compact ? '2px 4px' : '3px 6px',
+          borderRadius: compact ? 4 : 6,
           border: `1px solid ${active ? CORES.dourado : CORES.vidroBorda}`,
           background: active ? 'rgba(223,183,108,0.18)' : 'rgba(255,255,255,0.04)',
           color: active ? CORES.dourado : CORES.brancoMuted,
-          fontSize: 9,
+          fontSize: compact ? 7 : 9,
           fontWeight: active ? 700 : 500,
           cursor: 'pointer',
           transition: 'all 0.2s ease',
           lineHeight: 1,
         }}
       >
-        <span style={{ fontSize: 11, lineHeight: 1 }}>{flag}</span>
+        <span style={{ fontSize: compact ? 9 : 11, lineHeight: 1 }}>{flag}</span>
         <span>{code.toUpperCase()}</span>
       </button>
     )
@@ -42,14 +42,14 @@ function SwitcherButtons({ lang, setLang }) {
       className={undefined}
       style={{
         display: 'flex',
-        gap: 4,
-        padding: 3,
-        borderRadius: 8,
-        background: 'rgba(11,7,30,0.94)',
-        backdropFilter: 'blur(8px)',
-        WebkitBackdropFilter: 'blur(8px)',
-        border: `1px solid ${CORES.vidroBorda}`,
-        boxShadow: '0 2px 12px rgba(0,0,0,0.45)',
+        gap: compact ? 2 : 4,
+        padding: compact ? 2 : 3,
+        borderRadius: compact ? 6 : 8,
+        background: compact ? 'transparent' : 'rgba(11,7,30,0.94)',
+        backdropFilter: compact ? 'none' : 'blur(8px)',
+        WebkitBackdropFilter: compact ? 'none' : 'blur(8px)',
+        border: compact ? 'none' : `1px solid ${CORES.vidroBorda}`,
+        boxShadow: compact ? 'none' : '0 2px 12px rgba(0,0,0,0.45)',
         flexShrink: 0,
       }}
     >
@@ -59,12 +59,13 @@ function SwitcherButtons({ lang, setLang }) {
   )
 }
 
-/** variant=fixed: canto superior (mobile / páginas sem navbar). variant=inline: ao lado do logo desktop. */
+/** variant=fixed: canto superior (login). variant=inline|compact: na barra ao lado do logo. */
 export function LanguageSwitcher({ variant = 'fixed' }) {
   const { lang, setLang } = useLanguage()
-  const inner = <SwitcherButtons lang={lang} setLang={setLang} />
+  const compact = variant === 'compact' || variant === 'inline'
+  const inner = <SwitcherButtons lang={lang} setLang={setLang} compact={compact} />
 
-  if (variant === 'inline') {
+  if (variant === 'inline' || variant === 'compact') {
     return inner
   }
 

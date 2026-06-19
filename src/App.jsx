@@ -370,25 +370,23 @@ const estilos = {
     zIndex: 100,
     boxSizing: 'border-box',
   },
-  navbarDesktop: {
+  navbarDesktopTop: {
     position: 'fixed',
     top: 0,
     left: 0,
     right: 0,
-    bottom: 'auto',
     transform: 'none',
     width: '100%',
     maxWidth: 'none',
     display: 'flex',
-    justifyContent: 'center',
     alignItems: 'center',
-    gap: 8,
-    padding: '14px 32px',
+    justifyContent: 'space-between',
+    padding: '12px 28px',
+    paddingTop: 'max(12px, env(safe-area-inset-top, 12px))',
     background: 'rgba(11, 7, 30, 0.96)',
     backdropFilter: 'blur(20px)',
     borderBottom: `1px solid ${CORES.vidroBorda}`,
-    borderTop: 'none',
-    zIndex: 100,
+    zIndex: 150,
     boxSizing: 'border-box',
   },
 }
@@ -2689,7 +2687,6 @@ function LogoSidus({ onClick, compact = false }) {
 
 function Navbar({ passo, setPasso, isDesktop }) {
   const { lang, t } = useLanguage()
-  const [hover, setHover] = useState(null)
   const [menuAberto, setMenuAberto] = useState(false)
 
   const irHome = () => {
@@ -2726,80 +2723,12 @@ function Navbar({ passo, setPasso, isDesktop }) {
     setMenuAberto(false)
   }, [passo])
 
-  if (isDesktop) {
-    return (
-      <nav style={estilos.navbarDesktop}>
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: 4,
-          flex: 1,
-          overflowX: 'auto',
-          justifyContent: 'flex-start',
-          paddingRight: 16,
-          paddingLeft: 24,
-          scrollbarWidth: 'thin',
-        }}>
-          {itens.map((item) => {
-            const Icon = item.icon
-            const ativo = itemAtivo(item)
-            const emHover = hover === item.id
-            return (
-              <button
-                key={item.id}
-                type="button"
-                onClick={() => setPasso(item.id)}
-                onMouseEnter={() => setHover(item.id)}
-                onMouseLeave={() => setHover(null)}
-                style={{
-                  background: ativo
-                    ? `linear-gradient(135deg, rgba(223,183,108,0.18), rgba(139,92,246,0.12))`
-                    : emHover ? 'rgba(255,255,255,0.06)' : 'transparent',
-                  border: `1px solid ${ativo ? CORES.dourado : emHover ? 'rgba(223,183,108,0.35)' : 'transparent'}`,
-                  borderRadius: 12,
-                  color: ativo ? CORES.dourado : emHover ? CORES.branco : CORES.brancoMuted,
-                  display: 'flex',
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  gap: 6,
-                  cursor: 'pointer',
-                  padding: '8px 12px',
-                  transition: 'all 0.25s ease',
-                  boxShadow: ativo ? `0 0 20px ${item.glow}33` : emHover ? `0 0 14px ${item.glow}22` : 'none',
-                  transform: emHover && !ativo ? 'translateY(-1px)' : 'none',
-                  flexShrink: 0,
-                  whiteSpace: 'nowrap',
-                }}
-              >
-                <Icon size={16} strokeWidth={ativo ? 2.2 : 1.8} />
-                <span style={{ fontSize: 12, fontWeight: ativo ? 700 : 500, letterSpacing: '0.02em' }}>{item.label}</span>
-                {ativo && <span style={{ fontSize: 8, color: CORES.dourado }}>✦</span>}
-              </button>
-            )
-          })}
-        </div>
-        <div style={{
-          position: 'absolute',
-          right: 32,
-          top: '50%',
-          transform: 'translateY(-50%)',
-          display: 'flex',
-          alignItems: 'center',
-          gap: 12,
-          flexShrink: 0,
-        }}>
-          <LanguageSwitcher variant="inline" />
-          <LogoSidus onClick={irHome} />
-        </div>
-      </nav>
-    )
-  }
-
-  const itemAtivoMobile = itens.find((i) => itemAtivo(i))
+  const itemAtivoNav = itens.find((i) => itemAtivo(i))
+  const headerStyle = isDesktop ? estilos.navbarDesktopTop : estilos.navbarMobileTop
 
   return (
     <>
-      <header style={estilos.navbarMobileTop}>
+      <header style={headerStyle}>
         <button
           type="button"
           className="mobile-menu-btn"
@@ -2823,7 +2752,10 @@ function Navbar({ passo, setPasso, isDesktop }) {
           {menuAberto ? <X size={22} /> : <Menu size={22} />}
         </button>
         <div style={{ flex: 1 }} />
-        <LogoSidus onClick={irHome} compact />
+        <div style={{ display: 'flex', alignItems: 'center', gap: isDesktop ? 10 : 6, flexShrink: 0 }}>
+          <LogoSidus onClick={irHome} compact />
+          <LanguageSwitcher variant="compact" />
+        </div>
       </header>
 
       {menuAberto && (
@@ -2840,8 +2772,8 @@ function Navbar({ passo, setPasso, isDesktop }) {
           <div style={{ fontSize: 10, color: CORES.brancoMuted, textTransform: 'uppercase', letterSpacing: '0.1em' }}>
             {t('nav.menu')}
           </div>
-          {itemAtivoMobile && (
-            <div style={{ fontSize: 13, color: CORES.dourado, marginTop: 4, fontWeight: 600 }}>{itemAtivoMobile.label}</div>
+          {itemAtivoNav && (
+            <div style={{ fontSize: 13, color: CORES.dourado, marginTop: 4, fontWeight: 600 }}>{itemAtivoNav.label}</div>
           )}
         </div>
         {itens.map((item) => {
@@ -3524,16 +3456,16 @@ export default function App() {
     }
   }
 
-  const paddingTopo = isDesktop
-    ? (isDev && contaConfigurada ? 28 : 0)
-    : (mostrarNavbar ? 56 : (isDev && contaConfigurada ? 30 : 0))
+  const paddingTopo = mostrarNavbar
+    ? 56
+    : (isDev && contaConfigurada ? (isDesktop ? 28 : 30) : 0)
 
   const shellStyle = isDesktop ? estilos.appDesktop : estilos.app
-  const margemNav = isDesktop && mostrarNavbar ? 68 : 0
+  const margemNav = 0
 
   return (
     <div style={shellStyle}>
-      {!(isDesktop && mostrarNavbar) && <LanguageSwitcher />}
+      {!mostrarNavbar && <LanguageSwitcher />}
       <div style={estilos.estrelas} />
 
       {/* Barra de dev — só visível em localhost */}

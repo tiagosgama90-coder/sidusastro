@@ -96,15 +96,7 @@ html {
   touch-action: manipulation;
 }
 
-@media (min-width: 768px) {
-  .lang-switcher-root {
-    top: max(12px, env(safe-area-inset-top, 12px));
-    left: max(16px, env(safe-area-inset-left, 16px));
-    right: auto;
-  }
-}
-
-/* Menu hamburger mobile */
+/* Menu hamburger */
 .mobile-menu-overlay {
   position: fixed;
   inset: 0;
@@ -149,13 +141,6 @@ html {
 .mobile-menu-item {
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
-}
-
-@media (min-width: 1025px) {
-  .mobile-menu-overlay,
-  .mobile-menu-drawer {
-    display: none !important;
-  }
 }
 
 h1,
