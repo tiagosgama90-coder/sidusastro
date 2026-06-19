@@ -100,7 +100,7 @@ export function ConteudoDinamicoSidus({ mapaNatal, aspetos = [], isPremium, onUp
           <p style={{ fontSize: 13, color: CORES.brancoMuted, margin: 0 }}>{t('home.loadingContent')}</p>
         ) : (
           <>
-            {mapaNatal && userHoro ? (
+            {mapaNatal?.solar?.nome && userHoro ? (
               <div style={{
                 background: 'rgba(223,183,108,0.1)', borderRadius: 12, padding: 14, marginBottom: 12,
                 border: '1px solid rgba(223,183,108,0.25)',

@@ -423,10 +423,16 @@ function validarDataNascimento(data) {
 }
 
 function longitudeParaSigno(longitude) {
-  const lon = ((longitude % 360) + 360) % 360
-  const idx = Math.floor(lon / 30)
+  const n = Number(longitude)
+  if (!Number.isFinite(n)) return { ...SIGNOS[0], graus: '0.0000', longitude: 0 }
+  const lon = ((n % 360) + 360) % 360
+  const idx = Math.min(11, Math.max(0, Math.floor(lon / 30)))
   const grausNoSigno = lon % 30
   return { ...SIGNOS[idx], graus: grausNoSigno.toFixed(4), longitude: lon }
+}
+
+function mapaNatalValido(mapa) {
+  return Boolean(mapa?.solar?.nome && mapa?.lunar?.nome && mapa?.ascendente?.nome)
 }
 
 function diferencaAngular(a, b) {
@@ -610,6 +616,7 @@ function calcularMapaNatal(dados) {
   const { lat, lon } = dados.localizacao
   const fuso = dados.fuso ?? 0
   const dataUTC = criarDataUTCporLocal(dados.data, dados.hora, fuso)
+  if (!dataUTC) return null
   const time = MakeTime(dataUTC)
 
   const lonSol = Ecliptic(Position(Body.Sun, time)).elon
@@ -676,6 +683,7 @@ function calcularMapaNatalComSwe(swe, dados) {
     const lon = dados.localizacao.lon
     const fuso = dados.fuso ?? 0
     const dateUTC = criarDataUTCporLocal(dados.data, dados.hora, fuso)
+    if (!dateUTC) return null
     const angulos = calcularAngulosCasas(swe, dateUTC, lat, lon)
     if (!angulos) return null
 
@@ -1629,7 +1637,7 @@ function Dashboard({ nome, mapaNatal, ceuAgora, aspetos, onOraculo, onPrivacidad
         <p style={{ ...estilos.subtitulo, marginBottom: 0 }}>{nome ? t('home.welcome', { name: nome }) : t('home.skyRealtime')}</p>
       </header>
 
-      {mapaNatal && (
+      {mapaNatalValido(mapaNatal) && (
         <div style={{ ...estilos.vidro, padding: 20, marginBottom: 18 }}>
           <div style={{ fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.09em', color: CORES.dourado, marginBottom: 12 }}>
             {t('home.natalChart')}
@@ -1857,7 +1865,7 @@ function PilarCard({ titulo, simbolo, nome, graus, elemento, icon: Icon, corBord
       </div>
       <div style={{ flex: 1 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 3 }}>
-          <Icon size={12} color={corIcone} />
+          {Icon ? <Icon size={12} color={corIcone} /> : null}
           <span style={{ fontSize: 10, color: corIcone, textTransform: 'uppercase', letterSpacing: '0.09em', fontWeight: 700 }}>{titulo}</span>
         </div>
         <div style={{ fontSize: 20, fontWeight: 700, color: CORES.branco, lineHeight: 1.2 }}>{nome}</div>
@@ -1971,7 +1979,7 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
     setTimeout(() => setEmailEnviado(false), 4000)
   }
 
-  if (!mapaNatal) {
+  if (!mapaNatalValido(mapaNatal)) {
     const temDadosMinimos = dadosNataisMinimos(dados)
     const prontosParaMapa = Boolean(dadosProntosParaMapa(dados))
 
@@ -2816,7 +2824,7 @@ export default function App() {
                 const emOnboarding = passoRef.current === 'onboarding'
                 const cache = restaurarCachePerfil(user.uid)
 
-                if (!emOnboarding && cache.mapa) {
+                if (!emOnboarding && mapaNatalValido(cache.mapa)) {
                   setMapaNatal(cache.mapa)
                 }
                 if (!dadosPerfil && cache.dados) dadosPerfil = cache.dados
@@ -3105,8 +3113,12 @@ export default function App() {
     if (passo === 'onboarding') return
     const prontos = dadosProntosParaMapa(dados)
     if (!prontos) return
-    const mapa = calcularMapaNatalMotor(prontos, sweRef.current)
-    if (mapa) setMapaNatal(mapa)
+    try {
+      const mapa = calcularMapaNatalMotor(prontos, sweRef.current)
+      if (mapaNatalValido(mapa)) setMapaNatal(mapa)
+    } catch (e) {
+      console.warn('[Sidus] Cálculo mapa natal:', e?.message)
+    }
   }, [dados, sweReady, passo])
 
   // Cache local do mapa (fallback quando Firestore tem dados incompletos)
@@ -3169,7 +3181,7 @@ export default function App() {
     if (!prontos) return
 
     const mapa = calcularMapaNatalMotor(prontos, sweRef.current)
-    if (mapa) setMapaNatal(mapa)
+    if (mapaNatalValido(mapa)) setMapaNatal(mapa)
     const guardado = await guardarPerfil(dados)
     setMapaGerado(true)
     irPara('mapa', { replace: !guardado })

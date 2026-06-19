@@ -28,7 +28,7 @@ export function calcularAngulosCasasMeeus(dataUTC, latitude, longitude) {
   const ramc = normalizarGrausEcliptica(gmstDeg + lon)
   const ramcRad = (ramc * Math.PI) / 180
   const latRad = (lat * Math.PI) / 180
-  const eps = (obliquidadeEcliptica(dateUTC) * Math.PI) / 180
+  const eps = (obliquidadeEcliptica(dataUTC) * Math.PI) / 180
 
   const mc = normalizarGrausEcliptica(
     Math.atan2(Math.sin(ramcRad), Math.cos(ramcRad) * Math.cos(eps)) * (180 / Math.PI),
@@ -89,5 +89,10 @@ export function calcularAngulosCasas(swe, dateUTC, latitude, longitude) {
       console.warn('[Sidus] swe_houses falhou, fallback Meeus:', e?.message)
     }
   }
-  return calcularAngulosCasasMeeus(dataUTC, latitude, longitude)
+  try {
+    return calcularAngulosCasasMeeus(dataUTC, latitude, longitude)
+  } catch (e) {
+    console.warn('[Sidus] Meeus houses falhou:', e?.message)
+    return null
+  }
 }
