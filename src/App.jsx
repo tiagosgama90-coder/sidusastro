@@ -702,40 +702,52 @@ function criarDataUTCporLocal(dataISO, horaHHMM, fuso) {
  * Implementa Meeus "Astronomical Algorithms" cap. 14 + verificação
  * de hemisfério (ASC deve estar a ~90° do MC, nunca no mesmo lado).
  */
-function calcularAscendenteEMc(dataUTC, latitude, longitude) {
-  if (!dataUTC || latitude == null || longitude == null) return { asc: 0, mc: 0 }
-  if (isNaN(latitude) || isNaN(longitude)) return { asc: 0, mc: 0 }
+function calcularAscendenteReal(dataUTC, latitude, longitude) {
+  if (!dataUTC || latitude == null || longitude == null) return 0
+  if (Number.isNaN(latitude) || Number.isNaN(longitude)) return 0
   const lat = Math.max(-89, Math.min(89, latitude))
 
   const time = MakeTime(dataUTC)
-  const gmst  = SiderealTime(time) * 15
-  const ramc  = ((gmst + longitude) % 360 + 360) % 360
+  const gmstGraus = SiderealTime(time) * 15
+  const lst = ((gmstGraus + longitude) % 360 + 360) % 360
+
+  const T = (dataUTC.getTime() / 86400000 - 10957.5) / 36525
+  const e = ((23.439291111 - 0.013004167 * T - 0.000000164 * T * T) * Math.PI) / 180
+
+  const lstRad = (lst * Math.PI) / 180
+  const latRad = (lat * Math.PI) / 180
+
+  const asc = Math.atan2(
+    -Math.cos(lstRad),
+    Math.sin(lstRad) * Math.cos(e) + Math.tan(latRad) * Math.sin(e),
+  ) * (180 / Math.PI)
+
+  return ((asc % 360) + 360) % 360
+}
+
+function calcularAscendenteEMc(dataUTC, latitude, longitude) {
+  if (!dataUTC || latitude == null || longitude == null) return { asc: 0, mc: 0 }
+  if (Number.isNaN(latitude) || Number.isNaN(longitude)) return { asc: 0, mc: 0 }
+  const lat = Math.max(-89, Math.min(89, latitude))
+
+  const time = MakeTime(dataUTC)
+  const gmst = SiderealTime(time) * 15
+  const ramc = ((gmst + longitude) % 360 + 360) % 360
 
   const T = (dataUTC.getTime() / 86400000 - 10957.5) / 36525
   const eDeg = 23.439291111 - 0.013004167 * T - 0.000000164 * T * T
-  const e     = eDeg * Math.PI / 180
+  const e = eDeg * Math.PI / 180
+  const ramcRad = ramc * Math.PI / 180
+  const latRad = lat * Math.PI / 180
 
-  const ramcRad = ramc    * Math.PI / 180
-  const latRad  = lat     * Math.PI / 180
-
-  const yAsc = -Math.cos(ramcRad)
-  const xAsc =  Math.sin(ramcRad) * Math.cos(e) + Math.tan(latRad) * Math.sin(e)
-  let asc = Math.atan2(yAsc, xAsc) * (180 / Math.PI)
-  asc = ((asc % 360) + 360) % 360
+  const asc = calcularAscendenteReal(dataUTC, latitude, longitude)
 
   const yMC = Math.sin(ramcRad)
   const xMC = Math.cos(ramcRad) * Math.cos(e) - Math.tan(latRad) * Math.sin(e)
   let mc = Math.atan2(yMC, xMC) * (180 / Math.PI)
   mc = ((mc % 360) + 360) % 360
 
-  const diff = ((asc - mc + 360) % 360)
-  if (diff < 90 || diff > 270) asc = (asc + 180) % 360
-
   return { asc, mc }
-}
-
-function calcularAscendenteReal(dataUTC, latitude, longitude) {
-  return calcularAscendenteEMc(dataUTC, latitude, longitude).asc
 }
 
 function calcularMapaNatal(dados) {
@@ -2969,6 +2981,8 @@ export default function App() {
   const [sweReady, setSweReady] = useState(false)
   const [motorAstro, setMotorAstro] = useState(_motorStatus)
   const prevUserRef = useRef(undefined)
+  const passoRef = useRef(passo)
+  useEffect(() => { passoRef.current = passo }, [passo])
 
   // ── Escuta o estado de autenticação Firebase + perfil em tempo real ─────────
   useEffect(() => {
@@ -3032,9 +3046,10 @@ export default function App() {
                 }
 
                 let dadosPerfil = perfil.dados ? normalizarDadosPerfil(perfil.dados) : null
+                const emOnboarding = passoRef.current === 'onboarding'
                 const cache = restaurarCachePerfil(user.uid)
 
-                if ((perfil.mapaGerado || perfil.dadosTravados) && cache.mapa) {
+                if (!emOnboarding && (perfil.mapaGerado || perfil.dadosTravados) && cache.mapa) {
                   setMapaNatal(cache.mapa)
                 }
                 if (!dadosPerfil && cache.dados) dadosPerfil = cache.dados
@@ -3050,7 +3065,7 @@ export default function App() {
                     }
                   }
                 }
-                if (dadosPerfil) setDados(dadosPerfil)
+                if (dadosPerfil && !emOnboarding) setDados(dadosPerfil)
 
                 if (perfil.mapaGerado === true || perfil.dadosTravados === true) {
                   setMapaGerado(true)
@@ -3166,17 +3181,6 @@ export default function App() {
       setPasso('home')
     }
   }, [authCarregando, perfilCarregando, utilizador, location.pathname, navigate, contaConfigurada])
-
-  // Conta com mapa: bloquear re-onboarding só quando o mapa já está calculado
-  useEffect(() => {
-    if (authCarregando || perfilCarregando || !utilizador || !mapaGerado) return
-    if (!dadosNataisCompletos(dados)) return
-    if (!mapaNatal) return
-    if (passo === 'onboarding') {
-      navigate('/home', { replace: true })
-      setPasso('home')
-    }
-  }, [authCarregando, perfilCarregando, utilizador, mapaGerado, mapaNatal, passo, navigate, dados])
 
   // URL ↔ passo (voltar atrás no browser, links directos)
   useEffect(() => {
@@ -3303,6 +3307,7 @@ export default function App() {
 
   // ── Recalcula mapa natal (lógica original — nunca apaga mapa existente) ─────
   useEffect(() => {
+    if (passo === 'onboarding') return
     const prontos = dadosProntosParaMapa(dados)
     if (!prontos) return
 
@@ -3318,7 +3323,7 @@ export default function App() {
         if (mapa) setMapaNatal(mapa)
       } catch { /* mantém mapa anterior se existir */ }
     }
-  }, [dados, sweReady])
+  }, [dados, sweReady, passo])
 
   // Cache local do mapa (fallback quando Firestore tem dados incompletos)
   useEffect(() => {
@@ -3326,10 +3331,11 @@ export default function App() {
     guardarCachePerfil(utilizador.uid, dados, mapaNatal)
   }, [utilizador, mapaNatal, dados])
 
-  // Reparar dados incompletos (ex.: cidade sem coordenadas no Firestore)
+  // Reparar dados incompletos — nunca durante /comecar (utilizador a escrever/seleccionar cidade)
   useEffect(() => {
     if (!utilizador || mapaNatal || !dadosNataisMinimos(dados)) return
     if (dadosProntosParaMapa(dados)) return
+    if (passo === 'onboarding') return
 
     let cancelled = false
     setReparandoDados(true)
@@ -3354,7 +3360,7 @@ export default function App() {
       cancelled = true
       setReparandoDados(false)
     }
-  }, [utilizador, mapaNatal, dados])
+  }, [utilizador, mapaNatal, dados, passo])
 
   // ── Planetas de nascimento ──────────────────────────────────────────────────
   useEffect(() => {
@@ -3508,11 +3514,8 @@ export default function App() {
         />
       )
     }
-    // Onboarding: até dados completos e mapa calculado
-    const mostrarOnboarding = passo === 'onboarding' && (
-      !dadosNataisCompletos(dados) || !mapaNatal
-    )
-    if (mostrarOnboarding) {
+    // /comecar — sempre mostrar formulário até submeter (não expulsar ao escrever cidade)
+    if (passo === 'onboarding') {
       return <Onboarding dados={dados} setDados={setDados} onSubmit={handleOnboarding} isDesktop={isDesktop} />
     }
     if (!contaConfigurada) {
@@ -3520,8 +3523,6 @@ export default function App() {
     }
     // Autenticado com mapa → navegação normal
     switch (passo) {
-      case 'onboarding':
-        return <Onboarding dados={dados} setDados={setDados} onSubmit={handleOnboarding} isDesktop={isDesktop} />
       case 'home':
       case 'dashboard':
         return <Dashboard nome={dados.nome} mapaNatal={mapaNatal} ceuAgora={ceuAgora} aspetos={aspetosAgora} onOraculo={() => irPara('chat')} onPrivacidade={() => irPara('privacidade')} isDesktop={isDesktop} isPremium={acessoVip} onUpgrade={() => irPara('paywall')} onTarot={() => irPara('tarot')} />
