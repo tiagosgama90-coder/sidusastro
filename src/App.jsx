@@ -3649,7 +3649,7 @@ export default function App() {
       }}>
         {renderEcran()}
       </div>
-      {['home', 'ferramentas', 'tarot'].includes(passo) && (
+      {utilizador && !['login', 'onboarding', 'privacidade', 'paywall'].includes(passo) && (
         <AdSenseBanner />
       )}
       <RodapeSidus isDesktop={isDesktop} mostrarNavbar={mostrarNavbar} />

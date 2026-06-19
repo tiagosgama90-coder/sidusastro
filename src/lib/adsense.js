@@ -1,17 +1,32 @@
-/** Carrega o script AdSense uma vez (só se VITE_ADSENSE_CLIENT estiver definido). */
+/** Publisher ID público — igual ao index.html (AdSense sidusastro.com). */
+export const ADSENSE_PUBLISHER = 'ca-pub-2807052149540484'
+
+export function getAdsenseClient() {
+  const fromEnv = import.meta.env.VITE_ADSENSE_CLIENT
+  if (fromEnv && String(fromEnv).startsWith('ca-pub-')) return fromEnv
+  return ADSENSE_PUBLISHER
+}
+
+export function getAdsenseSlot() {
+  const slot = import.meta.env.VITE_ADSENSE_SLOT
+  if (!slot) return ''
+  return String(slot).trim()
+}
+
+/** Activar bloco in-app quando existir unidade (slot) configurada no build Netlify. */
+export function adsenseEnabled() {
+  return /^\d+$/.test(getAdsenseSlot())
+}
+
 export function initAdSense() {
-  const client = import.meta.env.VITE_ADSENSE_CLIENT
-  if (!client || typeof document === 'undefined') return
+  if (typeof document === 'undefined') return
+  if (document.querySelector('script[src*="pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"]')) return
   if (document.querySelector('script[data-sidus-adsense]')) return
 
   const script = document.createElement('script')
   script.async = true
-  script.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${client}`
+  script.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${getAdsenseClient()}`
   script.crossOrigin = 'anonymous'
   script.dataset.sidusAdsense = '1'
   document.head.appendChild(script)
-}
-
-export function adsenseEnabled() {
-  return Boolean(import.meta.env.VITE_ADSENSE_CLIENT && import.meta.env.VITE_ADSENSE_SLOT)
 }
