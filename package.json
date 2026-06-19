@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "verify:ascendente": "node scripts/verify-ascendente.mjs",
     "lint": "eslint .",
     "preview": "vite preview"
   },
