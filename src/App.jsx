@@ -66,9 +66,10 @@ import { getFerramentas, getBeneficiosVip } from './lib/i18n/ferramentasData.js'
 import { validarOnboarding } from './lib/i18n/validation.js'
 import { traduzirErroAuth } from './lib/i18n/authErrors.js'
 import {
-  construirSistema, validarPerguntaOracle, gerarRespostaOracle,
+  validarPerguntaOracle, gerarRespostaOracle,
   getChatGreeting, getOracleLimitMessage,
 } from './lib/i18n/oracle.js'
+import { consultarOracleServidor } from './lib/apiAi.js'
 import { localizeArcano } from './lib/i18n/tarotArcana.js'
 import { normalizarDataISO } from './lib/datetime.js'
 import { utilizadorTemPremium, emailTemPremiumPrivilegiado } from './lib/premiumAccess.js'
@@ -2424,127 +2425,9 @@ function Paywall({ onVoltar, onPagar, onSucesso, isDesktop }) {
   )
 }
 
-// ── Integração AI (OpenAI → Gemini → Pollinations) ───────────────────────────
-async function consultarOpenAI(pergunta, mapaNatal, historico = [], lang = 'pt', isPremium = false) {
-  const apiKey = import.meta.env.VITE_OPENAI_API_KEY
-  if (!apiKey) return null
-
-  const sistema = construirSistema(mapaNatal, lang, isPremium)
-  const msgs = [
-    { role: 'system', content: sistema },
-    ...historico.slice(-6).map(m => ({
-      role: m.autor === 'user' ? 'user' : 'assistant',
-      content: m.texto,
-    })),
-    { role: 'user', content: pergunta },
-  ]
-
-  try {
-    const res = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${apiKey}`,
-      },
-      body: JSON.stringify({
-        model: isPremium ? 'gpt-4o' : 'gpt-4o-mini',
-        messages: msgs,
-        max_tokens: isPremium ? 550 : 280,
-        temperature: isPremium ? 0.75 : 0.82,
-      }),
-    })
-    if (!res.ok) {
-      console.warn('OpenAI error:', res.status, await res.text())
-      return null
-    }
-    const d = await res.json()
-    return d.choices?.[0]?.message?.content?.trim() || null
-  } catch (e) {
-    console.warn('OpenAI fetch error:', e.message)
-    return null
-  }
-}
-
-async function consultarGeminiIA(pergunta, mapaNatal, historico = [], lang = 'pt', isPremium = false) {
-  const apiKey = import.meta.env.VITE_GEMINI_API_KEY
-  if (!apiKey) return null
-
-  const sistema = construirSistema(mapaNatal, lang, isPremium)
-  const conteudos = []
-  historico.slice(-6).forEach(m => {
-    conteudos.push({
-      role: m.autor === 'user' ? 'user' : 'model',
-      parts: [{ text: m.texto }],
-    })
-  })
-  conteudos.push({ role: 'user', parts: [{ text: pergunta }] })
-
-  try {
-    const res = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`,
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          systemInstruction: { parts: [{ text: sistema }] },
-          contents: conteudos,
-          generationConfig: {
-            temperature: isPremium ? 0.75 : 0.82,
-            maxOutputTokens: isPremium ? 550 : 280,
-          },
-          safetySettings: [
-            { category: 'HARM_CATEGORY_HARASSMENT',        threshold: 'BLOCK_MEDIUM_AND_ABOVE' },
-            { category: 'HARM_CATEGORY_HATE_SPEECH',       threshold: 'BLOCK_MEDIUM_AND_ABOVE' },
-            { category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT', threshold: 'BLOCK_LOW_AND_ABOVE' },
-            { category: 'HARM_CATEGORY_DANGEROUS_CONTENT', threshold: 'BLOCK_MEDIUM_AND_ABOVE' },
-          ],
-        }),
-      }
-    )
-    if (!res.ok) return null
-    const d = await res.json()
-    return d.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || null
-  } catch { return null }
-}
-
-async function consultarPollinationsAI(pergunta, mapaNatal, historico = [], lang = 'pt', isPremium = false) {
-  const sistema = construirSistema(mapaNatal, lang, isPremium)
-  const msgs = [
-    { role: 'system', content: sistema },
-    ...historico.slice(-6).map(m => ({
-      role: m.autor === 'user' ? 'user' : 'assistant',
-      content: m.texto,
-    })),
-    { role: 'user', content: pergunta },
-  ]
-  try {
-    const res = await fetch('https://text.pollinations.ai/', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'openai',
-        messages: msgs,
-        seed: Math.floor(Math.random() * 9999),
-        private: true,
-      }),
-    })
-    if (!res.ok) return null
-    const texto = await res.text()
-    return texto?.trim() || null
-  } catch (e) {
-    console.warn('[Pollinations] erro:', e.message)
-    return null
-  }
-}
-
+// ── Integração AI (servidor Netlify — chaves secretas) ─────────────────────────
 async function consultarSirius(pergunta, mapaNatal, historico, lang = 'pt', isPremium = false) {
-  const resOAI = await consultarOpenAI(pergunta, mapaNatal, historico, lang, isPremium)
-  if (resOAI) return resOAI
-  const resGemini = await consultarGeminiIA(pergunta, mapaNatal, historico, lang, isPremium)
-  if (resGemini) return resGemini
-  const resPollinations = await consultarPollinationsAI(pergunta, mapaNatal, historico, lang, isPremium)
-  if (resPollinations) return resPollinations
-  return null
+  return consultarOracleServidor(pergunta, mapaNatal, historico, lang, isPremium)
 }
 
 const MAX_PERGUNTAS_GRATIS = 3

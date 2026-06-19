@@ -334,7 +334,7 @@ export default {
     },
     sonhos: {
       title: 'Interpretação de Sonhos',
-      subtitle: 'Relata o sonho e toca nos símbolos que emergiram — a leitura segue a Matriz Hermenêutica de Psicologia Espiritual Integrativa.',
+      subtitle: 'Relata o teu sonho — cada imagem e emoção será lida de forma única, à medida do teu relato.',
       placeholder: 'Começa a relatar o sonho…',
       interpret: '✦ Revelar significado',
       symbolsHint: 'Símbolos frequentes',

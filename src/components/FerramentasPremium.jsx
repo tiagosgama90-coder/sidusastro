@@ -13,7 +13,7 @@ import {
 } from '../lib/i18n/ferramentasPremiumData.js'
 import { diasVidaDesdeNascimento } from '../lib/datetime.js'
 import { calcularMapaNumerologia } from '../lib/numerologia.js'
-import { interpretarSonho, CHIPS_SIMBOLOS_PT, CHIPS_SIMBOLOS_EN } from '../lib/sonhosInterpretacao.js'
+import { CHIPS_SIMBOLOS_PT, CHIPS_SIMBOLOS_EN, interpretarSonhoRemoto } from '../lib/sonhosInterpretacao.js'
 import {
   resolverDadosFerramentas,
   dadosMinimosFerramentas,
@@ -672,6 +672,8 @@ export function InterpretacaoSonhos({ mapaNatal, onVoltar }) {
   const { lang, t } = useLanguage()
   const [sonho, setSonho] = useState('')
   const [resultado, setResultado] = useState(null)
+  const [aInterpretar, setAInterpretar] = useState(false)
+  const [erro, setErro] = useState(null)
   const [chipsSel, setChipsSel] = useState([])
   const [feeling, setFeeling] = useState(null)
 
@@ -682,11 +684,20 @@ export function InterpretacaoSonhos({ mapaNatal, onVoltar }) {
     setChipsSel((prev) => prev.includes(chip) ? prev.filter((c) => c !== chip) : [...prev, chip])
   }
 
-  const interpretar = () => {
-    setResultado(interpretarSonho(sonho, mapaNatal, lang, feeling, chipsSel))
+  const interpretar = async () => {
+    setAInterpretar(true)
+    setErro(null)
+    setResultado(null)
+    const res = await interpretarSonhoRemoto(sonho, mapaNatal, lang, feeling, chipsSel)
+    setAInterpretar(false)
+    if (!res) {
+      setErro(lang === 'en' ? 'Could not interpret right now. Try again in a moment.' : 'Não foi possível interpretar agora. Tenta outra vez dentro de instantes.')
+      return
+    }
+    setResultado(res)
   }
 
-  const pronto = sonho.trim().length > 8 || chipsSel.length > 0
+  const pronto = (sonho.trim().length > 8 || chipsSel.length > 0) && !aInterpretar
 
   return (
     <div style={{ padding: '20px 20px 110px' }}>
@@ -759,13 +770,17 @@ export function InterpretacaoSonhos({ mapaNatal, onVoltar }) {
       <button type="button" disabled={!pronto} onClick={interpretar} style={{
         width: '100%', background: `linear-gradient(135deg,#DFB76C,#B8944F)`, border: 'none',
         borderRadius: 12, color: '#0B071E', fontSize: 15, fontWeight: 700, padding: '14px',
-        cursor: pronto ? 'pointer' : 'not-allowed', opacity: pronto ? 1 : 0.5, marginBottom: 24,
+        cursor: pronto ? 'pointer' : 'not-allowed', opacity: pronto ? 1 : 0.5, marginBottom: 12,
       }}>
-        {t('ferramentasPremium.sonhos.interpret')}
+        {aInterpretar ? (lang === 'en' ? '✦ Decoding the dream…' : '✦ A decifrar o sonho…') : t('ferramentasPremium.sonhos.interpret')}
       </button>
 
+      {erro && (
+        <p style={{ fontSize: 13, color: '#F87171', textAlign: 'center', marginBottom: 16 }}>{erro}</p>
+      )}
+
       {resultado && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginBottom: 24 }}>
           {resultado.simbolos.length > 0 && (
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 4 }}>
               {resultado.simbolos.map((s, i) => (

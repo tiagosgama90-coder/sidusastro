@@ -334,7 +334,7 @@ export default {
     },
     sonhos: {
       title: 'Dream Interpretation',
-      subtitle: 'Tell your dream and tap the symbols that emerged — reading follows the Integrative Spiritual Psychology Hermeneutic Matrix.',
+      subtitle: 'Tell your dream — each image and emotion is read uniquely, tailored to your account.',
       placeholder: 'Begin telling your dream…',
       interpret: '✦ Reveal meaning',
       symbolsHint: 'Common symbols',
