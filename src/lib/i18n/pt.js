@@ -164,7 +164,7 @@ export default {
     paymentMethods: 'Cartão · MB Way · Multibanco · PayPal · PIX — via Stripe',
   },
   oracle: {
-    title: 'Sírius',
+    title: 'Sidus',
     subtitle: 'Oráculo Astral · Matriz Hermenêutica',
     freeQuestions: '{count} questão grátis',
     freeQuestionsPlural: '{count} questões grátis',

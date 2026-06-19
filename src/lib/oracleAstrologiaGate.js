@@ -81,8 +81,8 @@ const RESPOSTA_FORA_EN = [
 
 export function mensagemForaEscopo(lang = 'pt') {
   return lang === 'en'
-    ? '✦ I am Sirius, Sidus Astral Oracle. I only guide astrology, predictions and life read through your natal chart (love, career, purpose, cycles, transits, compatibility). Please rephrase your question in that scope.'
-    : '✦ Sou o Sírius, Oráculo Astral do Sidus. Só oriento astrologia, previsões e vida lidas pelo teu mapa natal (amor, carreira, propósito, ciclos, trânsitos, compatibilidade). Reformula a tua pergunta nesse âmbito.'
+    ? '✦ I am Sidus, the Astral Oracle. I only guide astrology, predictions and life read through your natal chart (love, career, purpose, cycles, transits, compatibility). Please rephrase your question in that scope.'
+    : '✦ Sou Sidus, Oráculo Astral. Só oriento astrologia, previsões e vida lidas pelo teu mapa natal (amor, carreira, propósito, ciclos, trânsitos, compatibilidade). Reformula a tua pergunta nesse âmbito.'
 }
 
 /** Instrução extra injectada apenas nas chamadas Gemini (Oráculo). */
@@ -109,7 +109,7 @@ export function respostaPareceForaEscopoAstrologia(texto, lang = 'pt') {
   const lower = texto.toLowerCase()
   const lista = lang === 'en' ? RESPOSTA_FORA_EN : RESPOSTA_FORA_PT
   if (lista.some((k) => lower.includes(k))) return true
-  const recusa = lower.includes('sírius') || lower.includes('sirius')
+  const recusa = lower.includes('sidus')
   const recusaEscopo = lower.includes('só oriento') || lower.includes('only guide') || lower.includes('reformula')
   if (recusa && recusaEscopo) return false
   return false

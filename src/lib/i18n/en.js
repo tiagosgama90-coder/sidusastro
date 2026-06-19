@@ -164,7 +164,7 @@ export default {
     paymentMethods: 'Card · MB Way · Multibanco · PayPal · PIX — via Stripe',
   },
   oracle: {
-    title: 'Sirius',
+    title: 'Sidus',
     subtitle: 'Astral Oracle · Hermeneutic Matrix',
     freeQuestions: '{count} free question',
     freeQuestionsPlural: '{count} free questions',

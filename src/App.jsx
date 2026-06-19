@@ -2426,7 +2426,7 @@ function Paywall({ onVoltar, onPagar, onSucesso, isDesktop }) {
 }
 
 // ── Integração AI (servidor Netlify — chaves secretas) ─────────────────────────
-async function consultarSirius(pergunta, mapaNatal, historico, lang = 'pt', isPremium = false) {
+async function consultarSidus(pergunta, mapaNatal, historico, lang = 'pt', isPremium = false) {
   return consultarOracleServidor(pergunta, mapaNatal, historico, lang, isPremium)
 }
 
@@ -2486,7 +2486,7 @@ function Chat({ mapaNatal, isPremium, onUpgrade }) {
     setPerguntasUsadas(n => n + 1)
 
     // OpenAI → Gemini → template
-    const respostaIA = await consultarSirius(q, mapaNatal, historicoParaIA, lang, isPremium)
+    const respostaIA = await consultarSidus(q, mapaNatal, historicoParaIA, lang, isPremium)
     const resposta   = respostaIA || gerarRespostaOracle(q, mapaNatal, numAtual, lang)
 
     setMensagens(prev => [...prev, { id: Date.now()+1, autor: 'ia', texto: resposta }])
