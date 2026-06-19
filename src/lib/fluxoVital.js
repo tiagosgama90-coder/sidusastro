@@ -114,7 +114,7 @@ export function analisarFluxoVital({ fisico, emocional, intelectual, mapaNatal, 
       : `Ascendant in ${ascendente}: physical energy (${Math.round(fisico)}%) shows in how you present yourself — ${fisico > 30 ? 'favour visible initiatives' : fisico < -30 ? 'favour discreet routines' : 'keep balanced presence'}.`
   }
 
-  let estrategia = ''
+  let estrategia
   if (cruzCritica) {
     estrategia = pt
       ? '⚠ Cruz crítica bio-rítmica: dois ou mais ciclos em transição. Evita decisões irreversíveis, competições intensas e cirurgias eletivas. Prioriza sono, hidratação e tarefas de baixo risco.'

@@ -157,6 +157,20 @@ function scoreDimensao(elemA, elemB, tipo) {
   return tabelas[tipo]?.[par] ?? tabelas[tipo]?.[rev] ?? 72
 }
 
+function DimBar({ label, val, cor }) {
+  return (
+    <div style={{ marginBottom: 10 }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, marginBottom: 4 }}>
+        <span style={{ color: CORES.brancoSuave }}>{label}</span>
+        <span style={{ color: cor, fontWeight: 700 }}>{val}%</span>
+      </div>
+      <div style={{ height: 5, background: 'rgba(255,255,255,0.08)', borderRadius: 3 }}>
+        <div style={{ height: '100%', width: `${val}%`, background: cor, borderRadius: 3 }} />
+      </div>
+    </div>
+  )
+}
+
 export function Sinastria({ mapaNatal, onVoltar }) {
   const { lang, t, ts, te } = useLanguage()
   const [parceiro, setParceiro] = useState({nome:'',data:'',hora:'',signo:''})
@@ -213,18 +227,6 @@ export function Sinastria({ mapaNatal, onVoltar }) {
       setCalculando(false)
     }, 1800)
   }
-
-  const DimBar = ({ label, val, cor }) => (
-    <div style={{ marginBottom: 10 }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, marginBottom: 4 }}>
-        <span style={{ color: CORES.brancoSuave }}>{label}</span>
-        <span style={{ color: cor, fontWeight: 700 }}>{val}%</span>
-      </div>
-      <div style={{ height: 5, background: 'rgba(255,255,255,0.08)', borderRadius: 3 }}>
-        <div style={{ height: '100%', width: `${val}%`, background: cor, borderRadius: 3 }} />
-      </div>
-    </div>
-  )
 
   return (
     <div style={{padding:'20px 20px 110px'}}>
