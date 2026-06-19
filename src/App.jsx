@@ -71,6 +71,7 @@ import {
 } from './lib/i18n/oracle.js'
 import { localizeArcano } from './lib/i18n/tarotArcana.js'
 import { normalizarDataISO } from './lib/datetime.js'
+import { utilizadorTemPremium, emailTemPremiumPrivilegiado } from './lib/premiumAccess.js'
 
 const CORES = {
   fundo: '#0B071E',
@@ -972,13 +973,8 @@ function contaJaConfigurada(perfil, dadosActuais) {
   return dadosNataisCompletos(dadosActuais) || dadosNataisCompletos(perfil?.dados)
 }
 
-function perfilTemPremium(perfil) {
-  if (!perfil) return false
-  if (perfil.isPremium === true) return true
-  if (perfil.mapaCompleto === true) return true
-  if (perfil.stripeSubscriptionId) return true
-  if (perfil.premiumAt) return true
-  return false
+function perfilTemPremium(perfil, user) {
+  return utilizadorTemPremium(user, perfil)
 }
 
 function utilizadorGoogle(user) {
@@ -1819,32 +1815,20 @@ function Dashboard({ nome, mapaNatal, ceuAgora, aspetos, onOraculo, onPrivacidad
           </span>
         </div>
 
-        {/* Fase lunar — Premium */}
-        {isPremium ? (
-          <div style={{
-            background: 'rgba(139,92,246,0.12)', borderRadius: 12, padding: 14, marginBottom: 14,
-            border: '1px solid rgba(139,92,246,0.3)',
-          }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 8 }}>
-              <span style={{ fontSize: 32 }}>{faseLua.emoji}</span>
-              <div>
-                <div style={{ fontSize: 14, fontWeight: 700, color: CORES.branco }}>{faseLua.nome}</div>
-                <div style={{ fontSize: 11, color: CORES.brancoMuted }}>{t('home.illuminated', { pct: faseLua.iluminacao, angle: faseLua.angulo })}</div>
-              </div>
-            </div>
-            <p style={{ fontSize: 12, color: CORES.brancoSuave, lineHeight: 1.55, margin: 0 }}>{faseLua.desc}</p>
-          </div>
-        ) : (
-          <div onClick={onUpgrade} style={{
-            background: 'rgba(223,183,108,0.06)', borderRadius: 12, padding: 14, marginBottom: 14,
-            border: '1px dashed rgba(223,183,108,0.35)', cursor: 'pointer', textAlign: 'center',
-          }}>
-            <span style={{ fontSize: 24 }}>🌙</span>
-            <div style={{ fontSize: 12, color: CORES.brancoMuted, marginTop: 6 }}>
-              {t('home.moonPhasesPremium')}
+        {/* Fase lunar — disponível para todos na home */}
+        <div style={{
+          background: 'rgba(139,92,246,0.12)', borderRadius: 12, padding: 14, marginBottom: 14,
+          border: '1px solid rgba(139,92,246,0.3)',
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 8 }}>
+            <span style={{ fontSize: 32 }}>{faseLua.emoji}</span>
+            <div>
+              <div style={{ fontSize: 14, fontWeight: 700, color: CORES.branco }}>{faseLua.nome}</div>
+              <div style={{ fontSize: 11, color: CORES.brancoMuted }}>{t('home.illuminated', { pct: faseLua.iluminacao, angle: faseLua.angulo })}</div>
             </div>
           </div>
-        )}
+          <p style={{ fontSize: 12, color: CORES.brancoSuave, lineHeight: 1.55, margin: 0 }}>{faseLua.desc}</p>
+        </div>
 
         {ceuAgora.map((p) => (
           <div key={p.key} style={{ fontSize: 14, color: CORES.brancoSuave, padding: '7px 0', borderBottom: `1px solid ${CORES.vidroBorda}` }}>
@@ -3018,6 +3002,10 @@ export default function App() {
       unsubPerfil?.()
       unsubPerfil = null
       setUtilizador(user)
+      if (emailTemPremiumPrivilegiado(user)) {
+        setIsPremium(true)
+        setMapaCompleto(true)
+      }
 
       if (user) {
         setPerfilCarregando(true)
@@ -3039,7 +3027,7 @@ export default function App() {
             ;(async () => {
               try {
                 const perfil = snap.data()
-                const premium = perfilTemPremium(perfil)
+                const premium = perfilTemPremium(perfil, user)
                 setIsPremium(premium)
                 setMapaCompleto(premium || perfil.mapaCompleto === true)
                 if (typeof perfil.tarotLeiturasUsadas === 'number') {
@@ -3050,7 +3038,7 @@ export default function App() {
                 const emOnboarding = passoRef.current === 'onboarding'
                 const cache = restaurarCachePerfil(user.uid)
 
-                if (!emOnboarding && (perfil.mapaGerado || perfil.dadosTravados) && cache.mapa) {
+                if (!emOnboarding && cache.mapa) {
                   setMapaNatal(cache.mapa)
                 }
                 if (!dadosPerfil && cache.dados) dadosPerfil = cache.dados
@@ -3283,19 +3271,21 @@ export default function App() {
   useEffect(() => {
     _sweReadyPromise.then((swe) => {
       setMotorAstro(_motorStatus)
-      if (!swe) return
-      try {
-        sweRef.current = swe
-        setSweReady(true)
-        const planetas = calcularPlanetasComSwe(swe, new Date(), PLANETAS_AGORA)
-        setCeuAgora(planetas)
-        setAspetosAgora(calcularAspetos(planetas))
-      } catch (e) {
-        console.warn('[Sidus] Swiss Ephemeris céu de hoje:', e?.message)
+      if (swe) {
+        try {
+          sweRef.current = swe
+          const planetas = calcularPlanetasComSwe(swe, new Date(), PLANETAS_AGORA)
+          setCeuAgora(planetas)
+          setAspetosAgora(calcularAspetos(planetas))
+        } catch (e) {
+          console.warn('[Sidus] Swiss Ephemeris céu de hoje:', e?.message)
+        }
       }
+      setSweReady(true)
     }).catch((e) => {
       console.warn('[Sidus] Swiss Ephemeris init:', e?.message)
       setMotorAstro('astronomy-engine')
+      setSweReady(true)
     })
   }, [])
 
@@ -3315,29 +3305,24 @@ export default function App() {
     return () => clearInterval(id)
   }, [sweReady])
 
-  // ── Recalcula mapa natal (lógica original — nunca apaga mapa existente) ─────
+  // ── Recalcula mapa natal (Swiss Ephemeris prioritário; fallback após init) ──
   useEffect(() => {
     if (passo === 'onboarding') return
     const prontos = dadosProntosParaMapa(dados)
     if (!prontos) return
-
-    if (sweRef.current) {
-      try {
-        const mapa = calcularMapaNatalComSwe(sweRef.current, prontos)
-        if (mapa) setMapaNatal(mapa)
-      } catch (e) {
-        console.warn('[Sidus] Erro SWE mapa natal:', e?.message)
-      }
-      return
-    }
-
     if (!sweReady) return
 
     try {
-      const mapa = calcularMapaNatal(prontos)
+      const mapa = sweRef.current
+        ? calcularMapaNatalComSwe(sweRef.current, prontos)
+        : calcularMapaNatal(prontos)
       if (mapa) setMapaNatal(mapa)
     } catch (e) {
       console.warn('[Sidus] Erro ao calcular mapa natal:', e?.message)
+      try {
+        const mapa = calcularMapaNatal(prontos)
+        if (mapa) setMapaNatal(mapa)
+      } catch { /* mantém mapa anterior se existir */ }
     }
   }, [dados, sweReady, passo, motorAstro])
 
@@ -3382,13 +3367,11 @@ export default function App() {
   useEffect(() => {
     const prontos = dadosProntosParaMapa(dados)
     if (!prontos) { setPlanetasNascimento([]); return }
-    const dataUTC = criarDataUTCporLocal(prontos.data, prontos.hora, prontos.fuso ?? 0)
-    if (sweRef.current) {
-      setPlanetasNascimento(calcularPlanetasComSwe(sweRef.current, dataUTC, PLANETAS_NATAL))
-      return
-    }
     if (!sweReady) return
-    setPlanetasNascimento(calcularPlanetasNatalParaData(dataUTC))
+    const dataUTC = criarDataUTCporLocal(prontos.data, prontos.hora, prontos.fuso ?? 0)
+    setPlanetasNascimento(sweRef.current
+      ? calcularPlanetasComSwe(sweRef.current, dataUTC, PLANETAS_NATAL)
+      : calcularPlanetasNatalParaData(dataUTC))
   }, [dados, sweReady, motorAstro])
 
   // ── Acções ─────────────────────────────────────────────────────────────────
@@ -3404,10 +3387,10 @@ export default function App() {
     if (!prontos) return
 
     let mapa = null
-    if (sweRef.current) {
-      mapa = calcularMapaNatalComSwe(sweRef.current, prontos)
-    } else if (sweReady) {
-      mapa = calcularMapaNatal(prontos)
+    if (sweReady) {
+      mapa = sweRef.current
+        ? calcularMapaNatalComSwe(sweRef.current, prontos)
+        : calcularMapaNatal(prontos)
     }
     if (mapa) setMapaNatal(mapa)
     const guardado = await guardarPerfil(dados)
@@ -3548,7 +3531,7 @@ export default function App() {
     switch (passo) {
       case 'home':
       case 'dashboard':
-        return <Dashboard nome={dados.nome} mapaNatal={mapaNatal} ceuAgora={ceuAgora} aspetos={aspetosAgora} onOraculo={() => irPara('chat')} onPrivacidade={() => irPara('privacidade')} isDesktop={isDesktop} isPremium={acessoVip} onUpgrade={() => irPara('paywall')} onTarot={() => irPara('tarot')} />
+        return <Dashboard nome={dados.nome} mapaNatal={mapaNatal} ceuAgora={ceuAgora} aspetos={aspetosAgora} onOraculo={() => irPara('chat')} onPrivacidade={() => irPara('privacidade')} isDesktop={isDesktop} isPremium={isPremium} onUpgrade={() => irPara('paywall')} onTarot={() => irPara('tarot')} />
       case 'mapa':
         return <MapaAstral mapaNatal={mapaNatal} dados={dados} planetasNascimento={planetasNascimento} mapaDesbloqueado={isPremium || mapaCompleto} isPremium={isPremium} onUpgrade={() => irPara('paywall')} onComprarMapa={() => abrirPagamento(t('mapa.buyDesc'), PRECO_MAPA_COMPLETO, null, { direto: true, productType: 'mapa' })} onMapaGerado={handleMapaGerado} isDesktop={isDesktop} motorAstro={motorAstro} perfilCarregando={perfilCarregando} reparandoDados={reparandoDados} mapaGerado={mapaGerado} onCompletarNatal={() => irPara('onboarding')} />
       case 'tarot':
@@ -3578,7 +3561,7 @@ export default function App() {
           dadosBloqueados={dadosBloqueados}
           onLogout={handleLogout} />
       default:
-        return <Dashboard nome={dados.nome} mapaNatal={mapaNatal} ceuAgora={ceuAgora} aspetos={aspetosAgora} onOraculo={() => irPara('chat')} onPrivacidade={() => irPara('privacidade')} isDesktop={isDesktop} isPremium={acessoVip} onUpgrade={() => irPara('paywall')} onTarot={() => irPara('tarot')} />
+        return <Dashboard nome={dados.nome} mapaNatal={mapaNatal} ceuAgora={ceuAgora} aspetos={aspetosAgora} onOraculo={() => irPara('chat')} onPrivacidade={() => irPara('privacidade')} isDesktop={isDesktop} isPremium={isPremium} onUpgrade={() => irPara('paywall')} onTarot={() => irPara('tarot')} />
     }
   }
 
