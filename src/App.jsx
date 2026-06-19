@@ -30,8 +30,9 @@ import {
   Menu,
   X,
 } from 'lucide-react'
-import { Body, GeoVector, Ecliptic, MakeTime, SiderealTime } from 'astronomy-engine'
+import { Body, GeoVector, Ecliptic, MakeTime } from 'astronomy-engine'
 import { pesquisarCidades, pesquisarFusoHorario, geocodificarCidade } from './lib/geocoding'
+import { calcularMapaNatalMeeus, calcularMapaNatalSwe } from './lib/mapaNatal.js'
 import { EcraTarot } from './components/Tarot'
 import { ModalPagamento, verificarSessaoPagamento, iniciarCheckoutStripe } from './components/Pagamento'
 import { PRECO_MAPA_COMPLETO, PRECO_PREMIUM_MENSAL } from './lib/pricing.js'
@@ -688,103 +689,36 @@ function criarDataUTCporLocal(dataISO, horaHHMM, fuso) {
   return new Date(Date.UTC(y, m - 1, d, horasInt, minutos, 0))
 }
 
-/**
- * Ascendente Verdadeiro usando SiderealTime() de alta precisão da astronomy-engine.
- *
- * Fórmula de Meeus ("Astronomical Algorithms", cap. 14):
- *   Asc = atan2(−cos(LST),  sin(LST)·cos(ε) + tan(φ)·sin(ε))
- *
- * GMST é obtido directamente de SiderealTime(time) — mesmos algoritmos NASA
- * usados nas efemérides JPL — garantindo resultados iguais às tabelas profissionais.
- */
-/**
- * Ascendente via SiderealTime de alta precisão + correcção de quadrante.
- * Implementa Meeus "Astronomical Algorithms" cap. 14 + verificação
- * de hemisfério (ASC deve estar a ~90° do MC, nunca no mesmo lado).
- */
-function calcularAscendenteReal(dataUTC, latitude, longitude) {
-  if (!dataUTC || latitude == null || longitude == null) return 0
-  if (Number.isNaN(latitude) || Number.isNaN(longitude)) return 0
-  const lat = Math.max(-89, Math.min(89, latitude))
-
-  const time = MakeTime(dataUTC)
-  const gmstGraus = SiderealTime(time) * 15
-  const lst = ((gmstGraus + longitude) % 360 + 360) % 360
-
-  const T = (dataUTC.getTime() / 86400000 - 10957.5) / 36525
-  const e = ((23.439291111 - 0.013004167 * T - 0.000000164 * T * T) * Math.PI) / 180
-
-  const lstRad = (lst * Math.PI) / 180
-  const latRad = (lat * Math.PI) / 180
-
-  const asc = Math.atan2(
-    -Math.cos(lstRad),
-    Math.sin(lstRad) * Math.cos(e) + Math.tan(latRad) * Math.sin(e),
-  ) * (180 / Math.PI)
-
-  return ((asc % 360) + 360) % 360
-}
-
-function calcularAscendenteEMc(dataUTC, latitude, longitude) {
-  if (!dataUTC || latitude == null || longitude == null) return { asc: 0, mc: 0 }
-  if (Number.isNaN(latitude) || Number.isNaN(longitude)) return { asc: 0, mc: 0 }
-  const lat = Math.max(-89, Math.min(89, latitude))
-
-  const time = MakeTime(dataUTC)
-  const gmst = SiderealTime(time) * 15
-  const ramc = ((gmst + longitude) % 360 + 360) % 360
-
-  const T = (dataUTC.getTime() / 86400000 - 10957.5) / 36525
-  const eDeg = 23.439291111 - 0.013004167 * T - 0.000000164 * T * T
-  const e = eDeg * Math.PI / 180
-  const ramcRad = ramc * Math.PI / 180
-  const latRad = lat * Math.PI / 180
-
-  const asc = calcularAscendenteReal(dataUTC, latitude, longitude)
-
-  const yMC = Math.sin(ramcRad)
-  const xMC = Math.cos(ramcRad) * Math.cos(e) - Math.tan(latRad) * Math.sin(e)
-  let mc = Math.atan2(yMC, xMC) * (180 / Math.PI)
-  mc = ((mc % 360) + 360) % 360
-
-  return { asc, mc }
-}
-
 function calcularMapaNatal(dados) {
-  if (!dados.data || !dados.hora || !dados.localizacao) return null
+  return calcularMapaNatalMeeus(dados)
+}
 
-  const { lat, lon } = dados.localizacao
-  const fuso = dados.fuso ?? 0
-  const dataUTC = criarDataUTCporLocal(dados.data, dados.hora, fuso)
-  const time = MakeTime(dataUTC)
-
-  // Posições solares e lunares via GeoVector + Ecliptic (precisão JPL)
-  const lonSol = Ecliptic(Position(Body.Sun, time)).elon
-  const lonLua = Ecliptic(Position(Body.Moon, time)).elon
-
-  const { asc: lonAsc, mc: lonMc } = calcularAscendenteEMc(dataUTC, lat, lon)
-  const cusps = cuspsEqualHouse(lonAsc)
-
-  return {
-    solar:      longitudeParaSigno(lonSol),
-    lunar:      longitudeParaSigno(lonLua),
-    ascendente: longitudeParaSigno(lonAsc),
-    mc:         longitudeParaSigno(lonMc),
-    cusps,
-    sistema:    'Tropical · Placidus (fallback casas iguais)',
-    instanteUTC: dataUTC.toISOString(),
-    lat,
-    lon,
-    fuso,
-    motor: 'astronomy-engine + Meeus',
+function calcularMapaNatalComSwe(swe, dados) {
+  if (!swe) return calcularMapaNatal(dados)
+  try {
+    return calcularMapaNatalSwe(swe, dados, {
+      ephemerisPronta: sweEphemerisPronta(),
+      motorStatus: _motorStatus,
+    })
+  } catch (e) {
+    console.warn('[Sidus] Swiss Ephemeris mapa natal falhou:', e?.message)
+    return calcularMapaNatal(dados)
   }
 }
 
-// ─── Swiss Ephemeris — funções de cálculo ────────────────────────────────────
+function calcularMapaNatalAtual(dados) {
+  if (sweEphemerisPronta() && _sweInstance) {
+    return calcularMapaNatalComSwe(_sweInstance, dados)
+  }
+  if (_sweInstance) {
+    try {
+      const mapa = calcularMapaNatalComSwe(_sweInstance, dados)
+      if (mapa) return mapa
+    } catch { /* fallback Meeus */ }
+  }
+  return calcularMapaNatal(dados)
+}
 
-/**
- * Posições via swe_calc_ut (Swiss Ephemeris) — só após efemérides carregadas.
- */
 function calcularPlanetasComSwe(swe, dateUTC, lista = PLANETAS_AGORA) {
   const jd = swe.dateToJulianDay(dateUTC)
   const resultados = []
@@ -805,57 +739,6 @@ function calcularPlanetasComSwe(swe, dateUTC, lista = PLANETAS_AGORA) {
     }
   }
   return resultados
-}
-
-/**
- * Calcula mapa natal completo usando:
- * - swe_calc_ut para Sol, Lua e todos os planetas
- * - swe_houses (Placidus, 'P') para Ascendente e Meio do Céu exactos
- */
-function calcularMapaNatalComSwe(swe, dados) {
-  if (!dados.data || !dados.hora || !dados.localizacao) return null
-  if (!swe) return null
-
-  try {
-    const { lat } = dados.localizacao
-    const lon = dados.localizacao.lon
-    const fuso = dados.fuso ?? 0
-    const dateUTC = criarDataUTCporLocal(dados.data, dados.hora, fuso)
-    const jd = swe.dateToJulianDay(dateUTC)
-
-    // swe_calc_ut + swe_houses — só após loadEphemerisFiles concluir
-    const sunPos  = swe.calculatePosition(jd, 0)
-    const moonPos = swe.calculatePosition(jd, 1)
-    const houses  = swe.calculateHouses(jd, lat, lon, 'P')
-    const cusps   = normalizarCusps(houses) ?? cuspsEqualHouse(houses.ascendant)
-
-    const motorLabel =
-      _motorStatus === 'swisseph-full'
-        ? 'Swiss Ephemeris · Tropical Placidus'
-        : _motorStatus === 'swisseph-moshier'
-          ? 'Swiss Ephemeris Moshier · Tropical Placidus'
-          : 'astronomy-engine + Meeus'
-
-    console.info(
-      `[Sidus] JD=${jd.toFixed(6)} · UTC=${dateUTC.toISOString()} · lat=${lat.toFixed(4)} lon=${lon.toFixed(4)}` +
-      ` · Sol=${sunPos.longitude.toFixed(3)}° Lua=${moonPos.longitude.toFixed(3)}° Asc=${houses.ascendant.toFixed(3)}°`
-    )
-
-    return {
-      solar:      longitudeParaSigno(sunPos.longitude),
-      lunar:      longitudeParaSigno(moonPos.longitude),
-      ascendente: longitudeParaSigno(houses.ascendant),
-      mc:         longitudeParaSigno(houses.mc),
-      cusps,
-      sistema:    'Tropical · Placidus',
-      instanteUTC: dateUTC.toISOString(),
-      lat, lon, fuso,
-      motor: motorLabel,
-    }
-  } catch (e) {
-    console.warn('[Sidus] Swiss Ephemeris mapa natal falhou:', e?.message)
-    return calcularMapaNatal(dados)
-  }
 }
 
 function formatarData(dataISO) {
@@ -2329,7 +2212,7 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
                 {typeof mapaNatal.fuso === 'string' ? mapaNatal.fuso : `UTC${(mapaNatal.fuso ?? 0) >= 0 ? '+' : ''}${mapaNatal.fuso ?? 0}`}
               </span>
               <span style={{ color: CORES.brancoMuted }}>{t('mapa.coordinates')}</span>
-              <span style={{ color: CORES.branco }}>{mapaNatal.lat != null ? `${mapaNatal.lat.toFixed(3)}°N  ${mapaNatal.lon?.toFixed(3)}°E` : '—'}</span>
+              <span style={{ color: CORES.branco }}>{mapaNatal.lat != null ? `${Math.abs(mapaNatal.lat).toFixed(3)}°${mapaNatal.lat >= 0 ? 'N' : 'S'}  ${Math.abs(mapaNatal.lon).toFixed(3)}°${mapaNatal.lon >= 0 ? 'E' : 'W'}` : '—'}</span>
             </div>
           </div>
 
@@ -3049,9 +2932,6 @@ export default function App() {
                 const emOnboarding = passoRef.current === 'onboarding'
                 const cache = restaurarCachePerfil(user.uid)
 
-                if (!emOnboarding && (perfil.mapaGerado || perfil.dadosTravados) && cache.mapa) {
-                  setMapaNatal(cache.mapa)
-                }
                 if (!dadosPerfil && cache.dados) dadosPerfil = cache.dados
 
                 if (dadosPerfil && dadosNataisMinimos(dadosPerfil)) {
@@ -3312,9 +3192,7 @@ export default function App() {
     if (!prontos) return
 
     try {
-      const mapa = sweRef.current
-        ? calcularMapaNatalComSwe(sweRef.current, prontos)
-        : calcularMapaNatal(prontos)
+      const mapa = calcularMapaNatalAtual(prontos)
       if (mapa) setMapaNatal(mapa)
     } catch (e) {
       console.warn('[Sidus] Erro ao calcular mapa natal:', e?.message)
@@ -3384,9 +3262,7 @@ export default function App() {
     const prontos = dadosProntosParaMapa(dados)
     if (!prontos) return
 
-    setMapaNatal(sweRef.current
-      ? calcularMapaNatalComSwe(sweRef.current, prontos)
-      : calcularMapaNatal(prontos))
+    setMapaNatal(calcularMapaNatalAtual(prontos))
     const guardado = await guardarPerfil(dados)
     setMapaGerado(true)
     irPara('mapa', { replace: !guardado })
