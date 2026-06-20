@@ -8,9 +8,11 @@
 import { useState, useEffect } from 'react'
 import { useLanguage } from '../lib/i18n/LanguageContext.jsx'
 import {
-  getTransitos2026, getCompatDesc, getAspectosAmor, SIGNOS_LIST, ELEM,
-  TIPO_ICO, IMPACTO_COR,
+  getCompatDesc, getAspectosAmor, SIGNOS_LIST, ELEM,
 } from '../lib/i18n/ferramentasPremiumData.js'
+import {
+  calcularBussola2026Async, relevanciaParaMapa, TIPO_ICO, IMPACTO_COR,
+} from '../lib/bussolaCosmica.js'
 import { diasVidaDesdeNascimento } from '../lib/datetime.js'
 import { calcularMapaNumerologia } from '../lib/numerologia.js'
 import { CHIPS_SIMBOLOS_PT, CHIPS_SIMBOLOS_EN, interpretarSonhoRemoto } from '../lib/sonhosInterpretacao.js'
@@ -45,46 +47,71 @@ const CORES = {
   brancoMuted:'rgba(255,255,255,0.55)', vidroBorda:'rgba(223,183,108,0.22)',
 }
 
-export function BussolaCosmica({ mapaNatal }) {
+export function BussolaCosmica({ mapaNatal, onVoltar }) {
   const { lang, t, ts, tp } = useLanguage()
   const [mesAberto, setMesAberto] = useState(null)
+  const [dados, setDados] = useState(null)
+  const [carregando, setCarregando] = useState(true)
   const locale = lang === 'en' ? 'en-US' : 'pt-PT'
   const mesAtual = new Date().toLocaleString(locale, { month: 'long' })
-  const TRANSITOS_2026 = getTransitos2026(lang)
 
-  const calcularRelevancia = (t) => {
-    if (!mapaNatal) return ''
-    const solar = mapaNatal.solar?.nome
-    if (!solar) return ''
-    const AFINIDADE = {
-      'Áries':    ['Marte','Saturno','Lua Nova'],
-      'Touro':    ['Vénus','Júpiter','Sol'],
-      'Gémeos':   ['Mercúrio','Júpiter'],
-      'Caranguejo':['Lua Nova','Júpiter','Marte'],
-      'Leão':     ['Sol','Vénus','Lua Nova'],
-      'Virgem':   ['Mercúrio','Saturno'],
-      'Balança':  ['Vénus','Júpiter'],
-      'Escorpião':['Marte','Saturno'],
-      'Sagitário':['Júpiter','Sol'],
-      'Capricórnio':['Saturno','Marte'],
-      'Aquário':  ['Saturno','Júpiter','Mercúrio'],
-      'Peixes':   ['Júpiter','Vénus','Neptuno'],
-    }
-    const planetas = AFINIDADE[solar] || []
-    if (planetas.some(p=>t.planeta.includes(p))) return t('ferramentasPremium.bussola.relevant')
-    return ''
-  }
+  useEffect(() => {
+    let cancelado = false
+    setCarregando(true)
+    calcularBussola2026Async(lang)
+      .then((r) => { if (!cancelado) setDados(r) })
+      .catch(() => { if (!cancelado) setDados(null) })
+      .finally(() => { if (!cancelado) setCarregando(false) })
+    return () => { cancelado = true }
+  }, [lang])
+
+  const transitos = dados?.transitos || []
+  const conceitos = dados?.conceitos || []
 
   return (
     <div style={{padding:'20px 20px 110px'}}>
+      <BotaoVoltar onVoltar={onVoltar} t={t} />
+
       <div style={{marginBottom:24}}>
         <h2 style={{fontSize:20,fontWeight:700,color:CORES.dourado,margin:'0 0 4px'}}>{t('ferramentasPremium.bussola.title')}</h2>
         <p style={{fontSize:13,color:CORES.brancoMuted,margin:0}}>
           {t('ferramentasPremium.bussola.subtitle')}
         </p>
+        {dados?.motor && !carregando && (
+          <p style={{fontSize:11,color:'#34D399',margin:'8px 0 0'}}>
+            ✓ {t('ferramentasPremium.bussola.motor', { motor: dados.motor })}
+          </p>
+        )}
       </div>
 
-      {mapaNatal && (
+      {carregando && (
+        <div style={{textAlign:'center',padding:'40px 20px',color:CORES.brancoMuted,fontSize:14}}>
+          {t('ferramentasPremium.bussola.calculating')}
+        </div>
+      )}
+
+      {!carregando && conceitos.length > 0 && (
+        <div style={{marginBottom:24}}>
+          <h3 style={{fontSize:14,fontWeight:700,color:CORES.dourado,margin:'0 0 12px'}}>
+            {t('ferramentasPremium.bussola.conceptsTitle')}
+          </h3>
+          <div style={{display:'flex',flexDirection:'column',gap:10}}>
+            {conceitos.map((c, i) => (
+              <div key={i} style={{
+                background:'rgba(255,255,255,0.04)',border:'1px solid rgba(223,183,108,0.15)',
+                borderRadius:12,padding:'12px 14px',
+              }}>
+                <div style={{fontSize:13,fontWeight:700,color:CORES.branco,marginBottom:6}}>
+                  {c.icon} {c.titulo}
+                </div>
+                <p style={{fontSize:12,color:CORES.brancoSuave,margin:0,lineHeight:1.65}}>{c.texto}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {mapaNatal && !carregando && (
         <div style={{background:'rgba(223,183,108,0.07)',border:`1px solid rgba(223,183,108,0.25)`,borderRadius:12,padding:'12px 16px',marginBottom:20,fontSize:12,color:CORES.brancoSuave}}>
           {t('ferramentasPremium.bussola.personalized', {
             solar: ts(mapaNatal.solar?.nome),
@@ -94,10 +121,13 @@ export function BussolaCosmica({ mapaNatal }) {
         </div>
       )}
 
+      {!carregando && (
       <div style={{display:'flex',flexDirection:'column',gap:10}}>
-        {TRANSITOS_2026.map((transito,i)=>{
+        {transitos.map((transito,i)=>{
           const esteMs = transito.mes.toLowerCase()===mesAtual.toLowerCase()
-          const relevante = calcularRelevancia(transito)
+          const relevante = mapaNatal && relevanciaParaMapa(transito, mapaNatal)
+            ? t('ferramentasPremium.bussola.relevant')
+            : ''
           const aberto = mesAberto===i
           return (
             <div key={i} onClick={()=>setMesAberto(aberto?null:i)} style={{
@@ -139,6 +169,7 @@ export function BussolaCosmica({ mapaNatal }) {
           )
         })}
       </div>
+      )}
     </div>
   )
 }

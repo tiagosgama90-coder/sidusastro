@@ -304,6 +304,9 @@ export default {
       planetIn: '{planeta} em {signo}',
       relevant: '⭐ Relevante para ti',
       affinity: '✦ Este trânsito tem afinidade directa com o teu Sol em {signo}. Presta especial atenção neste período.',
+      calculating: '⏳ A calcular trânsitos de 2026…',
+      conceptsTitle: 'Conceitos-chave de 2026',
+      motor: 'Motor: {motor}',
     },
     sinastria: {
       title: 'Radar de Afinidades',

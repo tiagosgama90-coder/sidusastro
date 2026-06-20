@@ -304,6 +304,9 @@ export default {
       planetIn: '{planeta} in {signo}',
       relevant: '⭐ Relevant for you',
       affinity: '✦ This transit has a direct affinity with your Sun in {signo}. Pay special attention during this period.',
+      calculating: '⏳ Calculating 2026 transits…',
+      conceptsTitle: 'Key concepts for 2026',
+      motor: 'Engine: {motor}',
     },
     sinastria: {
       title: 'Affinity Radar',

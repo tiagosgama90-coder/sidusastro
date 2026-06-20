@@ -2326,8 +2326,8 @@ function Paywall({ onVoltar, onPagar, onSucesso, isDesktop }) {
 }
 
 // ── Integração AI (servidor Netlify — chaves secretas) ─────────────────────────
-async function consultarSidus(pergunta, mapaNatal, historico, lang, idToken) {
-  return consultarOracleServidor(pergunta, mapaNatal, historico, lang, idToken)
+async function consultarSidus(pergunta, mapaNatal, historico, lang, idToken, clientPremium = false) {
+  return consultarOracleServidor(pergunta, mapaNatal, historico, lang, idToken, clientPremium)
 }
 
 function Chat({ mapaNatal, isPremium, userId, oracleRemotas, onOracleUsada, onUpgrade, obterIdToken }) {
@@ -2381,26 +2381,18 @@ function Chat({ mapaNatal, isPremium, userId, oracleRemotas, onOracleUsada, onUp
     setDigitando(true)
 
     const numAtual = perguntasUsadas
-    const idToken = obterIdToken ? await obterIdToken() : null
+    let idToken = obterIdToken ? await obterIdToken() : null
+    let resultado = null
 
-    if (!idToken) {
-      setDigitando(false)
-      setMensagens(prev => [...prev, {
-        id: Date.now()+1, autor: 'ia', aviso: true,
-        texto: t('oracle.sessionError'),
-      }])
-      return
-    }
-
-    const resultado = await consultarSidus(q, mapaNatal, historicoParaIA, lang, idToken)
-
-    if (resultado?.auth) {
-      setDigitando(false)
-      setMensagens(prev => [...prev, {
-        id: Date.now()+1, autor: 'ia', aviso: true,
-        texto: t('oracle.sessionError'),
-      }])
-      return
+    if (idToken) {
+      resultado = await consultarSidus(q, mapaNatal, historicoParaIA, lang, idToken, isPremium)
+      if (resultado?.auth && obterIdToken) {
+        const retry = await obterIdToken(true)
+        if (retry) {
+          resultado = await consultarSidus(q, mapaNatal, historicoParaIA, lang, retry, isPremium)
+          idToken = retry
+        }
+      }
     }
 
     if (resultado?.limite && !isPremium) {
@@ -3224,10 +3216,10 @@ export default function App() {
     } catch { /* offline */ }
   }, [utilizador])
 
-  const obterIdTokenOracle = useCallback(async () => {
+  const obterIdTokenOracle = useCallback(async (forcar = false) => {
     if (!utilizador) return null
     try {
-      return await utilizador.getIdToken()
+      return await utilizador.getIdToken(forcar === true)
     } catch {
       return null
     }

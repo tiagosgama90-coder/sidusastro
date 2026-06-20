@@ -23,13 +23,36 @@ export function getFirestore() {
   return admin.firestore()
 }
 
-export async function verifyIdToken(idToken) {
-  if (!ensureInit() || !idToken) return null
+async function verifyIdTokenViaRest(idToken) {
+  const apiKey = env('VITE_FIREBASE_API_KEY') || env('FIREBASE_API_KEY')
+  if (!apiKey || !idToken) return null
   try {
-    return await admin.auth().verifyIdToken(idToken)
+    const res = await fetch(
+      `https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=${apiKey}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ idToken }),
+      },
+    )
+    if (!res.ok) return null
+    const data = await res.json()
+    const user = data.users?.[0]
+    if (!user?.localId) return null
+    return { uid: user.localId, email: user.email || null }
   } catch {
     return null
   }
+}
+
+export async function verifyIdToken(idToken) {
+  if (!idToken) return null
+  if (ensureInit()) {
+    try {
+      return await admin.auth().verifyIdToken(idToken)
+    } catch { /* fallback REST */ }
+  }
+  return verifyIdTokenViaRest(idToken)
 }
 
 function premiumUntilFromExisting(existingUntil, dias = 30) {

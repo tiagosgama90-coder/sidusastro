@@ -16,19 +16,21 @@ async function postJson(path, body, idToken = null) {
   return { ok: true, ...data }
 }
 
-export async function consultarOracleServidor(pergunta, mapaNatal, historico, lang, idToken) {
+export async function consultarOracleServidor(pergunta, mapaNatal, historico, lang, idToken, clientPremium = false) {
   try {
     const data = await postJson('/api/oracle-chat', {
       pergunta,
       mapaNatal,
       historico,
       lang,
+      clientPremium,
     }, idToken)
     if (data.auth || (!data.ok && data.status === 401)) {
       return { auth: true, resposta: null }
     }
     if (data.limite) return { limite: true, usadas: data.usadas, max: data.max, resposta: null }
     if (!data.ok && data.status === 402) return { limite: true, usadas: data.usadas, max: data.max, resposta: null }
+    if (!data.ok) return { resposta: null, servidor: true }
     return {
       resposta: data.resposta || null,
       usadas: data.usadas,

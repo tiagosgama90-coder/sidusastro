@@ -19,7 +19,7 @@ export default async (req) => {
 
   try {
     const body = await req.json()
-    const { pergunta, mapaNatal, historico = [], lang = 'pt', idToken } = body
+    const { pergunta, mapaNatal, historico = [], lang = 'pt', idToken, clientPremium = false } = body
 
     if (!pergunta?.trim()) {
       return new Response(JSON.stringify({ error: 'Pergunta em falta' }), { status: 400, headers: corsHeaders })
@@ -39,16 +39,10 @@ export default async (req) => {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       })
     }
-    if (acesso.erro === 'db') {
-      return new Response(JSON.stringify({ error: 'Serviço indisponível' }), {
-        status: 503,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      })
-    }
+    const { uid, isPremium, usadas, degradado } = acesso
+    const premiumActivo = isPremium || (degradado === true && clientPremium === true)
 
-    const { uid, isPremium, usadas } = acesso
-
-    if (!isPremium && usadas >= MAX_ORACLE_GRATIS) {
+    if (!premiumActivo && usadas >= MAX_ORACLE_GRATIS) {
       return new Response(JSON.stringify({
         limite: true,
         usadas,
@@ -68,7 +62,7 @@ export default async (req) => {
       })
     }
 
-    const system = construirSistema(mapaNatal, lang, isPremium)
+    const system = construirSistema(mapaNatal, lang, premiumActivo)
     const messages = [
       ...historico.slice(-6).map((m) => ({
         role: m.autor === 'user' ? 'user' : 'assistant',
@@ -80,9 +74,9 @@ export default async (req) => {
     const resposta = await chatCompletion({
       system,
       messages,
-      maxTokens: isPremium ? 550 : 300,
-      temperature: isPremium ? 0.75 : 0.82,
-      tier: isPremium ? 'premium' : 'free',
+      maxTokens: premiumActivo ? 550 : 300,
+      temperature: premiumActivo ? 0.75 : 0.82,
+      tier: premiumActivo ? 'premium' : 'free',
       escopo: 'astrologia',
       lang,
     })
@@ -102,16 +96,16 @@ export default async (req) => {
       fonte = 'mapa'
     }
 
-    if (!isPremium) {
+    if (!premiumActivo) {
       await incrementarOraclePergunta(uid)
     }
 
     return new Response(JSON.stringify({
       resposta: respostaFinal,
       fonte,
-      usadas: isPremium ? usadas : usadas + 1,
+      usadas: premiumActivo ? usadas : usadas + 1,
       max: MAX_ORACLE_GRATIS,
-      isPremium,
+      isPremium: premiumActivo,
     }), {
       status: 200,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },

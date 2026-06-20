@@ -5,15 +5,7 @@
 
 import { planetaPorNome } from './casasPlacidus.js'
 import { getMapaCopy } from './i18n/mapaCopy.js'
-import { translatePlaneta } from './i18n/astro.js'
-
-function aspectoTenso(aspetos) {
-  const tensos = (aspetos || []).filter(a =>
-    a.aspecto === 'Quadratura' || a.aspecto === 'Oposicao' || a.aspecto === 'Oposição'
-  )
-  if (!tensos.length) return null
-  return tensos.sort((a, b) => parseFloat(a.orbe) - parseFloat(b.orbe))[0]
-}
+import { interpretarTranspessoal, gerarSinteseEvolutiva } from './mapaProfundo.js'
 
 function metaSigno(signo, casa, lang) {
   const C = getMapaCopy(lang)
@@ -55,14 +47,14 @@ export function gerarAnaliseCompleta(mapaNatal, planetas, aspetos = [], dados = 
   const pNep = planetaPorNome(planetas, 'Neptuno')
   const pPlu = planetaPorNome(planetas, 'Plutão')
 
-  const tenso = C.sinteseAspectoTenso(aspectoTenso(aspetos))
+  const sintese = gerarSinteseEvolutiva(mapaNatal, planetas, aspetos, lang)
 
   const blocosGeracionais = [
-    pUra && { subtitulo: L.urano, texto: C.paragrafoGeracional('Urano', pUra.signo?.nome, pUra.casa), meta: metaSigno(pUra.signo?.nome, pUra.casa, lang) },
-    pNep && { subtitulo: L.neptuno, texto: C.paragrafoGeracional('Neptuno', pNep.signo?.nome, pNep.casa), meta: metaSigno(pNep.signo?.nome, pNep.casa, lang) },
-    pPlu && { subtitulo: L.plutao, texto: C.paragrafoGeracional('Plutão', pPlu.signo?.nome, pPlu.casa), meta: metaSigno(pPlu.signo?.nome, pPlu.casa, lang) },
-    pNod && { subtitulo: L.nodo, texto: C.paragrafoGeracional('Nodo Norte', pNod.signo?.nome, pNod.casa), meta: metaSigno(pNod.signo?.nome, pNod.casa, lang) },
-    pChi && { subtitulo: L.quiron, texto: C.paragrafoGeracional('Quíron', pChi.signo?.nome, pChi.casa), meta: metaSigno(pChi.signo?.nome, pChi.casa, lang) },
+    pUra && { subtitulo: L.urano, texto: interpretarTranspessoal('Urano', pUra, mapaNatal, aspetos, planetas, lang), meta: metaSigno(pUra.signo?.nome, pUra.casa, lang) },
+    pNep && { subtitulo: L.neptuno, texto: interpretarTranspessoal('Neptuno', pNep, mapaNatal, aspetos, planetas, lang), meta: metaSigno(pNep.signo?.nome, pNep.casa, lang) },
+    pPlu && { subtitulo: L.plutao, texto: interpretarTranspessoal('Plutão', pPlu, mapaNatal, aspetos, planetas, lang), meta: metaSigno(pPlu.signo?.nome, pPlu.casa, lang) },
+    pNod && { subtitulo: L.nodo, texto: interpretarTranspessoal('Nodo Norte', pNod, mapaNatal, aspetos, planetas, lang), meta: metaSigno(pNod.signo?.nome, pNod.casa, lang) },
+    pChi && { subtitulo: L.quiron, texto: interpretarTranspessoal('Quíron', pChi, mapaNatal, aspetos, planetas, lang), meta: metaSigno(pChi.signo?.nome, pChi.casa, lang) },
   ].filter(Boolean)
 
   const seccoes = [
@@ -116,8 +108,8 @@ export function gerarAnaliseCompleta(mapaNatal, planetas, aspetos = [], dados = 
       id: blocosGeracionais.length > 0 ? 6 : 5,
       titulo: L.sec6,
       blocos: [
-        { subtitulo: `${L.tensoTitulo}: ${tenso.titulo}`, texto: tenso.texto, destaque: true },
-        { subtitulo: L.orientacao, texto: C.conselhoFinal(mapaNatal, planetas, planetaPorNome) + ' ' + tenso.conselho },
+        { subtitulo: `${L.tensoTitulo}: ${sintese.titulo}`, texto: sintese.texto, destaque: true },
+        { subtitulo: L.orientacao, texto: sintese.conselho },
       ],
     },
   ]
