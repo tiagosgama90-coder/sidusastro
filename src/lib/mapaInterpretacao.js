@@ -6,6 +6,10 @@
 import { planetaPorNome } from './casasPlacidus.js'
 import { getMapaCopy } from './i18n/mapaCopy.js'
 import { interpretarTranspessoal, gerarSinteseEvolutiva } from './mapaProfundo.js'
+import {
+  interpretarSolEssencia, interpretarLuaEssencia,
+  interpretarAscEssencia, interpretarBig3Essencia,
+} from './mapaEssencia.js'
 
 function metaSigno(signo, casa, lang) {
   const C = getMapaCopy(lang)
@@ -69,10 +73,10 @@ export function gerarAnaliseCompleta(mapaNatal, planetas, aspetos = [], dados = 
       id: 1,
       titulo: L.sec1,
       blocos: [
-        { subtitulo: L.sol, texto: C.paragrafoSol(sol, pSol?.casa), meta: metaSigno(sol, pSol?.casa, lang) },
-        { subtitulo: L.lua, texto: C.paragrafoLua(lua, pLua?.casa), meta: metaSigno(lua, pLua?.casa, lang) },
-        { subtitulo: L.asc, texto: C.paragrafoAsc(asc), meta: lang === 'en' ? `${C.sn(asc)} · House 1` : `${asc} · Casa 1` },
-        { subtitulo: L.big3, texto: C.dinamicaBig3(sol, lua, asc), destaque: true },
+        { subtitulo: L.sol, texto: interpretarSolEssencia(pSol, mapaNatal, aspetos, planetas, lang), meta: metaSigno(sol, pSol?.casa, lang) },
+        { subtitulo: L.lua, texto: interpretarLuaEssencia(pLua, mapaNatal, aspetos, planetas, lang), meta: metaSigno(lua, pLua?.casa, lang) },
+        { subtitulo: L.asc, texto: interpretarAscEssencia(asc, mapaNatal, aspetos, planetas, lang), meta: lang === 'en' ? `${C.sn(asc)} · House 1` : `${asc} · Casa 1` },
+        { subtitulo: L.big3, texto: interpretarBig3Essencia(mapaNatal, planetas, aspetos, lang), destaque: true },
       ],
     },
     {

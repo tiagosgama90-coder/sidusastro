@@ -77,11 +77,6 @@ export function BussolaCosmica({ mapaNatal, onVoltar }) {
         <p style={{fontSize:13,color:CORES.brancoMuted,margin:0}}>
           {t('ferramentasPremium.bussola.subtitle')}
         </p>
-        {dados?.motor && !carregando && (
-          <p style={{fontSize:11,color:'#34D399',margin:'8px 0 0'}}>
-            ✓ {t('ferramentasPremium.bussola.motor', { motor: dados.motor })}
-          </p>
-        )}
       </div>
 
       {carregando && (
