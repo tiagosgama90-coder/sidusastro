@@ -653,82 +653,206 @@ export function Numerologia({ dados, utilizador, mapaNatal, onVoltar }) {
     </div>
   )
 
-  const blocos = [
-    { key: 'caminhoVida', num: mapa.caminhoVida, label: t('ferramentasPremium.numerologia.lifePath') },
-    { key: 'destino', num: mapa.destino, composto: mapa.destinoComposto, label: t('ferramentasPremium.numerologia.destiny') },
-    { key: 'alma', num: mapa.alma, composto: mapa.almaComposto, label: t('ferramentasPremium.numerologia.soul') },
-    { key: 'personalidade', num: mapa.personalidade, composto: mapa.personalidadeComposto, label: t('ferramentasPremium.numerologia.personality') },
-    { key: 'anoPessoal', num: mapa.anoPessoal, label: t('ferramentasPremium.numerologia.personalYear') },
-    { key: 'mesPessoal', num: mapa.mesPessoal, label: t('ferramentasPremium.numerologia.personalMonth') },
-  ]
+  const labelsPilar = {
+    destino: t('ferramentasPremium.numerologia.destiny'),
+    alma: t('ferramentasPremium.numerologia.soul'),
+    personalidade: t('ferramentasPremium.numerologia.personality'),
+  }
+  const labelsCurto = {
+    destino: t('ferramentasPremium.numerologia.expressionShort'),
+    alma: t('ferramentasPremium.numerologia.soulShort'),
+    personalidade: t('ferramentasPremium.numerologia.personalityShort'),
+  }
 
   return (
-    <div style={{ padding: '20px 20px 110px' }}>
+    <div style={{ padding: '20px 20px 110px', maxWidth: 520, margin: '0 auto' }}>
       <BotaoVoltar onVoltar={onVoltar} t={t} />
       <h2 style={{ fontSize: 20, fontWeight: 700, color: CORES.dourado, marginBottom: 4 }}>{t('ferramentasPremium.numerologia.title')}</h2>
-      <p style={{ fontSize: 18, fontWeight: 600, color: CORES.branco, marginBottom: 4 }}>{resolvido.nome}</p>
-      <p style={{ fontSize: 12, color: '#34D399', marginBottom: 8 }}>{mapa.metodo}</p>
-      <p style={{ fontSize: 12, color: CORES.brancoMuted, marginBottom: 16, lineHeight: 1.65 }}>{mapa.sintese}</p>
+      <p style={{ fontSize: 18, fontWeight: 600, color: CORES.branco, marginBottom: 16 }}>{resolvido.nome}</p>
 
-      {mapa.harmonias?.length > 0 && (
-        <div style={{ background: 'rgba(139,92,246,0.1)', border: '1px solid rgba(139,92,246,0.25)', borderRadius: 14, padding: 16, marginBottom: 16 }}>
-          <div style={{ fontSize: 11, color: CORES.dourado, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 8 }}>{t('ferramentasPremium.numerologia.harmonies')}</div>
-          {mapa.harmonias.map((h, i) => (
-            <p key={i} style={{ fontSize: 13, color: CORES.brancoSuave, lineHeight: 1.65, margin: i ? '10px 0 0' : 0 }}>{h}</p>
-          ))}
-        </div>
+      {/* Visão geral — leitura */}
+      <SecaoNumerologia titulo={t('ferramentasPremium.numerologia.sectionOverview')}>
+        <p style={{ fontSize: 14, color: CORES.brancoSuave, lineHeight: 1.75, margin: 0 }}>{mapa.visaoGeral}</p>
+      </SecaoNumerologia>
+
+      {/* Resumo visual — 3 pilares */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10, marginBottom: 20 }}>
+        {mapa.pilares?.map((p) => (
+          <div key={p.id} style={{
+            background: 'rgba(255,255,255,0.04)', border: `1px solid ${p.cor}44`,
+            borderRadius: 14, padding: '14px 10px', textAlign: 'center',
+          }}>
+            <div style={{ fontSize: 22, marginBottom: 4 }}>{p.icone}</div>
+            <div style={{ fontSize: 28, fontWeight: 700, color: p.cor, lineHeight: 1 }}>{p.num}</div>
+            <div style={{ fontSize: 10, color: CORES.brancoMuted, marginTop: 6, textTransform: 'uppercase', letterSpacing: '0.06em' }}>{labelsPilar[p.id]}</div>
+            <div style={{ fontSize: 11, color: CORES.brancoSuave, marginTop: 4, lineHeight: 1.4 }}>{p.titulo}</div>
+          </div>
+        ))}
+      </div>
+
+      {/* Detalhe do nome — 3 blocos */}
+      <SecaoNumerologia titulo={t('ferramentasPremium.numerologia.sectionName')}>
+        {mapa.pilares?.map((p) => (
+          <BlocoNumerologia
+            key={p.id}
+            num={p.num}
+            label={labelsPilar[p.id]}
+            subtitulo={labelsCurto[p.id]}
+            titulo={p.titulo}
+            resumo={p.resumo}
+            espiritual={p.espiritual}
+            pratica={p.pratica}
+            reflexao={p.reflexao}
+            astro={p.astro}
+            cor={p.cor}
+            t={t}
+          />
+        ))}
+      </SecaoNumerologia>
+
+      {/* Caminho de vida — data de nascimento */}
+      {mapa.caminho && (
+        <SecaoNumerologia titulo={t('ferramentasPremium.numerologia.sectionPath')}>
+          <BlocoNumerologia
+            num={mapa.caminho.num}
+            label={t('ferramentasPremium.numerologia.lifePath')}
+            subtitulo={mapa.caminho.titulo}
+            titulo={mapa.caminho.titulo}
+            resumo={mapa.caminho.resumo}
+            espiritual={mapa.caminho.espiritual}
+            pratica={mapa.caminho.pratica}
+            reflexao={mapa.caminho.reflexao}
+            astro={mapa.caminho.astro}
+            cor="#60A5FA"
+            t={t}
+          />
+        </SecaoNumerologia>
       )}
 
+      {/* Ritmo actual */}
+      <SecaoNumerologia titulo={t('ferramentasPremium.numerologia.sectionRhythm')}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+          {[
+            { key: 'anoPessoal', label: t('ferramentasPremium.numerologia.personalYear'), num: mapa.anoPessoal },
+            { key: 'mesPessoal', label: t('ferramentasPremium.numerologia.personalMonth'), num: mapa.mesPessoal },
+          ].map((item) => (
+            <div key={item.key} style={{ background: 'rgba(255,255,255,0.04)', border: `1px solid ${CORES.vidroBorda}`, borderRadius: 12, padding: 14 }}>
+              <div style={{ fontSize: 10, color: CORES.dourado, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 6 }}>{item.label}</div>
+              <div style={{ fontSize: 26, fontWeight: 700, color: CORES.branco, marginBottom: 6 }}>{item.num}</div>
+              <p style={{ fontSize: 12, color: CORES.brancoMuted, lineHeight: 1.6, margin: 0 }}>{mapa.textos[item.key]}</p>
+            </div>
+          ))}
+        </div>
+      </SecaoNumerologia>
+
+      {/* Mapa das letras */}
       {mapa.letras?.length > 0 && (
-        <div style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${CORES.vidroBorda}`, borderRadius: 14, padding: 16, marginBottom: 16 }}>
-          <div style={{ fontSize: 11, color: CORES.dourado, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 10 }}>{t('ferramentasPremium.numerologia.letterKeys')}</div>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
-            {mapa.letras.map((l, i) => (
-              <span key={i} style={{ fontSize: 11, padding: '4px 8px', borderRadius: 8, background: 'rgba(223,183,108,0.1)', color: CORES.brancoSuave, border: '1px solid rgba(223,183,108,0.2)' }}>
-                {l.letra}={l.valor}
-              </span>
-            ))}
+        <SecaoNumerologia titulo={t('ferramentasPremium.numerologia.sectionLetters')}>
+          <div style={{ marginBottom: 14 }}>
+            <div style={{ fontSize: 11, color: '#A78BFA', marginBottom: 8, fontWeight: 600 }}>{t('ferramentasPremium.numerologia.vowels')}</div>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+              {(mapa.letrasSeparadas?.vogais || []).map((l, i) => (
+                <LetraChip key={`v${i}`} letra={l.letra} valor={l.valor} cor="#A78BFA" />
+              ))}
+            </div>
+          </div>
+          <div style={{ marginBottom: 14 }}>
+            <div style={{ fontSize: 11, color: '#34D399', marginBottom: 8, fontWeight: 600 }}>{t('ferramentasPremium.numerologia.consonants')}</div>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+              {(mapa.letrasSeparadas?.consoantes || []).map((l, i) => (
+                <LetraChip key={`c${i}`} letra={l.letra} valor={l.valor} cor="#34D399" />
+              ))}
+            </div>
           </div>
           {mapa.numeroDominante && (
-            <p style={{ fontSize: 12, color: CORES.brancoMuted, marginTop: 10, marginBottom: 0 }}>
+            <p style={{ fontSize: 13, color: CORES.brancoSuave, margin: '0 0 8px' }}>
               {t('ferramentasPremium.numerologia.dominant', { num: mapa.numeroDominante })}
             </p>
           )}
           {mapa.numerosEmFalta?.length > 0 && (
-            <p style={{ fontSize: 12, color: CORES.brancoMuted, marginTop: 8, marginBottom: 0 }}>
+            <p style={{ fontSize: 13, color: CORES.brancoMuted, margin: 0 }}>
               {t('ferramentasPremium.numerologia.karmicGaps', { nums: mapa.numerosEmFalta.join(', ') })}
             </p>
           )}
-        </div>
+        </SecaoNumerologia>
       )}
 
-      <p style={{ fontSize: 12, color: CORES.brancoMuted, marginBottom: 20 }}>{t('ferramentasPremium.numerologia.subtitleHint')}</p>
+      {/* Integração */}
+      {mapa.harmonias?.length > 0 && (
+        <SecaoNumerologia titulo={t('ferramentasPremium.numerologia.sectionIntegration')}>
+          {mapa.harmonias.map((h, i) => (
+            <p key={i} style={{ fontSize: 13, color: CORES.brancoSuave, lineHeight: 1.7, margin: i ? '12px 0 0' : 0 }}>{h}</p>
+          ))}
+        </SecaoNumerologia>
+      )}
 
-      {blocos.map((b) => (
-        <div key={b.key} style={{ background: 'rgba(255,255,255,0.04)', border: `1px solid ${CORES.vidroBorda}`, borderRadius: 14, padding: 18, marginBottom: 12 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 10 }}>
-            <div style={{ fontSize: 32, fontWeight: 700, color: CORES.dourado, minWidth: 44, textAlign: 'center' }}>{b.num}</div>
-            <div>
-              <div style={{ fontSize: 14, fontWeight: 700, color: CORES.branco }}>{b.label}</div>
-              {b.composto && (
-                <div style={{ fontSize: 11, color: CORES.brancoMuted, marginTop: 2 }}>
-                  {t('ferramentasPremium.numerologia.compound', { n: b.composto })}
-                </div>
-              )}
-            </div>
-          </div>
-          <p style={{ fontSize: 13, color: CORES.brancoSuave, lineHeight: 1.75, margin: 0 }}>{mapa.textos[b.key]}</p>
-        </div>
-      ))}
-
+      {/* Ciclos de vida */}
       {mapa.ciclos && (
-        <div style={{ background: 'rgba(223,183,108,0.06)', border: `1px solid rgba(223,183,108,0.25)`, borderRadius: 14, padding: 18 }}>
+        <div style={{ background: 'rgba(223,183,108,0.06)', border: '1px solid rgba(223,183,108,0.25)', borderRadius: 14, padding: 18, marginTop: 16 }}>
           <div style={{ fontSize: 11, color: CORES.dourado, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 10 }}>{t('ferramentasPremium.numerologia.lifeCycles')}</div>
           <p style={{ fontSize: 13, color: CORES.brancoSuave, lineHeight: 1.7, margin: 0 }}>
             {t('ferramentasPremium.numerologia.cyclesDesc', {
               first: mapa.ciclos.primeiro, second: mapa.ciclos.segundo, third: mapa.ciclos.terceiro,
             })}
           </p>
+        </div>
+      )}
+    </div>
+  )
+}
+
+function SecaoNumerologia({ titulo, children }) {
+  return (
+    <div style={{ marginBottom: 24 }}>
+      <div style={{ fontSize: 11, color: CORES.dourado, textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 700, marginBottom: 12, paddingBottom: 8, borderBottom: `1px solid ${CORES.vidroBorda}` }}>
+        {titulo}
+      </div>
+      {children}
+    </div>
+  )
+}
+
+function LetraChip({ letra, valor, cor }) {
+  return (
+    <span style={{ fontSize: 12, padding: '5px 10px', borderRadius: 8, background: `${cor}18`, color: CORES.brancoSuave, border: `1px solid ${cor}44`, fontWeight: 600 }}>
+      {letra} <span style={{ opacity: 0.6, fontWeight: 400 }}>· {valor}</span>
+    </span>
+  )
+}
+
+function BlocoNumerologia({ num, label, subtitulo, resumo, espiritual, pratica, reflexao, astro, cor, t }) {
+  return (
+    <div style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${cor}33`, borderRadius: 14, padding: 16, marginBottom: 12 }}>
+      <div style={{ display: 'flex', alignItems: 'flex-start', gap: 14, marginBottom: 12 }}>
+        <div style={{ fontSize: 32, fontWeight: 700, color: cor, minWidth: 40, textAlign: 'center', lineHeight: 1 }}>{num}</div>
+        <div>
+          <div style={{ fontSize: 13, fontWeight: 700, color: CORES.branco }}>{label}</div>
+          <div style={{ fontSize: 11, color: CORES.brancoMuted, marginTop: 2 }}>{subtitulo}</div>
+        </div>
+      </div>
+      {resumo && <p style={{ fontSize: 14, color: CORES.branco, fontWeight: 500, lineHeight: 1.6, margin: '0 0 12px' }}>{resumo}</p>}
+      {espiritual && (
+        <div style={{ marginBottom: 10 }}>
+          <div style={{ fontSize: 10, color: cor, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 4 }}>{t('ferramentasPremium.numerologia.labelSpiritual')}</div>
+          <p style={{ fontSize: 13, color: CORES.brancoSuave, lineHeight: 1.75, margin: 0 }}>{espiritual}</p>
+        </div>
+      )}
+      {pratica && (
+        <div style={{ background: 'rgba(255,255,255,0.03)', borderRadius: 10, padding: '10px 12px', marginBottom: 10 }}>
+          <div style={{ fontSize: 10, color: '#34D399', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 4 }}>{t('ferramentasPremium.numerologia.labelPractice')}</div>
+          <p style={{ fontSize: 13, color: CORES.brancoSuave, lineHeight: 1.65, margin: 0 }}>{pratica}</p>
+        </div>
+      )}
+      {reflexao && (
+        <div style={{ background: 'rgba(139,92,246,0.08)', borderRadius: 10, padding: '10px 12px', marginBottom: 10 }}>
+          <div style={{ fontSize: 10, color: '#A78BFA', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 4 }}>{t('ferramentasPremium.numerologia.labelReflection')}</div>
+          <p style={{ fontSize: 13, color: CORES.brancoSuave, lineHeight: 1.65, margin: 0, fontStyle: 'italic' }}>{reflexao}</p>
+        </div>
+      )}
+      {astro?.texto && (
+        <div style={{ borderTop: `1px solid ${CORES.vidroBorda}`, paddingTop: 10, marginTop: 4 }}>
+          <div style={{ fontSize: 10, color: CORES.dourado, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 4 }}>{t('ferramentasPremium.numerologia.labelAstroBridge')}</div>
+          <p style={{ fontSize: 12, color: CORES.brancoMuted, lineHeight: 1.65, margin: 0 }}>{astro.texto}</p>
         </div>
       )}
     </div>
