@@ -9,6 +9,10 @@ import { useState, useEffect } from 'react'
 import { useLanguage } from '../lib/i18n/LanguageContext.jsx'
 import { localizeArcano, TIPOS_EN, POSICOES_EN } from '../lib/i18n/tarotArcana.js'
 import { PRECO_TAROT } from '../lib/pricing.js'
+import {
+  leituraDiariaAtiva, podeFazerLeituraDiaria, msAteProximaDiaria,
+  formatarTempoRestante, registarLeituraDiaria,
+} from '../lib/tarotDiario.js'
 
 const CORES = {
   fundo:'#0B071E', dourado:'#DFB76C', douradoEscuro:'#B8944F',
@@ -332,6 +336,12 @@ export function EcraTarot({ mapaNatal, isPremium, userId, leiturasTarotUsadas = 
     }
   }, [])
 
+  useEffect(() => {
+    if (fase !== 'diaria-bloqueada' && fase !== 'seleccionar') return undefined
+    const id = setInterval(() => setTick((n) => n + 1), 30000)
+    return () => clearInterval(id)
+  }, [fase])
+
   const tipo = TIPOS.find(t=>t.id===tipoId)
   const tipoLabel = tipo && lang === 'en' && TIPOS_EN[tipo.id]
     ? { ...tipo, nome: TIPOS_EN[tipo.id].nome, desc: TIPOS_EN[tipo.id].desc }
@@ -345,6 +355,11 @@ export function EcraTarot({ mapaNatal, isPremium, userId, leiturasTarotUsadas = 
   const refrescar = () => setTick(n => n + 1)
 
   const iniciarLeitura = (t) => {
+    if (t.id === 'diaria' && !podeFazerLeituraDiaria(userId)) {
+      setTipoId('diaria')
+      setFase('diaria-bloqueada')
+      return
+    }
     setLeituraPaga(false)
     setTipoId(t.id)
     setPergunta('')
@@ -356,7 +371,8 @@ export function EcraTarot({ mapaNatal, isPremium, userId, leiturasTarotUsadas = 
 
   const comecarEmbaralhar = () => {
     if (!tipo?.n) return
-    if (!isPremium && !leituraPaga && podeLerGratis(isPremium, userId, leiturasTarotUsadas)) {
+    const isDiaria = tipoId === 'diaria'
+    if (!isDiaria && !isPremium && !leituraPaga && podeLerGratis(isPremium, userId, leiturasTarotUsadas)) {
       const n = registarLeituraGratis(userId)
       onLeituraGratisUsada?.(n)
       refrescar()
@@ -384,7 +400,15 @@ export function EcraTarot({ mapaNatal, isPremium, userId, leiturasTarotUsadas = 
     if(reveladas[i]) return
     const novo = [...reveladas]; novo[i]=true; setReveladas(novo)
     if(novo.every(Boolean)) {
-      setResultado(interpretarLeitura(cartas, tipoId, pergunta, mapaNatal, lang, t))
+      const res = interpretarLeitura(cartas, tipoId, pergunta, mapaNatal, lang, t)
+      setResultado(res)
+      if (tipoId === 'diaria') {
+        registarLeituraDiaria(userId, {
+          cartas: cartas.map((c) => ({ id: c.id, nome: c.nome, invertida: !!c.invertida })),
+          pergunta,
+          detalhe: res?.detalhe || '',
+        })
+      }
     }
   }
 
@@ -401,8 +425,24 @@ export function EcraTarot({ mapaNatal, isPremium, userId, leiturasTarotUsadas = 
   }
 
   // ────────────────────────── RENDER ────────────────────────────────────────
+  if (fase === 'diaria-bloqueada') {
+    const ativa = leituraDiariaAtiva(userId)
+    const ms = msAteProximaDiaria(userId)
+    return (
+      <TelaDiariaBloqueada
+        t={t}
+        lang={lang}
+        userId={userId}
+        ativa={ativa}
+        msRestante={ms}
+        tick={tick}
+        onVoltar={voltar}
+      />
+    )
+  }
+
   if (fase==='seleccionar') return (
-    <TelaSeleccionar tipos={TIPOS.map(t => lang === 'en' && TIPOS_EN[t.id] ? { ...t, nome: TIPOS_EN[t.id].nome, desc: TIPOS_EN[t.id].desc } : t)} lang={lang} t={t} onSeleccionar={iniciarLeitura} isPremium={isPremium} gratisEsgotada={gratisEsgotada} restantes={restantes} tick={tick} onVoltar={onVoltar}/>
+    <TelaSeleccionar tipos={TIPOS.map(t => lang === 'en' && TIPOS_EN[t.id] ? { ...t, nome: TIPOS_EN[t.id].nome, desc: TIPOS_EN[t.id].desc } : t)} lang={lang} t={t} userId={userId} onSeleccionar={iniciarLeitura} isPremium={isPremium} gratisEsgotada={gratisEsgotada} restantes={restantes} tick={tick} onVoltar={onVoltar}/>
   )
 
   if (fase==='pergunta') return (
@@ -441,8 +481,56 @@ export function EcraTarot({ mapaNatal, isPremium, userId, leiturasTarotUsadas = 
 }
 
 // ── Sub-telas ─────────────────────────────────────────────────────────────────
-function TelaSeleccionar({ tipos, onSeleccionar, isPremium, gratisEsgotada, restantes, tick, onVoltar, t }) {
+function TelaDiariaBloqueada({ t, lang, ativa, msRestante, onVoltar }) {
+  const cartaSalva = ativa?.cartas?.[0]
+  const arcano = cartaSalva ? ARCANOS.find((a) => a.id === cartaSalva.id) : null
+  const carta = arcano ? { ...arcano, invertida: !!cartaSalva.invertida, invertidaLabel: cartaSalva.invertida ? t('tarot.reversed') : '' } : null
+
+  return (
+    <div style={{ padding: '20px 20px 110px' }}>
+      <button type="button" onClick={onVoltar} style={{ background: 'none', border: 'none', color: CORES.dourado, cursor: 'pointer', marginBottom: 12, fontSize: 13 }}>
+        {t('common.back')}
+      </button>
+      <div style={{
+        background: 'linear-gradient(135deg,rgba(239,68,68,0.08),rgba(223,183,108,0.06))',
+        border: '1px solid rgba(239,68,68,0.25)', borderRadius: 14, padding: '16px 18px', marginBottom: 18,
+      }}>
+        <div style={{ fontSize: 10, color: '#F87171', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 6, fontWeight: 700 }}>
+          {t('tarot.dailyLocked')}
+        </div>
+        <p style={{ fontSize: 13, color: CORES.brancoMuted, margin: '0 0 10px', lineHeight: 1.65 }}>{t('tarot.dailyLockedDesc')}</p>
+        <p style={{ fontSize: 14, fontWeight: 600, color: CORES.dourado, margin: 0 }}>
+          {t('tarot.dailyNextIn', { time: formatarTempoRestante(msRestante, lang) })}
+        </p>
+      </div>
+
+      {carta && (
+        <div style={{ background: 'rgba(255,255,255,0.04)', border: `1px solid ${CORES.vidroBorda}`, borderRadius: 14, padding: 18, marginBottom: 16, textAlign: 'center' }}>
+          <div style={{ fontSize: 11, color: CORES.dourado, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 12 }}>{t('tarot.dailySaved')}</div>
+          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 12 }}>
+            <CartaSVG carta={localizeArcano(carta, lang)} size={110} />
+          </div>
+          <div style={{ fontSize: 16, fontWeight: 700, color: CORES.branco }}>{localizeArcano(carta, lang).nome}</div>
+          {carta.invertida && <div style={{ fontSize: 11, color: '#F87171', marginTop: 4 }}>{t('tarot.reversed')}</div>}
+        </div>
+      )}
+
+      {ativa?.detalhe && (
+        <div style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${CORES.vidroBorda}`, borderRadius: 14, padding: 16, marginBottom: 16 }}>
+          <p style={{ fontSize: 13, color: CORES.brancoSuave, lineHeight: 1.75, margin: 0, whiteSpace: 'pre-wrap' }}>{ativa.detalhe}</p>
+        </div>
+      )}
+
+      <button type="button" onClick={onVoltar} style={{ ...btnDourado, width: '100%' }}>
+        {t('common.back')}
+      </button>
+    </div>
+  )
+}
+
+function TelaSeleccionar({ tipos, onSeleccionar, isPremium, gratisEsgotada, restantes, tick, onVoltar, userId, t }) {
   void tick
+  const diariaAtiva = !podeFazerLeituraDiaria(userId)
   return (
     <div style={{ padding:'20px 20px 110px' }}>
       {onVoltar && (
@@ -473,22 +561,31 @@ function TelaSeleccionar({ tipos, onSeleccionar, isPremium, gratisEsgotada, rest
       <div style={{display:'flex',flexDirection:'column',gap:10}}>
         {tipos.map(tipo=>(
           <button key={tipo.id} type="button" onClick={()=>onSeleccionar(tipo)} style={{
-            background: 'rgba(255,255,255,0.04)',
-            border:'1px solid rgba(223,183,108,0.18)',
+            background: tipo.id === 'diaria' && diariaAtiva ? 'rgba(255,255,255,0.02)' : 'rgba(255,255,255,0.04)',
+            border: tipo.id === 'diaria' && diariaAtiva ? '1px solid rgba(239,68,68,0.25)' : '1px solid rgba(223,183,108,0.18)',
             borderRadius:14,padding:'15px 18px',cursor:'pointer',textAlign:'left',
             display:'flex',alignItems:'center',gap:14,
+            opacity: tipo.id === 'diaria' && diariaAtiva ? 0.85 : 1,
           }}>
             <span style={{fontSize:28}}>{tipo.icone}</span>
             <div style={{flex:1}}>
               <div style={{fontSize:14,fontWeight:600,color:CORES.branco}}>{tipo.nome}</div>
               <div style={{fontSize:11,color:CORES.brancoMuted}}>{tipo.desc}</div>
-              {!isPremium && (
+              {tipo.id === 'diaria' ? (
+                <div style={{fontSize:10,marginTop:4,color: diariaAtiva ? '#F87171' : '#34D399'}}>
+                  {diariaAtiva
+                    ? t('tarot.dailyNextIn', { time: formatarTempoRestante(msAteProximaDiaria(userId), lang) })
+                    : t('tarot.dailyOnce')}
+                </div>
+              ) : !isPremium && (
                 <div style={{fontSize:10,marginTop:4,color: gratisEsgotada ? '#F87171' : '#34D399'}}>
                   {gratisEsgotada ? t('tarot.paidOption') : t('tarot.includedFree', { max: MAX_LEITURAS_GRATIS })}
                 </div>
               )}
             </div>
-            <div style={{fontSize:11,color:CORES.dourado,fontWeight:700}}>{tipo.n > 1 ? t('tarot.cardsPlural', { n: tipo.n }) : t('tarot.cards', { n: tipo.n })}</div>
+            <div style={{fontSize:11,color:CORES.dourado,fontWeight:700}}>
+              {tipo.id === 'diaria' ? t('tarot.dailyBadge') : (tipo.n > 1 ? t('tarot.cardsPlural', { n: tipo.n }) : t('tarot.cards', { n: tipo.n }))}
+            </div>
           </button>
         ))}
       </div>

@@ -295,6 +295,12 @@ export default {
     synthesisAmorChallenge: 'There are challenges to resolve before moving forward.',
     synthesisGeral: '✦ Synthesis: Your transformation cycle has roots in {root}, grows in the present through {present}, and points toward {future}.',
     synthesisCigano: '✦ Synthesis: The five cards form a map: the starting point is {start}, the destination is {end}. The path between them requires {path}.',
+    dailyOnce: 'Once per day · 24 h',
+    dailyLocked: 'Daily reading already revealed',
+    dailyLockedDesc: 'You can only shuffle once every 24 hours — premium or not. Today\'s card stays until tomorrow.',
+    dailyNextIn: 'Next reading in {time}',
+    dailySaved: 'Your card for today',
+    dailyBadge: '24 h',
   },
   ferramentasPremium: {
     bussola: {
@@ -353,6 +359,11 @@ export default {
       personalMonth: 'Personal Month',
       lifeCycles: 'Life Cycles',
       cyclesDesc: 'First cycle until age {first} · Second cycle {second} years · Third cycle from age {third}. Each phase brings distinct lessons on the evolutionary path.',
+      harmonies: 'Vibration harmonies',
+      letterKeys: 'Balliett keys — name letters',
+      dominant: 'Dominant number in vibration: {num}',
+      karmicGaps: 'Missing digits (karmic lessons): {nums}',
+      compound: 'Compound vibration: {n}',
     },
     sonhos: {
       title: 'Dream Interpretation',

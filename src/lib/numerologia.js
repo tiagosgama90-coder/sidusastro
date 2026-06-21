@@ -7,6 +7,10 @@ function reduzir(n) {
   return v
 }
 
+function somaBruta(n) {
+  return Math.abs(Math.floor(n))
+}
+
 const TABELA = {
   a:1,b:2,c:3,d:4,e:5,f:6,g:7,h:8,i:9,j:1,k:2,l:3,m:4,n:5,o:6,p:7,q:8,r:9,
   s:1,t:2,u:3,v:4,w:5,x:6,y:7,z:8,
@@ -22,14 +26,49 @@ function valorLetra(ch) {
 function somaNome(nome, filtro) {
   const limpo = (nome || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '')
   let total = 0
+  const letras = []
   for (const ch of limpo) {
     if (!/[a-zA-ZçÇ]/.test(ch)) continue
     const v = valorLetra(ch)
     if (filtro === 'vogais' && !VOGAIS.has(ch.toLowerCase())) continue
     if (filtro === 'consoantes' && VOGAIS.has(ch.toLowerCase())) continue
     total += v
+    letras.push({ letra: ch.toUpperCase(), valor: v })
   }
-  return reduzir(total)
+  return { total, letras, reduzido: reduzir(total) }
+}
+
+function analisarNome(nome) {
+  const completo = somaNome(nome)
+  const vogais = somaNome(nome, 'vogais')
+  const consoantes = somaNome(nome, 'consoantes')
+
+  const freq = {}
+  for (const l of completo.letras) {
+    const r = reduzir(l.valor)
+    freq[r] = (freq[r] || 0) + 1
+  }
+  let numeroDominante = null
+  let maxF = 0
+  for (const [k, v] of Object.entries(freq)) {
+    if (v > maxF) { maxF = v; numeroDominante = Number(k) }
+  }
+
+  const presentes = new Set(Object.keys(freq).map(Number))
+  const numerosEmFalta = [1, 2, 3, 4, 5, 6, 7, 8, 9].filter((n) => !presentes.has(n))
+
+  return {
+    destino: completo.reduzido,
+    destinoComposto: somaBruta(completo.total),
+    alma: vogais.reduzido,
+    almaComposto: somaBruta(vogais.total),
+    personalidade: consoantes.reduzido,
+    personalidadeComposto: somaBruta(consoantes.total),
+    vibracaoTotal: somaBruta(completo.total),
+    letras: completo.letras,
+    numeroDominante: maxF > 1 ? numeroDominante : null,
+    numerosEmFalta,
+  }
 }
 
 function caminhoVida(dataISO) {
@@ -89,33 +128,43 @@ const SIGNIFICADOS_EN = {
   33: 'Master of compassion and teaching. Loving service as the highest path expression.',
 }
 
-export function calcularMapaNumerologia(nome, dataISO, lang = 'pt') {
+import { enriquecerMapaNumerologia } from './numerologiaInterpretacao.js'
+
+export function calcularMapaNumerologia(nome, dataISO, lang = 'pt', mapaNatal = null) {
   const sig = lang === 'en' ? SIGNIFICADOS_EN : SIGNIFICADOS_PT
+  const nomeData = analisarNome(nome)
   const caminho = caminhoVida(dataISO)
-  const destino = somaNome(nome)
-  const alma = somaNome(nome, 'vogais')
-  const personalidade = somaNome(nome, 'consoantes')
   const ano = anoPessoal(dataISO)
   const mes = mesPessoal(dataISO)
   const ciclos = cicloVida(dataISO)
 
   const desc = (n) => sig[n] || sig[reduzir(n)] || '—'
 
-  return {
+  const base = {
+    nome,
     caminhoVida: caminho,
-    destino,
-    alma,
-    personalidade,
+    destino: nomeData.destino,
+    destinoComposto: nomeData.destinoComposto,
+    alma: nomeData.alma,
+    almaComposto: nomeData.almaComposto,
+    personalidade: nomeData.personalidade,
+    personalidadeComposto: nomeData.personalidadeComposto,
+    vibracaoTotal: nomeData.vibracaoTotal,
+    letras: nomeData.letras,
+    numeroDominante: nomeData.numeroDominante,
+    numerosEmFalta: nomeData.numerosEmFalta,
     anoPessoal: ano,
     mesPessoal: mes,
     ciclos,
     textos: {
       caminhoVida: desc(caminho),
-      destino: desc(destino),
-      alma: desc(alma),
-      personalidade: desc(personalidade),
+      destino: desc(nomeData.destino),
+      alma: desc(nomeData.alma),
+      personalidade: desc(nomeData.personalidade),
       anoPessoal: desc(ano),
       mesPessoal: desc(mes),
     },
   }
+
+  return enriquecerMapaNumerologia(base, nome, lang, mapaNatal)
 }

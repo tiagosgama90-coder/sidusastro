@@ -643,7 +643,7 @@ export function Numerologia({ dados, utilizador, mapaNatal, onVoltar }) {
   const [manual, setManual] = useState(null)
   const resolvido = manual || resolverDadosFerramentas(dados, utilizador, mapaNatal)
   const mapa = dadosNumerologiaProntos(resolvido)
-    ? calcularMapaNumerologia(resolvido.nome, resolvido.data, lang)
+    ? calcularMapaNumerologia(resolvido.nome, resolvido.data, lang, mapaNatal)
     : null
 
   if (!mapa) return (
@@ -655,9 +655,9 @@ export function Numerologia({ dados, utilizador, mapaNatal, onVoltar }) {
 
   const blocos = [
     { key: 'caminhoVida', num: mapa.caminhoVida, label: t('ferramentasPremium.numerologia.lifePath') },
-    { key: 'destino', num: mapa.destino, label: t('ferramentasPremium.numerologia.destiny') },
-    { key: 'alma', num: mapa.alma, label: t('ferramentasPremium.numerologia.soul') },
-    { key: 'personalidade', num: mapa.personalidade, label: t('ferramentasPremium.numerologia.personality') },
+    { key: 'destino', num: mapa.destino, composto: mapa.destinoComposto, label: t('ferramentasPremium.numerologia.destiny') },
+    { key: 'alma', num: mapa.alma, composto: mapa.almaComposto, label: t('ferramentasPremium.numerologia.soul') },
+    { key: 'personalidade', num: mapa.personalidade, composto: mapa.personalidadeComposto, label: t('ferramentasPremium.numerologia.personality') },
     { key: 'anoPessoal', num: mapa.anoPessoal, label: t('ferramentasPremium.numerologia.personalYear') },
     { key: 'mesPessoal', num: mapa.mesPessoal, label: t('ferramentasPremium.numerologia.personalMonth') },
   ]
@@ -667,15 +667,57 @@ export function Numerologia({ dados, utilizador, mapaNatal, onVoltar }) {
       <BotaoVoltar onVoltar={onVoltar} t={t} />
       <h2 style={{ fontSize: 20, fontWeight: 700, color: CORES.dourado, marginBottom: 4 }}>{t('ferramentasPremium.numerologia.title')}</h2>
       <p style={{ fontSize: 18, fontWeight: 600, color: CORES.branco, marginBottom: 4 }}>{resolvido.nome}</p>
+      <p style={{ fontSize: 12, color: '#34D399', marginBottom: 8 }}>{mapa.metodo}</p>
+      <p style={{ fontSize: 12, color: CORES.brancoMuted, marginBottom: 16, lineHeight: 1.65 }}>{mapa.sintese}</p>
+
+      {mapa.harmonias?.length > 0 && (
+        <div style={{ background: 'rgba(139,92,246,0.1)', border: '1px solid rgba(139,92,246,0.25)', borderRadius: 14, padding: 16, marginBottom: 16 }}>
+          <div style={{ fontSize: 11, color: CORES.dourado, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 8 }}>{t('ferramentasPremium.numerologia.harmonies')}</div>
+          {mapa.harmonias.map((h, i) => (
+            <p key={i} style={{ fontSize: 13, color: CORES.brancoSuave, lineHeight: 1.65, margin: i ? '10px 0 0' : 0 }}>{h}</p>
+          ))}
+        </div>
+      )}
+
+      {mapa.letras?.length > 0 && (
+        <div style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${CORES.vidroBorda}`, borderRadius: 14, padding: 16, marginBottom: 16 }}>
+          <div style={{ fontSize: 11, color: CORES.dourado, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 10 }}>{t('ferramentasPremium.numerologia.letterKeys')}</div>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+            {mapa.letras.map((l, i) => (
+              <span key={i} style={{ fontSize: 11, padding: '4px 8px', borderRadius: 8, background: 'rgba(223,183,108,0.1)', color: CORES.brancoSuave, border: '1px solid rgba(223,183,108,0.2)' }}>
+                {l.letra}={l.valor}
+              </span>
+            ))}
+          </div>
+          {mapa.numeroDominante && (
+            <p style={{ fontSize: 12, color: CORES.brancoMuted, marginTop: 10, marginBottom: 0 }}>
+              {t('ferramentasPremium.numerologia.dominant', { num: mapa.numeroDominante })}
+            </p>
+          )}
+          {mapa.numerosEmFalta?.length > 0 && (
+            <p style={{ fontSize: 12, color: CORES.brancoMuted, marginTop: 8, marginBottom: 0 }}>
+              {t('ferramentasPremium.numerologia.karmicGaps', { nums: mapa.numerosEmFalta.join(', ') })}
+            </p>
+          )}
+        </div>
+      )}
+
       <p style={{ fontSize: 12, color: CORES.brancoMuted, marginBottom: 20 }}>{t('ferramentasPremium.numerologia.subtitleHint')}</p>
 
       {blocos.map((b) => (
         <div key={b.key} style={{ background: 'rgba(255,255,255,0.04)', border: `1px solid ${CORES.vidroBorda}`, borderRadius: 14, padding: 18, marginBottom: 12 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 10 }}>
             <div style={{ fontSize: 32, fontWeight: 700, color: CORES.dourado, minWidth: 44, textAlign: 'center' }}>{b.num}</div>
-            <div style={{ fontSize: 14, fontWeight: 700, color: CORES.branco }}>{b.label}</div>
+            <div>
+              <div style={{ fontSize: 14, fontWeight: 700, color: CORES.branco }}>{b.label}</div>
+              {b.composto && (
+                <div style={{ fontSize: 11, color: CORES.brancoMuted, marginTop: 2 }}>
+                  {t('ferramentasPremium.numerologia.compound', { n: b.composto })}
+                </div>
+              )}
+            </div>
           </div>
-          <p style={{ fontSize: 13, color: CORES.brancoSuave, lineHeight: 1.7, margin: 0 }}>{mapa.textos[b.key]}</p>
+          <p style={{ fontSize: 13, color: CORES.brancoSuave, lineHeight: 1.75, margin: 0 }}>{mapa.textos[b.key]}</p>
         </div>
       ))}
 

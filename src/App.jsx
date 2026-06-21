@@ -2746,7 +2746,7 @@ export default function App() {
     if (destino === 'onboarding' && utilizador && contaConfigurada) {
       destino = 'home'
     }
-    if ((destino === 'bussola' || destino === 'sinastria') && !acessoVip) {
+    if ((destino === 'bussola' || destino === 'sinastria' || destino === 'numerologia') && !acessoVip) {
       destino = 'paywall'
     }
     setPasso(destino)

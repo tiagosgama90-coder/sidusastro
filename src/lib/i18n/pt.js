@@ -295,6 +295,12 @@ export default {
     synthesisAmorChallenge: 'Existem desafios a resolver antes de avançar.',
     synthesisGeral: '✦ Síntese: O teu ciclo de transformação tem raízes no {root}, cresce no presente através de {present}, e aponta para {future}.',
     synthesisCigano: '✦ Síntese: As cinco cartas formam um mapa: o ponto de partida é {start}, o destino é {end}. O caminho entre eles exige {path}.',
+    dailyOnce: '1× por dia · 24 h',
+    dailyLocked: 'Leitura diária já revelada',
+    dailyLockedDesc: 'Só podes baralhar uma vez a cada 24 horas — premium ou não. A carta de hoje permanece até amanhã.',
+    dailyNextIn: 'Próxima leitura em {time}',
+    dailySaved: 'A tua carta de hoje',
+    dailyBadge: '24 h',
   },
   ferramentasPremium: {
     bussola: {
@@ -353,6 +359,11 @@ export default {
       personalMonth: 'Mês Pessoal',
       lifeCycles: 'Ciclos de Vida',
       cyclesDesc: 'Primeiro ciclo até aos {first} anos · Segundo ciclo {second} anos · Terceiro ciclo a partir dos {third} anos. Cada fase traz lições distintas no caminho evolutivo.',
+      harmonies: 'Harmonias da vibração',
+      letterKeys: 'Chaves Balliett — letras do nome',
+      dominant: 'Número dominante na vibração: {num}',
+      karmicGaps: 'Algarismos em falta (lições kármicas): {nums}',
+      compound: 'Vibração composta: {n}',
     },
     sonhos: {
       title: 'Interpretação de Sonhos',
