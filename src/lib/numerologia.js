@@ -1,10 +1,26 @@
 /** Redução numerológica (mantém 11, 22, 33 como mestres). */
-function reduzir(n) {
+export function reduzir(n) {
   let v = Math.abs(Math.floor(n))
   while (v > 9 && v !== 11 && v !== 22 && v !== 33) {
     v = String(v).split('').reduce((s, d) => s + Number(d), 0)
   }
   return v
+}
+
+/** Passos da redução — ex.: 25 → [25, 7] */
+export function passosReducao(n) {
+  const passos = []
+  let v = Math.abs(Math.floor(n))
+  passos.push(v)
+  while (v > 9 && v !== 11 && v !== 22 && v !== 33) {
+    v = String(v).split('').reduce((s, d) => s + Number(d), 0)
+    passos.push(v)
+  }
+  return passos
+}
+
+export function isNumeroMestre(n) {
+  return n === 11 || n === 22 || n === 33
 }
 
 function somaBruta(n) {
@@ -83,11 +99,62 @@ function anoPessoal(dataISO, ano = new Date().getFullYear()) {
   return reduzir(d + m + ano)
 }
 
-function mesPessoal(dataISO, ref = new Date()) {
-  if (!dataISO) return null
-  const [, m, d] = dataISO.split('-').map(Number)
-  return reduzir(d + m + ref.getFullYear())
+function mesPessoal(dataISO, anoPessoalNum, ref = new Date()) {
+  if (!dataISO || anoPessoalNum == null) return null
+  const mesCalendario = ref.getMonth() + 1
+  return reduzir(anoPessoalNum + mesCalendario)
 }
+
+function buildCalculoLetras(letras, reduzido) {
+  if (!letras?.length) return null
+  const total = letras.reduce((s, l) => s + l.valor, 0)
+  return {
+    partes: letras.map((l) => ({ letra: l.letra, valor: l.valor })),
+    total,
+    passos: passosReducao(total),
+    resultado: reduzido,
+    mestre: isNumeroMestre(reduzido),
+  }
+}
+
+function buildCalculoSoma(partes, total, reduzido) {
+  return {
+    partes,
+    total,
+    passos: passosReducao(total),
+    resultado: reduzido,
+    mestre: isNumeroMestre(reduzido),
+  }
+}
+
+function buildCalculoData(dataISO) {
+  if (!dataISO) return null
+  const [y, m, d] = dataISO.split('-').map(Number)
+  const digitos = `${String(d).padStart(2, '0')}${String(m).padStart(2, '0')}${y}`.split('').map(Number)
+  const total = digitos.reduce((a, b) => a + b, 0)
+  const reduzido = reduzir(total)
+  return {
+    dataFormatada: `${String(d).padStart(2, '0')}/${String(m).padStart(2, '0')}/${y}`,
+    digitos,
+    total,
+    passos: passosReducao(total),
+    resultado: reduzido,
+    mestre: isNumeroMestre(reduzido),
+  }
+}
+
+/** Tabela pitagórica A–Z para referência na UI */
+export const GRUPOS_PITAGORICOS = [
+  { num: 1, letras: 'A J S' },
+  { num: 2, letras: 'B K T' },
+  { num: 3, letras: 'C L U' },
+  { num: 4, letras: 'D M V' },
+  { num: 5, letras: 'E N W' },
+  { num: 6, letras: 'F O X' },
+  { num: 7, letras: 'G P Y' },
+  { num: 8, letras: 'H Q Z' },
+  { num: 9, letras: 'I R' },
+]
 
 function cicloVida(dataISO) {
   const cv = caminhoVida(dataISO)
@@ -135,8 +202,41 @@ export function calcularMapaNumerologia(nome, dataISO, lang = 'pt', mapaNatal = 
   const nomeData = analisarNome(nome)
   const caminho = caminhoVida(dataISO)
   const ano = anoPessoal(dataISO)
-  const mes = mesPessoal(dataISO)
+  const mes = mesPessoal(dataISO, ano)
   const ciclos = cicloVida(dataISO)
+
+  const vogaisLetras = somaNome(nome, 'vogais').letras
+  const consoantesLetras = somaNome(nome, 'consoantes').letras
+  const [, mesNasc, diaNasc] = dataISO ? dataISO.split('-').map(Number) : [null, null, null]
+  const anoCivil = new Date().getFullYear()
+  const mesCalendario = new Date().getMonth() + 1
+
+  const calculos = {
+    destino: { ...buildCalculoLetras(nomeData.letras, nomeData.destino), tipo: 'nome_completo' },
+    alma: { ...buildCalculoLetras(vogaisLetras, nomeData.alma), tipo: 'vogais' },
+    personalidade: { ...buildCalculoLetras(consoantesLetras, nomeData.personalidade), tipo: 'consoantes' },
+    caminhoVida: { ...buildCalculoData(dataISO), tipo: 'data_nascimento' },
+    anoPessoal: {
+      ...buildCalculoSoma(
+        [{ label: 'dia', valor: diaNasc }, { label: 'mes', valor: mesNasc }, { label: 'ano', valor: anoCivil }],
+        diaNasc + mesNasc + anoCivil,
+        ano,
+      ),
+      tipo: 'ano_pessoal',
+      dia: diaNasc,
+      mes: mesNasc,
+      anoCivil,
+    },
+    mesPessoal: {
+      ...buildCalculoSoma(
+        [{ label: 'anoPessoal', valor: ano }, { label: 'mesCalendario', valor: mesCalendario }],
+        ano + mesCalendario,
+        mes,
+      ),
+      tipo: 'mes_pessoal',
+      mesCalendario,
+    },
+  }
 
   const desc = (n) => sig[n] || sig[reduzir(n)] || '—'
 
@@ -156,6 +256,8 @@ export function calcularMapaNumerologia(nome, dataISO, lang = 'pt', mapaNatal = 
     anoPessoal: ano,
     mesPessoal: mes,
     ciclos,
+    calculos,
+    mesCalendario,
     textos: {
       caminhoVida: desc(caminho),
       destino: desc(nomeData.destino),

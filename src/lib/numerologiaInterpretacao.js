@@ -197,9 +197,9 @@ function visaoGeral(nome, mapa, lang) {
 
 export function enriquecerMapaNumerologia(base, nome, lang = 'pt', mapaNatal = null) {
   const pilares = [
-    { id: 'destino', num: base.destino, icone: '✦', cor: '#DFB76C' },
-    { id: 'alma', num: base.alma, icone: '🌙', cor: '#A78BFA' },
-    { id: 'personalidade', num: base.personalidade, icone: '☀', cor: '#34D399' },
+    { id: 'destino', num: base.destino, icone: '✦', cor: '#DFB76C', calculo: base.calculos?.destino },
+    { id: 'alma', num: base.alma, icone: '🌙', cor: '#A78BFA', calculo: base.calculos?.alma },
+    { id: 'personalidade', num: base.personalidade, icone: '☀', cor: '#34D399', calculo: base.calculos?.personalidade },
   ].map((p) => {
     const bloco = interp(p.id, p.num, lang)
     const astro = ponteAstro(p.num, mapaNatal, lang)
@@ -252,8 +252,13 @@ export function enriquecerMapaNumerologia(base, nome, lang = 'pt', mapaNatal = n
     caminho: {
       num: base.caminhoVida,
       titulo: tituloNum(base.caminhoVida, lang),
+      calculo: base.calculos?.caminhoVida,
       ...caminhoBloco,
       astro: caminhoAstro,
+    },
+    ritmo: {
+      ano: { num: base.anoPessoal, calculo: base.calculos?.anoPessoal },
+      mes: { num: base.mesPessoal, calculo: base.calculos?.mesPessoal, mesCalendario: base.mesCalendario },
     },
     visaoGeral: visaoGeral(nome, base, lang),
     harmonias,

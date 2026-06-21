@@ -14,7 +14,7 @@ import {
   calcularBussola2026Async, relevanciaParaMapa, TIPO_ICO, IMPACTO_COR,
 } from '../lib/bussolaCosmica.js'
 import { diasVidaDesdeNascimento } from '../lib/datetime.js'
-import { calcularMapaNumerologia } from '../lib/numerologia.js'
+import { calcularMapaNumerologia, GRUPOS_PITAGORICOS } from '../lib/numerologia.js'
 import { CHIPS_SIMBOLOS_PT, CHIPS_SIMBOLOS_EN, interpretarSonhoRemoto } from '../lib/sonhosInterpretacao.js'
 import {
   resolverDadosFerramentas,
@@ -668,7 +668,22 @@ export function Numerologia({ dados, utilizador, mapaNatal, onVoltar }) {
     <div style={{ padding: '20px 20px 110px', maxWidth: 520, margin: '0 auto' }}>
       <BotaoVoltar onVoltar={onVoltar} t={t} />
       <h2 style={{ fontSize: 20, fontWeight: 700, color: CORES.dourado, marginBottom: 4 }}>{t('ferramentasPremium.numerologia.title')}</h2>
-      <p style={{ fontSize: 18, fontWeight: 600, color: CORES.branco, marginBottom: 16 }}>{resolvido.nome}</p>
+      <p style={{ fontSize: 18, fontWeight: 600, color: CORES.branco, marginBottom: 6 }}>{resolvido.nome}</p>
+      <p style={{ fontSize: 12, color: CORES.brancoMuted, lineHeight: 1.65, marginBottom: 16 }}>
+        {t('ferramentasPremium.numerologia.nameSource', { name: resolvido.nome })}
+      </p>
+
+      {/* Tabela pitagórica */}
+      <SecaoNumerologia titulo={t('ferramentasPremium.numerologia.tablePythagorean')}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 6 }}>
+          {GRUPOS_PITAGORICOS.map((g) => (
+            <div key={g.num} style={{ background: 'rgba(255,255,255,0.03)', borderRadius: 8, padding: '8px 10px', textAlign: 'center' }}>
+              <div style={{ fontSize: 18, fontWeight: 700, color: CORES.dourado }}>{g.num}</div>
+              <div style={{ fontSize: 11, color: CORES.brancoMuted, letterSpacing: '0.08em', marginTop: 2 }}>{g.letras}</div>
+            </div>
+          ))}
+        </div>
+      </SecaoNumerologia>
 
       {/* Visão geral — leitura */}
       <SecaoNumerologia titulo={t('ferramentasPremium.numerologia.sectionOverview')}>
@@ -698,7 +713,7 @@ export function Numerologia({ dados, utilizador, mapaNatal, onVoltar }) {
             num={p.num}
             label={labelsPilar[p.id]}
             subtitulo={labelsCurto[p.id]}
-            titulo={p.titulo}
+            calculo={p.calculo}
             resumo={p.resumo}
             espiritual={p.espiritual}
             pratica={p.pratica}
@@ -717,7 +732,7 @@ export function Numerologia({ dados, utilizador, mapaNatal, onVoltar }) {
             num={mapa.caminho.num}
             label={t('ferramentasPremium.numerologia.lifePath')}
             subtitulo={mapa.caminho.titulo}
-            titulo={mapa.caminho.titulo}
+            calculo={mapa.caminho.calculo}
             resumo={mapa.caminho.resumo}
             espiritual={mapa.caminho.espiritual}
             pratica={mapa.caminho.pratica}
@@ -731,15 +746,16 @@ export function Numerologia({ dados, utilizador, mapaNatal, onVoltar }) {
 
       {/* Ritmo actual */}
       <SecaoNumerologia titulo={t('ferramentasPremium.numerologia.sectionRhythm')}>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
           {[
-            { key: 'anoPessoal', label: t('ferramentasPremium.numerologia.personalYear'), num: mapa.anoPessoal },
-            { key: 'mesPessoal', label: t('ferramentasPremium.numerologia.personalMonth'), num: mapa.mesPessoal },
-          ].map((item) => (
-            <div key={item.key} style={{ background: 'rgba(255,255,255,0.04)', border: `1px solid ${CORES.vidroBorda}`, borderRadius: 12, padding: 14 }}>
-              <div style={{ fontSize: 10, color: CORES.dourado, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 6 }}>{item.label}</div>
-              <div style={{ fontSize: 26, fontWeight: 700, color: CORES.branco, marginBottom: 6 }}>{item.num}</div>
-              <p style={{ fontSize: 12, color: CORES.brancoMuted, lineHeight: 1.6, margin: 0 }}>{mapa.textos[item.key]}</p>
+            { key: 'anoPessoal', label: t('ferramentasPremium.numerologia.personalYear'), item: mapa.ritmo?.ano, texto: mapa.textos.anoPessoal },
+            { key: 'mesPessoal', label: t('ferramentasPremium.numerologia.personalMonth'), item: mapa.ritmo?.mes, texto: mapa.textos.mesPessoal },
+          ].map(({ key, label, item, texto }) => (
+            <div key={key} style={{ background: 'rgba(255,255,255,0.04)', border: `1px solid ${CORES.vidroBorda}`, borderRadius: 12, padding: 14 }}>
+              <div style={{ fontSize: 10, color: CORES.dourado, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 8 }}>{label}</div>
+              <div style={{ fontSize: 26, fontWeight: 700, color: CORES.branco, marginBottom: 8 }}>{item?.num}</div>
+              <PainelCalculo calculo={item?.calculo} t={t} compacto />
+              <p style={{ fontSize: 12, color: CORES.brancoMuted, lineHeight: 1.6, margin: '10px 0 0' }}>{texto}</p>
             </div>
           ))}
         </div>
@@ -820,7 +836,81 @@ function LetraChip({ letra, valor, cor }) {
   )
 }
 
-function BlocoNumerologia({ num, label, subtitulo, resumo, espiritual, pratica, reflexao, astro, cor, t }) {
+function PainelCalculo({ calculo, t, compacto = false }) {
+  if (!calculo) return null
+
+  const fmtPassos = () => {
+    if (!calculo.passos || calculo.passos.length <= 1) return null
+    return calculo.passos.map((v, i) => {
+      if (i === 0) return String(v)
+      const prev = calculo.passos[i - 1]
+      const soma = String(prev).split('').join('+')
+      return `${soma} = ${v}`
+    }).join(' → ')
+  }
+
+  const linhaLetras = calculo.partes?.filter((p) => p.letra).map((p) => `${p.letra}(${p.valor})`).join(' + ')
+  const linhaFormula = () => {
+    if (calculo.tipo === 'ano_pessoal') {
+      return t('ferramentasPremium.numerologia.calcAnoFormula', {
+        dia: calculo.dia, mes: calculo.mes, anoCivil: calculo.anoCivil,
+      })
+    }
+    if (calculo.tipo === 'mes_pessoal') {
+      return t('ferramentasPremium.numerologia.calcMesFormula', {
+        anoP: calculo.partes?.[0]?.valor, mesCal: calculo.mesCalendario,
+      })
+    }
+    return null
+  }
+
+  const boxStyle = {
+    background: 'rgba(0,0,0,0.25)',
+    border: '1px solid rgba(223,183,108,0.2)',
+    borderRadius: 10,
+    padding: compacto ? '10px 12px' : '12px 14px',
+    marginBottom: compacto ? 0 : 12,
+    fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Consolas, monospace',
+    fontSize: compacto ? 11 : 12,
+    lineHeight: 1.7,
+    color: CORES.brancoSuave,
+  }
+
+  return (
+    <div style={boxStyle}>
+      {calculo.tipo === 'data_nascimento' && (
+        <>
+          <div style={{ color: CORES.dourado, marginBottom: 4 }}>{t('ferramentasPremium.numerologia.calcBirthDate')}: {calculo.dataFormatada}</div>
+          <div>{calculo.digitos?.join(' + ')} = {calculo.total}</div>
+        </>
+      )}
+      {linhaLetras && (
+        <div>{linhaLetras} = {calculo.total}</div>
+      )}
+      {linhaFormula() && (
+        <div style={{ color: CORES.brancoMuted, marginBottom: 4 }}>{linhaFormula()}</div>
+      )}
+      {(calculo.tipo === 'ano_pessoal' || calculo.tipo === 'mes_pessoal') && (
+        <div>{calculo.partes?.map((p) => p.valor).join(' + ')} = {calculo.total}</div>
+      )}
+      {fmtPassos() && (
+        <div style={{ marginTop: 4 }}>
+          <span style={{ color: CORES.dourado }}>{t('ferramentasPremium.numerologia.calcReduce')}: </span>
+          {fmtPassos()}
+        </div>
+      )}
+      {!fmtPassos() && calculo.passos?.length === 1 && (
+        <div style={{ marginTop: 4, color: CORES.brancoMuted }}>{t('ferramentasPremium.numerologia.noReduce')}</div>
+      )}
+      <div style={{ marginTop: 6, fontWeight: 700, color: CORES.dourado }}>
+        {t('ferramentasPremium.numerologia.calcFinal')}: {calculo.resultado}
+        {calculo.mestre && ` · ${t('ferramentasPremium.numerologia.calcMaster')}`}
+      </div>
+    </div>
+  )
+}
+
+function BlocoNumerologia({ num, label, subtitulo, calculo, resumo, espiritual, pratica, reflexao, astro, cor, t }) {
   return (
     <div style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${cor}33`, borderRadius: 14, padding: 16, marginBottom: 12 }}>
       <div style={{ display: 'flex', alignItems: 'flex-start', gap: 14, marginBottom: 12 }}>
@@ -830,6 +920,12 @@ function BlocoNumerologia({ num, label, subtitulo, resumo, espiritual, pratica, 
           <div style={{ fontSize: 11, color: CORES.brancoMuted, marginTop: 2 }}>{subtitulo}</div>
         </div>
       </div>
+
+      <div style={{ fontSize: 10, color: cor, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 6 }}>
+        {t('ferramentasPremium.numerologia.labelCalculation')}
+      </div>
+      <PainelCalculo calculo={calculo} t={t} />
+
       {resumo && <p style={{ fontSize: 14, color: CORES.branco, fontWeight: 500, lineHeight: 1.6, margin: '0 0 12px' }}>{resumo}</p>}
       {espiritual && (
         <div style={{ marginBottom: 10 }}>
