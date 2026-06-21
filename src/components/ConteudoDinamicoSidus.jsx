@@ -6,7 +6,7 @@ import { buildLocalDailyContent, signoHoroscopeKey } from '../lib/dailyContentFa
 import { NOVIDADES_SIDUS } from '../lib/novidadesSidus.js'
 import { SIGNOS_PT, SIGNOS_EN } from '../lib/i18n/astro.js'
 import { calcularFaseLua } from '../lib/faseLua.js'
-import { emailTemPremiumPrivilegiado } from '../lib/premiumAccess.js'
+import { gerarNoticiasAstrologia } from '../lib/astroNews.js'
 
 const CORES = {
   dourado: '#DFB76C',
@@ -67,6 +67,10 @@ export function ConteudoDinamicoSidus({ mapaNatal, aspetos = [], isPremium, onUp
   const userKey = signoHoroscopeKey(mapaNatal?.solar?.nome, lang)
   const userHoro = userKey ? horoMap[userKey] : null
   const social = isAdmin ? pack?.social?.[lang] : null
+  const noticiasAstro = useMemo(
+    () => gerarNoticiasAstrologia({ aspetos, lang, max: 4 }),
+    [aspetos, lang],
+  )
 
   const handleCopy = async () => {
     if (!social) return
@@ -177,6 +181,24 @@ export function ConteudoDinamicoSidus({ mapaNatal, aspetos = [], isPremium, onUp
             )}
           </>
         )}
+      </div>
+
+      <div style={{ ...vidro, padding: 20, marginBottom: 16 }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
+          <span style={{ fontSize: 13, fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase', color: CORES.brancoSuave }}>
+            {t('home.astroNewsTitle')}
+          </span>
+          <span style={{ fontSize: 10, color: '#34D399', fontWeight: 700, textTransform: 'uppercase' }}>{t('home.liveBadge')}</span>
+        </div>
+        {noticiasAstro.map((n, i) => (
+          <div key={i} style={{ padding: '10px 0', borderBottom: i < noticiasAstro.length - 1 ? `1px solid ${CORES.vidroBorda}` : 'none' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
+              <span style={{ fontSize: 10, fontWeight: 700, color: CORES.dourado, textTransform: 'uppercase', letterSpacing: '0.06em' }}>{n.tag}</span>
+              {n.hora && <span style={{ fontSize: 10, color: CORES.brancoMuted }}>{n.hora}</span>}
+            </div>
+            <p style={{ fontSize: 12, color: CORES.brancoSuave, lineHeight: 1.55, margin: 0 }}>{n.texto}</p>
+          </div>
+        ))}
       </div>
 
       <div style={{ ...vidro, padding: 20, marginBottom: isAdmin ? 16 : 0 }}>

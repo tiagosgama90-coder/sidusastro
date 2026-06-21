@@ -2,8 +2,8 @@
 export const NOVIDADES_SIDUS = [
   {
     date: '2026-06-18',
-    pt: 'Oráculo renomeado para Sidus · Sitemap PT/EN para Google',
-    en: 'Oracle renamed to Sidus · PT/EN sitemap for Google',
+    pt: 'Entrada e Home dinâmicos · Notícias astrologia ao vivo · Cálculo numerologia transparente',
+    en: 'Dynamic login & home · Live astrology news · Transparent numerology calculations',
   },
   {
     date: '2026-06-17',

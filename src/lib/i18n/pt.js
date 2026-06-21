@@ -21,6 +21,9 @@ export default {
   },
   auth: {
     tagline: 'Onde o mapa do céu se cruza com a sabedoria das cartas para guiar os teus passos.',
+    liveNow: 'Ao vivo · Céu actualizado',
+    heroTitle: 'O teu mapa astral completo. O teu destino, decifrado.',
+    heroSubtitle: 'Swiss Ephemeris · casas Placidus · Oráculo IA · Tarot · Numerologia — tudo personalizado com o teu Sol, Lua e Ascendente.',
     login: 'Entrar', register: 'Criar Conta', email: 'E-mail', password: 'Senha',
     confirmPassword: 'Confirmar Senha', or: 'ou', google: 'Continuar com Google',
     noAccount: 'Ainda não tens conta?', hasAccount: 'Já tens conta?',
@@ -48,6 +51,38 @@ export default {
       'auth/missing-email': 'Introduz um e-mail.',
       'auth/missing-password': 'Introduz uma senha.',
       unknown: 'Erro desconhecido',
+    },
+    feature: {
+      mapa: {
+        badge: 'Mapa Astral',
+        title: 'Mapa natal profissional completo',
+        desc: 'Sol, Lua, Ascendente, 10 planetas, 12 casas, aspectos e PDF — calculado com precisão Swiss Ephemeris.',
+        pill: 'Mapa completo',
+      },
+      ceu: {
+        badge: 'Tempo real',
+        title: 'Céu de hoje personalizado',
+        desc: 'Fases da Lua, trânsitos activos e aspetos do momento cruzados com o teu mapa natal.',
+        pill: 'Céu ao vivo',
+      },
+      oraculo: {
+        badge: 'Oráculo Sidus',
+        title: 'Astrólogo IA dedicado',
+        desc: 'Pergunta o que quiseres — respostas fundamentadas no teu mapa, não em horóscopos genéricos.',
+        pill: 'Oráculo IA',
+      },
+      tarot: {
+        badge: 'Tarot Online',
+        title: '6 baralhos · leitura diária',
+        desc: 'Arcanos Maiores com interpretação ligada ao teu mapa natal e à energia do dia.',
+        pill: 'Tarot',
+      },
+      numerologia: {
+        badge: 'Numerologia',
+        title: 'Vibração espiritual do teu nome',
+        desc: 'Expressão, Alma e Personalidade — com cálculo transparente letra a letra. Qualquer nome A–Z.',
+        pill: 'Numerologia',
+      },
     },
   },
   emailVerify: {
@@ -101,6 +136,14 @@ export default {
   },
   home: {
     welcome: 'Bem-vindo, {name}', skyRealtime: 'O teu céu em tempo real',
+    liveUpdate: 'Actualização contínua',
+    liveBadge: 'Ao vivo',
+    heroTitle: 'Mapa Astral Completo Sidus',
+    heroNoMap: 'Descobre Sol, Lua, Ascendente, casas e aspectos — a tua assinatura cósmica única, calculada com Swiss Ephemeris.',
+    heroHasMap: 'O teu céu: Sol em {solar} · Lua em {lunar}. Explora trânsitos, aspectos e ferramentas premium personalizadas.',
+    openFullChart: 'Abrir mapa astral completo',
+    createChart: 'Calcular o meu mapa',
+    astroNewsTitle: 'Notícias de astrologia hoje',
     natalChart: 'Mapa Natal', sunSign: '☉ Signo Solar', ascendant: '↑ Ascendente', descendant: '↓ Descendente',
     moonIn: '☽ Lua em', skyToday: 'Céu de Hoje', illuminated: '{pct}% iluminada · {angle}° de elongação',
     moonPhasesPremium: 'Fases da Lua em tempo real — Premium',

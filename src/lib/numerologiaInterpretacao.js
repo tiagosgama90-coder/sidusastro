@@ -190,9 +190,9 @@ function separarLetras(letras) {
 function visaoGeral(nome, mapa, lang) {
   const { destino, alma, personalidade } = mapa
   if (lang === 'en') {
-    return `The name «${nome}» carries three layers of meaning. Expression ${destino} is how you act in the world; Soul ${alma} is what you desire deep inside; Personality ${personalidade} is how others first perceive you. Together they form your spiritual signature.`
+    return `The name «${nome}» carries three layers of meaning. Expression ${destino} is how you act in the world; Soul ${alma} is what you desire deep inside; Personality ${personalidade} is how others first perceive you. Works with any name using letters A–Z (including accented Portuguese characters).`
   }
-  return `O nome «${nome}» revela três camadas de significado. A Expressão ${destino} é como ages no mundo; a Alma ${alma} é o que desejas no profundo; a Personalidade ${personalidade} é como os outros te veem à primeira vista. Juntas formam a tua assinatura espiritual.`
+  return `O nome «${nome}» revela três camadas de significado. A Expressão ${destino} é como ages no mundo; a Alma ${alma} é o que desejas no profundo; a Personalidade ${personalidade} é como os outros te veem à primeira vista. Funciona com qualquer nome em letras A–Z (inclui acentos portugueses).`
 }
 
 export function enriquecerMapaNumerologia(base, nome, lang = 'pt', mapaNatal = null) {

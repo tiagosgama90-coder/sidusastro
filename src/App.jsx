@@ -42,6 +42,8 @@ import { PoliticaPrivacidade } from './components/PoliticaPrivacidade'
 import { InterpretacaoMapa } from './components/InterpretacaoMapa'
 import { BussolaCosmica, Sinastria, Biorritmo, DiarioAstral, Numerologia, InterpretacaoSonhos, HorasIguais } from './components/FerramentasPremium'
 import { ConteudoDinamicoSidus } from './components/ConteudoDinamicoSidus'
+import { HeroAuthSidus } from './components/HeroAuthSidus.jsx'
+import { HeroHomeSidus } from './components/HeroHomeSidus.jsx'
 import { auth, db, firebaseDisponivel } from './lib/firebase'
 import { enviarEmailVerificacao, traduzirErroEmail } from './lib/authEmail'
 import {
@@ -1267,13 +1269,7 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
 
   return (
     <div style={layoutConteudo(isDesktop, { paddingTop: 56, paddingBottom: 40, maxWidth: isDesktop ? 480 : undefined, margin: isDesktop ? '0 auto' : undefined })}>
-      <div style={{ textAlign: 'center', marginBottom: 40 }}>
-        <Sparkles size={40} color={CORES.dourado} strokeWidth={1.5} style={{ marginBottom: 16 }} />
-        <h1 style={{ ...estilos.titulo, fontSize: 36, letterSpacing: '0.2em' }}>Sidus</h1>
-        <p style={{ ...estilos.subtitulo, maxWidth: 360, margin: '8px auto 0', lineHeight: 1.55 }}>
-          {t('auth.tagline')}
-        </p>
-      </div>
+      <HeroAuthSidus />
 
       <div style={{ ...estilos.vidro, padding: 24 }}>
         {!firebaseOk && (
@@ -1627,15 +1623,17 @@ function Onboarding({ dados, setDados, onSubmit, isDesktop }) {
   )
 }
 
-function Dashboard({ nome, mapaNatal, ceuAgora, aspetos, onOraculo, onPrivacidade, isDesktop, isPremium, onUpgrade, onTarot, userEmail }) {
+function Dashboard({ nome, mapaNatal, ceuAgora, aspetos, onOraculo, onPrivacidade, isDesktop, isPremium, onUpgrade, onTarot, onMapa, userEmail }) {
   const { t, ts, te, tp, ta, lang } = useLanguage()
   const faseLua = calcularFaseLua(new Date(), lang)
   return (
     <div style={layoutConteudo(isDesktop)}>
-      <header style={{ textAlign: 'center', marginBottom: 28 }}>
+      <header style={{ textAlign: 'center', marginBottom: 20 }}>
         <h1 style={estilos.titulo}>Sidus</h1>
         <p style={{ ...estilos.subtitulo, marginBottom: 0 }}>{nome ? t('home.welcome', { name: nome }) : t('home.skyRealtime')}</p>
       </header>
+
+      <HeroHomeSidus mapaNatal={mapaNatal} onMapa={onMapa} isPremium={isPremium} />
 
       {mapaNatalValido(mapaNatal) && (
         <div style={{ ...estilos.vidro, padding: 20, marginBottom: 18 }}>
@@ -3323,7 +3321,7 @@ export default function App() {
     switch (passo) {
       case 'home':
       case 'dashboard':
-        return <Dashboard nome={dados.nome} mapaNatal={mapaNatal} ceuAgora={ceuAgora} aspetos={aspetosAgora} onOraculo={() => irPara('chat')} onPrivacidade={() => irPara('privacidade')} isDesktop={isDesktop} isPremium={isPremium} onUpgrade={() => irPara('paywall')} onTarot={() => irPara('tarot')} userEmail={utilizador?.email} />
+        return <Dashboard nome={dados.nome} mapaNatal={mapaNatal} ceuAgora={ceuAgora} aspetos={aspetosAgora} onOraculo={() => irPara('chat')} onPrivacidade={() => irPara('privacidade')} isDesktop={isDesktop} isPremium={isPremium} onUpgrade={() => irPara('paywall')} onTarot={() => irPara('tarot')} onMapa={() => irPara('mapa')} userEmail={utilizador?.email} />
       case 'mapa':
         return <MapaAstral mapaNatal={mapaNatal} dados={dados} planetasNascimento={planetasNascimento} mapaDesbloqueado={isPremium || mapaCompleto} isPremium={isPremium} onUpgrade={() => irPara('paywall')} onComprarMapa={() => abrirPagamento(t('mapa.buyDesc'), PRECO_MAPA_COMPLETO, null, { productType: 'mapa' })} onMapaGerado={handleMapaGerado} isDesktop={isDesktop} motorAstro={motorAstro} perfilCarregando={perfilCarregando} reparandoDados={reparandoDados} mapaGerado={mapaGerado} onCompletarNatal={() => irPara('home')} />
       case 'tarot':
@@ -3353,7 +3351,7 @@ export default function App() {
           dadosBloqueados={dadosBloqueados}
           onLogout={handleLogout} />
       default:
-        return <Dashboard nome={dados.nome} mapaNatal={mapaNatal} ceuAgora={ceuAgora} aspetos={aspetosAgora} onOraculo={() => irPara('chat')} onPrivacidade={() => irPara('privacidade')} isDesktop={isDesktop} isPremium={isPremium} onUpgrade={() => irPara('paywall')} onTarot={() => irPara('tarot')} userEmail={utilizador?.email} />
+        return <Dashboard nome={dados.nome} mapaNatal={mapaNatal} ceuAgora={ceuAgora} aspetos={aspetosAgora} onOraculo={() => irPara('chat')} onPrivacidade={() => irPara('privacidade')} isDesktop={isDesktop} isPremium={isPremium} onUpgrade={() => irPara('paywall')} onTarot={() => irPara('tarot')} onMapa={() => irPara('mapa')} userEmail={utilizador?.email} />
     }
   }
 

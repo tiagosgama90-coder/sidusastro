@@ -21,6 +21,9 @@ export default {
   },
   auth: {
     tagline: 'Where the sky map meets the wisdom of the cards to guide your steps.',
+    liveNow: 'Live · Sky updated',
+    heroTitle: 'Your complete natal chart. Your destiny, decoded.',
+    heroSubtitle: 'Swiss Ephemeris · Placidus houses · AI Oracle · Tarot · Numerology — all personalised with your Sun, Moon and Ascendant.',
     login: 'Sign In', register: 'Create Account', email: 'Email', password: 'Password',
     confirmPassword: 'Confirm Password', or: 'or', google: 'Continue with Google',
     noAccount: "Don't have an account?", hasAccount: 'Already have an account?',
@@ -48,6 +51,38 @@ export default {
       'auth/missing-email': 'Enter an email.',
       'auth/missing-password': 'Enter a password.',
       unknown: 'Unknown error',
+    },
+    feature: {
+      mapa: {
+        badge: 'Natal Chart',
+        title: 'Complete professional natal chart',
+        desc: 'Sun, Moon, Ascendant, 10 planets, 12 houses, aspects and PDF — Swiss Ephemeris precision.',
+        pill: 'Full chart',
+      },
+      ceu: {
+        badge: 'Real time',
+        title: 'Personalised sky today',
+        desc: 'Moon phases, active transits and current aspects crossed with your natal chart.',
+        pill: 'Live sky',
+      },
+      oraculo: {
+        badge: 'Sidus Oracle',
+        title: 'Dedicated AI astrologer',
+        desc: 'Ask anything — answers grounded in your chart, not generic horoscopes.',
+        pill: 'AI Oracle',
+      },
+      tarot: {
+        badge: 'Online Tarot',
+        title: '6 decks · daily reading',
+        desc: 'Major Arcana with interpretation linked to your natal chart and today\'s energy.',
+        pill: 'Tarot',
+      },
+      numerologia: {
+        badge: 'Numerology',
+        title: 'Spiritual vibration of your name',
+        desc: 'Expression, Soul and Personality — transparent letter-by-letter calculation. Any name A–Z.',
+        pill: 'Numerology',
+      },
     },
   },
   emailVerify: {
@@ -101,6 +136,14 @@ export default {
   },
   home: {
     welcome: 'Welcome, {name}', skyRealtime: 'Your sky in real time',
+    liveUpdate: 'Continuous update',
+    liveBadge: 'Live',
+    heroTitle: 'Sidus Complete Natal Chart',
+    heroNoMap: 'Discover Sun, Moon, Ascendant, houses and aspects — your unique cosmic signature, calculated with Swiss Ephemeris.',
+    heroHasMap: 'Your sky: Sun in {solar} · Moon in {lunar}. Explore transits, aspects and personalised premium tools.',
+    openFullChart: 'Open complete natal chart',
+    createChart: 'Calculate my chart',
+    astroNewsTitle: 'Astrology news today',
     natalChart: 'Natal Chart', sunSign: '☉ Sun Sign', ascendant: '↑ Ascendant', descendant: '↓ Descendant',
     moonIn: '☽ Moon in', skyToday: "Today's Sky", illuminated: '{pct}% illuminated · {angle}° elongation',
     moonPhasesPremium: 'Real-time Moon phases — Premium',
