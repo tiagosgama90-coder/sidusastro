@@ -11,7 +11,7 @@ import {
   calcularBussola2026Async, relevanciaParaMapa, TIPO_ICO, IMPACTO_COR,
 } from '../lib/bussolaCosmica.js'
 import { calcularSinastriaCompleta } from '../lib/sinastriaEngine.js'
-import { montarRelatorioSinastria } from '../lib/sinastriaInterpretacao.js'
+import { montarRelatorioSinastria, montarResumoGratis, EIXOS } from '../lib/sinastriaInterpretacao.js'
 import { RadarAfinidades } from './RadarAfinidades.jsx'
 import { CampoCidadeField } from './CampoCidadeField.jsx'
 import { pesquisarFusoHorario } from '../lib/geocoding.js'
@@ -173,18 +173,74 @@ export function BussolaCosmica({ mapaNatal, onVoltar }) {
 
 // ── Sinastria (Radar de Afinidades) ───────────────────────────────────────────
 
-export function Sinastria({ mapaNatal, dadosUtilizador, onVoltar }) {
+function CartaoEixo({ pilar, score, lang, t }) {
+  const eixo = EIXOS[pilar]
+  if (!eixo) return null
+  const cores = { quimica: '#F87171', emocao: '#818CF8', comunicacao: '#60A5FA', futuro: '#4ADE80' }
+  return (
+    <div style={{
+      background: 'rgba(255,255,255,0.04)', border: `1px solid ${CORES.vidroBorda}`,
+      borderRadius: 12, padding: 14, marginBottom: 10,
+      borderLeft: `3px solid ${cores[pilar]}`,
+    }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 8 }}>
+        <div>
+          <div style={{ fontSize: 13, fontWeight: 700, color: CORES.branco }}>{eixo.titulo[lang] || eixo.titulo.pt}</div>
+          <div style={{ fontSize: 10, color: CORES.brancoMuted, marginTop: 2 }}>{eixo.planetas[lang] || eixo.planetas.pt}</div>
+        </div>
+        <div style={{ fontSize: 20, fontWeight: 700, color: cores[pilar] }}>{score}%</div>
+      </div>
+      <p style={{ fontSize: 12, color: CORES.brancoSuave, lineHeight: 1.6, margin: '10px 0 0' }}>
+        {(eixo.intro[lang] || eixo.intro.pt).slice(0, 160)}…
+      </p>
+    </div>
+  )
+}
+
+function UpsellSinastriaPremium({ t, onUpgrade }) {
+  return (
+    <div style={{
+      background: 'linear-gradient(135deg, rgba(139,92,246,0.12), rgba(223,183,108,0.08))',
+      border: '1px solid rgba(223,183,108,0.35)', borderRadius: 16, padding: 20, marginTop: 16, textAlign: 'center',
+    }}>
+      <div style={{ fontSize: 28, marginBottom: 8 }}>👑</div>
+      <div style={{ fontSize: 15, fontWeight: 700, color: CORES.dourado, marginBottom: 8 }}>{t('ferramentasPremium.sinastria.premiumTitle')}</div>
+      <p style={{ fontSize: 13, color: CORES.brancoSuave, lineHeight: 1.65, margin: '0 0 16px' }}>{t('ferramentasPremium.sinastria.premiumDesc')}</p>
+      <ul style={{ textAlign: 'left', fontSize: 12, color: CORES.brancoMuted, lineHeight: 1.8, margin: '0 0 16px', paddingLeft: 20 }}>
+        <li>{t('ferramentasPremium.sinastria.premiumItem1')}</li>
+        <li>{t('ferramentasPremium.sinastria.premiumItem2')}</li>
+        <li>{t('ferramentasPremium.sinastria.premiumItem3')}</li>
+        <li>{t('ferramentasPremium.sinastria.premiumItem4')}</li>
+      </ul>
+      {onUpgrade && (
+        <button type="button" onClick={onUpgrade} style={{
+          width: '100%', padding: '14px', borderRadius: 12, border: 'none',
+          background: 'linear-gradient(135deg,#DFB76C,#B8944F)', color: '#0B071E',
+          fontSize: 14, fontWeight: 700, cursor: 'pointer',
+        }}>
+          {t('ferramentasPremium.sinastria.premiumBtn')}
+        </button>
+      )}
+    </div>
+  )
+}
+
+export function Sinastria({ mapaNatal, dadosUtilizador, isPremium = false, onUpgrade, onVoltar }) {
   const { lang, t, ts } = useLanguage()
   const [parceiro, setParceiro] = useState({
-    nome: '', data: '', hora: '12:00', cidade: '', localizacao: null, fuso: null,
+    nome: '', data: '', hora: '12:00', horaDesconhecida: false,
+    cidade: '', localizacao: null, fuso: null,
   })
   const [analise, setAnalise] = useState(null)
   const [calculando, setCalculando] = useState(false)
   const [erro, setErro] = useState(null)
 
+  const userHoraDesconhecida = !String(dadosUtilizador?.hora || '').trim()
+
   const dadosProntos = (p) => {
     const data = normalizarDataISO(p.data)
-    return p.nome?.trim() && data && p.hora && p.localizacao?.lat != null && p.localizacao?.lon != null
+    const horaOk = p.horaDesconhecida || p.hora
+    return p.nome?.trim() && data && horaOk && p.localizacao?.lat != null && p.localizacao?.lon != null
   }
 
   const calcularSinastria = async () => {
@@ -203,13 +259,15 @@ export function Sinastria({ mapaNatal, dadosUtilizador, onVoltar }) {
         nome: dadosUtilizador.nome,
         data: dadosUtilizador.data,
         hora: dadosUtilizador.hora || '12:00',
+        horaDesconhecida: userHoraDesconhecida,
         localizacao: dadosUtilizador.localizacao,
         fuso: dadosUtilizador.fuso ?? 0,
       }
       const dadosB = {
         nome: parceiro.nome.trim(),
         data: normalizarDataISO(parceiro.data),
-        hora: parceiro.hora || '12:00',
+        hora: parceiro.horaDesconhecida ? '12:00' : (parceiro.hora || '12:00'),
+        horaDesconhecida: parceiro.horaDesconhecida,
         localizacao: parceiro.localizacao,
         fuso: fuso ?? 0,
       }
@@ -220,22 +278,20 @@ export function Sinastria({ mapaNatal, dadosUtilizador, onVoltar }) {
         return
       }
 
-      const pilares = {
-        quimica: resultado.pilares.quimica,
-        comunicacao: resultado.pilares.comunicacao,
-        emocao: resultado.pilares.emocao,
-        proposito: resultado.pilares.proposito,
-      }
-
       setAnalise({
         pontuacao: resultado.pontuacao,
-        pilares,
+        pilares: resultado.pilares,
         aspectos: resultado.aspectos,
-        relatorio: montarRelatorioSinastria(resultado, mapaNatal, lang),
+        porPilar: resultado.porPilar,
+        relatorio: isPremium
+          ? montarRelatorioSinastria(resultado, mapaNatal, lang)
+          : montarResumoGratis(resultado, mapaNatal, lang),
+        relatorioPremium: montarRelatorioSinastria(resultado, mapaNatal, lang),
         motor: resultado.posA?.motor,
         parceiroSol: resultado.posB?.corpos?.sol?.signo,
         parceiroLua: resultado.posB?.corpos?.lua?.signo,
         parceiroAsc: resultado.posB?.corpos?.ascendente?.signo,
+        horaAproximada: resultado.posA?.horaDesconhecida || resultado.posB?.horaDesconhecida,
       })
     } catch (e) {
       console.error('[Sinastria]', e)
@@ -249,7 +305,7 @@ export function Sinastria({ mapaNatal, dadosUtilizador, onVoltar }) {
     quimica: t('ferramentasPremium.sinastria.passion'),
     comunicacao: t('ferramentasPremium.sinastria.communication'),
     emocao: t('ferramentasPremium.sinastria.emotional'),
-    proposito: t('ferramentasPremium.sinastria.purpose'),
+    futuro: t('ferramentasPremium.sinastria.future'),
     total: t('ferramentasPremium.sinastria.compatibility'),
   }
 
@@ -257,7 +313,12 @@ export function Sinastria({ mapaNatal, dadosUtilizador, onVoltar }) {
     <div style={{ padding: '20px 20px 110px' }}>
       <BotaoVoltar onVoltar={onVoltar} t={t} />
       <h2 style={{ fontSize: 20, fontWeight: 700, color: CORES.dourado, marginBottom: 4 }}>{t('ferramentasPremium.sinastria.title')}</h2>
-      <p style={{ fontSize: 13, color: CORES.brancoMuted, marginBottom: 24 }}>{t('ferramentasPremium.sinastria.subtitlePro')}</p>
+      <p style={{ fontSize: 13, color: CORES.brancoMuted, marginBottom: 8 }}>{t('ferramentasPremium.sinastria.subtitlePro')}</p>
+      {!isPremium && (
+        <div style={{ fontSize: 12, color: CORES.dourado, background: 'rgba(223,183,108,0.08)', border: '1px solid rgba(223,183,108,0.25)', borderRadius: 10, padding: '10px 14px', marginBottom: 20, lineHeight: 1.55 }}>
+          {t('ferramentasPremium.sinastria.freeHint')}
+        </div>
+      )}
 
       {mapaNatal && (
         <div style={{ background: 'rgba(255,255,255,0.04)', border: `1px solid ${CORES.vidroBorda}`, borderRadius: 14, padding: 16, marginBottom: 20 }}>
@@ -283,11 +344,16 @@ export function Sinastria({ mapaNatal, dadosUtilizador, onVoltar }) {
             </div>
             <div>
               <label style={{ fontSize: 11, color: CORES.brancoMuted, display: 'block', marginBottom: 6 }}>{t('ferramentasPremium.sinastria.birthTime')}</label>
-              <input type="time" value={parceiro.hora}
+              <input type="time" value={parceiro.hora} disabled={parceiro.horaDesconhecida}
                 onChange={(e) => setParceiro((p) => ({ ...p, hora: e.target.value }))}
-                style={inputStyle} />
+                style={{ ...inputStyle, opacity: parceiro.horaDesconhecida ? 0.45 : 1 }} />
             </div>
           </div>
+          <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12, color: CORES.brancoMuted, cursor: 'pointer' }}>
+            <input type="checkbox" checked={parceiro.horaDesconhecida}
+              onChange={(e) => setParceiro((p) => ({ ...p, horaDesconhecida: e.target.checked }))} />
+            {t('ferramentasPremium.sinastria.unknownTime')}
+          </label>
           <CampoCidadeField
             label={t('ferramentasPremium.sinastria.birthCity')}
             placeholder={t('ferramentasPremium.sinastria.cityPlaceholder')}
@@ -296,7 +362,12 @@ export function Sinastria({ mapaNatal, dadosUtilizador, onVoltar }) {
             onChange={(v) => setParceiro((p) => ({ ...p, cidade: v, localizacao: null, fuso: null }))}
             onSelect={(loc) => setParceiro((p) => ({ ...p, cidade: loc.nome, localizacao: loc, fuso: null }))}
           />
-          <p style={{ fontSize: 11, color: CORES.brancoMuted, margin: 0, lineHeight: 1.5 }}>{t('ferramentasPremium.sinastria.birthHint')}</p>
+          <p style={{ fontSize: 11, color: CORES.brancoMuted, margin: 0, lineHeight: 1.5 }}>
+            {parceiro.horaDesconhecida ? t('ferramentasPremium.sinastria.birthHintNoTime') : t('ferramentasPremium.sinastria.birthHint')}
+          </p>
+          {userHoraDesconhecida && (
+            <p style={{ fontSize: 11, color: '#FBBF24', margin: 0, lineHeight: 1.5 }}>{t('ferramentasPremium.sinastria.userNoTime')}</p>
+          )}
         </div>
       </div>
 
@@ -319,40 +390,80 @@ export function Sinastria({ mapaNatal, dadosUtilizador, onVoltar }) {
         <div style={{ animation: 'fadeIn 0.5s ease' }}>
           <style>{`@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}`}</style>
 
-          <div style={{ background: 'rgba(255,255,255,0.04)', border: `1px solid ${CORES.vidroBorda}`, borderRadius: 16, padding: '20px 16px', marginBottom: 16 }}>
-            <RadarAfinidades scores={analise.pilares} labels={radarLabels} total={analise.pontuacao} size={320} />
-            {analise.parceiroSol && (
-              <div style={{ fontSize: 12, color: CORES.brancoMuted, marginTop: 16, textAlign: 'center' }}>
-                {ts(mapaNatal?.solar?.nome)} ❤ {ts(analise.parceiroSol)} · 🌙 {ts(analise.parceiroLua)} · ↑ {ts(analise.parceiroAsc)}
-              </div>
-            )}
-          </div>
-
-          <div style={{ background: 'rgba(255,255,255,0.04)', border: `1px solid ${CORES.vidroBorda}`, borderRadius: 14, padding: 18, marginBottom: 14 }}>
-            <div style={{ fontSize: 11, color: CORES.dourado, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 10 }}>{t('ferramentasPremium.sinastria.connectionAnalysis')}</div>
-            <div style={{ fontSize: 13, color: CORES.brancoSuave, lineHeight: 1.75, whiteSpace: 'pre-wrap' }}>
-              {analise.relatorio}
-            </div>
-            {analise.motor && (
-              <div style={{ fontSize: 10, color: CORES.brancoMuted, marginTop: 12, opacity: 0.7 }}>
-                {t('ferramentasPremium.sinastria.motor', { motor: analise.motor })}
-              </div>
-            )}
-          </div>
-
-          {analise.aspectos?.length > 0 && (
-            <div style={{ background: 'rgba(255,255,255,0.04)', border: `1px solid ${CORES.vidroBorda}`, borderRadius: 14, padding: 18 }}>
-              <div style={{ fontSize: 11, color: CORES.dourado, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 12 }}>{t('ferramentasPremium.sinastria.aspectsDetected')}</div>
-              {analise.aspectos.slice(0, 10).map((a, i) => (
-                <div key={i} style={{ padding: '10px 0', borderBottom: i < Math.min(analise.aspectos.length, 10) - 1 ? '1px solid rgba(255,255,255,0.05)' : 'none' }}>
-                  <div style={{ fontSize: 12, fontWeight: 700, color: CORES.branco, marginBottom: 3 }}>
-                    {a.pessoaA} ✦ {a.pessoaB} — <span style={{ color: CORES.dourado, fontWeight: 400 }}>{a.nome}</span>
-                    <span style={{ color: CORES.brancoMuted, fontWeight: 400 }}> ({a.orbe}°)</span>
+          {isPremium ? (
+            <>
+              <div style={{ background: 'rgba(255,255,255,0.04)', border: `1px solid ${CORES.vidroBorda}`, borderRadius: 16, padding: '20px 16px', marginBottom: 16 }}>
+                <RadarAfinidades scores={analise.pilares} labels={radarLabels} total={analise.pontuacao} size={320} />
+                {analise.parceiroSol && (
+                  <div style={{ fontSize: 12, color: CORES.brancoMuted, marginTop: 16, textAlign: 'center' }}>
+                    {ts(mapaNatal?.solar?.nome)} ❤ {ts(analise.parceiroSol)} · 🌙 {ts(analise.parceiroLua)} · ↑ {analise.parceiroAsc ? ts(analise.parceiroAsc) : '—'}
                   </div>
-                  <div style={{ fontSize: 11, color: CORES.brancoMuted }}>{ts(a.signoA)} · {ts(a.signoB)}</div>
-                </div>
+                )}
+              </div>
+
+              <div style={{ fontSize: 11, color: CORES.dourado, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 10 }}>
+                {t('ferramentasPremium.sinastria.pillarsTitle')}
+              </div>
+              {['quimica', 'emocao', 'comunicacao', 'futuro'].map((p) => (
+                <CartaoEixo key={p} pilar={p} score={analise.pilares[p]} lang={lang} t={t} />
               ))}
-            </div>
+
+              <div style={{ background: 'rgba(255,255,255,0.04)', border: `1px solid ${CORES.vidroBorda}`, borderRadius: 14, padding: 18, marginBottom: 14, marginTop: 6 }}>
+                <div style={{ fontSize: 11, color: CORES.dourado, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 10 }}>{t('ferramentasPremium.sinastria.connectionAnalysis')}</div>
+                <div style={{ fontSize: 13, color: CORES.brancoSuave, lineHeight: 1.75, whiteSpace: 'pre-wrap' }}>
+                  {analise.relatorio}
+                </div>
+                {analise.motor && (
+                  <div style={{ fontSize: 10, color: CORES.brancoMuted, marginTop: 12, opacity: 0.7 }}>
+                    {t('ferramentasPremium.sinastria.motor', { motor: analise.motor })}
+                  </div>
+                )}
+              </div>
+
+              {analise.aspectos?.length > 0 && (
+                <div style={{ background: 'rgba(255,255,255,0.04)', border: `1px solid ${CORES.vidroBorda}`, borderRadius: 14, padding: 18 }}>
+                  <div style={{ fontSize: 11, color: CORES.dourado, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 12 }}>{t('ferramentasPremium.sinastria.aspectsDetected')}</div>
+                  {analise.aspectos.slice(0, 15).map((a, i) => (
+                    <div key={i} style={{ padding: '10px 0', borderBottom: i < Math.min(analise.aspectos.length, 15) - 1 ? '1px solid rgba(255,255,255,0.05)' : 'none' }}>
+                      <div style={{ fontSize: 12, fontWeight: 700, color: CORES.branco, marginBottom: 3 }}>
+                        {a.pessoaA} ✦ {a.pessoaB} — <span style={{ color: CORES.dourado, fontWeight: 400 }}>{a.nome}</span>
+                        <span style={{ color: CORES.brancoMuted, fontWeight: 400 }}> ({a.orbe}°)</span>
+                      </div>
+                      <div style={{ fontSize: 11, color: CORES.brancoMuted }}>{ts(a.signoA)} · {ts(a.signoB)}</div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </>
+          ) : (
+            <>
+              <div style={{ background: 'rgba(255,255,255,0.04)', border: `1px solid ${CORES.vidroBorda}`, borderRadius: 16, padding: 24, marginBottom: 16, textAlign: 'center' }}>
+                <div style={{ fontSize: 48, fontWeight: 700, color: CORES.dourado, lineHeight: 1 }}>
+                  ~{Math.round(analise.pontuacao / 5) * 5}%
+                </div>
+                <div style={{ fontSize: 12, color: CORES.brancoMuted, marginTop: 6 }}>{t('ferramentasPremium.sinastria.compatibilityApprox')}</div>
+                {analise.parceiroSol && (
+                  <div style={{ fontSize: 13, color: CORES.brancoSuave, marginTop: 14 }}>
+                    {ts(mapaNatal?.solar?.nome)} ❤ {ts(analise.parceiroSol)}
+                  </div>
+                )}
+              </div>
+
+              <div style={{ background: 'rgba(255,255,255,0.04)', border: `1px solid ${CORES.vidroBorda}`, borderRadius: 14, padding: 18, marginBottom: 14 }}>
+                <div style={{ fontSize: 11, color: CORES.dourado, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 10 }}>{t('ferramentasPremium.sinastria.freePreview')}</div>
+                <div style={{ fontSize: 13, color: CORES.brancoSuave, lineHeight: 1.75, whiteSpace: 'pre-wrap' }}>
+                  {analise.relatorio}
+                </div>
+              </div>
+
+              <div style={{ position: 'relative', borderRadius: 14, overflow: 'hidden', marginBottom: 8 }}>
+                <div style={{ filter: 'blur(6px)', pointerEvents: 'none', userSelect: 'none', opacity: 0.55 }}>
+                  <RadarAfinidades scores={analise.pilares} labels={radarLabels} total={analise.pontuacao} size={280} />
+                </div>
+              </div>
+
+              <UpsellSinastriaPremium t={t} onUpgrade={onUpgrade} />
+            </>
           )}
         </div>
       )}

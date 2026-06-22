@@ -1,6 +1,6 @@
 /**
- * Motor de sinastria — posições via Swiss Ephemeris (ou astronomy-engine)
- * e cruzamento de aspectos entre dois mapas natais.
+ * Motor de sinastria — Swiss Ephemeris (JPL/NASA) + aspectos cruzados.
+ * Pilares: Química (Vénus/Marte), Emoção (Sol/Lua), Comunicação (Mercúrio), Futuro (Júpiter/Saturno).
  */
 import { Body, Ecliptic, GeoVector, MakeTime } from 'astronomy-engine'
 import { longitudeParaSigno } from './astrologia.js'
@@ -23,6 +23,8 @@ const CORPOS = [
   { key: 'mercurio', nome: 'Mercúrio', sweId: 2, corpo: Body.Mercury },
   { key: 'venus', nome: 'Vénus', sweId: 3, corpo: Body.Venus },
   { key: 'marte', nome: 'Marte', sweId: 4, corpo: Body.Mars },
+  { key: 'jupiter', nome: 'Júpiter', sweId: 5, corpo: Body.Jupiter },
+  { key: 'saturno', nome: 'Saturno', sweId: 6, corpo: Body.Saturn },
 ]
 
 const _EPHE_FILES = [
@@ -85,20 +87,49 @@ function posicaoCorpo(swe, corpo, dateUTC) {
   }
 }
 
+function posicaoNodoNorte(swe, dateUTC) {
+  if (!swe) return null
+  try {
+    const jd = swe.dateToJulianDay(dateUTC)
+    const pos = swe.calculatePosition(jd, 11)
+    if (pos?.longitude == null) return null
+    const signo = longitudeParaSigno(pos.longitude)
+    return {
+      key: 'nodo_norte',
+      nome: 'Nodo Norte',
+      longitude: pos.longitude,
+      signo: signo.nome,
+      graus: signo.graus,
+      simbolo: signo.simbolo,
+      elemento: signo.elemento,
+    }
+  } catch {
+    return null
+  }
+}
+
+/** Hora desconhecida → meio-dia solar local; Asc/MC omitidos. */
+export function horaNatalEfectiva(dados) {
+  if (dados?.horaDesconhecida || !String(dados?.hora || '').trim()) {
+    return { hora: '12:00', horaDesconhecida: true }
+  }
+  return { hora: dados.hora, horaDesconhecida: false }
+}
+
 /**
- * Posições natais (Sol, Lua, Mercúrio, Vénus, Marte, Ascendente).
+ * Posições natais via Swiss Ephemeris (planetas + Asc/MC se hora conhecida).
  */
 export async function calcularPosicoesNatal(dados) {
-  if (!dados?.data || !dados?.hora || !dados?.localizacao) return null
+  if (!dados?.data || !dados?.localizacao) return null
 
   const { lat, lon } = dados.localizacao
   const fuso = dados.fuso ?? 0
-  const dateUTC = criarDataUTCporLocal(dados.data, dados.hora, fuso)
+  const { hora, horaDesconhecida } = horaNatalEfectiva(dados)
+  const dateUTC = criarDataUTCporLocal(dados.data, hora, fuso)
   if (!dateUTC) return null
 
   const swe = await obterSwe()
-  const angulos = calcularAngulosCasas(swe, dateUTC, lat, lon)
-  if (!angulos) return null
+  const angulos = horaDesconhecida ? null : calcularAngulosCasas(swe, dateUTC, lat, lon)
 
   const corpos = {}
   for (const c of CORPOS) {
@@ -106,15 +137,30 @@ export async function calcularPosicoesNatal(dados) {
     if (p) corpos[c.key] = p
   }
 
-  const ascSigno = longitudeParaSigno(angulos.ascendant)
-  corpos.ascendente = {
-    key: 'ascendente',
-    nome: 'Ascendente',
-    longitude: angulos.ascendant,
-    signo: ascSigno.nome,
-    graus: ascSigno.graus,
-    simbolo: ascSigno.simbolo,
-    elemento: ascSigno.elemento,
+  const nodo = posicaoNodoNorte(swe, dateUTC)
+  if (nodo) corpos.nodo_norte = nodo
+
+  if (angulos) {
+    const ascSigno = longitudeParaSigno(angulos.ascendant)
+    corpos.ascendente = {
+      key: 'ascendente',
+      nome: 'Ascendente',
+      longitude: angulos.ascendant,
+      signo: ascSigno.nome,
+      graus: ascSigno.graus,
+      simbolo: ascSigno.simbolo,
+      elemento: ascSigno.elemento,
+    }
+    const mcSigno = longitudeParaSigno(angulos.mc)
+    corpos.mc = {
+      key: 'mc',
+      nome: 'Meio-Céu',
+      longitude: angulos.mc,
+      signo: mcSigno.nome,
+      graus: mcSigno.graus,
+      simbolo: mcSigno.simbolo,
+      elemento: mcSigno.elemento,
+    }
   }
 
   return {
@@ -122,7 +168,10 @@ export async function calcularPosicoesNatal(dados) {
     instanteUTC: dateUTC.toISOString(),
     lat,
     lon,
-    motor: swe ? 'Swiss Ephemeris' : 'astronomy-engine',
+    horaDesconhecida,
+    motor: swe ? 'Swiss Ephemeris (JPL/NASA)' : 'astronomy-engine',
+    sistemaCasas: angulos?.sistema || null,
+    angulos,
     corpos,
   }
 }
@@ -143,8 +192,12 @@ const PILAR_CORPOS = {
   quimica: new Set(['venus', 'marte']),
   comunicacao: new Set(['mercurio']),
   emocao: new Set(['sol', 'lua']),
-  proposito: new Set(['ascendente']),
+  futuro: new Set(['jupiter', 'saturno']),
 }
+
+const CHAVES_SINASTRIA = [
+  'sol', 'lua', 'mercurio', 'venus', 'marte', 'jupiter', 'saturno', 'ascendente', 'mc',
+]
 
 function pilarDoAspecto(keyA, keyB) {
   const pilares = []
@@ -175,18 +228,74 @@ function pontuarPilar(aspectosPilar) {
   return Math.round(Math.max(18, Math.min(97, score)))
 }
 
+function aspectosEmocionais(aspectos) {
+  const chaves = new Set(['sol', 'lua', 'venus'])
+  return aspectos.filter((a) => chaves.has(a.keyA) && chaves.has(a.keyB))
+}
+
+/** Missão / vocação individual a partir do Sol, MC e Nodo Norte. */
+export function calcularMissaoPessoa(pos) {
+  if (!pos?.corpos) return null
+  const sol = pos.corpos.sol
+  const mc = pos.corpos.mc
+  const nn = pos.corpos.nodo_norte
+  return {
+    nome: pos.nome,
+    horaDesconhecida: pos.horaDesconhecida,
+    sol: sol ? { signo: sol.signo, elemento: sol.elemento } : null,
+    mc: mc ? { signo: mc.signo, elemento: mc.elemento } : null,
+    nodoNorte: nn ? { signo: nn.signo, elemento: nn.elemento } : null,
+  }
+}
+
+/** Dinâmica emocional cruzada — aspectos Sol/Lua/Vénus entre mapas. */
+export function calcularDinamicaEmocional(aspectos, posA, posB) {
+  const emocionais = aspectosEmocionais(aspectos)
+  const luaLua = aspectos.find((a) => a.keyA === 'lua' && a.keyB === 'lua')
+  const solLua = aspectos.filter(
+    (a) => (a.keyA === 'sol' && a.keyB === 'lua') || (a.keyA === 'lua' && a.keyB === 'sol'),
+  )
+  const venusLua = aspectos.filter(
+    (a) => (a.keyA === 'venus' && a.keyB === 'lua') || (a.keyA === 'lua' && a.keyB === 'venus'),
+  )
+
+  let tom = 'neutro'
+  let score = 50
+  for (const a of emocionais) {
+    score += pesoAspecto(a) * 0.6
+  }
+  score = Math.round(Math.max(15, Math.min(98, score)))
+  if (score >= 72) tom = 'harmonia'
+  else if (score <= 42) tom = 'tensao'
+
+  return {
+    score,
+    tom,
+    luaLua,
+    solLua,
+    venusLua,
+    aspectos: emocionais.slice(0, 8),
+    luaA: posA?.corpos?.lua?.signo,
+    luaB: posB?.corpos?.lua?.signo,
+    solA: posA?.corpos?.sol?.signo,
+    solB: posB?.corpos?.sol?.signo,
+  }
+}
+
 /**
- * Cruza posições de A e B; devolve aspectos e pilares 0–100.
+ * Cruza posições de A e B; devolve aspectos, pilares 0–100, missão e dinâmica emocional.
  */
 export function calcularSinastria(posA, posB) {
   if (!posA?.corpos || !posB?.corpos) return null
 
-  const chaves = ['sol', 'lua', 'mercurio', 'venus', 'marte', 'ascendente']
-  const aspectos = []
-  const porPilar = { quimica: [], comunicacao: [], emocao: [], proposito: [] }
+  const chavesA = CHAVES_SINASTRIA.filter((k) => posA.corpos[k]?.longitude != null)
+  const chavesB = CHAVES_SINASTRIA.filter((k) => posB.corpos[k]?.longitude != null)
 
-  for (const ka of chaves) {
-    for (const kb of chaves) {
+  const aspectos = []
+  const porPilar = { quimica: [], comunicacao: [], emocao: [], futuro: [] }
+
+  for (const ka of chavesA) {
+    for (const kb of chavesB) {
       const ca = posA.corpos[ka]
       const cb = posB.corpos[kb]
       if (ca?.longitude == null || cb?.longitude == null) continue
@@ -215,21 +324,26 @@ export function calcularSinastria(posA, posB) {
     quimica: pontuarPilar(porPilar.quimica),
     comunicacao: pontuarPilar(porPilar.comunicacao),
     emocao: pontuarPilar(porPilar.emocao),
-    proposito: pontuarPilar(porPilar.proposito),
+    futuro: pontuarPilar(porPilar.futuro),
   }
 
   const pontuacao = Math.round(
-    pilares.quimica * 0.28
-    + pilares.emocao * 0.32
-    + pilares.comunicacao * 0.2
-    + pilares.proposito * 0.2,
+    pilares.quimica * 0.25
+    + pilares.emocao * 0.30
+    + pilares.comunicacao * 0.20
+    + pilares.futuro * 0.25,
   )
+
+  const sorted = aspectos.sort((a, b) => a.orbe - b.orbe)
 
   return {
     pontuacao: Math.max(15, Math.min(98, pontuacao)),
     pilares,
-    aspectos: aspectos.sort((a, b) => a.orbe - b.orbe),
+    aspectos: sorted,
     porPilar,
+    missaoA: calcularMissaoPessoa(posA),
+    missaoB: calcularMissaoPessoa(posB),
+    dinamicaEmocional: calcularDinamicaEmocional(sorted, posA, posB),
     posA,
     posB,
   }
@@ -243,4 +357,58 @@ export async function calcularSinastriaCompleta(dadosA, dadosB) {
   ])
   if (!posA || !posB) return null
   return calcularSinastria(posA, posB)
+}
+
+/** Compatibilidade generalizada (signos Sol) — camada grátis. */
+export function compatibilidadeSolarGratis(solA, solB, lang = 'pt') {
+  if (!solA || !solB) return { nivel: 'medio', texto: '' }
+
+  const ELEMENTOS = {
+    Fogo: ['Carneiro', 'Leão', 'Sagitário', 'Aries', 'Leo', 'Sagittarius'],
+    Terra: ['Touro', 'Virgem', 'Capricórnio', 'Taurus', 'Virgo', 'Capricorn'],
+    Ar: ['Gémeos', 'Balança', 'Libra', 'Aquário', 'Gemini', 'Aquarius'],
+    Água: ['Caranguejo', 'Escorpião', 'Peixes', 'Cancer', 'Scorpio', 'Pisces'],
+  }
+
+  const elem = (signo) => {
+    for (const [el, signs] of Object.entries(ELEMENTOS)) {
+      if (signs.includes(signo)) return el
+    }
+    return null
+  }
+
+  const eA = elem(solA)
+  const eB = elem(solB)
+  const compat = {
+    'Fogo-Fogo': 78, 'Terra-Terra': 76, 'Ar-Ar': 74, 'Água-Água': 77,
+    'Fogo-Ar': 72, 'Ar-Fogo': 72, 'Terra-Água': 73, 'Água-Terra': 73,
+    'Fogo-Água': 48, 'Água-Fogo': 48, 'Terra-Ar': 50, 'Ar-Terra': 50,
+    'Fogo-Terra': 55, 'Terra-Fogo': 55, 'Ar-Água': 58, 'Água-Ar': 58,
+  }
+  const chave = eA && eB ? `${eA}-${eB}` : null
+  const score = chave ? (compat[chave] ?? 62) : 62
+  const nivel = score >= 72 ? 'alto' : score >= 55 ? 'medio' : 'desafio'
+
+  const textos = {
+    alto: {
+      pt: `Os Sols em ${solA} e ${solB} partilham uma linguagem elemental compatível (${eA} · ${eB}). Há base natural para reconhecimento mútuo — aprofundar requer o mapa completo.`,
+      en: `Suns in ${solA} and ${solB} share compatible elemental language (${eA} · ${eB}). There is a natural basis for mutual recognition — depth requires the full chart.`,
+    },
+    medio: {
+      pt: `Entre ${solA} e ${solB} há complementaridade moderada (${eA} · ${eB}). A relação cresce com consciência dos ritmos diferentes de cada um.`,
+      en: `Between ${solA} and ${solB} there is moderate complementarity (${eA} · ${eB}). The bond grows through awareness of each other's different rhythms.`,
+    },
+    desafio: {
+      pt: `Os Sols em ${solA} e ${solB} activam elementos distintos (${eA} · ${eB}). O atrito pode ser motor de crescimento se houver diálogo honesto.`,
+      en: `Suns in ${solA} and ${solB} activate different elements (${eA} · ${eB}). Friction can fuel growth with honest dialogue.`,
+    },
+  }
+
+  return {
+    nivel,
+    score,
+    elementoA: eA,
+    elementoB: eB,
+    texto: textos[nivel][lang] || textos[nivel].pt,
+  }
 }

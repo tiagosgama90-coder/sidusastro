@@ -2965,7 +2965,7 @@ export default function App() {
     if (destino === 'onboarding' && utilizador && contaConfigurada) {
       destino = 'home'
     }
-    if ((destino === 'bussola' || destino === 'sinastria' || destino === 'numerologia') && !acessoVip) {
+    if ((destino === 'bussola' || destino === 'numerologia') && !acessoVip) {
       destino = 'paywall'
     }
     setPasso(destino)
@@ -3565,7 +3565,7 @@ export default function App() {
       case 'bussola':
         return <BussolaCosmica mapaNatal={mapaNatal} onVoltar={() => irPara('home')} />
       case 'sinastria':
-        return <Sinastria mapaNatal={mapaNatal} dadosUtilizador={dados} onVoltar={() => irPara('home')} />
+        return <Sinastria mapaNatal={mapaNatal} dadosUtilizador={dados} isPremium={acessoVip} onUpgrade={() => irPara('paywall')} onVoltar={() => irPara('home')} />
       case 'biorritmo':
         return <Biorritmo dados={dados} utilizador={utilizador} mapaNatal={mapaNatal} onVoltar={() => irPara('home')} />
       case 'horasIguais':

@@ -19,7 +19,7 @@ export function RadarAfinidades({
   const axes = [
     { key: 'quimica', angle: -90, color: '#F87171', val: scores.quimica ?? 0 },
     { key: 'comunicacao', angle: 0, color: '#60A5FA', val: scores.comunicacao ?? 0 },
-    { key: 'proposito', angle: 90, color: '#4ADE80', val: scores.proposito ?? 0 },
+    { key: 'futuro', angle: 90, color: '#4ADE80', val: scores.futuro ?? scores.proposito ?? 0 },
     { key: 'emocao', angle: 180, color: '#818CF8', val: scores.emocao ?? 0 },
   ]
 

@@ -1,138 +1,278 @@
 /**
- * Interpretações textuais de sinastria — chaves por aspecto + contexto do mapa do utilizador.
+ * Relatórios de sinastria — resumo grátis vs análise Premium completa.
  */
+import { compatibilidadeSolarGratis } from './sinastriaEngine.js'
 
 const ASPECTO_TOM = {
-  Trígono: { pt: 'harmónico', en: 'harmonious', peso: 1 },
-  Sextil: { pt: 'cooperativo', en: 'cooperative', peso: 0.85 },
-  Conjunção: { pt: 'intenso', en: 'intense', peso: 0.9 },
-  Quadratura: { pt: 'desafiante', en: 'challenging', peso: -0.9 },
-  Oposição: { pt: 'polarizador', en: 'polarizing', peso: -0.75 },
+  Trígono: { pt: 'harmónico', en: 'harmonious' },
+  Sextil: { pt: 'cooperativo', en: 'cooperative' },
+  Conjunção: { pt: 'intenso', en: 'intense' },
+  Quadratura: { pt: 'desafiante', en: 'challenging' },
+  Oposição: { pt: 'polarizador', en: 'polarizing' },
 }
 
-const BLOCOS = {
-  venus_marte: {
-    pt: 'A dinâmica Vénus–Marte activa a química física e o magnetismo entre vocês. Há atração que pede expressão consciente, não apenas impulso.',
-    en: 'The Venus–Mars dynamic activates physical chemistry and magnetism between you. Attraction asks for conscious expression, not impulse alone.',
-  },
-  mercurio: {
-    pt: 'Mercúrio entre os vossos mapas define como traduzem intenções em palavras. A clareza mental é o alicerce desta ligação.',
-    en: 'Mercury between your charts defines how intentions become words. Mental clarity is the foundation of this bond.',
-  },
-  sol_lua: {
-    pt: 'Sol e Lua em contacto revelam compatibilidade de identidade e mundo emocional — o núcleo onde se sentem vistos ou invisíveis.',
-    en: 'Sun and Moon in contact reveal identity and emotional world compatibility — the core where you feel seen or unseen.',
-  },
-  ascendente: {
-    pt: 'O Ascendente em sinastria indica destino e propósito partilhado: como entram na vida um do outro e que caminho constroem juntos.',
-    en: 'The Ascendant in synastry points to shared destiny and purpose: how you enter each other\'s lives and what path you build together.',
-  },
+const MISSAO_SOL = {
+  Carneiro: { pt: 'Iniciar, liderar e abrir caminhos novos com coragem autêntica.', en: 'To initiate, lead and open new paths with authentic courage.' },
+  Touro: { pt: 'Construir segurança, beleza e valor duradouro no mundo material.', en: 'To build security, beauty and lasting value in the material world.' },
+  Gémeos: { pt: 'Conectar ideias, traduzir o invisível e estimular a curiosidade colectiva.', en: 'To connect ideas, translate the invisible and stimulate collective curiosity.' },
+  Caranguejo: { pt: 'Nutrir, proteger e dar raízes emocionais às pessoas e lugares.', en: 'To nurture, protect and give emotional roots to people and places.' },
+  Leão: { pt: 'Expressar criatividade, inspirar e irradiar confiança generosa.', en: 'To express creativity, inspire and radiate generous confidence.' },
+  Virgem: { pt: 'Aperfeiçoar, servir com precisão e curar através do discernimento.', en: 'To refine, serve with precision and heal through discernment.' },
+  Balança: { pt: 'Criar equilíbrio, justiça e pontes entre perspectivas opostas.', en: 'To create balance, justice and bridges between opposing views.' },
+  Escorpião: { pt: 'Transformar profundamente, revelar verdades ocultas e regenerar.', en: 'To transform deeply, reveal hidden truths and regenerate.' },
+  Sagitário: { pt: 'Expandir horizontes, ensinar e buscar sentido filosófico.', en: 'To expand horizons, teach and seek philosophical meaning.' },
+  Capricórnio: { pt: 'Estruturar legados, assumir responsabilidade e subir com disciplina.', en: 'To structure legacies, take responsibility and rise with discipline.' },
+  Aquário: { pt: 'Inovar, servir o colectivo e libertar padrões obsoletos.', en: 'To innovate, serve the collective and liberate obsolete patterns.' },
+  Peixes: { pt: 'Compadecer, sonhar e canalizar o invisível em arte ou serviço.', en: 'To empathize, dream and channel the invisible into art or service.' },
 }
 
-function chaveAspecto(a) {
-  const ord = [a.keyA, a.keyB].sort().join('_')
-  const asp = a.id || a.nome?.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-  return `${ord}_${asp}`
-}
-
-const FRASES = {
-  'sol_trigono_lua': {
-    pt: 'Sol trígono Lua: reconhecimento emocional natural; sentem-se em casa na presença um do outro.',
-    en: 'Sun trine Moon: natural emotional recognition; you feel at home in each other\'s presence.',
+const EIXOS = {
+  quimica: {
+    titulo: { pt: 'Atração Sexual e Química', en: 'Sexual Attraction & Chemistry' },
+    planetas: { pt: 'Marte · Vénus', en: 'Mars · Venus' },
+    intro: {
+      pt: 'Marte e Vénus em sinastria medem desejo físico, magnetismo e a forma como o casal expressa erotismo e afecto. Aspectos harmónicos amplificam a química; quadraturas pedem negociação dos ritmos de intimidade.',
+      en: 'Mars and Venus in synastry measure physical desire, magnetism and how the couple expresses eroticism and affection. Harmonious aspects amplify chemistry; squares ask for negotiation of intimacy rhythms.',
+    },
   },
-  'sol_quadratura_marte': {
-    pt: 'Sol quadratura Marte: faíscas de intensidade — o desafio é canalizar a energia sem competição.',
-    en: 'Sun square Mars: sparks of intensity — the challenge is channeling energy without competition.',
+  emocao: {
+    titulo: { pt: 'Sintonia Emocional', en: 'Emotional Harmony' },
+    planetas: { pt: 'Sol · Lua', en: 'Sun · Moon' },
+    intro: {
+      pt: 'Sol e Lua cruzados revelam como reagem a crises, o nível de empatia e a sensação de segurança emocional. É o eixo onde se sentem «em casa» ou estranhos um ao outro.',
+      en: 'Crossed Sun and Moon reveal how you react to crises, empathy levels and the sense of emotional safety. This is where you feel «at home» or like strangers.',
+    },
   },
-  'venus_conjuncao_marte': {
-    pt: 'Vénus conjunção Marte: química evidente e magnetismo físico acentuado.',
-    en: 'Venus conjunct Mars: evident chemistry and heightened physical magnetism.',
+  comunicacao: {
+    titulo: { pt: 'Comunicação e Diálogo', en: 'Communication & Dialogue' },
+    planetas: { pt: 'Mercúrio', en: 'Mercury' },
+    intro: {
+      pt: 'Mercúrio entre os mapas define a facilidade para resolver mal-entendidos, o humor intelectual partilhado e se a conversa flui ou trava em momentos de pressão.',
+      en: 'Mercury between charts defines ease resolving misunderstandings, shared intellectual humour and whether conversation flows or stalls under pressure.',
+    },
   },
-  'mercurio_sextil_mercurio': {
-    pt: 'Mercúrio sextil Mercúrio: diálogo fluido; compreendem o ritmo mental do outro.',
-    en: 'Mercury sextile Mercury: fluid dialogue; you understand each other\'s mental rhythm.',
-  },
-  'lua_oposicao_sol': {
-    pt: 'Lua oposição Sol: complementaridade clássica — um ilumina o que o outro sente; exige empatia activa.',
-    en: 'Moon opposition Sun: classic complementarity — one illuminates what the other feels; active empathy required.',
-  },
-  'ascendente_trigono_sol': {
-    pt: 'Ascendente trígono Sol: propósito alinhado; a relação abre caminhos de crescimento mútuo.',
-    en: 'Ascendant trine Sun: aligned purpose; the relationship opens paths of mutual growth.',
+  futuro: {
+    titulo: { pt: 'Projetos e Futuro', en: 'Projects & Future' },
+    planetas: { pt: 'Júpiter · Saturno', en: 'Jupiter · Saturn' },
+    intro: {
+      pt: 'Júpiter e Saturno indicam a capacidade de construir uma vida estável juntos, partilhar filosofia de vida e equilibrar expansão com compromisso a longo prazo.',
+      en: 'Jupiter and Saturn indicate capacity to build a stable life together, share life philosophy and balance expansion with long-term commitment.',
+    },
   },
 }
 
 function fraseAspecto(a, lang) {
-  const k = chaveAspecto(a)
-  const direct = FRASES[k]
-  if (direct) return direct[lang] || direct.pt
-
   const tom = ASPECTO_TOM[a.nome]
   if (!tom) return null
   const adj = tom[lang] || tom.pt
   if (lang === 'en') {
-    return `${a.pessoaA} ${a.nome.toLowerCase()} ${a.pessoaB} (${a.signoA} · ${a.signoB}): ${adj} link, orb ${a.orbe}°.`
+    return `${a.pessoaA} ${a.nome.toLowerCase()} ${a.pessoaB} (${a.signoA} · ${a.signoB}, orb ${a.orbe}°): ${adj} link.`
   }
-  return `${a.pessoaA} ${a.nome.toLowerCase()} ${a.pessoaB} (${a.signoA} · ${a.signoB}): ligação ${adj}, orbe ${a.orbe}°.`
+  return `${a.pessoaA} ${a.nome.toLowerCase()} ${a.pessoaB} (${a.signoA} · ${a.signoB}, orbe ${a.orbe}°): ligação ${adj}.`
 }
 
-/**
- * Monta relatório Markdown/texto com base nos aspectos e no mapa do utilizador.
- */
+function textoMissaoIndividual(missao, lang) {
+  if (!missao?.sol?.signo) return ''
+  const solTxt = MISSAO_SOL[missao.sol.signo]?.[lang] || MISSAO_SOL[missao.sol.signo]?.pt || ''
+  const linhas = []
+  const nome = missao.nome || (lang === 'en' ? 'This person' : 'Esta pessoa')
+
+  if (lang === 'en') {
+    linhas.push(`**${nome} — life mission (Sun in ${missao.sol.signo})**`)
+    linhas.push(solTxt)
+    if (missao.mc) {
+      linhas.push(`Midheaven in ${missao.mc.signo}: public vocation oriented toward ${missao.mc.elemento} themes — concrete expression of purpose in career and social role.`)
+    } else if (missao.horaDesconhecida) {
+      linhas.push('Without birth time, Midheaven is unavailable — solar mission remains the primary vocational indicator.')
+    }
+    if (missao.nodoNorte) {
+      linhas.push(`North Node in ${missao.nodoNorte.signo}: evolutionary direction inviting growth in ${missao.nodoNorte.elemento} qualities this lifetime.`)
+    }
+  } else {
+    linhas.push(`**${nome} — missão de vida (Sol em ${missao.sol.signo})**`)
+    linhas.push(solTxt)
+    if (missao.mc) {
+      linhas.push(`Meio-Céu em ${missao.mc.signo}: vocação pública orientada para temas de ${missao.mc.elemento} — expressão concreta do propósito na carreira e papel social.`)
+    } else if (missao.horaDesconhecida) {
+      linhas.push('Sem hora de nascimento, o Meio-Céu não está disponível — a missão solar permanece o indicador vocacional principal.')
+    }
+    if (missao.nodoNorte) {
+      linhas.push(`Nodo Norte em ${missao.nodoNorte.signo}: direcção evolutiva convidando ao crescimento nas qualidades de ${missao.nodoNorte.elemento} nesta vida.`)
+    }
+  }
+  return linhas.join('\n')
+}
+
+function textoDinamicaEmocional(din, lang) {
+  if (!din) return ''
+  const linhas = []
+  if (lang === 'en') {
+    linhas.push('**Emotional dynamics**')
+    if (din.tom === 'harmonia') {
+      linhas.push('Emotional worlds tend to flow with natural empathy — mutual recognition in vulnerability is a strength.')
+    } else if (din.tom === 'tensao') {
+      linhas.push('Emotional rhythms differ significantly — translating feelings and respecting different needs is the central exercise.')
+    } else {
+      linhas.push('The emotional bond develops through conscious presence rather than automatic harmony.')
+    }
+    if (din.luaA && din.luaB) {
+      linhas.push(`Moon signs: ${din.luaA} × ${din.luaB}.`)
+    }
+    for (const a of din.solLua?.slice(0, 2) || []) {
+      const f = fraseAspecto(a, lang)
+      if (f) linhas.push(`• ${f}`)
+    }
+    for (const a of din.venusLua?.slice(0, 2) || []) {
+      const f = fraseAspecto(a, lang)
+      if (f) linhas.push(`• ${f}`)
+    }
+    if (din.luaLua) {
+      const f = fraseAspecto(din.luaLua, lang)
+      if (f) linhas.push(`• Moon–Moon: ${f}`)
+    }
+  } else {
+    linhas.push('**Dinâmica emocional**')
+    if (din.tom === 'harmonia') {
+      linhas.push('Os mundos emocionais tendem a fluir com empatia natural — o reconhecimento mútuo na vulnerabilidade é uma força.')
+    } else if (din.tom === 'tensao') {
+      linhas.push('Os ritmos emocionais diferem significativamente — traduzir sentimentos e respeitar necessidades distintas é o exercício central.')
+    } else {
+      linhas.push('A ligação emocional desenvolve-se por presença consciente, não por harmonia automática.')
+    }
+    if (din.luaA && din.luaB) {
+      linhas.push(`Signos lunares: ${din.luaA} × ${din.luaB}.`)
+    }
+    for (const a of din.solLua?.slice(0, 2) || []) {
+      const f = fraseAspecto(a, lang)
+      if (f) linhas.push(`• ${f}`)
+    }
+    for (const a of din.venusLua?.slice(0, 2) || []) {
+      const f = fraseAspecto(a, lang)
+      if (f) linhas.push(`• ${f}`)
+    }
+    if (din.luaLua) {
+      const f = fraseAspecto(din.luaLua, lang)
+      if (f) linhas.push(`• Lua–Lua: ${f}`)
+    }
+  }
+  return linhas.join('\n')
+}
+
+function textoEixo(pilar, score, aspectos, lang) {
+  const eixo = EIXOS[pilar]
+  if (!eixo) return ''
+  const linhas = [
+    `### ${eixo.titulo[lang] || eixo.titulo.pt}`,
+    `*${eixo.planetas[lang] || eixo.planetas.pt}* · **${score}%**`,
+    '',
+    eixo.intro[lang] || eixo.intro.pt,
+  ]
+  const top = aspectos.slice(0, 4)
+  if (top.length) {
+    linhas.push('')
+    for (const a of top) {
+      const f = fraseAspecto(a, lang)
+      if (f) linhas.push(`• ${f}`)
+    }
+  } else {
+    linhas.push('')
+    linhas.push(lang === 'en'
+      ? 'No major aspects in this axis within 6° orb — the area develops through intentional effort.'
+      : 'Sem aspectos maiores neste eixo dentro de orbe 6° — a área desenvolve-se por esforço intencional.')
+  }
+  return linhas.join('\n')
+}
+
+/** Resumo generalizado para utilizadores grátis. */
+export function montarResumoGratis(resultado, mapaNatal, lang = 'pt') {
+  if (!resultado) return ''
+  const solA = mapaNatal?.solar?.nome || resultado.posA?.corpos?.sol?.signo
+  const solB = resultado.posB?.corpos?.sol?.signo
+  const compat = compatibilidadeSolarGratis(solA, solB, lang)
+  const linhas = []
+
+  if (lang === 'en') {
+    linhas.push('**Generalized compatibility preview**')
+    linhas.push(compat.texto)
+    linhas.push('')
+    const bucket = resultado.pontuacao >= 70 ? 'promising' : resultado.pontuacao >= 50 ? 'moderate' : 'demanding'
+    linhas.push(`Overall synastry tone: **${bucket}** (${Math.round(resultado.pontuacao / 5) * 5}% range).`)
+    linhas.push('')
+    linhas.push('Premium unlocks the 4-axis radar (chemistry, emotion, communication, future), each person\'s life mission, detailed emotional dynamics and all cross-aspects calculated via Swiss Ephemeris (JPL/NASA).')
+  } else {
+    linhas.push('**Pré-visualização generalizada de compatibilidade**')
+    linhas.push(compat.texto)
+    linhas.push('')
+    const bucket = resultado.pontuacao >= 70 ? 'promissora' : resultado.pontuacao >= 50 ? 'moderada' : 'exigente'
+    linhas.push(`Tom geral da sinastria: **${bucket}** (faixa ~${Math.round(resultado.pontuacao / 5) * 5}%).`)
+    linhas.push('')
+    linhas.push('O Premium desbloqueia o radar dos 4 eixos (química, emoção, comunicação, futuro), a missão de cada um, dinâmica emocional detalhada e todos os aspectos cruzados via Swiss Ephemeris (JPL/NASA).')
+  }
+  return linhas.join('\n')
+}
+
+/** Relatório Premium completo. */
 export function montarRelatorioSinastria(resultado, mapaNatal, lang = 'pt') {
   if (!resultado) return ''
 
-  const { pilares, aspectos, posA, posB } = resultado
+  const { pilares, aspectos, posA, posB, porPilar, missaoA, missaoB, dinamicaEmocional } = resultado
   const linhas = []
 
-  if (mapaNatal?.solar?.nome) {
+  const avisoHora = posA?.horaDesconhecida || posB?.horaDesconhecida
+  if (avisoHora) {
+    linhas.push(lang === 'en'
+      ? '*Note: without exact birth time, Ascendant, Midheaven and fast-moving points may be approximate (solar noon used). Sun, Jupiter and Saturn remain precise.*'
+      : '*Nota: sem hora exacta de nascimento, Ascendente, Meio-Céu e pontos rápidos podem ser aproximados (meio-dia solar). Sol, Júpiter e Saturno mantêm precisão.*')
+    linhas.push('')
+  }
+
+  if (mapaNatal?.solar?.nome || posA?.corpos?.sol) {
     if (lang === 'en') {
       linhas.push(
-        `**Your chart:** Sun in ${mapaNatal.solar.nome}, Moon in ${mapaNatal.lunar?.nome || '—'}, Ascendant in ${mapaNatal.ascendente?.nome || '—'}.`,
-        `**Partner:** Sun in ${posB?.corpos?.sol?.signo || '—'}, Moon in ${posB?.corpos?.lua?.signo || '—'}, Ascendant in ${posB?.corpos?.ascendente?.signo || '—'}.`,
+        `**Your chart:** Sun ${mapaNatal?.solar?.nome || posA?.corpos?.sol?.signo}, Moon ${mapaNatal?.lunar?.nome || posA?.corpos?.lua?.signo || '—'}, Asc ${mapaNatal?.ascendente?.nome || posA?.corpos?.ascendente?.signo || '—'}.`,
+        `**Partner:** Sun ${posB?.corpos?.sol?.signo || '—'}, Moon ${posB?.corpos?.lua?.signo || '—'}, Asc ${posB?.corpos?.ascendente?.signo || '—'}.`,
+        `**Ephemeris:** ${posA?.motor || 'Swiss Ephemeris'} · orb 6° · Tropical Placidus.`,
         '',
       )
     } else {
       linhas.push(
-        `**O teu mapa:** Sol em ${mapaNatal.solar.nome}, Lua em ${mapaNatal.lunar?.nome || '—'}, Ascendente em ${mapaNatal.ascendente?.nome || '—'}.`,
-        `**Parceiro(a):** Sol em ${posB?.corpos?.sol?.signo || '—'}, Lua em ${posB?.corpos?.lua?.signo || '—'}, Ascendente em ${posB?.corpos?.ascendente?.signo || '—'}.`,
+        `**O teu mapa:** Sol ${mapaNatal?.solar?.nome || posA?.corpos?.sol?.signo}, Lua ${mapaNatal?.lunar?.nome || posA?.corpos?.lua?.signo || '—'}, Asc ${mapaNatal?.ascendente?.nome || posA?.corpos?.ascendente?.signo || '—'}.`,
+        `**Parceiro(a):** Sol ${posB?.corpos?.sol?.signo || '—'}, Lua ${posB?.corpos?.lua?.signo || '—'}, Asc ${posB?.corpos?.ascendente?.signo || '—'}.`,
+        `**Efemérides:** ${posA?.motor || 'Swiss Ephemeris'} · orbe 6° · Tropical Placidus.`,
         '',
       )
     }
   }
 
-  const blocosUsados = new Set()
-  for (const a of aspectos.slice(0, 8)) {
-    if ((a.keyA === 'venus' || a.keyA === 'marte' || a.keyB === 'venus' || a.keyB === 'marte') && !blocosUsados.has('venus_marte')) {
-      linhas.push(BLOCOS.venus_marte[lang] || BLOCOS.venus_marte.pt)
-      blocosUsados.add('venus_marte')
-    }
-    if ((a.keyA === 'mercurio' || a.keyB === 'mercurio') && !blocosUsados.has('mercurio')) {
-      linhas.push(BLOCOS.mercurio[lang] || BLOCOS.mercurio.pt)
-      blocosUsados.add('mercurio')
-    }
-    if ((a.keyA === 'sol' || a.keyA === 'lua' || a.keyB === 'sol' || a.keyB === 'lua') && !blocosUsados.has('sol_lua')) {
-      linhas.push(BLOCOS.sol_lua[lang] || BLOCOS.sol_lua.pt)
-      blocosUsados.add('sol_lua')
-    }
-    if ((a.keyA === 'ascendente' || a.keyB === 'ascendente') && !blocosUsados.has('ascendente')) {
-      linhas.push(BLOCOS.ascendente[lang] || BLOCOS.ascendente.pt)
-      blocosUsados.add('ascendente')
-    }
-  }
-
-  linhas.push('')
   if (lang === 'en') {
-    linhas.push('**Key synastry aspects:**')
+    linhas.push('## Four practical pillars')
   } else {
-    linhas.push('**Aspectos-chave da sinastria:**')
+    linhas.push('## Quatro pilares práticos')
+  }
+  linhas.push('')
+
+  for (const pilar of ['quimica', 'emocao', 'comunicacao', 'futuro']) {
+    linhas.push(textoEixo(pilar, pilares[pilar], porPilar[pilar] || [], lang))
+    linhas.push('')
   }
 
-  const top = aspectos.slice(0, 6)
+  linhas.push(textoMissaoIndividual(missaoA, lang))
+  linhas.push('')
+  linhas.push(textoMissaoIndividual(missaoB, lang))
+  linhas.push('')
+  linhas.push(textoDinamicaEmocional(dinamicaEmocional, lang))
+  linhas.push('')
+
+  if (lang === 'en') {
+    linhas.push('**Key synastry aspects (Swiss Ephemeris):**')
+  } else {
+    linhas.push('**Aspectos-chave da sinastria (Swiss Ephemeris):**')
+  }
+  const top = aspectos.slice(0, 12)
   if (!top.length) {
     linhas.push(lang === 'en'
-      ? 'No major aspects within 6° orb — the bond develops through conscious choice rather than automatic harmony.'
-      : 'Sem aspectos maiores dentro de orbe 6° — a ligação desenvolve-se por escolha consciente, não por harmonia automática.')
+      ? 'No major aspects within 6° orb.'
+      : 'Sem aspectos maiores dentro de orbe 6°.')
   } else {
     for (const a of top) {
       const f = fraseAspecto(a, lang)
@@ -140,20 +280,7 @@ export function montarRelatorioSinastria(resultado, mapaNatal, lang = 'pt') {
     }
   }
 
-  linhas.push('')
-  if (lang === 'en') {
-    const p = pilares
-    if (p.emocao >= 75) linhas.push('Emotionally, this synastry offers strong mutual understanding.')
-    else if (p.emocao < 45) linhas.push('Emotional rhythms differ significantly — translation and patience are essential.')
-    if (p.quimica >= 75) linhas.push('Physical and romantic chemistry is pronounced in this chart comparison.')
-    if (p.proposito >= 70) linhas.push('There is a sense of shared direction — the relationship can serve a larger purpose.')
-  } else {
-    const p = pilares
-    if (p.emocao >= 75) linhas.push('Emocionalmente, esta sinastria oferece compreensão mútua forte.')
-    else if (p.emocao < 45) linhas.push('Os ritmos emocionais diferem significativamente — tradução e paciência são essenciais.')
-    if (p.quimica >= 75) linhas.push('A química física e romântica é acentuada nesta comparação de mapas.')
-    if (p.proposito >= 70) linhas.push('Há sentido de direcção partilhada — a relação pode servir um propósito maior.')
-  }
-
   return linhas.join('\n')
 }
+
+export { EIXOS }
