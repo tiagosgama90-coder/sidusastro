@@ -2324,6 +2324,60 @@ function Paywall({ onVoltar, onPagar, onSucesso, isDesktop }) {
   )
 }
 
+function OraclePremiumUpsell({ onUpgrade, compact = false }) {
+  const { lang, t } = useLanguage()
+  const beneficios = getBeneficiosVip(lang)
+
+  return (
+    <div style={{
+      alignSelf: 'stretch',
+      maxWidth: compact ? '100%' : '92%',
+      margin: compact ? 0 : '4px 0',
+      padding: compact ? '14px 16px' : '18px 20px',
+      borderRadius: 16,
+      background: 'linear-gradient(145deg, rgba(223,183,108,0.14), rgba(109,40,217,0.12))',
+      border: `1px solid ${CORES.dourado}`,
+      boxShadow: '0 8px 32px rgba(223,183,108,0.12)',
+    }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
+        <Crown size={18} color={CORES.dourado} />
+        <span style={{ fontSize: 14, fontWeight: 700, color: CORES.dourado }}>{t('oracle.upsellTitle')}</span>
+      </div>
+      <p style={{ fontSize: 13, color: CORES.brancoSuave, lineHeight: 1.65, margin: '0 0 14px' }}>
+        {t('oracle.upsellLead')}
+      </p>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 16 }}>
+        {beneficios.slice(0, 6).map((b) => (
+          <div key={b} style={{ display: 'flex', gap: 8, alignItems: 'flex-start' }}>
+            <Check size={14} color={CORES.dourado} style={{ flexShrink: 0, marginTop: 2 }} />
+            <span style={{ fontSize: 12, color: CORES.brancoSuave, lineHeight: 1.5 }}>{b}</span>
+          </div>
+        ))}
+      </div>
+      <div style={{
+        textAlign: 'center', padding: '10px 12px', marginBottom: 14,
+        background: 'rgba(0,0,0,0.2)', borderRadius: 10,
+        border: '1px solid rgba(223,183,108,0.25)',
+      }}>
+        <span style={{ fontSize: 22, fontWeight: 700, color: CORES.branco }}>{t('vip.price')}</span>
+        <span style={{ fontSize: 12, color: CORES.brancoMuted }}> {t('common.perMonth')}</span>
+        <div style={{ fontSize: 11, color: CORES.brancoMuted, marginTop: 4 }}>{t('vip.cancelAnytime')}</div>
+      </div>
+      <button
+        type="button"
+        onClick={onUpgrade}
+        style={{
+          width: '100%', padding: '14px 20px', border: 'none', borderRadius: 12, cursor: 'pointer',
+          background: `linear-gradient(135deg, ${CORES.dourado}, ${CORES.douradoEscuro})`,
+          color: CORES.fundo, fontSize: 15, fontWeight: 700,
+        }}
+      >
+        {t('oracle.upsellCta')}
+      </button>
+    </div>
+  )
+}
+
 // ── Integração AI (servidor Netlify — chaves secretas) ─────────────────────────
 async function consultarSidus(pergunta, mapaNatal, historico, lang, idToken, clientPremium = false) {
   return consultarOracleServidor(pergunta, mapaNatal, historico, lang, idToken, clientPremium)
@@ -2351,18 +2405,37 @@ function Chat({ mapaNatal, isPremium, userId, oracleRemotas, onOracleUsada, onUp
 
   useEffect(() => { fimRef.current?.scrollIntoView({ behavior: 'smooth' }) }, [mensagens, digitando])
 
+  const mostrarUpsell = useCallback(() => {
+    setMensagens((prev) => {
+      if (prev.some((m) => m.tipo === 'upsell')) return prev
+      return [...prev, {
+        id: `upsell-${Date.now()}`,
+        autor: 'ia',
+        tipo: 'upsell',
+      }]
+    })
+  }, [])
+
+  useEffect(() => {
+    if (!isPremium && perguntasUsadas >= MAX_ORACLE_GRATIS) {
+      mostrarUpsell()
+    }
+  }, [isPremium, perguntasUsadas, mostrarUpsell])
+
   const restantes = isPremium ? Infinity : Math.max(0, MAX_ORACLE_GRATIS - perguntasUsadas)
+  const limiteAtingido = !isPremium && perguntasUsadas >= MAX_ORACLE_GRATIS
 
   const enviar = async () => {
     if (!texto.trim() || digitando) return
 
-    if (!isPremium && perguntasUsadas >= MAX_ORACLE_GRATIS) {
+    const q = texto.trim()
+
+    if (limiteAtingido) {
+      setMensagens((prev) => [...prev, { id: Date.now(), autor: 'user', texto: q }])
       setTexto('')
-      onUpgrade()
+      mostrarUpsell()
       return
     }
-
-    const q = texto.trim()
 
     const erroValidacao = validarPerguntaOracle(q, lang)
     if (erroValidacao) {
@@ -2400,18 +2473,33 @@ function Chat({ mapaNatal, isPremium, userId, oracleRemotas, onOracleUsada, onUp
       setPerguntasUsadas(synced)
       onOracleUsada?.(synced)
       setDigitando(false)
-      setMensagens(prev => [...prev, {
-        id: Date.now()+1, autor: 'ia', aviso: true,
-        texto: getOracleLimitMessage(MAX_ORACLE_GRATIS, lang),
-      }])
-      setTimeout(onUpgrade, 800)
+      setMensagens((prev) => {
+        const next = [...prev, {
+          id: Date.now() + 1,
+          autor: 'ia',
+          aviso: true,
+          texto: getOracleLimitMessage(MAX_ORACLE_GRATIS, lang),
+        }]
+        if (!next.some((m) => m.tipo === 'upsell')) {
+          next.push({ id: `upsell-${Date.now()}`, autor: 'ia', tipo: 'upsell' })
+        }
+        return next
+      })
       return
     }
 
     const recusado = resultado?.recusado === true
     let resposta = resultado?.resposta
     if (!resposta && !recusado) {
-      resposta = gerarRespostaOracle(q, mapaNatal, numAtual, lang)
+      if (resultado?.auth) {
+        resposta = t('oracle.sessionError')
+      } else if (resultado?.servidor) {
+        resposta = lang === 'en'
+          ? '✦ The oracle is temporarily unavailable. Try again in a moment.'
+          : '✦ O oráculo está temporariamente indisponível. Tenta outra vez dentro de instantes.'
+      } else {
+        resposta = gerarRespostaOracle(q, mapaNatal, numAtual, lang)
+      }
     }
 
     if (!resposta) {
@@ -2432,12 +2520,18 @@ function Chat({ mapaNatal, isPremium, userId, oracleRemotas, onOracleUsada, onUp
       onOracleUsada?.(total)
 
       if (total >= MAX_ORACLE_GRATIS) {
-        setTimeout(() => {
-          setMensagens(prev => [...prev, {
-            id: Date.now()+99, autor: 'ia', aviso: true,
+        setMensagens((prev) => {
+          const next = [...prev, {
+            id: Date.now() + 99,
+            autor: 'ia',
+            aviso: true,
             texto: getOracleLimitMessage(MAX_ORACLE_GRATIS, lang),
-          }])
-        }, 600)
+          }]
+          if (!next.some((m) => m.tipo === 'upsell')) {
+            next.push({ id: `upsell-${Date.now()}`, autor: 'ia', tipo: 'upsell' })
+          }
+          return next
+        })
       }
     }
   }
@@ -2473,27 +2567,34 @@ function Chat({ mapaNatal, isPremium, userId, oracleRemotas, onOracleUsada, onUp
       {/* Mensagens */}
       <div style={{ flex: 1, overflowY: 'auto', padding: '16px 14px 10px', display: 'flex', flexDirection: 'column', gap: 12 }}>
         {mensagens.map((m) => (
-          <div key={m.id} style={{
-            alignSelf: m.autor === 'user' ? 'flex-end' : 'flex-start',
-            maxWidth: '86%',
-            padding: '13px 16px',
-            borderRadius: m.autor === 'user' ? '18px 18px 4px 18px' : '4px 18px 18px 18px',
-            background: m.aviso
-              ? 'rgba(251,191,36,0.08)'
-              : m.autor === 'user'
-              ? 'rgba(223,183,108,0.14)'
-              : 'rgba(255,255,255,0.055)',
-            border: `1px solid ${
-              m.aviso ? 'rgba(251,191,36,0.35)'
-              : m.autor === 'user' ? 'rgba(223,183,108,0.28)'
-              : 'rgba(255,255,255,0.09)'
-            }`,
-            fontSize: 14, color: m.aviso ? '#FBBf24' : CORES.brancoSuave,
-            lineHeight: 1.65, whiteSpace: 'pre-wrap',
-          }}>
-            {m.texto}
-          </div>
+          m.tipo === 'upsell' ? (
+            <OraclePremiumUpsell key={m.id} onUpgrade={onUpgrade} compact />
+          ) : (
+            <div key={m.id} style={{
+              alignSelf: m.autor === 'user' ? 'flex-end' : 'flex-start',
+              maxWidth: '86%',
+              padding: '13px 16px',
+              borderRadius: m.autor === 'user' ? '18px 18px 4px 18px' : '4px 18px 18px 18px',
+              background: m.aviso
+                ? 'rgba(251,191,36,0.08)'
+                : m.autor === 'user'
+                ? 'rgba(223,183,108,0.14)'
+                : 'rgba(255,255,255,0.055)',
+              border: `1px solid ${
+                m.aviso ? 'rgba(251,191,36,0.35)'
+                : m.autor === 'user' ? 'rgba(223,183,108,0.28)'
+                : 'rgba(255,255,255,0.09)'
+              }`,
+              fontSize: 14, color: m.aviso ? '#FBBf24' : CORES.brancoSuave,
+              lineHeight: 1.65, whiteSpace: 'pre-wrap',
+            }}>
+              {m.texto}
+            </div>
+          )
         ))}
+        {limiteAtingido && !mensagens.some((m) => m.tipo === 'upsell') && (
+          <OraclePremiumUpsell onUpgrade={onUpgrade} />
+        )}
         {digitando && (
           <div style={{ alignSelf: 'flex-start', padding: '13px 18px', borderRadius: '4px 18px 18px 18px', background: 'rgba(255,255,255,0.055)', border: `1px solid rgba(255,255,255,0.09)` }}>
             <span style={{ fontSize: 18, letterSpacing: 6, color: CORES.dourado }}>✦ ✦ ✦</span>
@@ -2509,11 +2610,17 @@ function Chat({ mapaNatal, isPremium, userId, oracleRemotas, onOracleUsada, onUp
           onChange={e => setTexto(e.target.value)}
           onKeyDown={e => e.key === 'Enter' && !e.shiftKey && enviar()}
           placeholder={
-            !isPremium && perguntasUsadas >= MAX_ORACLE_GRATIS
+            limiteAtingido
               ? t('oracle.placeholderLocked')
               : t('oracle.placeholder')
           }
-          style={{ ...estilos.input, flex: 1, borderRadius: 24, padding: '12px 18px' }}
+          style={{
+            ...estilos.input,
+            flex: 1,
+            borderRadius: 24,
+            padding: '12px 18px',
+            opacity: limiteAtingido ? 0.85 : 1,
+          }}
         />
         <button
           type="button"
@@ -2522,7 +2629,7 @@ function Chat({ mapaNatal, isPremium, userId, oracleRemotas, onOracleUsada, onUp
           style={{
             width: 44, height: 44, borderRadius: '50%', border: 'none', flexShrink: 0,
             background: digitando ? 'rgba(223,183,108,0.25)'
-              : !isPremium && perguntasUsadas >= MAX_ORACLE_GRATIS ? 'rgba(223,183,108,0.2)'
+              : limiteAtingido ? `linear-gradient(135deg,${CORES.dourado},${CORES.douradoEscuro})`
               : `linear-gradient(135deg,${CORES.dourado},${CORES.douradoEscuro})`,
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             cursor: digitando ? 'default' : 'pointer',

@@ -230,9 +230,12 @@ export default {
     freeQuestionsPlural: '{count} free questions',
     premiumBadge: '🔒 Premium €9.99/mo',
     placeholder: 'Astrology question — love, career, transits, natal chart…',
-    placeholderLocked: '🔒 Activate Premium to continue...',
+    placeholderLocked: '🔒 You used your 3 free questions — see Premium below',
     sessionError: '✦ Session expired. Reload the page and try again.',
     premiumSubtitle: 'Senior Astrologer · Unlimited professional chat',
+    upsellTitle: 'Unlock the full Oracle',
+    upsellLead: 'You have tried Sidus with 3 questions tailored to your chart. With Premium you get unlimited consultation — like a real session with a professional astrologer, always tied to your Sun, Moon and Ascendant.',
+    upsellCta: '✦ Activate Sidus VIP — €9.99/month',
   },
   perfil: {
     altPhoto: 'Profile',

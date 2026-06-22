@@ -280,7 +280,7 @@ export function getChatGreeting(mapaNatal, lang = 'pt', maxFree = 3, isPremium =
 
 export function getOracleLimitMessage(maxFree, lang = 'pt') {
   if (lang === 'en') {
-    return `✦ You have used your ${maxFree} free questions.\n\nActivate Premium (€9.99/month) for unlimited chat with Sidus — senior astrologer, deep chart analysis and professional guidance like a real consultation.`
+    return `✦ You have used your ${maxFree} free questions for today.\n\nYour question was received — to continue with unlimited professional guidance from Sidus, activate Premium below.`
   }
-  return `✦ Usaste as tuas ${maxFree} questões gratuitas.\n\nActiva o Premium (9,99 €/mês) para chat ilimitado com Sidus — análise profunda do mapa e orientação profissional como numa consulta real.`
+  return `✦ Usaste as tuas ${maxFree} questões gratuitas.\n\nA tua pergunta foi registada — para continuar com orientação profissional ilimitada do Sidus, activa o Premium abaixo.`
 }

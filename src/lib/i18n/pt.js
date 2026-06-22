@@ -230,9 +230,12 @@ export default {
     freeQuestionsPlural: '{count} questões grátis',
     premiumBadge: '🔒 Premium 9,99 €/mês',
     placeholder: 'Pergunta de astrologia — amor, carreira, trânsitos, mapa natal…',
-    placeholderLocked: '🔒 Activa o Premium para continuar...',
+    placeholderLocked: '🔒 Usaste as 3 questões grátis — vê o Premium abaixo',
     sessionError: '✦ Sessão expirada. Recarrega a página e tenta outra vez.',
     premiumSubtitle: 'Astrólogo Sénior · Chat profissional ilimitado',
+    upsellTitle: 'Desbloqueia o Oráculo completo',
+    upsellLead: 'Já provaste o Sidus com 3 questões personalizadas ao teu mapa. Com Premium tens consulta ilimitada — como uma sessão real com astróloga profissional, sempre ligada ao teu Sol, Lua e Ascendente.',
+    upsellCta: '✦ Activar Sidus VIP — 9,99 €/mês',
   },
   perfil: {
     altPhoto: 'Perfil',
