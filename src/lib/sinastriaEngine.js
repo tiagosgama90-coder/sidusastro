@@ -138,7 +138,20 @@ export async function calcularPosicoesNatal(dados) {
   }
 
   const nodo = posicaoNodoNorte(swe, dateUTC)
-  if (nodo) corpos.nodo_norte = nodo
+  if (nodo) {
+    corpos.nodo_norte = nodo
+    const lonSul = (nodo.longitude + 180) % 360
+    const signoSul = longitudeParaSigno(lonSul)
+    corpos.nodo_sul = {
+      key: 'nodo_sul',
+      nome: 'Nodo Sul',
+      longitude: lonSul,
+      signo: signoSul.nome,
+      graus: signoSul.graus,
+      simbolo: signoSul.simbolo,
+      elemento: signoSul.elemento,
+    }
+  }
 
   if (angulos) {
     const ascSigno = longitudeParaSigno(angulos.ascendant)
@@ -196,8 +209,103 @@ const PILAR_CORPOS = {
 }
 
 const CHAVES_SINASTRIA = [
-  'sol', 'lua', 'mercurio', 'venus', 'marte', 'jupiter', 'saturno', 'ascendente', 'mc',
+  'sol', 'lua', 'mercurio', 'venus', 'marte', 'jupiter', 'saturno', 'ascendente', 'mc', 'nodo_norte', 'nodo_sul',
 ]
+
+/** Ponto médio eclíptico (arco curto) — base do Mapa Composto. */
+export function pontoMedioEcliptico(lonA, lonB) {
+  let a = ((Number(lonA) % 360) + 360) % 360
+  let b = ((Number(lonB) % 360) + 360) % 360
+  let diff = Math.abs(a - b)
+  if (diff > 180) {
+    if (a < b) a += 360
+    else b += 360
+  }
+  return ((a + b) / 2) % 360
+}
+
+function corpoFromLongitude(key, nome, longitude) {
+  const signo = longitudeParaSigno(longitude)
+  return {
+    key,
+    nome,
+    longitude,
+    signo: signo.nome,
+    graus: signo.graus,
+    simbolo: signo.simbolo,
+    elemento: signo.elemento,
+  }
+}
+
+/** Mapa Composto — pontos médios entre posA e posB (método profissional). */
+export function calcularMapaComposto(posA, posB) {
+  if (!posA?.corpos || !posB?.corpos) return null
+  const chaves = ['sol', 'lua', 'mercurio', 'venus', 'marte', 'jupiter', 'saturno']
+  const corpos = {}
+  const NOMES = { sol: 'Sol', lua: 'Lua', mercurio: 'Mercúrio', venus: 'Vénus', marte: 'Marte', jupiter: 'Júpiter', saturno: 'Saturno' }
+  for (const k of chaves) {
+    const a = posA.corpos[k]
+    const b = posB.corpos[k]
+    if (a?.longitude == null || b?.longitude == null) continue
+    const lon = pontoMedioEcliptico(a.longitude, b.longitude)
+    corpos[k] = corpoFromLongitude(k, NOMES[k], lon)
+  }
+  if (posA.corpos.ascendente && posB.corpos.ascendente) {
+    const lon = pontoMedioEcliptico(posA.corpos.ascendente.longitude, posB.corpos.ascendente.longitude)
+    corpos.ascendente = corpoFromLongitude('ascendente', 'Ascendente', lon)
+  }
+  return { corpos, metodo: 'Midpoint · Swiss Ephemeris' }
+}
+
+/** Activações Nodo Norte (propósito) e Nodo Sul (cármico). */
+export function calcularNodosSinastria(posA, posB, aspectos) {
+  const activacoesNorte = []
+  const activacoesSul = []
+
+  const nodos = [
+    { pos: posA, key: 'nodo_norte', tipo: 'norte' },
+    { pos: posA, key: 'nodo_sul', tipo: 'sul' },
+    { pos: posB, key: 'nodo_norte', tipo: 'norte' },
+    { pos: posB, key: 'nodo_sul', tipo: 'sul' },
+  ]
+
+  const planetas = ['sol', 'lua', 'mercurio', 'venus', 'marte', 'jupiter', 'saturno']
+
+  for (const n of nodos) {
+    const nodo = n.pos?.corpos?.[n.key]
+    if (!nodo) continue
+    const outro = n.pos === posA ? posB : posA
+    const donoNodo = n.pos.nome || (n.pos === posA ? 'A' : 'B')
+
+    for (const pk of planetas) {
+      const planetaOutro = outro?.corpos?.[pk]
+      if (!planetaOutro?.longitude) continue
+      const asp = detectarAspecto(planetaOutro.longitude, nodo.longitude)
+      if (!asp) continue
+      const item = {
+        tipo: n.tipo,
+        planeta: planetaOutro.nome,
+        deQuem: outro.nome,
+        donoNodo,
+        signoNodo: nodo.signo,
+        aspecto: asp.nome,
+        orbe: asp.orbe,
+      }
+      if (n.tipo === 'norte') activacoesNorte.push(item)
+      else activacoesSul.push(item)
+    }
+  }
+
+  activacoesNorte.sort((a, b) => a.orbe - b.orbe)
+  activacoesSul.sort((a, b) => a.orbe - b.orbe)
+
+  return {
+    activacoesNorte,
+    activacoesSul,
+    laçoCarmico: activacoesSul.length >= 3,
+    activacaoProposito: activacoesNorte.length >= 1,
+  }
+}
 
 function pilarDoAspecto(keyA, keyB) {
   const pilares = []
@@ -336,6 +444,9 @@ export function calcularSinastria(posA, posB) {
 
   const sorted = aspectos.sort((a, b) => a.orbe - b.orbe)
 
+  const mapaComposto = calcularMapaComposto(posA, posB)
+  const nodosSinastria = calcularNodosSinastria(posA, posB, sorted)
+
   return {
     pontuacao: Math.max(15, Math.min(98, pontuacao)),
     pilares,
@@ -344,6 +455,8 @@ export function calcularSinastria(posA, posB) {
     missaoA: calcularMissaoPessoa(posA),
     missaoB: calcularMissaoPessoa(posB),
     dinamicaEmocional: calcularDinamicaEmocional(sorted, posA, posB),
+    mapaComposto,
+    nodosSinastria,
     posA,
     posB,
   }
