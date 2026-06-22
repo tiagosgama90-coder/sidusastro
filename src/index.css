@@ -186,3 +186,16 @@ code {
   padding: 4px 8px;
   background: var(--code-bg);
 }
+
+/* Premium VIP — ocultar anúncios manuais e Auto ads do Google */
+html.sidus-no-ads ins.adsbygoogle,
+html.sidus-no-ads .adsbygoogle,
+html.sidus-no-ads iframe[id^="google_ads_iframe"],
+html.sidus-no-ads .google-auto-placed {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  height: 0 !important;
+  max-height: 0 !important;
+  overflow: hidden !important;
+}

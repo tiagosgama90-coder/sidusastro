@@ -15,8 +15,9 @@ export function getAdsenseSlot() {
   return String(slot).trim()
 }
 
-/** Activar bloco in-app quando existir unidade (slot) configurada no build Netlify. */
-export function adsenseEnabled() {
+/** Activar bloco in-app quando existir unidade (slot) e utilizador não é Premium. */
+export function adsenseEnabled(isPremium = false) {
+  if (isPremium) return false
   return /^\d+$/.test(getAdsenseSlot())
 }
 

@@ -19,6 +19,13 @@ export default {
     perMonth: '/ month',
     monthShort: '/mo',
   },
+  cookies: {
+    title: 'Cookies & privacy',
+    text: 'We use cookies required for Sidus to work and, with your consent, Google AdSense cookies for advertising. You can accept all or limit to essential cookies (non-personalised ads).',
+    privacyLink: 'Privacy Policy',
+    acceptAll: 'Accept all',
+    essentialOnly: 'Essential cookies only',
+  },
   auth: {
     tagline: 'Where the sky map meets the wisdom of the cards to guide your steps.',
     liveNow: 'Live · Sky updated',

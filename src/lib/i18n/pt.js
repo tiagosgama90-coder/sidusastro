@@ -19,6 +19,13 @@ export default {
     perMonth: '/ mês',
     monthShort: '/mês',
   },
+  cookies: {
+    title: 'Cookies e privacidade',
+    text: 'Utilizamos cookies necessários para o funcionamento do Sidus e, com o teu consentimento, cookies do Google AdSense para publicidade. Podes aceitar todos ou limitar aos essenciais (anúncios não personalizados).',
+    privacyLink: 'Política de Privacidade',
+    acceptAll: 'Aceitar todos',
+    essentialOnly: 'Só cookies essenciais',
+  },
   auth: {
     tagline: 'Onde o mapa do céu se cruza com a sabedoria das cartas para guiar os teus passos.',
     liveNow: 'Ao vivo · Céu actualizado',

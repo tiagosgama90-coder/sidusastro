@@ -65,6 +65,8 @@ import { useNavigate, useLocation } from 'react-router-dom'
 import { passoFromPath, pathFromPasso, langFromPath } from './lib/routes.js'
 import { initAdSense } from './lib/adsense.js'
 import { AdSenseBanner } from './components/AdSenseBanner.jsx'
+import { CookieConsent } from './components/CookieConsent.jsx'
+import { allowsAds, applyAdConsentToGoogle, getCookieConsent } from './lib/cookieConsent.js'
 import { LanguageSwitcher } from './components/LanguageSwitcher.jsx'
 import { useLanguage } from './lib/i18n/LanguageContext.jsx'
 import { getFerramentas, getBeneficiosVip } from './lib/i18n/ferramentasData.js'
@@ -2934,6 +2936,7 @@ export default function App() {
   })
   const [perfilCarregando, setPerfilCarregando] = useState(false)
   const [reparandoDados, setReparandoDados] = useState(false)
+  const [cookieConsent, setCookieConsent] = useState(() => getCookieConsent())
 
   // ── Dados natais ─────────────────────────────────────────────────────────
   const [passo, setPasso] = useState(() => passoFromPath(window.location.pathname))
@@ -3118,9 +3121,22 @@ export default function App() {
     }
   }, [])
 
-  useEffect(() => { initAdSense() }, [])
+  useEffect(() => {
+    if (isPremium) {
+      document.documentElement.classList.add('sidus-no-ads')
+    } else {
+      document.documentElement.classList.remove('sidus-no-ads')
+    }
+    return () => document.documentElement.classList.remove('sidus-no-ads')
+  }, [isPremium])
 
-  // Firebase email verification link (?mode=verifyEmail&oobCode=...)
+  useEffect(() => {
+    if (isPremium || !allowsAds()) return
+    applyAdConsentToGoogle()
+    initAdSense()
+  }, [isPremium, cookieConsent])
+
+  // Firebase email verification link
   useEffect(() => {
     if (!auth || !firebaseDisponivel || oobCodeTratado.current) return
     const params = new URLSearchParams(location.search)
@@ -3488,6 +3504,8 @@ export default function App() {
   const isDev = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
 
   const mostrarNavbar = utilizador && contaConfigurada && passo !== 'paywall'
+  const mostrarAdsGratis = !isPremium && allowsAds() && cookieConsent
+
   const chatFullScreen = passo === 'chat'
 
   // Ecrã de carregamento (auth ou perfil Firestore)
@@ -3654,8 +3672,8 @@ export default function App() {
           {renderEcran()}
         </ErrorBoundary>
       </div>
-      {utilizador && !['login', 'onboarding', 'privacidade', 'paywall'].includes(passo) && (
-        <AdSenseBanner />
+      {utilizador && mostrarAdsGratis && !['login', 'onboarding', 'privacidade', 'paywall'].includes(passo) && (
+        <AdSenseBanner isPremium={isPremium} />
       )}
       <RodapeSidus isDesktop={isDesktop} mostrarNavbar={mostrarNavbar} />
       {mostrarNavbar && (
@@ -3680,6 +3698,11 @@ export default function App() {
           onFechar={() => setModalPagamento(null)}
         />
       )}
+
+      <CookieConsent
+        onConsentChange={setCookieConsent}
+        onPrivacy={() => irPara('privacidade')}
+      />
     </div>
   )
 }
