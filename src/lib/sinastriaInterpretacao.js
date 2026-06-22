@@ -10,6 +10,7 @@ import {
   narrativaMissaoIndividual,
   narrativaMissaoRelacionamento,
   narrativaMapaComposto,
+  narrativaIntroSinastria,
 } from './sinastriaNarrativas.js'
 
 const EIXOS = {
@@ -39,6 +40,10 @@ export function montarSecoesPremium(resultado, mapaNatal, lang = 'pt') {
   const nomeB = posB?.nome || (lang === 'en' ? 'Partner' : 'Parceiro(a)')
 
   return {
+    intro: {
+      titulo: lang === 'en' ? 'Your personal synastry' : 'A tua sinastria pessoal',
+      texto: narrativaIntroSinastria(nomeA, nomeB, Math.round(resultado.pontuacao), lang),
+    },
     quimica: {
       titulo: EIXOS.quimica.titulo[lang] || EIXOS.quimica.titulo.pt,
       score: pilares.quimica,
@@ -100,7 +105,7 @@ export function montarResumoGratis(resultado, mapaNatal, lang = 'pt') {
       '',
       `Overall tone: **${resultado.pontuacao >= 70 ? 'promising' : resultado.pontuacao >= 50 ? 'moderate' : 'demanding'}** (~${Math.round(resultado.pontuacao / 5) * 5}%).`,
       '',
-      'Premium unlocks personalized readings for each pillar (chemistry, emotion, communication, future), each person\'s life mission, Relationship Mission with lunar nodes, karmic bond analysis and the full Composite Chart via Swiss Ephemeris (JPL/NASA).',
+      'Premium unlocks personalized readings for each pillar (chemistry, emotion, communication, future), each person\'s life mission, Relationship Mission with lunar nodes, karmic bond analysis and the full Composite Chart — the vibration of your bond as one entity.',
     ].join('\n')
   }
   return [
@@ -110,7 +115,7 @@ export function montarResumoGratis(resultado, mapaNatal, lang = 'pt') {
     '',
     `Tom geral: **${resultado.pontuacao >= 70 ? 'promissor' : resultado.pontuacao >= 50 ? 'moderado' : 'exigente'}** (~${Math.round(resultado.pontuacao / 5) * 5}%).`,
     '',
-    'O Premium desbloqueia leituras personalizadas dos 4 pilares, missão de vida de cada um, Missão de Relacionamento com nodos lunares, análise de laço cármico e Mapa Composto completo via Swiss Ephemeris (JPL/NASA).',
+    'O Premium desbloqueia leituras personalizadas dos 4 pilares, missão de vida de cada um, Missão de Relacionamento com nodos lunares, análise de laço cármico e Mapa Composto completo — a vibração do vosso vínculo como entidade.',
   ].join('\n')
 }
 
@@ -123,8 +128,13 @@ export function montarRelatorioSinastria(resultado, mapaNatal, lang = 'pt') {
   const aviso = resultado.posA?.horaDesconhecida || resultado.posB?.horaDesconhecida
   if (aviso) {
     linhas.push(lang === 'en'
-      ? '*Without exact birth time, Moon, Ascendant and Midheaven may be approximate. Sun, Jupiter, Saturn and lunar nodes remain astronomically precise (Swiss Ephemeris · JPL/NASA).*'
-      : '*Sem hora exacta, Lua, Ascendente e Meio-Céu podem ser aproximados. Sol, Júpiter, Saturno e nodos lunares mantêm precisão astronómica (Swiss Ephemeris · JPL/NASA).*')
+      ? '*Without exact birth time, Moon, Ascendant and Midheaven may be approximate. Sun, Jupiter, Saturn and lunar nodes remain precise.*'
+      : '*Sem hora exacta, Lua, Ascendente e Meio-Céu podem ser aproximados. Sol, Júpiter, Saturno e nodos lunares mantêm precisão.*')
+    linhas.push('')
+  }
+
+  if (secoes.intro?.texto) {
+    linhas.push(secoes.intro.texto)
     linhas.push('')
   }
 

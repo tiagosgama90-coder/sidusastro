@@ -405,6 +405,14 @@ export function Sinastria({ mapaNatal, dadosUtilizador, isPremium = false, onUpg
                 )}
               </div>
 
+              {analise.secoes.intro && (
+                <CartaoSecao
+                  titulo={analise.secoes.intro.titulo}
+                  texto={analise.secoes.intro.texto}
+                  cor="#DFB76C"
+                />
+              )}
+
               {['quimica', 'emocao', 'comunicacao', 'futuro'].map((p) => (
                 <CartaoSecao
                   key={p}

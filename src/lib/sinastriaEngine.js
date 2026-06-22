@@ -254,7 +254,36 @@ export function calcularMapaComposto(posA, posB) {
     const lon = pontoMedioEcliptico(posA.corpos.ascendente.longitude, posB.corpos.ascendente.longitude)
     corpos.ascendente = corpoFromLongitude('ascendente', 'Ascendente', lon)
   }
-  return { corpos, metodo: 'Midpoint · Swiss Ephemeris' }
+  const aspectosInternos = calcularAspectosInternosComposto(corpos)
+  return { corpos, aspectosInternos, metodo: 'Pontos médios eclípticos' }
+}
+
+/** Aspectos internos do mapa composto — fluxo de energia do casal. */
+export function calcularAspectosInternosComposto(corpos) {
+  if (!corpos) return []
+  const chaves = Object.keys(corpos).filter((k) => corpos[k]?.longitude != null)
+  const aspectos = []
+  for (let i = 0; i < chaves.length; i++) {
+    for (let j = i + 1; j < chaves.length; j++) {
+      const ca = corpos[chaves[i]]
+      const cb = corpos[chaves[j]]
+      const asp = detectarAspecto(ca.longitude, cb.longitude)
+      if (!asp) continue
+      aspectos.push({
+        ...asp,
+        corpoA: ca.nome,
+        corpoB: cb.nome,
+        keyA: chaves[i],
+        keyB: chaves[j],
+        signoA: ca.signo,
+        signoB: cb.signo,
+        harmonico: asp.nome === 'Trígono' || asp.nome === 'Sextil',
+        tenso: asp.nome === 'Quadratura' || asp.nome === 'Oposição',
+        intenso: asp.nome === 'Conjunção',
+      })
+    }
+  }
+  return aspectos.sort((a, b) => a.orbe - b.orbe)
 }
 
 /** Activações Nodo Norte (propósito) e Nodo Sul (cármico). */
