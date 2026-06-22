@@ -4,9 +4,19 @@
   # ca-pub-... é público (index.html + AdSense) — não falhar scan de "secrets"
   environment = { SECRETS_SCAN_OMIT_KEYS = "VITE_ADSENSE_CLIENT" }
 
+[context.production.environment]
+  VITE_ADSENSE_CLIENT = "ca-pub-2807052149540484"
+  VITE_ADSENSE_SLOT = "7205155875"
+
 [functions]
   directory = "netlify/functions"
   node_bundler = "esbuild"
+
+[[headers]]
+  for = "/ads.txt"
+  [headers.values]
+    Content-Type = "text/plain; charset=utf-8"
+    Cache-Control = "public, max-age=86400"
 
 [[headers]]
   for = "/*"
