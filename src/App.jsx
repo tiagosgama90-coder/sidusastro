@@ -349,8 +349,8 @@ const estilos = {
     maxWidth: MOBILE_MAX,
     display: 'flex',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    padding: '10px 14px',
+    gap: 12,
+    padding: '10px 16px',
     paddingTop: 'max(10px, env(safe-area-inset-top, 10px))',
     background: 'rgba(11, 7, 30, 0.96)',
     backdropFilter: 'blur(20px)',
@@ -385,8 +385,8 @@ const estilos = {
     maxWidth: 'none',
     display: 'flex',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    padding: '12px 28px',
+    gap: 16,
+    padding: '12px 32px',
     paddingTop: 'max(12px, env(safe-area-inset-top, 12px))',
     background: 'rgba(11, 7, 30, 0.96)',
     backdropFilter: 'blur(20px)',
@@ -2666,29 +2666,15 @@ function Navbar({ passo, setPasso, isDesktop, dados, fotoPerfil }) {
   return (
     <>
       <header style={headerStyle}>
-        <button
-          type="button"
-          onClick={irPerfil}
-          aria-label={t('nav.perfil')}
-          style={{
-            display: 'flex', alignItems: 'center', gap: isDesktop ? 8 : 0,
-            background: perfilAtivo ? 'rgba(223,183,108,0.15)' : 'rgba(255,255,255,0.05)',
-            border: `1px solid ${perfilAtivo ? CORES.dourado : CORES.vidroBorda}`,
-            borderRadius: 12, padding: isDesktop ? '6px 12px 6px 6px' : 4, cursor: 'pointer', flexShrink: 0,
-          }}
-        >
-          <AvatarNav foto={fotoPerfil} nome={nomePerfil} size={34} ativo={perfilAtivo} />
-          {isDesktop && (
-            <div style={{ textAlign: 'left', minWidth: 0 }}>
-              <div style={{ fontSize: 10, color: CORES.brancoMuted, textTransform: 'uppercase', letterSpacing: '0.08em' }}>{t('nav.perfil')}</div>
-              <div style={{ fontSize: 12, fontWeight: 600, color: perfilAtivo ? CORES.dourado : CORES.branco, maxWidth: 120, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{nomePerfil}</div>
-            </div>
-          )}
-        </button>
+        {/* Esquerda: logo + idioma */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: isDesktop ? 14 : 10, flexShrink: 0 }}>
+          <LogoSidus onClick={irHome} compact={!isDesktop} />
+          <LanguageSwitcher variant={isDesktop ? 'inline' : 'compact'} />
+        </div>
 
         {isDesktop ? (
           <>
-            <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 4, overflowX: 'auto', padding: '0 8px', scrollbarWidth: 'thin' }}>
+            <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, overflowX: 'auto', padding: '0 20px', scrollbarWidth: 'thin' }}>
               {itens.map((item) => {
                 const Icon = item.icon
                 const ativo = itemAtivo(item)
@@ -2713,16 +2699,39 @@ function Navbar({ passo, setPasso, isDesktop, dados, fotoPerfil }) {
                 )
               })}
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexShrink: 0 }}>
-              <LanguageSwitcher variant="inline" />
-              <LogoSidus onClick={irHome} compact />
-            </div>
+            <button
+              type="button"
+              onClick={irPerfil}
+              aria-label={t('nav.perfil')}
+              style={{
+                display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0,
+                background: perfilAtivo ? 'rgba(223,183,108,0.15)' : 'rgba(255,255,255,0.05)',
+                border: `1px solid ${perfilAtivo ? CORES.dourado : CORES.vidroBorda}`,
+                borderRadius: 12, padding: '6px 12px 6px 6px', cursor: 'pointer',
+              }}
+            >
+              <AvatarNav foto={fotoPerfil} nome={nomePerfil} size={34} ativo={perfilAtivo} />
+              <div style={{ textAlign: 'left', minWidth: 0 }}>
+                <div style={{ fontSize: 10, color: CORES.brancoMuted, textTransform: 'uppercase', letterSpacing: '0.08em' }}>{t('nav.perfil')}</div>
+                <div style={{ fontSize: 12, fontWeight: 600, color: perfilAtivo ? CORES.dourado : CORES.branco, maxWidth: 120, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{nomePerfil}</div>
+              </div>
+            </button>
           </>
         ) : (
           <>
-            <div style={{ flex: 1, display: 'flex', justifyContent: 'center' }}>
-              <LogoSidus onClick={irHome} compact />
-            </div>
+            <div style={{ flex: 1 }} />
+            <button
+              type="button"
+              onClick={irPerfil}
+              aria-label={t('nav.perfil')}
+              style={{
+                background: perfilAtivo ? 'rgba(223,183,108,0.15)' : 'rgba(255,255,255,0.05)',
+                border: `1px solid ${perfilAtivo ? CORES.dourado : CORES.vidroBorda}`,
+                borderRadius: 12, padding: 4, cursor: 'pointer', flexShrink: 0,
+              }}
+            >
+              <AvatarNav foto={fotoPerfil} nome={nomePerfil} size={34} ativo={perfilAtivo} />
+            </button>
             <button
               type="button"
               className="mobile-menu-btn"
@@ -3442,7 +3451,7 @@ export default function App() {
       case 'bussola':
         return <BussolaCosmica mapaNatal={mapaNatal} onVoltar={() => irPara('home')} />
       case 'sinastria':
-        return <Sinastria mapaNatal={mapaNatal} onVoltar={() => irPara('home')} />
+        return <Sinastria mapaNatal={mapaNatal} dadosUtilizador={dados} onVoltar={() => irPara('home')} />
       case 'biorritmo':
         return <Biorritmo dados={dados} utilizador={utilizador} mapaNatal={mapaNatal} onVoltar={() => irPara('home')} />
       case 'horasIguais':

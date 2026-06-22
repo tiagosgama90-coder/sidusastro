@@ -568,7 +568,7 @@ function TelaDiariaBloqueada({ t, lang, ativa, msRestante, onVoltar }) {
   )
 }
 
-function TelaSeleccionar({ tipos, onSeleccionar, isPremium, gratisEsgotada, restantes, tick, onVoltar, userId, t }) {
+function TelaSeleccionar({ tipos, onSeleccionar, isPremium, gratisEsgotada, restantes, tick, onVoltar, userId, lang, t }) {
   void tick
   const diariaAtiva = !podeFazerLeituraDiaria(userId)
   return (
