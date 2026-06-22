@@ -7,6 +7,7 @@ import { NOVIDADES_SIDUS } from '../lib/novidadesSidus.js'
 import { SIGNOS_PT, SIGNOS_EN } from '../lib/i18n/astro.js'
 import { calcularFaseLua } from '../lib/faseLua.js'
 import { gerarNoticiasAstrologia } from '../lib/astroNews.js'
+import { emailTemPremiumPrivilegiado } from '../lib/premiumAccess.js'
 
 const CORES = {
   dourado: '#DFB76C',
