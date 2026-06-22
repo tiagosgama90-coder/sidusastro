@@ -139,7 +139,7 @@ export const IMPACTO_COR = {
 export const SIGNOS_LIST = ['Áries', 'Touro', 'Gémeos', 'Caranguejo', 'Leão', 'Virgem', 'Balança', 'Escorpião', 'Sagitário', 'Capricórnio', 'Aquário', 'Peixes']
 
 export const ELEM = {
-  'Áries': 'Fogo', 'Leão': 'Fogo', 'Sagitário': 'Fogo',
+  'Carneiro': 'Fogo', 'Áries': 'Fogo', 'Leão': 'Fogo', 'Sagitário': 'Fogo',
   'Touro': 'Terra', 'Virgem': 'Terra', 'Capricórnio': 'Terra',
   'Gémeos': 'Ar', 'Balança': 'Ar', 'Aquário': 'Ar',
   'Caranguejo': 'Água', 'Escorpião': 'Água', 'Peixes': 'Água',

@@ -13,6 +13,7 @@ import {
 import {
   calcularBussola2026Async, relevanciaParaMapa, TIPO_ICO, IMPACTO_COR,
 } from '../lib/bussolaCosmica.js'
+import { calcularDimensoesSinastria } from '../lib/sinastriaCalc.js'
 import { diasVidaDesdeNascimento } from '../lib/datetime.js'
 import { calcularMapaNumerologia, GRUPOS_PITAGORICOS } from '../lib/numerologia.js'
 import { CHIPS_SIMBOLOS_PT, CHIPS_SIMBOLOS_EN, interpretarSonhoRemoto } from '../lib/sonhosInterpretacao.js'
@@ -170,24 +171,6 @@ export function BussolaCosmica({ mapaNatal, onVoltar }) {
 }
 
 // ── Sinastria (Radar de Afinidades) ───────────────────────────────────────────
-const MODAL = {
-  'Áries': 'Cardinal', 'Caranguejo': 'Cardinal', 'Balança': 'Cardinal', 'Capricórnio': 'Cardinal',
-  'Touro': 'Fixo', 'Leão': 'Fixo', 'Escorpião': 'Fixo', 'Aquário': 'Fixo',
-  'Gémeos': 'Mutável', 'Virgem': 'Mutável', 'Sagitário': 'Mutável', 'Peixes': 'Mutável',
-}
-
-function scoreDimensao(elemA, elemB, tipo) {
-  const par = [elemA, elemB].sort().join('-')
-  const tabelas = {
-    passion: { 'Fogo-Fogo': 95, 'Fogo-Água': 88, 'Fogo-Ar': 82, 'Fogo-Terra': 70, 'Água-Água': 75, 'Ar-Ar': 65, 'Terra-Terra': 60 },
-    emotional: { 'Água-Água': 96, 'Água-Terra': 90, 'Fogo-Água': 85, 'Ar-Água': 80, 'Terra-Terra': 72, 'Fogo-Fogo': 68 },
-    communication: { 'Ar-Ar': 95, 'Fogo-Ar': 90, 'Ar-Água': 85, 'Terra-Ar': 78, 'Fogo-Fogo': 70, 'Terra-Terra': 65 },
-    stability: { 'Terra-Terra': 94, 'Terra-Água': 88, 'Terra-Ar': 75, 'Fogo-Terra': 68, 'Água-Água': 70, 'Ar-Ar': 55 },
-  }
-  const rev = [elemB, elemA].sort().join('-')
-  return tabelas[tipo]?.[par] ?? tabelas[tipo]?.[rev] ?? 72
-}
-
 function DimBar({ label, val, cor }) {
   return (
     <div style={{ marginBottom: 10 }}>
@@ -217,46 +200,58 @@ export function Sinastria({ mapaNatal, onVoltar }) {
       const meuAsc = mapaNatal?.ascendente?.nome
       const dele = parceiro.signo || 'Áries'
 
-      const elemA = ELEM[meuSol], elemB = ELEM[dele]
-      const elemLuaA = ELEM[meuLua], elemLuaB = elemB
-      const chave = elemA&&elemB ? [elemA,elemB].sort().join('-') : ''
-      const compatDesc = getCompatDesc(chave, lang, t('ferramentasPremium.sinastria.uniqueBond'))
+      const dims = calcularDimensoesSinastria({
+        solA: meuSol,
+        luaA: meuLua,
+        ascA: meuAsc,
+        solB: dele,
+      })
 
-      const pontuacao = elemA===elemB ? 95 :
-        ['Fogo-Ar','Terra-Água','Ar-Água'].some(c=>c===chave||c===[elemB,elemA].join('-')) ? 88 :
-        ['Fogo-Terra','Ar-Ar','Água-Água'].some(c=>c===chave) ? 78 : 70
+      const compatDesc = getCompatDesc(dims.chave, lang, t('ferramentasPremium.sinastria.uniqueBond'))
+      const aspectos = getAspectosAmor(lang).slice(0, 4 + (dims.distSol % 3))
 
-      const aspectos = getAspectosAmor(lang).slice(0, 5 + Math.floor(Math.random() * 3))
-      const passion = scoreDimensao(elemA, elemB, 'passion')
-      const emotional = scoreDimensao(elemLuaA || elemA, elemLuaB, 'emotional')
-      const communication = scoreDimensao(elemA, elemB, 'communication')
-      const stability = scoreDimensao(elemA, elemB, 'stability')
-      const modalA = MODAL[meuSol], modalB = MODAL[dele]
-      const modalNote = modalA === modalB
-        ? t('ferramentasPremium.sinastria.modalSame', { mod: modalA })
-        : t('ferramentasPremium.sinastria.modalDiff', { a: modalA, b: modalB })
+      const modalNote = dims.modalA === dims.modalB
+        ? t('ferramentasPremium.sinastria.modalSame', { mod: dims.modalA })
+        : t('ferramentasPremium.sinastria.modalDiff', { a: dims.modalA, b: dims.modalB })
 
-      const luaNote = elemLuaA && elemLuaB
-        ? (elemLuaA === elemLuaB
+      const luaNote = dims.elemLuaA && dims.elemLuaB
+        ? (dims.elemLuaA === dims.elemLuaB
           ? t('ferramentasPremium.sinastria.moonHarmony')
-          : t('ferramentasPremium.sinastria.moonTension', { mine: te(elemLuaA), theirs: te(elemLuaB) }))
+          : t('ferramentasPremium.sinastria.moonTension', { mine: te(dims.elemLuaA), theirs: te(dims.elemLuaB) }))
         : ''
 
-      const challenge = pontuacao >= 85
+      const challenge = dims.pontuacao >= 85
         ? t('ferramentasPremium.sinastria.challengeHigh')
-        : t('ferramentasPremium.sinastria.challengeMid')
+        : dims.pontuacao >= 65
+          ? t('ferramentasPremium.sinastria.challengeMid')
+          : t('ferramentasPremium.sinastria.challengeLow')
+
       const growth = t('ferramentasPremium.sinastria.growth', {
         solar: ts(meuSol || '—'), partner: ts(dele),
       })
 
       setAnalise({
-        pontuacao, elemA, elemB, compatDesc, aspectos, dele,
-        passion, emotional, communication, stability,
-        modalNote, luaNote, challenge, growth,
-        meuSol, meuLua, meuAsc,
+        pontuacao: dims.pontuacao,
+        elemA: dims.elemA,
+        elemB: dims.elemB,
+        compatDesc,
+        aspectos,
+        dele,
+        passion: dims.passion,
+        emotional: dims.emotional,
+        communication: dims.communication,
+        stability: dims.stability,
+        modalNote,
+        luaNote,
+        challenge,
+        growth,
+        meuSol,
+        meuLua,
+        meuAsc,
+        distSol: dims.distSol,
       })
       setCalculando(false)
-    }, 1800)
+    }, 1400)
   }
 
   return (

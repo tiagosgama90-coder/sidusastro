@@ -21,8 +21,19 @@ export class ErrorBoundary extends Component {
     console.error('[Sidus] Erro na interface:', error?.message, info?.componentStack)
   }
 
+  componentDidUpdate(prevProps) {
+    if (this.state.hasError && prevProps.resetKey !== this.props.resetKey) {
+      this.setState({ hasError: false, error: null })
+    }
+  }
+
   handleReload = () => {
     window.location.reload()
+  }
+
+  handleRetry = () => {
+    this.setState({ hasError: false, error: null })
+    this.props.onRetry?.()
   }
 
   render() {
@@ -30,8 +41,8 @@ export class ErrorBoundary extends Component {
 
     return (
       <div style={{
-        minHeight: '100svh',
-        background: `radial-gradient(ellipse at 20% 0%, rgba(88, 28, 135, 0.35) 0%, transparent 55%),
+        minHeight: this.props.compact ? '40vh' : '100svh',
+        background: this.props.compact ? 'transparent' : `radial-gradient(ellipse at 20% 0%, rgba(88, 28, 135, 0.35) 0%, transparent 55%),
           radial-gradient(ellipse at 80% 100%, rgba(67, 56, 202, 0.2) 0%, transparent 50%),
           ${CORES.fundo}`,
         color: CORES.branco,
@@ -56,24 +67,42 @@ export class ErrorBoundary extends Component {
             Algo correu mal
           </h1>
           <p style={{ margin: '0 0 20px', fontSize: 14, lineHeight: 1.6, color: CORES.brancoMuted }}>
-            A interface encontrou um erro inesperado. Recarrega a página para continuar.
+            A interface encontrou um erro inesperado. Podes tentar de novo ou recarregar a página.
           </p>
-          <button
-            type="button"
-            onClick={this.handleReload}
-            style={{
-              background: 'linear-gradient(135deg,#DFB76C,#B8944F)',
-              border: 'none',
-              borderRadius: 12,
-              color: CORES.fundo,
-              fontSize: 15,
-              fontWeight: 700,
-              padding: '12px 24px',
-              cursor: 'pointer',
-            }}
-          >
-            Recarregar página
-          </button>
+          <div style={{ display: 'flex', gap: 10, justifyContent: 'center', flexWrap: 'wrap' }}>
+            <button
+              type="button"
+              onClick={this.handleRetry}
+              style={{
+                background: 'rgba(255,255,255,0.08)',
+                border: '1px solid rgba(223,183,108,0.35)',
+                borderRadius: 12,
+                color: CORES.branco,
+                fontSize: 14,
+                fontWeight: 600,
+                padding: '12px 20px',
+                cursor: 'pointer',
+              }}
+            >
+              Tentar de novo
+            </button>
+            <button
+              type="button"
+              onClick={this.handleReload}
+              style={{
+                background: 'linear-gradient(135deg,#DFB76C,#B8944F)',
+                border: 'none',
+                borderRadius: 12,
+                color: CORES.fundo,
+                fontSize: 14,
+                fontWeight: 700,
+                padding: '12px 20px',
+                cursor: 'pointer',
+              }}
+            >
+              Recarregar página
+            </button>
+          </div>
         </div>
       </div>
     )

@@ -44,6 +44,7 @@ import { BussolaCosmica, Sinastria, Biorritmo, DiarioAstral, Numerologia, Interp
 import { ConteudoDinamicoSidus } from './components/ConteudoDinamicoSidus'
 import { HeroAuthSidus } from './components/HeroAuthSidus.jsx'
 import { HeroHomeSidus } from './components/HeroHomeSidus.jsx'
+import { ErrorBoundary } from './components/ErrorBoundary.jsx'
 import { auth, db, firebaseDisponivel } from './lib/firebase'
 import { enviarEmailVerificacao, traduzirErroEmail } from './lib/authEmail'
 import {
@@ -2595,12 +2596,38 @@ function LogoSidus({ onClick, compact = false }) {
   )
 }
 
-function Navbar({ passo, setPasso, isDesktop }) {
+function AvatarNav({ foto, nome, size = 36, ativo = false }) {
+  const inicial = (nome || 'S').trim().charAt(0).toUpperCase()
+  return (
+    <div style={{
+      width: size, height: size, borderRadius: '50%', overflow: 'hidden', flexShrink: 0,
+      border: `2px solid ${ativo ? CORES.dourado : 'rgba(223,183,108,0.35)'}`,
+      background: 'rgba(139,92,246,0.2)',
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      boxShadow: ativo ? `0 0 12px rgba(223,183,108,0.35)` : 'none',
+    }}>
+      {foto ? (
+        <img src={foto} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+      ) : (
+        <span style={{ fontSize: size * 0.4, fontWeight: 700, color: CORES.dourado }}>{inicial}</span>
+      )}
+    </div>
+  )
+}
+
+function Navbar({ passo, setPasso, isDesktop, dados, fotoPerfil }) {
   const { lang, t } = useLanguage()
   const [menuAberto, setMenuAberto] = useState(false)
+  const [hover, setHover] = useState(null)
+  const nomePerfil = dados?.nome?.trim() || t('perfil.defaultName')
 
   const irHome = () => {
     setPasso('home')
+    setMenuAberto(false)
+  }
+
+  const irPerfil = () => {
+    setPasso('perfil')
     setMenuAberto(false)
   }
 
@@ -2617,7 +2644,6 @@ function Navbar({ passo, setPasso, isDesktop }) {
     { id: 'tarot',       label: t('nav.tarot'),   icon: Layers,        glow: '#F472B6' },
     ...ferramentasNav,
     { id: 'chat',        label: t('nav.oraculo'), icon: MessageCircle, glow: '#34D399' },
-    { id: 'perfil',      label: t('nav.perfil'),  icon: User,          glow: '#93C5FD' },
   ]
 
   const passosFerramenta = new Set(ferramentasNav.map((f) => f.id))
@@ -2635,37 +2661,85 @@ function Navbar({ passo, setPasso, isDesktop }) {
 
   const itemAtivoNav = itens.find((i) => itemAtivo(i))
   const headerStyle = isDesktop ? estilos.navbarDesktopTop : estilos.navbarMobileTop
+  const perfilAtivo = passo === 'perfil'
 
   return (
     <>
       <header style={headerStyle}>
         <button
           type="button"
-          className="mobile-menu-btn"
-          aria-label={menuAberto ? t('nav.closeMenu') : t('nav.openMenu')}
-          aria-expanded={menuAberto}
-          onClick={() => setMenuAberto((v) => !v)}
+          onClick={irPerfil}
+          aria-label={t('nav.perfil')}
           style={{
-            background: menuAberto ? 'rgba(223,183,108,0.15)' : 'rgba(255,255,255,0.05)',
-            border: `1px solid ${menuAberto ? CORES.dourado : CORES.vidroBorda}`,
-            borderRadius: 10,
-            color: CORES.dourado,
-            width: 42,
-            height: 42,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            cursor: 'pointer',
-            flexShrink: 0,
+            display: 'flex', alignItems: 'center', gap: isDesktop ? 8 : 0,
+            background: perfilAtivo ? 'rgba(223,183,108,0.15)' : 'rgba(255,255,255,0.05)',
+            border: `1px solid ${perfilAtivo ? CORES.dourado : CORES.vidroBorda}`,
+            borderRadius: 12, padding: isDesktop ? '6px 12px 6px 6px' : 4, cursor: 'pointer', flexShrink: 0,
           }}
         >
-          {menuAberto ? <X size={22} /> : <Menu size={22} />}
+          <AvatarNav foto={fotoPerfil} nome={nomePerfil} size={34} ativo={perfilAtivo} />
+          {isDesktop && (
+            <div style={{ textAlign: 'left', minWidth: 0 }}>
+              <div style={{ fontSize: 10, color: CORES.brancoMuted, textTransform: 'uppercase', letterSpacing: '0.08em' }}>{t('nav.perfil')}</div>
+              <div style={{ fontSize: 12, fontWeight: 600, color: perfilAtivo ? CORES.dourado : CORES.branco, maxWidth: 120, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{nomePerfil}</div>
+            </div>
+          )}
         </button>
-        <div style={{ flex: 1 }} />
-        <div style={{ display: 'flex', alignItems: 'center', gap: isDesktop ? 10 : 6, flexShrink: 0 }}>
-          <LogoSidus onClick={irHome} compact />
-          <LanguageSwitcher variant="compact" />
-        </div>
+
+        {isDesktop ? (
+          <>
+            <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 4, overflowX: 'auto', padding: '0 8px', scrollbarWidth: 'thin' }}>
+              {itens.map((item) => {
+                const Icon = item.icon
+                const ativo = itemAtivo(item)
+                const emHover = hover === item.id
+                return (
+                  <button
+                    key={item.id}
+                    type="button"
+                    onClick={() => navegar(item.id)}
+                    onMouseEnter={() => setHover(item.id)}
+                    onMouseLeave={() => setHover(null)}
+                    style={{
+                      background: ativo ? 'rgba(223,183,108,0.18)' : emHover ? 'rgba(255,255,255,0.06)' : 'transparent',
+                      border: `1px solid ${ativo ? CORES.dourado : emHover ? 'rgba(223,183,108,0.35)' : 'transparent'}`,
+                      borderRadius: 12, color: ativo ? CORES.dourado : emHover ? CORES.branco : CORES.brancoMuted,
+                      display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer', padding: '8px 12px', flexShrink: 0, whiteSpace: 'nowrap',
+                    }}
+                  >
+                    <Icon size={16} strokeWidth={ativo ? 2.2 : 1.8} />
+                    <span style={{ fontSize: 12, fontWeight: ativo ? 700 : 500 }}>{item.label}</span>
+                  </button>
+                )
+              })}
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexShrink: 0 }}>
+              <LanguageSwitcher variant="inline" />
+              <LogoSidus onClick={irHome} compact />
+            </div>
+          </>
+        ) : (
+          <>
+            <div style={{ flex: 1, display: 'flex', justifyContent: 'center' }}>
+              <LogoSidus onClick={irHome} compact />
+            </div>
+            <button
+              type="button"
+              className="mobile-menu-btn"
+              aria-label={menuAberto ? t('nav.closeMenu') : t('nav.openMenu')}
+              aria-expanded={menuAberto}
+              onClick={() => setMenuAberto((v) => !v)}
+              style={{
+                background: menuAberto ? 'rgba(223,183,108,0.15)' : 'rgba(255,255,255,0.05)',
+                border: `1px solid ${menuAberto ? CORES.dourado : CORES.vidroBorda}`,
+                borderRadius: 10, color: CORES.dourado, width: 42, height: 42,
+                display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', flexShrink: 0,
+              }}
+            >
+              {menuAberto ? <X size={22} /> : <Menu size={22} />}
+            </button>
+          </>
+        )}
       </header>
 
       {menuAberto && (
@@ -2678,6 +2752,23 @@ function Navbar({ passo, setPasso, isDesktop }) {
       )}
 
       <nav className={`mobile-menu-drawer${menuAberto ? ' mobile-menu-drawer--open' : ''}`} aria-hidden={!menuAberto}>
+        <button
+          type="button"
+          onClick={irPerfil}
+          style={{
+            width: '100%', display: 'flex', alignItems: 'center', gap: 14,
+            padding: '16px 20px', border: 'none',
+            borderBottom: `1px solid ${CORES.vidroBorda}`,
+            background: passo === 'perfil' ? 'rgba(223,183,108,0.12)' : 'rgba(223,183,108,0.06)',
+            cursor: 'pointer', textAlign: 'left',
+          }}
+        >
+          <AvatarNav foto={fotoPerfil} nome={nomePerfil} size={44} ativo={passo === 'perfil'} />
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ fontSize: 14, fontWeight: 700, color: CORES.branco, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{nomePerfil}</div>
+            <div style={{ fontSize: 11, color: CORES.dourado, marginTop: 2 }}>{t('nav.perfil')} ✦</div>
+          </div>
+        </button>
         <div style={{ padding: '8px 16px 12px', borderBottom: `1px solid ${CORES.vidroBorda}` }}>
           <div style={{ fontSize: 10, color: CORES.brancoMuted, textTransform: 'uppercase', letterSpacing: '0.1em' }}>
             {t('nav.menu')}
@@ -2733,6 +2824,9 @@ export default function App() {
   const [mapaGerado, setMapaGerado] = useState(false) // bloqueio: 1 mapa por utilizador
   const [leiturasTarotUsadas, setLeiturasTarotUsadas] = useState(0)
   const [oraclePerguntasUsadas, setOraclePerguntasUsadas] = useState(0)
+  const [fotoPerfil, setFotoPerfil] = useState(() => {
+    try { return localStorage.getItem('sidus_foto') || null } catch { return null }
+  })
   const [perfilCarregando, setPerfilCarregando] = useState(false)
   const [reparandoDados, setReparandoDados] = useState(false)
 
@@ -2748,6 +2842,10 @@ export default function App() {
 
   const navigate = useNavigate()
   const location = useLocation()
+
+  useEffect(() => {
+    try { setFotoPerfil(localStorage.getItem('sidus_foto') || null) } catch { /* quota */ }
+  }, [passo])
 
   const mapaDesbloqueado = isPremium || mapaCompleto
   const acessoVip = mapaDesbloqueado
@@ -3447,7 +3545,9 @@ export default function App() {
         position: 'relative',
         zIndex: 1,
       }}>
-        {renderEcran()}
+        <ErrorBoundary resetKey={passo} compact={passo === 'tarot'}>
+          {renderEcran()}
+        </ErrorBoundary>
       </div>
       {utilizador && !['login', 'onboarding', 'privacidade', 'paywall'].includes(passo) && (
         <AdSenseBanner />
@@ -3458,6 +3558,8 @@ export default function App() {
           passo={passo}
           isDesktop={isDesktop}
           setPasso={irPara}
+          dados={dados}
+          fotoPerfil={fotoPerfil}
         />
       )}
 

@@ -5,10 +5,11 @@
  * ─ 3 leituras gratuitas por conta · depois 2 € por leitura ou Premium
  * ─ 6 tipos de leitura · interpretações personalizadas com mapa natal
  */
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useLanguage } from '../lib/i18n/LanguageContext.jsx'
 import { localizeArcano, TIPOS_EN, POSICOES_EN } from '../lib/i18n/tarotArcana.js'
 import { PRECO_TAROT } from '../lib/pricing.js'
+import { gerarMensagemAnjos } from '../lib/tarotAnjos.js'
 import {
   leituraDiariaAtiva, podeFazerLeituraDiaria, msAteProximaDiaria,
   formatarTempoRestante, registarLeituraDiaria,
@@ -281,6 +282,7 @@ function interpretarLeitura(cartas, tipoId, pergunta, mapaNatal, lang = 'pt', t)
     return {
       resposta: positiva ? tr('tarot.yes') : tr('tarot.no'),
       detalhe: `${astro}\n\n${cartas[0].invertida ? cartas[0].sombra : cartas[0].luz}\n\n${cartas[0].conselho}`,
+      mensagemAnjos: gerarMensagemAnjos(cartas, mapaNatal, lang),
     }
   }
 
@@ -295,24 +297,26 @@ function interpretarLeitura(cartas, tipoId, pergunta, mapaNatal, lang = 'pt', t)
   let conclusao = ''
   if (tipoId === 'amor') {
     conclusao = `\n\n${tr('tarot.synthesisAmor', {
-      theme: cartas[0].palavras[0],
-      outcome: cartas[2].invertida ? tr('tarot.synthesisAmorChallenge') : tr('tarot.synthesisAmorOpen'),
+      theme: cartas[0].palavras?.[0] || cartas[0].nome,
+      outcome: cartas[2]?.invertida ? tr('tarot.synthesisAmorChallenge') : tr('tarot.synthesisAmorOpen'),
     })}`
   } else if (tipoId === 'geral') {
     conclusao = `\n\n${tr('tarot.synthesisGeral', {
       root: cartas[0].nome.toLowerCase(),
-      present: cartas[1].palavras[0],
-      future: cartas[2].palavras[1],
+      present: cartas[1]?.palavras?.[0] || '',
+      future: cartas[2]?.palavras?.[1] || cartas[2]?.palavras?.[0] || '',
     })}`
-  } else if (tipoId==='cigano'||tipoId==='oraculo') {
+  } else if (tipoId === 'cigano' || tipoId === 'oraculo') {
     conclusao = `\n\n${tr('tarot.synthesisCigano', {
       start: cartas[0].nome,
-      end: cartas[4].nome,
-      path: cartas[2].palavras[0],
+      end: cartas[4]?.nome || cartas[cartas.length - 1]?.nome,
+      path: cartas[2]?.palavras?.[0] || '',
     })}`
   }
 
-  return { resposta: null, detalhe: `${astro}\n\n${linhas.join('\n\n')}${conclusao}` }
+  const mensagemAnjos = gerarMensagemAnjos(cartas, mapaNatal, lang)
+
+  return { resposta: null, detalhe: `${astro}\n\n${linhas.join('\n\n')}${conclusao}`, mensagemAnjos }
 }
 
 // ── Componente principal ──────────────────────────────────────────────────────
@@ -328,6 +332,25 @@ export function EcraTarot({ mapaNatal, isPremium, userId, leiturasTarotUsadas = 
   const [tick, setTick]           = useState(0)
   const [resultado, setResultado]       = useState(null)
   const [leituraPaga, setLeituraPaga]   = useState(false)
+  const montadoRef = useRef(true)
+  const timersRef = useRef([])
+
+  const agendar = (fn, ms) => {
+    const id = setTimeout(() => {
+      if (montadoRef.current) fn()
+    }, ms)
+    timersRef.current.push(id)
+    return id
+  }
+
+  useEffect(() => {
+    montadoRef.current = true
+    return () => {
+      montadoRef.current = false
+      timersRef.current.forEach(clearTimeout)
+      timersRef.current = []
+    }
+  }, [])
 
   useEffect(() => {
     if (sessionStorage.getItem('sidus_tarot_paid') === '1') {
@@ -370,7 +393,8 @@ export function EcraTarot({ mapaNatal, isPremium, userId, leiturasTarotUsadas = 
   }
 
   const comecarEmbaralhar = () => {
-    if (!tipo?.n) return
+    const tipoAtual = tipo || TIPOS.find((x) => x.id === tipoId)
+    if (!tipoAtual?.n) return
     const isDiaria = tipoId === 'diaria'
     if (!isDiaria && !isPremium && !leituraPaga && podeLerGratis(isPremium, userId, leiturasTarotUsadas)) {
       const n = registarLeituraGratis(userId)
@@ -378,35 +402,51 @@ export function EcraTarot({ mapaNatal, isPremium, userId, leiturasTarotUsadas = 
       refrescar()
     }
     setEmbaralhando(true)
-    setTimeout(()=>{
-      const sel = sortearCartas(tipo.n)
+    agendar(() => {
+      const sel = sortearCartas(tipoAtual.n)
       setCartas(sel)
-      setReveladas(new Array(tipo.n).fill(false))
+      setReveladas(new Array(tipoAtual.n).fill(false))
       setEmbaralhando(false)
-      // Distribuir cartas uma a uma
       setDistribuindo(0)
     }, 2000)
   }
 
-  useEffect(()=>{
-    if (distribuindo>=0 && tipo && distribuindo<tipo.n) {
-      const t = setTimeout(()=>setDistribuindo(i=>i+1), 350)
-      return ()=>clearTimeout(t)
+  useEffect(() => {
+    const tipoAtual = TIPOS.find((x) => x.id === tipoId)
+    if (!tipoAtual?.n || distribuindo < 0) return undefined
+    if (distribuindo < tipoAtual.n) {
+      const id = agendar(() => setDistribuindo((i) => i + 1), 350)
+      return () => clearTimeout(id)
     }
-    if (distribuindo>=tipo?.n) { setDistribuindo(-1); setFase('revelar') }
-  },[distribuindo, tipo])
+    if (distribuindo >= tipoAtual.n && cartas.length >= tipoAtual.n) {
+      setDistribuindo(-1)
+      setFase('revelar')
+    }
+    return undefined
+  }, [distribuindo, tipoId, cartas.length])
 
   const revelarCarta = (i) => {
-    if(reveladas[i]) return
-    const novo = [...reveladas]; novo[i]=true; setReveladas(novo)
-    if(novo.every(Boolean)) {
-      const res = interpretarLeitura(cartas, tipoId, pergunta, mapaNatal, lang, t)
-      setResultado(res)
-      if (tipoId === 'diaria') {
-        registarLeituraDiaria(userId, {
-          cartas: cartas.map((c) => ({ id: c.id, nome: c.nome, invertida: !!c.invertida })),
-          pergunta,
-          detalhe: res?.detalhe || '',
+    if (!Array.isArray(reveladas) || !cartas[i] || reveladas[i]) return
+    const novo = [...reveladas]
+    novo[i] = true
+    setReveladas(novo)
+    if (novo.length === cartas.length && novo.length > 0 && novo.every(Boolean)) {
+      try {
+        const res = interpretarLeitura(cartas, tipoId, pergunta, mapaNatal, lang, t)
+        setResultado(res)
+        if (tipoId === 'diaria') {
+          registarLeituraDiaria(userId, {
+            cartas: cartas.map((c) => ({ id: c.id, nome: c.nome, invertida: !!c.invertida })),
+            pergunta,
+            detalhe: res?.detalhe || '',
+            mensagemAnjos: res?.mensagemAnjos || '',
+          })
+        }
+      } catch (e) {
+        console.error('[Tarot]', e)
+        setResultado({
+          detalhe: t('tarot.interpretError'),
+          mensagemAnjos: '',
         })
       }
     }
@@ -704,8 +744,8 @@ function TelaDistribuir({ cartas, posicoes, distribuindo, t }) {
   )
 }
 
-function TelaRevelar({ cartas, reveladas, onRevelar, posicoes, tipo, pergunta, resultado, onVoltar, isPremium, onPagar, t }) {
-  const todasReveladas = reveladas.every(Boolean)
+function TelaRevelar({ cartas, reveladas = [], onRevelar, posicoes = [], tipo, pergunta, resultado, onVoltar, t }) {
+  const todasReveladas = reveladas.length > 0 && reveladas.length === cartas.length && reveladas.every(Boolean)
 
   return (
     <div style={{padding:'20px 20px 110px'}}>
@@ -756,7 +796,7 @@ function TelaRevelar({ cartas, reveladas, onRevelar, posicoes, tipo, pergunta, r
                 {c.nome} {c.invertida&&<span style={{fontSize:11,color:'#EF4444'}}>{t('tarot.reversed')}</span>}
               </div>
               <div style={{display:'flex',gap:5,flexWrap:'wrap',marginTop:6}}>
-                {c.palavras.map(p=>(
+                {(c.palavras || []).map(p=>(
                   <span key={p} style={{fontSize:10,padding:'2px 8px',borderRadius:20,background:'rgba(223,183,108,0.1)',color:CORES.dourado,border:`1px solid rgba(223,183,108,0.2)`}}>{p}</span>
                 ))}
               </div>
@@ -780,6 +820,20 @@ function TelaRevelar({ cartas, reveladas, onRevelar, posicoes, tipo, pergunta, r
             <div style={{fontSize:28,fontWeight:700,textAlign:'center',marginBottom:12}}>{resultado.resposta}</div>
           )}
           <div style={{fontSize:13,color:CORES.brancoSuave,lineHeight:1.8,whiteSpace:'pre-wrap'}}>{resultado.detalhe}</div>
+        </div>
+      )}
+
+      {todasReveladas && resultado?.mensagemAnjos && (
+        <div style={{
+          background: 'rgba(139,92,246,0.1)', border: '1px solid rgba(139,92,246,0.35)',
+          borderRadius: 16, padding: 20, marginTop: 14,
+        }}>
+          <div style={{ fontSize: 10, color: '#C4B5FD', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 10, fontWeight: 700 }}>
+            ✦ {t('tarot.angelMessage')}
+          </div>
+          <p style={{ fontSize: 14, color: CORES.brancoSuave, lineHeight: 1.75, margin: 0, fontStyle: 'italic' }}>
+            {resultado.mensagemAnjos}
+          </p>
         </div>
       )}
 
