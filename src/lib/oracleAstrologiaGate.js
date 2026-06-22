@@ -55,7 +55,8 @@ const VIDA_VIA_MAPA_PT = [
   'sinto', 'sinto-me', 'coração', 'coracao', 'alma', 'espiritual', 'karma',
   'família', 'familia', 'mãe', 'mae', 'pai ', 'filho', 'filha',
   'ansiedade', 'medo', 'futuro', 'mudança', 'mudanca', 'ciclo', 'fase da vida',
-  'mapa', 'natal', 'nascimento', 'nasci',
+  'mapa', 'natal', 'nascimento', 'nasci', 'vida', 'semana', 'mes', 'mês', 'ano',
+  'feliz', 'triste', 'confuso', 'preocup', 'significado', 'espera', 'acontecer',
 ]
 
 const VIDA_VIA_MAPA_EN = [
@@ -139,10 +140,13 @@ export function perguntaDentroEscopoAstrologia(texto, lang = 'pt') {
   if (temFora && !temAstro && !temVida) return false
   if (temAstro || temVida) return true
 
-  const pessoalPt = /^(porque|por que|como posso|ajuda|estou|sinto|devo|deveria|nao sei|não sei)/i
-  const pessoalEn = /^(why |how can i|help |i feel|should i|i am |i'm )/i
+  const pessoalPt = /^(porque|por que|como posso|ajuda|estou|sinto|devo|deveria|nao sei|não sei|quando|onde|o que|que devo|será que|sera que)/i
+  const pessoalEn = /^(why |how can i|help |i feel|should i|i am |i'm |when |what |will i )/i
   const pessoal = lang === 'en' ? pessoalEn.test(texto.trim()) : pessoalPt.test(texto.trim())
   const palavras = texto.trim().split(/\s+/).length
 
-  return pessoal && palavras >= 5
+  if (pessoal && palavras >= 4) return true
+  if (/\?/.test(texto.trim()) && palavras >= 4 && !temFora) return true
+
+  return false
 }

@@ -79,7 +79,7 @@ import { normalizarDataISO, criarDataUTCporLocal, localToUTC } from './lib/datet
 import { calcularAngulosCasas } from './lib/natalHouses.js'
 import { utilizadorTemPremium, emailTemPremiumPrivilegiado } from './lib/premiumAccess.js'
 import {
-  MAX_ORACLE_GRATIS, oraclePerguntasUsadas, sincronizarOraclePerguntas, oracleRestantes,
+  MAX_ORACLE_GRATIS, oraclePerguntasUsadas as contarOraclePerguntas, registarOraclePergunta, sincronizarOraclePerguntas,
 } from './lib/oracleLimit.js'
 
 const CORES = {
@@ -2330,7 +2330,7 @@ async function consultarSidus(pergunta, mapaNatal, historico, lang, idToken, cli
 
 function Chat({ mapaNatal, isPremium, userId, oracleRemotas, onOracleUsada, onUpgrade, obterIdToken }) {
   const { lang, t } = useLanguage()
-  const [perguntasUsadas, setPerguntasUsadas] = useState(() => oraclePerguntasUsadas(userId, oracleRemotas))
+  const [perguntasUsadas, setPerguntasUsadas] = useState(() => contarOraclePerguntas(userId, oracleRemotas))
 
   const [mensagens, setMensagens] = useState(() => [
     { id: 1, autor: 'ia', texto: getChatGreeting(mapaNatal, 'pt', MAX_ORACLE_GRATIS, isPremium) },
@@ -2341,7 +2341,7 @@ function Chat({ mapaNatal, isPremium, userId, oracleRemotas, onOracleUsada, onUp
   const fimRef = useRef(null)
 
   useEffect(() => {
-    setPerguntasUsadas(oraclePerguntasUsadas(userId, oracleRemotas))
+    setPerguntasUsadas(contarOraclePerguntas(userId, oracleRemotas))
   }, [userId, oracleRemotas])
 
   useEffect(() => {
@@ -2350,7 +2350,7 @@ function Chat({ mapaNatal, isPremium, userId, oracleRemotas, onOracleUsada, onUp
 
   useEffect(() => { fimRef.current?.scrollIntoView({ behavior: 'smooth' }) }, [mensagens, digitando])
 
-  const restantes = oracleRestantes(isPremium, userId, oracleRemotas)
+  const restantes = isPremium ? Infinity : Math.max(0, MAX_ORACLE_GRATIS - perguntasUsadas)
 
   const enviar = async () => {
     if (!texto.trim() || digitando) return
@@ -2395,8 +2395,9 @@ function Chat({ mapaNatal, isPremium, userId, oracleRemotas, onOracleUsada, onUp
 
     if (resultado?.limite && !isPremium) {
       const total = resultado.usadas ?? MAX_ORACLE_GRATIS
-      setPerguntasUsadas(total)
-      onOracleUsada?.(total)
+      const synced = sincronizarOraclePerguntas(userId, total)
+      setPerguntasUsadas(synced)
+      onOracleUsada?.(synced)
       setDigitando(false)
       setMensagens(prev => [...prev, {
         id: Date.now()+1, autor: 'ia', aviso: true,
@@ -2406,23 +2407,37 @@ function Chat({ mapaNatal, isPremium, userId, oracleRemotas, onOracleUsada, onUp
       return
     }
 
-    const resposta = resultado?.resposta || gerarRespostaOracle(q, mapaNatal, numAtual, lang)
-    setMensagens(prev => [...prev, { id: Date.now()+1, autor: 'ia', texto: resposta }])
-    setDigitando(false)
-
-    if (!isPremium && resultado?.usadas != null) {
-      const total = sincronizarOraclePerguntas(userId, resultado.usadas)
-      setPerguntasUsadas(total)
-      onOracleUsada?.(total)
+    const recusado = resultado?.recusado === true
+    let resposta = resultado?.resposta
+    if (!resposta && !recusado) {
+      resposta = gerarRespostaOracle(q, mapaNatal, numAtual, lang)
     }
 
-    if (!isPremium && (resultado?.usadas ?? numAtual + 1) >= MAX_ORACLE_GRATIS) {
-      setTimeout(() => {
-        setMensagens(prev => [...prev, {
-          id: Date.now()+99, autor: 'ia', aviso: true,
-          texto: getOracleLimitMessage(MAX_ORACLE_GRATIS, lang),
-        }])
-      }, 600)
+    if (!resposta) {
+      setDigitando(false)
+      return
+    }
+
+    setMensagens(prev => [...prev, {
+      id: Date.now()+1, autor: 'ia', texto: resposta, aviso: recusado || undefined,
+    }])
+    setDigitando(false)
+
+    if (!isPremium && !recusado) {
+      const total = resultado?.usadas != null
+        ? sincronizarOraclePerguntas(userId, resultado.usadas)
+        : registarOraclePergunta(userId)
+      setPerguntasUsadas(total)
+      onOracleUsada?.(total)
+
+      if (total >= MAX_ORACLE_GRATIS) {
+        setTimeout(() => {
+          setMensagens(prev => [...prev, {
+            id: Date.now()+99, autor: 'ia', aviso: true,
+            texto: getOracleLimitMessage(MAX_ORACLE_GRATIS, lang),
+          }])
+        }, 600)
+      }
     }
   }
 

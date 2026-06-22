@@ -36,6 +36,7 @@ export async function consultarOracleServidor(pergunta, mapaNatal, historico, la
       usadas: data.usadas,
       max: data.max,
       isPremium: data.isPremium,
+      recusado: data.recusado === true,
     }
   } catch {
     return { resposta: null }

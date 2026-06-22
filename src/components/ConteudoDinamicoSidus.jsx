@@ -3,7 +3,6 @@ import { Calendar, Sparkles, ChevronDown, ChevronUp, Lock, MessageCircle, Copy, 
 import { useLanguage } from '../lib/i18n/LanguageContext.jsx'
 import { fetchDailyContent } from '../lib/apiDailyContent.js'
 import { buildLocalDailyContent, signoHoroscopeKey } from '../lib/dailyContentFallback.js'
-import { NOVIDADES_SIDUS } from '../lib/novidadesSidus.js'
 import { SIGNOS_PT, SIGNOS_EN } from '../lib/i18n/astro.js'
 import { calcularFaseLua } from '../lib/faseLua.js'
 import { gerarNoticiasAstrologia } from '../lib/astroNews.js'
@@ -184,7 +183,7 @@ export function ConteudoDinamicoSidus({ mapaNatal, aspetos = [], isPremium, onUp
         )}
       </div>
 
-      <div style={{ ...vidro, padding: 20, marginBottom: 16 }}>
+      <div style={{ ...vidro, padding: 20, marginBottom: isAdmin ? 16 : 0 }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
           <span style={{ fontSize: 13, fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase', color: CORES.brancoSuave }}>
             {t('home.astroNewsTitle')}
@@ -198,18 +197,6 @@ export function ConteudoDinamicoSidus({ mapaNatal, aspetos = [], isPremium, onUp
               {n.hora && <span style={{ fontSize: 10, color: CORES.brancoMuted }}>{n.hora}</span>}
             </div>
             <p style={{ fontSize: 12, color: CORES.brancoSuave, lineHeight: 1.55, margin: 0 }}>{n.texto}</p>
-          </div>
-        ))}
-      </div>
-
-      <div style={{ ...vidro, padding: 20, marginBottom: isAdmin ? 16 : 0 }}>
-        <div style={{ fontSize: 13, fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase', color: CORES.brancoSuave, marginBottom: 12 }}>
-          {t('home.newsTitle')}
-        </div>
-        {NOVIDADES_SIDUS.slice(0, 3).map((item) => (
-          <div key={item.date} style={{ display: 'flex', gap: 12, padding: '8px 0', borderBottom: `1px solid ${CORES.vidroBorda}` }}>
-            <span style={{ fontSize: 11, color: CORES.dourado, minWidth: 72, flexShrink: 0 }}>{item.date.slice(5).replace('-', '/')}</span>
-            <span style={{ fontSize: 12, color: CORES.brancoMuted, lineHeight: 1.45 }}>{lang === 'en' ? item.en : item.pt}</span>
           </div>
         ))}
       </div>
