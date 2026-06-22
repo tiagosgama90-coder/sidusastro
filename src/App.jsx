@@ -2666,14 +2666,12 @@ function Navbar({ passo, setPasso, isDesktop, dados, fotoPerfil }) {
   return (
     <>
       <header style={headerStyle}>
-        {/* Esquerda: logo + idioma */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: isDesktop ? 14 : 10, flexShrink: 0 }}>
-          <LogoSidus onClick={irHome} compact={!isDesktop} />
-          <LanguageSwitcher variant={isDesktop ? 'inline' : 'compact'} />
-        </div>
-
         {isDesktop ? (
           <>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 14, flexShrink: 0 }}>
+              <LogoSidus onClick={irHome} />
+              <LanguageSwitcher variant="inline" />
+            </div>
             <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, overflowX: 'auto', padding: '0 20px', scrollbarWidth: 'thin' }}>
               {itens.map((item) => {
                 const Icon = item.icon
@@ -2719,19 +2717,6 @@ function Navbar({ passo, setPasso, isDesktop, dados, fotoPerfil }) {
           </>
         ) : (
           <>
-            <div style={{ flex: 1 }} />
-            <button
-              type="button"
-              onClick={irPerfil}
-              aria-label={t('nav.perfil')}
-              style={{
-                background: perfilAtivo ? 'rgba(223,183,108,0.15)' : 'rgba(255,255,255,0.05)',
-                border: `1px solid ${perfilAtivo ? CORES.dourado : CORES.vidroBorda}`,
-                borderRadius: 12, padding: 4, cursor: 'pointer', flexShrink: 0,
-              }}
-            >
-              <AvatarNav foto={fotoPerfil} nome={nomePerfil} size={34} ativo={perfilAtivo} />
-            </button>
             <button
               type="button"
               className="mobile-menu-btn"
@@ -2747,6 +2732,10 @@ function Navbar({ passo, setPasso, isDesktop, dados, fotoPerfil }) {
             >
               {menuAberto ? <X size={22} /> : <Menu size={22} />}
             </button>
+            <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, minWidth: 0 }}>
+              <LogoSidus onClick={irHome} compact />
+            </div>
+            <LanguageSwitcher variant="compact" />
           </>
         )}
       </header>
