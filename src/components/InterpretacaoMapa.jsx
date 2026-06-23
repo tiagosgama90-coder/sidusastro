@@ -16,8 +16,8 @@ export function InterpretacaoMapa({ analise, estilosVidro, lang = 'pt' }) {
   if (!analise?.seccoes?.length) return null
 
   const titulo = lang === 'en'
-    ? '✦ Professional Interpretation · Ephemerides · Placidus'
-    : '✦ Interpretação Profissional · Efemérides · Placidus'
+    ? '✦ Professional Interpretation'
+    : '✦ Interpretação Profissional'
 
   return (
     <div style={{ marginBottom: 14 }}>

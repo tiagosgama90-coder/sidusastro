@@ -169,11 +169,10 @@ export function getMapaCopy(lang = 'pt') {
   }
 
   function introTecnica(mapaNatal, dados) {
-    const motor = mapaNatal?.motor || 'Swiss Ephemeris / NASA JPL'
     if (lang === 'en') {
-      return `This natal chart was calculated using astronomical ephemerides (${motor}), in the **Tropical** system with **Placidus Houses** — the professional standard used by certified astrologers worldwide. The ecliptic degrees reflect the exact position of celestial bodies at birth${dados?.cidade ? ` in ${dados.cidade}` : ''}${dados?.data ? `, ${dados.data}` : ''}${dados?.hora ? ` at ${dados.hora}` : ''}. Each planet in a Placidus house indicates *where* in life that sign's energy manifests concretely.`
+      return `This natal chart reflects the exact position of the stars at your birth${dados?.cidade ? ` in ${dados.cidade}` : ''}${dados?.data ? `, ${dados.data}` : ''}${dados?.hora ? ` at ${dados.hora}` : ''}. Each planet in a house shows where in life that sign's energy manifests — your unique cosmic signature, read with professional astrological rigour.`
     }
-    return `Este mapa natal foi calculado pelo método das efemérides astronómicas (${motor}), no sistema **Tropical** com **Casas Placidus** — o padrão profissional utilizado por astrólogos certificados internacionalmente. Os graus eclípticos reflectem a posição exacta dos corpos celestes no momento do nascimento${dados?.cidade ? ` em ${dados.cidade}` : ''}${dados?.data ? `, ${dados.data}` : ''}${dados?.hora ? ` às ${dados.hora}` : ''}. Cada planeta numa casa Placidus indica *onde* na vida a energia desse signo se manifesta concretamente.`
+    return `Este mapa natal reflecte a posição exacta dos astros no momento do teu nascimento${dados?.cidade ? ` em ${dados.cidade}` : ''}${dados?.data ? `, ${dados.data}` : ''}${dados?.hora ? ` às ${dados.hora}` : ''}. Cada planeta numa casa indica onde na vida essa energia se manifesta — a tua assinatura cósmica única, lida com rigor astrológico profissional.`
   }
 
   function gerarResumoGratuito(mapaNatal) {

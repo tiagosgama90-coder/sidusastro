@@ -66,7 +66,7 @@ export function gerarAnaliseCompleta(mapaNatal, planetas, aspetos = [], dados = 
       id: 0,
       titulo: L.sec0,
       blocos: [
-        { subtitulo: 'Efemérides · Tropical · Placidus', texto: C.introTecnica(mapaNatal, dados), destaque: true },
+        { subtitulo: lang === 'en' ? 'Your natal chart' : 'O teu mapa natal', texto: C.introTecnica(mapaNatal, dados), destaque: true },
       ],
     },
     {
@@ -129,7 +129,6 @@ export function formatarTextoPlano(seccoes, mapaNatal, lang = 'pt') {
     `  ${L.pdfHeader}`,
     `  ${L.pdfMethod}`,
     `  ${L.pdfSystem}`,
-    `  Motor: ${mapaNatal?.motor || 'Swiss Ephemeris / astronomy-engine'}`,
     '═══════════════════════════════════════════',
     '',
   ]

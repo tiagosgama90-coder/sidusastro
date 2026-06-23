@@ -72,7 +72,7 @@ export async function gerarPdfMapaAstral(mapaNatal, dados, planetas = [], analis
   doc.setTextColor(...MUTED)
   doc.setFont('helvetica', 'normal')
   doc.text('MAPA ASTRAL NATAL COMPLETO', 105, 26, { align: 'center' })
-  doc.text('Efemérides · Tropical · Placidus', 105, 31, { align: 'center' })
+  doc.text('Leitura astrológica profissional', 105, 31, { align: 'center' })
 
   doc.setFont('helvetica', 'bold')
   doc.setFontSize(13)
@@ -85,7 +85,7 @@ export async function gerarPdfMapaAstral(mapaNatal, dados, planetas = [], analis
   const localDt = [formatarData(dados.data), dados.hora ? `às ${dados.hora}` : '', dados.cidade ? `· ${dados.cidade}` : ''].filter(Boolean).join(' ')
   doc.text(localDt, 105, 46, { align: 'center' })
   doc.setFontSize(7)
-  doc.text(`${mapaNatal?.motor || 'Swiss Ephemeris'} · ${mapaNatal?.sistema || 'Placidus'}`, 105, 50, { align: 'center' })
+  doc.text('Assinatura cósmica única', 105, 50, { align: 'center' })
 
   y = 62
 
@@ -220,10 +220,9 @@ export async function gerarPdfMapaAstral(mapaNatal, dados, planetas = [], analis
   y += 12
 
   ;[
-    ['Sistema:', mapaNatal?.sistema || 'Tropical · Placidus'],
+    ['Sistema:', 'Zodíaco tropical · Casas angulares'],
     ['Data UT:', mapaNatal?.instanteUTC ? mapaNatal.instanteUTC.replace('T', ' ').slice(0, 16) + ' UTC' : '—'],
     ['Coordenadas:', mapaNatal?.lat != null ? `${mapaNatal.lat.toFixed(4)}°, ${mapaNatal.lon?.toFixed(4)}°` : '—'],
-    ['Motor:', mapaNatal?.motor || 'astronomy-engine'],
   ].forEach(([label, valor]) => {
     novaPageSeNecessario(8)
     doc.setTextColor(...MUTED)

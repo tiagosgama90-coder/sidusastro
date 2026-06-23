@@ -2059,9 +2059,8 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
         <p style={{ ...estilos.subtitulo, textAlign: 'left', marginBottom: 2 }}>
           {dados.nome} · {formatarData(dados.data)} às {dados.hora}
         </p>
-        <p style={{ fontSize: 10, color: CORES.brancoMuted, textTransform: 'uppercase', letterSpacing: '0.07em' }}>
-          {mapaNatal.sistema || 'Tropical · Placidus'} · {mapaNatal.motor || motorAstro || 'astronomy-engine'}
-          {sweEphemerisPronta() ? ' · Efemérides ✓' : ''}
+        <p style={{ fontSize: 11, color: CORES.brancoMuted, letterSpacing: '0.04em' }}>
+          {t('mapa.proTagline')}
         </p>
       </header>
 
@@ -2547,10 +2546,12 @@ function Chat({ mapaNatal, isPremium, userId, oracleRemotas, onOracleUsada, onUp
             ✦
           </div>
           <div>
-            <div style={{ fontSize: 14, fontWeight: 700, color: CORES.branco }}>{t('oracle.title')}</div>
-            <div style={{ fontSize: 10, color: CORES.brancoMuted }}>
-              {isPremium ? t('oracle.premiumSubtitle') : t('oracle.subtitle')}
-            </div>
+            <div style={{ fontSize: 18, fontWeight: 700, color: CORES.dourado }}>{t('oracle.title')}</div>
+            {isPremium && (
+              <div style={{ fontSize: 13, color: CORES.brancoMuted, marginTop: 2 }}>
+                {t('oracle.premiumSubtitle')}
+              </div>
+            )}
           </div>
         </div>
         {!isPremium && (

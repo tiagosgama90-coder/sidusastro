@@ -256,26 +256,26 @@ export function getChatGreeting(mapaNatal, lang = 'pt', maxFree = 3, isPremium =
   if (lang === 'en') {
     if (isPremium) {
       if (sol) {
-        return `Welcome. I am **Sidus** — your senior astrologer and Astral Oracle.\n\nI have studied your natal chart in depth: **Sun in ${sol}**, **Moon in ${lua}**, **Ascendant in ${asc}**. Premium gives you unlimited, professional consultation — as in a real session.\n\nTell me what is happening in your life. I will read it through your chart.`
+        return `Welcome. I am Sidus, your Astral Oracle.\n\nI have studied your natal chart in depth: Sun in ${sol}, Moon in ${lua}, Ascendant in ${asc}. Premium gives you unlimited, professional consultation — as in a real session.\n\nTell me what is happening in your life. I will read it through your chart.`
       }
-      return `Welcome. I am **Sidus**, Astral Oracle.\n\nComplete your birth registration so I can read your chart with full precision. Then we can work together without limits.\n\nWhat weighs on your heart today?`
+      return `Welcome. I am Sidus, Astral Oracle.\n\nComplete your birth registration so I can read your chart with full precision. Then we can work together without limits.\n\nWhat weighs on your heart today?`
     }
     if (sol) {
-      return `Hello. I am **Sidus**, the Astral Oracle.\n\nI read your chart: **Sun in ${sol}**, **Moon in ${lua}**, **Ascendant in ${asc}**.\n\nYou have ${maxFree} free questions — thoughtful and personalised. For unlimited professional consultation, activate Premium.\n\nWhat is on your heart right now?`
+      return `Hello. I am Sidus, the Astral Oracle.\n\nI read your chart: Sun in ${sol}, Moon in ${lua}, Ascendant in ${asc}.\n\nYou have ${maxFree} free questions. Ask about love, career, purpose, cycles or transits — always tied to your chart.\n\nWhat do you want to read in the stars now?`
     }
-    return `Hello. I am **Sidus**, the Astral Oracle.\n\nComplete your birth registration to personalise each answer. Then I can speak directly to your chart.\n\nWhat is on your heart right now?`
+    return `Hello. I am Sidus, the Astral Oracle.\n\nComplete your birth registration for personalised answers to your chart.\n\nAsk about love, career, purpose or planetary cycles.\n\nWhat do you want to read in the stars now?`
   }
 
   if (isPremium) {
     if (sol) {
-      return `Bem-vindo/a. Sou **Sidus** — Oráculo Astral e astróloga sénior.\n\nEstudei o teu mapa natal em profundidade: **Sol em ${sol}**, **Lua em ${lua}**, **Ascendente em ${asc}**. O Premium dá-te consulta profissional ilimitada — como numa sessão real.\n\nConta-me o que se passa na tua vida. Lerei através do teu mapa.`
+      return `Bem-vindo/a. Sou Sidus, o teu Oráculo Astral.\n\nEstudei o teu mapa natal em profundidade: Sol em ${sol}, Lua em ${lua}, Ascendente em ${asc}. O Premium dá-te consulta profissional ilimitada — como numa sessão real.\n\nConta-me o que se passa na tua vida. Lerei através do teu mapa.`
     }
-    return `Bem-vindo/a. Sou **Sidus**, Oráculo Astral.\n\nCompleta o registo natal para eu ler o teu mapa com precisão total. Depois trabalhamos juntos sem limites.\n\nO que pesa no teu coração hoje?`
+    return `Bem-vindo/a. Sou Sidus, Oráculo Astral.\n\nCompleta o registo natal para eu ler o teu mapa com precisão total. Depois trabalhamos juntos sem limites.\n\nO que pesa no teu coração hoje?`
   }
   if (sol) {
-    return `Olá. Sou **Sidus**, Oráculo Astral — **só astrologia, previsões e vida via mapa natal**.\n\nLi o teu mapa: **Sol em ${sol}**, **Lua em ${lua}**, **Ascendente em ${asc}**.\n\nTens ${maxFree} questões gratuitas. Pergunta sobre amor, carreira, propósito, ciclos ou trânsitos — sempre ligado ao teu mapa.\n\nO que queres ler nas estrelas agora?`
+    return `Olá. Sou Sidus, Oráculo Astral.\n\nLi o teu mapa: Sol em ${sol}, Lua em ${lua}, Ascendente em ${asc}.\n\nTens ${maxFree} questões gratuitas. Pergunta sobre amor, carreira, propósito, ciclos ou trânsitos — sempre ligado ao teu mapa.\n\nO que queres ler nas estrelas agora?`
   }
-  return `Olá. Sou **Sidus**, Oráculo Astral — **só astrologia, previsões e vida via mapa natal**.\n\nCompleta o registo natal para respostas personalizadas ao teu mapa.\n\nPergunta sobre amor, carreira, propósito ou ciclos planetários.\n\nO que queres ler nas estrelas agora?`
+  return `Olá. Sou Sidus, Oráculo Astral.\n\nCompleta o registo natal para respostas personalizadas ao teu mapa.\n\nPergunta sobre amor, carreira, propósito ou ciclos planetários.\n\nO que queres ler nas estrelas agora?`
 }
 
 export function getOracleLimitMessage(maxFree, lang = 'pt') {
