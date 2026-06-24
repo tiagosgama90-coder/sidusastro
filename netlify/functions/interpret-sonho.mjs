@@ -30,7 +30,7 @@ export default async (req) => {
     }
 
     const feelingLabel = labelSentimento(feeling, lang)
-    const simbolosDetectados = extrairSimbolos(texto, chips)
+    const simbolosDetectados = extrairSimbolos(texto, chips, lang)
     const system = construirSistemaSonhos(lang)
     const userPrompt = construirPedidoSonhos({
       texto: texto.trim(),

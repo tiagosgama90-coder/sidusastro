@@ -31,7 +31,7 @@ export default {
     liveNow: 'Ao vivo · Céu actualizado',
     heroTitle: 'O teu mapa astral completo. O teu destino, decifrado.',
     heroSubtitle: 'Swiss Ephemeris · casas Placidus · Oráculo IA · Tarot · Numerologia — tudo personalizado com o teu Sol, Lua e Ascendente.',
-    login: 'Entrar', register: 'Criar Conta', email: 'E-mail', password: 'Senha',
+    login: 'Entrar', register: 'Criar Conta', email: 'E-mail', emailPlaceholder: 'name@example.com', password: 'Senha',
     confirmPassword: 'Confirmar Senha', or: 'ou', google: 'Continuar com Google',
     noAccount: 'Ainda não tens conta?', hasAccount: 'Já tens conta?',
     createHere: 'Cria uma aqui', loginHere: 'Entra aqui',

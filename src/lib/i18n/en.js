@@ -31,7 +31,7 @@ export default {
     liveNow: 'Live · Sky updated',
     heroTitle: 'Your complete natal chart. Your destiny, decoded.',
     heroSubtitle: 'Swiss Ephemeris · Placidus houses · AI Oracle · Tarot · Numerology — all personalised with your Sun, Moon and Ascendant.',
-    login: 'Sign In', register: 'Create Account', email: 'Email', password: 'Password',
+    login: 'Sign In', register: 'Create Account', email: 'Email', emailPlaceholder: 'name@example.com', password: 'Password',
     confirmPassword: 'Confirm Password', or: 'or', google: 'Continue with Google',
     noAccount: "Don't have an account?", hasAccount: 'Already have an account?',
     createHere: 'Create one here', loginHere: 'Sign in here',

@@ -1,5 +1,7 @@
 import { createPortal } from 'react-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { useLanguage } from '../lib/i18n/LanguageContext.jsx'
+import { passoFromPath, pathFromPasso } from '../lib/routes.js'
 
 const CORES = {
   dourado: '#DFB76C',
@@ -8,13 +10,24 @@ const CORES = {
 }
 
 function SwitcherButtons({ lang, setLang, compact = false }) {
+  const navigate = useNavigate()
+  const location = useLocation()
+
+  const changeLang = (code) => {
+    if (code === lang) return
+    setLang(code)
+    const passo = passoFromPath(location.pathname)
+    const newPath = pathFromPasso(passo, code)
+    navigate(`${newPath}${location.search}${location.hash}`, { replace: true })
+  }
+
   const btn = (code, flag, label) => {
     const active = lang === code
     return (
       <button
         type="button"
         title={label}
-        onClick={() => setLang(code)}
+        onClick={() => changeLang(code)}
         style={{
           display: 'flex',
           alignItems: 'center',

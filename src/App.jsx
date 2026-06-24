@@ -1293,7 +1293,7 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="o.teu@email.com"
+              placeholder={t('auth.emailPlaceholder')}
               style={{ ...estilos.input, paddingLeft: 40 }}
               onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
             />

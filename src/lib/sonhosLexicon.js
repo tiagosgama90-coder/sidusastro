@@ -89,7 +89,7 @@ const FEELING_EN = {
   joy: 'joy / lightness', confusion: 'confusion / disorientation', anger: 'anger / irritation',
 }
 
-export function extrairSimbolos(texto, chipsExtra = []) {
+export function extrairSimbolos(texto, chipsExtra = [], lang = 'pt') {
   const lower = `${texto} ${(chipsExtra || []).join(' ')}`.toLowerCase()
   const normalizado = lower.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
   const encontrados = []
@@ -111,13 +111,15 @@ export function extrairSimbolos(texto, chipsExtra = []) {
     if (!encontrados.some((e) => e.tema.toLowerCase().includes(cl.slice(0, 4)))) {
       encontrados.push({
         tema: chip,
-        resumo: 'Símbolo seleccionado — aplicar Regra de Ouro: conflito actual, apelo de conversão, remédio de cura.',
+        resumo: lang === 'en'
+          ? 'Selected symbol — apply Golden Rule: current conflict, call to change, path of healing.'
+          : 'Símbolo seleccionado — aplicar Regra de Ouro: conflito actual, apelo de conversão, remédio de cura.',
         letra: chip[0]?.toUpperCase() || '?',
       })
     }
   }
 
-  return encontrados.sort((a, b) => a.letra.localeCompare(b.letra, 'pt'))
+  return encontrados.sort((a, b) => a.letra.localeCompare(b.letra, lang === 'en' ? 'en' : 'pt'))
 }
 
 export function labelSentimento(feelingKey, lang = 'pt') {

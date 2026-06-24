@@ -33,7 +33,8 @@ CRITICAL:
 - Each answer MUST be unique to THIS dream text — quote specific images, people, places, actions from the user.
 - Interpret EVERY symbol mentioned, not generic paragraphs.
 - 180–320 words total across sections.
-- Warm, pastoral, precise Portuguese-of-Portugal tone if lang=pt; English if lang=en.
+- Write the ENTIRE response in English only. Never use Portuguese.
+- Warm, pastoral, precise English tone.
 `.trim()
   }
 
@@ -73,19 +74,22 @@ CRÍTICO:
 }
 
 export function construirPedidoSonhos({ texto, lang, feeling, simbolosDetectados, mapaNatal }) {
-  const e = lang === 'en'
-  const feelingLabel = feeling || (e ? 'not specified' : 'não indicado')
+  const en = lang === 'en'
+  const feelingLabel = feeling || (en ? 'not specified' : 'não indicado')
   const lista = simbolosDetectados?.length
-    ? simbolosDetectados.map((s) => `- ${s.tema}: ${s.resumo}`).join('\n')
-    : (e ? '- No indexed symbols — apply Golden Rule to each image in the dream.' : '- Nenhum símbolo indexado — aplica Regra de Ouro a cada imagem do sonho.')
+    ? (en
+      ? simbolosDetectados.map((s) => `- ${s.tema}`).join('\n')
+        + '\n(Interpret each symbol above in English using your core symbol matrix.)'
+      : simbolosDetectados.map((s) => `- ${s.tema}: ${s.resumo}`).join('\n'))
+    : (en ? '- No indexed symbols — apply Golden Rule to each image in the dream.' : '- Nenhum símbolo indexado — aplica Regra de Ouro a cada imagem do sonho.')
 
   const astro = mapaNatal?.solar?.nome
-    ? (e
+    ? (en
       ? `\nNatal context (secondary): Sun ${mapaNatal.solar.nome}, Moon ${mapaNatal.lunar?.nome || '—'}, Asc ${mapaNatal.ascendente?.nome || '—'}. Weave lightly if relevant.`
       : `\nContexto natal (secundário): Sol ${mapaNatal.solar.nome}, Lua ${mapaNatal.lunar?.nome || '—'}, Asc ${mapaNatal.ascendente?.nome || '—'}. Integra levemente se relevante.`)
     : ''
 
-  return e
+  return en
     ? `Dominant feeling in dream: ${feelingLabel}
 
 Symbols detected in lexicon (use as anchors, expand with dream specifics):
@@ -95,7 +99,9 @@ ${astro}
 DREAM REPORT (interpret every detail uniquely):
 """
 ${texto}
-"""`
+"""
+
+Write all four sections entirely in English. Use the exact section headers from your instructions.`
     : `Sentimento dominante no sonho: ${feelingLabel}
 
 Símbolos detectados no léxico (usa como âncoras, expande com detalhes do sonho):
