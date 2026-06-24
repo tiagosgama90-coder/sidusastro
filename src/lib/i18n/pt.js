@@ -21,7 +21,7 @@ export default {
   },
   cookies: {
     title: 'Cookies e privacidade',
-    text: 'Utilizamos cookies necessários para o funcionamento do Sidus e, com o teu consentimento, cookies do Google AdSense para publicidade. Podes aceitar todos ou limitar aos essenciais (anúncios não personalizados).',
+    text: 'Utilizamos cookies necessários para o funcionamento do Sidus e, com o teu consentimento, Google Analytics (estatísticas) e cookies do Google AdSense (publicidade). Podes aceitar todos ou limitar aos essenciais.',
     privacyLink: 'Política de Privacidade',
     acceptAll: 'Aceitar todos',
     essentialOnly: 'Só cookies essenciais',

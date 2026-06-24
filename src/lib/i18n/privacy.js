@@ -13,7 +13,7 @@ const SECTIONS_PT = [
   },
   {
     titulo: '4. Parceiros e terceiros',
-    texto: `Trabalhamos com os seguintes parceiros:\n\n• Firebase / Google (autenticação e base de dados em nuvem) — Política: firebase.google.com/support/privacy\n• OpenStreetMap Nominatim (geocodificação de cidades) — sem dados pessoais transmitidos\n• Open-Meteo (fuso horário histórico) — sem dados pessoais transmitidos\n• Google Gemini AI (respostas do Oráculo) — as perguntas podem ser processadas pela API do Google\n• Google AdSense (publicidade) — pode utilizar cookies para personalizar anúncios\n• Stripe (pagamentos) — os dados de pagamento são processados directamente pela Stripe`,
+    texto: `Trabalhamos com os seguintes parceiros:\n\n• Firebase / Google (autenticação e base de dados em nuvem) — Política: firebase.google.com/support/privacy\n• Google Analytics (estatísticas de visitas, apenas com o teu consentimento) — Política: policies.google.com/privacy\n• OpenStreetMap Nominatim (geocodificação de cidades) — sem dados pessoais transmitidos\n• Open-Meteo (fuso horário histórico) — sem dados pessoais transmitidos\n• Google Gemini AI (respostas do Oráculo) — as perguntas podem ser processadas pela API do Google\n• Google AdSense (publicidade) — pode utilizar cookies para personalizar anúncios\n• Stripe (pagamentos) — os dados de pagamento são processados directamente pela Stripe`,
   },
   {
     titulo: '5. Publicidade (Google AdSense)',
@@ -21,7 +21,7 @@ const SECTIONS_PT = [
   },
   {
     titulo: '6. Cookies',
-    texto: `Utilizamos cookies estritamente necessários para o funcionamento da aplicação (autenticação, preferências) e cookies de terceiros do Google AdSense para personalização de anúncios.\n\nAo continuar a usar a aplicação, aceita o uso de cookies. Pode gerir os cookies nas definições do seu browser.`,
+    texto: `Utilizamos cookies estritamente necessários para o funcionamento da aplicação (autenticação, preferências), cookies de análise do Google Analytics (apenas se aceitares todos os cookies) e cookies de terceiros do Google AdSense para personalização de anúncios.\n\nAo continuar a usar a aplicação, aceita o uso de cookies. Pode gerir os cookies nas definições do seu browser.`,
   },
   {
     titulo: '7. Os seus direitos (RGPD)',
@@ -64,7 +64,7 @@ const SECTIONS_EN = [
   },
   {
     titulo: '4. Partners and third parties',
-    texto: `We work with the following partners:\n\n• Firebase / Google (authentication and cloud database) — Policy: firebase.google.com/support/privacy\n• OpenStreetMap Nominatim (city geocoding) — no personal data transmitted\n• Open-Meteo (historical time zone) — no personal data transmitted\n• Google Gemini AI (Oracle responses) — questions may be processed by Google's API\n• Google AdSense (advertising) — may use cookies to personalise ads\n• Stripe (payments) — payment data is processed directly by Stripe`,
+    texto: `We work with the following partners:\n\n• Firebase / Google (authentication and cloud database) — Policy: firebase.google.com/support/privacy\n• Google Analytics (visit statistics, only with your consent) — Policy: policies.google.com/privacy\n• OpenStreetMap Nominatim (city geocoding) — no personal data transmitted\n• Open-Meteo (historical time zone) — no personal data transmitted\n• Google Gemini AI (Oracle responses) — questions may be processed by Google's API\n• Google AdSense (advertising) — may use cookies to personalise ads\n• Stripe (payments) — payment data is processed directly by Stripe`,
   },
   {
     titulo: '5. Advertising (Google AdSense)',
@@ -72,7 +72,7 @@ const SECTIONS_EN = [
   },
   {
     titulo: '6. Cookies',
-    texto: `We use strictly necessary cookies for the app to function (authentication, preferences) and third-party Google AdSense cookies for ad personalisation.\n\nBy continuing to use the app, you accept the use of cookies. You can manage cookies in your browser settings.`,
+    texto: `We use strictly necessary cookies for the app to function (authentication, preferences), Google Analytics cookies (only if you accept all cookies) and third-party Google AdSense cookies for ad personalisation.\n\nBy continuing to use the app, you accept the use of cookies. You can manage cookies in your browser settings.`,
   },
   {
     titulo: '7. Your rights (GDPR)',
