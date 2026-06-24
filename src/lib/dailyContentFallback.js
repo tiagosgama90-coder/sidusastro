@@ -1,19 +1,19 @@
 import { SIGNOS_PT, SIGNOS_EN, SIGNO_PT_TO_EN } from './i18n/astro.js'
 
 const SOCIAL_PT = [
-  '🌙 {fase} hoje — o céu pede pausa. Pergunta ao Oráculo Sidus (3 grátis) → sidusastro.com',
-  '✦ Mapa astral + Oráculo Sidus. Descobre Sol, Lua e Ascendente → sidusastro.com',
-  '🔮 Horóscopo do dia no Sidus. Qual é o teu signo? → sidusastro.com/horoscopo',
-  '⭐ Trânsitos de hoje explicados pelo teu mapa. sidusastro.com',
-  '🎴 Tarot online + Oráculo Sidus — sidusastro.com/tarot',
+  '🌙 {fase} hoje — o céu pede pausa. Pergunta ao Oráculo Sidus (3 grátis) → your-domain.com',
+  '✦ Mapa astral + Oráculo Sidus. Descobre Sol, Lua e Ascendente → your-domain.com',
+  '🔮 Horóscopo do dia no Sidus. Qual é o teu signo? → your-domain.com/horoscopo',
+  '⭐ Trânsitos de hoje explicados pelo teu mapa. your-domain.com',
+  '🎴 Tarot online + Oráculo Sidus — your-domain.com/tarot',
 ]
 
 const SOCIAL_EN = [
-  '🌙 {phase} today — ask Sidus Oracle (3 free) → sidusastro.com',
-  '✦ Natal chart + Sidus Oracle. Sun, Moon & Ascendant → sidusastro.com',
-  '🔮 Daily horoscope on Sidus → sidusastro.com/horoscopo',
-  '⭐ Today\'s transits through your chart → sidusastro.com',
-  '🎴 Online Tarot + Sidus Oracle → sidusastro.com/tarot',
+  '🌙 {phase} today — ask Sidus Oracle (3 free) → your-domain.com',
+  '✦ Natal chart + Sidus Oracle. Sun, Moon & Ascendant → your-domain.com',
+  '🔮 Daily horoscope on Sidus → your-domain.com/horoscopo',
+  '⭐ Today\'s transits through your chart → your-domain.com',
+  '🎴 Online Tarot + Sidus Oracle → your-domain.com/tarot',
 ]
 
 function templateLine(sign, fase, seed, lang) {
@@ -49,11 +49,11 @@ export function buildLocalDailyContent({ fasePt, faseEn, lang = 'pt' }) {
   const social = {
     pt: {
       text: SOCIAL_PT[dow % SOCIAL_PT.length].replace('{fase}', fasePt),
-      hashtags: '#sidusastro #astrologia #mapaastral #oráculo #horóscopo',
+      hashtags: '#yourbrand #astrologia #mapaastral #oráculo #horóscopo',
     },
     en: {
       text: SOCIAL_EN[dow % SOCIAL_EN.length].replace('{phase}', faseEn),
-      hashtags: '#sidusastro #astrology #natalchart #oracle #horoscope',
+      hashtags: '#yourbrand #astrology #natalchart #oracle #horoscope',
     },
   }
 

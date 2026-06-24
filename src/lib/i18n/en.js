@@ -273,7 +273,7 @@ export default {
     premiumWelcome: '✦ Welcome to Sidus VIP! Your Premium is active.',
     tarotUnlocked: '✦ Payment confirmed! Your Tarot reading is unlocked.',
     processing: 'Payment received but still processing. Reload the page in 1 minute or contact us.',
-    verifyFail: 'Could not confirm payment. If you were charged, contact suporte.sidusapp@gmail.com',
+    verifyFail: 'Could not confirm payment. If you were charged, contact support@example.com',
     close: 'Close',
     needLogin: 'You need to sign in before paying.',
     secureTitle: 'Secure payment',
@@ -549,7 +549,7 @@ export default {
     mapaUnlocked: '✦ Complete Natal Chart unlocked! View the full interpretation and export PDF.',
     tarotUnlocked: '✦ Payment confirmed! Your Tarot reading is unlocked.',
     processing: 'Payment received but still processing. Reload the page in 1 minute or contact us.',
-    verifyFail: 'Could not confirm payment. If you were charged, contact suporte.sidusapp@gmail.com',
+    verifyFail: 'Could not confirm payment. If you were charged, contact support@example.com',
     close: 'Close',
   },
 }

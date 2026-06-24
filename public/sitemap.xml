@@ -4,278 +4,278 @@
 
   <!-- Página principal -->
   <url>
-    <loc>https://sidusastro.com/</loc>
+    <loc>https://your-domain.com/</loc>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
-    <xhtml:link rel="alternate" hreflang="pt-PT" href="https://sidusastro.com/pt/"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://sidusastro.com/en/"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://sidusastro.com/"/>
+    <xhtml:link rel="alternate" hreflang="pt-PT" href="https://your-domain.com/pt/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://your-domain.com/en/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://your-domain.com/"/>
   </url>
   <url>
-    <loc>https://sidusastro.com/pt/</loc>
+    <loc>https://your-domain.com/pt/</loc>
     <changefreq>weekly</changefreq>
     <priority>0.95</priority>
-    <xhtml:link rel="alternate" hreflang="pt-PT" href="https://sidusastro.com/pt/"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://sidusastro.com/en/"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://sidusastro.com/"/>
+    <xhtml:link rel="alternate" hreflang="pt-PT" href="https://your-domain.com/pt/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://your-domain.com/en/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://your-domain.com/"/>
   </url>
   <url>
-    <loc>https://sidusastro.com/en/</loc>
+    <loc>https://your-domain.com/en/</loc>
     <changefreq>weekly</changefreq>
     <priority>0.95</priority>
-    <xhtml:link rel="alternate" hreflang="pt-PT" href="https://sidusastro.com/pt/"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://sidusastro.com/en/"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://sidusastro.com/"/>
+    <xhtml:link rel="alternate" hreflang="pt-PT" href="https://your-domain.com/pt/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://your-domain.com/en/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://your-domain.com/"/>
   </url>
 
   <!-- Tarot -->
   <url>
-    <loc>https://sidusastro.com/tarot</loc>
+    <loc>https://your-domain.com/tarot</loc>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
-    <xhtml:link rel="alternate" hreflang="pt-PT" href="https://sidusastro.com/pt/tarot"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://sidusastro.com/en/tarot"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://sidusastro.com/tarot"/>
+    <xhtml:link rel="alternate" hreflang="pt-PT" href="https://your-domain.com/pt/tarot"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://your-domain.com/en/tarot"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://your-domain.com/tarot"/>
   </url>
   <url>
-    <loc>https://sidusastro.com/pt/tarot</loc>
+    <loc>https://your-domain.com/pt/tarot</loc>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
-    <xhtml:link rel="alternate" hreflang="pt-PT" href="https://sidusastro.com/pt/tarot"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://sidusastro.com/en/tarot"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://sidusastro.com/tarot"/>
+    <xhtml:link rel="alternate" hreflang="pt-PT" href="https://your-domain.com/pt/tarot"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://your-domain.com/en/tarot"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://your-domain.com/tarot"/>
   </url>
   <url>
-    <loc>https://sidusastro.com/en/tarot</loc>
+    <loc>https://your-domain.com/en/tarot</loc>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
-    <xhtml:link rel="alternate" hreflang="pt-PT" href="https://sidusastro.com/pt/tarot"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://sidusastro.com/en/tarot"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://sidusastro.com/tarot"/>
+    <xhtml:link rel="alternate" hreflang="pt-PT" href="https://your-domain.com/pt/tarot"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://your-domain.com/en/tarot"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://your-domain.com/tarot"/>
   </url>
 
   <!-- Horóscopo / Horoscope (início + oráculo do dia) -->
   <url>
-    <loc>https://sidusastro.com/horoscopo</loc>
+    <loc>https://your-domain.com/horoscopo</loc>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
-    <xhtml:link rel="alternate" hreflang="pt-PT" href="https://sidusastro.com/pt/horoscopo"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://sidusastro.com/en/horoscope"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://sidusastro.com/horoscopo"/>
+    <xhtml:link rel="alternate" hreflang="pt-PT" href="https://your-domain.com/pt/horoscopo"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://your-domain.com/en/horoscope"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://your-domain.com/horoscopo"/>
   </url>
   <url>
-    <loc>https://sidusastro.com/pt/horoscopo</loc>
+    <loc>https://your-domain.com/pt/horoscopo</loc>
     <changefreq>daily</changefreq>
     <priority>0.85</priority>
-    <xhtml:link rel="alternate" hreflang="pt-PT" href="https://sidusastro.com/pt/horoscopo"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://sidusastro.com/en/horoscope"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://sidusastro.com/horoscopo"/>
+    <xhtml:link rel="alternate" hreflang="pt-PT" href="https://your-domain.com/pt/horoscopo"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://your-domain.com/en/horoscope"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://your-domain.com/horoscopo"/>
   </url>
   <url>
-    <loc>https://sidusastro.com/en/horoscope</loc>
+    <loc>https://your-domain.com/en/horoscope</loc>
     <changefreq>daily</changefreq>
     <priority>0.85</priority>
-    <xhtml:link rel="alternate" hreflang="pt-PT" href="https://sidusastro.com/pt/horoscopo"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://sidusastro.com/en/horoscope"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://sidusastro.com/horoscopo"/>
+    <xhtml:link rel="alternate" hreflang="pt-PT" href="https://your-domain.com/pt/horoscopo"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://your-domain.com/en/horoscope"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://your-domain.com/horoscopo"/>
   </url>
 
   <!-- Oráculo Sidus (consulta IA) -->
   <url>
-    <loc>https://sidusastro.com/oraculo</loc>
+    <loc>https://your-domain.com/oraculo</loc>
     <changefreq>weekly</changefreq>
     <priority>0.88</priority>
-    <xhtml:link rel="alternate" hreflang="pt-PT" href="https://sidusastro.com/pt/oraculo"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://sidusastro.com/en/oraculo"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://sidusastro.com/oraculo"/>
+    <xhtml:link rel="alternate" hreflang="pt-PT" href="https://your-domain.com/pt/oraculo"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://your-domain.com/en/oraculo"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://your-domain.com/oraculo"/>
   </url>
   <url>
-    <loc>https://sidusastro.com/pt/oraculo</loc>
+    <loc>https://your-domain.com/pt/oraculo</loc>
     <changefreq>weekly</changefreq>
     <priority>0.82</priority>
-    <xhtml:link rel="alternate" hreflang="pt-PT" href="https://sidusastro.com/pt/oraculo"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://sidusastro.com/en/oraculo"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://sidusastro.com/oraculo"/>
+    <xhtml:link rel="alternate" hreflang="pt-PT" href="https://your-domain.com/pt/oraculo"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://your-domain.com/en/oraculo"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://your-domain.com/oraculo"/>
   </url>
   <url>
-    <loc>https://sidusastro.com/en/oraculo</loc>
+    <loc>https://your-domain.com/en/oraculo</loc>
     <changefreq>weekly</changefreq>
     <priority>0.82</priority>
-    <xhtml:link rel="alternate" hreflang="pt-PT" href="https://sidusastro.com/pt/oraculo"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://sidusastro.com/en/oraculo"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://sidusastro.com/oraculo"/>
+    <xhtml:link rel="alternate" hreflang="pt-PT" href="https://your-domain.com/pt/oraculo"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://your-domain.com/en/oraculo"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://your-domain.com/oraculo"/>
   </url>
 
   <!-- Mapa astral -->
   <url>
-    <loc>https://sidusastro.com/mapaastral</loc>
+    <loc>https://your-domain.com/mapaastral</loc>
     <changefreq>monthly</changefreq>
     <priority>0.88</priority>
-    <xhtml:link rel="alternate" hreflang="pt-PT" href="https://sidusastro.com/pt/mapaastral"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://sidusastro.com/en/mapaastral"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://sidusastro.com/mapaastral"/>
+    <xhtml:link rel="alternate" hreflang="pt-PT" href="https://your-domain.com/pt/mapaastral"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://your-domain.com/en/mapaastral"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://your-domain.com/mapaastral"/>
   </url>
   <url>
-    <loc>https://sidusastro.com/pt/mapaastral</loc>
+    <loc>https://your-domain.com/pt/mapaastral</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
-    <xhtml:link rel="alternate" hreflang="pt-PT" href="https://sidusastro.com/pt/mapaastral"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://sidusastro.com/en/mapaastral"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://sidusastro.com/mapaastral"/>
+    <xhtml:link rel="alternate" hreflang="pt-PT" href="https://your-domain.com/pt/mapaastral"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://your-domain.com/en/mapaastral"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://your-domain.com/mapaastral"/>
   </url>
   <url>
-    <loc>https://sidusastro.com/en/mapaastral</loc>
+    <loc>https://your-domain.com/en/mapaastral</loc>
     <lastmod>2026-06-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
-    <xhtml:link rel="alternate" hreflang="pt-PT" href="https://sidusastro.com/pt/mapaastral"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://sidusastro.com/en/mapaastral"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://sidusastro.com/mapaastral"/>
+    <xhtml:link rel="alternate" hreflang="pt-PT" href="https://your-domain.com/pt/mapaastral"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://your-domain.com/en/mapaastral"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://your-domain.com/mapaastral"/>
   </url>
 
   <!-- Radar de Afinidades / Sinastria -->
   <url>
-    <loc>https://sidusastro.com/sinastria</loc>
+    <loc>https://your-domain.com/sinastria</loc>
     <lastmod>2026-06-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.86</priority>
-    <xhtml:link rel="alternate" hreflang="pt-PT" href="https://sidusastro.com/pt/sinastria"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://sidusastro.com/en/sinastria"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://sidusastro.com/sinastria"/>
+    <xhtml:link rel="alternate" hreflang="pt-PT" href="https://your-domain.com/pt/sinastria"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://your-domain.com/en/sinastria"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://your-domain.com/sinastria"/>
   </url>
   <url>
-    <loc>https://sidusastro.com/pt/sinastria</loc>
+    <loc>https://your-domain.com/pt/sinastria</loc>
     <lastmod>2026-06-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.82</priority>
-    <xhtml:link rel="alternate" hreflang="pt-PT" href="https://sidusastro.com/pt/sinastria"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://sidusastro.com/en/sinastria"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://sidusastro.com/sinastria"/>
+    <xhtml:link rel="alternate" hreflang="pt-PT" href="https://your-domain.com/pt/sinastria"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://your-domain.com/en/sinastria"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://your-domain.com/sinastria"/>
   </url>
   <url>
-    <loc>https://sidusastro.com/en/sinastria</loc>
+    <loc>https://your-domain.com/en/sinastria</loc>
     <lastmod>2026-06-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.82</priority>
-    <xhtml:link rel="alternate" hreflang="pt-PT" href="https://sidusastro.com/pt/sinastria"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://sidusastro.com/en/sinastria"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://sidusastro.com/sinastria"/>
+    <xhtml:link rel="alternate" hreflang="pt-PT" href="https://your-domain.com/pt/sinastria"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://your-domain.com/en/sinastria"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://your-domain.com/sinastria"/>
   </url>
 
   <!-- Bússola Cósmica 2026 -->
   <url>
-    <loc>https://sidusastro.com/bussola</loc>
+    <loc>https://your-domain.com/bussola</loc>
     <lastmod>2026-06-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
-    <xhtml:link rel="alternate" hreflang="pt-PT" href="https://sidusastro.com/pt/bussola"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://sidusastro.com/en/bussola"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://sidusastro.com/bussola"/>
+    <xhtml:link rel="alternate" hreflang="pt-PT" href="https://your-domain.com/pt/bussola"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://your-domain.com/en/bussola"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://your-domain.com/bussola"/>
   </url>
   <url>
-    <loc>https://sidusastro.com/pt/bussola</loc>
+    <loc>https://your-domain.com/pt/bussola</loc>
     <lastmod>2026-06-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
-    <xhtml:link rel="alternate" hreflang="pt-PT" href="https://sidusastro.com/pt/bussola"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://sidusastro.com/en/bussola"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://sidusastro.com/bussola"/>
+    <xhtml:link rel="alternate" hreflang="pt-PT" href="https://your-domain.com/pt/bussola"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://your-domain.com/en/bussola"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://your-domain.com/bussola"/>
   </url>
   <url>
-    <loc>https://sidusastro.com/en/bussola</loc>
+    <loc>https://your-domain.com/en/bussola</loc>
     <lastmod>2026-06-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
-    <xhtml:link rel="alternate" hreflang="pt-PT" href="https://sidusastro.com/pt/bussola"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://sidusastro.com/en/bussola"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://sidusastro.com/bussola"/>
+    <xhtml:link rel="alternate" hreflang="pt-PT" href="https://your-domain.com/pt/bussola"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://your-domain.com/en/bussola"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://your-domain.com/bussola"/>
   </url>
 
   <!-- Mapa de Numerologia -->
   <url>
-    <loc>https://sidusastro.com/numerologia</loc>
+    <loc>https://your-domain.com/numerologia</loc>
     <lastmod>2026-06-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.84</priority>
-    <xhtml:link rel="alternate" hreflang="pt-PT" href="https://sidusastro.com/pt/numerologia"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://sidusastro.com/en/numerologia"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://sidusastro.com/numerologia"/>
+    <xhtml:link rel="alternate" hreflang="pt-PT" href="https://your-domain.com/pt/numerologia"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://your-domain.com/en/numerologia"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://your-domain.com/numerologia"/>
   </url>
   <url>
-    <loc>https://sidusastro.com/pt/numerologia</loc>
+    <loc>https://your-domain.com/pt/numerologia</loc>
     <lastmod>2026-06-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
-    <xhtml:link rel="alternate" hreflang="pt-PT" href="https://sidusastro.com/pt/numerologia"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://sidusastro.com/en/numerologia"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://sidusastro.com/numerologia"/>
+    <xhtml:link rel="alternate" hreflang="pt-PT" href="https://your-domain.com/pt/numerologia"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://your-domain.com/en/numerologia"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://your-domain.com/numerologia"/>
   </url>
   <url>
-    <loc>https://sidusastro.com/en/numerologia</loc>
+    <loc>https://your-domain.com/en/numerologia</loc>
     <lastmod>2026-06-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
-    <xhtml:link rel="alternate" hreflang="pt-PT" href="https://sidusastro.com/pt/numerologia"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://sidusastro.com/en/numerologia"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://sidusastro.com/numerologia"/>
+    <xhtml:link rel="alternate" hreflang="pt-PT" href="https://your-domain.com/pt/numerologia"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://your-domain.com/en/numerologia"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://your-domain.com/numerologia"/>
   </url>
 
   <!-- Sidus VIP / Premium -->
   <url>
-    <loc>https://sidusastro.com/vip</loc>
+    <loc>https://your-domain.com/vip</loc>
     <lastmod>2026-06-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.78</priority>
-    <xhtml:link rel="alternate" hreflang="pt-PT" href="https://sidusastro.com/pt/vip"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://sidusastro.com/en/vip"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://sidusastro.com/vip"/>
+    <xhtml:link rel="alternate" hreflang="pt-PT" href="https://your-domain.com/pt/vip"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://your-domain.com/en/vip"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://your-domain.com/vip"/>
   </url>
   <url>
-    <loc>https://sidusastro.com/pt/vip</loc>
+    <loc>https://your-domain.com/pt/vip</loc>
     <lastmod>2026-06-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.74</priority>
-    <xhtml:link rel="alternate" hreflang="pt-PT" href="https://sidusastro.com/pt/vip"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://sidusastro.com/en/vip"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://sidusastro.com/vip"/>
+    <xhtml:link rel="alternate" hreflang="pt-PT" href="https://your-domain.com/pt/vip"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://your-domain.com/en/vip"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://your-domain.com/vip"/>
   </url>
   <url>
-    <loc>https://sidusastro.com/en/vip</loc>
+    <loc>https://your-domain.com/en/vip</loc>
     <lastmod>2026-06-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.74</priority>
-    <xhtml:link rel="alternate" hreflang="pt-PT" href="https://sidusastro.com/pt/vip"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://sidusastro.com/en/vip"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://sidusastro.com/vip"/>
+    <xhtml:link rel="alternate" hreflang="pt-PT" href="https://your-domain.com/pt/vip"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://your-domain.com/en/vip"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://your-domain.com/vip"/>
   </url>
 
   <!-- Política de Privacidade -->
   <url>
-    <loc>https://sidusastro.com/privacidade</loc>
+    <loc>https://your-domain.com/privacidade</loc>
     <lastmod>2026-06-22</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.5</priority>
-    <xhtml:link rel="alternate" hreflang="pt-PT" href="https://sidusastro.com/pt/privacidade"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://sidusastro.com/en/privacidade"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://sidusastro.com/privacidade"/>
+    <xhtml:link rel="alternate" hreflang="pt-PT" href="https://your-domain.com/pt/privacidade"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://your-domain.com/en/privacidade"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://your-domain.com/privacidade"/>
   </url>
   <url>
-    <loc>https://sidusastro.com/pt/privacidade</loc>
+    <loc>https://your-domain.com/pt/privacidade</loc>
     <lastmod>2026-06-22</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.48</priority>
-    <xhtml:link rel="alternate" hreflang="pt-PT" href="https://sidusastro.com/pt/privacidade"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://sidusastro.com/en/privacidade"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://sidusastro.com/privacidade"/>
+    <xhtml:link rel="alternate" hreflang="pt-PT" href="https://your-domain.com/pt/privacidade"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://your-domain.com/en/privacidade"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://your-domain.com/privacidade"/>
   </url>
   <url>
-    <loc>https://sidusastro.com/en/privacidade</loc>
+    <loc>https://your-domain.com/en/privacidade</loc>
     <lastmod>2026-06-22</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.48</priority>
-    <xhtml:link rel="alternate" hreflang="pt-PT" href="https://sidusastro.com/pt/privacidade"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://sidusastro.com/en/privacidade"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://sidusastro.com/privacidade"/>
+    <xhtml:link rel="alternate" hreflang="pt-PT" href="https://your-domain.com/pt/privacidade"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://your-domain.com/en/privacidade"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://your-domain.com/privacidade"/>
   </url>
 
 </urlset>

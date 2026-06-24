@@ -6,7 +6,7 @@ const corsHeaders = {
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
 }
 
-const SITE_ORIGIN = () => env('URL') || env('DEPLOY_PRIME_URL') || 'https://sidusastro.com'
+const SITE_ORIGIN = () => env('URL') || env('DEPLOY_PRIME_URL') || env('SITE_URL') || 'https://your-domain.com'
 
 export default async (req) => {
   if (req.method === 'OPTIONS') {

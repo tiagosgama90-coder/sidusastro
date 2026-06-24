@@ -1,7 +1,7 @@
 const SECTIONS_PT = [
   {
     titulo: '1. Quem somos',
-    texto: `A aplicação Sidus é um serviço de astrologia digital desenvolvido para fins informativos e de entretenimento espiritual. O responsável pelo tratamento de dados é o operador da aplicação Sidus ("nós", "nosso").\n\nContacto: suporte.sidusapp@gmail.com`,
+    texto: `A aplicação Sidus é um serviço de astrologia digital desenvolvido para fins informativos e de entretenimento espiritual. O responsável pelo tratamento de dados é o operador da aplicação Sidus ("nós", "nosso").\n\nContacto: suporte@example.com`,
   },
   {
     titulo: '2. Dados recolhidos',
@@ -25,7 +25,7 @@ const SECTIONS_PT = [
   },
   {
     titulo: '7. Os seus direitos (RGPD)',
-    texto: `Se é residente na União Europeia, tem os seguintes direitos:\n\n• Direito de acesso: obter uma cópia dos seus dados\n• Direito de rectificação: corrigir dados incorrectos\n• Direito ao apagamento: solicitar a eliminação dos seus dados\n• Direito de portabilidade: receber os seus dados em formato legível\n• Direito de oposição: opor-se ao tratamento para fins de marketing\n\nPara exercer qualquer destes direitos, contacte-nos em: suporte.sidusapp@gmail.com`,
+    texto: `Se é residente na União Europeia, tem os seguintes direitos:\n\n• Direito de acesso: obter uma cópia dos seus dados\n• Direito de rectificação: corrigir dados incorrectos\n• Direito ao apagamento: solicitar a eliminação dos seus dados\n• Direito de portabilidade: receber os seus dados em formato legível\n• Direito de oposição: opor-se ao tratamento para fins de marketing\n\nPara exercer qualquer destes direitos, contacte-nos em: suporte@example.com`,
   },
   {
     titulo: '8. Segurança dos dados',
@@ -45,14 +45,14 @@ const SECTIONS_PT = [
   },
   {
     titulo: '12. Contacto',
-    texto: `Para qualquer questão sobre esta política ou sobre os seus dados:\n\nE-mail: suporte.sidusapp@gmail.com\nWebsite: sidusastro.com\n\nTemos o compromisso de responder a qualquer solicitação no prazo de 30 dias.`,
+    texto: `Para qualquer questão sobre esta política ou sobre os seus dados:\n\nE-mail: suporte@example.com\nWebsite: your-domain.com\n\nTemos o compromisso de responder a qualquer solicitação no prazo de 30 dias.`,
   },
 ]
 
 const SECTIONS_EN = [
   {
     titulo: '1. Who we are',
-    texto: `The Sidus app is a digital astrology service developed for informational and spiritual entertainment purposes. The data controller is the operator of the Sidus application ("we", "our").\n\nContact: suporte.sidusapp@gmail.com`,
+    texto: `The Sidus app is a digital astrology service developed for informational and spiritual entertainment purposes. The data controller is the operator of the Sidus application ("we", "our").\n\nContact: suporte@example.com`,
   },
   {
     titulo: '2. Data collected',
@@ -76,7 +76,7 @@ const SECTIONS_EN = [
   },
   {
     titulo: '7. Your rights (GDPR)',
-    texto: `If you are a resident of the European Union, you have the following rights:\n\n• Right of access: obtain a copy of your data\n• Right to rectification: correct inaccurate data\n• Right to erasure: request deletion of your data\n• Right to portability: receive your data in a readable format\n• Right to object: object to processing for marketing purposes\n\nTo exercise any of these rights, contact us at: suporte.sidusapp@gmail.com`,
+    texto: `If you are a resident of the European Union, you have the following rights:\n\n• Right of access: obtain a copy of your data\n• Right to rectification: correct inaccurate data\n• Right to erasure: request deletion of your data\n• Right to portability: receive your data in a readable format\n• Right to object: object to processing for marketing purposes\n\nTo exercise any of these rights, contact us at: suporte@example.com`,
   },
   {
     titulo: '8. Data security',
@@ -96,7 +96,7 @@ const SECTIONS_EN = [
   },
   {
     titulo: '12. Contact',
-    texto: `For any questions about this policy or your data:\n\nEmail: suporte.sidusapp@gmail.com\nWebsite: sidusastro.com\n\nWe are committed to responding to any request within 30 days.`,
+    texto: `For any questions about this policy or your data:\n\nEmail: suporte@example.com\nWebsite: your-domain.com\n\nWe are committed to responding to any request within 30 days.`,
   },
 ]
 

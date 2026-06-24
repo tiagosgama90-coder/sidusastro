@@ -13,5 +13,5 @@ export function getStripe() {
 export function siteOrigin(req) {
   const origin = req.headers.get('origin')
   if (origin) return origin.replace(/\/$/, '')
-  return env('URL') || env('DEPLOY_PRIME_URL') || 'https://sidusastro.com'
+  return env('URL') || env('DEPLOY_PRIME_URL') || env('SITE_URL') || 'https://your-domain.com'
 }

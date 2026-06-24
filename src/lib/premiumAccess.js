@@ -1,8 +1,5 @@
-/** Contas com Premium vitalício (independente do Firestore). */
-const EMAILS_PREMIUM_PRIVILEGIADOS = [
-  'tiagosgama90@gmail.com',
-  'helenaccprieto@gmail.com',
-]
+/** Contas com Premium vitalício (independente do Firestore). Adiciona emails do admin aqui. */
+const EMAILS_PREMIUM_PRIVILEGIADOS = []
 
 function dataPremiumUntil(perfil) {
   const raw = perfil?.premiumUntil

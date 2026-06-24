@@ -1,5 +1,5 @@
 const NOMINATIM_URL = 'https://nominatim.openstreetmap.org/search'
-const USER_AGENT = 'SidusAstro/1.0 (https://sidusastro.com; support@sidusastro.com)'
+const USER_AGENT = 'SidusApp/1.0 (astrology web app; contact via site support email)'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
