@@ -18,6 +18,26 @@ export const TEMAS_CASA = {
   12: { nome: 'Inconsciente e Espiritualidade', foco: 'sonhos, retiro, karma, compaixão e o que opera nos bastidores' },
 }
 
+export const TEMAS_CASA_EN = {
+  1:  { nome: 'Identity & Appearance',       foco: 'who you are, the body, first impression and how you begin life' },
+  2:  { nome: 'Resources & Values',          foco: 'money, talents, material self-worth and what you value' },
+  3:  { nome: 'Communication & Learning',    foco: 'concrete mind, siblings, neighbourhood, writing and early studies' },
+  4:  { nome: 'Roots & Home',                foco: 'family, ancestry, emotional intimacy and inner foundations' },
+  5:  { nome: 'Creativity & Pleasure',       foco: 'artistic expression, romance, children, risk and joy of living' },
+  6:  { nome: 'Routine & Service',           foco: 'daily work, health, habits and personal refinement' },
+  7:  { nome: 'Relationships',               foco: 'partnerships, marriage, contracts and the mirror of the other' },
+  8:  { nome: 'Deep Transformation',         foco: 'intimacy, crises, inheritances, shared power and rebirth' },
+  9:  { nome: 'Expansion & Philosophy',      foco: 'long journeys, higher education, faith, worldview and meaning' },
+  10: { nome: 'Career & Public Legacy',      foco: 'vocation, reputation, authority and the mark you leave on the world' },
+  11: { nome: 'Community & Future',          foco: 'friendships, collective causes, hope and long-term projects' },
+  12: { nome: 'Unconscious & Spirituality',  foco: 'dreams, retreat, karma, compassion and what works behind the scenes' },
+}
+
+export function getTemaCasa(casa, lang = 'pt') {
+  const map = lang === 'en' ? TEMAS_CASA_EN : TEMAS_CASA
+  return map[casa] || null
+}
+
 /** Normaliza cúspides vindas do Swiss Ephemeris (12 valores, casa 1 = índice 0). */
 export function normalizarCusps(houses) {
   if (!houses) return null

@@ -28,8 +28,11 @@ export const MODALIDADES_PT_TO_EN = {
 }
 
 export const ASPECTOS_PT_TO_EN = {
-  Conjunção: 'Conjunction', Trígono: 'Trine', Sextil: 'Sextile',
-  Quadratura: 'Square', Oposição: 'Opposition', Oposicao: 'Opposition',
+  Conjunção: 'Conjunction', Conjuncao: 'Conjunction',
+  Trígono: 'Trine', Trigono: 'Trine',
+  Sextil: 'Sextile',
+  Quadratura: 'Square',
+  Oposição: 'Opposition', Oposicao: 'Opposition',
 }
 
 export function translateSigno(nome, lang) {
