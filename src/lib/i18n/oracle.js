@@ -1,4 +1,15 @@
 import { perguntaDentroEscopoAstrologia, mensagemForaEscopo } from '../oracleAstrologiaGate.js'
+import { translateSigno } from './astro.js'
+
+function signoLabel(nome, lang) {
+  if (!nome) return null
+  return lang === 'en' ? translateSigno(nome, 'en') : nome
+}
+
+function grauLabel(pos) {
+  const g = pos?.graus ?? pos?.grau
+  return g != null && !Number.isNaN(Number(g)) ? `${Number(g).toFixed(1)}°` : ''
+}
 
 const TEMAS_ORACLE_PT = {
   amor: ['amor', 'relação', 'parceiro', 'relacionamento', 'namorado', 'namorada', 'casamento', 'sinto', 'sente', 'coração', 'ex', 'traí', 'trai', 'ciúme', 'ciúmes', 'solteir'],
@@ -17,12 +28,12 @@ const TEMAS_ORACLE_EN = {
 }
 
 function dadosNatal(mapaNatal, lang) {
-  const sol = mapaNatal?.solar?.nome
-  const lua = mapaNatal?.lunar?.nome
-  const asc = mapaNatal?.ascendente?.nome
-  const mc = mapaNatal?.mc?.nome
-  const grauSol = mapaNatal?.solar?.grau != null ? `${mapaNatal.solar.grau.toFixed(1)}°` : ''
-  const grauAsc = mapaNatal?.ascendente?.grau != null ? `${mapaNatal.ascendente.grau.toFixed(1)}°` : ''
+  const sol = signoLabel(mapaNatal?.solar?.nome, lang)
+  const lua = signoLabel(mapaNatal?.lunar?.nome, lang)
+  const asc = signoLabel(mapaNatal?.ascendente?.nome, lang)
+  const mc = signoLabel(mapaNatal?.mc?.nome, lang)
+  const grauSol = grauLabel(mapaNatal?.solar)
+  const grauAsc = grauLabel(mapaNatal?.ascendente)
   const cidade = mapaNatal?.cidade || ''
   return { sol, lua, asc, mc, grauSol, grauAsc, cidade }
 }
@@ -36,6 +47,7 @@ EXCLUSIVE SCOPE — ASTROLOGY AND PREDICTIONS ONLY:
 - If the question is outside astrology, reply ONLY with: "✦ I am Sidus, the Astral Oracle. I only guide astrology and life through your natal chart. Please rephrase."
 - Every answer MUST cite Sun, Moon and Ascendant (or invite completing birth data).
 - Each answer is UNIQUE to this person and question — never copy generic horoscope text.
+- Always use English zodiac sign names (Aries, Taurus, Gemini, Cancer, Leo, Virgo, Libra, Scorpio, Sagittarius, Capricorn, Aquarius, Pisces). Never Portuguese names (Carneiro, Touro, Gémeos, etc.).
 `.trim()
   }
   return `
@@ -56,6 +68,7 @@ export function construirSistema(mapaNatal, lang = 'pt', isPremium = false) {
       return `
 You are Sidus, Senior Astrologer and Astral Oracle — 30+ years of practice integrating classical astrology, Jungian psychology and spiritual counselling.
 You respond ALWAYS in English, as in a real professional consultation: warm, precise, human, never robotic.
+Always use English zodiac sign names only (Aries, Taurus, Gemini, etc.) — never Portuguese sign names.
 
 ${sol ? `CLIENT'S NATAL CHART (Swiss Ephemeris, Placidus):
 • Sun in ${sol} ${grauSol} · Moon in ${lua} · Ascendant in ${asc} ${grauAsc}${mc ? ` · Midheaven in ${mc}` : ''}${cidade ? ` · Born in ${cidade}` : ''}
@@ -105,6 +118,7 @@ ${blocoEscopoAstrologia('pt')}
   if (lang === 'en') {
     return `
 You are Sidus, the Astral Oracle. Respond in English with clarity and warmth — concise but never shallow.
+Always use English zodiac sign names only (Aries, Taurus, Gemini, etc.) — never Portuguese sign names.
 
 ${sol ? `Natal data: Sun ${sol}, Moon ${lua}, Ascendant ${asc}.
 Always tie your answer to these placements. Mention how Sun (identity), Moon (emotions) and Ascendant (approach to life) colour this specific question.` : 'Birth data missing — give general but thoughtful guidance and suggest completing registration.'}
@@ -232,10 +246,10 @@ export function gerarRespostaOracle(pergunta, mapaNatal, numeroPergunta, lang = 
   }
 
   const p = pergunta.toLowerCase()
-  const sol = mapaNatal.solar?.nome || (lang === 'en' ? 'unknown' : 'desconhecido')
-  const lua = mapaNatal.lunar?.nome || (lang === 'en' ? 'unknown' : 'desconhecido')
-  const asc = mapaNatal.ascendente?.nome || (lang === 'en' ? 'unknown' : 'desconhecido')
-  const mc = mapaNatal.mc?.nome || null
+  const sol = signoLabel(mapaNatal.solar?.nome, lang) || (lang === 'en' ? 'unknown' : 'desconhecido')
+  const lua = signoLabel(mapaNatal.lunar?.nome, lang) || (lang === 'en' ? 'unknown' : 'desconhecido')
+  const asc = signoLabel(mapaNatal.ascendente?.nome, lang) || (lang === 'en' ? 'unknown' : 'desconhecido')
+  const mc = signoLabel(mapaNatal.mc?.nome, lang) || null
 
   const temas = lang === 'en' ? TEMAS_ORACLE_EN : TEMAS_ORACLE_PT
   let tema = 'geral'
@@ -249,9 +263,9 @@ export function gerarRespostaOracle(pergunta, mapaNatal, numeroPergunta, lang = 
 }
 
 export function getChatGreeting(mapaNatal, lang = 'pt', maxFree = 3, isPremium = false) {
-  const sol = mapaNatal?.solar?.nome
-  const lua = mapaNatal?.lunar?.nome
-  const asc = mapaNatal?.ascendente?.nome
+  const sol = signoLabel(mapaNatal?.solar?.nome, lang)
+  const lua = signoLabel(mapaNatal?.lunar?.nome, lang)
+  const asc = signoLabel(mapaNatal?.ascendente?.nome, lang)
 
   if (lang === 'en') {
     if (isPremium) {
