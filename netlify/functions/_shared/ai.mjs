@@ -198,7 +198,7 @@ async function callOpenRouter(messages, { maxTokens, temperature }) {
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${apiKey}`,
-          'HTTP-Referer': 'https://sidusastro.com',
+          'HTTP-Referer': env('SITE_URL') || env('URL') || 'https://your-domain.com',
           'X-Title': 'Sidus Astro',
         },
         body: JSON.stringify({

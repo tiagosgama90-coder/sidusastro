@@ -21,7 +21,7 @@ export default {
   },
   cookies: {
     title: 'Cookies & privacy',
-    text: 'We use cookies required for Sidus to work and, with your consent, Google AdSense cookies for advertising. You can accept all or limit to essential cookies (non-personalised ads).',
+    text: 'We use cookies required for Sidus to work and, with your consent, Google Analytics (statistics) and Google AdSense cookies (advertising). You can accept all or limit to essential cookies.',
     privacyLink: 'Privacy Policy',
     acceptAll: 'Accept all',
     essentialOnly: 'Essential cookies only',
@@ -273,7 +273,7 @@ export default {
     premiumWelcome: '✦ Welcome to Sidus VIP! Your Premium is active.',
     tarotUnlocked: '✦ Payment confirmed! Your Tarot reading is unlocked.',
     processing: 'Payment received but still processing. Reload the page in 1 minute or contact us.',
-    verifyFail: 'Could not confirm payment. If you were charged, contact suporte.sidusapp@gmail.com',
+    verifyFail: 'Could not confirm payment. If you were charged, contact support@example.com',
     close: 'Close',
     needLogin: 'You need to sign in before paying.',
     secureTitle: 'Secure payment',
@@ -549,7 +549,7 @@ export default {
     mapaUnlocked: '✦ Complete Natal Chart unlocked! View the full interpretation and export PDF.',
     tarotUnlocked: '✦ Payment confirmed! Your Tarot reading is unlocked.',
     processing: 'Payment received but still processing. Reload the page in 1 minute or contact us.',
-    verifyFail: 'Could not confirm payment. If you were charged, contact suporte.sidusapp@gmail.com',
+    verifyFail: 'Could not confirm payment. If you were charged, contact support@example.com',
     close: 'Close',
   },
 }

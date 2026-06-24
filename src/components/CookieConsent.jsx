@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react'
 import { useLanguage } from '../lib/i18n/LanguageContext.jsx'
 import {
-  getCookieConsent, setCookieConsent, applyAdConsentToGoogle,
+  getCookieConsent, setCookieConsent, applyAdConsentToGoogle, allowsAnalytics,
 } from '../lib/cookieConsent.js'
+import { initAnalytics, trackPageView } from '../lib/analytics.js'
 
 const CORES = {
   fundo: '#0B071E',
@@ -24,6 +25,10 @@ export function CookieConsent({ onConsentChange, onPrivacy }) {
   const escolher = (value) => {
     setCookieConsent(value)
     applyAdConsentToGoogle()
+    if (allowsAnalytics()) {
+      initAnalytics()
+      trackPageView()
+    }
     setVisivel(false)
     onConsentChange?.(value)
   }

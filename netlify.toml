@@ -4,9 +4,7 @@
   # ca-pub-... é público (index.html + AdSense) — não falhar scan de "secrets"
   environment = { SECRETS_SCAN_OMIT_KEYS = "VITE_ADSENSE_CLIENT" }
 
-[context.production.environment]
-  VITE_ADSENSE_CLIENT = "ca-pub-2807052149540484"
-  VITE_ADSENSE_SLOT = "7205155875"
+# Defina VITE_ADSENSE_*, VITE_FIREBASE_*, STRIPE_* em Netlify → Environment variables
 
 [functions]
   directory = "netlify/functions"

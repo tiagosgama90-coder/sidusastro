@@ -21,7 +21,7 @@ export default {
   },
   cookies: {
     title: 'Cookies e privacidade',
-    text: 'Utilizamos cookies necessários para o funcionamento do Sidus e, com o teu consentimento, cookies do Google AdSense para publicidade. Podes aceitar todos ou limitar aos essenciais (anúncios não personalizados).',
+    text: 'Utilizamos cookies necessários para o funcionamento do Sidus e, com o teu consentimento, Google Analytics (estatísticas) e cookies do Google AdSense (publicidade). Podes aceitar todos ou limitar aos essenciais.',
     privacyLink: 'Política de Privacidade',
     acceptAll: 'Aceitar todos',
     essentialOnly: 'Só cookies essenciais',
@@ -273,7 +273,7 @@ export default {
     premiumWelcome: '✦ Bem-vindo/a ao Sidus VIP! O teu Premium está activo.',
     tarotUnlocked: '✦ Pagamento confirmado! A tua leitura de Tarot está desbloqueada.',
     processing: 'Pagamento recebido mas ainda a processar. Recarrega a página dentro de 1 minuto ou contacta-nos.',
-    verifyFail: 'Não foi possível confirmar o pagamento. Se foste cobrado/a, contacta suporte.sidusapp@gmail.com',
+    verifyFail: 'Não foi possível confirmar o pagamento. Se foste cobrado/a, contacta suporte@example.com',
     close: 'Fechar',
     needLogin: 'Precisas de iniciar sessão antes de pagar.',
     secureTitle: 'Pagamento seguro',
@@ -549,7 +549,7 @@ export default {
     mapaUnlocked: '✦ Mapa Astral Completo desbloqueado! Consulta a interpretação e exporta em PDF.',
     tarotUnlocked: '✦ Pagamento confirmado! A tua leitura de Tarot está desbloqueada.',
     processing: 'Pagamento recebido mas ainda a processar. Recarrega a página dentro de 1 minuto ou contacta-nos.',
-    verifyFail: 'Não foi possível confirmar o pagamento. Se foste cobrado/a, contacta suporte.sidusapp@gmail.com',
+    verifyFail: 'Não foi possível confirmar o pagamento. Se foste cobrado/a, contacta suporte@example.com',
     close: 'Fechar',
   },
 }

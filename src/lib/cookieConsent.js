@@ -32,6 +32,11 @@ export function allowsPersonalizedAds() {
   return getCookieConsent() === 'all'
 }
 
+/** Google Analytics — apenas com consentimento explícito para todos os cookies. */
+export function allowsAnalytics() {
+  return getCookieConsent() === 'all'
+}
+
 export function applyAdConsentToGoogle() {
   if (typeof window === 'undefined') return
   window.adsbygoogle = window.adsbygoogle || []

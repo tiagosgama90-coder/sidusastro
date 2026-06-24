@@ -1,16 +1,57 @@
-# React + Vite
+# Sidus — Astrology Web App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Bilingual (Portuguese + English) astrology SaaS: natal chart, tarot, AI oracle, synastry, numerology, Stripe payments.
 
-Currently, two official plugins are available:
+## Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- **Frontend:** React 19, Vite, React Router
+- **Backend:** Netlify Functions
+- **Auth / DB:** Firebase Authentication + Firestore
+- **Payments:** Stripe Checkout + webhooks
+- **AI:** Pollinations (free default) + optional Groq / Gemini / OpenRouter
 
-## React Compiler
+## Quick start (local)
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+```bash
+npm install
+cp .env.example .env
+# Fill .env with your Firebase keys (see docs/SETUP.md)
+npm run dev
+```
 
-## Expanding the ESLint configuration
+## Production deploy
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+1. Create accounts: Firebase, Stripe, Netlify, reCAPTCHA
+2. Connect this repo to Netlify (or `netlify deploy`)
+3. Set all variables from `.env.example` in Netlify → Environment variables
+4. Point your domain DNS to Netlify
+5. Configure Stripe webhook: `https://your-domain.com/api/stripe-webhook`
+
+**Full guide:** [docs/SETUP.md](./docs/SETUP.md)
+
+## Domain transfer (included in sale)
+
+If you purchased this package with domain **sidusastro.com**, see [docs/DOMAIN-TRANSFER.md](./docs/DOMAIN-TRANSFER.md).
+
+## Customize before launch
+
+| Item | Where |
+|------|--------|
+| Support email | `src/lib/i18n/privacy.js`, `pt.js`, `en.js`, `public/privacy.html` |
+| Brand name | UI strings, `index.html`, `manifest.json` |
+| Admin premium emails | `src/lib/premiumAccess.js` |
+| Domain in sitemap/robots | `public/sitemap.xml`, `public/robots.txt` |
+| AdSense | `VITE_ADSENSE_*` + `public/ads.txt` |
+| Analytics | `VITE_GA_MEASUREMENT_ID` — see `docs/ANALYTICS.md` |
+
+## Pricing (defaults in code)
+
+- Tarot: €2
+- Full natal chart: €10
+- Premium subscription: €9.99/month
+
+Edit `src/lib/pricing.js` and Stripe products as needed.
+
+## License
+
+Sold as a transferable license to the buyer. Redistribution of source code is not permitted unless agreed with the seller.

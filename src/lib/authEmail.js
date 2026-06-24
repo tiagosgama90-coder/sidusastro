@@ -5,7 +5,7 @@ import { traduzirErroEmail as traduzirErroEmailFromAuth } from './i18n/authError
 export function emailActionSettings() {
   const origin = typeof window !== 'undefined'
     ? window.location.origin
-    : 'https://sidusastro.com'
+    : 'https://your-domain.com'
   return {
     url: `${origin}/home`,
     handleCodeInApp: true,

@@ -66,7 +66,8 @@ import { passoFromPath, pathFromPasso, langFromPath } from './lib/routes.js'
 import { initAdSense } from './lib/adsense.js'
 import { AdSenseBanner } from './components/AdSenseBanner.jsx'
 import { CookieConsent } from './components/CookieConsent.jsx'
-import { allowsAds, applyAdConsentToGoogle, getCookieConsent } from './lib/cookieConsent.js'
+import { allowsAds, allowsAnalytics, applyAdConsentToGoogle, getCookieConsent } from './lib/cookieConsent.js'
+import { initAnalytics, trackPageView } from './lib/analytics.js'
 import { LanguageSwitcher } from './components/LanguageSwitcher.jsx'
 import { useLanguage } from './lib/i18n/LanguageContext.jsx'
 import { getFerramentas, getBeneficiosVip } from './lib/i18n/ferramentasData.js'
@@ -3136,6 +3137,12 @@ export default function App() {
     applyAdConsentToGoogle()
     initAdSense()
   }, [isPremium, cookieConsent])
+
+  useEffect(() => {
+    if (!allowsAnalytics()) return
+    initAnalytics()
+    trackPageView(`${location.pathname}${location.search}`)
+  }, [cookieConsent, location.pathname, location.search])
 
   // Firebase email verification link
   useEffect(() => {

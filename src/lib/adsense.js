@@ -1,7 +1,6 @@
-/** Publisher ID público — igual ao index.html (AdSense sidusastro.com). */
-export const ADSENSE_PUBLISHER = 'ca-pub-2807052149540484'
-/** Bloco Display horizontal — sidusastro.com */
-export const ADSENSE_SLOT_DEFAULT = '7205155875'
+/** AdSense — configure VITE_ADSENSE_CLIENT e VITE_ADSENSE_SLOT no Netlify. */
+export const ADSENSE_PUBLISHER = ''
+export const ADSENSE_SLOT_DEFAULT = ''
 
 export function getAdsenseClient() {
   const fromEnv = import.meta.env.VITE_ADSENSE_CLIENT
@@ -15,20 +14,21 @@ export function getAdsenseSlot() {
   return String(slot).trim()
 }
 
-/** Activar bloco in-app quando existir unidade (slot) e utilizador não é Premium. */
 export function adsenseEnabled(isPremium = false) {
   if (isPremium) return false
-  return /^\d+$/.test(getAdsenseSlot())
+  return /^\d+$/.test(getAdsenseSlot()) && getAdsenseClient().startsWith('ca-pub-')
 }
 
 export function initAdSense() {
   if (typeof document === 'undefined') return
+  const client = getAdsenseClient()
+  if (!client.startsWith('ca-pub-')) return
   if (document.querySelector('script[src*="pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"]')) return
   if (document.querySelector('script[data-sidus-adsense]')) return
 
   const script = document.createElement('script')
   script.async = true
-  script.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${getAdsenseClient()}`
+  script.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${client}`
   script.crossOrigin = 'anonymous'
   script.dataset.sidusAdsense = '1'
   document.head.appendChild(script)
