@@ -64,6 +64,7 @@ import { calcularFaseLua } from './lib/faseLua.js'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { passoFromPath, pathFromPasso, langFromPath } from './lib/routes.js'
 import { initAdSense } from './lib/adsense.js'
+import { initGoogleAnalytics } from './lib/googleAnalytics.js'
 import { AdSenseBanner } from './components/AdSenseBanner.jsx'
 import { CookieConsent } from './components/CookieConsent.jsx'
 import { allowsAds, applyAdConsentToGoogle, getCookieConsent } from './lib/cookieConsent.js'
@@ -3132,7 +3133,9 @@ export default function App() {
   }, [isPremium])
 
   useEffect(() => {
-    if (isPremium || !allowsAds()) return
+    if (!allowsAds()) return
+    initGoogleAnalytics()
+    if (isPremium) return
     applyAdConsentToGoogle()
     initAdSense()
   }, [isPremium, cookieConsent])

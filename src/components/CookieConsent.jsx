@@ -3,6 +3,7 @@ import { useLanguage } from '../lib/i18n/LanguageContext.jsx'
 import {
   getCookieConsent, setCookieConsent, applyAdConsentToGoogle,
 } from '../lib/cookieConsent.js'
+import { initGoogleAnalytics } from '../lib/googleAnalytics.js'
 
 const CORES = {
   fundo: '#0B071E',
@@ -23,6 +24,7 @@ export function CookieConsent({ onConsentChange, onPrivacy }) {
 
   const escolher = (value) => {
     setCookieConsent(value)
+    initGoogleAnalytics()
     applyAdConsentToGoogle()
     setVisivel(false)
     onConsentChange?.(value)
