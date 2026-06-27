@@ -9,7 +9,9 @@ const CORES = {
   vidroBorda: 'rgba(223, 183, 108, 0.22)',
 }
 
-function SwitcherButtons({ lang, setLang, compact = false }) {
+function SwitcherButtons({ lang, setLang, size = 'fixed' }) {
+  const compact = size === 'compact'
+  const inline = size === 'inline'
   const navigate = useNavigate()
   const location = useLocation()
 
@@ -31,20 +33,20 @@ function SwitcherButtons({ lang, setLang, compact = false }) {
         style={{
           display: 'flex',
           alignItems: 'center',
-          gap: compact ? 2 : 3,
-          padding: compact ? '2px 4px' : '3px 6px',
+          gap: compact ? 2 : inline ? 3 : 3,
+          padding: compact ? '2px 4px' : inline ? '3px 6px' : '3px 6px',
           borderRadius: compact ? 4 : 6,
           border: `1px solid ${active ? CORES.dourado : CORES.vidroBorda}`,
           background: active ? 'rgba(223,183,108,0.18)' : 'rgba(255,255,255,0.04)',
           color: active ? CORES.dourado : CORES.brancoMuted,
-          fontSize: compact ? 7 : 9,
+          fontSize: compact ? 7 : inline ? 10 : 9,
           fontWeight: active ? 700 : 500,
           cursor: 'pointer',
           transition: 'all 0.2s ease',
           lineHeight: 1,
         }}
       >
-        <span style={{ fontSize: compact ? 9 : 11, lineHeight: 1 }}>{flag}</span>
+        <span style={{ fontSize: compact ? 9 : inline ? 12 : 11, lineHeight: 1 }}>{flag}</span>
         <span>{code.toUpperCase()}</span>
       </button>
     )
@@ -75,8 +77,8 @@ function SwitcherButtons({ lang, setLang, compact = false }) {
 /** variant=fixed: canto superior (login). variant=inline|compact: na barra ao lado do logo. */
 export function LanguageSwitcher({ variant = 'fixed' }) {
   const { lang, setLang } = useLanguage()
-  const compact = variant === 'compact' || variant === 'inline'
-  const inner = <SwitcherButtons lang={lang} setLang={setLang} compact={compact} />
+  const size = variant === 'compact' ? 'compact' : variant === 'inline' ? 'inline' : 'fixed'
+  const inner = <SwitcherButtons lang={lang} setLang={setLang} size={size} />
 
   if (variant === 'inline' || variant === 'compact') {
     return inner

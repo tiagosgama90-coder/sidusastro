@@ -203,8 +203,8 @@ html.sidus-no-ads .google-auto-placed {
 /* Navbar desktop — uma linha, sem scroll nem quebra */
 .desktop-profile-fab {
   position: fixed;
-  top: max(9px, env(safe-area-inset-top, 9px));
-  right: 14px;
+  top: max(11px, env(safe-area-inset-top, 11px));
+  right: 16px;
   z-index: 151;
   transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
@@ -219,7 +219,7 @@ html.sidus-no-ads .google-auto-placed {
   align-items: center;
   justify-content: center;
   flex-wrap: nowrap;
-  gap: 2px;
+  gap: 4px;
   min-width: 0;
   overflow: hidden;
 }
@@ -227,30 +227,34 @@ html.sidus-no-ads .google-auto-placed {
 .desktop-nav-item {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  padding: 5px 8px;
+  gap: 6px;
+  padding: 7px 11px;
   flex-shrink: 0;
   white-space: nowrap;
   cursor: pointer;
-  font-size: 10.5px;
-  font-weight: 500;
+  font-size: 13px;
+  font-weight: 600;
   font-family: inherit;
-  line-height: 1.2;
+  line-height: 1.25;
+  letter-spacing: 0.01em;
   transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
 }
 
 .desktop-nav-item span {
-  font-size: 10.5px;
+  font-size: 13px;
   font-weight: inherit;
 }
 
 @media (max-width: 1280px) {
+  .desktop-nav-items {
+    gap: 2px;
+  }
   .desktop-nav-item {
-    padding: 5px 6px;
-    gap: 3px;
-    font-size: 10px;
+    padding: 6px 8px;
+    gap: 5px;
+    font-size: 12px;
   }
   .desktop-nav-item span {
-    font-size: 10px;
+    font-size: 12px;
   }
 }

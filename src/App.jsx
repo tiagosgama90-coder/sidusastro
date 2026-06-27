@@ -389,8 +389,8 @@ const estilos = {
     display: 'flex',
     alignItems: 'center',
     gap: 10,
-    padding: '8px 52px 8px 16px',
-    paddingTop: 'max(8px, env(safe-area-inset-top, 8px))',
+    padding: '10px 58px 10px 18px',
+    paddingTop: 'max(10px, env(safe-area-inset-top, 10px))',
     background: 'rgba(11, 7, 30, 0.96)',
     backdropFilter: 'blur(20px)',
     borderBottom: `1px solid ${CORES.vidroBorda}`,
@@ -2702,8 +2702,8 @@ function LogoSidus({ onClick, compact = false }) {
         flexShrink: 0,
       }}
     >
-      <Sparkles size={compact ? 16 : 20} color={CORES.dourado} strokeWidth={1.5} />
-      <span style={{ fontSize: compact ? 15 : 20, fontWeight: 300, letterSpacing: compact ? '0.18em' : '0.2em', color: CORES.dourado }}>SIDUS</span>
+      <Sparkles size={compact ? 18 : 20} color={CORES.dourado} strokeWidth={1.5} />
+      <span style={{ fontSize: compact ? 17 : 20, fontWeight: 300, letterSpacing: compact ? '0.18em' : '0.2em', color: CORES.dourado }}>SIDUS</span>
     </button>
   )
 }
@@ -2793,7 +2793,7 @@ function Navbar({ passo, setPasso, isDesktop, dados, fotoPerfil }) {
             lineHeight: 0,
           }}
         >
-          <AvatarNav foto={fotoPerfil} nome={nomePerfil} size={28} ativo={perfilAtivo} />
+          <AvatarNav foto={fotoPerfil} nome={nomePerfil} size={34} ativo={perfilAtivo} />
         </button>
       )}
       <header style={headerStyle}>
@@ -2824,7 +2824,7 @@ function Navbar({ passo, setPasso, isDesktop, dados, fotoPerfil }) {
                       color: ativo ? CORES.dourado : emHover ? CORES.branco : CORES.brancoMuted,
                     }}
                   >
-                    <Icon size={13} strokeWidth={ativo ? 2.2 : 1.8} />
+                    <Icon size={16} strokeWidth={ativo ? 2.2 : 1.9} />
                     <span>{item.label}</span>
                   </button>
                 )
@@ -3601,7 +3601,7 @@ export default function App() {
   }
 
   const paddingTopo = mostrarNavbar
-    ? (isDesktop ? 52 : 56)
+    ? (isDesktop ? 58 : 56)
     : (isDev && contaConfigurada ? (isDesktop ? 28 : 30) : 0)
 
   const shellStyle = isDesktop ? estilos.appDesktop : estilos.app
