@@ -3703,7 +3703,7 @@ export default function App() {
   const margemNav = 0
 
   return (
-    <div style={shellStyle}>
+    <div className={!utilizador ? 'sidus-login-shell' : undefined} style={shellStyle}>
       {!mostrarNavbar && <LanguageSwitcher />}
       <div style={estilos.estrelas} />
 

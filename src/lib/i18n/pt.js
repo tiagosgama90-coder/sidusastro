@@ -55,6 +55,7 @@ export default {
       skyPlanetLine: '{symbol} {planet} em {sign}',
       skyTickerLabel: 'Trânsitos de hoje',
       toolsFooter: '✦ Ferramentas do cosmos ✦',
+      toolsAria: 'Ferramentas Sidus Astro',
       cta: 'Guardar e revelar o meu destino',
       ctaLoading: 'A ler as estrelas…',
       savedTitle: '✦ Dados guardados no cosmos',

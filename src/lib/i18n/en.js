@@ -55,6 +55,7 @@ export default {
       skyPlanetLine: '{symbol} {planet} in {sign}',
       skyTickerLabel: 'Today\'s transits',
       toolsFooter: '✦ Tools of the cosmos ✦',
+      toolsAria: 'Sidus Astro tools',
       cta: 'Save and reveal my destiny',
       ctaLoading: 'Reading the stars…',
       savedTitle: '✦ Data saved to the cosmos',

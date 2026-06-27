@@ -34,6 +34,8 @@ const FERRAMENTAS_LANDING = [
   { key: 'sonhos', Icon: BookOpen },
 ]
 
+const FERRAMENTAS_MOBILE_TICKER = FERRAMENTAS_LANDING.filter((f) => f.key !== 'sonhos')
+
 const labelStyle = {
   display: 'block',
   fontSize: 11,
@@ -221,6 +223,15 @@ export function LandingBirthPortal({ isDesktop, onSaved, onScrollToLogin }) {
       sign: `${ts(p.signo.nome)} ${p.signo.simbolo}`,
     }),
   })), [ceuAgora.planetas, lang, t, ts, tp])
+
+  const ferramentasTicker = useMemo(() => {
+    const lista = isDesktop ? FERRAMENTAS_LANDING : FERRAMENTAS_MOBILE_TICKER
+    return lista.map(({ key, Icon }) => ({
+      key,
+      Icon,
+      label: t(`auth.feature.${key}.pill`),
+    }))
+  }, [isDesktop, lang, t])
 
   useEffect(() => {
     const draft = readLandingDraft()
@@ -488,16 +499,16 @@ export function LandingBirthPortal({ isDesktop, onSaved, onScrollToLogin }) {
           )}
         </div>
 
-        <footer className="landing-portal-tools-footer" aria-label={t('auth.portal.toolsFooter')}>
-          <div className="landing-portal-tools-footer-glow" aria-hidden />
-          <p className="landing-portal-tools-eyebrow">{t('auth.portal.toolsFooter')}</p>
-          <div className="landing-portal-tools-grid">
-            {FERRAMENTAS_LANDING.map(({ key, Icon }) => (
-              <span key={key} className="landing-portal-tool-badge">
-                <Icon size={14} strokeWidth={1.8} className="landing-portal-tool-icon" aria-hidden />
-                {t(`auth.feature.${key}.pill`)}
-              </span>
-            ))}
+        <footer className="landing-portal-tools-footer" aria-label={t('auth.portal.toolsAria')}>
+          <div className="landing-portal-tools-ticker-viewport">
+            <div className="landing-portal-tools-ticker-track">
+              {[...ferramentasTicker, ...ferramentasTicker].map(({ key, Icon, label }, i) => (
+                <span key={`${key}-${i}`} className="landing-portal-tool-badge landing-portal-tool-badge--ticker">
+                  <Icon size={13} strokeWidth={1.8} className="landing-portal-tool-icon" aria-hidden />
+                  {label}
+                </span>
+              ))}
+            </div>
           </div>
         </footer>
       </div>
