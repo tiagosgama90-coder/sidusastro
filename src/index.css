@@ -199,3 +199,14 @@ html.sidus-no-ads .google-auto-placed {
   max-height: 0 !important;
   overflow: hidden !important;
 }
+
+/* Navbar desktop — todos os labels visíveis, sem barra de scroll horizontal */
+.desktop-nav-items {
+  overflow-x: hidden;
+  overflow-y: visible;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.desktop-nav-items::-webkit-scrollbar {
+  display: none;
+}

@@ -2783,7 +2783,7 @@ function Navbar({ passo, setPasso, isDesktop, dados, fotoPerfil }) {
               <LogoSidus onClick={irHome} />
               <LanguageSwitcher variant="inline" />
             </div>
-            <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, overflowX: 'auto', padding: '0 20px', scrollbarWidth: 'thin' }}>
+            <div className="desktop-nav-items" style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', flexWrap: 'wrap', gap: 4, padding: '0 12px', minWidth: 0 }}>
               {itens.map((item) => {
                 const Icon = item.icon
                 const ativo = itemAtivo(item)
@@ -2799,11 +2799,11 @@ function Navbar({ passo, setPasso, isDesktop, dados, fotoPerfil }) {
                       background: ativo ? 'rgba(223,183,108,0.18)' : emHover ? 'rgba(255,255,255,0.06)' : 'transparent',
                       border: `1px solid ${ativo ? CORES.dourado : emHover ? 'rgba(223,183,108,0.35)' : 'transparent'}`,
                       borderRadius: 12, color: ativo ? CORES.dourado : emHover ? CORES.branco : CORES.brancoMuted,
-                      display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer', padding: '8px 12px', flexShrink: 0, whiteSpace: 'nowrap',
+                      display: 'flex', alignItems: 'center', gap: 5, cursor: 'pointer', padding: '6px 10px', flexShrink: 0, whiteSpace: 'nowrap',
                     }}
                   >
-                    <Icon size={16} strokeWidth={ativo ? 2.2 : 1.8} />
-                    <span style={{ fontSize: 12, fontWeight: ativo ? 700 : 500 }}>{item.label}</span>
+                    <Icon size={15} strokeWidth={ativo ? 2.2 : 1.8} />
+                    <span style={{ fontSize: 11, fontWeight: ativo ? 700 : 500 }}>{item.label}</span>
                   </button>
                 )
               })}
@@ -3596,7 +3596,7 @@ export default function App() {
   }
 
   const paddingTopo = mostrarNavbar
-    ? 56
+    ? (isDesktop ? 92 : 56)
     : (isDev && contaConfigurada ? (isDesktop ? 28 : 30) : 0)
 
   const shellStyle = isDesktop ? estilos.appDesktop : estilos.app
