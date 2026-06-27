@@ -388,14 +388,15 @@ const estilos = {
     maxWidth: 'none',
     display: 'flex',
     alignItems: 'center',
-    gap: 16,
-    padding: '12px 32px',
-    paddingTop: 'max(12px, env(safe-area-inset-top, 12px))',
+    gap: 10,
+    padding: '8px 52px 8px 16px',
+    paddingTop: 'max(8px, env(safe-area-inset-top, 8px))',
     background: 'rgba(11, 7, 30, 0.96)',
     backdropFilter: 'blur(20px)',
     borderBottom: `1px solid ${CORES.vidroBorda}`,
     zIndex: 150,
     boxSizing: 'border-box',
+    flexWrap: 'nowrap',
   },
 }
 
@@ -2744,7 +2745,7 @@ function Navbar({ passo, setPasso, isDesktop, dados, fotoPerfil }) {
 
   const ferramentasNav = getFerramentas(lang).map((f) => ({
     id: f.id,
-    label: f.nome,
+    label: isDesktop ? (f.navNome || f.nome) : f.nome,
     icon: f.icon,
     glow: f.premium ? CORES.dourado : '#93C5FD',
   }))
@@ -2776,14 +2777,33 @@ function Navbar({ passo, setPasso, isDesktop, dados, fotoPerfil }) {
 
   return (
     <>
+      {isDesktop && (
+        <button
+          type="button"
+          className="desktop-profile-fab"
+          onClick={irPerfil}
+          aria-label={t('nav.perfil')}
+          title={`${t('nav.perfil')} — ${nomePerfil}`}
+          style={{
+            background: perfilAtivo ? 'rgba(223,183,108,0.18)' : 'rgba(255,255,255,0.05)',
+            border: `1px solid ${perfilAtivo ? CORES.dourado : CORES.vidroBorda}`,
+            borderRadius: '50%',
+            padding: 2,
+            cursor: 'pointer',
+            lineHeight: 0,
+          }}
+        >
+          <AvatarNav foto={fotoPerfil} nome={nomePerfil} size={28} ativo={perfilAtivo} />
+        </button>
+      )}
       <header style={headerStyle}>
         {isDesktop ? (
           <>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 14, flexShrink: 0 }}>
-              <LogoSidus onClick={irHome} />
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
+              <LogoSidus onClick={irHome} compact />
               <LanguageSwitcher variant="inline" />
             </div>
-            <div className="desktop-nav-items" style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', flexWrap: 'wrap', gap: 4, padding: '0 12px', minWidth: 0 }}>
+            <div className="desktop-nav-items">
               {itens.map((item) => {
                 const Icon = item.icon
                 const ativo = itemAtivo(item)
@@ -2792,39 +2812,24 @@ function Navbar({ passo, setPasso, isDesktop, dados, fotoPerfil }) {
                   <button
                     key={item.id}
                     type="button"
+                    className="desktop-nav-item"
                     onClick={() => navegar(item.id)}
                     onMouseEnter={() => setHover(item.id)}
                     onMouseLeave={() => setHover(null)}
+                    title={item.label}
                     style={{
                       background: ativo ? 'rgba(223,183,108,0.18)' : emHover ? 'rgba(255,255,255,0.06)' : 'transparent',
-                      border: `1px solid ${ativo ? CORES.dourado : emHover ? 'rgba(223,183,108,0.35)' : 'transparent'}`,
-                      borderRadius: 12, color: ativo ? CORES.dourado : emHover ? CORES.branco : CORES.brancoMuted,
-                      display: 'flex', alignItems: 'center', gap: 5, cursor: 'pointer', padding: '6px 10px', flexShrink: 0, whiteSpace: 'nowrap',
+                      border: `1px solid ${ativo ? CORES.dourado : emHover ? 'rgba(223,183,108,0.3)' : 'transparent'}`,
+                      borderRadius: 8,
+                      color: ativo ? CORES.dourado : emHover ? CORES.branco : CORES.brancoMuted,
                     }}
                   >
-                    <Icon size={15} strokeWidth={ativo ? 2.2 : 1.8} />
-                    <span style={{ fontSize: 11, fontWeight: ativo ? 700 : 500 }}>{item.label}</span>
+                    <Icon size={13} strokeWidth={ativo ? 2.2 : 1.8} />
+                    <span>{item.label}</span>
                   </button>
                 )
               })}
             </div>
-            <button
-              type="button"
-              onClick={irPerfil}
-              aria-label={t('nav.perfil')}
-              style={{
-                display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0,
-                background: perfilAtivo ? 'rgba(223,183,108,0.15)' : 'rgba(255,255,255,0.05)',
-                border: `1px solid ${perfilAtivo ? CORES.dourado : CORES.vidroBorda}`,
-                borderRadius: 12, padding: '6px 12px 6px 6px', cursor: 'pointer',
-              }}
-            >
-              <AvatarNav foto={fotoPerfil} nome={nomePerfil} size={34} ativo={perfilAtivo} />
-              <div style={{ textAlign: 'left', minWidth: 0 }}>
-                <div style={{ fontSize: 10, color: CORES.brancoMuted, textTransform: 'uppercase', letterSpacing: '0.08em' }}>{t('nav.perfil')}</div>
-                <div style={{ fontSize: 12, fontWeight: 600, color: perfilAtivo ? CORES.dourado : CORES.branco, maxWidth: 120, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{nomePerfil}</div>
-              </div>
-            </button>
           </>
         ) : (
           <>
@@ -3596,7 +3601,7 @@ export default function App() {
   }
 
   const paddingTopo = mostrarNavbar
-    ? (isDesktop ? 92 : 56)
+    ? (isDesktop ? 52 : 56)
     : (isDev && contaConfigurada ? (isDesktop ? 28 : 30) : 0)
 
   const shellStyle = isDesktop ? estilos.appDesktop : estilos.app

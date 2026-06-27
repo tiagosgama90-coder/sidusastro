@@ -200,13 +200,57 @@ html.sidus-no-ads .google-auto-placed {
   overflow: hidden !important;
 }
 
-/* Navbar desktop — todos os labels visíveis, sem barra de scroll horizontal */
-.desktop-nav-items {
-  overflow-x: hidden;
-  overflow-y: visible;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
+/* Navbar desktop — uma linha, sem scroll nem quebra */
+.desktop-profile-fab {
+  position: fixed;
+  top: max(9px, env(safe-area-inset-top, 9px));
+  right: 14px;
+  z-index: 151;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
-.desktop-nav-items::-webkit-scrollbar {
-  display: none;
+.desktop-profile-fab:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 16px rgba(223, 183, 108, 0.25);
+}
+
+.desktop-nav-items {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: nowrap;
+  gap: 2px;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.desktop-nav-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 8px;
+  flex-shrink: 0;
+  white-space: nowrap;
+  cursor: pointer;
+  font-size: 10.5px;
+  font-weight: 500;
+  font-family: inherit;
+  line-height: 1.2;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.desktop-nav-item span {
+  font-size: 10.5px;
+  font-weight: inherit;
+}
+
+@media (max-width: 1280px) {
+  .desktop-nav-item {
+    padding: 5px 6px;
+    gap: 3px;
+    font-size: 10px;
+  }
+  .desktop-nav-item span {
+    font-size: 10px;
+  }
 }
