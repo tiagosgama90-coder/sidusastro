@@ -212,8 +212,6 @@ export function LandingBirthPortal({ isDesktop, onSaved, onScrollToLogin }) {
   })
 
   const ceuAgora = useMemo(() => calcularResumoCeuAgora(new Date(), lang), [lang])
-  const solLabel = `${ts(ceuAgora.sol.nome)} ${ceuAgora.sol.simbolo}`
-  const luaLabel = `${ts(ceuAgora.lua.nome)} ${ceuAgora.lua.simbolo}`
 
   const tickerItems = useMemo(() => ceuAgora.planetas.map((p) => ({
     key: p.key,
@@ -327,9 +325,6 @@ export function LandingBirthPortal({ isDesktop, onSaved, onScrollToLogin }) {
                 </div>
               </div>
             </div>
-            <p className="landing-portal-sky-positions">
-              {t('auth.portal.skyPositions', { sun: solLabel, moon: luaLabel })}
-            </p>
           </div>
 
           <div className="landing-portal-sky-ticker" aria-label={t('auth.portal.skyTickerLabel')}>

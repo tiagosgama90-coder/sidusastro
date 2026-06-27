@@ -1294,21 +1294,11 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
   }, [])
 
   return (
-    <div className={`landing-auth-layout${isDesktop ? ' landing-auth-layout--desktop' : ''}`} style={layoutConteudo(isDesktop, {
-      paddingTop: isDesktop ? 40 : 48,
-      paddingBottom: 40,
-      maxWidth: isDesktop ? 1080 : undefined,
-      margin: isDesktop ? '0 auto' : undefined,
-    })}>
-      <div className="landing-auth-grid" style={{
-        display: isDesktop ? 'grid' : 'block',
-        gridTemplateColumns: isDesktop ? '1.1fr 0.9fr' : undefined,
-        gap: isDesktop ? 36 : 0,
-        alignItems: 'start',
-      }}>
+    <div className={`landing-auth-layout${isDesktop ? ' landing-auth-layout--desktop' : ' landing-auth-layout--mobile'}`}>
+      <div className="landing-auth-grid">
         <LandingBirthPortal isDesktop={isDesktop} onSaved={scrollParaAuth} onScrollToLogin={scrollParaAuth} />
 
-        <div className="landing-auth-column" style={{ marginTop: isDesktop ? 0 : 28 }}>
+        <div className="landing-auth-column">
           {!isDesktop && (
             <div className="landing-auth-divider-mobile" style={{
               display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20,
@@ -3772,7 +3762,9 @@ export default function App() {
         </div>
       )}
 
-      <div style={{
+      <div
+        className={!utilizador ? 'landing-auth-page-wrap' : undefined}
+        style={{
         paddingTop: paddingTopo,
         marginTop: margemNav,
         paddingBottom: chatFullScreen && !isDesktop ? 72 : 0,
