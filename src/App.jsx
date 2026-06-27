@@ -80,6 +80,7 @@ import {
 import { consultarOracleServidor } from './lib/apiAi.js'
 import { localizeArcano } from './lib/i18n/tarotArcana.js'
 import { normalizarDataISO, criarDataUTCporLocal, localToUTC } from './lib/datetime.js'
+import { readLandingDraft, clearLandingDraft } from './lib/landingDraft.js'
 import { calcularAngulosCasas } from './lib/natalHouses.js'
 import { utilizadorTemPremium, emailTemPremiumPrivilegiado } from './lib/premiumAccess.js'
 import {
@@ -893,6 +894,19 @@ function CampoData({ valor, onChange, onBlur, erro }) {
   const [mes, setMes] = useState(() => valor ? valor.split('-')[1] || '' : '')
   const [ano, setAno] = useState(() => valor ? valor.split('-')[0] || '' : '')
 
+  useEffect(() => {
+    if (!valor) {
+      setDia('')
+      setMes('')
+      setAno('')
+      return
+    }
+    const [y, m, d] = valor.split('-')
+    setAno(y || '')
+    setMes(m || '')
+    setDia(d || '')
+  }, [valor])
+
   // Sincroniza para o pai sempre que os três segmentos mudarem
   useEffect(() => {
     if (dia.length === 2 && mes.length === 2 && ano.length === 4) {
@@ -1468,6 +1482,47 @@ function Onboarding({ dados, setDados, onSubmit, isDesktop }) {
   const [fusoCarregando, setFusoCarregando] = useState(false)
   const [fusoErro, setFusoErro] = useState(null)
   const [fusoManual, setFusoManual] = useState(0)
+
+  useEffect(() => {
+    const draft = readLandingDraft()
+    if (!draft) return
+
+    setDados((prev) => ({
+      ...prev,
+      ...(draft.nome ? { nome: draft.nome } : {}),
+      ...(draft.data ? { data: draft.data } : {}),
+      ...(draft.hora ? { hora: draft.hora } : {}),
+      ...(draft.cidade ? { cidade: draft.cidade } : {}),
+      ...(draft.localizacao ? { localizacao: draft.localizacao } : {}),
+      ...(draft.fuso != null ? { fuso: draft.fuso } : {}),
+    }))
+
+    if (typeof draft.fuso === 'number') setFusoManual(draft.fuso)
+
+    clearLandingDraft()
+
+    const loc = draft.localizacao
+    if (loc?.lat != null && loc?.lon != null && draft.fuso == null) {
+      let cancelled = false
+      ;(async () => {
+        setFusoCarregando(true)
+        setFusoErro(null)
+        try {
+          const tz = await pesquisarFusoHorario(loc.lat, loc.lon)
+          if (!cancelled) setDados((p) => ({ ...p, fuso: tz }))
+        } catch {
+          if (!cancelled) {
+            setFusoErro(t('onboarding.tzFail'))
+            setDados((p) => ({ ...p, fuso: fusoManual }))
+          }
+        } finally {
+          if (!cancelled) setFusoCarregando(false)
+        }
+      })()
+      return () => { cancelled = true }
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const erros = validarOnboarding(dados, lang)
   const valido = Object.keys(erros).length === 0
