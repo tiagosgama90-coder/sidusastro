@@ -1,9 +1,9 @@
 import { Compass, Heart, Activity, BookOpen, Moon, Sparkles, Clock } from 'lucide-react'
 
 const FERRAMENTAS_PT = [
-  { id: 'bussola', nome: 'Bússola Cósmica 2026', icon: Compass, premium: true },
+  { id: 'bussola', nome: 'Bússola Cósmica', icon: Compass, premium: true },
   { id: 'sinastria', nome: 'Radar de Afinidades', sub: 'Prévia grátis · Sinastria Pro', icon: Heart, premium: false },
-  { id: 'numerologia', nome: 'Mapa de Numerologia', sub: 'Vibração espiritual do nome', icon: Sparkles, premium: true },
+  { id: 'numerologia', nome: 'Numerologia', sub: 'Vibração espiritual do nome', icon: Sparkles, premium: true },
   { id: 'sonhos', nome: 'Interpretação de Sonhos', sub: 'Símbolos e mensagens', icon: Moon, premium: false },
   { id: 'biorritmo', nome: 'Fluxo Vital', sub: 'Biorritmo', icon: Activity, premium: false },
   { id: 'horasIguais', nome: 'Horas Iguais', sub: 'Mensagens angélicas', icon: Clock, premium: false },
@@ -11,9 +11,9 @@ const FERRAMENTAS_PT = [
 ]
 
 const FERRAMENTAS_EN = [
-  { id: 'bussola', nome: 'Cosmic Compass 2026', icon: Compass, premium: true },
+  { id: 'bussola', nome: 'Cosmic Compass', icon: Compass, premium: true },
   { id: 'sinastria', nome: 'Affinity Radar', sub: 'Free preview · Pro synastry', icon: Heart, premium: false },
-  { id: 'numerologia', nome: 'Numerology Chart', sub: 'Spiritual name vibration', icon: Sparkles, premium: true },
+  { id: 'numerologia', nome: 'Numerology', sub: 'Spiritual name vibration', icon: Sparkles, premium: true },
   { id: 'sonhos', nome: 'Dream Interpretation', sub: 'Symbols & messages', icon: Moon, premium: false },
   { id: 'biorritmo', nome: 'Vital Flow', sub: 'Biorhythm', icon: Activity, premium: false },
   { id: 'horasIguais', nome: 'Mirror Hours', sub: 'Angelic messages', icon: Clock, premium: false },
