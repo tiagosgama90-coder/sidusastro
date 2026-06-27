@@ -1,11 +1,13 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useMemo } from 'react'
 import {
   Sparkles, Moon, MapPin, Clock, User, Radio, Check, Loader2, ChevronDown,
+  Star, MessageCircle, Layers, BookOpen, Hash,
 } from 'lucide-react'
 import { useLanguage } from '../lib/i18n/LanguageContext.jsx'
 import { validarOnboarding } from '../lib/i18n/validation.js'
 import { pesquisarCidades, pesquisarFusoHorario } from '../lib/geocoding.js'
 import { readLandingDraft, saveLandingDraft } from '../lib/landingDraft.js'
+import { calcularResumoCeuAgora } from '../lib/ceuAoVivo.js'
 
 const CORES = {
   dourado: '#DFB76C',
@@ -22,6 +24,14 @@ const FUSOS_FALLBACK = [
   { label: 'UTC+1 (Espanha / França)', value: 1 },
   { label: 'UTC−3 (Brasil)', value: -3 },
   { label: 'UTC+2 (Grécia / Egipto)', value: 2 },
+]
+
+const FERRAMENTAS_LANDING = [
+  { key: 'mapa', Icon: Star },
+  { key: 'oraculo', Icon: MessageCircle },
+  { key: 'tarot', Icon: Layers },
+  { key: 'numerologia', Icon: Hash },
+  { key: 'sonhos', Icon: BookOpen },
 ]
 
 const labelStyle = {
@@ -178,7 +188,7 @@ function CampoCidadePortal({ valor, localizacao, onChange, onSelect, erro, onBlu
 }
 
 export function LandingBirthPortal({ isDesktop, onSaved }) {
-  const { lang, t } = useLanguage()
+  const { lang, t, ts } = useLanguage()
   const [nome, setNome] = useState('')
   const [data, setData] = useState('')
   const [hora, setHora] = useState('')
@@ -200,6 +210,10 @@ export function LandingBirthPortal({ isDesktop, onSaved }) {
   const hoje = new Date().toLocaleDateString(lang === 'en' ? 'en-GB' : 'pt-PT', {
     weekday: 'long', day: 'numeric', month: 'long',
   })
+
+  const ceuAgora = useMemo(() => calcularResumoCeuAgora(new Date(), lang), [lang])
+  const solLabel = `${ts(ceuAgora.sol.nome)} ${ceuAgora.sol.simbolo}`
+  const luaLabel = `${ts(ceuAgora.lua.nome)} ${ceuAgora.lua.simbolo}`
 
   useEffect(() => {
     const draft = readLandingDraft()
@@ -270,16 +284,24 @@ export function LandingBirthPortal({ isDesktop, onSaved }) {
       <div className="landing-portal-orb landing-portal-orb--2" aria-hidden />
 
       <div style={{ position: 'relative', zIndex: 1 }}>
-        <div style={{
-          display: 'inline-flex', alignItems: 'center', gap: 8,
-          background: 'rgba(52,211,153,0.12)', border: '1px solid rgba(52,211,153,0.35)',
-          borderRadius: 999, padding: '6px 14px', marginBottom: 18,
-        }}>
-          <Radio size={13} color="#34D399" className="landing-portal-pulse-icon" />
-          <span style={{ fontSize: 11, fontWeight: 700, color: '#34D399', letterSpacing: '0.06em', textTransform: 'uppercase' }}>
-            {t('auth.liveNow')}
-          </span>
-          <span style={{ fontSize: 11, color: CORES.brancoMuted }}>· {hoje}</span>
+        <div className="landing-portal-sky-live">
+          <div className="landing-portal-sky-live-head">
+            <Radio size={13} color="#34D399" className="landing-portal-pulse-icon" />
+            <span className="landing-portal-sky-live-badge">{t('auth.portal.skyLive')}</span>
+            <span className="landing-portal-sky-live-date">· {hoje}</span>
+          </div>
+          <div className="landing-portal-sky-live-body">
+            <span className="landing-portal-sky-moon-emoji">{ceuAgora.faseLua.emoji}</span>
+            <div>
+              <div className="landing-portal-sky-moon-name">{ceuAgora.faseLua.nome}</div>
+              <div className="landing-portal-sky-moon-pct">
+                {t('home.illuminated', { pct: ceuAgora.faseLua.iluminacao, angle: ceuAgora.faseLua.angulo })}
+              </div>
+            </div>
+          </div>
+          <p className="landing-portal-sky-positions">
+            {t('auth.portal.skyPositions', { sun: solLabel, moon: luaLabel })}
+          </p>
         </div>
 
         <div style={{ display: 'flex', alignItems: 'flex-start', gap: 14, marginBottom: 10 }}>
@@ -433,21 +455,23 @@ export function LandingBirthPortal({ isDesktop, onSaved }) {
                   </>
                 )}
               </button>
+              <p className="landing-portal-swiss-note">{t('auth.portal.swissNote')}</p>
             </>
           )}
         </div>
 
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 16 }}>
-          {['mapa', 'oraculo', 'tarot', 'numerologia'].map((key) => (
-            <span key={key} style={{
-              fontSize: 10, padding: '4px 10px', borderRadius: 999,
-              background: 'rgba(223,183,108,0.08)', border: '1px solid rgba(223,183,108,0.22)',
-              color: CORES.brancoMuted, fontWeight: 600, letterSpacing: '0.04em',
-            }}>
-              {t(`auth.feature.${key}.pill`)}
-            </span>
-          ))}
-        </div>
+        <footer className="landing-portal-tools-footer" aria-label={t('auth.portal.toolsFooter')}>
+          <div className="landing-portal-tools-footer-glow" aria-hidden />
+          <p className="landing-portal-tools-eyebrow">{t('auth.portal.toolsFooter')}</p>
+          <div className="landing-portal-tools-grid">
+            {FERRAMENTAS_LANDING.map(({ key, Icon }) => (
+              <span key={key} className="landing-portal-tool-badge">
+                <Icon size={14} strokeWidth={1.8} className="landing-portal-tool-icon" aria-hidden />
+                {t(`auth.feature.${key}.pill`)}
+              </span>
+            ))}
+          </div>
+        </footer>
       </div>
     </section>
   )
