@@ -1984,7 +1984,7 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
         `  ${p.simbolo} ${p.nome}: ${p.signo?.nome || '—'}${p.casa ? ` · Casa ${p.casa}` : ''} (${(p.longitude ?? 0).toFixed(1)}°)${p.retrograde ? ' ℞' : ''}`
       ),
       '',
-      'Gerado por Sidus — https://sidus.app',
+      'Gerado por Sidus — https://sidusastro.com',
     ].join('\n')
 
     const assunto = encodeURIComponent(`Mapa Astral Completo — ${dados.nome} · Sidus`)
