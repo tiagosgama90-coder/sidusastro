@@ -42,7 +42,7 @@ import { PoliticaPrivacidade } from './components/PoliticaPrivacidade'
 import { InterpretacaoMapa } from './components/InterpretacaoMapa'
 import { BussolaCosmica, Sinastria, Biorritmo, DiarioAstral, Numerologia, InterpretacaoSonhos, HorasIguais } from './components/FerramentasPremium'
 import { ConteudoDinamicoSidus } from './components/ConteudoDinamicoSidus'
-import { HeroAuthSidus } from './components/HeroAuthSidus.jsx'
+import { LandingBirthPortal } from './components/LandingBirthPortal.jsx'
 import { HeroHomeSidus } from './components/HeroHomeSidus.jsx'
 import { ErrorBoundary } from './components/ErrorBoundary.jsx'
 import { auth, db, firebaseDisponivel } from './lib/firebase'
@@ -1229,6 +1229,7 @@ function EcraVerificarEmail({ utilizador, isDesktop, onLogout, onVerificado }) {
 
 function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
   const { lang, t } = useLanguage()
+  const authPanelRef = useRef(null)
   const [email, setEmail]       = useState('')
   const [senha, setSenha]       = useState('')
   const [confirmar, setConfirmar] = useState('')
@@ -1286,11 +1287,58 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
     }
   }
 
-  return (
-    <div style={layoutConteudo(isDesktop, { paddingTop: 56, paddingBottom: 40, maxWidth: isDesktop ? 480 : undefined, margin: isDesktop ? '0 auto' : undefined })}>
-      <HeroAuthSidus />
+  const scrollParaAuth = useCallback(() => {
+    requestAnimationFrame(() => {
+      authPanelRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    })
+  }, [])
 
-      <div style={{ ...estilos.vidro, padding: 24 }}>
+  return (
+    <div style={layoutConteudo(isDesktop, {
+      paddingTop: isDesktop ? 40 : 48,
+      paddingBottom: 40,
+      maxWidth: isDesktop ? 1080 : undefined,
+      margin: isDesktop ? '0 auto' : undefined,
+    })}>
+      <div style={{
+        display: isDesktop ? 'grid' : 'block',
+        gridTemplateColumns: isDesktop ? '1.1fr 0.9fr' : undefined,
+        gap: isDesktop ? 36 : 0,
+        alignItems: 'start',
+      }}>
+        <LandingBirthPortal isDesktop={isDesktop} onSaved={scrollParaAuth} />
+
+        <div style={{ marginTop: isDesktop ? 0 : 28 }}>
+          {!isDesktop && (
+            <div style={{
+              display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20,
+            }}>
+              <div style={{ flex: 1, height: 1, background: 'rgba(223,183,108,0.2)' }} />
+              <span style={{ fontSize: 11, fontWeight: 600, color: CORES.dourado, letterSpacing: '0.08em', textTransform: 'uppercase' }}>
+                {t('auth.portal.authDivider')}
+              </span>
+              <div style={{ flex: 1, height: 1, background: 'rgba(223,183,108,0.2)' }} />
+            </div>
+          )}
+
+          <div
+            id="sidus-auth-panel"
+            ref={authPanelRef}
+            className="landing-auth-panel"
+            style={{
+              ...estilos.vidro,
+              padding: 24,
+              ...(isDesktop ? { position: 'sticky', top: 24 } : {}),
+            }}
+          >
+            {isDesktop && (
+              <p style={{
+                margin: '0 0 18px', fontSize: 11, fontWeight: 700, letterSpacing: '0.1em',
+                textTransform: 'uppercase', color: CORES.dourado, textAlign: 'center',
+              }}>
+                {t('auth.portal.authDivider')}
+              </p>
+            )}
         {!firebaseOk && (
           <div style={{ marginBottom: 16, padding: '10px 14px', borderRadius: 10, background: 'rgba(251,191,36,0.1)', border: '1px solid rgba(251,191,36,0.35)', fontSize: 12, color: '#FCD34D', lineHeight: 1.5 }}>
             {t('auth.firebaseNotConfigured')}
@@ -1450,6 +1498,8 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
             {isLogin ? t('auth.createHere') : t('auth.loginHere')}
           </button>
         </p>
+          </div>
+        </div>
       </div>
     </div>
   )

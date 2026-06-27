@@ -41,6 +41,17 @@ export default {
     accountCreated: 'Conta criada! Enviámos um e-mail de confirmação — verifica a caixa de entrada e a pasta de spam antes de continuar.',
     notRobot: 'Não sou um robot', verification: '✓ Verificação',
     firebaseNotConfigured: 'Firebase não está configurado neste ambiente. Define as variáveis VITE_FIREBASE_* no Netlify ou no ficheiro .env local.',
+    portal: {
+      ariaLabel: 'Portal de nascimento Sidus',
+      eyebrow: 'Portal Sidus',
+      title: 'Quando nasceste, o céu desenhou o teu mapa',
+      subtitle: 'Introduz os dados exactos do teu nascimento. Guardamos tudo de forma segura — quando entrares, o formulário estará pronto para ti.',
+      cta: 'Guardar e revelar o meu destino',
+      ctaLoading: 'A ler as estrelas…',
+      savedTitle: '✦ Dados guardados no cosmos',
+      savedHint: 'Agora cria conta ou entra abaixo — o teu mapa será pré-preenchido automaticamente.',
+      authDivider: 'Continua para entrar',
+    },
     errors: {
       'auth/email-already-in-use': 'Este e-mail já tem uma conta.',
       'auth/invalid-email': 'E-mail inválido.',

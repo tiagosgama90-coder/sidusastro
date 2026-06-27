@@ -41,6 +41,17 @@ export default {
     accountCreated: 'Account created! We sent a confirmation email — check your inbox (and spam) before continuing.',
     notRobot: 'I am not a robot', verification: '✓ Verified',
     firebaseNotConfigured: 'Firebase is not configured in this environment. Set the VITE_FIREBASE_* variables in Netlify or in your local .env file.',
+    portal: {
+      ariaLabel: 'Sidus birth portal',
+      eyebrow: 'Sidus Portal',
+      title: 'When you were born, the sky drew your chart',
+      subtitle: 'Enter your exact birth details. We save them securely — when you sign in, your form will be ready.',
+      cta: 'Save and reveal my destiny',
+      ctaLoading: 'Reading the stars…',
+      savedTitle: '✦ Data saved to the cosmos',
+      savedHint: 'Now create an account or sign in below — your chart form will be pre-filled automatically.',
+      authDivider: 'Continue to sign in',
+    },
     errors: {
       'auth/email-already-in-use': 'This email already has an account.',
       'auth/invalid-email': 'Invalid email.',
