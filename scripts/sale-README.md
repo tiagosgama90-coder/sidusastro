@@ -21,11 +21,13 @@ Deploy: Netlify (recommended) — see **SETUP.md**.
 ## What's included
 
 - React 19 + Vite frontend
+- **Landing birth portal** at `/login` — captures birth data pre-signup, prefills onboarding via localStorage
 - 9 Netlify serverless functions (oracle, dreams, Stripe, geocoding, daily content)
 - Firebase Auth + Firestore
 - Stripe Checkout + webhooks
 - Swiss Ephemeris (WASM) + astronomy-engine fallback
 - Full i18n (Portuguese + English)
+- GDPR cookie banner → Google Analytics 4 + AdSense (optional, env-driven)
 
 ## Documentation
 
@@ -34,6 +36,7 @@ Deploy: Netlify (recommended) — see **SETUP.md**.
 | [SETUP.md](./SETUP.md) | Deploy Firebase, Netlify, Stripe, reCAPTCHA, optional AdSense |
 | [DOMAIN-TRANSFER.md](./DOMAIN-TRANSFER.md) | Transfer sidusastro.com from Namecheap |
 | [SALE-NOTES.md](./SALE-NOTES.md) | What was sanitized in this package |
+| [DEPLOY-INVENTORY.md](./DEPLOY-INVENTORY.md) | Seller production stack reference (public IDs, no secrets) |
 
 ## Monetization (configured in code)
 

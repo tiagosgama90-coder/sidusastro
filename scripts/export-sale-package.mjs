@@ -164,6 +164,10 @@ function writeDocs() {
   writeOut('SETUP.md', readFileSync(join(ROOT, 'scripts', 'sale-SETUP.md'), 'utf8'))
   writeOut('DOMAIN-TRANSFER.md', readFileSync(join(ROOT, 'scripts', 'sale-DOMAIN-TRANSFER.md'), 'utf8'))
   writeOut('SALE-NOTES.md', readFileSync(join(ROOT, 'scripts', 'sale-NOTES.md'), 'utf8'))
+  const inventory = join(ROOT, 'scripts', 'DEPLOY-INVENTORY.md')
+  if (existsSync(inventory)) {
+    writeOut('DEPLOY-INVENTORY.md', readFileSync(inventory, 'utf8'))
+  }
 }
 
 // ── Main ──────────────────────────────────────────────────────────────────────

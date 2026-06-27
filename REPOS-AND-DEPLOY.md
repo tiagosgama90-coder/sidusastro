@@ -42,10 +42,11 @@ O site **não corre no teu computador**. Apagar a pasta local **não desliga** s
 ## Pacote de venda (regenerar)
 
 ```bash
-cd sidus-app
+cd sidusastro
 node scripts/export-sale-package.mjs
-cd ../sidusastro-sale
-git add . && git commit -m "Update handover" && git push
+robocopy ..\sidusastro-sale ..\sidusastro-handover-review /MIR /XD .git
+cd ..\sidusastro-handover-review
+git add -A && git commit -m "Sync handover with production" && git push
 ```
 
 ## Segredos (nunca no Git)
