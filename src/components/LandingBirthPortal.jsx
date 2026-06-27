@@ -188,7 +188,7 @@ function CampoCidadePortal({ valor, localizacao, onChange, onSelect, erro, onBlu
 }
 
 export function LandingBirthPortal({ isDesktop, onSaved, onScrollToLogin }) {
-  const { lang, t, ts } = useLanguage()
+  const { lang, t, ts, tp } = useLanguage()
   const [nome, setNome] = useState('')
   const [data, setData] = useState('')
   const [hora, setHora] = useState('')
@@ -214,6 +214,15 @@ export function LandingBirthPortal({ isDesktop, onSaved, onScrollToLogin }) {
   const ceuAgora = useMemo(() => calcularResumoCeuAgora(new Date(), lang), [lang])
   const solLabel = `${ts(ceuAgora.sol.nome)} ${ceuAgora.sol.simbolo}`
   const luaLabel = `${ts(ceuAgora.lua.nome)} ${ceuAgora.lua.simbolo}`
+
+  const tickerItems = useMemo(() => ceuAgora.planetas.map((p) => ({
+    key: p.key,
+    label: t('auth.portal.skyPlanetLine', {
+      symbol: p.simbolo,
+      planet: tp(p.nome),
+      sign: `${ts(p.signo.nome)} ${p.signo.simbolo}`,
+    }),
+  })), [ceuAgora.planetas, lang, t, ts, tp])
 
   useEffect(() => {
     const draft = readLandingDraft()
@@ -284,26 +293,6 @@ export function LandingBirthPortal({ isDesktop, onSaved, onScrollToLogin }) {
       <div className="landing-portal-orb landing-portal-orb--2" aria-hidden />
 
       <div style={{ position: 'relative', zIndex: 1 }}>
-        <div className="landing-portal-sky-live">
-          <div className="landing-portal-sky-live-head">
-            <Radio size={13} color="#34D399" className="landing-portal-pulse-icon" />
-            <span className="landing-portal-sky-live-badge">{t('auth.portal.skyLive')}</span>
-            <span className="landing-portal-sky-live-date">· {hoje}</span>
-          </div>
-          <div className="landing-portal-sky-live-body">
-            <span className="landing-portal-sky-moon-emoji">{ceuAgora.faseLua.emoji}</span>
-            <div>
-              <div className="landing-portal-sky-moon-name">{ceuAgora.faseLua.nome}</div>
-              <div className="landing-portal-sky-moon-pct">
-                {t('home.illuminated', { pct: ceuAgora.faseLua.iluminacao, angle: ceuAgora.faseLua.angulo })}
-              </div>
-            </div>
-          </div>
-          <p className="landing-portal-sky-positions">
-            {t('auth.portal.skyPositions', { sun: solLabel, moon: luaLabel })}
-          </p>
-        </div>
-
         <div className="landing-portal-header-row">
           <div className="landing-portal-moon" aria-hidden>
             <Moon size={28} color={CORES.dourado} strokeWidth={1.4} />
@@ -311,11 +300,50 @@ export function LandingBirthPortal({ isDesktop, onSaved, onScrollToLogin }) {
           </div>
           <div>
             <p className="landing-portal-eyebrow">
-              {t('auth.portal.eyebrow')}
+              {t('auth.portal.eyebrow')}{' '}
+              <span className="landing-portal-brand">{t('auth.portal.eyebrowBrand')}</span>
             </p>
             <h1 className="landing-portal-title">
               {t('auth.portal.title')}
             </h1>
+          </div>
+        </div>
+
+        <div className="landing-portal-sky-live">
+          <div className="landing-portal-sky-stars" aria-hidden />
+          <div className="landing-portal-sky-live-head">
+            <Radio size={13} color="#34D399" className="landing-portal-pulse-icon" />
+            <span className="landing-portal-sky-live-badge">{t('auth.portal.skyLive')}</span>
+            <span className="landing-portal-sky-live-date">· {hoje}</span>
+          </div>
+
+          <div className="landing-portal-sky-core">
+            <div className="landing-portal-sky-live-body">
+              <span className="landing-portal-sky-moon-emoji">{ceuAgora.faseLua.emoji}</span>
+              <div>
+                <div className="landing-portal-sky-moon-name">{ceuAgora.faseLua.nome}</div>
+                <div className="landing-portal-sky-moon-pct">
+                  {t('home.illuminated', { pct: ceuAgora.faseLua.iluminacao, angle: ceuAgora.faseLua.angulo })}
+                </div>
+              </div>
+            </div>
+            <p className="landing-portal-sky-positions">
+              {t('auth.portal.skyPositions', { sun: solLabel, moon: luaLabel })}
+            </p>
+          </div>
+
+          <div className="landing-portal-sky-ticker" aria-label={t('auth.portal.skyTickerLabel')}>
+            <span className="landing-portal-sky-ticker-label">{t('auth.portal.skyTickerLabel')}</span>
+            <div className="landing-portal-sky-ticker-viewport">
+              <div className="landing-portal-sky-ticker-track">
+                {[...tickerItems, ...tickerItems].map((item, i) => (
+                  <span key={`${item.key}-${i}`} className="landing-portal-sky-ticker-item">
+                    <span className="landing-portal-sky-ticker-dot" aria-hidden>✦</span>
+                    {item.label}
+                  </span>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
 

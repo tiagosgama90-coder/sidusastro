@@ -388,14 +388,32 @@ html.sidus-no-ads .google-auto-placed {
 
 /* Céu ao vivo — dados reais */
 .landing-portal-sky-live {
-  margin-bottom: 18px;
-  padding: 14px 16px;
+  position: relative;
+  margin-bottom: 16px;
+  padding: 14px 16px 12px;
   border-radius: 16px;
-  background: linear-gradient(135deg, rgba(52, 211, 153, 0.08), rgba(139, 92, 246, 0.06));
-  border: 1px solid rgba(52, 211, 153, 0.28);
-  box-shadow: 0 0 24px rgba(52, 211, 153, 0.06);
+  background: linear-gradient(145deg, rgba(52, 211, 153, 0.09), rgba(139, 92, 246, 0.08) 55%, rgba(223, 183, 108, 0.05));
+  border: 1px solid rgba(212, 175, 55, 0.22);
+  box-shadow:
+    0 0 0 1px rgba(52, 211, 153, 0.06) inset,
+    0 8px 32px rgba(0, 0, 0, 0.22),
+    0 0 28px rgba(139, 92, 246, 0.06);
+  overflow: hidden;
+}
+.landing-portal-sky-stars {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.45;
+  background-image:
+    radial-gradient(1px 1px at 12% 22%, rgba(255,255,255,0.7) 0%, transparent 100%),
+    radial-gradient(1px 1px at 78% 18%, rgba(223,183,108,0.8) 0%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 88% 72%, rgba(255,255,255,0.5) 0%, transparent 100%),
+    radial-gradient(1px 1px at 34% 82%, rgba(196,181,253,0.6) 0%, transparent 100%),
+    radial-gradient(1px 1px at 56% 38%, rgba(255,255,255,0.4) 0%, transparent 100%);
 }
 .landing-portal-sky-live-head {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -413,16 +431,20 @@ html.sidus-no-ads .google-auto-placed {
   font-size: 11px;
   color: rgba(255, 255, 255, 0.55);
 }
+.landing-portal-sky-core {
+  position: relative;
+  display: grid;
+  gap: 8px;
+}
 .landing-portal-sky-live-body {
   display: flex;
   align-items: center;
   gap: 12px;
-  margin-bottom: 8px;
 }
 .landing-portal-sky-moon-emoji {
-  font-size: 28px;
+  font-size: 30px;
   line-height: 1;
-  filter: drop-shadow(0 0 8px rgba(223, 183, 108, 0.35));
+  filter: drop-shadow(0 0 10px rgba(223, 183, 108, 0.4));
 }
 .landing-portal-sky-moon-name {
   font-size: 14px;
@@ -437,8 +459,68 @@ html.sidus-no-ads .google-auto-placed {
 .landing-portal-sky-positions {
   margin: 0;
   font-size: 12px;
-  color: rgba(255, 255, 255, 0.78);
+  color: rgba(255, 255, 255, 0.82);
   letter-spacing: 0.02em;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(212, 175, 55, 0.12);
+}
+
+/* Ticker planetas — rodapé do céu ao vivo */
+.landing-portal-sky-ticker {
+  position: relative;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(212, 175, 55, 0.18);
+}
+.landing-portal-sky-ticker-label {
+  display: block;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(223, 183, 108, 0.65);
+  margin-bottom: 6px;
+  text-align: center;
+}
+.landing-portal-sky-ticker-viewport {
+  overflow: hidden;
+  mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+}
+.landing-portal-sky-ticker-track {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  width: max-content;
+  animation: landingSkyTicker 32s linear infinite;
+  will-change: transform;
+}
+.landing-portal-sky-ticker-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.78);
+  white-space: nowrap;
+  letter-spacing: 0.03em;
+}
+.landing-portal-sky-ticker-dot {
+  color: rgba(223, 183, 108, 0.55);
+  font-size: 8px;
+}
+
+@keyframes landingSkyTicker {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.landing-portal-brand {
+  color: #DFB76C;
+  letter-spacing: 0.16em;
+  font-weight: 800;
 }
 
 .landing-portal-swiss-note {
@@ -520,15 +602,15 @@ html.sidus-no-ads .google-auto-placed {
   display: flex;
   align-items: flex-start;
   gap: 14px;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
 }
 .landing-portal-eyebrow {
-  margin: 0 0 6px;
+  margin: 0 0 8px;
   font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.14em;
+  font-weight: 600;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: #C4B5FD;
+  color: rgba(196, 181, 253, 0.85);
 }
 .landing-portal-title {
   margin: 0;
@@ -590,20 +672,21 @@ html.sidus-no-ads .google-auto-placed {
   }
 
   .landing-auth-layout--desktop {
-    padding-top: 10px !important;
-    padding-bottom: 12px !important;
-    padding-left: 28px !important;
-    padding-right: 28px !important;
+    padding-top: 14px !important;
+    padding-bottom: 16px !important;
+    padding-left: 32px !important;
+    padding-right: 32px !important;
   }
 
   .landing-auth-grid {
-    gap: 20px !important;
+    gap: 28px !important;
+    align-items: stretch !important;
   }
 
   .landing-auth-panel {
-    padding: 14px 16px !important;
-    top: 10px !important;
-    scroll-margin-top: 10px;
+    padding: 18px 20px !important;
+    top: 14px !important;
+    scroll-margin-top: 12px;
   }
 
   .landing-auth-divider-desktop {
@@ -634,31 +717,40 @@ html.sidus-no-ads .google-auto-placed {
   }
 
   .landing-portal-sky-live {
-    margin-bottom: 8px;
-    padding: 8px 12px;
-    border-radius: 12px;
+    margin-bottom: 12px;
+    padding: 12px 14px 10px;
   }
-  .landing-portal-sky-live-head {
-    margin-bottom: 5px;
+  .landing-portal-sky-core {
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    gap: 10px;
   }
   .landing-portal-sky-live-body {
-    margin-bottom: 3px;
-    gap: 8px;
+    margin-bottom: 0;
+  }
+  .landing-portal-sky-positions {
+    margin: 0;
+    font-size: 11px;
+    padding: 8px 10px;
+  }
+  .landing-portal-sky-ticker-label {
+    text-align: left;
+    margin-bottom: 5px;
   }
   .landing-portal-sky-moon-emoji {
-    font-size: 22px;
+    font-size: 24px;
   }
   .landing-portal-sky-moon-name {
     font-size: 12px;
   }
   .landing-portal-sky-moon-pct,
-  .landing-portal-sky-positions {
+  .landing-portal-sky-ticker-item {
     font-size: 10px;
   }
 
   .landing-portal-header-row {
-    margin-bottom: 5px;
-    gap: 10px;
+    margin-bottom: 8px;
+    gap: 12px;
   }
   .landing-portal-moon {
     width: 42px;
@@ -674,22 +766,22 @@ html.sidus-no-ads .google-auto-placed {
     font-size: 9px;
   }
   .landing-portal-title {
-    font-size: 24px;
-    line-height: 1.12;
+    font-size: 23px;
+    line-height: 1.14;
   }
   .landing-portal-subtitle {
-    margin-bottom: 8px;
+    margin-bottom: 10px;
     font-size: 12px;
-    line-height: 1.45;
-    max-width: 520px;
+    line-height: 1.5;
+    max-width: 100%;
   }
 
   .landing-portal-card {
-    padding: 12px 14px 10px;
+    padding: 14px 16px 12px;
     border-radius: 16px;
   }
   .landing-portal-field {
-    margin-bottom: 8px !important;
+    margin-bottom: 9px !important;
   }
   .landing-portal-field label {
     margin-bottom: 5px !important;
@@ -717,9 +809,8 @@ html.sidus-no-ads .google-auto-placed {
   }
 
   .landing-portal-tools-footer {
-    margin-top: 8px;
-    padding: 10px 12px 8px;
-    border-radius: 14px;
+    margin-top: 10px;
+    padding: 12px 14px 10px;
   }
   .landing-portal-tools-eyebrow {
     margin-bottom: 7px;
