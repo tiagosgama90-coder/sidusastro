@@ -1,7 +1,7 @@
 export default {
   nav: {
-    home: 'Home', mapa: 'Mapa', tarot: 'Tarot', ferramentas: 'Ferramentas',
-    oraculo: 'Oráculo', perfil: 'Perfil',
+    home: 'Home', mapa: 'Mapa', tarot: 'Tarot Online', ferramentas: 'Ferramentas',
+    oraculo: 'Chat Oráculo', perfil: 'Perfil',
     menu: 'Menu', openMenu: 'Abrir menu', closeMenu: 'Fechar menu',
   },
   common: {

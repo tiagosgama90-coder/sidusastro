@@ -9,6 +9,8 @@ const CORES = {
   vidroBorda: 'rgba(223, 183, 108, 0.22)',
 }
 
+const LABELS = { pt: 'PT', en: 'ENG' }
+
 function SwitcherButtons({ lang, setLang, size = 'fixed' }) {
   const compact = size === 'compact'
   const inline = size === 'inline'
@@ -23,31 +25,31 @@ function SwitcherButtons({ lang, setLang, size = 'fixed' }) {
     navigate(`${newPath}${location.search}${location.hash}`, { replace: true })
   }
 
-  const btn = (code, flag, label) => {
+  const btn = (code, title) => {
     const active = lang === code
     return (
       <button
         type="button"
-        title={label}
+        title={title}
         onClick={() => changeLang(code)}
         style={{
           display: 'flex',
           alignItems: 'center',
-          gap: compact ? 2 : inline ? 3 : 3,
-          padding: compact ? '2px 4px' : inline ? '3px 6px' : '3px 6px',
+          justifyContent: 'center',
+          padding: compact ? '2px 5px' : inline ? '3px 7px' : '3px 7px',
           borderRadius: compact ? 4 : 6,
           border: `1px solid ${active ? CORES.dourado : CORES.vidroBorda}`,
           background: active ? 'rgba(223,183,108,0.18)' : 'rgba(255,255,255,0.04)',
           color: active ? CORES.dourado : CORES.brancoMuted,
-          fontSize: compact ? 7 : inline ? 10 : 9,
+          fontSize: compact ? 8 : inline ? 10 : 9,
           fontWeight: active ? 700 : 500,
           cursor: 'pointer',
           transition: 'all 0.2s ease',
           lineHeight: 1,
+          letterSpacing: '0.04em',
         }}
       >
-        <span style={{ fontSize: compact ? 9 : inline ? 12 : 11, lineHeight: 1 }}>{flag}</span>
-        <span>{code.toUpperCase()}</span>
+        {LABELS[code]}
       </button>
     )
   }
@@ -68,8 +70,8 @@ function SwitcherButtons({ lang, setLang, size = 'fixed' }) {
         flexShrink: 0,
       }}
     >
-      {btn('pt', '🇵🇹', 'Português')}
-      {btn('en', '🇬🇧', 'English')}
+      {btn('pt', 'Português')}
+      {btn('en', 'English')}
     </div>
   )
 }

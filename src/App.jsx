@@ -2745,7 +2745,7 @@ function Navbar({ passo, setPasso, isDesktop, dados, fotoPerfil }) {
 
   const ferramentasNav = getFerramentas(lang).map((f) => ({
     id: f.id,
-    label: isDesktop ? (f.navNome || f.nome) : f.nome,
+    label: f.nome,
     icon: f.icon,
     glow: f.premium ? CORES.dourado : '#93C5FD',
   }))
@@ -2824,7 +2824,7 @@ function Navbar({ passo, setPasso, isDesktop, dados, fotoPerfil }) {
                       color: ativo ? CORES.dourado : emHover ? CORES.branco : CORES.brancoMuted,
                     }}
                   >
-                    <Icon size={16} strokeWidth={ativo ? 2.2 : 1.9} />
+                    <Icon size={14} strokeWidth={ativo ? 2.2 : 1.8} />
                     <span>{item.label}</span>
                   </button>
                 )
