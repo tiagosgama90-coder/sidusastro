@@ -515,6 +515,242 @@ html.sidus-no-ads .google-auto-placed {
   opacity: 0.9;
 }
 
+/* Título e intro */
+.landing-portal-header-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  margin-bottom: 10px;
+}
+.landing-portal-eyebrow {
+  margin: 0 0 6px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #C4B5FD;
+}
+.landing-portal-title {
+  margin: 0;
+  font-size: 26px;
+  font-weight: 800;
+  color: #fff;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+.landing-portal-subtitle {
+  margin: 0 0 22px;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.55);
+  line-height: 1.65;
+}
+
+.landing-portal-field {
+  margin-bottom: 16px;
+}
+.landing-portal-tz-box {
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+/* Mobile — atalho para login */
+.landing-portal-mobile-only {
+  display: block;
+}
+.landing-portal-mobile-login {
+  margin: -12px 0 18px;
+  text-align: center;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.55);
+  line-height: 1.5;
+}
+.landing-portal-mobile-login-link {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  color: #DFB76C;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.landing-portal-mobile-login-link:hover {
+  color: #f0cf8a;
+}
+
+/* Layout auth — landing /login */
+
+/* ── Desktop (md+): compactação above-the-fold ── */
+@media (min-width: 768px) {
+  .landing-portal-mobile-only {
+    display: none !important;
+  }
+
+  .landing-auth-layout--desktop {
+    padding-top: 10px !important;
+    padding-bottom: 12px !important;
+    padding-left: 28px !important;
+    padding-right: 28px !important;
+  }
+
+  .landing-auth-grid {
+    gap: 20px !important;
+  }
+
+  .landing-auth-panel {
+    padding: 14px 16px !important;
+    top: 10px !important;
+    scroll-margin-top: 10px;
+  }
+
+  .landing-auth-divider-desktop {
+    margin-bottom: 10px !important;
+    font-size: 10px !important;
+  }
+
+  .landing-auth-heading {
+    margin-bottom: 12px !important;
+    font-size: 16px !important;
+  }
+
+  .landing-auth-field {
+    margin-bottom: 10px !important;
+  }
+  .landing-auth-field--last {
+    margin-bottom: 14px !important;
+  }
+  #sidus-auth-panel input {
+    padding-top: 11px !important;
+    padding-bottom: 11px !important;
+    font-size: 14px !important;
+  }
+  #sidus-auth-panel button[type="submit"],
+  #sidus-auth-panel button.landing-auth-submit {
+    padding-top: 12px !important;
+    padding-bottom: 12px !important;
+  }
+
+  .landing-portal-sky-live {
+    margin-bottom: 8px;
+    padding: 8px 12px;
+    border-radius: 12px;
+  }
+  .landing-portal-sky-live-head {
+    margin-bottom: 5px;
+  }
+  .landing-portal-sky-live-body {
+    margin-bottom: 3px;
+    gap: 8px;
+  }
+  .landing-portal-sky-moon-emoji {
+    font-size: 22px;
+  }
+  .landing-portal-sky-moon-name {
+    font-size: 12px;
+  }
+  .landing-portal-sky-moon-pct,
+  .landing-portal-sky-positions {
+    font-size: 10px;
+  }
+
+  .landing-portal-header-row {
+    margin-bottom: 5px;
+    gap: 10px;
+  }
+  .landing-portal-moon {
+    width: 42px;
+    height: 42px;
+    border-radius: 11px;
+  }
+  .landing-portal-moon svg:first-of-type {
+    width: 22px;
+    height: 22px;
+  }
+  .landing-portal-eyebrow {
+    margin-bottom: 3px;
+    font-size: 9px;
+  }
+  .landing-portal-title {
+    font-size: 24px;
+    line-height: 1.12;
+  }
+  .landing-portal-subtitle {
+    margin-bottom: 8px;
+    font-size: 12px;
+    line-height: 1.45;
+    max-width: 520px;
+  }
+
+  .landing-portal-card {
+    padding: 12px 14px 10px;
+    border-radius: 16px;
+  }
+  .landing-portal-field {
+    margin-bottom: 8px !important;
+  }
+  .landing-portal-field label {
+    margin-bottom: 5px !important;
+    font-size: 10px !important;
+  }
+  .landing-portal-input,
+  .landing-portal-card input,
+  .landing-portal-card select {
+    padding-top: 9px !important;
+    padding-bottom: 9px !important;
+    font-size: 14px !important;
+    border-radius: 10px !important;
+  }
+  .landing-portal-tz-box {
+    padding: 7px 10px;
+  }
+  .landing-portal-cta {
+    padding: 11px 14px;
+    font-size: 14px;
+    border-radius: 12px;
+  }
+  .landing-portal-swiss-note {
+    margin-top: 6px;
+    font-size: 10px;
+  }
+
+  .landing-portal-tools-footer {
+    margin-top: 8px;
+    padding: 10px 12px 8px;
+    border-radius: 14px;
+  }
+  .landing-portal-tools-eyebrow {
+    margin-bottom: 7px;
+    font-size: 9px;
+    letter-spacing: 0.14em;
+  }
+  .landing-portal-tools-grid {
+    gap: 5px;
+  }
+  .landing-portal-tool-badge {
+    padding: 5px 8px;
+    font-size: 9px;
+    border-radius: 9px;
+    gap: 5px;
+  }
+  .landing-portal-tool-badge svg {
+    width: 12px;
+    height: 12px;
+  }
+
+  .landing-portal-orb--1 {
+    width: 160px;
+    height: 160px;
+    top: -24px;
+  }
+  .landing-portal-orb--2 {
+    width: 120px;
+    height: 120px;
+  }
+}
+
 @keyframes landingOrbDrift {
   0%, 100% { transform: translate(0, 0); }
   50% { transform: translate(12px, -8px); }

@@ -1294,23 +1294,23 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
   }, [])
 
   return (
-    <div style={layoutConteudo(isDesktop, {
+    <div className={`landing-auth-layout${isDesktop ? ' landing-auth-layout--desktop' : ''}`} style={layoutConteudo(isDesktop, {
       paddingTop: isDesktop ? 40 : 48,
       paddingBottom: 40,
       maxWidth: isDesktop ? 1080 : undefined,
       margin: isDesktop ? '0 auto' : undefined,
     })}>
-      <div style={{
+      <div className="landing-auth-grid" style={{
         display: isDesktop ? 'grid' : 'block',
         gridTemplateColumns: isDesktop ? '1.1fr 0.9fr' : undefined,
         gap: isDesktop ? 36 : 0,
         alignItems: 'start',
       }}>
-        <LandingBirthPortal isDesktop={isDesktop} onSaved={scrollParaAuth} />
+        <LandingBirthPortal isDesktop={isDesktop} onSaved={scrollParaAuth} onScrollToLogin={scrollParaAuth} />
 
-        <div style={{ marginTop: isDesktop ? 0 : 28 }}>
+        <div className="landing-auth-column" style={{ marginTop: isDesktop ? 0 : 28 }}>
           {!isDesktop && (
-            <div style={{
+            <div className="landing-auth-divider-mobile" style={{
               display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20,
             }}>
               <div style={{ flex: 1, height: 1, background: 'rgba(223,183,108,0.2)' }} />
@@ -1332,7 +1332,7 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
             }}
           >
             {isDesktop && (
-              <p style={{
+              <p className="landing-auth-divider-desktop" style={{
                 margin: '0 0 18px', fontSize: 11, fontWeight: 700, letterSpacing: '0.1em',
                 textTransform: 'uppercase', color: CORES.dourado, textAlign: 'center',
               }}>
@@ -1344,12 +1344,12 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
             {t('auth.firebaseNotConfigured')}
           </div>
         )}
-        <h2 style={{ margin: '0 0 24px', fontSize: 18, fontWeight: 600, color: CORES.branco, textAlign: 'center' }}>
+        <h2 className="landing-auth-heading" style={{ margin: '0 0 24px', fontSize: 18, fontWeight: 600, color: CORES.branco, textAlign: 'center' }}>
           {isLogin ? t('auth.login') : t('auth.register')}
         </h2>
 
         {/* Email */}
-        <div style={{ marginBottom: 16 }}>
+        <div className="landing-auth-field" style={{ marginBottom: 16 }}>
           <label style={estilos.label}>{t('auth.email')}</label>
           <div style={{ position: 'relative' }}>
             <Mail size={15} color={CORES.brancoMuted} style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }} />
@@ -1365,7 +1365,7 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
         </div>
 
         {/* Senha */}
-        <div style={{ marginBottom: tipo === 'register' ? 16 : 24 }}>
+        <div className={`landing-auth-field${tipo === 'register' ? '' : ' landing-auth-field--last'}`} style={{ marginBottom: tipo === 'register' ? 16 : 24 }}>
           <label style={estilos.label}>{t('auth.password')}</label>
           <div style={{ position: 'relative' }}>
             <Lock size={15} color={CORES.brancoMuted} style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }} />
@@ -1389,7 +1389,7 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
 
         {/* Confirmar senha (só no registo) */}
         {tipo === 'register' && (
-          <div style={{ marginBottom: 24 }}>
+          <div className="landing-auth-field landing-auth-field--last" style={{ marginBottom: 24 }}>
             <label style={estilos.label}>{t('auth.confirmPassword')}</label>
             <div style={{ position: 'relative' }}>
               <Lock size={15} color={CORES.brancoMuted} style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }} />

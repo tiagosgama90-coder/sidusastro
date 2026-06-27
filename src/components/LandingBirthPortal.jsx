@@ -90,7 +90,7 @@ function CampoDataPortal({ valor, onChange, onBlur, erro, t }) {
   const mini = { ...inputStyle, borderColor: borda, textAlign: 'center', padding: '13px 6px' }
 
   return (
-    <div style={{ marginBottom: 16 }}>
+    <div className="landing-portal-field">
       <label style={labelStyle}>{t('onboarding.birthDate')}</label>
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 12px 1fr 12px 1.4fr', alignItems: 'center' }}>
         <input ref={diaRef} inputMode="numeric" maxLength={2} placeholder="DD" value={dia}
@@ -140,7 +140,7 @@ function CampoCidadePortal({ valor, localizacao, onChange, onSelect, erro, onBlu
   }, [])
 
   return (
-    <div ref={containerRef} style={{ marginBottom: 16, position: 'relative' }}>
+    <div ref={containerRef} className="landing-portal-field" style={{ position: 'relative' }}>
       <label style={labelStyle}>{t('onboarding.birthCity')}</label>
       <div style={{ position: 'relative' }}>
         <input
@@ -187,7 +187,7 @@ function CampoCidadePortal({ valor, localizacao, onChange, onSelect, erro, onBlu
   )
 }
 
-export function LandingBirthPortal({ isDesktop, onSaved }) {
+export function LandingBirthPortal({ isDesktop, onSaved, onScrollToLogin }) {
   const { lang, t, ts } = useLanguage()
   const [nome, setNome] = useState('')
   const [data, setData] = useState('')
@@ -304,33 +304,37 @@ export function LandingBirthPortal({ isDesktop, onSaved }) {
           </p>
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'flex-start', gap: 14, marginBottom: 10 }}>
+        <div className="landing-portal-header-row">
           <div className="landing-portal-moon" aria-hidden>
             <Moon size={28} color={CORES.dourado} strokeWidth={1.4} />
             <Sparkles size={14} color="#C4B5FD" className="landing-portal-spark" />
           </div>
           <div>
-            <p style={{
-              margin: '0 0 6px', fontSize: 10, fontWeight: 700, letterSpacing: '0.14em',
-              textTransform: 'uppercase', color: '#C4B5FD',
-            }}>
+            <p className="landing-portal-eyebrow">
               {t('auth.portal.eyebrow')}
             </p>
-            <h1 style={{
-              margin: 0, fontSize: isDesktop ? 32 : 26, fontWeight: 800, color: CORES.branco,
-              lineHeight: 1.15, letterSpacing: '-0.02em',
-            }}>
+            <h1 className="landing-portal-title">
               {t('auth.portal.title')}
             </h1>
           </div>
         </div>
 
-        <p style={{
-          margin: '0 0 22px', fontSize: 14, color: CORES.brancoMuted, lineHeight: 1.65,
-          maxWidth: isDesktop ? 520 : undefined,
-        }}>
+        <p className="landing-portal-subtitle">
           {t('auth.portal.subtitle')}
         </p>
+
+        {onScrollToLogin && (
+          <p className="landing-portal-mobile-only landing-portal-mobile-login">
+            {t('auth.portal.mobileLoginPrompt')}{' '}
+            <button
+              type="button"
+              className="landing-portal-mobile-login-link"
+              onClick={onScrollToLogin}
+            >
+              {t('auth.portal.mobileLoginLink')}
+            </button>
+          </p>
+        )}
 
         <div className={`landing-portal-card${guardado ? ' landing-portal-card--saved' : ''}`}>
           <div className="landing-portal-card-shimmer" aria-hidden />
@@ -356,7 +360,7 @@ export function LandingBirthPortal({ isDesktop, onSaved }) {
             </div>
           ) : (
             <>
-              <div style={{ marginBottom: 16 }}>
+              <div className="landing-portal-field">
                 <label style={labelStyle}>{t('onboarding.name')}</label>
                 <div style={{ position: 'relative' }}>
                   <User size={16} color={CORES.brancoMuted} style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)' }} />
@@ -378,7 +382,7 @@ export function LandingBirthPortal({ isDesktop, onSaved }) {
 
               <CampoDataPortal valor={data} onChange={setData} onBlur={tocar('data')} erro={tocado.data ? erros.data : null} t={t} />
 
-              <div style={{ marginBottom: 16 }}>
+              <div className="landing-portal-field">
                 <label style={labelStyle}>{t('onboarding.birthTime')}</label>
                 <div style={{ position: 'relative' }}>
                   <Clock size={16} color={CORES.brancoMuted} style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)' }} />
@@ -409,11 +413,12 @@ export function LandingBirthPortal({ isDesktop, onSaved }) {
               />
 
               {localizacao && (
-                <div style={{
-                  marginBottom: 16, padding: '10px 14px', borderRadius: 12,
-                  background: 'rgba(255,255,255,0.03)',
-                  border: `1px solid ${fusoErro ? 'rgba(251,191,36,0.4)' : fuso != null ? 'rgba(52,211,153,0.35)' : CORES.vidroBorda}`,
-                }}>
+                <div
+                  className="landing-portal-field landing-portal-tz-box"
+                  style={{
+                    border: `1px solid ${fusoErro ? 'rgba(251,191,36,0.4)' : fuso != null ? 'rgba(52,211,153,0.35)' : CORES.vidroBorda}`,
+                  }}
+                >
                   {fusoCarregando && (
                     <p style={{ margin: 0, fontSize: 12, color: CORES.brancoMuted }}>{t('onboarding.detectingTz')}</p>
                   )}

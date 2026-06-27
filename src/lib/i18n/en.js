@@ -46,6 +46,8 @@ export default {
       eyebrow: 'Sidus Portal',
       title: 'When you were born, the sky drew your chart',
       subtitle: 'Begin your cosmic calculation. Enter your exact birth details and sign in next to reveal your interpreted chart.',
+      mobileLoginPrompt: 'Already have an account?',
+      mobileLoginLink: 'Sign in here',
       swissNote: '⚙️ High-precision calculations powered by Swiss Ephemeris.',
       skyLive: 'Live',
       skyPositions: '☉ Sun in {sun} · ☽ Moon in {moon}',

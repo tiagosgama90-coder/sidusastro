@@ -46,6 +46,8 @@ export default {
       eyebrow: 'Portal Sidus',
       title: 'Quando nasceste, o céu desenhou o teu mapa',
       subtitle: 'Inicia o teu cálculo cósmico. Introduz os teus dados exatos e faz login em seguida para revelar o teu mapa interpretado.',
+      mobileLoginPrompt: 'Já tens conta?',
+      mobileLoginLink: 'Entra aqui',
       swissNote: '⚙️ Cálculos de alta precisão baseados na Swiss Ephemeris.',
       skyLive: 'Ao vivo',
       skyPositions: '☉ Sol em {sun} · ☽ Lua em {moon}',
