@@ -1315,10 +1315,10 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
           <div
             id="sidus-auth-panel"
             ref={authPanelRef}
-            className="landing-auth-panel"
+            className="landing-auth-panel landing-glass"
             style={{
-              ...estilos.vidro,
-              ...(isDesktop ? { padding: 24, position: 'sticky', top: 24 } : {}),
+              padding: isDesktop ? 24 : undefined,
+              ...(isDesktop ? { position: 'sticky', top: 24, borderRadius: 16, boxShadow: CORES.sombra } : { borderRadius: 16, boxShadow: CORES.sombra }),
             }}
           >
             {isDesktop && (
@@ -2162,6 +2162,32 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
         </p>
       </header>
 
+      {/* ── CTA Premium (utilizador gratuito — destaque no topo) ── */}
+      {!mapaCompletoDesbloqueado && (
+        <div style={{
+          ...estilos.vidro, padding: 24, marginBottom: 14,
+          border: `1px solid ${CORES.dourado}`, background: 'rgba(223,183,108,0.06)',
+          textAlign: 'center', position: 'relative',
+        }}>
+          <div style={{ position: 'absolute', inset: 0, background: 'repeating-linear-gradient(45deg, transparent, transparent 8px, rgba(223,183,108,0.03) 8px, rgba(223,183,108,0.03) 16px)', pointerEvents: 'none' }} />
+          <Crown size={28} color={CORES.dourado} style={{ marginBottom: 10 }} />
+          <div style={{ fontSize: 16, fontWeight: 700, color: CORES.dourado, marginBottom: 12 }}>{t('mapa.fullChart')}</div>
+          <button type="button" onClick={onUpgrade} style={{ ...estilos.botaoDourado, width: '100%', marginBottom: 14 }}>
+            {t('mapa.premiumOption')}
+          </button>
+          <div style={{ fontSize: 13, color: CORES.brancoMuted, marginBottom: 14, lineHeight: 1.5 }}>
+            {t('mapa.fullDesc')}
+          </div>
+          <div style={{ display: 'flex', justifyContent: 'center', gap: 8, flexWrap: 'wrap' }}>
+            {['☀ Essência', '☿♀♂ Pessoais', '♃♄ Karma', '⊕ MC', '🌙 Fases Lua', '📄 PDF'].map(item => (
+              <span key={item} style={{ fontSize: 11, padding: '4px 10px', borderRadius: 20, background: 'rgba(223,183,108,0.1)', border: `1px solid rgba(223,183,108,0.25)`, color: CORES.brancoMuted }}>
+                {item}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* ── Resumo interpretativo (gratuito) ── */}
       {!mapaCompletoDesbloqueado && resumoGratuito && (
         <div style={{ ...estilos.vidro, padding: 16, marginBottom: 14 }}>
@@ -2323,46 +2349,7 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
             </button>
           </div>
         </>
-      ) : (
-        <div style={{
-          ...estilos.vidro, padding: 24, marginBottom: 14,
-          border: `1px solid ${CORES.dourado}`, background: 'rgba(223,183,108,0.06)',
-          textAlign: 'center', position: 'relative',
-        }}>
-          <div style={{ position: 'absolute', inset: 0, background: 'repeating-linear-gradient(45deg, transparent, transparent 8px, rgba(223,183,108,0.03) 8px, rgba(223,183,108,0.03) 16px)', pointerEvents: 'none' }} />
-          <Crown size={28} color={CORES.dourado} style={{ marginBottom: 10 }} />
-          <div style={{ fontSize: 16, fontWeight: 700, color: CORES.dourado, marginBottom: 6 }}>{t('mapa.fullChart')}</div>
-          <div style={{ fontSize: 13, color: CORES.brancoMuted, marginBottom: 14, lineHeight: 1.5 }}>
-            {t('mapa.fullDesc')}
-          </div>
-          <div style={{ display: 'flex', justifyContent: 'center', gap: 8, marginBottom: 16, flexWrap: 'wrap' }}>
-            {['☀ Essência', '☿♀♂ Pessoais', '♃♄ Karma', '⊕ MC', '🌙 Fases Lua', '📄 PDF'].map(item => (
-              <span key={item} style={{ fontSize: 11, padding: '4px 10px', borderRadius: 20, background: 'rgba(223,183,108,0.1)', border: `1px solid rgba(223,183,108,0.25)`, color: CORES.brancoMuted }}>
-                {item}
-              </span>
-            ))}
-          </div>
-          <p style={{ fontSize: 12, color: CORES.dourado, margin: '0 0 12px', lineHeight: 1.45, fontWeight: 600 }}>
-            {t('mapa.premiumRecommended')}
-          </p>
-          <button type="button" onClick={onUpgrade} style={{ ...estilos.botaoDourado, width: '100%', marginBottom: 10 }}>
-            {t('mapa.premiumOption')}
-          </button>
-          <p style={{ fontSize: 11, color: CORES.brancoMuted, margin: '0 0 12px', lineHeight: 1.45 }}>
-            {t('mapa.pricingHint')}
-          </p>
-          <button type="button" onClick={onComprarMapa} style={{
-            width: '100%', padding: '13px', borderRadius: 12,
-            background: 'rgba(255,255,255,0.04)', border: `1px solid ${CORES.vidroBorda}`,
-            color: CORES.brancoSuave, fontSize: 14, fontWeight: 600, cursor: 'pointer', marginBottom: 6,
-          }}>
-            {t('mapa.buyOnce')}
-          </button>
-          <p style={{ fontSize: 11, color: CORES.brancoMuted, margin: 0, lineHeight: 1.4 }}>
-            {t('mapa.buyOnceNote')}
-          </p>
-        </div>
-      )}
+      ) : null}
     </div>
   )
 }
