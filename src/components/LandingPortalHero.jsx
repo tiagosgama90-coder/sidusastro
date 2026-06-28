@@ -1,20 +1,15 @@
 import { useLanguage } from '../lib/i18n/LanguageContext.jsx'
+import { SidusLogoMark } from './SidusLogoMark.jsx'
 
 export function LandingPortalHero() {
   const { t } = useLanguage()
 
   return (
     <header className="landing-auth-hero">
-      <p className="landing-portal-welcome">{t('auth.portal.eyebrow')}</p>
-      <div className="landing-portal-logo-wrap">
-        <img
-          src="/sidus-logo.png"
-          alt={t('auth.portal.logoAlt')}
-          className="landing-portal-logo"
-          width={220}
-          height={48}
-          decoding="async"
-        />
+      <div className="landing-portal-brand-row">
+        <span className="landing-portal-welcome-inline">{t('auth.portal.eyebrow')}</span>
+        <SidusLogoMark size={21} className="landing-portal-brand-mark" />
+        <span className="landing-portal-brand-text">{t('auth.portal.eyebrowBrand')}</span>
       </div>
       <h1 className="landing-portal-title">{t('auth.portal.title')}</h1>
     </header>

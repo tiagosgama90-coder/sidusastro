@@ -278,7 +278,7 @@ html.sidus-no-ads .google-auto-placed {
   height: 220px;
   top: -40px;
   right: -30px;
-  background: rgba(139, 92, 246, 0.22);
+  background: rgba(139, 92, 246, 0.14);
   animation: landingOrbDrift 8s ease-in-out infinite;
 }
 .landing-portal-orb--2 {
@@ -286,7 +286,7 @@ html.sidus-no-ads .google-auto-placed {
   height: 160px;
   bottom: 20px;
   left: -20px;
-  background: rgba(223, 183, 108, 0.15);
+  background: rgba(223, 183, 108, 0.1);
   animation: landingOrbDrift 10s ease-in-out infinite reverse;
 }
 
@@ -512,46 +512,49 @@ html.sidus-no-ads .google-auto-placed {
   100% { transform: translateX(-50%); }
 }
 
-/* Céu ao vivo — compacto no rodapé */
-.landing-sky-band {
+/* Céu ao vivo — faixa no topo */
+.landing-sky-top {
   width: 100%;
-  max-width: 100%;
-  margin-top: 16px;
+  margin: 0 0 16px;
   position: relative;
   z-index: 1;
 }
-.landing-portal-sky-live--compact {
+.landing-portal-sky-live--top {
   margin-bottom: 0;
-  padding: 8px 12px 6px;
+  padding: 8px 12px;
   border-radius: 12px;
 }
-.landing-sky-compact-row {
+.landing-sky-top-inner {
   position: relative;
   z-index: 1;
   display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.landing-sky-top-left {
+  display: flex;
   align-items: center;
-  justify-content: center;
   flex-wrap: wrap;
-  gap: 8px 12px;
-  margin-bottom: 6px;
+  gap: 6px 8px;
 }
-.landing-portal-sky-live--compact .landing-portal-sky-live-head {
+.landing-portal-sky-live--top .landing-portal-sky-live-head {
   margin-bottom: 0;
-  justify-content: center;
 }
-.landing-portal-sky-moon-emoji--compact {
-  font-size: 18px;
+.landing-portal-sky-moon-emoji--top {
+  font-size: 16px;
   line-height: 1;
 }
-.landing-portal-sky-moon-name--compact {
+.landing-portal-sky-moon-name--top {
   font-size: 11px;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.85);
+  color: rgba(255, 255, 255, 0.88);
 }
-.landing-portal-sky-ticker--compact {
+.landing-portal-sky-ticker--top {
   margin-top: 0;
-  padding-top: 6px;
-  border-top: 1px solid rgba(212, 175, 55, 0.15);
+  padding-top: 0;
+  border-top: none;
+  width: 100%;
+  min-width: 0;
 }
 
 .landing-portal-swiss-note {
@@ -590,29 +593,49 @@ html.sidus-no-ads .google-auto-placed {
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  padding: 6px 11px;
-  border-radius: 10px;
+  padding: 7px 13px;
+  border-radius: 999px;
   font-size: 10px;
   font-weight: 600;
-  letter-spacing: 0.04em;
-  color: rgba(255, 255, 255, 0.82);
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(212, 175, 55, 0.28);
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
+  letter-spacing: 0.05em;
+  color: rgba(255, 255, 255, 0.92);
+  background: linear-gradient(135deg, rgba(223, 183, 108, 0.16) 0%, rgba(139, 92, 246, 0.1) 100%);
+  border: 1px solid rgba(223, 183, 108, 0.42);
+  box-shadow:
+    0 0 14px rgba(223, 183, 108, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  transition: color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease, background 0.25s ease;
+  cursor: default;
 }
 .landing-portal-tool-badge--ticker {
   white-space: nowrap;
   flex-shrink: 0;
 }
-@keyframes landingToolsTicker {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
+.landing-portal-tool-badge--ticker:hover {
+  color: #fff;
+  border-color: rgba(240, 207, 138, 0.85);
+  background: linear-gradient(135deg, rgba(223, 183, 108, 0.28) 0%, rgba(167, 139, 250, 0.18) 100%);
+  box-shadow:
+    0 0 22px rgba(223, 183, 108, 0.42),
+    0 0 36px rgba(139, 92, 246, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  transform: translateY(-1px) scale(1.02);
 }
-
 .landing-portal-tool-icon {
   flex-shrink: 0;
   color: #DFB76C;
-  opacity: 0.9;
+  opacity: 0.95;
+  filter: drop-shadow(0 0 4px rgba(223, 183, 108, 0.35));
+  transition: filter 0.25s ease, color 0.25s ease;
+}
+.landing-portal-tool-badge--ticker:hover .landing-portal-tool-icon {
+  color: #f0cf8a;
+  filter: drop-shadow(0 0 8px rgba(223, 183, 108, 0.65));
+}
+
+@keyframes landingToolsTicker {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
 }
 
 /* Título e intro — hero centrado acima dos formulários */
@@ -622,25 +645,34 @@ html.sidus-no-ads .google-auto-placed {
   margin: 0 auto 20px;
   text-align: center;
 }
-.landing-portal-welcome {
-  margin: 0 0 10px;
+.landing-portal-brand-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: nowrap;
+  gap: 10px;
+  margin: 0 0 14px;
+  line-height: 1;
+}
+.landing-portal-welcome-inline {
   font-size: 12px;
   font-weight: 600;
-  letter-spacing: 0.22em;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: rgba(196, 181, 253, 0.88);
-  line-height: 1.4;
+  color: rgba(196, 181, 253, 0.9);
+  white-space: nowrap;
 }
-.landing-portal-logo-wrap {
-  display: flex;
-  justify-content: center;
-  margin: 0 0 14px;
+.landing-portal-brand-mark {
+  flex-shrink: 0;
+  filter: drop-shadow(0 0 6px rgba(223, 183, 108, 0.35));
 }
-.landing-portal-logo {
-  display: block;
-  width: min(220px, 72vw);
-  height: auto;
-  object-fit: contain;
+.landing-portal-brand-text {
+  font-size: 21px;
+  font-weight: 300;
+  letter-spacing: 0.24em;
+  color: #DFB76C;
+  white-space: nowrap;
+  text-shadow: 0 0 20px rgba(223, 183, 108, 0.2);
 }
 .landing-portal-title {
   margin: 0;
@@ -707,6 +739,12 @@ html.sidus-no-ads .google-auto-placed {
   margin-left: auto !important;
   margin-right: auto !important;
   overflow-x: clip;
+  background:
+    radial-gradient(ellipse 130% 90% at 50% -15%, rgba(88, 28, 135, 0.42) 0%, transparent 58%),
+    radial-gradient(ellipse 110% 80% at 100% 60%, rgba(67, 56, 202, 0.26) 0%, transparent 52%),
+    radial-gradient(ellipse 100% 75% at 0% 70%, rgba(139, 92, 246, 0.2) 0%, transparent 50%),
+    radial-gradient(ellipse 90% 70% at 50% 45%, rgba(88, 28, 135, 0.14) 0%, transparent 65%),
+    #0B071E !important;
 }
 
 .landing-auth-page-wrap {
@@ -718,6 +756,7 @@ html.sidus-no-ads .google-auto-placed {
   margin-inline: auto;
   box-sizing: border-box;
   overflow-x: clip;
+  background: transparent;
   padding-inline: max(12px, env(safe-area-inset-left, 0px)) max(12px, env(safe-area-inset-right, 0px));
 }
 
@@ -781,6 +820,22 @@ html.sidus-no-ads .google-auto-placed {
     margin-bottom: 12px;
     font-size: 14px;
   }
+
+  .landing-sky-top-inner {
+    flex-direction: row;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .landing-sky-top-left {
+    flex-shrink: 0;
+    flex-wrap: nowrap;
+  }
+
+  .landing-portal-sky-ticker--top {
+    flex: 1;
+    min-width: 0;
+  }
 }
 
 /* ── Desktop (md+): compactação above-the-fold ── */
@@ -802,13 +857,14 @@ html.sidus-no-ads .google-auto-placed {
     margin-bottom: 22px;
   }
 
-  .landing-portal-welcome {
+  .landing-portal-welcome-inline {
     font-size: 11px;
-    letter-spacing: 0.24em;
+    letter-spacing: 0.22em;
   }
 
-  .landing-portal-logo {
-    width: 200px;
+  .landing-portal-brand-text {
+    font-size: 19px;
+    letter-spacing: 0.26em;
   }
 
   .landing-portal-title {

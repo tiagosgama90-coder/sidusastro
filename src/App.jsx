@@ -1297,6 +1297,7 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
 
   return (
     <div className={`landing-auth-layout${isDesktop ? ' landing-auth-layout--desktop' : ' landing-auth-layout--mobile'}`}>
+      <LandingSkyLive />
       <LandingPortalHero />
       <div className="landing-auth-grid">
         <LandingBirthPortal isDesktop={isDesktop} onSaved={scrollParaAuth} onScrollToLogin={scrollParaAuth} />
@@ -1494,7 +1495,6 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
           </div>
         </div>
       </div>
-      <LandingSkyLive />
     </div>
   )
 }
