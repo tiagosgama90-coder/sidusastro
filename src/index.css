@@ -512,12 +512,6 @@ html.sidus-no-ads .google-auto-placed {
   100% { transform: translateX(-50%); }
 }
 
-.landing-portal-brand {
-  color: #DFB76C;
-  letter-spacing: 0.16em;
-  font-weight: 800;
-}
-
 .landing-portal-swiss-note {
   margin: 12px 0 0;
   text-align: center;
@@ -587,26 +581,35 @@ html.sidus-no-ads .google-auto-placed {
   margin-bottom: 12px;
 }
 .landing-portal-eyebrow {
-  margin: 0 0 8px;
-  font-size: 10px;
+  margin: 0 0 10px;
+  font-size: 13px;
   font-weight: 600;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: rgba(196, 181, 253, 0.85);
+  color: rgba(196, 181, 253, 0.9);
+  line-height: 1.35;
+}
+.landing-portal-brand {
+  color: #DFB76C;
+  letter-spacing: 0.18em;
+  font-weight: 800;
+  font-size: 1.08em;
 }
 .landing-portal-title {
   margin: 0;
-  font-size: 26px;
-  font-weight: 800;
-  color: #fff;
-  line-height: 1.15;
-  letter-spacing: -0.02em;
+  font-size: 21px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.88);
+  line-height: 1.2;
+  letter-spacing: -0.01em;
 }
 .landing-portal-subtitle {
   margin: 0 0 22px;
-  font-size: 14px;
-  color: rgba(255, 255, 255, 0.55);
-  line-height: 1.65;
+  font-size: 13px;
+  color: rgba(196, 181, 253, 0.62);
+  line-height: 1.75;
+  font-weight: 400;
+  letter-spacing: 0.01em;
 }
 
 .landing-portal-field {
@@ -797,17 +800,22 @@ html.sidus-no-ads .google-auto-placed {
     height: 22px;
   }
   .landing-portal-eyebrow {
-    margin-bottom: 3px;
-    font-size: 9px;
+    margin-bottom: 4px;
+    font-size: 12px;
+    letter-spacing: 0.11em;
+  }
+  .landing-portal-brand {
+    font-size: 1.06em;
   }
   .landing-portal-title {
-    font-size: 23px;
-    line-height: 1.14;
+    font-size: 19px;
+    line-height: 1.18;
+    font-weight: 700;
   }
   .landing-portal-subtitle {
     margin-bottom: 10px;
-    font-size: 12px;
-    line-height: 1.5;
+    font-size: 11px;
+    line-height: 1.65;
     max-width: 100%;
   }
 
