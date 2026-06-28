@@ -2152,7 +2152,7 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
 
   return (
     <div style={layoutConteudo(isDesktop)}>
-      <header style={{ marginBottom: 20, position: 'relative', zIndex: 100 }}>
+      <header style={{ marginBottom: 20 }}>
         <h1 style={{ ...estilos.titulo, textAlign: 'left', fontSize: isDesktop ? 28 : 22 }}>{t('mapa.title')}</h1>
         <p style={{ ...estilos.subtitulo, textAlign: 'left', marginBottom: 2 }}>
           {dados.nome} · {formatarData(dados.data)} às {dados.hora}
@@ -2162,27 +2162,6 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
         </p>
       </header>
 
-      {!mapaCompletoDesbloqueado && (
-        <div className="mapa-paywall-overlay" aria-modal="true" role="dialog" aria-label={t('mapa.unlockFullChart')}>
-          <div className="mapa-paywall-card">
-            <div className="mapa-paywall-card-pattern" aria-hidden />
-            <Crown size={28} color={CORES.dourado} style={{ marginBottom: 10, position: 'relative' }} />
-            <h2 className="mapa-paywall-title">{t('mapa.unlockFullChart')}</h2>
-            <button type="button" onClick={onUpgrade} style={{ ...estilos.botaoDourado, width: '100%', marginBottom: 14, position: 'relative' }}>
-              {t('mapa.premiumOption')}
-            </button>
-            <p className="mapa-paywall-desc">{t('mapa.fullDesc')}</p>
-            <div className="mapa-paywall-pills">
-              {['☀ Essência', '☿♀♂ Pessoais', '♃♄ Karma', '⊕ MC', '🌙 Fases Lua', '📄 PDF'].map((item) => (
-                <span key={item} className="mapa-paywall-pill">{item}</span>
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
-
-      <div className="mapa-page-body">
-        <div className={!mapaCompletoDesbloqueado ? 'mapa-preview-blurred' : undefined}>
       {/* ── Resumo interpretativo (gratuito) ── */}
       {!mapaCompletoDesbloqueado && resumoGratuito && (
         <div style={{ ...estilos.vidro, padding: 16, marginBottom: 14 }}>
@@ -2201,7 +2180,7 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
       </div>
       {pilaresCompletos.map(p => <PilarCard key={p.titulo} {...p} />)}
 
-      {/* ── Posições planetárias (todos os utilizadores com dados completos) ── */}
+      {/* ── Posições planetárias (gratuito — dados reais) ── */}
       {mapaCompletoVisivel && (
         <>
           {balEl && (
@@ -2268,8 +2247,8 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
         </>
       )}
 
-      {/* ── Interpretação profunda + exportação (premium ou preview desfocado) ── */}
-      {analiseCompleta && (
+      {/* ── Interpretação + premium ── */}
+      {analiseCompleta && mapaCompletoDesbloqueado && (
         <>
           <InterpretacaoMapa analise={analiseCompleta} estilosVidro={estilos.vidro} lang={lang} />
 
@@ -2319,32 +2298,115 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
             </div>
           </div>
 
-          {mapaCompletoDesbloqueado && (
-            <div style={{ display: 'flex', gap: 10, marginBottom: 20 }}>
-              <button type="button" onClick={downloadPdf} disabled={gerandoPdf} style={{
-                flex: 1, padding: '14px', borderRadius: 14,
-                background: gerandoPdf ? 'rgba(223,183,108,0.15)' : `linear-gradient(135deg, ${CORES.dourado}, ${CORES.douradoEscuro})`,
-                border: 'none', color: CORES.fundo, fontSize: 14, fontWeight: 700, cursor: gerandoPdf ? 'default' : 'pointer',
-                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
-              }}>
-                {gerandoPdf ? t('mapa.generating') : '📄 PDF'}
+          <div style={{ display: 'flex', gap: 10, marginBottom: 20 }}>
+            <button type="button" onClick={downloadPdf} disabled={gerandoPdf} style={{
+              flex: 1, padding: '14px', borderRadius: 14,
+              background: gerandoPdf ? 'rgba(223,183,108,0.15)' : `linear-gradient(135deg, ${CORES.dourado}, ${CORES.douradoEscuro})`,
+              border: 'none', color: CORES.fundo, fontSize: 14, fontWeight: 700, cursor: gerandoPdf ? 'default' : 'pointer',
+              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
+            }}>
+              {gerandoPdf ? t('mapa.generating') : '📄 PDF'}
+            </button>
+            <button type="button" onClick={compartilharEmail} style={{
+              flex: 1, padding: '14px', borderRadius: 14,
+              background: emailEnviado ? 'rgba(52,211,153,0.2)' : 'rgba(223,183,108,0.12)',
+              border: `1px solid ${emailEnviado ? '#34D399' : CORES.dourado}`,
+              color: emailEnviado ? '#34D399' : CORES.dourado,
+              fontSize: 14, fontWeight: 700, cursor: 'pointer',
+              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
+            }}>
+              {emailEnviado ? t('mapa.emailOpened') : '✉ Email'}
+            </button>
+          </div>
+        </>
+      )}
+
+      {analiseCompleta && !mapaCompletoDesbloqueado && (
+        <>
+          {analiseCompleta.seccoes?.length > 0 && (
+            <InterpretacaoMapa
+              analise={{ ...analiseCompleta, seccoes: analiseCompleta.seccoes.slice(0, 1) }}
+              estilosVidro={estilos.vidro}
+              lang={lang}
+            />
+          )}
+
+          <div className="mapa-paywall-inline" role="region" aria-label={t('mapa.unlockFullChart')}>
+            <div className="mapa-paywall-card">
+              <div className="mapa-paywall-card-pattern" aria-hidden />
+              <Crown size={28} color={CORES.dourado} style={{ marginBottom: 10, position: 'relative' }} />
+              <h2 className="mapa-paywall-title">{t('mapa.unlockFullChart')}</h2>
+              <button type="button" onClick={onUpgrade} style={{ ...estilos.botaoDourado, width: '100%', marginBottom: 14, position: 'relative' }}>
+                {t('mapa.premiumOption')}
               </button>
-              <button type="button" onClick={compartilharEmail} style={{
-                flex: 1, padding: '14px', borderRadius: 14,
-                background: emailEnviado ? 'rgba(52,211,153,0.2)' : 'rgba(223,183,108,0.12)',
-                border: `1px solid ${emailEnviado ? '#34D399' : CORES.dourado}`,
-                color: emailEnviado ? '#34D399' : CORES.dourado,
-                fontSize: 14, fontWeight: 700, cursor: 'pointer',
-                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
-              }}>
-                {emailEnviado ? t('mapa.emailOpened') : '✉ Email'}
-              </button>
+              <p className="mapa-paywall-desc">{t('mapa.fullDesc')}</p>
+              <div className="mapa-paywall-pills">
+                {['☀ Essência', '☿♀♂ Pessoais', '♃♄ Karma', '⊕ MC', '🌙 Fases Lua', '📄 PDF'].map((item) => (
+                  <span key={item} className="mapa-paywall-pill">{item}</span>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {analiseCompleta.seccoes?.length > 1 && (
+            <div className="mapa-premium-teaser">
+              <div className="mapa-preview-blurred">
+                <InterpretacaoMapa
+                  analise={{ ...analiseCompleta, seccoes: analiseCompleta.seccoes.slice(1) }}
+                  estilosVidro={estilos.vidro}
+                  lang={lang}
+                />
+
+                <div style={{ ...estilos.vidro, padding: 18, marginBottom: 14 }}>
+                  <div style={{ fontSize: 11, color: CORES.dourado, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 14, fontWeight: 700 }}>
+                    {t('mapa.lifeSpheres')}
+                  </div>
+                  {[
+                    {
+                      area: t('mapa.love'),
+                      planetas: planetasComCasa.filter(p => ['Vénus', 'Lua', 'Marte'].includes(p.nome)),
+                    },
+                    {
+                      area: t('mapa.career'),
+                      planetas: planetasComCasa.filter(p => ['Sol', 'Saturno', 'Marte'].includes(p.nome)),
+                    },
+                    {
+                      area: t('mapa.spirit'),
+                      planetas: planetasComCasa.filter(p => ['Neptuno', 'Plutão', 'Lua', 'Quíron'].includes(p.nome)),
+                    },
+                  ].map(({ area, planetas: ps }) => (
+                    <div key={area} style={{ padding: '10px 0', borderBottom: `1px solid ${CORES.vidroBorda}` }}>
+                      <div style={{ fontSize: 13, color: CORES.branco, fontWeight: 600, marginBottom: 3 }}>{area}</div>
+                      <div style={{ fontSize: 12, color: CORES.brancoMuted }}>
+                        {ps.length > 0
+                          ? ps.map(p => t('mapa.planetIn', { planet: tp(p.nome), sign: ts(p.signo?.nome) }) + (p.casa ? ` (${t('mapa.house')} ${p.casa})` : '')).join(' · ')
+                          : '—'}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                <div style={{ fontSize: 11, color: CORES.dourado, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 10, fontWeight: 700 }}>
+                  {t('mapa.export')}
+                </div>
+
+                <div style={{ ...estilos.vidro, padding: 14, marginBottom: 14 }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '5px 12px', fontSize: 11 }}>
+                    <span style={{ color: CORES.brancoMuted }}>{t('mapa.utDate')}</span>
+                    <span style={{ color: CORES.branco }}>{mapaNatal.instanteUTC ? mapaNatal.instanteUTC.replace('T', ' ').slice(0, 16) + ' UTC' : '—'}</span>
+                    <span style={{ color: CORES.brancoMuted }}>{t('mapa.timezone')}</span>
+                    <span style={{ color: CORES.branco }}>
+                      {typeof mapaNatal.fuso === 'string' ? mapaNatal.fuso : `UTC${(mapaNatal.fuso ?? 0) >= 0 ? '+' : ''}${mapaNatal.fuso ?? 0}`}
+                    </span>
+                    <span style={{ color: CORES.brancoMuted }}>{t('mapa.coordinates')}</span>
+                    <span style={{ color: CORES.branco }}>{mapaNatal.lat != null ? `${mapaNatal.lat.toFixed(3)}°N  ${mapaNatal.lon?.toFixed(3)}°E` : '—'}</span>
+                  </div>
+                </div>
+              </div>
             </div>
           )}
         </>
       )}
-        </div>
-      </div>
     </div>
   )
 }

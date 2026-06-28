@@ -65,7 +65,7 @@ export default {
       faq: {
         ariaLabel: 'Frequently asked questions about Sidus Astro',
         title: 'Frequently Asked Questions',
-        q1: 'What do I get with the €10 Natal Chart?',
+        q1: 'What do I get with the Natal Chart?',
         a1: 'A complete, high-quality interpreted PDF report with Sun, Moon, Ascendant, planets, Placidus houses and aspects — calculated with Swiss Ephemeris.',
         q2: 'How does the AI Oracle work?',
         a2: 'It is a secure chat powered by artificial intelligence focused on astrological guidance — love, career, transits and your natal chart.',

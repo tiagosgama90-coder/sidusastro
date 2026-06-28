@@ -65,7 +65,7 @@ export default {
       faq: {
         ariaLabel: 'Perguntas frequentes sobre Sidus Astro',
         title: 'Perguntas Frequentes',
-        q1: 'O que recebo no Mapa Astral de €10?',
+        q1: 'O que recebo no Mapa Astral?',
         a1: 'Um relatório interpretado completo em PDF de alta qualidade, com Sol, Lua, Ascendente, planetas, casas Placidus e aspectos — calculado com Swiss Ephemeris.',
         q2: 'Como funciona o Oráculo de IA?',
         a2: 'É um chat seguro baseado em inteligência artificial focado em aconselhamento astrológico — amor, carreira, trânsitos e mapa natal.',
