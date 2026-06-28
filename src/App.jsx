@@ -290,9 +290,9 @@ const estilos = {
     boxSizing: 'border-box',
   },
   vidro: {
-    background: CORES.vidro,
-    backdropFilter: 'blur(16px)',
-    WebkitBackdropFilter: 'blur(16px)',
+    background: 'rgba(11, 7, 30, 0.96)',
+    backdropFilter: 'blur(20px)',
+    WebkitBackdropFilter: 'blur(20px)',
     border: `1px solid ${CORES.vidroBorda}`,
     borderRadius: 16,
     boxShadow: CORES.sombra,
@@ -357,8 +357,6 @@ const estilos = {
     gap: 12,
     padding: '10px 16px',
     paddingTop: 'max(10px, env(safe-area-inset-top, 10px))',
-    background: 'rgba(11, 7, 30, 0.96)',
-    backdropFilter: 'blur(20px)',
     borderBottom: `1px solid ${CORES.vidroBorda}`,
     zIndex: 150,
     boxSizing: 'border-box',
@@ -374,8 +372,6 @@ const estilos = {
     justifyContent: 'space-around',
     alignItems: 'center',
     padding: '12px 8px 20px',
-    background: 'rgba(11, 7, 30, 0.92)',
-    backdropFilter: 'blur(20px)',
     borderTop: `1px solid ${CORES.vidroBorda}`,
     zIndex: 100,
     boxSizing: 'border-box',
@@ -393,8 +389,6 @@ const estilos = {
     gap: 10,
     padding: '10px 58px 10px 18px',
     paddingTop: 'max(10px, env(safe-area-inset-top, 10px))',
-    background: 'rgba(11, 7, 30, 0.96)',
-    backdropFilter: 'blur(20px)',
     borderBottom: `1px solid ${CORES.vidroBorda}`,
     zIndex: 150,
     boxSizing: 'border-box',
@@ -1296,7 +1290,7 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
 
   return (
     <div className={`landing-auth-layout${isDesktop ? ' landing-auth-layout--desktop' : ' landing-auth-layout--mobile'}`}>
-      <div className={`landing-auth-sticky-top${!isDesktop ? ' landing-auth-sticky-top--mobile' : ''}`}>
+      <div className={`landing-auth-sticky-top sidus-blur-glass${!isDesktop ? ' landing-auth-sticky-top--mobile' : ''}`}>
         {!isDesktop && (
           <div className="landing-lang-bar">
             <LanguageSwitcher variant="landing-bar" />
@@ -2815,7 +2809,7 @@ function Chat({ mapaNatal, isPremium, userId, oracleRemotas, onOracleUsada, onUp
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100svh', maxHeight: '100svh', position: 'relative', zIndex: 1 }}>
       {/* Cabeçalho */}
-      <header style={{ padding: '14px 18px', background: 'rgba(11,7,30,0.97)', borderBottom: `1px solid ${CORES.vidroBorda}`, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0 }}>
+      <header className="sidus-blur-glass" style={{ padding: '14px 18px', borderBottom: `1px solid ${CORES.vidroBorda}`, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
           <div style={{ width: 36, height: 36, borderRadius: '50%', background: 'linear-gradient(135deg,#6D28D9,#0B071E)', border: `1.5px solid ${CORES.dourado}`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18 }}>
             ✦
@@ -2882,7 +2876,7 @@ function Chat({ mapaNatal, isPremium, userId, oracleRemotas, onOracleUsada, onUp
       </div>
 
       {/* Input */}
-      <div style={{ padding: '10px 14px 22px', background: 'rgba(11,7,30,0.97)', borderTop: `1px solid ${CORES.vidroBorda}`, display: 'flex', gap: 10, flexShrink: 0 }}>
+      <div className="sidus-blur-glass" style={{ padding: '10px 14px 22px', borderTop: `1px solid ${CORES.vidroBorda}`, display: 'flex', gap: 10, flexShrink: 0 }}>
         <input
           value={texto}
           onChange={e => setTexto(e.target.value)}
@@ -3069,7 +3063,7 @@ function Navbar({ passo, setPasso, isDesktop, dados, fotoPerfil }) {
           <AvatarNav foto={fotoPerfil} nome={nomePerfil} size={34} ativo={perfilAtivo} />
         </button>
       )}
-      <header style={headerStyle}>
+      <header className="sidus-blur-glass" style={headerStyle}>
         {isDesktop ? (
           <>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
@@ -3138,7 +3132,7 @@ function Navbar({ passo, setPasso, isDesktop, dados, fotoPerfil }) {
         />
       )}
 
-      <nav className={`mobile-menu-drawer${menuAberto ? ' mobile-menu-drawer--open' : ''}`} aria-hidden={!menuAberto}>
+      <nav className={`mobile-menu-drawer sidus-blur-glass${menuAberto ? ' mobile-menu-drawer--open' : ''}`} aria-hidden={!menuAberto}>
         <button
           type="button"
           onClick={irPerfil}
