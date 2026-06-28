@@ -13,10 +13,23 @@ export function gerarChaveMapa(dados, lang = 'pt') {
   ].join('|')
 }
 
-const STORAGE_PREFIX = 'sidus_mapa_v4'
+const STORAGE_PREFIX = 'sidus_mapa_v5'
 
 function storageKey(dados, lang) {
   return `${STORAGE_PREFIX}:${gerarChaveMapa(dados, lang)}`
+}
+
+export function analiseMapaValida(analise) {
+  if (!analise?.seccoes?.length) return false
+  const textos = analise.seccoes.flatMap((s) => (s.blocos || []).map((b) => b.texto || ''))
+  const junto = textos.join(' ')
+  if (!junto.trim()) return false
+  if (/\bundefined\b/i.test(junto)) return false
+  const palavras = junto.split(/\s+/).filter(Boolean).length
+  if (palavras < 600) return false
+  const blocosVazios = textos.filter((t) => t.trim().length < 40).length
+  if (blocosVazios > textos.length * 0.4) return false
+  return true
 }
 
 export function readMapaIACache(dados, lang) {
@@ -26,6 +39,7 @@ export function readMapaIACache(dados, lang) {
     const parsed = JSON.parse(raw)
     if (!parsed?.seccoes?.length) return null
     if (parsed.chave && parsed.chave !== gerarChaveMapa(dados, lang)) return null
+    if (!analiseMapaValida(parsed)) return null
     return parsed
   } catch {
     return null
@@ -34,7 +48,7 @@ export function readMapaIACache(dados, lang) {
 
 export function writeMapaIACache(dados, lang, analise) {
   try {
-    if (!analise?.seccoes?.length) return
+    if (!analiseMapaValida(analise)) return
     localStorage.setItem(storageKey(dados, lang), JSON.stringify({
       ...analise,
       chave: gerarChaveMapa(dados, lang),
@@ -47,7 +61,15 @@ export function writeMapaIACache(dados, lang, analise) {
 
 export function interpretacaoValidaParaMapa(interpretacao, dados, lang) {
   if (!interpretacao?.seccoes?.length) return false
-  if (!interpretacao.chave) return true
-  return interpretacao.chave === gerarChaveMapa(dados, lang)
-    && (interpretacao.lang || lang) === lang
+  if (!analiseMapaValida(interpretacao)) return false
+  if (interpretacao.chave && interpretacao.chave !== gerarChaveMapa(dados, lang)) return false
+  if (interpretacao.lang && interpretacao.lang !== lang) return false
+  return true
+}
+
+export function contarPalavrasAnalise(analise) {
+  if (!analise?.seccoes?.length) return 0
+  return analise.seccoes
+    .flatMap((s) => s.blocos || [])
+    .reduce((n, b) => n + String(b.texto || '').split(/\s+/).filter(Boolean).length, 0)
 }

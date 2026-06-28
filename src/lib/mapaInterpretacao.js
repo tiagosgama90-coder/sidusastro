@@ -3,12 +3,13 @@
  * Suporta PT e EN via parâmetro lang.
  */
 
-import { planetaPorNome } from './casasPlacidus.js'
+import { planetaPorNome, resolverPlaneta, mapaPlanetasProntos } from './casasPlacidus.js'
 import { getMapaCopy } from './i18n/mapaCopy.js'
 import { interpretarTranspessoal, gerarSinteseEvolutiva } from './mapaProfundo.js'
 import {
   interpretarSolEssencia, interpretarLuaEssencia,
   interpretarAscEssencia, interpretarBig3Essencia,
+  interpretarPlanetaEssencia,
 } from './mapaEssencia.js'
 
 function metaSigno(signo, casa, lang) {
@@ -26,9 +27,13 @@ export function gerarResumoGratuito(mapaNatal, lang = 'pt') {
 
 /**
  * Gera a análise completa em secções.
- * @returns {{ seccoes: Array, textoPlano: string }}
+ * @returns {{ seccoes: Array, textoPlano: string, fonte: string }}
  */
 export function gerarAnaliseCompleta(mapaNatal, planetas, aspetos = [], dados = {}, lang = 'pt') {
+  if (!mapaPlanetasProntos(planetas, mapaNatal)) {
+    return { seccoes: [], textoPlano: '', fonte: 'lexicon' }
+  }
+
   const C = getMapaCopy(lang)
   const { L } = C
 
@@ -37,28 +42,28 @@ export function gerarAnaliseCompleta(mapaNatal, planetas, aspetos = [], dados = 
   const asc = mapaNatal?.ascendente?.nome
   const mc  = mapaNatal?.mc?.nome
 
-  const pSol = planetaPorNome(planetas, 'Sol')
-  const pLua = planetaPorNome(planetas, 'Lua')
-  const pMer = planetaPorNome(planetas, 'Mercúrio')
-  const pVen = planetaPorNome(planetas, 'Vénus')
-  const pMar = planetaPorNome(planetas, 'Marte')
-  const pJup = planetaPorNome(planetas, 'Júpiter')
-  const pSat = planetaPorNome(planetas, 'Saturno')
+  const pSol = resolverPlaneta(planetas, mapaNatal, 'Sol')
+  const pLua = resolverPlaneta(planetas, mapaNatal, 'Lua')
+  const pMer = resolverPlaneta(planetas, mapaNatal, 'Mercúrio')
+  const pVen = resolverPlaneta(planetas, mapaNatal, 'Vénus')
+  const pMar = resolverPlaneta(planetas, mapaNatal, 'Marte')
+  const pJup = resolverPlaneta(planetas, mapaNatal, 'Júpiter')
+  const pSat = resolverPlaneta(planetas, mapaNatal, 'Saturno')
 
-  const pChi = planetaPorNome(planetas, 'Quíron')
-  const pNod = planetaPorNome(planetas, 'Nodo Norte')
-  const pUra = planetaPorNome(planetas, 'Urano')
-  const pNep = planetaPorNome(planetas, 'Neptuno')
-  const pPlu = planetaPorNome(planetas, 'Plutão')
+  const pChi = resolverPlaneta(planetas, mapaNatal, 'Quíron')
+  const pNod = resolverPlaneta(planetas, mapaNatal, 'Nodo Norte')
+  const pUra = resolverPlaneta(planetas, mapaNatal, 'Urano')
+  const pNep = resolverPlaneta(planetas, mapaNatal, 'Neptuno')
+  const pPlu = resolverPlaneta(planetas, mapaNatal, 'Plutão')
 
   const sintese = gerarSinteseEvolutiva(mapaNatal, planetas, aspetos, lang)
 
   const blocosGeracionais = [
-    pUra && { subtitulo: L.urano, texto: interpretarTranspessoal('Urano', pUra, mapaNatal, aspetos, planetas, lang), meta: metaSigno(pUra.signo?.nome, pUra.casa, lang) },
-    pNep && { subtitulo: L.neptuno, texto: interpretarTranspessoal('Neptuno', pNep, mapaNatal, aspetos, planetas, lang), meta: metaSigno(pNep.signo?.nome, pNep.casa, lang) },
-    pPlu && { subtitulo: L.plutao, texto: interpretarTranspessoal('Plutão', pPlu, mapaNatal, aspetos, planetas, lang), meta: metaSigno(pPlu.signo?.nome, pPlu.casa, lang) },
-    pNod && { subtitulo: L.nodo, texto: interpretarTranspessoal('Nodo Norte', pNod, mapaNatal, aspetos, planetas, lang), meta: metaSigno(pNod.signo?.nome, pNod.casa, lang) },
-    pChi && { subtitulo: L.quiron, texto: interpretarTranspessoal('Quíron', pChi, mapaNatal, aspetos, planetas, lang), meta: metaSigno(pChi.signo?.nome, pChi.casa, lang) },
+    pUra?.signo?.nome && { subtitulo: L.urano, texto: interpretarTranspessoal('Urano', pUra, mapaNatal, aspetos, planetas, lang), meta: metaSigno(pUra.signo?.nome, pUra.casa, lang) },
+    pNep?.signo?.nome && { subtitulo: L.neptuno, texto: interpretarTranspessoal('Neptuno', pNep, mapaNatal, aspetos, planetas, lang), meta: metaSigno(pNep.signo?.nome, pNep.casa, lang) },
+    pPlu?.signo?.nome && { subtitulo: L.plutao, texto: interpretarTranspessoal('Plutão', pPlu, mapaNatal, aspetos, planetas, lang), meta: metaSigno(pPlu.signo?.nome, pPlu.casa, lang) },
+    pNod?.signo?.nome && { subtitulo: L.nodo, texto: interpretarTranspessoal('Nodo Norte', pNod, mapaNatal, aspetos, planetas, lang), meta: metaSigno(pNod.signo?.nome, pNod.casa, lang) },
+    pChi?.signo?.nome && { subtitulo: L.quiron, texto: interpretarTranspessoal('Quíron', pChi, mapaNatal, aspetos, planetas, lang), meta: metaSigno(pChi.signo?.nome, pChi.casa, lang) },
   ].filter(Boolean)
 
   const seccoes = [
@@ -83,17 +88,17 @@ export function gerarAnaliseCompleta(mapaNatal, planetas, aspetos = [], dados = 
       id: 2,
       titulo: L.sec2,
       blocos: [
-        { subtitulo: L.mer, texto: C.paragrafoMerc(pMer?.signo?.nome, pMer?.casa), meta: pMer ? metaSigno(pMer.signo?.nome, pMer.casa, lang) : '-' },
-        { subtitulo: L.ven, texto: C.paragrafoVen(pVen?.signo?.nome, pVen?.casa), meta: pVen ? metaSigno(pVen.signo?.nome, pVen.casa, lang) : '-' },
-        { subtitulo: L.mar, texto: C.paragrafoMar(pMar?.signo?.nome, pMar?.casa), meta: pMar ? metaSigno(pMar.signo?.nome, pMar.casa, lang) : '-' },
+        { subtitulo: L.mer, texto: interpretarPlanetaEssencia('Mercúrio', pMer, mapaNatal, aspetos, planetas, lang), meta: metaSigno(pMer?.signo?.nome, pMer?.casa, lang) },
+        { subtitulo: L.ven, texto: interpretarPlanetaEssencia('Vénus', pVen, mapaNatal, aspetos, planetas, lang), meta: metaSigno(pVen?.signo?.nome, pVen?.casa, lang) },
+        { subtitulo: L.mar, texto: interpretarPlanetaEssencia('Marte', pMar, mapaNatal, aspetos, planetas, lang), meta: metaSigno(pMar?.signo?.nome, pMar?.casa, lang) },
       ],
     },
     {
       id: 3,
       titulo: L.sec3,
       blocos: [
-        { subtitulo: L.jup, texto: C.paragrafoJup(pJup?.signo?.nome, pJup?.casa), meta: pJup ? metaSigno(pJup.signo?.nome, pJup.casa, lang) : '-' },
-        { subtitulo: L.sat, texto: C.paragrafoSat(pSat?.signo?.nome, pSat?.casa), meta: pSat ? metaSigno(pSat.signo?.nome, pSat.casa, lang) : '-' },
+        { subtitulo: L.jup, texto: interpretarPlanetaEssencia('Júpiter', pJup, mapaNatal, aspetos, planetas, lang), meta: metaSigno(pJup?.signo?.nome, pJup?.casa, lang) },
+        { subtitulo: L.sat, texto: interpretarPlanetaEssencia('Saturno', pSat, mapaNatal, aspetos, planetas, lang), meta: metaSigno(pSat?.signo?.nome, pSat?.casa, lang) },
       ],
     },
     {
@@ -119,7 +124,7 @@ export function gerarAnaliseCompleta(mapaNatal, planetas, aspetos = [], dados = 
   ]
 
   const textoPlano = formatarTextoPlano(seccoes, mapaNatal, lang)
-  return { seccoes, textoPlano }
+  return { seccoes, textoPlano, fonte: 'lexicon' }
 }
 
 export function formatarTextoPlano(seccoes, mapaNatal, lang = 'pt') {
@@ -147,3 +152,5 @@ export function formatarTextoPlano(seccoes, mapaNatal, lang = 'pt') {
   linhas.push(L.pdfFooter)
   return linhas.join('\n')
 }
+
+export { mapaPlanetasProntos }

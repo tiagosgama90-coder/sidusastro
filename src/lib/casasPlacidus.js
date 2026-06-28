@@ -91,6 +91,63 @@ export function atribuirCasasPlanetas(planetas, cusps) {
   }))
 }
 
+const CHAVE_POR_NOME = {
+  Sol: 'sol',
+  Lua: 'lua',
+  Mercúrio: 'mercurio',
+  Vénus: 'venus',
+  Marte: 'marte',
+  Júpiter: 'jupiter',
+  Saturno: 'saturno',
+  Urano: 'urano',
+  Neptuno: 'netuno',
+  Plutão: 'plutao',
+  'Nodo Norte': 'nodo',
+  Quíron: 'quiron',
+}
+
 export function planetaPorNome(planetas, nome) {
-  return planetas.find(p => p.nome === nome) ?? null
+  if (!Array.isArray(planetas) || !nome) return null
+  const direct = planetas.find((p) => p.nome === nome)
+  if (direct) return direct
+  const key = CHAVE_POR_NOME[nome]
+  if (key) {
+    const byKey = planetas.find((p) => p.key === key)
+    if (byKey) return byKey
+  }
+  const lower = nome.toLowerCase()
+  return planetas.find((p) => p.nome?.toLowerCase() === lower) ?? null
+}
+
+/** Resolve planeta com fallback aos pontos angulares do mapa natal. */
+export function resolverPlaneta(planetas, mapaNatal, nome) {
+  const p = planetaPorNome(planetas, nome)
+  if (p?.signo?.nome) return p
+
+  const angulares = {
+    Sol: mapaNatal?.solar,
+    Lua: mapaNatal?.lunar,
+  }
+  const angular = angulares[nome]
+  if (!angular?.nome) return p
+
+  return {
+    ...(p || { nome, key: CHAVE_POR_NOME[nome] }),
+    signo: {
+      ...angular,
+      nome: angular.nome,
+      graus: angular.graus,
+    },
+    longitude: p?.longitude ?? angular.longitude,
+    casa: p?.casa ?? null,
+    retrograde: p?.retrograde ?? false,
+  }
+}
+
+export function mapaPlanetasProntos(planetas, mapaNatal) {
+  if (!mapaNatal?.solar?.nome || !Array.isArray(planetas) || planetas.length < 7) return false
+  const sol = resolverPlaneta(planetas, mapaNatal, 'Sol')
+  const lua = resolverPlaneta(planetas, mapaNatal, 'Lua')
+  const mer = resolverPlaneta(planetas, mapaNatal, 'Mercúrio')
+  return Boolean(sol?.signo?.nome && lua?.signo?.nome && mer?.signo?.nome)
 }

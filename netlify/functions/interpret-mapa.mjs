@@ -11,7 +11,8 @@ import {
   parseRespostaMapa,
   contarPalavrasAnalise,
 } from '../../src/lib/mapaInterpretacaoPrompt.js'
-import { gerarAnaliseCompleta } from '../../src/lib/mapaInterpretacao.js'
+import { gerarAnaliseCompleta, mapaPlanetasProntos } from '../../src/lib/mapaInterpretacao.js'
+import { analiseMapaValida } from '../../src/lib/mapaInterpretacaoCache.js'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -105,7 +106,16 @@ export default async (req) => {
     }
 
     const chave = gerarChaveMapa(dados, lang)
-    const resumoLexicon = gerarAnaliseCompleta(mapaNatal, planetas, aspetos, dados, lang)
+    const resumoLexicon = mapaPlanetasProntos(planetas, mapaNatal)
+      ? gerarAnaliseCompleta(mapaNatal, planetas, aspetos, dados, lang)
+      : null
+
+    if (!mapaPlanetasProntos(planetas, mapaNatal)) {
+      return new Response(JSON.stringify({ error: 'Planetas em cálculo', retry: true }), {
+        status: 503,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      })
+    }
 
     if (!forceRegenerate) {
       const guardada = interpretacaoGuardada(acesso.perfil, dados, lang)
@@ -134,7 +144,7 @@ export default async (req) => {
       resumoLexicon,
     })
 
-    if (!analise?.seccoes?.length) {
+    if (!analise?.seccoes?.length || !analiseMapaValida(analise)) {
       analise = { ...resumoLexicon, fonte: 'lexicon' }
     } else {
       analise.fonte = 'ia'

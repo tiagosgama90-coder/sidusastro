@@ -63,7 +63,7 @@ import {
 } from 'firebase/auth'
 import { doc, getDoc, setDoc, onSnapshot } from 'firebase/firestore'
 import { atribuirCasasPlanetas } from './lib/casasPlacidus.js'
-import { gerarAnaliseCompleta, gerarResumoGratuito } from './lib/mapaInterpretacao.js'
+import { gerarAnaliseCompleta, gerarResumoGratuito, mapaPlanetasProntos } from './lib/mapaInterpretacao.js'
 import { calcularFaseLua } from './lib/faseLua.js'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { passoFromPath, pathFromPasso, langFromPath } from './lib/routes.js'
@@ -84,7 +84,7 @@ import {
 import { consultarOracleServidor, interpretarMapaServidor } from './lib/apiAi.js'
 import { localizeArcano } from './lib/i18n/tarotArcana.js'
 import { normalizarDataISO, criarDataUTCporLocal, localToUTC } from './lib/datetime.js'
-import { readMapaIACache, writeMapaIACache, interpretacaoValidaParaMapa, gerarChaveMapa } from './lib/mapaInterpretacaoCache.js'
+import { readMapaIACache, writeMapaIACache, interpretacaoValidaParaMapa, gerarChaveMapa, analiseMapaValida, contarPalavrasAnalise } from './lib/mapaInterpretacaoCache.js'
 import { calcularAngulosCasas } from './lib/natalHouses.js'
 import { utilizadorTemPremium, emailTemPremiumPrivilegiado } from './lib/premiumAccess.js'
 import {
@@ -2039,19 +2039,31 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
     [planetasComCasa]
   )
 
+  const planetasProntos = mapaPlanetasProntos(planetasComCasa, mapaNatal)
+
   const analiseLexicon = useMemo(() => {
-    if (!mapaNatal) return null
+    if (!mapaNatal || !planetasProntos) return null
     try {
       return gerarAnaliseCompleta(mapaNatal, planetasComCasa, aspetosNatais, dados, lang)
     } catch (e) {
       console.warn('[Sidus] Análise mapa:', e?.message)
       return null
     }
-  }, [mapaNatal, planetasComCasa, aspetosNatais, dados, lang])
+  }, [mapaNatal, planetasComCasa, aspetosNatais, dados, lang, planetasProntos])
 
-  const analiseCompleta = (mapaCompletoDesbloqueado && analiseIA?.seccoes?.length)
-    ? analiseIA
-    : analiseLexicon
+  const analiseCompleta = useMemo(() => {
+    if (!analiseLexicon?.seccoes?.length) return null
+    const lexPalavras = contarPalavrasAnalise(analiseLexicon)
+    if (
+      mapaCompletoDesbloqueado
+      && analiseIA?.seccoes?.length
+      && analiseMapaValida(analiseIA)
+      && contarPalavrasAnalise(analiseIA) >= lexPalavras
+    ) {
+      return analiseIA
+    }
+    return analiseLexicon
+  }, [mapaCompletoDesbloqueado, analiseIA, analiseLexicon])
 
   useEffect(() => {
     if (!mapaCompletoDesbloqueado || !mapaNatal || !analiseLexicon) {
@@ -2068,7 +2080,7 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
       pedidoInterpretacaoRef.current = false
     }
     const aplicar = (analise) => {
-      if (!analise?.seccoes?.length) return
+      if (!analiseMapaValida(analise)) return
       setAnaliseIA({
         ...analise,
         chave,
@@ -2083,25 +2095,19 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
     }
 
     const cached = readMapaIACache(dados, lang)
-    if (cached?.seccoes?.length && cached.fonte === 'ia') {
-      aplicar(cached)
-      return undefined
-    }
-
     if (cached?.seccoes?.length) {
       aplicar(cached)
-    } else {
-      aplicar(analiseLexicon)
     }
 
     if (pedidoInterpretacaoRef.current) return undefined
+    if (!analiseLexicon?.seccoes?.length) return undefined
     pedidoInterpretacaoRef.current = true
 
     let cancelled = false
     ;(async () => {
-      if (interpretacaoValidaParaMapa(interpretacaoPerfil, dados, lang)) return
       const cachedIa = readMapaIACache(dados, lang)
       if (cachedIa?.fonte === 'ia') return
+      if (interpretacaoValidaParaMapa(interpretacaoPerfil, dados, lang)) return
 
       setAnaliseIAUpgrading(true)
       try {
@@ -2129,14 +2135,12 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
         }
 
         if (cancelled || !resultado?.seccoes?.length) return
-        const analise = {
+        if (!analiseMapaValida(resultado)) return
+        aplicar({
           seccoes: resultado.seccoes,
           textoPlano: resultado.textoPlano,
           fonte: resultado.fonte || 'ia',
-          chave,
-          lang,
-        }
-        aplicar(analise)
+        })
       } catch (e) {
         console.warn('[Sidus] Interpretação mapa:', e?.message)
       } finally {
@@ -2356,7 +2360,7 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
             analise={analiseCompleta}
             estilosVidro={estilos.vidro}
             lang={lang}
-            upgrading={analiseIAUpgrading && analiseCompleta?.fonte !== 'ia'}
+            upgrading={analiseIAUpgrading && analiseCompleta?.fonte !== 'ia' && !interpretacaoValidaParaMapa(interpretacaoPerfil, dados, lang)}
             upgradingLabel={t('mapa.aiUpgrading')}
           />
 

@@ -394,3 +394,74 @@ export function interpretarBig3Essencia(mapaNatal, planetas, aspetos, lang = 'pt
 
   return partes.join(' ')
 }
+
+const ESSENCIA_PLANETA = {
+  pt: {
+    Mercúrio: 'Mercúrio governa a mente concreta, a fala, a escrita e a forma como processas informação. É o mensageiro do mapa - traduz o céu em palavras que a vida compreende.',
+    Vénus: 'Vénus descreve o que amas, o que valorizas e a forma como atraes e és atraído/a. É a gravidade do prazer, da beleza e do vínculo afetivo no teu mapa.',
+    Marte: 'Marte é o guerreiro interior - desejo, coragem, raiva e impulso de agir. Mostra onde combates, onde conquistas e onde precisas de canalizar fogo sem te queimares.',
+    Júpiter: 'Júpiter expande - fé, sentido, oportunidade e crescimento. Indica onde a vida te convida a confiar, a ousar e a ver mais longe do que o medo permite.',
+    Saturno: 'Saturno é o mestre severo e amoroso - limites, tempo, responsabilidade e maturidade. Marca onde constróis trono através do esforço ou onde o medo te paralisa até aprenderes.',
+  },
+  en: {
+    Mercury: 'Mercury governs concrete mind, speech, writing and how you process information. It is the chart\'s messenger - translating the sky into words life can understand.',
+    Venus: 'Venus describes what you love, value and how you attract and are attracted. It is the gravity of pleasure, beauty and emotional bond in your chart.',
+    Mars: 'Mars is the inner warrior - desire, courage, anger and drive to act. It shows where you fight, conquer and must channel fire without burning out.',
+    Jupiter: 'Jupiter expands - faith, meaning, opportunity and growth. It shows where life invites you to trust, dare and see further than fear allows.',
+    Saturn: 'Saturn is the strict and loving teacher - limits, time, responsibility and maturity. It marks where you build a throne through effort or where fear paralyses you until you learn.',
+  },
+}
+
+function introPlaneta(nome, lang) {
+  const mapPt = ESSENCIA_PLANETA.pt
+  if (lang === 'en') {
+    const enNome = tp(nome, lang)
+    const mapEn = ESSENCIA_PLANETA.en
+    return mapEn[enNome] || `${enNome} colours a vital dimension of your chart.`
+  }
+  return mapPt[nome] || `${nome} colore uma dimensão vital do teu mapa.`
+}
+
+// import at top - need PLANETAS_PT_TO_EN from astro - already have translatePlaneta
+
+export function interpretarPlanetaEssencia(nomePlaneta, p, mapaNatal, aspetos, planetas, lang = 'pt') {
+  if (!p?.signo?.nome) {
+    return lang === 'en'
+      ? `${nomePlaneta} could not be calculated for this chart. Check birth time and place.`
+      : `${nomePlaneta} não foi possível calcular neste mapa. Verifica hora e local de nascimento.`
+  }
+
+  const signo = p.signo.nome
+  const s = sn(signo, lang)
+  const elem = elemSigno(signo, lang)
+  const mod = modSigno(signo, lang)
+  const nomeTr = tp(nomePlaneta, lang)
+
+  let t = lang === 'en'
+    ? `${nomeTr} in ${s} shapes how this planet expresses in your life: ${introPlaneta(nomePlaneta, lang)} In ${s}, the ${elem} and ${mod} quality colours every sentence you think, every choice you make under this planet's domain.`
+    : `${nomePlaneta} em ${s} define como este planeta se expressa na tua vida: ${introPlaneta(nomePlaneta, lang)} Em ${s}, a qualidade de ${elem} e modalidade ${mod} colore cada frase que pensas e cada escolha que fazes sob o domínio deste planeta.`
+
+  t += blocoGraus(p.signo?.graus, signo, lang)
+  t += blocoCasa(p.casa, lang, lang === 'en' ? ' ' : ' ')
+  t += blocoAspectos(nomePlaneta, aspetos, planetas, lang)
+
+  if (p.retrograde) {
+    t += lang === 'en'
+      ? ` ${nomeTr} retrograde: this energy turns inward - you review, rethink and refine this area before acting outwardly.`
+      : ` ${nomePlaneta} retrógrado: esta energia volta para dentro - revisas, repensas e afinas esta área antes de a expressares no mundo.`
+  }
+
+  if (nomePlaneta === 'Saturno' || nomePlaneta === 'Saturn') {
+    t += lang === 'en'
+      ? ' Saturn is your karmic master: what you resist here becomes your greatest competence when you commit to the long work.'
+      : ' Saturno é o teu mestre kármico: o que resistes aqui torna-se a tua maior competência quando te comprometes com o trabalho longo.'
+  }
+
+  if (nomePlaneta === 'Júpiter' || nomePlaneta === 'Jupiter') {
+    t += lang === 'en'
+      ? ' Trust this expansion but watch excess - Jupiter blesses and inflates in equal measure.'
+      : ' Confia nesta expansão mas vigia o excesso - Júpiter abençoa e inflaciona na mesma medida.'
+  }
+
+  return t
+}

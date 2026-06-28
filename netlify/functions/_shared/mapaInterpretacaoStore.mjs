@@ -1,4 +1,4 @@
-import { gerarChaveMapa } from '../../../src/lib/mapaInterpretacaoCache.js'
+import { gerarChaveMapa, analiseMapaValida } from '../../../src/lib/mapaInterpretacaoCache.js'
 
 export { gerarChaveMapa }
 
@@ -8,11 +8,12 @@ export function interpretacaoGuardada(perfil, dados, lang) {
   const chave = gerarChaveMapa(dados, lang)
   if (guardada.chave !== chave) return null
   if ((guardada.lang || lang) !== lang) return null
+  if (!analiseMapaValida(guardada)) return null
   return guardada
 }
 
 export async function persistirInterpretacao(db, uid, dados, lang, analise) {
-  if (!db || !uid || !analise?.seccoes?.length) return false
+  if (!db || !uid || !analise?.seccoes?.length || !analiseMapaValida(analise)) return false
   try {
     await db.collection('users').doc(uid).set({
       interpretacaoMapa: {
