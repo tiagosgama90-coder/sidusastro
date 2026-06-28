@@ -71,9 +71,8 @@ export default {
         a2: 'É um chat seguro baseado em inteligência artificial focado em aconselhamento astrológico - amor, carreira, trânsitos e mapa natal.',
         q3: 'Os meus dados de nascimento estão seguros?',
         a3: 'Sim, os dados são processados de forma encriptada através do Firebase.',
-        q4: 'Por que o mapa avulso e o Premium têm preços parecidos?',
-        a4: 'O mapa a 10 € é pagamento único - recebes o PDF completo sem subscrição mensal. O Sidus Premium a 9,99 €/mês inclui o mapa astral completo mais oráculo de IA, tarot, sinastria e todas as ferramentas. Se queres ir além do PDF, o Premium é a melhor escolha.',
-        pricingLine: '💳 Comprar mapa completo · 10 € · ✦ Sidus Premium 9,99 €/mês · Tudo incluído',
+        q4: 'Qual a diferença entre o mapa avulso e o Premium?',
+        a4: 'O mapa avulso é pagamento único — recebes o relatório completo em PDF sem subscrição mensal. O Sidus Premium inclui o mapa astral completo mais oráculo de IA, tarot, sinastria e todas as ferramentas. Se queres ir além do PDF, o Premium é a melhor escolha.',
       },
     },
     errors: {

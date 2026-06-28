@@ -93,7 +93,8 @@ const LABELS = {
   pt: {
     casaCalc: 'uma área ainda a calcular',
     sec0: 'Nota Metodológica', sec1: 'A Tua Essência Central', sec2: 'Mente, Relações e Acção (Planetas Pessoais)',
-    sec3: 'Desafios, Bloqueios e Crescimento (Saturno e Júpiter)', sec4: 'Missão de Vida e Carreira (Meio do Céu)',
+    sec3: 'Desafios, Bloqueios e Crescimento (Saturno e Júpiter)', secAspetos: 'Diálogo Planetário (Aspetos Principais)',
+    sec4: 'Missão de Vida e Carreira (Meio do Céu)',
     sec5: 'Dimensões Transpessoais e Kármicas', sec6: 'Síntese Evolutiva e Conselho Final',
     sol: 'O Teu Propósito Vital (Sol)', lua: 'A Tua Natureza Emocional (Lua)', asc: 'A Tua Máscara Social e Impacto (Ascendente)',
     big3: 'Dinâmica entre Sol, Lua e Ascendente', mer: 'Mentalidade e Comunicação (Mercúrio)',
@@ -112,7 +113,8 @@ const LABELS = {
   en: {
     casaCalc: 'an area still being calculated',
     sec0: 'Methodological Note', sec1: 'Your Central Essence', sec2: 'Mind, Relationships & Action (Personal Planets)',
-    sec3: 'Challenges, Blocks & Growth (Saturn & Jupiter)', sec4: 'Life Mission & Career (Midheaven)',
+    sec3: 'Challenges, Blocks & Growth (Saturn & Jupiter)', secAspetos: 'Planetary Dialogue (Major Aspects)',
+    sec4: 'Life Mission & Career (Midheaven)',
     sec5: 'Transpersonal & Karmic Dimensions', sec6: 'Evolutionary Synthesis & Final Guidance',
     sol: 'Your Vital Purpose (Sun)', lua: 'Your Emotional Nature (Moon)', asc: 'Your Social Mask & Impact (Ascendant)',
     big3: 'Dynamics between Sun, Moon & Ascendant', mer: 'Mindset & Communication (Mercury)',

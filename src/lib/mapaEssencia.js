@@ -4,6 +4,7 @@
  */
 import { planetaPorNome, getTemaCasa } from './casasPlacidus.js'
 import { translateSigno, translatePlaneta, translateAspecto } from './i18n/astro.js'
+import { comporInterpretacaoPlaneta } from './lexicon/compositor.js'
 
 const ELEMENTO = {
   Carneiro: 'Fogo', Leão: 'Fogo', Sagitário: 'Fogo',
@@ -148,8 +149,8 @@ function faseLunar(lonSol, lonLua, lang) {
     textoEn = 'Waning crescent - introspective soul processing in silence; emotional retreats are not escape - they maintain your psyche.'
   }
   return lang === 'en'
-    ? ` Natal lunar phase: ${faseEn} (${diff.toFixed(0)}° Sun–Moon). ${textoEn}`
-    : ` Fase lunar natal: ${fasePt} (${diff.toFixed(0)}° Sol–Lua). ${textoPt}`
+    ? ` Natal lunar phase: ${faseEn}. ${textoEn}`
+    : ` Fase lunar natal: ${fasePt}. ${textoPt}`
 }
 
 const SOL_PT = {
@@ -263,53 +264,41 @@ function blocoRegenteAsc(asc, planetas, lang) {
       : ` Regente do mapa: ${reg} (regente clássico de ${sn(asc, lang)}). Estuda este planeta no mapa completo para orientação de vida.`
   }
   if (lang === 'en') {
-    return ` Chart ruler ${regLabel} in ${sn(p.signo?.nome, lang)}${p.casa ? `, House ${p.casa}` : ''} (${(p.signo?.graus || '0')}°) steers your life path - where ${regLabel} goes, your Ascendant story unfolds.`
+    return ` Chart ruler ${regLabel} in ${sn(p.signo?.nome, lang)}${p.casa ? `, House ${p.casa}` : ''} steers your life path - where ${regLabel} goes, your Ascendant story unfolds.`
   }
-  return ` Regente do mapa ${reg} em ${sn(p.signo?.nome, lang)}${p.casa ? `, Casa ${p.casa}` : ''} (${(p.signo?.graus || '0')}°) orienta o teu caminho de vida - onde ${reg} vai, a história do Ascendente desenrola-se.`
+  return ` Regente do mapa ${reg} em ${sn(p.signo?.nome, lang)}${p.casa ? `, Casa ${p.casa}` : ''} orienta o teu caminho de vida - onde ${reg} vai, a história do Ascendente desenrola-se.`
 }
 
 export function interpretarSolEssencia(pSol, mapaNatal, aspetos, planetas, lang = 'pt') {
   if (!pSol) return ''
   const signo = pSol.signo?.nome
-  let t = textoEssencia(SOL_PT, SOL_EN, signo, lang)
-  t += blocoGraus(pSol.signo?.graus, signo, lang)
-  t += blocoCasa(pSol.casa, lang, lang === 'en' ? ' ' : ' ')
-  t += blocoAspectos('Sol', aspetos, planetas, lang)
-  const elem = elemSigno(signo, lang)
-  const mod = modSigno(signo, lang)
-  if (lang === 'en') {
-    t += ` Element ${elem}, ${mod} modality - your solar will expresses through ${mod} ${elem.toLowerCase()} rhythm.`
-  } else {
-    t += ` Elemento ${elem}, modalidade ${mod} - a tua vontade solar expressa-se no ritmo ${mod.toLowerCase()} de ${elem}.`
-  }
-  return t
+  const rico = textoEssencia(SOL_PT, SOL_EN, signo, lang)
+  return comporInterpretacaoPlaneta('Sol', pSol, aspetos, planetas, lang, rico)
 }
 
 export function interpretarLuaEssencia(pLua, mapaNatal, aspetos, planetas, lang = 'pt') {
   if (!pLua) return ''
   const signo = pLua.signo?.nome
-  let t = textoEssencia(LUA_PT, LUA_EN, signo, lang)
-  t += blocoGraus(pLua.signo?.graus, signo, lang)
-  t += blocoCasa(pLua.casa, lang, lang === 'en' ? ' ' : ' ')
-  t += blocoAspectos('Lua', aspetos, planetas, lang)
+  let rico = textoEssencia(LUA_PT, LUA_EN, signo, lang)
   const pSol = planetaPorNome(planetas, 'Sol')
-  t += faseLunar(pSol?.longitude, pLua.longitude, lang)
-  return t
+  rico += faseLunar(pSol?.longitude, pLua.longitude, lang)
+  return comporInterpretacaoPlaneta('Lua', pLua, aspetos, planetas, lang, rico)
 }
 
 export function interpretarAscEssencia(asc, mapaNatal, aspetos, planetas, lang = 'pt') {
   if (!asc) return ''
-  let t = textoEssencia(ASC_PT, ASC_EN, asc, lang)
-  const pAsc = mapaNatal?.ascendente
-  t += blocoGraus(pAsc?.graus, asc, lang)
-  t += blocoRegenteAsc(asc, planetas, lang)
+  let rico = textoEssencia(ASC_PT, ASC_EN, asc, lang)
+  rico += blocoRegenteAsc(asc, planetas, lang)
   const mc = mapaNatal?.mc?.nome
   if (mc) {
-    t += lang === 'en'
-      ? ` Ascendant–MC axis: public path (MC in ${sn(mc, lang)}) filters how your ${sn(asc, lang)} mask serves vocation.`
+    rico += lang === 'en'
+      ? ` The Ascendant–MC axis: your public path (MC in ${sn(mc, lang)}) filters how your ${sn(asc, lang)} persona serves vocation.`
       : ` Eixo Ascendente–MC: o caminho público (MC em ${sn(mc, lang)}) filtra como a máscara ${sn(asc, lang)} serve a vocação.`
   }
-  return t
+  const casaTxt = lang === 'en'
+    ? ' The 1st House is your threshold: how you enter rooms, how your body speaks before words, and the instinctive mask you wear when the world first meets you.'
+    : ' A 1.ª Casa é o teu limiar: a forma como entras nas salas, como o corpo fala antes das palavras e a máscara instintiva que usas quando o mundo te encontra pela primeira vez.'
+  return `${rico}\n\n${casaTxt}`
 }
 
 export function interpretarBig3Essencia(mapaNatal, planetas, aspetos, lang = 'pt') {
@@ -374,8 +363,8 @@ export function interpretarBig3Essencia(mapaNatal, planetas, aspetos, lang = 'pt
   if (solLuaAsp) {
     const aspLabel = translateAspecto(solLuaAsp.aspecto, lang).toLowerCase()
     partes.push(lang === 'en'
-      ? `Direct Sun–Moon aspect (${aspLabel}, orb ${solLuaAsp.orbe}): your identity and emotional body are wired together - what you feel shapes who you are immediately.`
-      : `Aspecto directo Sol–Lua (${solLuaAsp.aspecto}, orbe ${solLuaAsp.orbe}): identidade e corpo emocional estão ligados - o que sentes molda quem és imediatamente.`)
+      ? `Direct Sun–Moon aspect (${aspLabel}): your identity and emotional body are wired together - what you feel shapes who you are immediately.`
+      : `Aspecto directo Sol–Lua (${aspLabel}): identidade e corpo emocional estão ligados - o que sentes molda quem és imediatamente.`)
   }
 
   if (mSol !== mLua) {
@@ -422,46 +411,6 @@ function introPlaneta(nome, lang) {
   return mapPt[nome] || `${nome} colore uma dimensão vital do teu mapa.`
 }
 
-// import at top - need PLANETAS_PT_TO_EN from astro - already have translatePlaneta
-
 export function interpretarPlanetaEssencia(nomePlaneta, p, mapaNatal, aspetos, planetas, lang = 'pt') {
-  if (!p?.signo?.nome) {
-    return lang === 'en'
-      ? `${nomePlaneta} could not be calculated for this chart. Check birth time and place.`
-      : `${nomePlaneta} não foi possível calcular neste mapa. Verifica hora e local de nascimento.`
-  }
-
-  const signo = p.signo.nome
-  const s = sn(signo, lang)
-  const elem = elemSigno(signo, lang)
-  const mod = modSigno(signo, lang)
-  const nomeTr = tp(nomePlaneta, lang)
-
-  let t = lang === 'en'
-    ? `${nomeTr} in ${s} shapes how this planet expresses in your life: ${introPlaneta(nomePlaneta, lang)} In ${s}, the ${elem} and ${mod} quality colours every sentence you think, every choice you make under this planet's domain.`
-    : `${nomePlaneta} em ${s} define como este planeta se expressa na tua vida: ${introPlaneta(nomePlaneta, lang)} Em ${s}, a qualidade de ${elem} e modalidade ${mod} colore cada frase que pensas e cada escolha que fazes sob o domínio deste planeta.`
-
-  t += blocoGraus(p.signo?.graus, signo, lang)
-  t += blocoCasa(p.casa, lang, lang === 'en' ? ' ' : ' ')
-  t += blocoAspectos(nomePlaneta, aspetos, planetas, lang)
-
-  if (p.retrograde) {
-    t += lang === 'en'
-      ? ` ${nomeTr} retrograde: this energy turns inward - you review, rethink and refine this area before acting outwardly.`
-      : ` ${nomePlaneta} retrógrado: esta energia volta para dentro - revisas, repensas e afinas esta área antes de a expressares no mundo.`
-  }
-
-  if (nomePlaneta === 'Saturno' || nomePlaneta === 'Saturn') {
-    t += lang === 'en'
-      ? ' Saturn is your karmic master: what you resist here becomes your greatest competence when you commit to the long work.'
-      : ' Saturno é o teu mestre kármico: o que resistes aqui torna-se a tua maior competência quando te comprometes com o trabalho longo.'
-  }
-
-  if (nomePlaneta === 'Júpiter' || nomePlaneta === 'Jupiter') {
-    t += lang === 'en'
-      ? ' Trust this expansion but watch excess - Jupiter blesses and inflates in equal measure.'
-      : ' Confia nesta expansão mas vigia o excesso - Júpiter abençoa e inflaciona na mesma medida.'
-  }
-
-  return t
+  return comporInterpretacaoPlaneta(nomePlaneta, p, aspetos, planetas, lang)
 }

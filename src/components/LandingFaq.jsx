@@ -15,7 +15,6 @@ export function LandingFaq() {
           </div>
         ))}
       </dl>
-      <p className="landing-faq-pricing">{t('auth.portal.faq.pricingLine')}</p>
     </section>
   )
 }

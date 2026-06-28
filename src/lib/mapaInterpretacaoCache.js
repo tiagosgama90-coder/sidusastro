@@ -15,7 +15,7 @@ export function gerarChaveMapa(dados, lang = 'pt') {
   ].join('|')
 }
 
-const STORAGE_PREFIX = 'sidus_mapa_v6'
+const STORAGE_PREFIX = 'sidus_mapa_v7'
 
 function storageKey(dados, lang) {
   return `${STORAGE_PREFIX}:${gerarChaveMapa(dados, lang)}`

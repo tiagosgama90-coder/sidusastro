@@ -1,7 +1,8 @@
 /**
  * Interpretação profunda - secções 5 (transpessoais) e 6 (síntese).
- * Cada texto é único: signo, casa Placidus, graus, aspectos e Big 3.
+ * Cada texto é único: signo, casa Placidus, aspectos e Big 3.
  */
+import { comporInterpretacaoPlaneta } from './lexicon/compositor.js'
 import { planetaPorNome, TEMAS_CASA } from './casasPlacidus.js'
 import { translateSigno } from './i18n/astro.js'
 
@@ -297,26 +298,12 @@ function blocoNodoSul(signo, lang) {
 export function interpretarTranspessoal(nome, planeta, mapaNatal, aspetos, planetas, lang = 'pt') {
   if (!planeta) return ''
   const signo = planeta.signo?.nome
-  const graus = planeta.signo?.graus
-  const casa = planeta.casa
-  const retro = planeta.retrograde
 
-  let texto = nucleoPlaneta(nome, signo, lang)
-  texto += blocoCasa(casa, lang)
-  texto += blocoDecan(graus, signo, lang)
-  texto += blocoBig3(nome, signo, mapaNatal, lang)
-  if (nome === 'Nodo Norte') texto += blocoNodoSul(signo, lang)
-  texto += textoAspectos(nome, aspetos, planetas, lang)
-  if (retro) {
-    texto += lang === 'en'
-      ? ' Retrograde: the theme works inwardly - revision before external revolution.'
-      : ' Retrógrado: o tema opera interiormente - revisão antes da revolução externa.'
-  }
-  const motor = mapaNatal?.motor || 'Swiss Ephemeris'
-  texto += lang === 'en'
-    ? ` (${motor} · ${(graus || '0')}° ecliptic).`
-    : ` (${motor} · ${(graus || '0')}° eclíptica).`
-  return texto
+  let textoRico = nucleoPlaneta(nome, signo, lang)
+  textoRico += blocoBig3(nome, signo, mapaNatal, lang)
+  if (nome === 'Nodo Norte') textoRico += blocoNodoSul(signo, lang)
+
+  return comporInterpretacaoPlaneta(nome, planeta, aspetos, planetas, lang, textoRico)
 }
 
 function elementoDominante(planetas) {

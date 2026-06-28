@@ -6,6 +6,7 @@
 import { planetaPorNome, resolverPlaneta, mapaPlanetasProntos } from './casasPlacidus.js'
 import { getMapaCopy } from './i18n/mapaCopy.js'
 import { interpretarTranspessoal, gerarSinteseEvolutiva } from './mapaProfundo.js'
+import { interpretarAspectosNatais } from './lexicon/aspectosNarrativa.js'
 import {
   interpretarSolEssencia, interpretarLuaEssencia,
   interpretarAscEssencia, interpretarBig3Essencia,
@@ -99,6 +100,17 @@ export function gerarAnaliseCompleta(mapaNatal, planetas, aspetos = [], dados = 
       blocos: [
         { subtitulo: L.jup, texto: interpretarPlanetaEssencia('Júpiter', pJup, mapaNatal, aspetos, planetas, lang), meta: metaSigno(pJup?.signo?.nome, pJup?.casa, lang) },
         { subtitulo: L.sat, texto: interpretarPlanetaEssencia('Saturno', pSat, mapaNatal, aspetos, planetas, lang), meta: metaSigno(pSat?.signo?.nome, pSat?.casa, lang) },
+      ],
+    },
+    {
+      id: 'aspectos',
+      titulo: L.secAspetos,
+      blocos: [
+        {
+          subtitulo: lang === 'en' ? 'Major planetary aspects' : 'Aspetos planetários principais',
+          texto: interpretarAspectosNatais(aspetos, planetas, lang),
+          destaque: true,
+        },
       ],
     },
     {

@@ -71,9 +71,8 @@ export default {
         a2: 'It is a secure chat powered by artificial intelligence focused on astrological guidance - love, career, transits and your natal chart.',
         q3: 'Are my birth details safe?',
         a3: 'Yes - your data is processed encrypted through Firebase.',
-        q4: 'Why do the one-off chart and Premium cost about the same?',
-        a4: 'The €10 chart is a one-time payment - you get the full PDF with no monthly subscription. Sidus Premium at €9.99/month includes the full natal chart plus AI oracle, tarot, synastry and all tools. If you want more than the PDF, Premium is the best choice.',
-        pricingLine: '💳 Buy full chart · €10 · ✦ Sidus Premium €9.99/mo · Everything included',
+        q4: 'What is the difference between the one-off chart and Premium?',
+        a4: 'The one-off chart is a single payment — you get the full PDF report with no monthly subscription. Sidus Premium includes the full natal chart plus AI oracle, tarot, synastry and all tools. If you want more than the PDF, Premium is the best choice.',
       },
     },
     errors: {
