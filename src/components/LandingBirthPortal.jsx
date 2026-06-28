@@ -299,6 +299,10 @@ export function LandingBirthPortal({ isDesktop, onSaved, onScrollToLogin }) {
           </p>
         )}
 
+        {!guardado && (
+          <p className="landing-portal-form-lead">{t('auth.portal.formLead')}</p>
+        )}
+
         <div className={`landing-portal-card${guardado ? ' landing-portal-card--saved' : ''}`}>
           <div className="landing-portal-card-shimmer" aria-hidden />
 

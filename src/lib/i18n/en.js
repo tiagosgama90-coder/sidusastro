@@ -44,9 +44,10 @@ export default {
     portal: {
       ariaLabel: 'Sidus Astro — birth portal',
       eyebrow: 'Welcome to',
-      eyebrowBrand: 'SIDUS ASTRO',
-      title: 'When you were born, the sky drew your chart',
-      subtitle: 'The universe recorded your unique moment. Enter your birth time and place to reveal the chart that belongs to you after signing in.',
+      eyebrowBrand: 'SIDUS',
+      logoAlt: 'Sidus',
+      title: 'When you were born, the sky drew your astral chart',
+      formLead: 'Read your personalized horoscope',
       mobileLoginPrompt: 'Already have an account?',
       mobileLoginLink: 'Sign in here',
       swissNote: 'High-precision calculations powered by Swiss Ephemeris.',

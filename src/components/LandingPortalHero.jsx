@@ -5,12 +5,18 @@ export function LandingPortalHero() {
 
   return (
     <header className="landing-auth-hero">
-      <p className="landing-portal-eyebrow">
-        {t('auth.portal.eyebrow')}{' '}
-        <span className="landing-portal-brand">{t('auth.portal.eyebrowBrand')}</span>
-      </p>
+      <p className="landing-portal-welcome">{t('auth.portal.eyebrow')}</p>
+      <div className="landing-portal-logo-wrap">
+        <img
+          src="/sidus-logo.png"
+          alt={t('auth.portal.logoAlt')}
+          className="landing-portal-logo"
+          width={220}
+          height={48}
+          decoding="async"
+        />
+      </div>
       <h1 className="landing-portal-title">{t('auth.portal.title')}</h1>
-      <p className="landing-portal-subtitle">{t('auth.portal.subtitle')}</p>
     </header>
   )
 }

@@ -618,42 +618,50 @@ html.sidus-no-ads .google-auto-placed {
 /* Título e intro — hero centrado acima dos formulários */
 .landing-auth-hero {
   width: 100%;
-  max-width: 520px;
-  margin: 0 auto 18px;
+  max-width: 560px;
+  margin: 0 auto 20px;
   text-align: center;
 }
-.landing-portal-eyebrow {
-  margin: 0 0 8px;
-  font-size: 17px;
+.landing-portal-welcome {
+  margin: 0 0 10px;
+  font-size: 12px;
   font-weight: 600;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: rgba(196, 181, 253, 0.95);
+  color: rgba(196, 181, 253, 0.88);
   line-height: 1.4;
 }
-.landing-portal-brand {
-  color: #DFB76C;
-  letter-spacing: 0.2em;
-  font-weight: 800;
-  font-size: 1.12em;
+.landing-portal-logo-wrap {
+  display: flex;
+  justify-content: center;
+  margin: 0 0 14px;
+}
+.landing-portal-logo {
+  display: block;
+  width: min(220px, 72vw);
+  height: auto;
+  object-fit: contain;
 }
 .landing-portal-title {
   margin: 0;
-  font-size: 18px;
-  font-weight: 600;
-  color: rgba(255, 255, 255, 0.82);
-  line-height: 1.35;
-  letter-spacing: 0.01em;
-  text-align: center;
-}
-.landing-portal-subtitle {
-  margin: 0 0 20px;
-  font-size: 13px;
-  color: #DFB76C;
-  line-height: 1.7;
+  font-size: 17px;
   font-weight: 500;
+  color: rgba(255, 255, 255, 0.78);
+  line-height: 1.45;
   letter-spacing: 0.02em;
   text-align: center;
+}
+.landing-portal-form-lead {
+  margin: 0 0 14px;
+  padding: 0 4px;
+  text-align: center;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.45;
+  letter-spacing: 0.04em;
+  color: #DFB76C;
+  text-shadow: 0 0 28px rgba(223, 183, 108, 0.22);
+  font-family: Georgia, 'Palatino Linotype', 'Book Antiqua', serif;
 }
 
 .landing-portal-field {
@@ -732,7 +740,7 @@ html.sidus-no-ads .google-auto-placed {
 .landing-auth-grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 20px;
+  gap: 24px;
   width: 100%;
   min-width: 0;
   max-width: 100%;
@@ -752,40 +760,64 @@ html.sidus-no-ads .google-auto-placed {
 /* Tablet+ — formulários lado a lado */
 @media (min-width: 640px) {
   .landing-auth-layout {
-    max-width: min(920px, calc(100vw - 32px));
+    max-width: min(880px, calc(100vw - 48px));
   }
 
   .landing-auth-grid {
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    gap: 20px;
+    gap: 36px;
   }
 
   .landing-auth-column {
     margin-top: 0;
+    padding-top: 36px;
   }
 
   .landing-portal-mobile-only {
     display: none !important;
+  }
+
+  .landing-portal-form-lead {
+    margin-bottom: 12px;
+    font-size: 14px;
   }
 }
 
 /* ── Desktop (md+): compactação above-the-fold ── */
 @media (min-width: 768px) {
   .landing-auth-layout--desktop {
-    max-width: min(960px, calc(100vw - 40px)) !important;
+    max-width: min(900px, calc(100vw - 48px)) !important;
     padding-top: 14px !important;
     padding-bottom: 16px !important;
-    padding-left: 20px !important;
-    padding-right: 20px !important;
+    padding-left: 24px !important;
+    padding-right: 24px !important;
   }
 
   .landing-auth-grid {
-    gap: 24px !important;
+    gap: 40px !important;
   }
 
   .landing-auth-hero {
-    max-width: 560px;
-    margin-bottom: 20px;
+    max-width: 580px;
+    margin-bottom: 22px;
+  }
+
+  .landing-portal-welcome {
+    font-size: 11px;
+    letter-spacing: 0.24em;
+  }
+
+  .landing-portal-logo {
+    width: 200px;
+  }
+
+  .landing-portal-title {
+    font-size: 15px;
+  }
+
+  .landing-portal-form-lead {
+    font-size: 13px;
+    margin-bottom: 10px;
   }
 
   .landing-auth-panel {
@@ -825,27 +857,8 @@ html.sidus-no-ads .google-auto-placed {
     font-size: 10px;
   }
 
-  .landing-auth-hero {
-    margin-bottom: 16px;
-  }
-  .landing-portal-eyebrow {
-    margin-bottom: 6px;
-    font-size: 15px;
-    letter-spacing: 0.13em;
-  }
-  .landing-portal-brand {
-    font-size: 1.1em;
-  }
-  .landing-portal-title {
-    font-size: 16px;
-    line-height: 1.3;
-    font-weight: 600;
-  }
-  .landing-portal-subtitle {
-    margin-bottom: 10px;
-    font-size: 11px;
-    line-height: 1.65;
-    max-width: 100%;
+  .landing-auth-column {
+    padding-top: 38px;
   }
 
   .landing-portal-card {
