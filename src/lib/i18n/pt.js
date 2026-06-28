@@ -72,7 +72,7 @@ export default {
         q3: 'Os meus dados de nascimento estão seguros?',
         a3: 'Sim, os dados são processados de forma encriptada através do Firebase.',
         q4: 'Qual a diferença entre o mapa avulso e o Premium?',
-        a4: 'O mapa avulso é pagamento único — recebes o relatório completo em PDF sem subscrição mensal. O Sidus Premium inclui o mapa astral completo mais oráculo de IA, tarot, sinastria e todas as ferramentas. Se queres ir além do PDF, o Premium é a melhor escolha.',
+        a4: 'O mapa avulso é pagamento único - recebes o relatório completo em PDF sem subscrição mensal. O Sidus Premium inclui o mapa astral completo mais oráculo de IA, tarot, sinastria e todas as ferramentas. Se queres ir além do PDF, o Premium é a melhor escolha.',
       },
     },
     errors: {
@@ -264,7 +264,7 @@ export default {
     proTagline: 'Leitura astrológica profissional · Assinatura cósmica única',
     aiUpgrading: 'A preparar a tua leitura completa em segundo plano…',
     aiFallbackNote: 'Interpretação profissional (modo clássico)',
-    freeTasteHint: 'Estás a ver uma amostra gratuita. O resto do mapa — interpretação completa, posições, aspectos e PDF — está reservado ao Premium.',
+    freeTasteHint: 'Estás a ver uma amostra gratuita. O resto do mapa - interpretação completa, posições, aspectos e PDF - está reservado ao Premium.',
     freeBlurTeaser: 'Interpretação profissional, esferas de vida, exportação PDF e muito mais…',
   },
   cartaoDia: {
@@ -422,7 +422,6 @@ export default {
       title: 'Radar de Afinidades',
       subtitle: 'Sinastria - Comparação de dois mapas natais',
       subtitlePro: 'Sinastria profissional - textos íntimos e personalizados a partir dos vossos mapas e aspectos cruzados (orbe 6°)',
-      freeHint: 'Prévia grátis: compatibilidade generalizada. Premium desbloqueia radar completo, 4 eixos, missão de cada um e dinâmica emocional.',
       yourChart: 'O teu mapa',
       partnerData: 'Dados de nascimento do parceiro(a)',
       partnerName: 'Nome do(a) parceiro(a)',

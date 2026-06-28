@@ -1,5 +1,5 @@
 /**
- * Compositor profissional de interpretações — estilo Cafe Astrology.
+ * Compositor profissional de interpretações - estilo Cafe Astrology.
  * Cruza planeta + signo + casa + aspetos sem graus, orbes ou templates robóticos.
  */
 import { PLANET_SIGN_PT } from './dados/planetSign.pt.js'
@@ -79,8 +79,8 @@ export function comporInterpretacaoPlaneta(nomePlaneta, p, aspetos, planetas, la
 
   if (p.retrograde) {
     partes.push(lang === 'en'
-      ? `${translatePlaneta(nomePlaneta, lang)} retrograde: this energy turns inward — you review, rethink and refine this area before expressing it outwardly.`
-      : `${nomePlaneta} retrógrado: esta energia volta para dentro — revisas, repensas e afinas esta área antes de a expressares no mundo.`)
+      ? `${translatePlaneta(nomePlaneta, lang)} retrograde: this energy turns inward - you review, rethink and refine this area before expressing it outwardly.`
+      : `${nomePlaneta} retrógrado: esta energia volta para dentro - revisas, repensas e afinas esta área antes de a expressares no mundo.`)
   }
 
   return partes.join('\n\n')

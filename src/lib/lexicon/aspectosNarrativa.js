@@ -1,32 +1,32 @@
 /**
- * Narrativas de aspetos planetários — estilo interpretativo profissional.
+ * Narrativas de aspetos planetários - estilo interpretativo profissional.
  * Sem orbes, graus ou jargão matemático.
  */
 import { translatePlaneta, translateSigno, translateAspecto } from '../i18n/astro.js'
 import { planetaPorNome } from '../casasPlacidus.js'
 
 const ASPETO_NUCLEO_PT = {
-  Conjunção: 'duas forças fundem-se num só canal — intensificam-se mutuamente, para bem ou para tensão concentrada',
-  Conjuncao: 'duas forças fundem-se num só canal — intensificam-se mutuamente, para bem ou para tensão concentrada',
-  Oposição: 'polos opostos pedem integração consciente — o outro revela o que negas em ti',
-  Oposicao: 'polos opostos pedem integração consciente — o outro revela o que negas em ti',
-  Trígono: 'fluxo natural e talento espontâneo — o dom precisa de ser usado, não apenas possuído',
-  Trigono: 'fluxo natural e talento espontâneo — o dom precisa de ser usado, não apenas possuído',
-  Quadratura: 'fricção criativa que obriga à acção — o desconforto é motor de crescimento quando não fujas',
-  Sextil: 'oportunidade gentil que requer iniciativa — a porta abre-se para quem bate',
+  Conjunção: 'duas forças fundem-se num só canal - intensificam-se mutuamente, para bem ou para tensão concentrada',
+  Conjuncao: 'duas forças fundem-se num só canal - intensificam-se mutuamente, para bem ou para tensão concentrada',
+  Oposição: 'polos opostos pedem integração consciente - o outro revela o que negas em ti',
+  Oposicao: 'polos opostos pedem integração consciente - o outro revela o que negas em ti',
+  Trígono: 'fluxo natural e talento espontâneo - o dom precisa de ser usado, não apenas possuído',
+  Trigono: 'fluxo natural e talento espontâneo - o dom precisa de ser usado, não apenas possuído',
+  Quadratura: 'fricção criativa que obriga à acção - o desconforto é motor de crescimento quando não fujas',
+  Sextil: 'oportunidade gentil que requer iniciativa - a porta abre-se para quem bate',
 }
 
 const ASPETO_NUCLEO_EN = {
-  Conjunction: 'two forces merge into one channel — they intensify each other, for better or concentrated tension',
-  Conjuncao: 'two forces merge into one channel — they intensify each other, for better or concentrated tension',
-  Opposition: 'opposite poles ask conscious integration — the other reveals what you deny in yourself',
-  Oposicao: 'opposite poles ask conscious integration — the other reveals what you deny in yourself',
-  Trine: 'natural flow and spontaneous talent — the gift must be used, not merely possessed',
-  Trigono: 'natural flow and spontaneous talent — the gift must be used, not merely possessed',
-  Square: 'creative friction that demands action — discomfort drives growth when you do not flee',
-  Quadratura: 'creative friction that demands action — discomfort drives growth when you do not flee',
-  Sextile: 'gentle opportunity requiring initiative — the door opens for those who knock',
-  Sextil: 'gentle opportunity requiring initiative — the door opens for those who knock',
+  Conjunction: 'two forces merge into one channel - they intensify each other, for better or concentrated tension',
+  Conjuncao: 'two forces merge into one channel - they intensify each other, for better or concentrated tension',
+  Opposition: 'opposite poles ask conscious integration - the other reveals what you deny in yourself',
+  Oposicao: 'opposite poles ask conscious integration - the other reveals what you deny in yourself',
+  Trine: 'natural flow and spontaneous talent - the gift must be used, not merely possessed',
+  Trigono: 'natural flow and spontaneous talent - the gift must be used, not merely possessed',
+  Square: 'creative friction that demands action - discomfort drives growth when you do not flee',
+  Quadratura: 'creative friction that demands action - discomfort drives growth when you do not flee',
+  Sextile: 'gentle opportunity requiring initiative - the door opens for those who knock',
+  Sextil: 'gentle opportunity requiring initiative - the door opens for those who knock',
 }
 
 const PAR_DINAMICA_PT = {
@@ -123,8 +123,8 @@ export function interpretarAspectosNatais(aspetos, planetas, lang = 'pt') {
 
   if (!lista.length) {
     return lang === 'en'
-      ? 'No major tight aspects dominate this chart — your story unfolds through sign and house emphasis rather than planetary dialogue. This grants flexibility but asks you to choose consciously rather than being propelled by inner tension.'
-      : 'Nenhum aspeto maior apertado domina este mapa — a tua história desenrola-se sobretudo através da ênfase de signos e casas, e não por diálogo planetário. Isto concede flexibilidade, mas pede escolha consciente em vez de impulso por tensão interior.'
+      ? 'No major tight aspects dominate this chart - your story unfolds through sign and house emphasis rather than planetary dialogue. This grants flexibility but asks you to choose consciously rather than being propelled by inner tension.'
+      : 'Nenhum aspeto maior apertado domina este mapa - a tua história desenrola-se sobretudo através da ênfase de signos e casas, e não por diálogo planetário. Isto concede flexibilidade, mas pede escolha consciente em vez de impulso por tensão interior.'
   }
 
   return lista.map((a) => narrarAspecto(a, planetas, lang)).join('\n\n')

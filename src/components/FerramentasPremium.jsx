@@ -318,11 +318,6 @@ export function Sinastria({ mapaNatal, dadosUtilizador, isPremium = false, onUpg
       <BotaoVoltar onVoltar={onVoltar} t={t} />
       <h2 style={{ fontSize: 20, fontWeight: 700, color: CORES.dourado, marginBottom: 4 }}>{t('ferramentasPremium.sinastria.title')}</h2>
       <p style={{ fontSize: 13, color: CORES.brancoMuted, marginBottom: 8 }}>{t('ferramentasPremium.sinastria.subtitlePro')}</p>
-      {!isPremium && (
-        <div style={{ fontSize: 12, color: CORES.dourado, background: 'rgba(223,183,108,0.08)', border: '1px solid rgba(223,183,108,0.25)', borderRadius: 10, padding: '10px 14px', marginBottom: 20, lineHeight: 1.55 }}>
-          {t('ferramentasPremium.sinastria.freeHint')}
-        </div>
-      )}
 
       {mapaNatal && (
         <div style={{ background: 'rgba(255,255,255,0.04)', border: `1px solid ${CORES.vidroBorda}`, borderRadius: 14, padding: 16, marginBottom: 20 }}>

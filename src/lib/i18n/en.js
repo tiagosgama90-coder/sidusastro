@@ -72,7 +72,7 @@ export default {
         q3: 'Are my birth details safe?',
         a3: 'Yes - your data is processed encrypted through Firebase.',
         q4: 'What is the difference between the one-off chart and Premium?',
-        a4: 'The one-off chart is a single payment — you get the full PDF report with no monthly subscription. Sidus Premium includes the full natal chart plus AI oracle, tarot, synastry and all tools. If you want more than the PDF, Premium is the best choice.',
+        a4: 'The one-off chart is a single payment - you get the full PDF report with no monthly subscription. Sidus Premium includes the full natal chart plus AI oracle, tarot, synastry and all tools. If you want more than the PDF, Premium is the best choice.',
       },
     },
     errors: {
@@ -264,7 +264,7 @@ export default {
     proTagline: 'Professional astrological reading · Unique cosmic signature',
     aiUpgrading: 'Preparing your full reading in the background…',
     aiFallbackNote: 'Professional interpretation (classic mode)',
-    freeTasteHint: 'You are viewing a free sample. The rest of the chart — full interpretation, positions, aspects and PDF — is reserved for Premium.',
+    freeTasteHint: 'You are viewing a free sample. The rest of the chart - full interpretation, positions, aspects and PDF - is reserved for Premium.',
     freeBlurTeaser: 'Professional interpretation, life spheres, PDF export and much more…',
   },
   cartaoDia: {
@@ -422,7 +422,6 @@ export default {
       title: 'Affinity Radar',
       subtitle: 'Synastry - Comparison of two natal charts',
       subtitlePro: 'Professional synastry - intimate personalized readings from your charts and cross-aspects (6° orb)',
-      freeHint: 'Free preview: generalized compatibility. Premium unlocks full radar, 4 axes, each person\'s mission and emotional dynamics.',
       yourChart: 'Your chart',
       partnerData: 'Partner birth data',
       partnerName: 'Partner name',

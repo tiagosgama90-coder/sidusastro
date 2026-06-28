@@ -1,4 +1,4 @@
-﻿import { useState, useEffect, useRef, useCallback, useMemo } from 'react'
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react'
 import {
   Sparkles,
   Moon,
@@ -2529,7 +2529,7 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
                       </div>
                       {aspetosNatais.slice(0, 6).map((a, i) => (
                         <div key={i} style={{ fontSize: 12, color: CORES.brancoMuted, padding: '6px 0' }}>
-                          {tp(a.planetaA)} · {tp(a.planetaB)} — {ta(a.aspecto)}
+                          {tp(a.planetaA)} · {tp(a.planetaB)} - {ta(a.aspecto)}
                         </div>
                       ))}
                     </div>
