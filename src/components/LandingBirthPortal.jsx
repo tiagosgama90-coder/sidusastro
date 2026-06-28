@@ -286,20 +286,6 @@ export function LandingBirthPortal({ isDesktop, onSaved, onScrollToLogin }) {
       <div className="landing-portal-orb landing-portal-orb--2" aria-hidden />
 
       <div style={{ position: 'relative', zIndex: 1 }}>
-        <header className="landing-portal-header">
-          <p className="landing-portal-eyebrow">
-            {t('auth.portal.eyebrow')}{' '}
-            <span className="landing-portal-brand">{t('auth.portal.eyebrowBrand')}</span>
-          </p>
-          <h1 className="landing-portal-title">
-            {t('auth.portal.title')}
-          </h1>
-        </header>
-
-        <p className="landing-portal-subtitle">
-          {t('auth.portal.subtitle')}
-        </p>
-
         {onScrollToLogin && (
           <p className="landing-portal-mobile-only landing-portal-mobile-login">
             {t('auth.portal.mobileLoginPrompt')}{' '}

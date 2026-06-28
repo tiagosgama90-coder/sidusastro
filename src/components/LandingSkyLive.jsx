@@ -23,37 +23,26 @@ export function LandingSkyLive() {
 
   return (
     <div className="landing-sky-band" aria-label={t('auth.portal.skyLive')}>
-      <div className="landing-portal-sky-live landing-portal-sky-live--band">
+      <div className="landing-portal-sky-live landing-portal-sky-live--compact">
         <div className="landing-portal-sky-stars" aria-hidden />
-        <div className="landing-sky-band-layout">
-          <div className="landing-sky-band-meta">
-            <div className="landing-portal-sky-live-head">
-              <Radio size={13} color="#34D399" className="landing-portal-pulse-icon" />
-              <span className="landing-portal-sky-live-badge">{t('auth.portal.skyLive')}</span>
-              <span className="landing-portal-sky-live-date">· {hoje}</span>
-            </div>
-            <div className="landing-portal-sky-live-body">
-              <span className="landing-portal-sky-moon-emoji">{ceuAgora.faseLua.emoji}</span>
-              <div>
-                <div className="landing-portal-sky-moon-name">{ceuAgora.faseLua.nome}</div>
-                <div className="landing-portal-sky-moon-pct">
-                  {t('home.illuminated', { pct: ceuAgora.faseLua.iluminacao, angle: ceuAgora.faseLua.angulo })}
-                </div>
-              </div>
-            </div>
+        <div className="landing-sky-compact-row">
+          <div className="landing-portal-sky-live-head">
+            <Radio size={12} color="#34D399" className="landing-portal-pulse-icon" />
+            <span className="landing-portal-sky-live-badge">{t('auth.portal.skyLive')}</span>
+            <span className="landing-portal-sky-live-date">· {hoje}</span>
           </div>
-
-          <div className="landing-portal-sky-ticker" aria-label={t('auth.portal.skyTickerLabel')}>
-            <span className="landing-portal-sky-ticker-label">{t('auth.portal.skyTickerLabel')}</span>
-            <div className="landing-portal-sky-ticker-viewport">
-              <div className="landing-portal-sky-ticker-track">
-                {[...tickerItems, ...tickerItems].map((item, i) => (
-                  <span key={`${item.key}-${i}`} className="landing-portal-sky-ticker-item">
-                    <span className="landing-portal-sky-ticker-dot" aria-hidden>✦</span>
-                    {item.label}
-                  </span>
-                ))}
-              </div>
+          <span className="landing-portal-sky-moon-emoji landing-portal-sky-moon-emoji--compact">{ceuAgora.faseLua.emoji}</span>
+          <span className="landing-portal-sky-moon-name landing-portal-sky-moon-name--compact">{ceuAgora.faseLua.nome}</span>
+        </div>
+        <div className="landing-portal-sky-ticker landing-portal-sky-ticker--compact" aria-label={t('auth.portal.skyTickerLabel')}>
+          <div className="landing-portal-sky-ticker-viewport">
+            <div className="landing-portal-sky-ticker-track">
+              {[...tickerItems, ...tickerItems].map((item, i) => (
+                <span key={`${item.key}-${i}`} className="landing-portal-sky-ticker-item">
+                  <span className="landing-portal-sky-ticker-dot" aria-hidden>✦</span>
+                  {item.label}
+                </span>
+              ))}
             </div>
           </div>
         </div>
