@@ -10,6 +10,8 @@ import {
   construirPedidoMapa,
   parseRespostaMapa,
   contarPalavrasAnalise,
+  analiseIaPremiumValida,
+  temFrasesRoboticas,
 } from '../../src/lib/mapaInterpretacaoPrompt.js'
 import { gerarAnaliseCompleta, mapaPlanetasProntos } from '../../src/lib/mapaInterpretacao.js'
 import { analiseMapaValida } from '../../src/lib/mapaInterpretacaoCache.js'
@@ -20,26 +22,30 @@ const corsHeaders = {
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
 }
 
-const MIN_PALAVRAS = 2800
+const MIN_PALAVRAS_IA = 4200
 
-async function gerarInterpretacaoIA({ mapaNatal, planetas, aspetos, dados, lang, resumoLexicon }) {
+function validarIa(analise) {
+  return analise?.seccoes?.length && analiseIaPremiumValida(analise)
+}
+
+async function gerarInterpretacaoIA({ mapaNatal, planetas, aspetos, dados, lang }) {
   const system = construirSistemaMapa(lang)
 
-  async function tentar(retryCurto = false) {
+  async function tentar({ retryCurto = false, retryRobotic = false } = {}) {
     const userPrompt = construirPedidoMapa({
       mapaNatal,
       planetas,
       aspetos,
       dados,
       lang,
-      resumoLexicon,
       retryCurto,
+      retryRobotic,
     })
     const raw = await chatCompletion({
       system,
       messages: [{ role: 'user', content: userPrompt }],
       maxTokens: 8192,
-      temperature: retryCurto ? 0.82 : 0.78,
+      temperature: retryRobotic ? 0.85 : retryCurto ? 0.82 : 0.8,
       tier: 'premium',
       escopo: 'astrologia',
       lang,
@@ -47,15 +53,26 @@ async function gerarInterpretacaoIA({ mapaNatal, planetas, aspetos, dados, lang,
     return raw ? parseRespostaMapa(raw, mapaNatal, lang) : null
   }
 
-  let analise = await tentar(false)
-  const palavras = contarPalavrasAnalise(analise?.seccoes)
-  if (!analise?.seccoes?.length || palavras < MIN_PALAVRAS) {
-    const retry = await tentar(true)
+  let analise = await tentar({})
+  let palavras = contarPalavrasAnalise(analise?.seccoes)
+
+  if (!validarIa(analise) && (palavras < MIN_PALAVRAS_IA || temFrasesRoboticas(analise))) {
+    const retry = await tentar({
+      retryCurto: palavras < MIN_PALAVRAS_IA,
+      retryRobotic: temFrasesRoboticas(analise),
+    })
     const palavrasRetry = contarPalavrasAnalise(retry?.seccoes)
-    if (retry?.seccoes?.length && palavrasRetry >= palavras) {
+    if (retry?.seccoes?.length && (validarIa(retry) || palavrasRetry > palavras)) {
       analise = retry
+      palavras = palavrasRetry
     }
   }
+
+  if (!validarIa(analise) && palavras < MIN_PALAVRAS_IA) {
+    const retry2 = await tentar({ retryCurto: true, retryRobotic: true })
+    if (validarIa(retry2)) analise = retry2
+  }
+
   return analise
 }
 
@@ -106,7 +123,7 @@ export default async (req) => {
     }
 
     const chave = gerarChaveMapa(dados, lang)
-    const resumoLexicon = mapaPlanetasProntos(planetas, mapaNatal)
+    const fallbackLexicon = mapaPlanetasProntos(planetas, mapaNatal)
       ? gerarAnaliseCompleta(mapaNatal, planetas, aspetos, dados, lang)
       : null
 
@@ -119,7 +136,7 @@ export default async (req) => {
 
     if (!forceRegenerate) {
       const guardada = interpretacaoGuardada(acesso.perfil, dados, lang)
-      if (guardada?.seccoes?.length) {
+      if (guardada?.seccoes?.length && (guardada.fonte === 'ia' || analiseIaPremiumValida(guardada))) {
         return new Response(JSON.stringify({
           ok: true,
           chave,
@@ -141,11 +158,12 @@ export default async (req) => {
       aspetos,
       dados,
       lang,
-      resumoLexicon,
     })
 
-    if (!analise?.seccoes?.length || !analiseMapaValida(analise)) {
-      analise = { ...resumoLexicon, fonte: 'lexicon' }
+    if (!validarIa(analise)) {
+      analise = fallbackLexicon?.seccoes?.length && analiseMapaValida(fallbackLexicon)
+        ? { ...fallbackLexicon, fonte: 'lexicon' }
+        : { seccoes: [], textoPlano: '', fonte: 'lexicon' }
     } else {
       analise.fonte = 'ia'
       const db = (await import('./_shared/firebase-admin.mjs')).getFirestore()

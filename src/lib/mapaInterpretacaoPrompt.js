@@ -1,9 +1,37 @@
 /**
- * Prompt IA - interpretação natal única por mapa calculado (Tropical · Placidus).
+ * Prompt IA - interpretação natal psicológica evolutiva (Tropical · Placidus · Swiss Ephemeris).
  */
 
 import { formatarTextoPlano } from './mapaInterpretacao.js'
 import { getMapaCopy } from './i18n/mapaCopy.js'
+
+const ELEMENTO = {
+  Carneiro: 'Fogo', Leão: 'Fogo', Sagitário: 'Fogo',
+  Touro: 'Terra', Virgem: 'Terra', Capricórnio: 'Terra',
+  Gémeos: 'Ar', Balança: 'Ar', Aquário: 'Ar',
+  Caranguejo: 'Água', Escorpião: 'Água', Peixes: 'Água',
+}
+
+const MODALIDADE = {
+  Carneiro: 'Cardinal', Caranguejo: 'Cardinal', Balança: 'Cardinal', Capricórnio: 'Cardinal',
+  Touro: 'Fixo', Leão: 'Fixo', Escorpião: 'Fixo', Aquário: 'Fixo',
+  Gémeos: 'Mutável', Virgem: 'Mutável', Sagitário: 'Mutável', Peixes: 'Mutável',
+}
+
+export const FRASES_PROIBIDAS_IA = [
+  'define como este planeta se expressa',
+  'colore uma dimensão vital',
+  'define como pensas',
+  'revela a tua linguagem',
+  'indica como assertas',
+  'aponta onde a vida te expande',
+  'é o teu mestre kármico: lições de maturidade',
+  'nenhum horóscopo genérico',
+  'assinatura psíquica',
+  'este planeta se expressa na tua vida',
+  'horóscopo genérico',
+  'cada planeta se expressa',
+]
 
 function labelsFromCopy(lang) {
   const L = getMapaCopy(lang).L
@@ -35,81 +63,159 @@ function labelsFromCopy(lang) {
   }
 }
 
-function fmtPlaneta(p, lang) {
-  if (!p) return null
-  const signo = p.signo?.nome || '-'
-  const graus = p.signo?.graus != null ? `${Number(p.signo.graus).toFixed(1)}°` : '-'
-  const casa = p.casa ? (lang === 'en' ? `H${p.casa}` : `C${p.casa}`) : '-'
-  const retro = p.retrograde ? ' ℞' : ''
-  const lon = p.longitude != null ? `${Number(p.longitude).toFixed(2)}°` : ''
-  return `${p.nome || p.key}: ${signo} ${graus} ${casa}${retro}${lon ? ` (${lon})` : ''}`
+function nomeAspeto(str) {
+  return String(str || '').split(' ')[0]
 }
 
-export function serializarMapaParaIA(mapaNatal, planetas, aspetos, dados, lang = 'pt') {
-  const linhas = []
-  const en = lang === 'en'
+function decanato(graus) {
+  const g = Number(graus)
+  if (!Number.isFinite(g)) return null
+  if (g < 10) return '1º decanato (inicial)'
+  if (g < 20) return '2º decanato (central)'
+  return '3º decanato (final)'
+}
 
-  linhas.push(en ? 'NATAL CHART DATA (authoritative - do not invent positions):' : 'DADOS DO MAPA NATAL (autoritativos - não inventes posições):')
-  if (dados?.nome) linhas.push(en ? `Name: ${dados.nome}` : `Nome: ${dados.nome}`)
-  if (dados?.data) linhas.push(en ? `Birth date: ${dados.data}` : `Data: ${dados.data}`)
-  if (dados?.hora) linhas.push(en ? `Birth time: ${dados.hora}` : `Hora: ${dados.hora}`)
-  if (dados?.cidade) linhas.push(en ? `Place: ${dados.cidade}` : `Local: ${dados.cidade}`)
-  if (mapaNatal?.instanteUTC) linhas.push(`UTC: ${mapaNatal.instanteUTC}`)
-  if (mapaNatal?.fuso != null) linhas.push(en ? `Timezone: ${mapaNatal.fuso}` : `Fuso: ${mapaNatal.fuso}`)
-  if (mapaNatal?.lat != null) linhas.push(`Lat/Lon: ${mapaNatal.lat}, ${mapaNatal.lon}`)
-
-  linhas.push('')
-  linhas.push(en ? 'Angular points:' : 'Pontos angulares:')
-  if (mapaNatal?.solar) linhas.push(`Sol: ${mapaNatal.solar.nome}${mapaNatal.solar.graus != null ? ` ${Number(mapaNatal.solar.graus).toFixed(1)}°` : ''}`)
-  if (mapaNatal?.lunar) linhas.push(`Lua: ${mapaNatal.lunar.nome}${mapaNatal.lunar.graus != null ? ` ${Number(mapaNatal.lunar.graus).toFixed(1)}°` : ''}`)
-  if (mapaNatal?.ascendente) linhas.push(`ASC: ${mapaNatal.ascendente.nome}${mapaNatal.ascendente.graus != null ? ` ${Number(mapaNatal.ascendente.graus).toFixed(1)}°` : ''}`)
-  if (mapaNatal?.mc) linhas.push(`MC: ${mapaNatal.mc.nome}${mapaNatal.mc.graus != null ? ` ${Number(mapaNatal.mc.graus).toFixed(1)}°` : ''}`)
-
-  linhas.push('')
-  linhas.push(en ? 'Planets in Placidus houses:' : 'Planetas nas casas Placidus:')
-  for (const p of planetas || []) {
-    const line = fmtPlaneta(p, lang)
-    if (line) linhas.push(`- ${line}`)
+function metaPlaneta(p) {
+  const signo = p?.signo?.nome
+  if (!signo) return null
+  const graus = p.signo?.graus != null ? Number(p.signo.graus) : null
+  return {
+    signo,
+    grau_no_signo: graus != null ? Number(graus.toFixed(2)) : null,
+    decanato: decanato(graus),
+    elemento: ELEMENTO[signo] || null,
+    modalidade: MODALIDADE[signo] || null,
+    casa: p.casa ?? null,
+    longitude_ecliptica: p.longitude != null ? Number(p.longitude.toFixed(4)) : null,
+    retrogrado: Boolean(p.retrograde),
   }
+}
 
-  if (aspetos?.length) {
-    linhas.push('')
-    linhas.push(en ? 'Major aspects:' : 'Aspectos principais:')
-    for (const a of aspetos.slice(0, 24)) {
-      linhas.push(`- ${a.planetaA} ${a.aspecto} ${a.planetaB} (orbe ${a.orbe})`)
+function aspectosDoPlaneta(nome, aspetos) {
+  return (aspetos || [])
+    .filter((a) => nomeAspeto(a.planetaA) === nome || nomeAspeto(a.planetaB) === nome)
+    .map((a) => ({
+      com: nomeAspeto(a.planetaA) === nome ? nomeAspeto(a.planetaB) : nomeAspeto(a.planetaA),
+      tipo: a.aspecto,
+      orbe: a.orbe,
+    }))
+}
+
+export function construirPayloadMapa(mapaNatal, planetas, aspetos, dados, lang = 'pt') {
+  const lista = (planetas || []).map((p) => ({
+    nome: p.nome || p.key,
+    ...metaPlaneta(p),
+    aspectos: aspectosDoPlaneta(p.nome, aspetos),
+  }))
+
+  const ang = (pt) => {
+    if (!pt?.nome) return null
+    return {
+      signo: pt.nome,
+      grau_no_signo: pt.graus != null ? Number(Number(pt.graus).toFixed(2)) : null,
+      decanato: decanato(pt.graus),
+      elemento: ELEMENTO[pt.nome] || pt.elemento || null,
+      modalidade: MODALIDADE[pt.nome] || null,
     }
   }
 
-  return linhas.join('\n')
+  return {
+    sistema: 'Tropical · Casas Placidus · Swiss Ephemeris',
+    idioma_saida: lang === 'en' ? 'en-GB' : 'pt-PT',
+    nativo: {
+      nome: dados?.nome || null,
+      data: dados?.data || null,
+      hora: dados?.hora || null,
+      local: dados?.cidade || null,
+      utc: mapaNatal?.instanteUTC || null,
+      fuso: mapaNatal?.fuso ?? null,
+      lat: mapaNatal?.lat ?? null,
+      lon: mapaNatal?.lon ?? null,
+    },
+    angulares: {
+      sol: ang(mapaNatal?.solar),
+      lua: ang(mapaNatal?.lunar),
+      ascendente: ang(mapaNatal?.ascendente),
+      meio_ceu: ang(mapaNatal?.mc),
+      descendente: ang(mapaNatal?.descendente),
+      fundo_ceu: ang(mapaNatal?.ic),
+    },
+    planetas: lista,
+    aspectos_maiores: (aspetos || []).slice(0, 28).map((a) => ({
+      a: nomeAspeto(a.planetaA),
+      aspecto: a.aspecto,
+      b: nomeAspeto(a.planetaB),
+      orbe: a.orbe,
+    })),
+  }
+}
+
+export function serializarMapaParaIA(mapaNatal, planetas, aspetos, dados, lang = 'pt') {
+  const payload = construirPayloadMapa(mapaNatal, planetas, aspetos, dados, lang)
+  const en = lang === 'en'
+  return [
+    en ? 'AUTHORITATIVE CHART JSON (Swiss Ephemeris - never invent positions):' : 'JSON AUTORITATIVO DO MAPA (Swiss Ephemeris - nunca inventes posições):',
+    JSON.stringify(payload, null, 2),
+  ].join('\n')
 }
 
 export function contarPalavrasAnalise(seccoes) {
   if (!Array.isArray(seccoes)) return 0
   return seccoes.reduce((total, sec) => {
     const blocos = sec.blocos || []
-    return total + blocos.reduce((n, b) => n + (String(b.texto || '').split(/\s+/).filter(Boolean).length), 0)
+    return total + blocos.reduce((n, b) => n + String(b.texto || '').split(/\s+/).filter(Boolean).length, 0)
   }, 0)
+}
+
+export function temFrasesRoboticas(analise) {
+  if (!analise?.seccoes?.length) return true
+  const junto = analise.seccoes
+    .flatMap((s) => (s.blocos || []).map((b) => String(b.texto || '').toLowerCase()))
+    .join(' ')
+  return FRASES_PROIBIDAS_IA.some((f) => junto.includes(f.toLowerCase()))
+}
+
+export function analiseIaPremiumValida(analise) {
+  if (!analise?.seccoes?.length) return false
+  const junto = analise.seccoes.flatMap((s) => (s.blocos || []).map((b) => b.texto || '')).join(' ')
+  if (!junto.trim() || /\bundefined\b/i.test(junto)) return false
+  if (temFrasesRoboticas(analise)) return false
+  const palavras = junto.split(/\s+/).filter(Boolean).length
+  if (palavras < 4200) return false
+  const blocos = analise.seccoes.flatMap((s) => s.blocos || [])
+  const curtos = blocos.filter((b) => String(b.texto || '').split(/\s+/).filter(Boolean).length < 120)
+  if (curtos.length > blocos.length * 0.25) return false
+  return true
 }
 
 export function construirSistemaMapa(lang = 'pt') {
   const L = labelsFromCopy(lang)
+
   if (lang === 'en') {
     return `
-You are a human professional astrologer writing a private natal chart report for one client. Tropical zodiac, Placidus houses, Swiss Ephemeris precision.
+You are Sidus Astro's Senior Psychological and Evolutionary Astrologer. Tropical zodiac, Placidus houses, Swiss Ephemeris precision.
 
-VOICE: Write directly TO the person in second person ("you"). Warm, intimate, honest - like a long letter after studying their chart for hours. Not a textbook, not a horoscope column. Help them know themselves deeply.
+IDENTITY: Literary, dense, engaging, therapeutic writing for THIS chart only. You write a permanent premium natal report - a literary work, not a template engine.
 
-MISSION: This report is PERMANENT and UNIQUE to this chart. Two different birth charts must produce completely different texts. Never reuse sentences across charts.
+ABSOLUTE PROHIBITIONS:
+- No prefabricated phrases or repetitive skeletons (e.g. "X shows how this planet expresses...", "this colours a vital dimension").
+- No isolated placements: never interpret a planet without weaving sign, house, element, modality, decan degree AND exact aspects in the SAME flowing analysis.
+- No invented positions. Use ONLY the supplied JSON.
+- No bullet lists inside "texto". Use paragraphs separated by blank lines (\\n\\n).
 
-RULES:
-1. Use ONLY the supplied positions - never invent data.
-2. Each "texto" block: minimum 10-14 sentences for Sun, Moon, Ascendant, Saturn, MC, synthesis; minimum 8-10 for other planets.
-3. Always cite sign, house number, degree and relevant aspects inside the prose naturally.
-4. Use the native's name often if provided. Speak about their inner life, relationships, fears, gifts, patterns they repeat.
-5. Hyphens (-) only. No bullet lists inside "texto". English only.
-6. Forbidden: generic praise, copy-paste astrology clichés, identical openings, cold technical jargon without human meaning.
+INTERPRETATION ENGINE (mandatory cross-analysis):
+For each placement read: Planet + Sign + House + Element + Modality + Decan + exact aspects with orbs.
+When planet X is in sign Y, house Z, aspecting planet W - write ONE unique essay fusing ALL factors, analysing real tension or harmony of this configuration.
 
-Output VALID JSON ONLY:
+SHADOW, LIGHT, PRACTICAL (woven into prose, not labelled mechanically):
+Every major block must include: (a) Shadow - self-sabotage, unconscious fears, blocks; (b) Light - latent gifts, virtues, evolution; (c) Practical counsel - real personal development tools for daily life.
+
+LENGTH:
+Sun, Moon, Ascendant, Mercury, Venus, Mars, Jupiter, Saturn, MC: 3-4 robust paragraphs each (180-280 words per block minimum).
+Transpersonal planets: 2-3 paragraphs each. Synthesis: 4+ paragraphs.
+Minimum total: 5500 words.
+
+VOICE: Second person ("you"). Mature, prestigious, human. Valid JSON only.
 
 {
   "seccoes": [
@@ -117,33 +223,35 @@ Output VALID JSON ONLY:
   ]
 }
 
-Sections (ids 0-6, titles EXACT):
-0 "${L.sec0}" - subtitulo "${L.mapaNatal}" (10+ sentences: how this sky was calculated, why this moment is unique)
-1 "${L.sec1}" - "${L.sol}", "${L.lua}", "${L.asc}", "${L.big3}" (each 10+ sentences)
-2 "${L.sec2}" - "${L.mer}", "${L.ven}", "${L.mar}" (each 8+ sentences)
-3 "${L.sec3}" - "${L.jup}", "${L.sat}" (each 10+ sentences; Saturn = karma, mastery, life lessons)
-4 "${L.sec4}" - "${L.mc}" (12+ sentences on vocation and public path)
-5 "${L.sec5}" - "${L.urano}", "${L.neptuno}", "${L.plutao}", "${L.nodo}", "${L.quiron}" (only if in data; each 8+ sentences)
-6 "${L.sec6}" - synthesis (destaque: true, 12+ sentences) + "${L.orientacao}" (8+ practical sentences)
-
-MINIMUM TOTAL: 4500 words across all blocks. Write long. This is a premium full natal chart report.
+Sections 0-6, titles EXACT: "${L.sec0}", "${L.sec1}", "${L.sec2}", "${L.sec3}", "${L.sec4}", "${L.sec5}", "${L.sec6}".
+Block subtitles EXACT as in standard Sidus natal chart structure.
 `.trim()
   }
 
   return `
-És uma astróloga profissional humana a escrever um relatório privado de mapa natal para uma cliente. Zodíaco Tropical, casas Placidus, precisão Swiss Ephemeris.
+És o Astrólogo Psicológico e Evolutivo Sénior do Sidus Astro. Zodíaco Tropical, casas Placidus, precisão Swiss Ephemeris.
 
-VOZ: Escreve directamente PARA a pessoa na 2.ª pessoa ("tu"). Caloroso, íntimo, honesto - como uma carta longa depois de horas a estudar o mapa dela. Não é manual escolar nem horóscopo de jornal. Ajuda-a a conhecer-se a fundo.
+IDENTIDADE: Escrita literária, densa, envolvente e terapêutica SÓ para ESTE mapa. Produzes um relatório premium permanente - uma obra de interpretação, não um motor de templates.
 
-MISSÃO: Este relatório é PERMANENTE e ÚNICO para este mapa. Dois mapas diferentes têm de produzir textos completamente distintos. Proibido reutilizar frases entre mapas.
+PROIBIÇÕES ABSOLUTAS:
+- É TERMINANTEMENTE PROIBIDO usar frases pré-feitas ou estruturas repetitivas (ex.: "X define como este planeta se expressa...", "colore uma dimensão vital do teu mapa", "aponta onde a vida te expande", "indica como assertas").
+- É PROIBIDO interpretar pontos isolados: nunca analises um planeta sem fundir no MESMO texto signo, casa, elemento, modalidade, decanato e aspectos exactos com orbes.
+- É PROIBIDO inventar posições. Usa APENAS o JSON fornecido.
+- Sem listas com bullets dentro de "texto". Usa parágrafos separados por linha em branco (\\n\\n).
 
-REGRAS:
-1. Usa APENAS posições fornecidas - nunca inventes dados.
-2. Cada bloco "texto": mínimo 10-14 frases para Sol, Lua, Ascendente, Saturno, MC, síntese; mínimo 8-10 para outros planetas.
-3. Cita signo, número da casa, grau e aspectos relevantes dentro da prosa, de forma natural.
-4. Usa o nome do nativo/a frequentemente se existir. Fala da vida interior, relações, medos, dons, padrões que repete.
-5. Só hífens (-). Sem listas dentro de "texto". Português de Portugal exclusivamente.
-6. Proibido: elogios genéricos, clichés astrológicos copiados, aberturas iguais, jargão frio sem significado humano.
+ENGENHARIA DE INTERPRETAÇÃO (cruzamento obrigatório):
+Lê o JSON da Swiss Ephemeris e cruza dinamicamente: Planeta + Signo + Casa + Elemento + Modalidade + Grau/Decanato + Aspetos exactos com orbes.
+Se o planeta X está no signo Y, na casa Z, em aspecto com W - escreve um ensaio único que funde TODOS estes elementos, analisando a tensão ou harmonia real desta configuração específica.
+
+SOMBRA, LUZ E CONSELHO (integrados na prosa, sem etiquetas mecânicas):
+Em cada bloco principal inclui obrigatoriamente: (a) Sombra - autossabotagem, medos inconscientes, bloqueios; (b) Luz - talentos latentes, virtudes, evolução; (c) Conselhos práticos - ferramentas reais para o quotidiano.
+
+EXTENSÃO PREMIUM (Português de Portugal natural, maduro, profundo, sério):
+Sol, Lua, Ascendente, Mercúrio, Vénus, Marte, Júpiter, Saturno, MC: 3 a 4 parágrafos robustos cada (mínimo 180-280 palavras por bloco).
+Planetas transpessoais: 2-3 parágrafos cada. Síntese final: 4+ parágrafos.
+Mínimo total: 5500 palavras.
+
+VOZ: Segunda pessoa do singular ("tu"). Fala directamente à pessoa pelo nome se existir. Tom de prestígio clínico-literário, nunca robótico.
 
 Responde APENAS com JSON VÁLIDO:
 
@@ -153,37 +261,38 @@ Responde APENAS com JSON VÁLIDO:
   ]
 }
 
-Secções (ids 0-6, títulos EXACTOS):
-0 "${L.sec0}" - subtitulo "${L.mapaNatal}" (10+ frases: como este céu foi calculado, por que este momento é único)
-1 "${L.sec1}" - "${L.sol}", "${L.lua}", "${L.asc}", "${L.big3}" (cada 10+ frases)
-2 "${L.sec2}" - "${L.mer}", "${L.ven}", "${L.mar}" (cada 8+ frases)
-3 "${L.sec3}" - "${L.jup}", "${L.sat}" (cada 10+ frases; Saturno = karma, mestre, lições de vida)
-4 "${L.sec4}" - "${L.mc}" (12+ frases sobre vocação e percurso público)
-5 "${L.sec5}" - "${L.urano}", "${L.neptuno}", "${L.plutao}", "${L.nodo}", "${L.quiron}" (só se existir nos dados; cada 8+ frases)
-6 "${L.sec6}" - síntese (destaque: true, 12+ frases) + "${L.orientacao}" (8+ frases práticas)
+Secções 0-6, títulos EXACTOS:
+0 "${L.sec0}" - subtitulo "${L.mapaNatal}"
+1 "${L.sec1}" - subtitulos EXACTOS: "${L.sol}", "${L.lua}", "${L.asc}", "${L.big3}"
+2 "${L.sec2}" - "${L.mer}", "${L.ven}", "${L.mar}"
+3 "${L.sec3}" - "${L.jup}", "${L.sat}"
+4 "${L.sec4}" - "${L.mc}"
+5 "${L.sec5}" - "${L.urano}", "${L.neptuno}", "${L.plutao}", "${L.nodo}", "${L.quiron}" (só se existirem no JSON)
+6 "${L.sec6}" - síntese evolutiva (destaque: true) + "${L.orientacao}"
 
-MÍNIMO TOTAL: 4500 palavras em todos os blocos. Escreve longo. Isto é um mapa astral completo premium.
+Cada "texto" é prosa contínua em parágrafos. Este relatório é imutável e único para este nativo - outro mapa exige texto completamente diferente.
 `.trim()
 }
 
-export function construirPedidoMapa({ mapaNatal, planetas, aspetos, dados, lang, resumoLexicon, retryCurto = false }) {
+export function construirPedidoMapa({ mapaNatal, planetas, aspetos, dados, lang, retryCurto = false, retryRobotic = false }) {
   const facts = serializarMapaParaIA(mapaNatal, planetas, aspetos, dados, lang)
   const en = lang === 'en'
-  const lex = resumoLexicon?.textoPlano
-    ? (en
-      ? `\nFactual anchors (rewrite entirely in fresh human prose - do NOT copy any sentence):\n${resumoLexicon.textoPlano.slice(0, 5000)}`
-      : `\nÂncoras factuais (reescreve integralmente com prosa humana nova - NÃO copies nenhuma frase):\n${resumoLexicon.textoPlano.slice(0, 5000)}`)
-    : ''
 
-  const retry = retryCurto
-    ? (en
-      ? '\n\nIMPORTANT: Your previous answer was too short. Expand every block. Minimum 4500 words total. Write as a human astrologer speaking directly to this person.'
-      : '\n\nIMPORTANTE: A resposta anterior foi demasiado curta. Expande cada bloco. Mínimo 4500 palavras no total. Escreve como astróloga humana a falar directamente com esta pessoa.')
-    : ''
+  let extra = ''
+  if (retryCurto) {
+    extra += en
+      ? '\n\nCRITICAL: Previous response was too short. Minimum 5500 words. Expand every block to 3-4 full paragraphs.'
+      : '\n\nCRÍTICO: A resposta anterior foi curta demais. Mínimo 5500 palavras. Expande cada bloco para 3-4 parágrafos completos.'
+  }
+  if (retryRobotic) {
+    extra += en
+      ? '\n\nCRITICAL: Previous response used template phrases. Rewrite from zero. No repetitive structures. Pure literary psychological astrology.'
+      : '\n\nCRÍTICO: A resposta anterior usou frases-feitas. Reescreve do zero. Proibido templates. Astrologia psicológica literária pura.'
+  }
 
   return en
-    ? `${facts}${lex}${retry}\n\nWrite the complete JSON report now. Long, human, unique to this chart only. Valid JSON.`
-    : `${facts}${lex}${retry}\n\nRedige agora o relatório JSON completo. Longo, humano, único só para este mapa. Só JSON válido.`
+    ? `${facts}${extra}\n\nWrite the complete JSON report now. Cross-weave all chart factors. Shadow, light and practical counsel in every major block. Valid JSON only.`
+    : `${facts}${extra}\n\nRedige agora o relatório JSON completo. Cruza todos os factores do mapa. Sombra, luz e conselho prático em cada bloco principal. Só JSON válido.`
 }
 
 function sanitizarSeccoes(seccoes) {

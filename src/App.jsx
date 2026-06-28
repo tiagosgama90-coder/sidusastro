@@ -85,6 +85,7 @@ import { consultarOracleServidor, interpretarMapaServidor } from './lib/apiAi.js
 import { localizeArcano } from './lib/i18n/tarotArcana.js'
 import { normalizarDataISO, criarDataUTCporLocal, localToUTC } from './lib/datetime.js'
 import { readMapaIACache, writeMapaIACache, interpretacaoValidaParaMapa, gerarChaveMapa, analiseMapaValida, contarPalavrasAnalise } from './lib/mapaInterpretacaoCache.js'
+import { analiseIaPremiumValida } from './lib/mapaInterpretacaoPrompt.js'
 import { calcularAngulosCasas } from './lib/natalHouses.js'
 import { utilizadorTemPremium, emailTemPremiumPrivilegiado } from './lib/premiumAccess.js'
 import {
@@ -2057,13 +2058,22 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
     if (
       mapaCompletoDesbloqueado
       && analiseIA?.seccoes?.length
-      && analiseMapaValida(analiseIA)
+      && analiseIA.fonte === 'ia'
+      && analiseIaPremiumValida(analiseIA)
       && contarPalavrasAnalise(analiseIA) >= lexPalavras
     ) {
       return analiseIA
     }
+    if (
+      mapaCompletoDesbloqueado
+      && analiseIA?.seccoes?.length
+      && interpretacaoValidaParaMapa(analiseIA, dados, lang)
+      && analiseIaPremiumValida(analiseIA)
+    ) {
+      return analiseIA
+    }
     return analiseLexicon
-  }, [mapaCompletoDesbloqueado, analiseIA, analiseLexicon])
+  }, [mapaCompletoDesbloqueado, analiseIA, analiseLexicon, dados, lang])
 
   useEffect(() => {
     if (!mapaCompletoDesbloqueado || !mapaNatal || !analiseLexicon) {
@@ -2080,13 +2090,15 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
       pedidoInterpretacaoRef.current = false
     }
     const aplicar = (analise) => {
-      if (!analiseMapaValida(analise)) return
+      if (!analise?.seccoes?.length) return
+      if (analise.fonte === 'ia' && !analiseIaPremiumValida(analise)) return
+      if (analise.fonte !== 'ia' && !analiseMapaValida(analise)) return
       setAnaliseIA({
         ...analise,
         chave,
         lang,
       })
-      writeMapaIACache(dados, lang, analise)
+      if (analise.fonte === 'ia') writeMapaIACache(dados, lang, analise)
     }
 
     if (interpretacaoValidaParaMapa(interpretacaoPerfil, dados, lang)) {
@@ -2135,7 +2147,7 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
         }
 
         if (cancelled || !resultado?.seccoes?.length) return
-        if (!analiseMapaValida(resultado)) return
+        if (resultado.fonte === 'ia' && !analiseIaPremiumValida(resultado)) return
         aplicar({
           seccoes: resultado.seccoes,
           textoPlano: resultado.textoPlano,
@@ -2360,7 +2372,7 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
             analise={analiseCompleta}
             estilosVidro={estilos.vidro}
             lang={lang}
-            upgrading={analiseIAUpgrading && analiseCompleta?.fonte !== 'ia' && !interpretacaoValidaParaMapa(interpretacaoPerfil, dados, lang)}
+            upgrading={analiseIAUpgrading && !analiseIaPremiumValida(analiseIA)}
             upgradingLabel={t('mapa.aiUpgrading')}
           />
 

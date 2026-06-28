@@ -1,3 +1,5 @@
+import { analiseIaPremiumValida } from './mapaInterpretacaoPrompt.js'
+
 /** Chave estável por mapa + idioma. Mesmos dados = mesma leitura, sempre. */
 export function gerarChaveMapa(dados, lang = 'pt') {
   const lat = dados?.localizacao?.lat ?? dados?.lat ?? ''
@@ -13,7 +15,7 @@ export function gerarChaveMapa(dados, lang = 'pt') {
   ].join('|')
 }
 
-const STORAGE_PREFIX = 'sidus_mapa_v5'
+const STORAGE_PREFIX = 'sidus_mapa_v6'
 
 function storageKey(dados, lang) {
   return `${STORAGE_PREFIX}:${gerarChaveMapa(dados, lang)}`
@@ -48,7 +50,12 @@ export function readMapaIACache(dados, lang) {
 
 export function writeMapaIACache(dados, lang, analise) {
   try {
-    if (!analiseMapaValida(analise)) return
+    if (!analise?.seccoes?.length) return
+    if (analise.fonte === 'ia') {
+      if (!analiseIaPremiumValida(analise)) return
+    } else if (!analiseMapaValida(analise)) {
+      return
+    }
     localStorage.setItem(storageKey(dados, lang), JSON.stringify({
       ...analise,
       chave: gerarChaveMapa(dados, lang),
@@ -61,7 +68,11 @@ export function writeMapaIACache(dados, lang, analise) {
 
 export function interpretacaoValidaParaMapa(interpretacao, dados, lang) {
   if (!interpretacao?.seccoes?.length) return false
-  if (!analiseMapaValida(interpretacao)) return false
+  if (interpretacao.fonte === 'ia') {
+    if (!analiseIaPremiumValida(interpretacao)) return false
+  } else if (!analiseMapaValida(interpretacao)) {
+    return false
+  }
   if (interpretacao.chave && interpretacao.chave !== gerarChaveMapa(dados, lang)) return false
   if (interpretacao.lang && interpretacao.lang !== lang) return false
   return true
