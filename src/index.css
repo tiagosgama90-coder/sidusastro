@@ -114,6 +114,9 @@ html {
   width: min(82vw, 300px);
   max-width: 300px;
   z-index: 160;
+  background: rgba(11, 7, 30, 0.98);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   border-right: 1px solid rgba(223, 183, 108, 0.22);
   box-shadow: 8px 0 32px rgba(0, 0, 0, 0.45);
   transform: translateX(-105%);
@@ -767,23 +770,14 @@ html.sidus-no-ads .google-auto-placed {
   background: rgba(255, 255, 255, 0.03);
 }
 
-/* Mobile - compactação landing (hero abaixo da roda zodiacal, como desktop) */
+/* Mobile - hero e welcome iguais ao desktop (abaixo do céu ao vivo / roda) */
 @media (max-width: 639px) {
   .landing-auth-layout,
   .landing-auth-layout--mobile {
-    padding-top: calc(
-      env(safe-area-inset-top, 0px) + var(--landing-sticky-offset) + min(38vw, 176px) + 20px
-    ) !important;
+    padding-top: calc(118px + env(safe-area-inset-top, 0px)) !important;
     padding-left: 12px !important;
     padding-right: 12px !important;
     padding-bottom: 16px !important;
-  }
-
-  .sidus-login-shell .landing-cosmic-hendecagram-wrap {
-    width: min(70vw, 300px);
-    height: min(70vw, 300px);
-    top: calc(env(safe-area-inset-top, 0px) + var(--landing-sticky-offset) + 10px);
-    opacity: 0.52;
   }
 
   .landing-sky-top {
@@ -795,30 +789,27 @@ html.sidus-no-ads .google-auto-placed {
   }
 
   .landing-auth-hero {
-    margin-top: 0;
-    margin-bottom: 12px;
-    position: relative;
-    z-index: 2;
+    margin-bottom: 20px;
   }
 
   .landing-portal-brand-row {
-    gap: 8px;
-    margin-bottom: 10px;
+    gap: 10px;
+    margin-bottom: 14px;
   }
 
   .landing-portal-welcome-inline {
-    font-size: 11px;
-    letter-spacing: 0.14em;
+    font-size: 13px;
+    letter-spacing: 0.2em;
   }
 
   .landing-portal-brand-text {
-    font-size: 22px;
-    letter-spacing: 0.18em;
+    font-size: 28px;
+    letter-spacing: 0.22em;
   }
 
   .landing-portal-title {
-    font-size: 13px;
-    line-height: 1.4;
+    font-size: 15px;
+    line-height: 1.45;
   }
 
   .landing-portal-form-lead {
@@ -893,6 +884,12 @@ html.sidus-no-ads .google-auto-placed {
   .landing-portal-tools-footer {
     margin-top: 6px;
   }
+
+  .landing-cosmic-hendecagram-wrap {
+    opacity: 0.52;
+    width: min(110vw, 420px);
+    height: min(110vw, 420px);
+  }
 }
 
 .landing-auth-divider-mobile {
@@ -924,30 +921,6 @@ html.sidus-no-ads .google-auto-placed {
   position: relative;
   z-index: 2;
   min-height: 100svh;
-  isolation: isolate;
-}
-
-/* Vidro global — fundo cósmico desfoca ao scroll por baixo dos menus e cartões */
-.sidus-blur-glass {
-  background: rgba(11, 7, 30, 0.96) !important;
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-}
-
-:root {
-  --landing-sticky-offset: 64px;
-}
-
-@media (max-width: 639px) {
-  :root {
-    --landing-sticky-offset: 112px;
-  }
-}
-
-@media (min-width: 768px) {
-  :root {
-    --landing-sticky-offset: 58px;
-  }
 }
 
 .sidus-login-shell {
@@ -989,15 +962,6 @@ html.sidus-no-ads .google-auto-placed {
   width: min(92vw, 520px);
   height: min(92vw, 520px);
   opacity: 0.58;
-}
-
-/* Login: roda zodiacal entre o céu ao vivo (sticky) e o hero — igual desktop/mobile */
-.sidus-login-shell .landing-cosmic-hendecagram-wrap {
-  top: calc(env(safe-area-inset-top, 0px) + var(--landing-sticky-offset) + 16px);
-  transform: translate(-50%, 0);
-  width: min(76vw, 360px);
-  height: min(76vw, 360px);
-  opacity: 0.56;
 }
 .landing-cosmic-hendecagram {
   width: 100%;
@@ -1043,6 +1007,9 @@ html.sidus-no-ads .google-auto-placed {
   padding-bottom: 6px;
   padding-inline: max(12px, env(safe-area-inset-left, 0px)) max(12px, env(safe-area-inset-right, 0px));
   box-sizing: border-box;
+  background: rgba(11, 7, 30, 0.96);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   border-bottom: 1px solid rgba(223, 183, 108, 0.22);
 }
 
@@ -1159,18 +1126,10 @@ html.sidus-no-ads .google-auto-placed {
 
   .landing-auth-layout--desktop {
     max-width: min(900px, calc(100vw - 48px)) !important;
-    padding-top: calc(
-      env(safe-area-inset-top, 0px) + var(--landing-sticky-offset) + min(28vw, 220px) + 16px
-    ) !important;
+    padding-top: calc(62px + env(safe-area-inset-top, 0px)) !important;
     padding-bottom: 16px !important;
     padding-left: 24px !important;
     padding-right: 24px !important;
-  }
-
-  .sidus-login-shell .landing-cosmic-hendecagram-wrap {
-    width: min(48vw, 400px);
-    height: min(48vw, 400px);
-    top: calc(env(safe-area-inset-top, 0px) + var(--landing-sticky-offset) + 14px);
   }
 
   .landing-auth-grid {
@@ -1180,8 +1139,6 @@ html.sidus-no-ads .google-auto-placed {
   .landing-auth-hero {
     max-width: 580px;
     margin-bottom: 22px;
-    position: relative;
-    z-index: 2;
   }
 
   .landing-portal-welcome-inline {
