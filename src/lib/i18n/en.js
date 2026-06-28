@@ -263,8 +263,7 @@ export default {
     timezone: 'Timezone:',
     coordinates: 'Coordinates:',
     proTagline: 'Professional astrological reading · Unique cosmic signature',
-    aiLoading: 'Writing your personalised chart reading…',
-    aiBadge: 'Reading written for your chart',
+    aiUpgrading: 'Preparing your full reading in the background…',
     aiFallbackNote: 'Professional interpretation (classic mode)',
   },
   cartaoDia: {

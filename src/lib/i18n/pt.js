@@ -263,8 +263,7 @@ export default {
     timezone: 'Fuso:',
     coordinates: 'Coordenadas:',
     proTagline: 'Leitura astrológica profissional · Assinatura cósmica única',
-    aiLoading: 'A redigir a tua leitura personalizada ao mapa…',
-    aiBadge: 'Leitura escrita para o teu mapa',
+    aiUpgrading: 'A preparar a tua leitura completa em segundo plano…',
     aiFallbackNote: 'Interpretação profissional (modo clássico)',
   },
   cartaoDia: {

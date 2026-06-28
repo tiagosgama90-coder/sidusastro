@@ -73,6 +73,8 @@ export async function interpretarMapaServidor(payload, idToken) {
       seccoes: data.seccoes,
       textoPlano: data.textoPlano,
       fonte: data.fonte || 'ia',
+      chave: data.chave,
+      cached: data.cached === true,
     }
   } catch {
     return { seccoes: null }

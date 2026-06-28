@@ -38,7 +38,7 @@ service cloud.firestore {
         && request.auth.uid == userId
         && !request.resource.data.diff(resource.data).affectedKeys().hasAny([
           'isPremium', 'premiumAt', 'stripeCustomerId', 'stripeSubscriptionId',
-          'mapaCompleto', 'mapaCompletoAt'
+          'mapaCompleto', 'mapaCompletoAt', 'interpretacaoMapa'
         ])
         && (
           podeActualizarDadosNatais()

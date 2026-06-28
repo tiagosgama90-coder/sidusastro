@@ -1,9 +1,15 @@
 import { chatCompletion } from './_shared/ai.mjs'
 import { obterAcessoMapa } from './_shared/mapaAccess.mjs'
 import {
+  interpretacaoGuardada,
+  persistirInterpretacao,
+  gerarChaveMapa,
+} from './_shared/mapaInterpretacaoStore.mjs'
+import {
   construirSistemaMapa,
   construirPedidoMapa,
   parseRespostaMapa,
+  contarPalavrasAnalise,
 } from '../../src/lib/mapaInterpretacaoPrompt.js'
 import { gerarAnaliseCompleta } from '../../src/lib/mapaInterpretacao.js'
 
@@ -11,6 +17,45 @@ const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'Content-Type, Authorization',
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
+}
+
+const MIN_PALAVRAS = 2800
+
+async function gerarInterpretacaoIA({ mapaNatal, planetas, aspetos, dados, lang, resumoLexicon }) {
+  const system = construirSistemaMapa(lang)
+
+  async function tentar(retryCurto = false) {
+    const userPrompt = construirPedidoMapa({
+      mapaNatal,
+      planetas,
+      aspetos,
+      dados,
+      lang,
+      resumoLexicon,
+      retryCurto,
+    })
+    const raw = await chatCompletion({
+      system,
+      messages: [{ role: 'user', content: userPrompt }],
+      maxTokens: 8192,
+      temperature: retryCurto ? 0.82 : 0.78,
+      tier: 'premium',
+      escopo: 'astrologia',
+      lang,
+    })
+    return raw ? parseRespostaMapa(raw, mapaNatal, lang) : null
+  }
+
+  let analise = await tentar(false)
+  const palavras = contarPalavrasAnalise(analise?.seccoes)
+  if (!analise?.seccoes?.length || palavras < MIN_PALAVRAS) {
+    const retry = await tentar(true)
+    const palavrasRetry = contarPalavrasAnalise(retry?.seccoes)
+    if (retry?.seccoes?.length && palavrasRetry >= palavras) {
+      analise = retry
+    }
+  }
+  return analise
 }
 
 export default async (req) => {
@@ -30,6 +75,7 @@ export default async (req) => {
       dados = {},
       lang = 'pt',
       idToken,
+      forceRegenerate = false,
     } = body
 
     if (!mapaNatal?.solar) {
@@ -58,9 +104,28 @@ export default async (req) => {
       })
     }
 
+    const chave = gerarChaveMapa(dados, lang)
     const resumoLexicon = gerarAnaliseCompleta(mapaNatal, planetas, aspetos, dados, lang)
-    const system = construirSistemaMapa(lang)
-    const userPrompt = construirPedidoMapa({
+
+    if (!forceRegenerate) {
+      const guardada = interpretacaoGuardada(acesso.perfil, dados, lang)
+      if (guardada?.seccoes?.length) {
+        return new Response(JSON.stringify({
+          ok: true,
+          chave,
+          lang,
+          seccoes: guardada.seccoes,
+          textoPlano: guardada.textoPlano,
+          fonte: guardada.fonte || 'ia',
+          cached: true,
+        }), {
+          status: 200,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        })
+      }
+    }
+
+    let analise = await gerarInterpretacaoIA({
       mapaNatal,
       planetas,
       aspetos,
@@ -69,25 +134,23 @@ export default async (req) => {
       resumoLexicon,
     })
 
-    const raw = await chatCompletion({
-      system,
-      messages: [{ role: 'user', content: userPrompt }],
-      maxTokens: 6500,
-      temperature: 0.76,
-      tier: 'premium',
-      escopo: 'astrologia',
-      lang,
-    })
-
-    let analise = raw ? parseRespostaMapa(raw, mapaNatal, lang) : null
     if (!analise?.seccoes?.length) {
       analise = { ...resumoLexicon, fonte: 'lexicon' }
+    } else {
+      analise.fonte = 'ia'
+      const db = (await import('./_shared/firebase-admin.mjs')).getFirestore()
+      if (db && acesso.uid) {
+        await persistirInterpretacao(db, acesso.uid, dados, lang, analise)
+      }
     }
 
     return new Response(JSON.stringify({
       ok: true,
+      chave,
+      lang,
       ...analise,
-      fonte: analise.fonte || (raw ? 'ia' : 'lexicon'),
+      fonte: analise.fonte || 'ia',
+      cached: false,
     }), {
       status: 200,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
