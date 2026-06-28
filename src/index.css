@@ -262,11 +262,17 @@ html.sidus-no-ads .google-auto-placed {
   overflow-x: clip;
 }
 
-/* Vidro partilhado — landing (desfoque do fundo cósmico) */
+/* Vidro landing — mesma lógica que navbar (blur 20px + fundo escuro semitransparente) */
+.landing-glass,
+.landing-portal-card,
+.landing-auth-hero,
+.landing-faq,
+.landing-portal-sky-live {
+  background: rgba(11, 7, 30, 0.96) !important;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
 .landing-glass {
-  background: rgba(255, 255, 255, 0.06);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
   border: 1px solid rgba(223, 183, 108, 0.22);
 }
 
@@ -319,9 +325,6 @@ html.sidus-no-ads .google-auto-placed {
   overflow: hidden;
   padding: 22px 20px 20px;
   border-radius: 20px;
-  background: rgba(255, 255, 255, 0.06);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
   border: 1px solid rgba(223, 183, 108, 0.22);
   box-shadow:
     0 0 0 1px rgba(139, 92, 246, 0.08) inset,
@@ -397,9 +400,6 @@ html.sidus-no-ads .google-auto-placed {
   margin-top: 28px;
   padding: 20px 18px 22px;
   border-radius: 16px;
-  background: rgba(255, 255, 255, 0.06);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
   border: 1px solid rgba(223, 183, 108, 0.22);
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
 }
@@ -456,9 +456,6 @@ html.sidus-no-ads .google-auto-placed {
   margin-bottom: 14px;
   padding: 10px 14px 8px;
   border-radius: 14px;
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
   border: 1px solid rgba(212, 175, 55, 0.22);
   box-shadow:
     0 0 0 1px rgba(52, 211, 153, 0.06) inset,
@@ -710,9 +707,6 @@ html.sidus-no-ads .google-auto-placed {
   padding: 18px 16px 16px;
   text-align: center;
   border-radius: 16px;
-  background: rgba(255, 255, 255, 0.06);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
   border: 1px solid rgba(223, 183, 108, 0.22);
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
 }
@@ -917,7 +911,6 @@ html.sidus-no-ads .google-auto-placed {
   position: relative;
   min-height: 100svh;
   background: transparent !important;
-  isolation: isolate;
 }
 
 .sidus-cosmic-foreground {
@@ -996,17 +989,24 @@ html.sidus-no-ads .google-auto-placed {
   display: none;
 }
 
-/* Sticky topo landing — vidro + desfoque (site-wide) */
+/* Topo landing fixo — mesma lógica que navbar (conteúdo/cósmico desfoca ao scroll) */
 .landing-auth-sticky-top {
-  position: sticky;
+  position: fixed;
   top: 0;
-  z-index: 80;
-  margin: 0 0 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: min(480px, 100vw);
+  z-index: 150;
+  margin: 0;
   padding-top: max(2px, env(safe-area-inset-top, 0px));
-  padding-bottom: 4px;
-  background: linear-gradient(180deg, rgba(3, 8, 24, 0.92) 0%, rgba(3, 8, 24, 0.78) 72%, rgba(3, 8, 24, 0) 100%);
+  padding-bottom: 6px;
+  padding-inline: max(12px, env(safe-area-inset-left, 0px)) max(12px, env(safe-area-inset-right, 0px));
+  box-sizing: border-box;
+  background: rgba(11, 7, 30, 0.96);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(223, 183, 108, 0.22);
 }
 
 /* Mobile login — idioma fixo acima do céu ao vivo */
@@ -1040,7 +1040,7 @@ html.sidus-no-ads .google-auto-placed {
   width: 100%;
   max-width: min(480px, calc(100vw - 24px));
   margin-inline: auto !important;
-  padding: 40px 14px 28px;
+  padding: calc(88px + env(safe-area-inset-top, 0px)) 14px 28px;
   box-sizing: border-box;
   position: relative;
   z-index: 1;
@@ -1116,9 +1116,13 @@ html.sidus-no-ads .google-auto-placed {
 
 /* ── Desktop (md+): compactação above-the-fold ── */
 @media (min-width: 768px) {
+  .landing-auth-sticky-top {
+    max-width: min(900px, calc(100vw - 48px));
+  }
+
   .landing-auth-layout--desktop {
     max-width: min(900px, calc(100vw - 48px)) !important;
-    padding-top: 14px !important;
+    padding-top: calc(62px + env(safe-area-inset-top, 0px)) !important;
     padding-bottom: 16px !important;
     padding-left: 24px !important;
     padding-right: 24px !important;
@@ -1270,4 +1274,79 @@ html.sidus-no-ads .google-auto-placed {
 @keyframes landingBounce {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(6px); }
+}
+
+/* Mapa astral — preview desfocado + paywall (utilizador gratuito) */
+.mapa-page-body {
+  position: relative;
+}
+.mapa-preview-blurred {
+  filter: blur(12px);
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.mapa-paywall-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: max(16px, env(safe-area-inset-top, 16px)) 16px max(16px, env(safe-area-inset-bottom, 16px));
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  pointer-events: none;
+  box-sizing: border-box;
+}
+.mapa-paywall-card {
+  pointer-events: auto;
+  width: 100%;
+  max-width: 420px;
+  padding: 24px;
+  border-radius: 16px;
+  text-align: center;
+  position: relative;
+  background: rgba(11, 7, 30, 0.98);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(223, 183, 108, 0.45);
+  box-shadow:
+    0 24px 60px rgba(0, 0, 0, 0.55),
+    0 0 40px rgba(223, 183, 108, 0.12);
+}
+.mapa-paywall-card-pattern {
+  position: absolute;
+  inset: 0;
+  border-radius: 16px;
+  background: repeating-linear-gradient(45deg, transparent, transparent 8px, rgba(223, 183, 108, 0.03) 8px, rgba(223, 183, 108, 0.03) 16px);
+  pointer-events: none;
+}
+.mapa-paywall-title {
+  margin: 0 0 12px;
+  font-size: 16px;
+  font-weight: 700;
+  color: #DFB76C;
+  line-height: 1.35;
+}
+.mapa-paywall-desc {
+  margin: 0 0 14px;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.62);
+  line-height: 1.5;
+}
+.mapa-paywall-pills {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.mapa-paywall-pill {
+  font-size: 11px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  background: rgba(223, 183, 108, 0.1);
+  border: 1px solid rgba(223, 183, 108, 0.25);
+  color: rgba(255, 255, 255, 0.62);
 }

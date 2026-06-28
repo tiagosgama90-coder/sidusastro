@@ -2036,14 +2036,14 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
   )
 
   const analiseCompleta = useMemo(() => {
-    if (!mapaCompletoDesbloqueado || !mapaNatal) return null
+    if (!mapaNatal) return null
     try {
       return gerarAnaliseCompleta(mapaNatal, planetasComCasa, aspetosNatais, dados, lang)
     } catch (e) {
       console.warn('[Sidus] Análise mapa:', e?.message)
       return null
     }
-  }, [mapaCompletoDesbloqueado, mapaNatal, planetasComCasa, aspetosNatais, dados, lang])
+  }, [mapaNatal, planetasComCasa, aspetosNatais, dados, lang])
 
   const resumoGratuito = useMemo(() => {
     if (mapaCompletoDesbloqueado || !mapaNatal) return null
@@ -2152,7 +2152,7 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
 
   return (
     <div style={layoutConteudo(isDesktop)}>
-      <header style={{ marginBottom: 20 }}>
+      <header style={{ marginBottom: 20, position: 'relative', zIndex: 100 }}>
         <h1 style={{ ...estilos.titulo, textAlign: 'left', fontSize: isDesktop ? 28 : 22 }}>{t('mapa.title')}</h1>
         <p style={{ ...estilos.subtitulo, textAlign: 'left', marginBottom: 2 }}>
           {dados.nome} · {formatarData(dados.data)} às {dados.hora}
@@ -2162,32 +2162,27 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
         </p>
       </header>
 
-      {/* ── CTA Premium (utilizador gratuito — destaque no topo) ── */}
       {!mapaCompletoDesbloqueado && (
-        <div style={{
-          ...estilos.vidro, padding: 24, marginBottom: 14,
-          border: `1px solid ${CORES.dourado}`, background: 'rgba(223,183,108,0.06)',
-          textAlign: 'center', position: 'relative',
-        }}>
-          <div style={{ position: 'absolute', inset: 0, background: 'repeating-linear-gradient(45deg, transparent, transparent 8px, rgba(223,183,108,0.03) 8px, rgba(223,183,108,0.03) 16px)', pointerEvents: 'none' }} />
-          <Crown size={28} color={CORES.dourado} style={{ marginBottom: 10 }} />
-          <div style={{ fontSize: 16, fontWeight: 700, color: CORES.dourado, marginBottom: 12 }}>{t('mapa.fullChart')}</div>
-          <button type="button" onClick={onUpgrade} style={{ ...estilos.botaoDourado, width: '100%', marginBottom: 14 }}>
-            {t('mapa.premiumOption')}
-          </button>
-          <div style={{ fontSize: 13, color: CORES.brancoMuted, marginBottom: 14, lineHeight: 1.5 }}>
-            {t('mapa.fullDesc')}
-          </div>
-          <div style={{ display: 'flex', justifyContent: 'center', gap: 8, flexWrap: 'wrap' }}>
-            {['☀ Essência', '☿♀♂ Pessoais', '♃♄ Karma', '⊕ MC', '🌙 Fases Lua', '📄 PDF'].map(item => (
-              <span key={item} style={{ fontSize: 11, padding: '4px 10px', borderRadius: 20, background: 'rgba(223,183,108,0.1)', border: `1px solid rgba(223,183,108,0.25)`, color: CORES.brancoMuted }}>
-                {item}
-              </span>
-            ))}
+        <div className="mapa-paywall-overlay" aria-modal="true" role="dialog" aria-label={t('mapa.unlockFullChart')}>
+          <div className="mapa-paywall-card">
+            <div className="mapa-paywall-card-pattern" aria-hidden />
+            <Crown size={28} color={CORES.dourado} style={{ marginBottom: 10, position: 'relative' }} />
+            <h2 className="mapa-paywall-title">{t('mapa.unlockFullChart')}</h2>
+            <button type="button" onClick={onUpgrade} style={{ ...estilos.botaoDourado, width: '100%', marginBottom: 14, position: 'relative' }}>
+              {t('mapa.premiumOption')}
+            </button>
+            <p className="mapa-paywall-desc">{t('mapa.fullDesc')}</p>
+            <div className="mapa-paywall-pills">
+              {['☀ Essência', '☿♀♂ Pessoais', '♃♄ Karma', '⊕ MC', '🌙 Fases Lua', '📄 PDF'].map((item) => (
+                <span key={item} className="mapa-paywall-pill">{item}</span>
+              ))}
+            </div>
           </div>
         </div>
       )}
 
+      <div className="mapa-page-body">
+        <div className={!mapaCompletoDesbloqueado ? 'mapa-preview-blurred' : undefined}>
       {/* ── Resumo interpretativo (gratuito) ── */}
       {!mapaCompletoDesbloqueado && resumoGratuito && (
         <div style={{ ...estilos.vidro, padding: 16, marginBottom: 14 }}>
@@ -2273,12 +2268,11 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
         </>
       )}
 
-      {/* ── Conteúdo Premium (interpretação profunda + PDF) ── */}
-      {mapaCompletoDesbloqueado ? (
+      {/* ── Interpretação profunda + exportação (premium ou preview desfocado) ── */}
+      {analiseCompleta && (
         <>
           <InterpretacaoMapa analise={analiseCompleta} estilosVidro={estilos.vidro} lang={lang} />
 
-          {/* Áreas da Vida — resumo por casa dominante */}
           <div style={{ ...estilos.vidro, padding: 18, marginBottom: 14 }}>
             <div style={{ fontSize: 11, color: CORES.dourado, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 14, fontWeight: 700 }}>
               {t('mapa.lifeSpheres')}
@@ -2308,12 +2302,10 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
             ))}
           </div>
 
-          {/* Exportar mapa completo */}
           <div style={{ fontSize: 11, color: CORES.dourado, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 10, fontWeight: 700 }}>
             {t('mapa.export')}
           </div>
 
-          {/* Verificação de precisão (compacta) */}
           <div style={{ ...estilos.vidro, padding: 14, marginBottom: 14 }}>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '5px 12px', fontSize: 11 }}>
               <span style={{ color: CORES.brancoMuted }}>{t('mapa.utDate')}</span>
@@ -2327,29 +2319,32 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
             </div>
           </div>
 
-          {/* Botões de ação */}
-          <div style={{ display: 'flex', gap: 10, marginBottom: 20 }}>
-            <button type="button" onClick={downloadPdf} disabled={gerandoPdf} style={{
-              flex: 1, padding: '14px', borderRadius: 14,
-              background: gerandoPdf ? 'rgba(223,183,108,0.15)' : `linear-gradient(135deg, ${CORES.dourado}, ${CORES.douradoEscuro})`,
-              border: 'none', color: CORES.fundo, fontSize: 14, fontWeight: 700, cursor: gerandoPdf ? 'default' : 'pointer',
-              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
-            }}>
-              {gerandoPdf ? t('mapa.generating') : '📄 PDF'}
-            </button>
-            <button type="button" onClick={compartilharEmail} style={{
-              flex: 1, padding: '14px', borderRadius: 14,
-              background: emailEnviado ? 'rgba(52,211,153,0.2)' : 'rgba(223,183,108,0.12)',
-              border: `1px solid ${emailEnviado ? '#34D399' : CORES.dourado}`,
-              color: emailEnviado ? '#34D399' : CORES.dourado,
-              fontSize: 14, fontWeight: 700, cursor: 'pointer',
-              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
-            }}>
-              {emailEnviado ? t('mapa.emailOpened') : '✉ Email'}
-            </button>
-          </div>
+          {mapaCompletoDesbloqueado && (
+            <div style={{ display: 'flex', gap: 10, marginBottom: 20 }}>
+              <button type="button" onClick={downloadPdf} disabled={gerandoPdf} style={{
+                flex: 1, padding: '14px', borderRadius: 14,
+                background: gerandoPdf ? 'rgba(223,183,108,0.15)' : `linear-gradient(135deg, ${CORES.dourado}, ${CORES.douradoEscuro})`,
+                border: 'none', color: CORES.fundo, fontSize: 14, fontWeight: 700, cursor: gerandoPdf ? 'default' : 'pointer',
+                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
+              }}>
+                {gerandoPdf ? t('mapa.generating') : '📄 PDF'}
+              </button>
+              <button type="button" onClick={compartilharEmail} style={{
+                flex: 1, padding: '14px', borderRadius: 14,
+                background: emailEnviado ? 'rgba(52,211,153,0.2)' : 'rgba(223,183,108,0.12)',
+                border: `1px solid ${emailEnviado ? '#34D399' : CORES.dourado}`,
+                color: emailEnviado ? '#34D399' : CORES.dourado,
+                fontSize: 14, fontWeight: 700, cursor: 'pointer',
+                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
+              }}>
+                {emailEnviado ? t('mapa.emailOpened') : '✉ Email'}
+              </button>
+            </div>
+          )}
         </>
-      ) : null}
+      )}
+        </div>
+      </div>
     </div>
   )
 }

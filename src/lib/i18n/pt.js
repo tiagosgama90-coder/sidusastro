@@ -247,6 +247,7 @@ export default {
     export: '✦ Exportar Mapa Completo',
     generating: '⏳ A gerar…', emailOpened: '✓ Email aberto',
     fullChart: 'Mapa Astral Completo',
+    unlockFullChart: 'Desbloqueia o teu Mapa Astral Completo',
     fullDesc: 'Interpretação profissional com efemérides, casas Placidus, planetas geracionais, aspectos, síntese evolutiva e exportação PDF + email',
     buyDesc: 'Mapa Astral Completo — Sidus',
     buyOnce: '💳 Comprar mapa completo · 10 €',

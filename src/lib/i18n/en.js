@@ -247,6 +247,7 @@ export default {
     export: '✦ Export Full Chart',
     generating: '⏳ Generating…', emailOpened: '✓ Email opened',
     fullChart: 'Complete Natal Chart',
+    unlockFullChart: 'Unlock Your Complete Natal Chart',
     fullDesc: 'Professional interpretation with ephemerides, Placidus houses, generational planets, aspects, evolutionary synthesis and PDF + email export',
     buyDesc: 'Complete Natal Chart — Sidus',
     buyOnce: '💳 Buy full chart · €10',
