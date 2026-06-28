@@ -383,6 +383,66 @@ html.sidus-no-ads .google-auto-placed {
 
 .landing-auth-panel {
   scroll-margin-top: 24px;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+/* FAQ — fundo da landing (SEO / AdSense) */
+.landing-faq {
+  margin-top: 28px;
+  padding: 20px 18px 22px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(223, 183, 108, 0.22);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+}
+.landing-faq-title {
+  margin: 0 0 16px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-align: center;
+  color: #DFB76C;
+}
+.landing-faq-list {
+  margin: 0;
+  padding: 0;
+}
+.landing-faq-item {
+  margin: 0 0 14px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid rgba(223, 183, 108, 0.14);
+}
+.landing-faq-item:last-of-type {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+.landing-faq-question {
+  margin: 0 0 6px;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.45;
+  color: rgba(255, 255, 255, 0.92);
+}
+.landing-faq-answer {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.62);
+}
+.landing-faq-pricing {
+  margin: 16px 0 0;
+  padding-top: 14px;
+  border-top: 1px solid rgba(223, 183, 108, 0.14);
+  font-size: 12px;
+  line-height: 1.5;
+  text-align: center;
+  color: rgba(223, 183, 108, 0.88);
+  font-weight: 600;
 }
 
 /* Céu ao vivo — dados reais */
@@ -520,6 +580,9 @@ html.sidus-no-ads .google-auto-placed {
   margin-bottom: 0;
   padding: 8px 12px;
   border-radius: 12px;
+  background: linear-gradient(145deg, rgba(52, 211, 153, 0.07), rgba(139, 92, 246, 0.06) 55%, rgba(223, 183, 108, 0.04));
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
 }
 .landing-sky-top-inner {
   position: relative;
@@ -922,16 +985,22 @@ html.sidus-no-ads .google-auto-placed {
   display: none;
 }
 
-/* Mobile login — idioma fixo acima do céu ao vivo */
-.landing-auth-sticky-top--mobile {
+/* Sticky topo landing — vidro + desfoque (site-wide) */
+.landing-auth-sticky-top {
   position: sticky;
   top: 0;
   z-index: 80;
   margin: 0 0 10px;
   padding-top: max(2px, env(safe-area-inset-top, 0px));
-  background: linear-gradient(180deg, rgba(3, 8, 24, 0.98) 0%, rgba(3, 8, 24, 0.94) 72%, rgba(3, 8, 24, 0) 100%);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+  padding-bottom: 4px;
+  background: linear-gradient(180deg, rgba(3, 8, 24, 0.92) 0%, rgba(3, 8, 24, 0.78) 72%, rgba(3, 8, 24, 0) 100%);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+/* Mobile login — idioma fixo acima do céu ao vivo */
+.landing-auth-sticky-top--mobile {
+  margin: 0 0 10px;
 }
 .landing-lang-bar {
   display: flex;

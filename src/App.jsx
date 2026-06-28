@@ -44,6 +44,7 @@ import { BussolaCosmica, Sinastria, Biorritmo, DiarioAstral, Numerologia, Interp
 import { ConteudoDinamicoSidus } from './components/ConteudoDinamicoSidus'
 import { LandingCosmicBackground } from './components/LandingCosmicBackground.jsx'
 import { LandingBirthPortal } from './components/LandingBirthPortal.jsx'
+import { LandingFaq } from './components/LandingFaq.jsx'
 import { LandingPortalHero } from './components/LandingPortalHero.jsx'
 import { LandingSkyLive } from './components/LandingSkyLive.jsx'
 import { HeroHomeSidus } from './components/HeroHomeSidus.jsx'
@@ -1490,6 +1491,7 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
           </div>
         </div>
       </div>
+      <LandingFaq />
     </div>
   )
 }
@@ -2340,16 +2342,25 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
               </span>
             ))}
           </div>
-          <button type="button" onClick={onComprarMapa} style={{ ...estilos.botaoDourado, width: '100%', marginBottom: 10 }}>
-            {t('mapa.buyOnce')}
-          </button>
-          <button type="button" onClick={onUpgrade} style={{
-            width: '100%', padding: '13px', borderRadius: 12,
-            background: 'rgba(139,92,246,0.15)', border: '1px solid rgba(139,92,246,0.4)',
-            color: CORES.dourado, fontSize: 14, fontWeight: 700, cursor: 'pointer',
-          }}>
+          <p style={{ fontSize: 12, color: CORES.dourado, margin: '0 0 12px', lineHeight: 1.45, fontWeight: 600 }}>
+            {t('mapa.premiumRecommended')}
+          </p>
+          <button type="button" onClick={onUpgrade} style={{ ...estilos.botaoDourado, width: '100%', marginBottom: 10 }}>
             {t('mapa.premiumOption')}
           </button>
+          <p style={{ fontSize: 11, color: CORES.brancoMuted, margin: '0 0 12px', lineHeight: 1.45 }}>
+            {t('mapa.pricingHint')}
+          </p>
+          <button type="button" onClick={onComprarMapa} style={{
+            width: '100%', padding: '13px', borderRadius: 12,
+            background: 'rgba(255,255,255,0.04)', border: `1px solid ${CORES.vidroBorda}`,
+            color: CORES.brancoSuave, fontSize: 14, fontWeight: 600, cursor: 'pointer', marginBottom: 6,
+          }}>
+            {t('mapa.buyOnce')}
+          </button>
+          <p style={{ fontSize: 11, color: CORES.brancoMuted, margin: 0, lineHeight: 1.4 }}>
+            {t('mapa.buyOnceNote')}
+          </p>
         </div>
       )}
     </div>
