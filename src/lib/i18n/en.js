@@ -263,6 +263,9 @@ export default {
     timezone: 'Timezone:',
     coordinates: 'Coordinates:',
     proTagline: 'Professional astrological reading · Unique cosmic signature',
+    aiLoading: 'Writing your unique AI interpretation…',
+    aiBadge: 'AI personalised reading',
+    aiFallbackNote: 'Professional interpretation (classic mode)',
   },
   cartaoDia: {
     title: '✦ Card of the Day · {date}',

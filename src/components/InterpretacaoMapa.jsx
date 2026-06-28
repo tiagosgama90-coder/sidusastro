@@ -12,21 +12,40 @@ const CORES = {
   roxoClaro: 'rgba(139, 92, 246, 0.12)',
 }
 
-export function InterpretacaoMapa({ analise, estilosVidro, lang = 'pt' }) {
+export function InterpretacaoMapa({ analise, estilosVidro, lang = 'pt', loading = false, loadingLabel }) {
+  if (loading) {
+    return (
+      <div style={{ ...estilosVidro, padding: 20, marginBottom: 14, textAlign: 'center' }}>
+        <p style={{ margin: 0, fontSize: 13, color: CORES.brancoMuted, lineHeight: 1.5 }}>
+          {loadingLabel || (lang === 'en' ? 'Writing your unique interpretation…' : 'A redigir a tua interpretação única…')}
+        </p>
+      </div>
+    )
+  }
+
   if (!analise?.seccoes?.length) return null
 
   const titulo = lang === 'en'
     ? '✦ Professional Interpretation'
     : '✦ Interpretação Profissional'
 
+  const badge = analise.fonte === 'ia'
+    ? (lang === 'en' ? '✦ AI personalised reading' : '✦ Interpretação IA personalizada')
+    : null
+
   return (
     <div style={{ marginBottom: 14 }}>
       <div style={{
         fontSize: 11, color: CORES.dourado, textTransform: 'uppercase',
-        letterSpacing: '0.1em', marginBottom: 12, fontWeight: 700,
+        letterSpacing: '0.1em', marginBottom: badge ? 6 : 12, fontWeight: 700,
       }}>
         {titulo}
       </div>
+      {badge && (
+        <p style={{ margin: '0 0 12px', fontSize: 11, color: CORES.brancoMuted, lineHeight: 1.45 }}>
+          {badge}
+        </p>
+      )}
 
       {analise.seccoes.map(sec => (
         <div key={sec.id} style={{ ...estilosVidro, padding: 18, marginBottom: 14 }}>

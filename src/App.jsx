@@ -81,10 +81,10 @@ import {
   validarPerguntaOracle, gerarRespostaOracle,
   getChatGreeting, getOracleLimitMessage,
 } from './lib/i18n/oracle.js'
-import { consultarOracleServidor } from './lib/apiAi.js'
+import { consultarOracleServidor, interpretarMapaServidor } from './lib/apiAi.js'
 import { localizeArcano } from './lib/i18n/tarotArcana.js'
 import { normalizarDataISO, criarDataUTCporLocal, localToUTC } from './lib/datetime.js'
-import { readLandingDraft, clearLandingDraft } from './lib/landingDraft.js'
+import { readMapaIACache, writeMapaIACache } from './lib/mapaInterpretacaoCache.js'
 import { calcularAngulosCasas } from './lib/natalHouses.js'
 import { utilizadorTemPremium, emailTemPremiumPrivilegiado } from './lib/premiumAccess.js'
 import {
@@ -1996,11 +1996,13 @@ function BarraElemento({ label, valor, total, cor }) {
   )
 }
 
-function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, isPremium, onUpgrade, onComprarMapa, onMapaGerado, isDesktop, motorAstro, perfilCarregando, reparandoDados, mapaGerado, onCompletarNatal }) {
+function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, isPremium, onUpgrade, onComprarMapa, onMapaGerado, isDesktop, motorAstro, perfilCarregando, reparandoDados, mapaGerado, onCompletarNatal, obterIdToken }) {
   const { lang, t, ts, tp, te, ta } = useLanguage()
   const [gerandoPdf, setGerandoPdf] = useState(false)
   const [emailEnviado, setEmailEnviado] = useState(false)
   const [calcExpirado, setCalcExpirado] = useState(false)
+  const [analiseIA, setAnaliseIA] = useState(null)
+  const [analiseIALoading, setAnaliseIALoading] = useState(false)
   const mapaGeradoRef = useRef(false)
 
   const mapaCompletoDesbloqueado = mapaDesbloqueado || isPremium
@@ -2035,7 +2037,7 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
     [planetasComCasa]
   )
 
-  const analiseCompleta = useMemo(() => {
+  const analiseLexicon = useMemo(() => {
     if (!mapaNatal) return null
     try {
       return gerarAnaliseCompleta(mapaNatal, planetasComCasa, aspetosNatais, dados, lang)
@@ -2044,6 +2046,67 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
       return null
     }
   }, [mapaNatal, planetasComCasa, aspetosNatais, dados, lang])
+
+  const analiseCompleta = mapaCompletoDesbloqueado && analiseIA ? analiseIA : analiseLexicon
+
+  useEffect(() => {
+    if (!mapaCompletoDesbloqueado || !mapaNatal || !analiseLexicon) {
+      setAnaliseIA(null)
+      setAnaliseIALoading(false)
+      return undefined
+    }
+
+    const cached = readMapaIACache(dados, lang)
+    if (cached?.fonte === 'ia') {
+      setAnaliseIA(cached)
+      setAnaliseIALoading(false)
+      return undefined
+    }
+
+    let cancelled = false
+    ;(async () => {
+      setAnaliseIALoading(true)
+      try {
+        const idToken = obterIdToken ? await obterIdToken() : null
+        if (!idToken || cancelled) return
+        let resultado = await interpretarMapaServidor({
+          mapaNatal,
+          planetas: planetasComCasa,
+          aspetos: aspetosNatais,
+          dados,
+          lang,
+        }, idToken)
+
+        if (resultado?.auth && obterIdToken) {
+          const retry = await obterIdToken(true)
+          if (retry && !cancelled) {
+            resultado = await interpretarMapaServidor({
+              mapaNatal,
+              planetas: planetasComCasa,
+              aspetos: aspetosNatais,
+              dados,
+              lang,
+            }, retry)
+          }
+        }
+
+        if (cancelled || !resultado?.seccoes?.length) return
+        const analise = {
+          seccoes: resultado.seccoes,
+          textoPlano: resultado.textoPlano,
+          fonte: resultado.fonte || 'ia',
+        }
+        setAnaliseIA(analise)
+        if (analise.fonte === 'ia') writeMapaIACache(dados, lang, analise)
+      } catch (e) {
+        console.warn('[Sidus] Interpretação IA mapa:', e?.message)
+      } finally {
+        if (!cancelled) setAnaliseIALoading(false)
+      }
+    })()
+
+    return () => { cancelled = true }
+  }, [mapaCompletoDesbloqueado, mapaNatal, analiseLexicon, planetasComCasa, aspetosNatais, dados, lang, obterIdToken])
 
   const resumoGratuito = useMemo(() => {
     if (mapaCompletoDesbloqueado || !mapaNatal) return null
@@ -2250,7 +2313,13 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
       {/* ── Interpretação + premium ── */}
       {analiseCompleta && mapaCompletoDesbloqueado && (
         <>
-          <InterpretacaoMapa analise={analiseCompleta} estilosVidro={estilos.vidro} lang={lang} />
+          <InterpretacaoMapa
+            analise={analiseCompleta}
+            estilosVidro={estilos.vidro}
+            lang={lang}
+            loading={analiseIALoading && !analiseIA}
+            loadingLabel={t('mapa.aiLoading')}
+          />
 
           <div style={{ ...estilos.vidro, padding: 18, marginBottom: 14 }}>
             <div style={{ fontSize: 11, color: CORES.dourado, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 14, fontWeight: 700 }}>
@@ -3717,7 +3786,7 @@ export default function App() {
       case 'dashboard':
         return <Dashboard nome={dados.nome} mapaNatal={mapaNatal} ceuAgora={ceuAgora} aspetos={aspetosAgora} onOraculo={() => irPara('chat')} onPrivacidade={() => irPara('privacidade')} isDesktop={isDesktop} isPremium={isPremium} onUpgrade={() => irPara('paywall')} onTarot={() => irPara('tarot')} onMapa={() => irPara('mapa')} userEmail={utilizador?.email} />
       case 'mapa':
-        return <MapaAstral mapaNatal={mapaNatal} dados={dados} planetasNascimento={planetasNascimento} mapaDesbloqueado={isPremium || mapaCompleto} isPremium={isPremium} onUpgrade={() => irPara('paywall')} onComprarMapa={() => abrirPagamento(t('mapa.buyDesc'), PRECO_MAPA_COMPLETO, null, { productType: 'mapa' })} onMapaGerado={handleMapaGerado} isDesktop={isDesktop} motorAstro={motorAstro} perfilCarregando={perfilCarregando} reparandoDados={reparandoDados} mapaGerado={mapaGerado} onCompletarNatal={() => irPara('home')} />
+        return <MapaAstral mapaNatal={mapaNatal} dados={dados} planetasNascimento={planetasNascimento} mapaDesbloqueado={isPremium || mapaCompleto} isPremium={isPremium} onUpgrade={() => irPara('paywall')} onComprarMapa={() => abrirPagamento(t('mapa.buyDesc'), PRECO_MAPA_COMPLETO, null, { productType: 'mapa' })} onMapaGerado={handleMapaGerado} isDesktop={isDesktop} motorAstro={motorAstro} perfilCarregando={perfilCarregando} reparandoDados={reparandoDados} mapaGerado={mapaGerado} onCompletarNatal={() => irPara('home')} obterIdToken={obterIdTokenOracle} />
       case 'tarot':
         return <EcraTarot mapaNatal={mapaNatal} isPremium={acessoVip} userId={utilizador?.uid} leiturasTarotUsadas={leiturasTarotUsadas} onLeituraGratisUsada={registarLeituraTarotGratis} onPagar={abrirPagamento} onVoltar={() => irPara('home')} onPremium={() => irPara('paywall')} />
       case 'bussola':

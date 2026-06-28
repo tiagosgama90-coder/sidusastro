@@ -58,3 +58,23 @@ export async function interpretarSonhoServidor(texto, mapaNatal, lang, feeling, 
     return null
   }
 }
+
+export async function interpretarMapaServidor(payload, idToken) {
+  try {
+    const data = await postJson('/api/interpret-mapa', { ...payload, idToken }, idToken)
+    if (data.auth || (!data.ok && data.status === 401)) {
+      return { auth: true, seccoes: null }
+    }
+    if (data.locked || (!data.ok && data.status === 402)) {
+      return { locked: true, seccoes: null }
+    }
+    if (!data.ok || !data.seccoes?.length) return { seccoes: null, servidor: true }
+    return {
+      seccoes: data.seccoes,
+      textoPlano: data.textoPlano,
+      fonte: data.fonte || 'ia',
+    }
+  } catch {
+    return { seccoes: null }
+  }
+}

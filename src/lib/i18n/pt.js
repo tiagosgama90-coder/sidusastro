@@ -263,6 +263,9 @@ export default {
     timezone: 'Fuso:',
     coordinates: 'Coordenadas:',
     proTagline: 'Leitura astrológica profissional · Assinatura cósmica única',
+    aiLoading: 'A redigir a tua interpretação única com IA…',
+    aiBadge: 'Interpretação IA personalizada',
+    aiFallbackNote: 'Interpretação profissional (modo clássico)',
   },
   cartaoDia: {
     title: '✦ Carta do Dia · {date}',
