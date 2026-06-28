@@ -1,4 +1,4 @@
-﻿import { useState, useEffect, useRef, useCallback, useMemo } from 'react'
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react'
 import {
   Sparkles,
   Moon,
@@ -131,7 +131,7 @@ const PLANETAS_AGORA = [
   { key: 'saturno',  nome: 'Saturno',  corpo: Body.Saturn,  sweId: 6, simbolo: '♄' },
 ]
 
-// Mapa natal completo — Swiss Ephemeris (swe_calc_ut) com efemérides licenciadas
+// Mapa natal completo - Swiss Ephemeris (swe_calc_ut) com efemérides licenciadas
 const PLANETAS_NATAL = [
   ...PLANETAS_AGORA,
   { key: 'urano',    nome: 'Urano',      corpo: Body.Uranus,  sweId: 7,  simbolo: '♅' },
@@ -169,7 +169,7 @@ const ORBE_ASPECTO = 6
 
 const Position = (corpo, time) => GeoVector(corpo, time, true)
 
-// ─── Swiss Ephemeris — inicialização async isolada (dynamic import) ──────────
+// ─── Swiss Ephemeris - inicialização async isolada (dynamic import) ──────────
 // Dynamic import isola qualquer erro de módulo CJS/ESM do bundle principal.
 // Se falhar, a app continua com astronomy-engine sem interrupção.
 // Status do motor astronómico (exposto para a UI)
@@ -182,7 +182,7 @@ function sweEphemerisPronta() {
   return _ephemerisPronto && _sweInstance != null
 }
 
-// Efemérides Swiss servidas localmente (public/ephe/) — sem CORS, sem CDN externo
+// Efemérides Swiss servidas localmente (public/ephe/) - sem CORS, sem CDN externo
 // Ficheiros: sepl_18.se1 (planetas), semo_18.se1 (Lua), seas_18.se1 (asteróides)
 // Cobertura 1800–2400, precisão ≤ 1 arco-segundo (equivalente Astro.com / Astrolink)
 const _EPHE_FILES = [
@@ -476,7 +476,7 @@ function calcularAspetos(planetas) {
     for (let j = i + 1; j < planetas.length; j++) {
       const a = planetas[i]
       const b = planetas[j]
-      // Diferença de longitude eclíptica — correcto para aspectos astrológicos
+      // Diferença de longitude eclíptica - correcto para aspectos astrológicos
       const angle = diferencaAngular(a.longitude, b.longitude)
       const nearest = ASPECTOS_MAIORES
         .map((x) => ({ ...x, orbe: Math.abs(angle - x.angulo) }))
@@ -650,10 +650,10 @@ function calcularMapaNatal(dados) {
   }
 }
 
-// ─── Swiss Ephemeris — funções de cálculo ────────────────────────────────────
+// ─── Swiss Ephemeris - funções de cálculo ────────────────────────────────────
 
 /**
- * Posições via swe_calc_ut (Swiss Ephemeris) — só após efemérides carregadas.
+ * Posições via swe_calc_ut (Swiss Ephemeris) - só após efemérides carregadas.
  */
 function calcularPlanetasComSwe(swe, dateUTC, lista = PLANETAS_AGORA) {
   const jd = swe.dateToJulianDay(dateUTC)
@@ -731,7 +731,7 @@ function calcularMapaNatalComSwe(swe, dados) {
   }
 }
 
-/** Motor único — mesma matemática para gratuito e Premium (SWE → Meeus fallback). */
+/** Motor único - mesma matemática para gratuito e Premium (SWE → Meeus fallback). */
 function calcularMapaNatalMotor(dados, swe) {
   if (!dados?.data || !dados?.hora || !dados?.localizacao) return null
   if (swe) {
@@ -822,7 +822,7 @@ async function repararDadosPerfil(dados) {
   const d = normalizarDadosPerfil(dados)
   if (!d || !dadosNataisMinimos(d)) return d
   try {
-    // Não geocodificar — preservar lat/lon escolhidos no onboarding
+    // Não geocodificar - preservar lat/lon escolhidos no onboarding
     if (d.localizacao && (d.fuso == null || d.fuso === '')) {
       try {
         d.fuso = await pesquisarFusoHorario(d.localizacao.lat, d.localizacao.lon)
@@ -1251,8 +1251,8 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
   const precisaRecaptcha = !isLogin
 
   useEffect(() => {
-    document.title = isLogin ? `Sidus — ${t('auth.login')}` : `Sidus — ${t('auth.register')}`
-    return () => { document.title = 'Sidus — Astrologia' }
+    document.title = isLogin ? `Sidus - ${t('auth.login')}` : `Sidus - ${t('auth.register')}`
+    return () => { document.title = 'Sidus - Astrologia' }
   }, [isLogin, t])
 
   const handleSubmit = async () => {
@@ -1648,7 +1648,7 @@ function Onboarding({ dados, setDados, onSubmit, isDesktop }) {
           erro={tocado.cidade ? erros.cidade : null}
         />
 
-        {/* Painel de fuso horário — auto-detectado ou manual */}
+        {/* Painel de fuso horário - auto-detectado ou manual */}
         {dados.localizacao && (
           <div style={{
             marginBottom: 20,
@@ -1785,7 +1785,7 @@ function Dashboard({ nome, mapaNatal, ceuAgora, aspetos, onOraculo, onPrivacidad
           </span>
         </div>
 
-        {/* Fase lunar — disponível para todos na home */}
+        {/* Fase lunar - disponível para todos na home */}
         <div style={{
           background: 'rgba(139,92,246,0.12)', borderRadius: 12, padding: 14, marginBottom: 14,
           border: '1px solid rgba(139,92,246,0.3)',
@@ -1882,7 +1882,7 @@ const ARCANOS_NOMES = [
   {id:8,nome:'A Força',simb:'🦁',palavras:['coragem','compaixão','domínio'],luz:'A força verdadeira nasce do amor. Domas os medos com gentileza.'},
   {id:9,nome:'O Eremita',simb:'🕯️',palavras:['reflexão','solidão','guia'],luz:'Recolhimento frutífero. A tua luz interior ilumina quando tudo parece escuro.'},
   {id:10,nome:'Roda da Fortuna',simb:'☸️',palavras:['destino','ciclos','mudança'],luz:'O ciclo vira a teu favor. Uma reviravolta traz nova sorte.'},
-  {id:11,nome:'A Justiça',simb:'⚖️',palavras:['equilíbrio','verdade','karma'],luz:'A verdade prevalece. Cada acção tem a sua consequência — colhes o que plantaste.'},
+  {id:11,nome:'A Justiça',simb:'⚖️',palavras:['equilíbrio','verdade','karma'],luz:'A verdade prevalece. Cada acção tem a sua consequência - colhes o que plantaste.'},
   {id:12,nome:'O Enforcado',simb:'🔄',palavras:['sacrifício','perspetiva','pausa'],luz:'Uma pausa necessária revela o que estava oculto. O sacrifício abre novas perspetivas.'},
   {id:13,nome:'A Morte',simb:'🌑',palavras:['transformação','fim','renascimento'],luz:'Uma fase encerra para que algo mais elevado nasça. A transformação é libertadora.'},
   {id:14,nome:'A Temperança',simb:'🌊',palavras:['equilíbrio','paciência','alquimia'],luz:'A mistura perfeita cria algo extraordinário. Paciência é a tua aliada.'},
@@ -2140,13 +2140,13 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
       '',
       '── POSIÇÕES PLANETÁRIAS (Placidus) ─────────',
       ...planetasComCasa.map(p =>
-        `  ${p.simbolo} ${p.nome}: ${p.signo?.nome || '—'}${p.casa ? ` · Casa ${p.casa}` : ''} (${(p.longitude ?? 0).toFixed(1)}°)${p.retrograde ? ' ℞' : ''}`
+        `  ${p.simbolo} ${p.nome}: ${p.signo?.nome || '-'}${p.casa ? ` · Casa ${p.casa}` : ''} (${(p.longitude ?? 0).toFixed(1)}°)${p.retrograde ? ' ℞' : ''}`
       ),
       '',
-      'Gerado por Sidus — https://sidusastro.com',
+      'Gerado por Sidus - https://sidusastro.com',
     ].join('\n')
 
-    const assunto = encodeURIComponent(`Mapa Astral Completo — ${dados.nome} · Sidus`)
+    const assunto = encodeURIComponent(`Mapa Astral Completo - ${dados.nome} · Sidus`)
     const body    = encodeURIComponent(corpo)
     window.location.href = `mailto:?subject=${assunto}&body=${body}`
     setEmailEnviado(true)
@@ -2243,7 +2243,7 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
       </div>
       {pilaresCompletos.map(p => <PilarCard key={p.titulo} {...p} />)}
 
-      {/* ── Posições planetárias (gratuito — dados reais) ── */}
+      {/* ── Posições planetárias (gratuito - dados reais) ── */}
       {mapaCompletoVisivel && (
         <>
           {balEl && (
@@ -2344,7 +2344,7 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
                 <div style={{ fontSize: 12, color: CORES.brancoMuted }}>
                   {ps.length > 0
                     ? ps.map(p => t('mapa.planetIn', { planet: tp(p.nome), sign: ts(p.signo?.nome) }) + (p.casa ? ` (${t('mapa.house')} ${p.casa})` : '')).join(' · ')
-                    : '—'}
+                    : '-'}
                 </div>
               </div>
             ))}
@@ -2357,13 +2357,13 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
           <div style={{ ...estilos.vidro, padding: 14, marginBottom: 14 }}>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '5px 12px', fontSize: 11 }}>
               <span style={{ color: CORES.brancoMuted }}>{t('mapa.utDate')}</span>
-              <span style={{ color: CORES.branco }}>{mapaNatal.instanteUTC ? mapaNatal.instanteUTC.replace('T', ' ').slice(0, 16) + ' UTC' : '—'}</span>
+              <span style={{ color: CORES.branco }}>{mapaNatal.instanteUTC ? mapaNatal.instanteUTC.replace('T', ' ').slice(0, 16) + ' UTC' : '-'}</span>
               <span style={{ color: CORES.brancoMuted }}>{t('mapa.timezone')}</span>
               <span style={{ color: CORES.branco }}>
                 {typeof mapaNatal.fuso === 'string' ? mapaNatal.fuso : `UTC${(mapaNatal.fuso ?? 0) >= 0 ? '+' : ''}${mapaNatal.fuso ?? 0}`}
               </span>
               <span style={{ color: CORES.brancoMuted }}>{t('mapa.coordinates')}</span>
-              <span style={{ color: CORES.branco }}>{mapaNatal.lat != null ? `${mapaNatal.lat.toFixed(3)}°N  ${mapaNatal.lon?.toFixed(3)}°E` : '—'}</span>
+              <span style={{ color: CORES.branco }}>{mapaNatal.lat != null ? `${mapaNatal.lat.toFixed(3)}°N  ${mapaNatal.lon?.toFixed(3)}°E` : '-'}</span>
             </div>
           </div>
 
@@ -2449,7 +2449,7 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
                       <div style={{ fontSize: 12, color: CORES.brancoMuted }}>
                         {ps.length > 0
                           ? ps.map(p => t('mapa.planetIn', { planet: tp(p.nome), sign: ts(p.signo?.nome) }) + (p.casa ? ` (${t('mapa.house')} ${p.casa})` : '')).join(' · ')
-                          : '—'}
+                          : '-'}
                       </div>
                     </div>
                   ))}
@@ -2462,13 +2462,13 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
                 <div style={{ ...estilos.vidro, padding: 14, marginBottom: 14 }}>
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '5px 12px', fontSize: 11 }}>
                     <span style={{ color: CORES.brancoMuted }}>{t('mapa.utDate')}</span>
-                    <span style={{ color: CORES.branco }}>{mapaNatal.instanteUTC ? mapaNatal.instanteUTC.replace('T', ' ').slice(0, 16) + ' UTC' : '—'}</span>
+                    <span style={{ color: CORES.branco }}>{mapaNatal.instanteUTC ? mapaNatal.instanteUTC.replace('T', ' ').slice(0, 16) + ' UTC' : '-'}</span>
                     <span style={{ color: CORES.brancoMuted }}>{t('mapa.timezone')}</span>
                     <span style={{ color: CORES.branco }}>
                       {typeof mapaNatal.fuso === 'string' ? mapaNatal.fuso : `UTC${(mapaNatal.fuso ?? 0) >= 0 ? '+' : ''}${mapaNatal.fuso ?? 0}`}
                     </span>
                     <span style={{ color: CORES.brancoMuted }}>{t('mapa.coordinates')}</span>
-                    <span style={{ color: CORES.branco }}>{mapaNatal.lat != null ? `${mapaNatal.lat.toFixed(3)}°N  ${mapaNatal.lon?.toFixed(3)}°E` : '—'}</span>
+                    <span style={{ color: CORES.branco }}>{mapaNatal.lat != null ? `${mapaNatal.lat.toFixed(3)}°N  ${mapaNatal.lon?.toFixed(3)}°E` : '-'}</span>
                   </div>
                 </div>
               </div>
@@ -2535,7 +2535,7 @@ function Paywall({ onVoltar, onPagar, onSucesso, isDesktop }) {
         <div style={{ fontSize: 40, fontWeight: 700, color: CORES.branco }}>{t('vip.price')} <span style={{ fontSize: 16, color: CORES.brancoMuted, fontWeight: 400 }}>{t('common.perMonth')}</span></div>
         <p style={{ fontSize: 12, color: CORES.brancoMuted, marginTop: 6 }}>{t('vip.cancelAnytime')}</p>
       </div>
-      <button type="button" onClick={() => onPagar(lang === 'en' ? 'Sidus VIP — Monthly subscription' : 'Sidus VIP — Subscrição mensal', PRECO_PREMIUM_MENSAL, onSucesso, { productType: 'premium' })} style={estilos.botaoDourado}>
+      <button type="button" onClick={() => onPagar(lang === 'en' ? 'Sidus VIP - Monthly subscription' : 'Sidus VIP - Subscrição mensal', PRECO_PREMIUM_MENSAL, onSucesso, { productType: 'premium' })} style={estilos.botaoDourado}>
         {t('vip.cta')}
       </button>
       <p style={{ textAlign: 'center', fontSize: 11, color: CORES.brancoMuted, marginTop: 12 }}>
@@ -2599,7 +2599,7 @@ function OraclePremiumUpsell({ onUpgrade, compact = false }) {
   )
 }
 
-// ── Integração AI (servidor Netlify — chaves secretas) ─────────────────────────
+// ── Integração AI (servidor Netlify - chaves secretas) ─────────────────────────
 async function consultarSidus(pergunta, mapaNatal, historico, lang, idToken, clientPremium = false) {
   return consultarOracleServidor(pergunta, mapaNatal, historico, lang, idToken, clientPremium)
 }
@@ -2908,7 +2908,7 @@ function LogoSidus({ onClick, compact = false }) {
     <button
       type="button"
       onClick={onClick}
-      aria-label="Sidus — Home"
+      aria-label="Sidus - Home"
       style={{
         background: 'none',
         border: 'none',
@@ -3001,7 +3001,7 @@ function Navbar({ passo, setPasso, isDesktop, dados, fotoPerfil }) {
           className="desktop-profile-fab"
           onClick={irPerfil}
           aria-label={t('nav.perfil')}
-          title={`${t('nav.perfil')} — ${nomePerfil}`}
+          title={`${t('nav.perfil')} - ${nomePerfil}`}
           style={{
             background: perfilAtivo ? 'rgba(223,183,108,0.18)' : 'rgba(255,255,255,0.05)',
             border: `1px solid ${perfilAtivo ? CORES.dourado : CORES.vidroBorda}`,
@@ -3230,7 +3230,7 @@ export default function App() {
 
     const timeoutId = setTimeout(() => {
       if (authResolvido) return
-      console.warn('[Sidus] Auth demorou demasiado — a continuar sem bloquear a interface')
+      console.warn('[Sidus] Auth demorou demasiado - a continuar sem bloquear a interface')
       setAuthCarregando(false)
       setPerfilCarregando(false)
     }, 10000)
@@ -3250,7 +3250,7 @@ export default function App() {
       if (user) {
         setPerfilCarregando(true)
         perfilTimeoutId = setTimeout(() => {
-          console.warn('[Sidus] Perfil cloud demorou — a continuar sem bloquear a interface')
+          console.warn('[Sidus] Perfil cloud demorou - a continuar sem bloquear a interface')
           setPerfilCarregando(false)
         }, 8000)
 
@@ -3452,7 +3452,7 @@ export default function App() {
     if (fromUrl !== passo) setPasso(fromUrl)
   }, [location.pathname, authCarregando, passo])
 
-  // Utilizador autenticado com conta configurada — nunca voltar a /comecar
+  // Utilizador autenticado com conta configurada - nunca voltar a /comecar
   useEffect(() => {
     if (authCarregando || perfilCarregando || !utilizador || !contaConfigurada) return
     const path = (location.pathname || '/').replace(/\/$/, '') || '/'
@@ -3580,7 +3580,7 @@ export default function App() {
     return () => clearInterval(id)
   }, [sweReady])
 
-  // ── Recalcula mapa natal (motor único — gratuito = Premium) ──
+  // ── Recalcula mapa natal (motor único - gratuito = Premium) ──
   useEffect(() => {
     if (passo === 'onboarding') return
     const prontos = dadosProntosParaMapa(dados)
@@ -3599,7 +3599,7 @@ export default function App() {
     guardarCachePerfil(utilizador.uid, dados, mapaNatal)
   }, [utilizador, mapaNatal, dados])
 
-  // Reparar dados incompletos — nunca durante /comecar (utilizador a escrever/seleccionar cidade)
+  // Reparar dados incompletos - nunca durante /comecar (utilizador a escrever/seleccionar cidade)
   useEffect(() => {
     if (!utilizador || mapaNatal || !dadosNataisMinimos(dados)) return
     if (dadosProntosParaMapa(dados)) return
@@ -3706,7 +3706,7 @@ export default function App() {
     return true
   }
 
-  // Activa premium em modo dev (só localhost — não escreve isPremium em produção)
+  // Activa premium em modo dev (só localhost - não escreve isPremium em produção)
   const togglePremiumDev = async (valor) => {
     setIsPremium(valor)
     if (valor) setMapaCompleto(true)
@@ -3773,7 +3773,7 @@ export default function App() {
         />
       )
     }
-    // /comecar — só contas novas sem mapa (utilizadores com sessão activa redireccionados)
+    // /comecar - só contas novas sem mapa (utilizadores com sessão activa redireccionados)
     if (passo === 'onboarding') {
       return <Onboarding dados={dados} setDados={setDados} onSubmit={handleOnboarding} isDesktop={isDesktop} />
     }
@@ -3831,7 +3831,7 @@ export default function App() {
       <div className="sidus-cosmic-foreground">
       {!utilizador && isDesktop && <LanguageSwitcher />}
 
-      {/* Barra de dev — só visível em localhost */}
+      {/* Barra de dev - só visível em localhost */}
       {isDev && contaConfigurada && (
         <div style={{
           position: 'fixed', top: 0, left: 0, right: 0,
@@ -3916,7 +3916,7 @@ export default function App() {
         />
       )}
 
-      {/* Modal de pagamento — sobrepõe tudo */}
+      {/* Modal de pagamento - sobrepõe tudo */}
       {modalPagamento && (
         <ModalPagamento
           descricao={modalPagamento.descricao}

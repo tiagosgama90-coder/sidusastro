@@ -1,5 +1,5 @@
 /**
- * Radar de Afinidades — gráfico SVG minimalista (4 dimensões).
+ * Radar de Afinidades - gráfico SVG minimalista (4 dimensões).
  */
 const CORES = {
   dourado: '#DFB76C',

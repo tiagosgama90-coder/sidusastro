@@ -1,6 +1,6 @@
-# Inventário de produção — sidusastro.com (vendedor)
+# Inventário de produção - sidusastro.com (vendedor)
 
-Documento de referência para venda / handover. **Segredos reais** (Stripe secret, Firebase service account) ficam só no **Netlify → Environment variables** — nunca no Git.
+Documento de referência para venda / handover. **Segredos reais** (Stripe secret, Firebase service account) ficam só no **Netlify → Environment variables** - nunca no Git.
 
 Última actualização: Junho 2026
 
@@ -10,7 +10,7 @@ Documento de referência para venda / handover. **Segredos reais** (Stripe secre
 
 | Repo | URL | Função |
 |------|-----|--------|
-| **sidusastro** | https://github.com/tiagosgama90-coder/sidusastro | Produção — Netlify deploy `master` |
+| **sidusastro** | https://github.com/tiagosgama90-coder/sidusastro | Produção - Netlify deploy `master` |
 | **sidusastro-handover** | https://github.com/tiagosgama90-coder/sidusastro-handover | Pacote venda (privado) |
 | **sidus-app** | https://github.com/tiagosgama90-coder/sidus-app | Cópia desenvolvimento |
 
@@ -31,17 +31,17 @@ git add -A && git commit -m "Sync handover" && git push
 | Serviço | Detalhe |
 |---------|---------|
 | **Netlify** | Build: `npm run build` · Publish: `dist` · `netlify.toml` |
-| **Domínio** | sidusastro.com (+ www) — Namecheap |
+| **Domínio** | sidusastro.com (+ www) - Namecheap |
 | **Deploy** | Push para `sidusastro` `master` → auto-deploy 2–5 min |
 
 ---
 
-## Contas Google (IDs públicos — no repo)
+## Contas Google (IDs públicos - no repo)
 
 | Serviço | Valor | Estado |
 |---------|-------|--------|
-| **Google Analytics 4** | `G-18FPC8HYE8` | Activo — carrega após consentimento cookies |
-| **Google AdSense Publisher** | `ca-pub-2807052149540484` | Conta ligada — site **em aprovação** |
+| **Google Analytics 4** | `G-18FPC8HYE8` | Activo - carrega após consentimento cookies |
+| **Google AdSense Publisher** | `ca-pub-2807052149540484` | Conta ligada - site **em aprovação** |
 | **AdSense slot (Display horizontal)** | `7205155875` | Unidade criada |
 | **ads.txt** | `public/ads.txt` | Publicado em sidusastro.com/ads.txt |
 | **reCAPTCHA v2** | `VITE_RECAPTCHA_SITE_KEY` no Netlify | Domínios: sidusastro.com, netlify.app |
@@ -77,9 +77,9 @@ Variáveis: `VITE_FIREBASE_*`, `FIREBASE_WEB_API_KEY`, `FIREBASE_SERVICE_ACCOUNT
 
 ## Funcionalidades recentes (código)
 
-- **Landing portal** (`/login`) — formulário nascimento + `localStorage` → pré-preenche onboarding
-- **Navbar desktop** — uma linha, FAB perfil, PT/ENG
-- **Cookie consent** RGPD — AdSense + GA4 só após aceitar
+- **Landing portal** (`/login`) - formulário nascimento + `localStorage` → pré-preenche onboarding
+- **Navbar desktop** - uma linha, FAB perfil, PT/ENG
+- **Cookie consent** RGPD - AdSense + GA4 só após aceitar
 - **i18n** PT/EN completo
 
 ---
@@ -90,7 +90,7 @@ Variáveis: `VITE_FIREBASE_*`, `FIREBASE_WEB_API_KEY`, `FIREBASE_SERVICE_ACCOUNT
 2. SEO: `/login` indexável, sitemap.xml, meta OG
 3. Conteúdo: posts mapa astral, numerologia, horóscopo (PT + EN)
 4. Redes: TikTok/Instagram reels com CTA sidusastro.com/login
-5. Google Search Console — submeter sitemap
+5. Google Search Console - submeter sitemap
 6. Quando AdSense aprovar, considerar ads também na landing pública
 
 ---

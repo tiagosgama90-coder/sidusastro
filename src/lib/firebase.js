@@ -7,7 +7,7 @@ const apiKey = import.meta.env.VITE_FIREBASE_API_KEY
 // Se as credenciais não estiverem configuradas, exporta null.
 // A app funciona em modo offline/local sem Firebase.
 if (!apiKey) {
-  console.warn('[Sidus] Firebase não configurado — a correr em modo local (sem login/cloud).')
+  console.warn('[Sidus] Firebase não configurado - a correr em modo local (sem login/cloud).')
 }
 
 export let auth = null

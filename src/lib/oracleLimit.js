@@ -1,4 +1,4 @@
-/** 3 perguntas grátis ao Oráculo Sidus por conta — espelha o Tarot. */
+/** 3 perguntas grátis ao Oráculo Sidus por conta - espelha o Tarot. */
 export const MAX_ORACLE_GRATIS = 3
 const STORAGE_KEY = 'sidus_oracle_free_v1'
 

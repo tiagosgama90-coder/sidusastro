@@ -28,7 +28,7 @@ export function HeroHomeSidus({ mapaNatal, onMapa, isPremium }) {
       </h2>
       <p style={{ margin: '0 0 14px', fontSize: 13, color: CORES.brancoMuted, lineHeight: 1.6 }}>
         {temMapa
-          ? t('home.heroHasMap', { solar: ts(mapaNatal.solar.nome), lunar: ts(mapaNatal.lunar?.nome || '—') })
+          ? t('home.heroHasMap', { solar: ts(mapaNatal.solar.nome), lunar: ts(mapaNatal.lunar?.nome || '-') })
           : t('home.heroNoMap')}
       </p>
 

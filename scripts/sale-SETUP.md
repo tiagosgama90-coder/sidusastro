@@ -1,4 +1,4 @@
-# SETUP.md — Deploy Sidus Astro (buyer guide)
+# SETUP.md - Deploy Sidus Astro (buyer guide)
 
 This guide walks you through deploying the app on **your own** accounts. Estimated time: **1–2 hours** for someone familiar with Firebase and Netlify.
 
@@ -44,7 +44,7 @@ npx firebase-tools@latest use your-firebase-project-id
 npm run deploy:rules
 ```
 
-Rules file: `firestore.rules` — users can only read/write their own `/users/{uid}` document; premium fields are server-only.
+Rules file: `firestore.rules` - users can only read/write their own `/users/{uid}` document; premium fields are server-only.
 
 ### 2.3 Web app credentials
 
@@ -65,7 +65,7 @@ Also set `FIREBASE_WEB_API_KEY` to the same Web API key as `VITE_FIREBASE_API_KE
 
 ### 3.1 Products
 
-Create in Stripe Dashboard (or let Checkout use dynamic `price_data` — already implemented):
+Create in Stripe Dashboard (or let Checkout use dynamic `price_data` - already implemented):
 
 | Type | Suggested price | Code reference |
 |------|-----------------|----------------|
@@ -164,7 +164,7 @@ Leave AdSense vars **empty** to disable ads completely.
 
 ## 7. Optional: Admin premium emails
 
-Edit `src/lib/premiumAccess.js` — add emails to `EMAILS_PREMIUM_PRIVILEGIADOS` for lifetime premium (optional).
+Edit `src/lib/premiumAccess.js` - add emails to `EMAILS_PREMIUM_PRIVILEGIADOS` for lifetime premium (optional).
 
 ---
 
@@ -185,9 +185,9 @@ Edit `src/lib/premiumAccess.js` — add emails to `EMAILS_PREMIUM_PRIVILEGIADOS`
 
 Netlify Functions use free providers by default:
 
-1. **Pollinations** — no key
-2. **Groq** — free tier at console.groq.com
-3. **Gemini** — free quota at aistudio.google.com
+1. **Pollinations** - no key
+2. **Groq** - free tier at console.groq.com
+3. **Gemini** - free quota at aistudio.google.com
 
 Set keys in Netlify env. Paid OpenAI is opt-in via `ALLOW_PAID_OPENAI=true`.
 

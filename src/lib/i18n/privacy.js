@@ -5,7 +5,7 @@ const SECTIONS_PT = [
   },
   {
     titulo: '2. Dados recolhidos',
-    texto: `Recolhemos os seguintes dados pessoais para prestar os nossos serviços:\n\n• Nome e apelido\n• Data, hora e local de nascimento (necessários para calcular o mapa astral)\n• Endereço de e-mail e palavra-passe (para autenticação)\n• Foto de perfil (opcional, guardada localmente no dispositivo)\n• Histórico de leituras de tarot (guardado localmente)\n• Dados de pagamento (processados por parceiros — não armazenados nos nossos servidores)\n\nNão recolhemos dados sensíveis como informações de saúde, orientação sexual ou convicções religiosas.`,
+    texto: `Recolhemos os seguintes dados pessoais para prestar os nossos serviços:\n\n• Nome e apelido\n• Data, hora e local de nascimento (necessários para calcular o mapa astral)\n• Endereço de e-mail e palavra-passe (para autenticação)\n• Foto de perfil (opcional, guardada localmente no dispositivo)\n• Histórico de leituras de tarot (guardado localmente)\n• Dados de pagamento (processados por parceiros - não armazenados nos nossos servidores)\n\nNão recolhemos dados sensíveis como informações de saúde, orientação sexual ou convicções religiosas.`,
   },
   {
     titulo: '3. Como usamos os seus dados',
@@ -13,7 +13,7 @@ const SECTIONS_PT = [
   },
   {
     titulo: '4. Parceiros e terceiros',
-    texto: `Trabalhamos com os seguintes parceiros:\n\n• Firebase / Google (autenticação e base de dados em nuvem) — Política: firebase.google.com/support/privacy\n• OpenStreetMap Nominatim (geocodificação de cidades) — sem dados pessoais transmitidos\n• Open-Meteo (fuso horário histórico) — sem dados pessoais transmitidos\n• Google Gemini AI (respostas do Oráculo) — as perguntas podem ser processadas pela API do Google\n• Google AdSense (publicidade) — pode utilizar cookies para personalizar anúncios\n• Stripe (pagamentos) — os dados de pagamento são processados directamente pela Stripe`,
+    texto: `Trabalhamos com os seguintes parceiros:\n\n• Firebase / Google (autenticação e base de dados em nuvem) - Política: firebase.google.com/support/privacy\n• OpenStreetMap Nominatim (geocodificação de cidades) - sem dados pessoais transmitidos\n• Open-Meteo (fuso horário histórico) - sem dados pessoais transmitidos\n• Google Gemini AI (respostas do Oráculo) - as perguntas podem ser processadas pela API do Google\n• Google AdSense (publicidade) - pode utilizar cookies para personalizar anúncios\n• Stripe (pagamentos) - os dados de pagamento são processados directamente pela Stripe`,
   },
   {
     titulo: '5. Publicidade (Google AdSense)',
@@ -56,7 +56,7 @@ const SECTIONS_EN = [
   },
   {
     titulo: '2. Data collected',
-    texto: `We collect the following personal data to provide our services:\n\n• First and last name\n• Date, time and place of birth (required to calculate the natal chart)\n• Email address and password (for authentication)\n• Profile photo (optional, stored locally on the device)\n• Tarot reading history (stored locally)\n• Payment data (processed by partners — not stored on our servers)\n\nWe do not collect sensitive data such as health information, sexual orientation or religious beliefs.`,
+    texto: `We collect the following personal data to provide our services:\n\n• First and last name\n• Date, time and place of birth (required to calculate the natal chart)\n• Email address and password (for authentication)\n• Profile photo (optional, stored locally on the device)\n• Tarot reading history (stored locally)\n• Payment data (processed by partners - not stored on our servers)\n\nWe do not collect sensitive data such as health information, sexual orientation or religious beliefs.`,
   },
   {
     titulo: '3. How we use your data',
@@ -64,7 +64,7 @@ const SECTIONS_EN = [
   },
   {
     titulo: '4. Partners and third parties',
-    texto: `We work with the following partners:\n\n• Firebase / Google (authentication and cloud database) — Policy: firebase.google.com/support/privacy\n• OpenStreetMap Nominatim (city geocoding) — no personal data transmitted\n• Open-Meteo (historical time zone) — no personal data transmitted\n• Google Gemini AI (Oracle responses) — questions may be processed by Google's API\n• Google AdSense (advertising) — may use cookies to personalise ads\n• Stripe (payments) — payment data is processed directly by Stripe`,
+    texto: `We work with the following partners:\n\n• Firebase / Google (authentication and cloud database) - Policy: firebase.google.com/support/privacy\n• OpenStreetMap Nominatim (city geocoding) - no personal data transmitted\n• Open-Meteo (historical time zone) - no personal data transmitted\n• Google Gemini AI (Oracle responses) - questions may be processed by Google's API\n• Google AdSense (advertising) - may use cookies to personalise ads\n• Stripe (payments) - payment data is processed directly by Stripe`,
   },
   {
     titulo: '5. Advertising (Google AdSense)',

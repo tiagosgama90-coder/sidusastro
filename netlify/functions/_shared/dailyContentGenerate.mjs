@@ -11,15 +11,15 @@ const SIGNOS_EN = [
 ]
 
 const SOCIAL_PT = [
-  '🌙 {fase} hoje — o céu pede pausa. Pergunta ao Oráculo Sidus (3 grátis) → sidusastro.com',
+  '🌙 {fase} hoje - o céu pede pausa. Pergunta ao Oráculo Sidus (3 grátis) → sidusastro.com',
   '✦ Mapa astral + Oráculo Sidus. Descobre Sol, Lua e Ascendente → sidusastro.com',
   '🔮 Horóscopo do dia no Sidus. Qual é o teu signo? → sidusastro.com/horoscopo',
   '⭐ Trânsitos de hoje explicados pelo teu mapa. sidusastro.com',
-  '🎴 Tarot online + Oráculo Sidus — sidusastro.com/tarot',
+  '🎴 Tarot online + Oráculo Sidus - sidusastro.com/tarot',
 ]
 
 const SOCIAL_EN = [
-  '🌙 {phase} today — ask Sidus Oracle (3 free) → sidusastro.com',
+  '🌙 {phase} today - ask Sidus Oracle (3 free) → sidusastro.com',
   '✦ Natal chart + Sidus Oracle. Sun, Moon & Ascendant → sidusastro.com',
   '🔮 Daily horoscope on Sidus → sidusastro.com/horoscopo',
   '⭐ Today\'s transits through your chart → sidusastro.com',
@@ -31,7 +31,7 @@ function templateHoroscopePT(signo, fase, seed) {
     `${fase} favorece introspeção. ${signo}: escuta o coração antes de decidir.`,
     `Energia mutável no ar. ${signo}: pequenos passos trazem clareza hoje.`,
     `Dia para alinhar intenção e acção. ${signo}: uma conversa honesta abre portas.`,
-    `${signo}: o cosmos convida ao equilíbrio — descansa se o corpo pedir.`,
+    `${signo}: o cosmos convida ao equilíbrio - descansa se o corpo pedir.`,
     `Momento de foco prático. ${signo}: consolida o que já começaste.`,
   ]
   return msgs[(seed + signo.length) % msgs.length]
@@ -42,7 +42,7 @@ function templateHoroscopeEN(sign, phase, seed) {
     `${phase} invites reflection. ${sign}: listen to your heart before deciding.`,
     `Mutable energy in the air. ${sign}: small steps bring clarity today.`,
     `A day to align intention and action. ${sign}: honest talk opens doors.`,
-    `${sign}: the cosmos calls for balance — rest if your body asks.`,
+    `${sign}: the cosmos calls for balance - rest if your body asks.`,
     `Practical focus moment. ${sign}: consolidate what you already started.`,
   ]
   return msgs[(seed + sign.length) % msgs.length]

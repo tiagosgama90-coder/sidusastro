@@ -1,5 +1,5 @@
 /**
- * Relatórios de sinastria — secções personalizadas Premium vs resumo grátis.
+ * Relatórios de sinastria - secções personalizadas Premium vs resumo grátis.
  */
 import { compatibilidadeSolarGratis } from './sinastriaEngine.js'
 import {
@@ -32,7 +32,7 @@ const EIXOS = {
   },
 }
 
-/** Secções estruturadas para UI Premium — textos longos e personalizados. */
+/** Secções estruturadas para UI Premium - textos longos e personalizados. */
 export function montarSecoesPremium(resultado, mapaNatal, lang = 'pt') {
   if (!resultado) return null
   const { pilares, porPilar, posA, posB } = resultado
@@ -65,11 +65,11 @@ export function montarSecoesPremium(resultado, mapaNatal, lang = 'pt') {
       texto: narrativaFuturo(posA, posB, porPilar.futuro || [], lang),
     },
     missaoA: {
-      titulo: lang === 'en' ? `${nomeA}'s life mission` : `Missão de vida — ${nomeA}`,
+      titulo: lang === 'en' ? `${nomeA}'s life mission` : `Missão de vida - ${nomeA}`,
       texto: narrativaMissaoIndividual(posA, lang),
     },
     missaoB: {
-      titulo: lang === 'en' ? `${nomeB}'s life mission` : `Missão de vida — ${nomeB}`,
+      titulo: lang === 'en' ? `${nomeB}'s life mission` : `Missão de vida - ${nomeB}`,
       texto: narrativaMissaoIndividual(posB, lang),
     },
     missaoRelacionamento: {
@@ -99,23 +99,23 @@ export function montarResumoGratis(resultado, mapaNatal, lang = 'pt') {
 
   if (lang === 'en') {
     return [
-      `**General preview — ${mapaNatal?.nome || 'You'} & ${nomeB}**`,
+      `**General preview - ${mapaNatal?.nome || 'You'} & ${nomeB}**`,
       '',
       compat.texto,
       '',
       `Overall tone: **${resultado.pontuacao >= 70 ? 'promising' : resultado.pontuacao >= 50 ? 'moderate' : 'demanding'}** (~${Math.round(resultado.pontuacao / 5) * 5}%).`,
       '',
-      'Premium unlocks personalized readings for each pillar (chemistry, emotion, communication, future), each person\'s life mission, Relationship Mission with lunar nodes, karmic bond analysis and the full Composite Chart — the vibration of your bond as one entity.',
+      'Premium unlocks personalized readings for each pillar (chemistry, emotion, communication, future), each person\'s life mission, Relationship Mission with lunar nodes, karmic bond analysis and the full Composite Chart - the vibration of your bond as one entity.',
     ].join('\n')
   }
   return [
-    `**Pré-visualização — ${mapaNatal?.nome || 'Tu'} e ${nomeB}**`,
+    `**Pré-visualização - ${mapaNatal?.nome || 'Tu'} e ${nomeB}**`,
     '',
     compat.texto,
     '',
     `Tom geral: **${resultado.pontuacao >= 70 ? 'promissor' : resultado.pontuacao >= 50 ? 'moderado' : 'exigente'}** (~${Math.round(resultado.pontuacao / 5) * 5}%).`,
     '',
-    'O Premium desbloqueia leituras personalizadas dos 4 pilares, missão de vida de cada um, Missão de Relacionamento com nodos lunares, análise de laço cármico e Mapa Composto completo — a vibração do vosso vínculo como entidade.',
+    'O Premium desbloqueia leituras personalizadas dos 4 pilares, missão de vida de cada um, Missão de Relacionamento com nodos lunares, análise de laço cármico e Mapa Composto completo - a vibração do vosso vínculo como entidade.',
   ].join('\n')
 }
 

@@ -1,4 +1,4 @@
-/** Google Analytics 4 — carregado após consentimento de cookies (App.jsx). */
+/** Google Analytics 4 - carregado após consentimento de cookies (App.jsx). */
 const FALLBACK_GA_ID = 'G-18FPC8HYE8'
 
 export function getGaMeasurementId() {

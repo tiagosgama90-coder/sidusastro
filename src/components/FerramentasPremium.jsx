@@ -400,7 +400,7 @@ export function Sinastria({ mapaNatal, dadosUtilizador, isPremium = false, onUpg
                 <RadarAfinidades scores={analise.pilares} labels={radarLabels} total={analise.pontuacao} size={320} />
                 {analise.parceiroSol && (
                   <div style={{ fontSize: 12, color: CORES.brancoMuted, marginTop: 16, textAlign: 'center' }}>
-                    {ts(mapaNatal?.solar?.nome)} ❤ {ts(analise.parceiroSol)} · 🌙 {ts(analise.parceiroLua)} · ↑ {analise.parceiroAsc ? ts(analise.parceiroAsc) : '—'}
+                    {ts(mapaNatal?.solar?.nome)} ❤ {ts(analise.parceiroSol)} · 🌙 {ts(analise.parceiroLua)} · ↑ {analise.parceiroAsc ? ts(analise.parceiroAsc) : '-'}
                   </div>
                 )}
               </div>
@@ -550,7 +550,7 @@ export function Biorritmo({ dados, utilizador, mapaNatal, onVoltar }) {
         }}>
           {t('ferramentasPremium.biorritmo.astroContext', {
             solar: ts(mapaNatal.solar.nome),
-            lunar: ts(mapaNatal.lunar?.nome || '—'),
+            lunar: ts(mapaNatal.lunar?.nome || '-'),
           })}
         </div>
       )}
@@ -820,12 +820,12 @@ export function Numerologia({ dados, utilizador, mapaNatal, onVoltar }) {
         </div>
       </SecaoNumerologia>
 
-      {/* Visão geral — leitura */}
+      {/* Visão geral - leitura */}
       <SecaoNumerologia titulo={t('ferramentasPremium.numerologia.sectionOverview')}>
         <p style={{ fontSize: 14, color: CORES.brancoSuave, lineHeight: 1.75, margin: 0 }}>{mapa.visaoGeral}</p>
       </SecaoNumerologia>
 
-      {/* Resumo visual — 3 pilares */}
+      {/* Resumo visual - 3 pilares */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10, marginBottom: 20 }}>
         {mapa.pilares?.map((p) => (
           <div key={p.id} style={{
@@ -840,7 +840,7 @@ export function Numerologia({ dados, utilizador, mapaNatal, onVoltar }) {
         ))}
       </div>
 
-      {/* Detalhe do nome — 3 blocos */}
+      {/* Detalhe do nome - 3 blocos */}
       <SecaoNumerologia titulo={t('ferramentasPremium.numerologia.sectionName')}>
         {mapa.pilares?.map((p) => (
           <BlocoNumerologia
@@ -860,7 +860,7 @@ export function Numerologia({ dados, utilizador, mapaNatal, onVoltar }) {
         ))}
       </SecaoNumerologia>
 
-      {/* Caminho de vida — data de nascimento */}
+      {/* Caminho de vida - data de nascimento */}
       {mapa.caminho && (
         <SecaoNumerologia titulo={t('ferramentasPremium.numerologia.sectionPath')}>
           <BlocoNumerologia

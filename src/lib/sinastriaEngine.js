@@ -1,5 +1,5 @@
 /**
- * Motor de sinastria — Swiss Ephemeris (JPL/NASA) + aspectos cruzados.
+ * Motor de sinastria - Swiss Ephemeris (JPL/NASA) + aspectos cruzados.
  * Pilares: Química (Vénus/Marte), Emoção (Sol/Lua), Comunicação (Mercúrio), Futuro (Júpiter/Saturno).
  */
 import { Body, Ecliptic, GeoVector, MakeTime } from 'astronomy-engine'
@@ -212,7 +212,7 @@ const CHAVES_SINASTRIA = [
   'sol', 'lua', 'mercurio', 'venus', 'marte', 'jupiter', 'saturno', 'ascendente', 'mc', 'nodo_norte', 'nodo_sul',
 ]
 
-/** Ponto médio eclíptico (arco curto) — base do Mapa Composto. */
+/** Ponto médio eclíptico (arco curto) - base do Mapa Composto. */
 export function pontoMedioEcliptico(lonA, lonB) {
   let a = ((Number(lonA) % 360) + 360) % 360
   let b = ((Number(lonB) % 360) + 360) % 360
@@ -237,7 +237,7 @@ function corpoFromLongitude(key, nome, longitude) {
   }
 }
 
-/** Mapa Composto — pontos médios entre posA e posB (método profissional). */
+/** Mapa Composto - pontos médios entre posA e posB (método profissional). */
 export function calcularMapaComposto(posA, posB) {
   if (!posA?.corpos || !posB?.corpos) return null
   const chaves = ['sol', 'lua', 'mercurio', 'venus', 'marte', 'jupiter', 'saturno']
@@ -258,7 +258,7 @@ export function calcularMapaComposto(posA, posB) {
   return { corpos, aspectosInternos, metodo: 'Pontos médios eclípticos' }
 }
 
-/** Aspectos internos do mapa composto — fluxo de energia do casal. */
+/** Aspectos internos do mapa composto - fluxo de energia do casal. */
 export function calcularAspectosInternosComposto(corpos) {
   if (!corpos) return []
   const chaves = Object.keys(corpos).filter((k) => corpos[k]?.longitude != null)
@@ -385,7 +385,7 @@ export function calcularMissaoPessoa(pos) {
   }
 }
 
-/** Dinâmica emocional cruzada — aspectos Sol/Lua/Vénus entre mapas. */
+/** Dinâmica emocional cruzada - aspectos Sol/Lua/Vénus entre mapas. */
 export function calcularDinamicaEmocional(aspectos, posA, posB) {
   const emocionais = aspectosEmocionais(aspectos)
   const luaLua = aspectos.find((a) => a.keyA === 'lua' && a.keyB === 'lua')
@@ -501,7 +501,7 @@ export async function calcularSinastriaCompleta(dadosA, dadosB) {
   return calcularSinastria(posA, posB)
 }
 
-/** Compatibilidade generalizada (signos Sol) — camada grátis. */
+/** Compatibilidade generalizada (signos Sol) - camada grátis. */
 export function compatibilidadeSolarGratis(solA, solB, lang = 'pt') {
   if (!solA || !solB) return { nivel: 'medio', texto: '' }
 
@@ -533,8 +533,8 @@ export function compatibilidadeSolarGratis(solA, solB, lang = 'pt') {
 
   const textos = {
     alto: {
-      pt: `Os Sols em ${solA} e ${solB} partilham uma linguagem elemental compatível (${eA} · ${eB}). Há base natural para reconhecimento mútuo — aprofundar requer o mapa completo.`,
-      en: `Suns in ${solA} and ${solB} share compatible elemental language (${eA} · ${eB}). There is a natural basis for mutual recognition — depth requires the full chart.`,
+      pt: `Os Sols em ${solA} e ${solB} partilham uma linguagem elemental compatível (${eA} · ${eB}). Há base natural para reconhecimento mútuo - aprofundar requer o mapa completo.`,
+      en: `Suns in ${solA} and ${solB} share compatible elemental language (${eA} · ${eB}). There is a natural basis for mutual recognition - depth requires the full chart.`,
     },
     medio: {
       pt: `Entre ${solA} e ${solB} há complementaridade moderada (${eA} · ${eB}). A relação cresce com consciência dos ritmos diferentes de cada um.`,

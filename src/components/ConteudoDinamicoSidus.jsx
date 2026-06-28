@@ -144,7 +144,7 @@ export function ConteudoDinamicoSidus({ mapaNatal, aspetos = [], isPremium, onUp
                     {signList.map((sign) => (
                       <div key={sign} style={{ padding: '8px 0', borderBottom: `1px solid ${CORES.vidroBorda}` }}>
                         <div style={{ fontSize: 12, fontWeight: 600, color: CORES.branco, marginBottom: 2 }}>{sign}</div>
-                        <div style={{ fontSize: 12, color: CORES.brancoMuted, lineHeight: 1.45 }}>{horoMap[sign] || '—'}</div>
+                        <div style={{ fontSize: 12, color: CORES.brancoMuted, lineHeight: 1.45 }}>{horoMap[sign] || '-'}</div>
                       </div>
                     ))}
                   </div>

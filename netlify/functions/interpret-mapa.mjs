@@ -72,8 +72,8 @@ export default async (req) => {
     const raw = await chatCompletion({
       system,
       messages: [{ role: 'user', content: userPrompt }],
-      maxTokens: 3600,
-      temperature: 0.74,
+      maxTokens: 6500,
+      temperature: 0.76,
       tier: 'premium',
       escopo: 'astrologia',
       lang,

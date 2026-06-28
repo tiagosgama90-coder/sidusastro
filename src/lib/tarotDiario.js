@@ -1,4 +1,4 @@
-/** Leitura Diária — uma carta a cada 24 horas (todos os utilizadores). */
+/** Leitura Diária - uma carta a cada 24 horas (todos os utilizadores). */
 
 export const DIARIA_MS = 24 * 60 * 60 * 1000
 const STORAGE_PREFIX = 'sidus_tarot_diaria_v1'

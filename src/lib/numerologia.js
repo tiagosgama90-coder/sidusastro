@@ -7,7 +7,7 @@ export function reduzir(n) {
   return v
 }
 
-/** Passos da redução — ex.: 25 → [25, 7] */
+/** Passos da redução - ex.: 25 → [25, 7] */
 export function passosReducao(n) {
   const passos = []
   let v = Math.abs(Math.floor(n))
@@ -175,7 +175,7 @@ const SIGNIFICADOS_PT = {
   7: 'Introspecção, estudo e espiritualidade. O silêncio e a análise aprofundam a sabedoria.',
   8: 'Realização material, poder e justiça. Equilibrar ambição com ética é o desafio central.',
   9: 'Humanitarismo, conclusão e compaixão. Encerrar ciclos com generosidade abre portas novas.',
-  11: 'Intuição elevada e inspiração. Missão de elevar consciências — canal de visão espiritual.',
+  11: 'Intuição elevada e inspiração. Missão de elevar consciências - canal de visão espiritual.',
   22: 'Construtor de grandes obras. Capacidade de materializar ideais em benefício colectivo.',
   33: 'Mestre da compaixão e do ensino. Serviço amoroso como expressão máxima do caminho.',
 }
@@ -190,7 +190,7 @@ const SIGNIFICADOS_EN = {
   7: 'Introspection, study and spirituality. Silence and analysis deepen wisdom.',
   8: 'Material achievement, power and justice. Balancing ambition with ethics is central.',
   9: 'Humanitarianism, completion and compassion. Closing cycles generously opens new doors.',
-  11: 'Elevated intuition and inspiration. A mission to raise consciousness — a channel of vision.',
+  11: 'Elevated intuition and inspiration. A mission to raise consciousness - a channel of vision.',
   22: 'Builder of great works. Power to materialise ideals for collective benefit.',
   33: 'Master of compassion and teaching. Loving service as the highest path expression.',
 }
@@ -238,7 +238,7 @@ export function calcularMapaNumerologia(nome, dataISO, lang = 'pt', mapaNatal = 
     },
   }
 
-  const desc = (n) => sig[n] || sig[reduzir(n)] || '—'
+  const desc = (n) => sig[n] || sig[reduzir(n)] || '-'
 
   const base = {
     nome,

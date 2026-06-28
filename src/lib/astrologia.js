@@ -135,17 +135,17 @@ export function calcularMapaNatal({ data, hora, localizacao }) {
     solar: {
       ...solar,
       fonte: 'efemérides',
-      descricao: `Essência e identidade — ${TRACOS[solar.nome]}`,
+      descricao: `Essência e identidade - ${TRACOS[solar.nome]}`,
     },
     lunar: {
       ...lunar,
       fonte: 'efemérides',
-      descricao: `Emoções e instinto — ${TRACOS[lunar.nome]}`,
+      descricao: `Emoções e instinto - ${TRACOS[lunar.nome]}`,
     },
     ascendente: {
       ...ascendente,
       fonte: 'efemérides',
-      descricao: `Máscara social e primeira impressão — ${TRACOS[ascendente.nome]}`,
+      descricao: `Máscara social e primeira impressão - ${TRACOS[ascendente.nome]}`,
     },
     solarReferencia: solarData,
     coordenadas: { lat, lon },

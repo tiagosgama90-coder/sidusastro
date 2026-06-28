@@ -1,5 +1,5 @@
 /**
- * Interpretação profissional do Mapa Natal — Tropical Placidus
+ * Interpretação profissional do Mapa Natal - Tropical Placidus
  * Suporta PT e EN via parâmetro lang.
  */
 
@@ -14,7 +14,7 @@ import {
 function metaSigno(signo, casa, lang) {
   const C = getMapaCopy(lang)
   const s = C.sn(signo)
-  if (!s) return '—'
+  if (!s) return '-'
   if (!casa) return s
   return lang === 'en' ? `${s} · House ${casa}` : `${s} · Casa ${casa}`
 }
@@ -83,24 +83,24 @@ export function gerarAnaliseCompleta(mapaNatal, planetas, aspetos = [], dados = 
       id: 2,
       titulo: L.sec2,
       blocos: [
-        { subtitulo: L.mer, texto: C.paragrafoMerc(pMer?.signo?.nome, pMer?.casa), meta: pMer ? metaSigno(pMer.signo?.nome, pMer.casa, lang) : '—' },
-        { subtitulo: L.ven, texto: C.paragrafoVen(pVen?.signo?.nome, pVen?.casa), meta: pVen ? metaSigno(pVen.signo?.nome, pVen.casa, lang) : '—' },
-        { subtitulo: L.mar, texto: C.paragrafoMar(pMar?.signo?.nome, pMar?.casa), meta: pMar ? metaSigno(pMar.signo?.nome, pMar.casa, lang) : '—' },
+        { subtitulo: L.mer, texto: C.paragrafoMerc(pMer?.signo?.nome, pMer?.casa), meta: pMer ? metaSigno(pMer.signo?.nome, pMer.casa, lang) : '-' },
+        { subtitulo: L.ven, texto: C.paragrafoVen(pVen?.signo?.nome, pVen?.casa), meta: pVen ? metaSigno(pVen.signo?.nome, pVen.casa, lang) : '-' },
+        { subtitulo: L.mar, texto: C.paragrafoMar(pMar?.signo?.nome, pMar?.casa), meta: pMar ? metaSigno(pMar.signo?.nome, pMar.casa, lang) : '-' },
       ],
     },
     {
       id: 3,
       titulo: L.sec3,
       blocos: [
-        { subtitulo: L.jup, texto: C.paragrafoJup(pJup?.signo?.nome, pJup?.casa), meta: pJup ? metaSigno(pJup.signo?.nome, pJup.casa, lang) : '—' },
-        { subtitulo: L.sat, texto: C.paragrafoSat(pSat?.signo?.nome, pSat?.casa), meta: pSat ? metaSigno(pSat.signo?.nome, pSat.casa, lang) : '—' },
+        { subtitulo: L.jup, texto: C.paragrafoJup(pJup?.signo?.nome, pJup?.casa), meta: pJup ? metaSigno(pJup.signo?.nome, pJup.casa, lang) : '-' },
+        { subtitulo: L.sat, texto: C.paragrafoSat(pSat?.signo?.nome, pSat?.casa), meta: pSat ? metaSigno(pSat.signo?.nome, pSat.casa, lang) : '-' },
       ],
     },
     {
       id: 4,
       titulo: L.sec4,
       blocos: [
-        { subtitulo: L.mc, texto: C.paragrafoMC(mc), meta: mc ? (lang === 'en' ? `${C.sn(mc)} · House 10` : `${mc} · Casa 10`) : '—' },
+        { subtitulo: L.mc, texto: C.paragrafoMC(mc), meta: mc ? (lang === 'en' ? `${C.sn(mc)} · House 10` : `${mc} · Casa 10`) : '-' },
       ],
     },
     ...(blocosGeracionais.length > 0 ? [{

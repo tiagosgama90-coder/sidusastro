@@ -1,4 +1,4 @@
-/** Preços Sidus (EUR) — fonte única para UI e Stripe. */
+/** Preços Sidus (EUR) - fonte única para UI e Stripe. */
 export const PRECO_TAROT = 2
 export const PRECO_MAPA_COMPLETO = 10
 export const PRECO_PREMIUM_MENSAL = 9.99

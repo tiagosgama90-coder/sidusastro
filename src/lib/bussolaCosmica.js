@@ -1,5 +1,5 @@
 /**
- * Bússola Cósmica 2026 — trânsitos calculados (astronomy-engine / JPL).
+ * Bússola Cósmica 2026 - trânsitos calculados (astronomy-engine / JPL).
  * Isolado do mapa natal; não altera cálculos do mapa.
  */
 import { Body, Ecliptic, GeoVector, MakeTime } from 'astronomy-engine'
@@ -115,7 +115,7 @@ function descricaoMes(transito, lang, posicoes) {
   if (lang === 'en') {
     let base = `${p} in ${s} at ${graus}°`
     if (retro) base += ' ℞'
-    if (tipo === 'ingresso') base = `${p} enters ${s} this month — a shift in collective tone and personal strategy.`
+    if (tipo === 'ingresso') base = `${p} enters ${s} this month - a shift in collective tone and personal strategy.`
     else if (tipo === 'retrógrado') base = `${p} retrograde in ${s}: review, revise and deepen; avoid rushing new starts in this area.`
     else base += `. Monthly sky emphasis invites conscious alignment with this archetype.`
     if (outros) base += ` Also active: ${outros}.`
@@ -125,7 +125,7 @@ function descricaoMes(transito, lang, posicoes) {
 
   let base = `${p} em ${s} a ${graus}°`
   if (retro) base += ' ℞'
-  if (tipo === 'ingresso') base = `${p} ingressa em ${s} este mês — mudança de tom colectivo e de estratégia pessoal.`
+  if (tipo === 'ingresso') base = `${p} ingressa em ${s} este mês - mudança de tom colectivo e de estratégia pessoal.`
   else if (tipo === 'retrógrado') base = `${p} retrógrado em ${s}: rever, revisar e aprofundar; evita arrancadas precipitadas nesta área.`
   else base += `. O céu do mês pede alinhamento consciente com este arquétipo.`
   if (outros) base += ` Também activos: ${outros}.`
@@ -138,7 +138,7 @@ function conceitos2026(lang) {
     return [
       {
         titulo: 'Saturn · Neptune conjunction (Feb 2026)',
-        texto: 'A rare fusion of structure and dream. Boundaries dissolve where discipline meets imagination — ideal for spiritual maturity, not escapism.',
+        texto: 'A rare fusion of structure and dream. Boundaries dissolve where discipline meets imagination - ideal for spiritual maturity, not escapism.',
         icon: '☌',
       },
       {
@@ -153,7 +153,7 @@ function conceitos2026(lang) {
       },
       {
         titulo: 'Eclipse portals',
-        texto: 'Solar and lunar eclipses mark accelerated chapters. Track which natal house they touch — events unfold over 6–18 months.',
+        texto: 'Solar and lunar eclipses mark accelerated chapters. Track which natal house they touch - events unfold over 6–18 months.',
         icon: '🌑',
       },
     ]
@@ -161,7 +161,7 @@ function conceitos2026(lang) {
   return [
     {
       titulo: 'Conjunção Saturno · Neptuno (Fev 2026)',
-      texto: 'Fusão rara de estrutura e sonho. As fronteiras dissolvem-se onde a disciplina encontra a imaginação — ideal para maturidade espiritual, não fuga.',
+      texto: 'Fusão rara de estrutura e sonho. As fronteiras dissolvem-se onde a disciplina encontra a imaginação - ideal para maturidade espiritual, não fuga.',
       icon: '☌',
     },
     {
@@ -176,7 +176,7 @@ function conceitos2026(lang) {
     },
     {
       titulo: 'Portais de eclipse',
-      texto: 'Eclipses solares e lunares marcam capítulos acelerados. Observa que casa natal tocam — os acontecimentos desenrolam-se em 6–18 meses.',
+      texto: 'Eclipses solares e lunares marcam capítulos acelerados. Observa que casa natal tocam - os acontecimentos desenrolam-se em 6–18 meses.',
       icon: '🌑',
     },
   ]

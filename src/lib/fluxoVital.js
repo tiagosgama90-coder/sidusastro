@@ -1,5 +1,5 @@
 /**
- * Fluxo Vital — biorritmo + astrologia profissional (efemérides reais).
+ * Fluxo Vital - biorritmo + astrologia profissional (efemérides reais).
  * Combina ciclos físico/emocional/intelectual com trânsitos do Sol e Lua,
  * fase lunar precisa e eixo natal (Sol · Lua · Ascendente).
  */
@@ -114,8 +114,8 @@ export function analisarFluxoVital({ fisico, emocional, intelectual, mapaNatal, 
     : aspectoEntreSignos(ceu.lua.signo, lunar)
 
   const faseTxt = pt
-    ? `${faseLua.emoji} ${faseLua.nome} — ${faseLua.iluminacao}% iluminada. ${faseLua.desc}`
-    : `${faseLua.emoji} ${faseLua.nome} — ${faseLua.iluminacao}% illuminated. ${faseLua.desc}`
+    ? `${faseLua.emoji} ${faseLua.nome} - ${faseLua.iluminacao}% iluminada. ${faseLua.desc}`
+    : `${faseLua.emoji} ${faseLua.nome} - ${faseLua.iluminacao}% illuminated. ${faseLua.desc}`
 
   let ritmoElementar = ''
   if (solar && lunar) {
@@ -124,8 +124,8 @@ export function analisarFluxoVital({ fisico, emocional, intelectual, mapaNatal, 
     const modSol = MODALIDADE[solar]
     const regente = PLANETA_REGENTE[ceu.sol.signo]
     ritmoElementar = pt
-      ? `Eixo natal ${elSol}/${elLua} (${modSol}). Hoje o Sol transita ${ceu.sol.signo} (${ELEMENTO[ceu.sol.signo]}), regido por ${regente}, em ${aspectoSol.tipo} com o teu Sol natal — ${aspectoSol.natureza} de energia. A Lua em ${ceu.lua.signo} modula o ritmo emocional do dia.`
-      : `Natal axis ${elSol}/${elLua} (${modSol}). Today the Sun transits ${ceu.sol.signo} (${ELEMENTO[ceu.sol.signo]}), ruled by ${regente}, ${aspectoSol.tipo} your natal Sun — ${aspectoSol.natureza} energy. The Moon in ${ceu.lua.signo} shapes today's emotional rhythm.`
+      ? `Eixo natal ${elSol}/${elLua} (${modSol}). Hoje o Sol transita ${ceu.sol.signo} (${ELEMENTO[ceu.sol.signo]}), regido por ${regente}, em ${aspectoSol.tipo} com o teu Sol natal - ${aspectoSol.natureza} de energia. A Lua em ${ceu.lua.signo} modula o ritmo emocional do dia.`
+      : `Natal axis ${elSol}/${elLua} (${modSol}). Today the Sun transits ${ceu.sol.signo} (${ELEMENTO[ceu.sol.signo]}), ruled by ${regente}, ${aspectoSol.tipo} your natal Sun - ${aspectoSol.natureza} energy. The Moon in ${ceu.lua.signo} shapes today's emotional rhythm.`
   } else {
     ritmoElementar = pt
       ? `Sol em ${ceu.sol.signo}, Lua em ${ceu.lua.signo}. Observa como o elemento ${ELEMENTO[ceu.sol.signo]} colore a tua energia hoje.`
@@ -135,15 +135,15 @@ export function analisarFluxoVital({ fisico, emocional, intelectual, mapaNatal, 
   let luaNatal = ''
   if (lunar && aspectoLua) {
     luaNatal = pt
-      ? `Lua natal em ${lunar} (${ELEMENTO[lunar]}): trânsito lunar em ${aspectoLua.tipo} (${aspectoLua.score}% harmonia). ${aspectoLua.score >= 75 ? 'Emoções fluem com clareza — bom momento para diálogo íntimo.' : aspectoLua.score <= 45 ? 'Sensibilidade amplificada; protege o espaço emocional.' : 'Equilíbrio entre razão e sentimento nas decisões.'}`
-      : `Natal Moon in ${lunar} (${ELEMENTO[lunar]}): lunar transit ${aspectoLua.tipo} (${aspectoLua.score}% harmony). ${aspectoLua.score >= 75 ? 'Emotions flow clearly — good for intimate dialogue.' : aspectoLua.score <= 45 ? 'Heightened sensitivity; protect emotional space.' : 'Balance reason and feeling in decisions.'}`
+      ? `Lua natal em ${lunar} (${ELEMENTO[lunar]}): trânsito lunar em ${aspectoLua.tipo} (${aspectoLua.score}% harmonia). ${aspectoLua.score >= 75 ? 'Emoções fluem com clareza - bom momento para diálogo íntimo.' : aspectoLua.score <= 45 ? 'Sensibilidade amplificada; protege o espaço emocional.' : 'Equilíbrio entre razão e sentimento nas decisões.'}`
+      : `Natal Moon in ${lunar} (${ELEMENTO[lunar]}): lunar transit ${aspectoLua.tipo} (${aspectoLua.score}% harmony). ${aspectoLua.score >= 75 ? 'Emotions flow clearly - good for intimate dialogue.' : aspectoLua.score <= 45 ? 'Heightened sensitivity; protect emotional space.' : 'Balance reason and feeling in decisions.'}`
   }
 
   let ascendenteNota = ''
   if (ascendente) {
     ascendenteNota = pt
-      ? `Ascendente em ${ascendente}: ciclo físico a ${Math.round(fisico)}% — ${fisico > 30 ? 'corpo pede expressão visível e movimento' : fisico < -30 ? 'privilegia descanso e rotinas suaves' : 'presença equilibrada no mundo exterior'}.`
-      : `Ascendant in ${ascendente}: physical cycle at ${Math.round(fisico)}% — ${fisico > 30 ? 'body asks for visible expression and movement' : fisico < -30 ? 'favour rest and gentle routines' : 'balanced presence outward'}.`
+      ? `Ascendente em ${ascendente}: ciclo físico a ${Math.round(fisico)}% - ${fisico > 30 ? 'corpo pede expressão visível e movimento' : fisico < -30 ? 'privilegia descanso e rotinas suaves' : 'presença equilibrada no mundo exterior'}.`
+      : `Ascendant in ${ascendente}: physical cycle at ${Math.round(fisico)}% - ${fisico > 30 ? 'body asks for visible expression and movement' : fisico < -30 ? 'favour rest and gentle routines' : 'balanced presence outward'}.`
   }
 
   let estrategia = ''

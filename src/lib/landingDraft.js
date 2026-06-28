@@ -49,7 +49,7 @@ export function readLandingDraft() {
       }
     }
   } catch {
-    /* formato inválido — tentar chaves individuais */
+    /* formato inválido - tentar chaves individuais */
   }
 
   const nome = readField(FIELD_KEYS.nome)?.trim() || ''

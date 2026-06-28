@@ -1,5 +1,5 @@
 /**
- * Ascendente, Descendente, MC e IC — Swiss Ephemeris (JPL) ou fórmula Meeus equivalente.
+ * Ascendente, Descendente, MC e IC - Swiss Ephemeris (JPL) ou fórmula Meeus equivalente.
  * Longitude geográfica: positiva a Este (convénção Swiss Ephemeris / NASA JPL).
  */
 import { MakeTime, SiderealTime } from 'astronomy-engine'
@@ -15,7 +15,7 @@ function obliquidadeEcliptica(dateUTC) {
 }
 
 /**
- * Ascendente e MC — algoritmo padrão swe_houses / Jean Meeus (sem correcções ad-hoc).
+ * Ascendente e MC - algoritmo padrão swe_houses / Jean Meeus (sem correcções ad-hoc).
  */
 export function calcularAngulosCasasMeeus(dataUTC, latitude, longitude) {
   if (!dataUTC || latitude == null || longitude == null) return null
@@ -53,7 +53,7 @@ export function calcularAngulosCasasMeeus(dataUTC, latitude, longitude) {
   }
 }
 
-/** Casas via swe_houses — efemérides JPL, precisão sub-arco-segundo. */
+/** Casas via swe_houses - efemérides JPL, precisão sub-arco-segundo. */
 export function calcularAngulosCasasSwe(swe, dateUTC, latitude, longitude) {
   if (!swe || !dateUTC) return null
   const lat = Number(latitude)

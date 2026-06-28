@@ -1,4 +1,4 @@
-/** Métodos activos no Dashboard Stripe — todos disponíveis em qualquer compra. */
+/** Métodos activos no Dashboard Stripe - todos disponíveis em qualquer compra. */
 export const METODOS_PAGAMENTO = [
   { stripeType: 'card', i18nKey: 'card', icone: '💳', recorrente: true },
   { stripeType: 'mb_way', i18nKey: 'mbway', icone: '📱', recorrente: false },

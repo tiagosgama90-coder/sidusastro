@@ -1,6 +1,6 @@
 /**
  * Gera pacote limpo para venda em ../sidusastro-sale/
- * Não altera o repo de produção — só copia e sanitiza.
+ * Não altera o repo de produção - só copia e sanitiza.
  *
  * Uso: node scripts/export-sale-package.mjs
  */
@@ -92,9 +92,9 @@ const EMAILS_PREMIUM_PRIVILEGIADOS = [
     .replace('return FALLBACK_GA_ID', "return ''"))
 
   patchFile('src/lib/adsense.js', [
-    [`/** Publisher ID público — igual ao index.html (AdSense sidusastro.com). */
+    [`/** Publisher ID público - igual ao index.html (AdSense sidusastro.com). */
 export const ADSENSE_PUBLISHER = 'ca-pub-2807052149540484'
-/** Bloco Display horizontal — sidusastro.com */
+/** Bloco Display horizontal - sidusastro.com */
 export const ADSENSE_SLOT_DEFAULT = '7205155875'`, `/** Set via VITE_ADSENSE_CLIENT / VITE_ADSENSE_SLOT in Netlify (no hardcoded IDs). */
 export const ADSENSE_PUBLISHER = ''
 export const ADSENSE_SLOT_DEFAULT = ''`],

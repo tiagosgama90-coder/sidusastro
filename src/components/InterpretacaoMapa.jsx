@@ -1,6 +1,6 @@
 /**
  * Renderização da interpretação profissional do Mapa Natal (Premium).
- * Estrutura em 5 secções — Tropical Placidus.
+ * Estrutura em 5 secções - Tropical Placidus.
  */
 
 const CORES = {
@@ -30,7 +30,7 @@ export function InterpretacaoMapa({ analise, estilosVidro, lang = 'pt', loading 
     : '✦ Interpretação Profissional'
 
   const badge = analise.fonte === 'ia'
-    ? (lang === 'en' ? '✦ AI personalised reading' : '✦ Interpretação IA personalizada')
+    ? (lang === 'en' ? '✦ Personalised chart reading' : '✦ Leitura personalizada ao teu mapa')
     : null
 
   return (

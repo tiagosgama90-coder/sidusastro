@@ -1,4 +1,4 @@
-# Imagens Google Ads — Sidus Astro
+# Imagens Google Ads - Sidus Astro
 
 Pasta para campanhas Google Ads / Meta Ads.
 
@@ -12,9 +12,9 @@ Pasta para campanhas Google Ads / Meta Ads.
 
 ## Logótipo SVG (site)
 
-`public/favicon.svg` — estrela dourada + SIDUS (mesmo estilo da navbar).
+`public/favicon.svg` - estrela dourada + SIDUS (mesmo estilo da navbar).
 
-## Google Ads — onde carregar
+## Google Ads - onde carregar
 
 1. **Ferramentas → Biblioteca → Logótipo da empresa** → `logo-sidus-1200.png`
 2. **Campanha → Recursos → Imagens** → banner + quadrado

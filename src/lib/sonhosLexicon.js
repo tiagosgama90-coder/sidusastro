@@ -1,5 +1,5 @@
 /**
- * Léxico A–Z de símbolos oníricos — base hermenêutica para pesquisa por palavras-chave.
+ * Léxico A–Z de símbolos oníricos - base hermenêutica para pesquisa por palavras-chave.
  * Cada entrada alimenta a IA com contexto específico; a resposta final é sempre sintetizada por sonho.
  */
 
@@ -112,8 +112,8 @@ export function extrairSimbolos(texto, chipsExtra = [], lang = 'pt') {
       encontrados.push({
         tema: chip,
         resumo: lang === 'en'
-          ? 'Selected symbol — apply Golden Rule: current conflict, call to change, path of healing.'
-          : 'Símbolo seleccionado — aplicar Regra de Ouro: conflito actual, apelo de conversão, remédio de cura.',
+          ? 'Selected symbol - apply Golden Rule: current conflict, call to change, path of healing.'
+          : 'Símbolo seleccionado - aplicar Regra de Ouro: conflito actual, apelo de conversão, remédio de cura.',
         letra: chip[0]?.toUpperCase() || '?',
       })
     }

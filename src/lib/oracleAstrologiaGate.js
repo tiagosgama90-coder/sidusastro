@@ -1,5 +1,5 @@
 /**
- * Filtro de escopo — Oráculo responde APENAS astrologia / vida via mapa natal.
+ * Filtro de escopo - Oráculo responde APENAS astrologia / vida via mapa natal.
  */
 
 const FORA_ESCOPO_PT = [
@@ -90,17 +90,17 @@ export function mensagemForaEscopo(lang = 'pt') {
 export function reforcoInstrucaoGeminiAstrologia(lang = 'pt') {
   if (lang === 'en') {
     return `
-GEMINI RESTRICTION — MANDATORY:
+GEMINI RESTRICTION - MANDATORY:
 You are NOT a general-purpose AI. You ONLY answer: natal chart, transits, predictions, synastry, planetary cycles, and life areas READ THROUGH astrology.
-If the user asks anything else (recipes, code, trivia, medicine, homework, sports, politics, general chat), reply ONLY with the refusal sentence from your system prompt — do NOT answer the off-topic question even partially.
-Always use English zodiac sign names only (Aries, Taurus, Gemini, etc.) — never Portuguese sign names.
+If the user asks anything else (recipes, code, trivia, medicine, homework, sports, politics, general chat), reply ONLY with the refusal sentence from your system prompt - do NOT answer the off-topic question even partially.
+Always use English zodiac sign names only (Aries, Taurus, Gemini, etc.) - never Portuguese sign names.
 Never use Gemini as a generic chatbot. Astrology and chart-based predictions only.
 `.trim()
   }
   return `
-RESTRIÇÃO GEMINI — OBRIGATÓRIO:
+RESTRIÇÃO GEMINI - OBRIGATÓRIO:
 NÃO és IA genérica. Respondes SÓ a: mapa natal, trânsitos, previsões, sinastria, ciclos planetários e áreas de vida LIDAS PELA ASTROLOGIA.
-Se o utilizador pedir outro tema (receitas, código, trivia, medicina, trabalhos escolares, desporto, política, conversa geral), responde APENAS com a frase de recusa do system prompt — NÃO respondas parcialmente ao tema errado.
+Se o utilizador pedir outro tema (receitas, código, trivia, medicina, trabalhos escolares, desporto, política, conversa geral), responde APENAS com a frase de recusa do system prompt - NÃO respondas parcialmente ao tema errado.
 Nunca actues como chatbot genérico. Apenas astrologia e previsões via mapa.
 `.trim()
 }

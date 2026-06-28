@@ -1,4 +1,4 @@
-/** Marca Sidus — estrela de quatro pontas + detalhes (como logotipo original). */
+/** Marca Sidus - estrela de quatro pontas + detalhes (como logotipo original). */
 export function SidusLogoMark({ size = 22, className }) {
   return (
     <svg

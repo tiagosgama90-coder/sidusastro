@@ -1,4 +1,4 @@
-/** Changelog Sidus — actualizar quando houver deploy relevante. */
+/** Changelog Sidus - actualizar quando houver deploy relevante. */
 export const NOVIDADES_SIDUS = [
   {
     date: '2026-06-18',

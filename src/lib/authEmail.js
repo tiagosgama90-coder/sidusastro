@@ -30,7 +30,7 @@ async function enviarViaServidor(user) {
 
 /**
  * Envia e-mail de verificação Firebase.
- * Usa sempre auth.currentUser (sessão activa) — o objeto user em props pode ficar desactualizado.
+ * Usa sempre auth.currentUser (sessão activa) - o objeto user em props pode ficar desactualizado.
  */
 export async function enviarEmailVerificacao(user) {
   if (!auth) throw new Error('Firebase não configurado')

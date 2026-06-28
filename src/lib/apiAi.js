@@ -1,4 +1,4 @@
-/** Chamadas IA via Netlify Functions — chaves secretas só no servidor. */
+/** Chamadas IA via Netlify Functions - chaves secretas só no servidor. */
 
 async function postJson(path, body, idToken = null) {
   const headers = { 'Content-Type': 'application/json' }

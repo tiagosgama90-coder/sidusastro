@@ -1,4 +1,4 @@
-const STORAGE_PREFIX = 'sidus_mapa_ia_v2'
+const STORAGE_PREFIX = 'sidus_mapa_ia_v3'
 
 function cacheKey(dados, lang) {
   const lat = dados?.localizacao?.lat ?? ''

@@ -21,24 +21,24 @@ const FERRAMENTAS_EN = [
 ]
 
 const BENEFICIOS_VIP_PT = [
-  'Mapa Astral completo — efemérides, Placidus, PDF profissional + email',
+  'Mapa Astral completo - efemérides, Placidus, PDF profissional + email',
   'Fases da Lua em tempo real no Céu de Hoje',
   'Mapa de Numerologia com vibração espiritual do nome',
   'Leituras de Tarot ilimitadas em todos os baralhos',
   'Bússola Cósmica 2026 com previsões mensais',
   'Radar de Afinidades e Sinastria completa',
-  'Chat ilimitado com o Oráculo Sidus — astrólogo profissional',
+  'Chat ilimitado com o Oráculo Sidus - astrólogo profissional',
   'Alertas de trânsitos planetários em tempo real',
 ]
 
 const BENEFICIOS_VIP_EN = [
-  'Complete Natal Chart — ephemerides, Placidus, professional PDF + email',
+  'Complete Natal Chart - ephemerides, Placidus, professional PDF + email',
   'Real-time Moon phases in Today\'s Sky',
   'Numerology Chart with spiritual name vibration',
   'Unlimited Tarot readings across all decks',
   'Cosmic Compass 2026 with monthly forecasts',
   'Affinity Radar and full Synastry',
-  'Unlimited chat with Oracle Sidus — professional astrologer',
+  'Unlimited chat with Oracle Sidus - professional astrologer',
   'Real-time planetary transit alerts',
 ]
 

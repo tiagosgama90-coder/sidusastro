@@ -82,7 +82,7 @@ html {
   position: relative;
 }
 
-/* Seletor de idioma — fixo (desktop login); mobile landing usa landing-bar */
+/* Seletor de idioma - fixo (desktop login); mobile landing usa landing-bar */
 .lang-switcher-root {
   position: fixed !important;
   top: max(8px, env(safe-area-inset-top, 8px));
@@ -184,7 +184,7 @@ code {
   background: var(--code-bg);
 }
 
-/* Premium VIP — ocultar anúncios manuais e Auto ads do Google */
+/* Premium VIP - ocultar anúncios manuais e Auto ads do Google */
 html.sidus-no-ads ins.adsbygoogle,
 html.sidus-no-ads .adsbygoogle,
 html.sidus-no-ads iframe[id^="google_ads_iframe"],
@@ -197,7 +197,7 @@ html.sidus-no-ads .google-auto-placed {
   overflow: hidden !important;
 }
 
-/* Navbar desktop — uma linha, sem scroll nem quebra */
+/* Navbar desktop - uma linha, sem scroll nem quebra */
 .desktop-profile-fab {
   position: fixed;
   top: max(11px, env(safe-area-inset-top, 11px));
@@ -255,14 +255,14 @@ html.sidus-no-ads .google-auto-placed {
   }
 }
 
-/* Landing — portal de nascimento (pré-login) */
+/* Landing - portal de nascimento (pré-login) */
 .landing-portal-root {
   position: relative;
   min-width: 0;
   overflow-x: clip;
 }
 
-/* Vidro landing — mesma lógica que navbar (blur 20px + fundo escuro semitransparente) */
+/* Vidro landing - mesma lógica que navbar (blur 20px + fundo escuro semitransparente) */
 .landing-glass,
 .landing-portal-card,
 .landing-auth-hero,
@@ -395,7 +395,7 @@ html.sidus-no-ads .google-auto-placed {
   scroll-margin-top: 24px;
 }
 
-/* FAQ — fundo da landing (SEO / AdSense) */
+/* FAQ - fundo da landing (SEO / AdSense) */
 .landing-faq {
   margin-top: 28px;
   padding: 20px 18px 22px;
@@ -450,7 +450,7 @@ html.sidus-no-ads .google-auto-placed {
   font-weight: 600;
 }
 
-/* Céu ao vivo — dados reais */
+/* Céu ao vivo - dados reais */
 .landing-portal-sky-live {
   position: relative;
   margin-bottom: 14px;
@@ -520,7 +520,7 @@ html.sidus-no-ads .google-auto-placed {
   margin-top: 1px;
 }
 
-/* Ticker planetas — rodapé do céu ao vivo */
+/* Ticker planetas - rodapé do céu ao vivo */
 .landing-portal-sky-ticker {
   position: relative;
   margin-top: 6px;
@@ -573,7 +573,7 @@ html.sidus-no-ads .google-auto-placed {
   100% { transform: translateX(-50%); }
 }
 
-/* Céu ao vivo — faixa no topo */
+/* Céu ao vivo - faixa no topo */
 .landing-sky-top {
   width: 100%;
   margin: 0 0 16px;
@@ -627,7 +627,7 @@ html.sidus-no-ads .google-auto-placed {
   letter-spacing: 0.02em;
 }
 
-/* Rodapé místico — ferramentas (ticker) */
+/* Rodapé místico - ferramentas (ticker) */
 .landing-portal-tools-footer {
   position: relative;
   margin-top: 14px;
@@ -699,7 +699,7 @@ html.sidus-no-ads .google-auto-placed {
   100% { transform: translateX(-50%); }
 }
 
-/* Título e intro — hero centrado acima dos formulários */
+/* Título e intro - hero centrado acima dos formulários */
 .landing-auth-hero {
   width: 100%;
   max-width: 560px;
@@ -770,7 +770,7 @@ html.sidus-no-ads .google-auto-placed {
   background: rgba(255, 255, 255, 0.03);
 }
 
-/* Mobile — compactação landing */
+/* Mobile - compactação landing */
 @media (max-width: 639px) {
   .landing-auth-layout {
     padding: 8px 12px 16px !important;
@@ -906,7 +906,7 @@ html.sidus-no-ads .google-auto-placed {
   }
 }
 
-/* Layout auth — landing /login */
+/* Layout auth - landing /login */
 .sidus-cosmic-shell {
   position: relative;
   min-height: 100svh;
@@ -927,7 +927,7 @@ html.sidus-no-ads .google-auto-placed {
   overflow-x: clip;
 }
 
-/* Fundo cósmico — estrelas + hendecagrama (fixo atrás do conteúdo) */
+/* Fundo cósmico - estrelas + hendecagrama (fixo atrás do conteúdo) */
 .cosmic-bg-root {
   position: fixed;
   inset: 0;
@@ -989,7 +989,7 @@ html.sidus-no-ads .google-auto-placed {
   display: none;
 }
 
-/* Topo landing fixo — mesma lógica que navbar (conteúdo/cósmico desfoca ao scroll) */
+/* Topo landing fixo - mesma lógica que navbar (conteúdo/cósmico desfoca ao scroll) */
 .landing-auth-sticky-top {
   position: fixed;
   top: 0;
@@ -1009,7 +1009,7 @@ html.sidus-no-ads .google-auto-placed {
   border-bottom: 1px solid rgba(223, 183, 108, 0.22);
 }
 
-/* Mobile login — idioma fixo acima do céu ao vivo */
+/* Mobile login - idioma fixo acima do céu ao vivo */
 .landing-auth-sticky-top--mobile {
   margin: 0 0 10px;
 }
@@ -1072,7 +1072,7 @@ html.sidus-no-ads .google-auto-placed {
   min-width: 0;
 }
 
-/* Tablet+ — formulários lado a lado */
+/* Tablet+ - formulários lado a lado */
 @media (min-width: 640px) {
   .landing-auth-layout {
     max-width: min(880px, calc(100vw - 48px));
@@ -1276,7 +1276,7 @@ html.sidus-no-ads .google-auto-placed {
   50% { transform: translateY(6px); }
 }
 
-/* Mapa astral — preview desfocado + paywall inline (utilizador gratuito) */
+/* Mapa astral - preview desfocado + paywall inline (utilizador gratuito) */
 .mapa-preview-blurred {
   filter: blur(12px);
   pointer-events: none;

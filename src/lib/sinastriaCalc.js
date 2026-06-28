@@ -42,13 +42,13 @@ function distSignos(a, b) {
 /** Aspecto clássico → base de compatibilidade. */
 function scoreAspecto(dist) {
   const map = {
-    0: 86, // conjunção — intensidade
+    0: 86, // conjunção - intensidade
     1: 58, // semi-sextil / vizinho
     2: 76, // sexsil
-    3: 44, // quadratura — atrito
-    4: 91, // trígono — fluidez
+    3: 44, // quadratura - atrito
+    4: 91, // trígono - fluidez
     5: 52, // quincúncio
-    6: 62, // oposição — magnetismo difícil
+    6: 62, // oposição - magnetismo difícil
   }
   return map[dist] ?? 65
 }

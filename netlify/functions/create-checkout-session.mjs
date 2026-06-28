@@ -67,7 +67,7 @@ export default async (req) => {
     const cancelPath = CANCEL_PATH[productType] || '/tarot'
 
     const nomeProduto = billingType === 'prepaid_month'
-      ? 'Sidus VIP — 1 mês'
+      ? 'Sidus VIP - 1 mês'
       : descricao
 
     const sessionParams = {

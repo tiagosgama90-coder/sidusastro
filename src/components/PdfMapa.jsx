@@ -1,5 +1,5 @@
 /**
- * Gerador de PDF do Mapa Astral Completo — Sidus
+ * Gerador de PDF do Mapa Astral Completo - Sidus
  * Tropical · Placidus · 5 secções profissionais
  */
 
@@ -93,11 +93,11 @@ export async function gerarPdfMapaAstral(mapaNatal, dados, planetas = [], analis
   y += 12
 
   const pilares = [
-    { icon: '☀', label: 'Sol', valor: mapaNatal?.solar?.nome || '—', grau: mapaNatal?.solar?.graus },
-    { icon: '☽', label: 'Lua', valor: mapaNatal?.lunar?.nome || '—', grau: mapaNatal?.lunar?.graus },
-    { icon: '↑', label: 'Ascendente', valor: mapaNatal?.ascendente?.nome || '—', grau: mapaNatal?.ascendente?.graus },
-    { icon: '↓', label: 'Descendente', valor: mapaNatal?.descendente?.nome || '—', grau: mapaNatal?.descendente?.graus },
-    { icon: '⊕', label: 'Meio do Céu', valor: mapaNatal?.mc?.nome || '—', grau: mapaNatal?.mc?.graus },
+    { icon: '☀', label: 'Sol', valor: mapaNatal?.solar?.nome || '-', grau: mapaNatal?.solar?.graus },
+    { icon: '☽', label: 'Lua', valor: mapaNatal?.lunar?.nome || '-', grau: mapaNatal?.lunar?.graus },
+    { icon: '↑', label: 'Ascendente', valor: mapaNatal?.ascendente?.nome || '-', grau: mapaNatal?.ascendente?.graus },
+    { icon: '↓', label: 'Descendente', valor: mapaNatal?.descendente?.nome || '-', grau: mapaNatal?.descendente?.graus },
+    { icon: '⊕', label: 'Meio do Céu', valor: mapaNatal?.mc?.nome || '-', grau: mapaNatal?.mc?.graus },
   ]
 
   pilares.forEach((p, i) => {
@@ -175,7 +175,7 @@ export async function gerarPdfMapaAstral(mapaNatal, dados, planetas = [], analis
       doc.text(`${pl.simbolo || ''} ${pl.nome || ''}`, x + 4, y + 7)
       doc.setTextColor(...BRANCO)
       doc.setFont('helvetica', 'normal')
-      const signoCasa = `${pl.signo?.nome || '—'}${pl.casa ? ` · C${pl.casa}` : ''}`
+      const signoCasa = `${pl.signo?.nome || '-'}${pl.casa ? ` · C${pl.casa}` : ''}`
       doc.text(signoCasa, x + 28, y + 7)
       doc.setTextColor(...MUTED)
       doc.setFontSize(7)
@@ -221,8 +221,8 @@ export async function gerarPdfMapaAstral(mapaNatal, dados, planetas = [], analis
 
   ;[
     ['Sistema:', 'Zodíaco tropical · Casas angulares'],
-    ['Data UT:', mapaNatal?.instanteUTC ? mapaNatal.instanteUTC.replace('T', ' ').slice(0, 16) + ' UTC' : '—'],
-    ['Coordenadas:', mapaNatal?.lat != null ? `${mapaNatal.lat.toFixed(4)}°, ${mapaNatal.lon?.toFixed(4)}°` : '—'],
+    ['Data UT:', mapaNatal?.instanteUTC ? mapaNatal.instanteUTC.replace('T', ' ').slice(0, 16) + ' UTC' : '-'],
+    ['Coordenadas:', mapaNatal?.lat != null ? `${mapaNatal.lat.toFixed(4)}°, ${mapaNatal.lon?.toFixed(4)}°` : '-'],
   ].forEach(([label, valor]) => {
     novaPageSeNecessario(8)
     doc.setTextColor(...MUTED)
@@ -267,7 +267,7 @@ function secaoTitulo(doc, y, texto, DOURADO, ROXO, L, W) {
 }
 
 function formatarData(iso) {
-  if (!iso) return '—'
+  if (!iso) return '-'
   const [a, m, d] = iso.split('-')
   return `${d}/${m}/${a}`
 }

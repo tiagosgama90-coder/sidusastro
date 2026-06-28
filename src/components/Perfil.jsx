@@ -15,7 +15,7 @@ const SIGNO_EMOJI = {
 }
 
 function formatarData(iso) {
-  if (!iso) return '—'
+  if (!iso) return '-'
   const [a,m,d] = iso.split('-')
   return `${d}/${m}/${a}`
 }
@@ -112,9 +112,9 @@ export function Perfil({ utilizador, dados, mapaNatal, isPremium, dadosBloqueado
             <span style={{color:CORES.brancoMuted}}>{t('perfil.birth')}</span>
             <span style={{color:CORES.branco}}>{formatarData(dados?.data)}</span>
             <span style={{color:CORES.brancoMuted}}>{t('perfil.time')}</span>
-            <span style={{color:CORES.branco}}>{dados?.hora || '—'}</span>
+            <span style={{color:CORES.branco}}>{dados?.hora || '-'}</span>
             <span style={{color:CORES.brancoMuted}}>{t('perfil.place')}</span>
-            <span style={{color:CORES.branco,fontSize:11}}>{dados?.cidade || '—'}</span>
+            <span style={{color:CORES.branco,fontSize:11}}>{dados?.cidade || '-'}</span>
           </div>
         </div>
       )}

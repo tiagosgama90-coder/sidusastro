@@ -1,4 +1,4 @@
-/** Consentimento de cookies RGPD — localStorage apenas (sem cookies até aceitar). */
+/** Consentimento de cookies RGPD - localStorage apenas (sem cookies até aceitar). */
 const STORAGE_KEY = 'sidus_cookie_consent_v1'
 
 /** 'all' = cookies analíticos/publicidade | 'essential' = só necessários + ads não personalizados */

@@ -1,4 +1,4 @@
-# DOMAIN-TRANSFER.md — sidusastro.com handover
+# DOMAIN-TRANSFER.md - sidusastro.com handover
 
 This document describes how the **seller** transfers the domain **sidusastro.com** to you after payment. The seller keeps their hosting until the sale is complete; you deploy this codebase on your own Netlify/Firebase accounts.
 
@@ -10,20 +10,20 @@ This document describes how the **seller** transfers the domain **sidusastro.com
 |-------|-------------------|------------------|
 | Domain `sidusastro.com` | Namecheap | Yes |
 | DNS configuration | Namecheap or Netlify | Instructions below |
-| Seller's Netlify site | Seller account | No — you create a new site |
-| Seller's Firebase data | Seller project | No — fresh project recommended |
+| Seller's Netlify site | Seller account | No - you create a new site |
+| Seller's Firebase data | Seller project | No - fresh project recommended |
 | Email `@sidusastro.com` | If any | Not included unless agreed separately |
 
 ---
 
 ## Recommended transfer flow
 
-### Step 1 — Payment
+### Step 1 - Payment
 
 Agree payment via Escrow.com, bank transfer, or PayPal (as per sale agreement).  
 **Do not request the Auth/EPP code before payment is secured.**
 
-### Step 2 — Seller prepares domain (Namecheap)
+### Step 2 - Seller prepares domain (Namecheap)
 
 Seller logs into [Namecheap](https://www.namecheap.com/):
 
@@ -32,7 +32,7 @@ Seller logs into [Namecheap](https://www.namecheap.com/):
 3. Confirm registrant email is valid (transfer approval may be sent there)
 4. **Sharing & Transfer** → **Auth Code** → generate and send to buyer securely
 
-### Step 3 — Buyer initiates transfer
+### Step 3 - Buyer initiates transfer
 
 1. At your registrar (Namecheap or other), choose **Transfer domain**
 2. Enter `sidusastro.com` and the Auth/EPP code
@@ -41,16 +41,16 @@ Seller logs into [Namecheap](https://www.namecheap.com/):
 
 Transfer usually completes in **5–7 days** (ICANN rules).
 
-### Step 4 — Point domain to your Netlify site
+### Step 4 - Point domain to your Netlify site
 
 After you deploy on Netlify (see SETUP.md):
 
-**Option A — Netlify DNS (simplest)**
+**Option A - Netlify DNS (simplest)**
 
 1. Netlify → Domain management → Add `sidusastro.com`
 2. At Namecheap (after transfer), set nameservers to Netlify's (shown in Netlify UI)
 
-**Option B — Keep Namecheap DNS**
+**Option B - Keep Namecheap DNS**
 
 Add records Netlify provides, typically:
 
@@ -61,12 +61,12 @@ Add records Netlify provides, typically:
 
 Enable HTTPS in Netlify after DNS propagates (up to 48h).
 
-### Step 5 — Seller decommissions old deployment
+### Step 5 - Seller decommissions old deployment
 
 After your site is live and domain resolves correctly:
 
 1. Seller removes custom domain from their Netlify site (or deletes site)
-2. Seller does **not** need to delete Firebase immediately — no buyer data should exist in seller project
+2. Seller does **not** need to delete Firebase immediately - no buyer data should exist in seller project
 3. Update Firebase Authorized domains and reCAPTCHA to **your** project only
 
 ---
@@ -75,9 +75,9 @@ After your site is live and domain resolves correctly:
 
 Replace placeholder domains in your fork if you use a different brand:
 
-- `scripts/add-firebase-auth-domains.mjs` — domain list
-- `public/sitemap.xml` — base URL
-- `public/robots.txt` — sitemap URL
+- `scripts/add-firebase-auth-domains.mjs` - domain list
+- `public/sitemap.xml` - base URL
+- `public/robots.txt` - sitemap URL
 - Privacy contact email in `src/lib/i18n/privacy.js` and `public/privacy.html`
 - Marketing strings referencing `sidusastro.com` (optional rebrand)
 
@@ -103,8 +103,8 @@ Buyer becomes registrant after transfer completes. Enable WHOIS privacy at your 
 |-----------|--------|
 | Auth code expired | Seller generates a new code |
 | Transfer rejected | Unlock domain; confirm no transfer lock / recent registration |
-| Site still shows old version | DNS cache — wait or lower TTL before cutover |
-| Email to @sidusastro.com needed | Set up Google Workspace or forwarding separately — not part of default sale |
+| Site still shows old version | DNS cache - wait or lower TTL before cutover |
+| Email to @sidusastro.com needed | Set up Google Workspace or forwarding separately - not part of default sale |
 
 ---
 

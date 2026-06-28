@@ -1,8 +1,8 @@
-# Sidus Astro — Astrology SaaS (sale package)
+# Sidus Astro - Astrology SaaS (sale package)
 
 Production-ready bilingual (PT/EN) astrology web application: natal charts, AI oracle, synastry, tarot, and Stripe monetization.
 
-**This repository is a clean handover package** — no seller Firebase, Stripe, or AdSense accounts are included. Follow [SETUP.md](./SETUP.md) to deploy on your own infrastructure.
+**This repository is a clean handover package** - no seller Firebase, Stripe, or AdSense accounts are included. Follow [SETUP.md](./SETUP.md) to deploy on your own infrastructure.
 
 ## Live product (seller demo)
 
@@ -12,16 +12,16 @@ The seller may keep their deployment running until sale completes. After purchas
 
 ```bash
 npm install
-cp .env.example .env.local   # local dev only — production uses Netlify env vars
+cp .env.example .env.local   # local dev only - production uses Netlify env vars
 npm run dev                    # http://localhost:5173
 ```
 
-Deploy: Netlify (recommended) — see **SETUP.md**.
+Deploy: Netlify (recommended) - see **SETUP.md**.
 
 ## What's included
 
 - React 19 + Vite frontend
-- **Landing birth portal** at `/login` — captures birth data pre-signup, prefills onboarding via localStorage
+- **Landing birth portal** at `/login` - captures birth data pre-signup, prefills onboarding via localStorage
 - 9 Netlify serverless functions (oracle, dreams, Stripe, geocoding, daily content)
 - Firebase Auth + Firestore
 - Stripe Checkout + webhooks
@@ -48,7 +48,7 @@ Deploy: Netlify (recommended) — see **SETUP.md**.
 
 ## Support
 
-7 days email support after purchase (as agreed with seller). Deployment questions only — not ongoing product development.
+7 days email support after purchase (as agreed with seller). Deployment questions only - not ongoing product development.
 
 ## License
 

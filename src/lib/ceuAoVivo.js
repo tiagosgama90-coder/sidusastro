@@ -1,4 +1,4 @@
-/** Resumo do céu actual — Sol, Lua, fase lunar e planetas (astronomy-engine). */
+/** Resumo do céu actual - Sol, Lua, fase lunar e planetas (astronomy-engine). */
 import { Body, Ecliptic, GeoVector, MakeTime } from 'astronomy-engine'
 import { longitudeParaSigno } from './astrologia.js'
 import { calcularFaseLua } from './faseLua.js'

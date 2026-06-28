@@ -6,7 +6,7 @@ const corsHeaders = {
   'Access-Control-Allow-Methods': 'GET, OPTIONS',
 }
 
-/** Fase lunar simples (servidor) — fallback se cliente não enviar. */
+/** Fase lunar simples (servidor) - fallback se cliente não enviar. */
 function faseFallback() {
   return { pt: 'Lua em ciclo activo', en: 'Moon in active cycle' }
 }

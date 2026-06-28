@@ -5,7 +5,7 @@ const swe = new SwissEphemeris();
 await swe.init();
 console.log('version:', swe.version());
 
-// Jan 29 1988 10:45 UT — Caldas da Rainha 39.4N -9.1W
+// Jan 29 1988 10:45 UT - Caldas da Rainha 39.4N -9.1W
 const jd = swe.julianDay(1988, 1, 29, 10.75);
 console.log('JD:', jd);
 const sun = swe.calculatePosition(jd, Planet.Sun);

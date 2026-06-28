@@ -4,7 +4,7 @@ import { allowsAds } from '../lib/cookieConsent'
 
 const CORES = { brancoMuted: 'rgba(255,255,255,0.35)' }
 
-/** Anúncio manual — só utilizadores grátis com consentimento cookies. */
+/** Anúncio manual - só utilizadores grátis com consentimento cookies. */
 export function AdSenseBanner({ isPremium = false }) {
   const ref = useRef(null)
   const client = getAdsenseClient()

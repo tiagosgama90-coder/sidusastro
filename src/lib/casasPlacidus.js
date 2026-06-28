@@ -1,5 +1,5 @@
 /**
- * Casas Placidus — Tropical
+ * Casas Placidus - Tropical
  * Atribuição de planetas às casas a partir das cúspides Swiss Ephemeris.
  */
 

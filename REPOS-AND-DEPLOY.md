@@ -1,4 +1,4 @@
-# Sidus — tudo online (não dependes do PC)
+# Sidus - tudo online (não dependes do PC)
 
 Guia rápido: onde vive cada coisa e como fazer alterações sem perder o site.
 
@@ -6,9 +6,9 @@ Guia rápido: onde vive cada coisa e como fazer alterações sem perder o site.
 
 | Repo | URL | Para quê |
 |------|-----|----------|
-| **sidusastro** | https://github.com/tiagosgama90-coder/sidusastro | **Produção** — Netlify faz deploy da branch `master` |
+| **sidusastro** | https://github.com/tiagosgama90-coder/sidusastro | **Produção** - Netlify faz deploy da branch `master` |
 | **sidus-app** | https://github.com/tiagosgama90-coder/sidus-app | Cópia de desenvolvimento (mesmo código) |
-| **sidusastro-handover** | https://github.com/tiagosgama90-coder/sidusastro-handover | **Venda** — pacote limpo para compradores (privado) |
+| **sidusastro-handover** | https://github.com/tiagosgama90-coder/sidusastro-handover | **Venda** - pacote limpo para compradores (privado) |
 
 Podes apagar as pastas locais e recuperar tudo com:
 
@@ -37,7 +37,7 @@ O site **não corre no teu computador**. Apagar a pasta local **não desliga** s
 3. `git add` → `git commit` → `git push` para **sidusastro** `master`
 4. Netlify faz deploy automático (2–5 min)
 
-**Sim — as alterações devem sempre passar pelo repositório + push.** Editar só no PC sem push **não** atualiza o site.
+**Sim - as alterações devem sempre passar pelo repositório + push.** Editar só no PC sem push **não** atualiza o site.
 
 ## Pacote de venda (regenerar)
 
