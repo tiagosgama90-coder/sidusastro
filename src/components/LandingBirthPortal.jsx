@@ -286,19 +286,6 @@ export function LandingBirthPortal({ isDesktop, onSaved, onScrollToLogin }) {
       <div className="landing-portal-orb landing-portal-orb--2" aria-hidden />
 
       <div style={{ position: 'relative', zIndex: 1 }}>
-        {onScrollToLogin && (
-          <p className="landing-portal-mobile-only landing-portal-mobile-login">
-            {t('auth.portal.mobileLoginPrompt')}{' '}
-            <button
-              type="button"
-              className="landing-portal-mobile-login-link"
-              onClick={onScrollToLogin}
-            >
-              {t('auth.portal.mobileLoginLink')}
-            </button>
-          </p>
-        )}
-
         {!guardado && (
           <p className="landing-portal-form-lead">{t('auth.portal.formLead')}</p>
         )}

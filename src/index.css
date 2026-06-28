@@ -655,30 +655,30 @@ html.sidus-no-ads .google-auto-placed {
   line-height: 1;
 }
 .landing-portal-welcome-inline {
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 600;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: rgba(196, 181, 253, 0.9);
+  color: rgba(196, 181, 253, 0.92);
   white-space: nowrap;
 }
 .landing-portal-brand-mark {
   flex-shrink: 0;
-  filter: drop-shadow(0 0 6px rgba(223, 183, 108, 0.35));
+  filter: drop-shadow(0 0 8px rgba(223, 183, 108, 0.4));
 }
 .landing-portal-brand-text {
-  font-size: 21px;
+  font-size: 28px;
   font-weight: 300;
-  letter-spacing: 0.24em;
+  letter-spacing: 0.22em;
   color: #DFB76C;
   white-space: nowrap;
-  text-shadow: 0 0 20px rgba(223, 183, 108, 0.2);
+  text-shadow: 0 0 24px rgba(223, 183, 108, 0.28);
 }
 .landing-portal-title {
   margin: 0;
-  font-size: 17px;
+  font-size: 15px;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.78);
+  color: rgba(255, 255, 255, 0.72);
   line-height: 1.45;
   letter-spacing: 0.02em;
   text-align: center;
@@ -705,31 +705,140 @@ html.sidus-no-ads .google-auto-placed {
   background: rgba(255, 255, 255, 0.03);
 }
 
-/* Mobile — atalho para login */
-.landing-portal-mobile-only {
+/* Mobile — compactação landing */
+@media (max-width: 639px) {
+  .landing-auth-layout {
+    padding: 24px 12px 16px !important;
+  }
+
+  .landing-sky-top {
+    margin-bottom: 10px;
+  }
+
+  .landing-portal-sky-live--top {
+    padding: 6px 10px;
+  }
+
+  .landing-auth-hero {
+    margin-bottom: 12px;
+  }
+
+  .landing-portal-brand-row {
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+
+  .landing-portal-welcome-inline {
+    font-size: 11px;
+    letter-spacing: 0.14em;
+  }
+
+  .landing-portal-brand-text {
+    font-size: 22px;
+    letter-spacing: 0.18em;
+  }
+
+  .landing-portal-title {
+    font-size: 13px;
+    line-height: 1.4;
+  }
+
+  .landing-portal-form-lead {
+    margin-bottom: 8px;
+    font-size: 12px;
+    line-height: 1.4;
+  }
+
+  .landing-auth-grid {
+    gap: 14px !important;
+  }
+
+  .landing-auth-column {
+    padding-top: 0 !important;
+  }
+
+  .landing-auth-panel {
+    padding: 12px 14px !important;
+  }
+
+  .landing-auth-heading {
+    margin-bottom: 10px !important;
+    font-size: 15px !important;
+  }
+
+  .landing-auth-field {
+    margin-bottom: 8px !important;
+  }
+
+  .landing-auth-field--last {
+    margin-bottom: 10px !important;
+  }
+
+  #sidus-auth-panel input {
+    padding-top: 9px !important;
+    padding-bottom: 9px !important;
+    font-size: 13px !important;
+  }
+
+  #sidus-auth-panel button[type="submit"] {
+    padding-top: 10px !important;
+    padding-bottom: 10px !important;
+    font-size: 14px !important;
+  }
+
+  .landing-portal-card {
+    padding: 12px 14px 10px;
+  }
+
+  .landing-portal-field {
+    margin-bottom: 8px !important;
+  }
+
+  .landing-portal-field label {
+    margin-bottom: 4px !important;
+    font-size: 9px !important;
+  }
+
+  .landing-portal-input,
+  .landing-portal-card input,
+  .landing-portal-card select {
+    padding-top: 8px !important;
+    padding-bottom: 8px !important;
+    font-size: 13px !important;
+  }
+
+  .landing-portal-cta {
+    padding: 10px 12px;
+    font-size: 13px;
+  }
+
+  .landing-portal-tools-footer {
+    margin-top: 6px;
+  }
+
+  .landing-cosmic-hendecagram-wrap {
+    opacity: 0.38;
+    width: min(110vw, 420px);
+    height: min(110vw, 420px);
+  }
+}
+
+.landing-auth-divider-mobile {
   display: block;
-}
-.landing-portal-mobile-login {
-  margin: -12px 0 18px;
-  text-align: center;
-  font-size: 13px;
-  color: rgba(255, 255, 255, 0.55);
-  line-height: 1.5;
-}
-.landing-portal-mobile-login-link {
-  background: none;
-  border: none;
+  margin: 0 0 6px;
   padding: 0;
-  cursor: pointer;
-  font: inherit;
-  font-size: 13px;
-  font-weight: 600;
-  color: #DFB76C;
-  text-decoration: underline;
-  text-underline-offset: 3px;
+  text-align: center;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(223, 183, 108, 0.75);
 }
-.landing-portal-mobile-login-link:hover {
-  color: #f0cf8a;
+
+@media (min-width: 640px) {
+  .landing-auth-divider-mobile {
+    display: none !important;
+  }
 }
 
 /* Layout auth — landing /login */
@@ -739,12 +848,69 @@ html.sidus-no-ads .google-auto-placed {
   margin-left: auto !important;
   margin-right: auto !important;
   overflow-x: clip;
+  background: #030818 !important;
+}
+
+/* Fundo cósmico — estrelas + hendecagrama */
+.landing-cosmic-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+  background: radial-gradient(ellipse 85% 70% at 50% 42%, rgba(12, 28, 68, 0.55) 0%, transparent 62%), #030818;
+}
+.landing-cosmic-stars-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.landing-cosmic-nebula {
+  position: absolute;
+  inset: 0;
   background:
-    radial-gradient(ellipse 130% 90% at 50% -15%, rgba(88, 28, 135, 0.42) 0%, transparent 58%),
-    radial-gradient(ellipse 110% 80% at 100% 60%, rgba(67, 56, 202, 0.26) 0%, transparent 52%),
-    radial-gradient(ellipse 100% 75% at 0% 70%, rgba(139, 92, 246, 0.2) 0%, transparent 50%),
-    radial-gradient(ellipse 90% 70% at 50% 45%, rgba(88, 28, 135, 0.14) 0%, transparent 65%),
-    #0B071E !important;
+    radial-gradient(ellipse 50% 40% at 50% 45%, rgba(223, 183, 108, 0.04) 0%, transparent 55%),
+    radial-gradient(ellipse 35% 30% at 30% 60%, rgba(67, 56, 202, 0.07) 0%, transparent 50%),
+    radial-gradient(ellipse 35% 30% at 70% 35%, rgba(88, 28, 135, 0.06) 0%, transparent 50%);
+}
+.landing-cosmic-hendecagram-wrap {
+  position: absolute;
+  left: 50%;
+  top: 46%;
+  transform: translate(-50%, -50%);
+  width: min(92vw, 520px);
+  height: min(92vw, 520px);
+  opacity: 0.55;
+}
+.landing-cosmic-hendecagram {
+  width: 100%;
+  height: 100%;
+}
+.landing-cosmic-star-lines {
+  transform-origin: 200px 200px;
+  animation: landingHendecSpin 140s linear infinite, landingHendecPulse 8s ease-in-out infinite;
+}
+.landing-cosmic-zodiac {
+  font-size: 15px;
+  fill: rgba(223, 183, 108, 0.55);
+  animation: landingZodiacShine 4.5s ease-in-out infinite;
+}
+@keyframes landingHendecSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+@keyframes landingHendecPulse {
+  0%, 100% { opacity: 0.65; }
+  50% { opacity: 1; }
+}
+@keyframes landingZodiacShine {
+  0%, 100% { fill: rgba(223, 183, 108, 0.45); opacity: 0.7; }
+  50% { fill: rgba(240, 207, 138, 0.95); opacity: 1; }
+}
+
+.sidus-login-shell .landing-portal-orb {
+  display: none;
 }
 
 .landing-auth-page-wrap {
@@ -858,13 +1024,13 @@ html.sidus-no-ads .google-auto-placed {
   }
 
   .landing-portal-welcome-inline {
-    font-size: 11px;
-    letter-spacing: 0.22em;
+    font-size: 13px;
+    letter-spacing: 0.2em;
   }
 
   .landing-portal-brand-text {
-    font-size: 19px;
-    letter-spacing: 0.26em;
+    font-size: 32px;
+    letter-spacing: 0.24em;
   }
 
   .landing-portal-title {

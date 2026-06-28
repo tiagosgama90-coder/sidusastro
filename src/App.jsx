@@ -42,6 +42,7 @@ import { PoliticaPrivacidade } from './components/PoliticaPrivacidade'
 import { InterpretacaoMapa } from './components/InterpretacaoMapa'
 import { BussolaCosmica, Sinastria, Biorritmo, DiarioAstral, Numerologia, InterpretacaoSonhos, HorasIguais } from './components/FerramentasPremium'
 import { ConteudoDinamicoSidus } from './components/ConteudoDinamicoSidus'
+import { LandingCosmicBackground } from './components/LandingCosmicBackground.jsx'
 import { LandingBirthPortal } from './components/LandingBirthPortal.jsx'
 import { LandingPortalHero } from './components/LandingPortalHero.jsx'
 import { LandingSkyLive } from './components/LandingSkyLive.jsx'
@@ -1304,15 +1305,7 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
 
         <div className="landing-auth-column">
           {!isDesktop && (
-            <div className="landing-auth-divider-mobile" style={{
-              display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20,
-            }}>
-              <div style={{ flex: 1, height: 1, background: 'rgba(223,183,108,0.2)' }} />
-              <span style={{ fontSize: 11, fontWeight: 600, color: CORES.dourado, letterSpacing: '0.08em', textTransform: 'uppercase' }}>
-                {t('auth.portal.authDivider')}
-              </span>
-              <div style={{ flex: 1, height: 1, background: 'rgba(223,183,108,0.2)' }} />
-            </div>
+            <p className="landing-auth-divider-mobile">{t('auth.portal.authDivider')}</p>
           )}
 
           <div
@@ -1321,8 +1314,7 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
             className="landing-auth-panel"
             style={{
               ...estilos.vidro,
-              padding: 24,
-              ...(isDesktop ? { position: 'sticky', top: 24 } : {}),
+              ...(isDesktop ? { padding: 24, position: 'sticky', top: 24 } : {}),
             }}
           >
             {isDesktop && (
@@ -3709,7 +3701,7 @@ export default function App() {
   return (
     <div className={!utilizador ? 'sidus-login-shell' : undefined} style={shellStyle}>
       {!mostrarNavbar && <LanguageSwitcher />}
-      <div style={estilos.estrelas} />
+      {!utilizador ? <LandingCosmicBackground /> : <div style={estilos.estrelas} />}
 
       {/* Barra de dev — só visível em localhost */}
       {isDev && contaConfigurada && (
