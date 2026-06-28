@@ -46,7 +46,7 @@ export default {
       eyebrow: 'Welcome to',
       eyebrowBrand: 'SIDUS ASTRO',
       title: 'When you were born, the sky drew your chart',
-      subtitle: 'The moment you were born, the universe recorded your unique configuration. Share your exact time and place — and when you sign in, the sky will reveal the chart that belongs to you.',
+      subtitle: 'The universe recorded your unique moment. Enter your birth time and place to reveal the chart that belongs to you after signing in.',
       mobileLoginPrompt: 'Already have an account?',
       mobileLoginLink: 'Sign in here',
       swissNote: 'High-precision calculations powered by Swiss Ephemeris.',

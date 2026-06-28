@@ -43,6 +43,7 @@ import { InterpretacaoMapa } from './components/InterpretacaoMapa'
 import { BussolaCosmica, Sinastria, Biorritmo, DiarioAstral, Numerologia, InterpretacaoSonhos, HorasIguais } from './components/FerramentasPremium'
 import { ConteudoDinamicoSidus } from './components/ConteudoDinamicoSidus'
 import { LandingBirthPortal } from './components/LandingBirthPortal.jsx'
+import { LandingSkyLive } from './components/LandingSkyLive.jsx'
 import { HeroHomeSidus } from './components/HeroHomeSidus.jsx'
 import { ErrorBoundary } from './components/ErrorBoundary.jsx'
 import { auth, db, firebaseDisponivel } from './lib/firebase'
@@ -1491,6 +1492,7 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
           </div>
         </div>
       </div>
+      <LandingSkyLive />
     </div>
   )
 }

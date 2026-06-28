@@ -46,7 +46,7 @@ export default {
       eyebrow: 'Bem-vindo ao',
       eyebrowBrand: 'SIDUS ASTRO',
       title: 'Quando nasceste, o céu desenhou o teu mapa',
-      subtitle: 'No instante em que nasceste, o universo registou a tua configuração única. Indica a hora exacta e o lugar — e, ao entrares, o céu revelará o mapa que te pertence.',
+      subtitle: 'O universo registou o seu momento único. Introduza a sua hora e local de nascimento para revelar o mapa que lhe pertence após o login.',
       mobileLoginPrompt: 'Já tens conta?',
       mobileLoginLink: 'Entra aqui',
       swissNote: 'Cálculos de alta precisão baseados na Swiss Ephemeris.',
