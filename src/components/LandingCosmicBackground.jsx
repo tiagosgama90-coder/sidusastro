@@ -1,5 +1,4 @@
 import { useEffect, useRef, useMemo } from 'react'
-import { createPortal } from 'react-dom'
 
 const ZODIAC = ['♈', '♉', '♊', '♋', '♌', '♎', '♏', '♐', '♑', '♒', '♓']
 
@@ -93,7 +92,7 @@ export function LandingCosmicBackground() {
     }
   }, [])
 
-  const content = (
+  return (
     <div className="cosmic-bg-root" aria-hidden>
       <canvas ref={canvasRef} className="landing-cosmic-stars-canvas" />
       <div className="landing-cosmic-nebula" />
@@ -101,8 +100,8 @@ export function LandingCosmicBackground() {
         <svg className="landing-cosmic-hendecagram" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
           <defs>
             <radialGradient id="landingHendecGlow" cx="50%" cy="50%" r="50%">
-              <stop offset="0%" stopColor="rgba(223,183,108,0.14)" />
-              <stop offset="55%" stopColor="rgba(139,92,246,0.08)" />
+              <stop offset="0%" stopColor="rgba(223,183,108,0.18)" />
+              <stop offset="55%" stopColor="rgba(139,92,246,0.12)" />
               <stop offset="100%" stopColor="rgba(3,8,24,0)" />
             </radialGradient>
             <filter id="landingZodiacGlow" x="-80%" y="-80%" width="260%" height="260%">
@@ -120,13 +119,13 @@ export function LandingCosmicBackground() {
                 key={idx}
                 d={d}
                 fill="none"
-                stroke="rgba(223,183,108,0.22)"
-                strokeWidth="0.85"
+                stroke="rgba(223,183,108,0.28)"
+                strokeWidth="0.9"
                 strokeLinecap="round"
               />
             ))}
           </g>
-          <circle cx="200" cy="200" r="42" fill="none" stroke="rgba(223,183,108,0.12)" strokeWidth="0.6" />
+          <circle cx="200" cy="200" r="42" fill="none" stroke="rgba(223,183,108,0.16)" strokeWidth="0.6" />
           {zodiacNodes.map(({ sym, x, y, i }) => (
             <text
               key={sym}
@@ -145,7 +144,4 @@ export function LandingCosmicBackground() {
       </div>
     </div>
   )
-
-  if (typeof document === 'undefined') return content
-  return createPortal(content, document.body)
 }

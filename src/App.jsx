@@ -3704,6 +3704,7 @@ export default function App() {
   return (
     <div className={`sidus-cosmic-shell${!utilizador ? ' sidus-login-shell' : ''}`} style={shellStyle}>
       <LandingCosmicBackground />
+      <div className="sidus-cosmic-foreground">
       {!utilizador && isDesktop && <LanguageSwitcher />}
 
       {/* Barra de dev — só visível em localhost */}
@@ -3808,6 +3809,7 @@ export default function App() {
         onConsentChange={setCookieConsent}
         onPrivacy={() => irPara('privacidade')}
       />
+      </div>
     </div>
   )
 }
