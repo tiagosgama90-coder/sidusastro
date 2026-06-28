@@ -264,6 +264,8 @@ export default {
     proTagline: 'Professional astrological reading · Unique cosmic signature',
     aiUpgrading: 'Preparing your full reading in the background…',
     aiFallbackNote: 'Professional interpretation (classic mode)',
+    freeTasteHint: 'You are viewing a free sample. The rest of the chart — full interpretation, positions, aspects and PDF — is reserved for Premium.',
+    freeBlurTeaser: 'Professional interpretation, life spheres, PDF export and much more…',
   },
   cartaoDia: {
     title: '✦ Card of the Day · {date}',

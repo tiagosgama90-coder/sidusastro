@@ -2173,14 +2173,14 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
     }
   }, [mapaCompletoDesbloqueado, mapaNatal, lang])
 
-  const mapaCompletoVisivel = planetasComCasa.length > 0
+  const mapaCompletoVisivel = mapaCompletoDesbloqueado && planetasComCasa.length > 0
 
   const downloadPdf = async () => {
     if (gerandoPdf) return
     setGerandoPdf(true)
     try {
       const { gerarPdfMapaAstral } = await import('./components/PdfMapa.jsx')
-      await gerarPdfMapaAstral(mapaNatal, dados, planetasComCasa, analiseCompleta)
+      await gerarPdfMapaAstral(mapaNatal, dados, planetasComCasa, analiseCompleta, lang)
     } catch (e) {
       console.error('PDF error:', e)
       alert(t('mapa.pdfError'))
@@ -2264,7 +2264,7 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
     ...(mapaNatal.mc ? [{ titulo: t('mapa.mc'), icon: Star, corBorda: 'rgba(52,211,153,0.35)', corFundo: 'rgba(52,211,153,0.12)', corIcone: '#34D399', ...mapaNatal.mc, nome: ts(mapaNatal.mc.nome), elemento: te(mapaNatal.mc.elemento) }] : []),
   ]
 
-  const balEl  = mapaCompletoVisivel ? calcularBalancaElementos(planetasComCasa) : null
+  const balEl  = planetasComCasa.length > 0 ? calcularBalancaElementos(planetasComCasa) : null
   const balMod = mapaCompletoVisivel ? calcularBalancaModalidades(planetasComCasa) : null
   const totalPlanetas = planetasComCasa.length
 
@@ -2447,13 +2447,21 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
 
       {analiseCompleta && !mapaCompletoDesbloqueado && (
         <>
-          {analiseCompleta.seccoes?.length > 0 && (
+          {analiseCompleta.seccoes?.[0]?.blocos?.length > 0 && (
             <InterpretacaoMapa
-              analise={{ ...analiseCompleta, seccoes: analiseCompleta.seccoes.slice(0, 1) }}
+              analise={{
+                ...analiseCompleta,
+                seccoes: [{
+                  ...analiseCompleta.seccoes[0],
+                  blocos: analiseCompleta.seccoes[0].blocos.slice(0, 1),
+                }],
+              }}
               estilosVidro={estilos.vidro}
               lang={lang}
             />
           )}
+
+          <p className="mapa-free-taste-hint">{t('mapa.freeTasteHint')}</p>
 
           <div className="mapa-paywall-inline" role="region" aria-label={t('mapa.unlockFullChart')}>
             <div className="mapa-paywall-card">
@@ -2472,63 +2480,75 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
             </div>
           </div>
 
-          {analiseCompleta.seccoes?.length > 1 && (
-            <div className="mapa-premium-teaser">
-              <div className="mapa-preview-blurred">
+          <div className="mapa-premium-teaser" aria-hidden>
+            <div className="mapa-preview-blurred">
+              {analiseCompleta.seccoes?.length > 0 && (
                 <InterpretacaoMapa
-                  analise={{ ...analiseCompleta, seccoes: analiseCompleta.seccoes.slice(1) }}
+                  analise={{
+                    ...analiseCompleta,
+                    seccoes: analiseCompleta.seccoes.map((sec, idx) => (
+                      idx === 0
+                        ? { ...sec, blocos: sec.blocos.slice(1) }
+                        : sec
+                    )).filter((sec) => sec.blocos?.length > 0),
+                  }}
                   estilosVidro={estilos.vidro}
                   lang={lang}
                 />
+              )}
 
-                <div style={{ ...estilos.vidro, padding: 18, marginBottom: 14 }}>
-                  <div style={{ fontSize: 11, color: CORES.dourado, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 14, fontWeight: 700 }}>
-                    {t('mapa.lifeSpheres')}
-                  </div>
-                  {[
-                    {
-                      area: t('mapa.love'),
-                      planetas: planetasComCasa.filter(p => ['Vénus', 'Lua', 'Marte'].includes(p.nome)),
-                    },
-                    {
-                      area: t('mapa.career'),
-                      planetas: planetasComCasa.filter(p => ['Sol', 'Saturno', 'Marte'].includes(p.nome)),
-                    },
-                    {
-                      area: t('mapa.spirit'),
-                      planetas: planetasComCasa.filter(p => ['Neptuno', 'Plutão', 'Lua', 'Quíron'].includes(p.nome)),
-                    },
-                  ].map(({ area, planetas: ps }) => (
-                    <div key={area} style={{ padding: '10px 0', borderBottom: `1px solid ${CORES.vidroBorda}` }}>
-                      <div style={{ fontSize: 13, color: CORES.branco, fontWeight: 600, marginBottom: 3 }}>{area}</div>
-                      <div style={{ fontSize: 12, color: CORES.brancoMuted }}>
-                        {ps.length > 0
-                          ? ps.map(p => t('mapa.planetIn', { planet: tp(p.nome), sign: ts(p.signo?.nome) }) + (p.casa ? ` (${t('mapa.house')} ${p.casa})` : '')).join(' · ')
-                          : '-'}
+              {planetasComCasa.length > 0 && (
+                <>
+                  {balEl && (
+                    <div style={{ ...estilos.vidro, padding: 18, marginBottom: 14 }}>
+                      <div style={{ fontSize: 11, color: CORES.dourado, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 14, fontWeight: 700 }}>
+                        {t('mapa.elementBalance')}
                       </div>
+                      <BarraElemento label={t('mapa.fire')}  valor={balEl.Fogo}  total={totalPlanetas} cor="#FB923C" />
+                      <BarraElemento label={t('mapa.earth')} valor={balEl.Terra} total={totalPlanetas} cor="#4ADE80" />
+                      <BarraElemento label={t('mapa.air')}   valor={balEl.Ar}   total={totalPlanetas} cor="#93C5FD" />
+                      <BarraElemento label={t('mapa.water')}   valor={balEl.Água} total={totalPlanetas} cor="#818CF8" />
                     </div>
-                  ))}
-                </div>
+                  )}
 
-                <div style={{ fontSize: 11, color: CORES.dourado, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 10, fontWeight: 700 }}>
-                  {t('mapa.export')}
-                </div>
-
-                <div style={{ ...estilos.vidro, padding: 14, marginBottom: 14 }}>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '5px 12px', fontSize: 11 }}>
-                    <span style={{ color: CORES.brancoMuted }}>{t('mapa.utDate')}</span>
-                    <span style={{ color: CORES.branco }}>{mapaNatal.instanteUTC ? mapaNatal.instanteUTC.replace('T', ' ').slice(0, 16) + ' UTC' : '-'}</span>
-                    <span style={{ color: CORES.brancoMuted }}>{t('mapa.timezone')}</span>
-                    <span style={{ color: CORES.branco }}>
-                      {typeof mapaNatal.fuso === 'string' ? mapaNatal.fuso : `UTC${(mapaNatal.fuso ?? 0) >= 0 ? '+' : ''}${mapaNatal.fuso ?? 0}`}
-                    </span>
-                    <span style={{ color: CORES.brancoMuted }}>{t('mapa.coordinates')}</span>
-                    <span style={{ color: CORES.branco }}>{mapaNatal.lat != null ? `${mapaNatal.lat.toFixed(3)}°N  ${mapaNatal.lon?.toFixed(3)}°E` : '-'}</span>
+                  <div style={{ ...estilos.vidro, padding: 18, marginBottom: 14 }}>
+                    <div style={{ fontSize: 11, color: CORES.dourado, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 14, fontWeight: 700 }}>
+                      {t('mapa.positions')}
+                    </div>
+                    {planetasComCasa.map((p) => (
+                      <div key={p.key} style={{ padding: '10px 0', borderBottom: `1px solid ${CORES.vidroBorda}` }}>
+                        <span style={{ fontSize: 14, color: CORES.branco }}>{p.simbolo} {tp(p.nome)} · {ts(p.signo?.nome)}</span>
+                      </div>
+                    ))}
                   </div>
+
+                  {aspetosNatais.length > 0 && (
+                    <div style={{ ...estilos.vidro, padding: 18, marginBottom: 14 }}>
+                      <div style={{ fontSize: 11, color: CORES.dourado, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 14, fontWeight: 700 }}>
+                        {t('mapa.aspects')}
+                      </div>
+                      {aspetosNatais.slice(0, 6).map((a, i) => (
+                        <div key={i} style={{ fontSize: 12, color: CORES.brancoMuted, padding: '6px 0' }}>
+                          {tp(a.planetaA)} · {tp(a.planetaB)} — {ta(a.aspecto)}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </>
+              )}
+
+              <div style={{ ...estilos.vidro, padding: 18, marginBottom: 14 }}>
+                <div style={{ fontSize: 11, color: CORES.dourado, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 14, fontWeight: 700 }}>
+                  {t('mapa.lifeSpheres')}
                 </div>
+                <p style={{ fontSize: 12, color: CORES.brancoMuted, margin: 0 }}>{t('mapa.freeBlurTeaser')}</p>
               </div>
             </div>
-          )}
+            <div className="mapa-premium-teaser-lock">
+              <Crown size={22} color={CORES.dourado} />
+              <span>{t('mapa.unlockFullChart')}</span>
+            </div>
+          </div>
         </>
       )}
     </div>

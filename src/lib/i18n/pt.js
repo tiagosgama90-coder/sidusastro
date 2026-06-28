@@ -264,6 +264,8 @@ export default {
     proTagline: 'Leitura astrológica profissional · Assinatura cósmica única',
     aiUpgrading: 'A preparar a tua leitura completa em segundo plano…',
     aiFallbackNote: 'Interpretação profissional (modo clássico)',
+    freeTasteHint: 'Estás a ver uma amostra gratuita. O resto do mapa — interpretação completa, posições, aspectos e PDF — está reservado ao Premium.',
+    freeBlurTeaser: 'Interpretação profissional, esferas de vida, exportação PDF e muito mais…',
   },
   cartaoDia: {
     title: '✦ Carta do Dia · {date}',

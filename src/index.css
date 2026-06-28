@@ -1282,10 +1282,22 @@ html.sidus-no-ads .google-auto-placed {
 
 /* Mapa astral - preview desfocado + paywall inline (utilizador gratuito) */
 .mapa-preview-blurred {
-  filter: blur(12px);
+  filter: blur(14px);
+  opacity: 0.72;
   pointer-events: none;
   user-select: none;
   -webkit-user-select: none;
+}
+.mapa-free-taste-hint {
+  margin: 0 0 16px;
+  padding: 10px 14px;
+  font-size: 12px;
+  line-height: 1.5;
+  color: rgba(223, 183, 108, 0.85);
+  text-align: center;
+  border-radius: 10px;
+  background: rgba(223, 183, 108, 0.08);
+  border: 1px solid rgba(223, 183, 108, 0.2);
 }
 .mapa-paywall-inline {
   margin: 8px 0 20px;
@@ -1295,8 +1307,27 @@ html.sidus-no-ads .google-auto-placed {
 .mapa-premium-teaser {
   position: relative;
   margin-bottom: 20px;
-  max-height: 420px;
+  max-height: 380px;
   overflow: hidden;
+}
+.mapa-premium-teaser-lock {
+  position: absolute;
+  left: 50%;
+  bottom: 28px;
+  transform: translateX(-50%);
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #DFB76C;
+  background: rgba(11, 7, 30, 0.92);
+  border: 1px solid rgba(223, 183, 108, 0.45);
+  pointer-events: none;
+  white-space: nowrap;
 }
 .mapa-premium-teaser::after {
   content: '';

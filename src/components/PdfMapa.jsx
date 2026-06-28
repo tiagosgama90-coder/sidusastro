@@ -4,6 +4,7 @@
  */
 
 import { gerarAnaliseCompleta } from '../lib/mapaInterpretacao.js'
+import { sidusLogoParaPdf, SIDUS_COPYRIGHT_PT, SIDUS_COPYRIGHT_EN } from '../lib/sidusLogoPdf.js'
 
 const ELEMENTO_DO_SIGNO = {
   Carneiro:'Fogo', Leão:'Fogo', Sagitário:'Fogo',
@@ -12,10 +13,12 @@ const ELEMENTO_DO_SIGNO = {
   Caranguejo:'Água', Escorpião:'Água', Peixes:'Água',
 }
 
-export async function gerarPdfMapaAstral(mapaNatal, dados, planetas = [], analise = null) {
+export async function gerarPdfMapaAstral(mapaNatal, dados, planetas = [], analise = null, lang = 'pt') {
   const { jsPDF } = await import('jspdf')
 
   const analiseFinal = analise || gerarAnaliseCompleta(mapaNatal, planetas, [], dados)
+  const copyright = lang === 'en' ? SIDUS_COPYRIGHT_EN : SIDUS_COPYRIGHT_PT
+  const logoData = await sidusLogoParaPdf()
 
   const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' })
   const L = 18
@@ -58,36 +61,44 @@ export async function gerarPdfMapaAstral(mapaNatal, dados, planetas = [], analis
   doc.rect(0, 0, 210, 297, 'F')
 
   doc.setFillColor(...ROXO)
-  doc.rect(0, 0, 210, 52, 'F')
+  doc.rect(0, 0, 210, 58, 'F')
   doc.setDrawColor(...DOURADO)
   doc.setLineWidth(0.5)
-  doc.line(L, 52, 210 - L, 52)
+  doc.line(L, 58, 210 - L, 58)
+
+  if (logoData) {
+    doc.addImage(logoData, 'PNG', 105 - 7, 7, 14, 14)
+  }
 
   doc.setTextColor(...DOURADO)
   doc.setFont('helvetica', 'bold')
-  doc.setFontSize(30)
-  doc.text('SIDUS', 105, 18, { align: 'center' })
+  doc.setFontSize(28)
+  doc.text('SIDUS', 105, 26, { align: 'center' })
 
-  doc.setFontSize(9)
+  doc.setFontSize(8)
   doc.setTextColor(...MUTED)
   doc.setFont('helvetica', 'normal')
-  doc.text('MAPA ASTRAL NATAL COMPLETO', 105, 26, { align: 'center' })
-  doc.text('Leitura astrológica profissional', 105, 31, { align: 'center' })
+  doc.text('MAPA ASTRAL NATAL COMPLETO', 105, 32, { align: 'center' })
+  doc.text('Leitura astrológica profissional', 105, 36, { align: 'center' })
+
+  const copyrightLines = doc.splitTextToSize(copyright, W)
+  doc.setFontSize(6.5)
+  copyrightLines.forEach((line, i) => {
+    doc.text(line, 105, 41 + i * 3.2, { align: 'center' })
+  })
 
   doc.setFont('helvetica', 'bold')
   doc.setFontSize(13)
   doc.setTextColor(...BRANCO)
-  doc.text(dados.nome || '', 105, 40, { align: 'center' })
+  doc.text(dados.nome || '', 105, 50, { align: 'center' })
 
   doc.setFont('helvetica', 'normal')
   doc.setFontSize(9)
   doc.setTextColor(...MUTED)
   const localDt = [formatarData(dados.data), dados.hora ? `às ${dados.hora}` : '', dados.cidade ? `· ${dados.cidade}` : ''].filter(Boolean).join(' ')
-  doc.text(localDt, 105, 46, { align: 'center' })
-  doc.setFontSize(7)
-  doc.text('Assinatura cósmica única', 105, 50, { align: 'center' })
+  doc.text(localDt, 105, 55, { align: 'center' })
 
-  y = 62
+  y = 68
 
   secaoTitulo(doc, y, '✦ QUATRO PILARES FUNDAMENTAIS', DOURADO, ROXO, L, W)
   y += 12
@@ -243,12 +254,15 @@ export async function gerarPdfMapaAstral(mapaNatal, dados, planetas = [], analis
     doc.setLineWidth(0.2)
     doc.line(L, 287, 210 - L, 287)
     doc.setTextColor(...MUTED)
-    doc.setFontSize(7)
+    doc.setFontSize(6.5)
     doc.setFont('helvetica', 'normal')
-    doc.text(
-      `Sidus · Mapa Astral de ${dados.nome || ''} · Tropical Placidus · ${new Date().toLocaleDateString('pt-PT')} · Pág. ${i}/${totalPaginas}`,
-      105, 292, { align: 'center' }
-    )
+    const footerLine = `Sidus Astro · ${dados.nome || ''} · Tropical Placidus · ${new Date().toLocaleDateString(lang === 'en' ? 'en-GB' : 'pt-PT')} · Pág. ${i}/${totalPaginas}`
+    doc.text(footerLine, 105, 290, { align: 'center' })
+    const footCopy = doc.splitTextToSize(copyright, W)
+    doc.setFontSize(5.5)
+    footCopy.forEach((line, idx) => {
+      doc.text(line, 105, 293.5 + idx * 2.6, { align: 'center' })
+    })
   }
 
   doc.save(`Sidus_MapaNatal_${(dados.nome || 'perfil').replace(/\s+/g, '_')}.pdf`)
