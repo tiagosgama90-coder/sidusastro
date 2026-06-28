@@ -1,4 +1,5 @@
 import { useEffect, useRef, useMemo } from 'react'
+import { createPortal } from 'react-dom'
 
 const ZODIAC = ['♈', '♉', '♊', '♋', '♌', '♎', '♏', '♐', '♑', '♒', '♓']
 
@@ -92,8 +93,8 @@ export function LandingCosmicBackground() {
     }
   }, [])
 
-  return (
-    <div className="landing-cosmic-bg" aria-hidden>
+  const content = (
+    <div className="cosmic-bg-root" aria-hidden>
       <canvas ref={canvasRef} className="landing-cosmic-stars-canvas" />
       <div className="landing-cosmic-nebula" />
       <div className="landing-cosmic-hendecagram-wrap">
@@ -144,4 +145,7 @@ export function LandingCosmicBackground() {
       </div>
     </div>
   )
+
+  if (typeof document === 'undefined') return content
+  return createPortal(content, document.body)
 }

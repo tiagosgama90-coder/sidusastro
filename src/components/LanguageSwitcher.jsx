@@ -86,6 +86,14 @@ export function LanguageSwitcher({ variant = 'fixed' }) {
     return inner
   }
 
+  if (variant === 'landing-bar') {
+    return (
+      <div className="landing-lang-bar-inner">
+        {inner}
+      </div>
+    )
+  }
+
   const el = (
     <div className="lang-switcher-root">
       {inner}

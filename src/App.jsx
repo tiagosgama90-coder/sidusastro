@@ -232,9 +232,7 @@ const estilos = {
     width: '100%',
     maxWidth: MOBILE_MAX,
     margin: '0 auto',
-    background: `radial-gradient(ellipse at 20% 0%, rgba(88, 28, 135, 0.35) 0%, transparent 55%),
-      radial-gradient(ellipse at 80% 100%, rgba(67, 56, 202, 0.2) 0%, transparent 50%),
-      ${CORES.fundo}`,
+    background: 'transparent',
     color: CORES.branco,
     fontFamily: "'Segoe UI', system-ui, -apple-system, sans-serif",
     position: 'relative',
@@ -248,9 +246,7 @@ const estilos = {
     width: '100%',
     maxWidth: 'none',
     margin: 0,
-    background: `radial-gradient(ellipse at 15% 0%, rgba(88, 28, 135, 0.4) 0%, transparent 50%),
-      radial-gradient(ellipse at 85% 100%, rgba(67, 56, 202, 0.25) 0%, transparent 45%),
-      ${CORES.fundo}`,
+    background: 'transparent',
     color: CORES.branco,
     fontFamily: "'Segoe UI', system-ui, -apple-system, sans-serif",
     position: 'relative',
@@ -1298,7 +1294,14 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
 
   return (
     <div className={`landing-auth-layout${isDesktop ? ' landing-auth-layout--desktop' : ' landing-auth-layout--mobile'}`}>
-      <LandingSkyLive />
+      <div className={`landing-auth-sticky-top${!isDesktop ? ' landing-auth-sticky-top--mobile' : ''}`}>
+        {!isDesktop && (
+          <div className="landing-lang-bar">
+            <LanguageSwitcher variant="landing-bar" />
+          </div>
+        )}
+        <LandingSkyLive />
+      </div>
       <LandingPortalHero />
       <div className="landing-auth-grid">
         <LandingBirthPortal isDesktop={isDesktop} onSaved={scrollParaAuth} onScrollToLogin={scrollParaAuth} />
@@ -3699,9 +3702,9 @@ export default function App() {
   const margemNav = 0
 
   return (
-    <div className={!utilizador ? 'sidus-login-shell' : undefined} style={shellStyle}>
-      {!mostrarNavbar && <LanguageSwitcher />}
-      {!utilizador ? <LandingCosmicBackground /> : <div style={estilos.estrelas} />}
+    <div className={`sidus-cosmic-shell${!utilizador ? ' sidus-login-shell' : ''}`} style={shellStyle}>
+      <LandingCosmicBackground />
+      {!utilizador && isDesktop && <LanguageSwitcher />}
 
       {/* Barra de dev — só visível em localhost */}
       {isDev && contaConfigurada && (
