@@ -199,7 +199,7 @@ export default {
     noAspects: 'Sem aspetos maiores dentro de orbe {orbe}° neste instante.',
     tarotOnline: 'Tarot Online', virtualArcana: 'Arcanos Virtuais',
     tarotSub: '6 baralhos · 3 leituras grátis',
-    oracleDay: 'Oráculo do Dia', consultAI: 'Consulta o Astrólogo IA',
+    oracleDay: 'Oráculo do Dia', consultAI: 'Consulte o seu Oráculo Pessoal',
     privacy: 'Política de Privacidade',
     cardOfDay: 'Carta do Dia',
     copyright: '© 2026 Sidus',

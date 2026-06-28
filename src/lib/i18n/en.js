@@ -199,7 +199,7 @@ export default {
     noAspects: 'No major aspects within {orbe}° orb at this moment.',
     tarotOnline: 'Online Tarot', virtualArcana: 'Virtual Arcana',
     tarotSub: '6 decks · 3 free readings',
-    oracleDay: 'Oracle of the Day', consultAI: 'Consult the AI Astrologer',
+    oracleDay: 'Oracle of the Day', consultAI: 'Consult your Personal Oracle',
     privacy: 'Privacy Policy',
     cardOfDay: 'Card of the Day',
     copyright: '© 2026 Sidus',
