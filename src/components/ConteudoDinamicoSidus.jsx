@@ -29,7 +29,7 @@ function formatarHoje(lang) {
 }
 
 export function ConteudoDinamicoSidus({ mapaNatal, aspetos = [], isPremium, onUpgrade, onOraculo, userEmail }) {
-  const { lang, t, ts } = useLanguage()
+  const { lang, t, ts, tp, ta } = useLanguage()
   const [pack, setPack] = useState(null)
   const [showAll, setShowAll] = useState(false)
   const [copied, setCopied] = useState(false)
@@ -40,8 +40,8 @@ export function ConteudoDinamicoSidus({ mapaNatal, aspetos = [], isPremium, onUp
 
   const transitSummary = useMemo(() => {
     if (!aspetos?.length) return ''
-    return aspetos.slice(0, 4).map((a) => `${a.planetaA} ${a.aspecto} ${a.planetaB}`).join('; ')
-  }, [aspetos])
+    return aspetos.slice(0, 4).map((a) => `${tp(a.planetaA)} ${ta(a.aspecto)} ${tp(a.planetaB)}`).join('; ')
+  }, [aspetos, tp, ta])
 
   useEffect(() => {
     let cancelled = false

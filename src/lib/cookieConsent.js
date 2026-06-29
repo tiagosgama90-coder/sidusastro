@@ -41,3 +41,24 @@ export function applyAdConsentToGoogle() {
     window.adsbygoogle.requestNonPersonalizedAds = 1
   }
 }
+
+/** Actualiza Consent Mode v2 (gtag no index.html). */
+export function applyAnalyticsConsentToGtag() {
+  if (typeof window === 'undefined' || typeof window.gtag !== 'function') return
+  const c = getCookieConsent()
+  if (c === 'all') {
+    window.gtag('consent', 'update', {
+      analytics_storage: 'granted',
+      ad_storage: 'granted',
+      ad_user_data: 'granted',
+      ad_personalization: 'granted',
+    })
+  } else if (c === 'essential') {
+    window.gtag('consent', 'update', {
+      analytics_storage: 'denied',
+      ad_storage: 'granted',
+      ad_user_data: 'denied',
+      ad_personalization: 'denied',
+    })
+  }
+}

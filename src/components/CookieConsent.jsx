@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useLanguage } from '../lib/i18n/LanguageContext.jsx'
 import {
-  getCookieConsent, setCookieConsent, applyAdConsentToGoogle,
+  getCookieConsent, setCookieConsent, applyAdConsentToGoogle, applyAnalyticsConsentToGtag,
 } from '../lib/cookieConsent.js'
 import { initGoogleAnalytics } from '../lib/googleAnalytics.js'
 
@@ -20,10 +20,14 @@ export function CookieConsent({ onConsentChange, onPrivacy }) {
 
   useEffect(() => {
     setVisivel(!getCookieConsent())
+    if (getCookieConsent()) {
+      applyAnalyticsConsentToGtag()
+    }
   }, [])
 
   const escolher = (value) => {
     setCookieConsent(value)
+    applyAnalyticsConsentToGtag()
     initGoogleAnalytics()
     applyAdConsentToGoogle()
     setVisivel(false)

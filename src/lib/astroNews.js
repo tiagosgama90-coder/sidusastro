@@ -3,6 +3,7 @@
  */
 
 import { calcularFaseLua } from './faseLua.js'
+import { translatePlaneta, translateAspecto } from './i18n/astro.js'
 
 const NOTICIAS_BASE_PT = [
   { tag: 'Lua', gerar: (ctx) => `Fase ${ctx.fase.nome}: ${ctx.fase.desc?.slice(0, 120)}…` },
@@ -21,10 +22,13 @@ const NOTICIAS_BASE_EN = [
 function transitoDestaque(aspetos, lang) {
   if (!aspetos?.length) return null
   const a = aspetos[0]
+  const pA = translatePlaneta(a.planetaA, lang)
+  const pB = translatePlaneta(a.planetaB, lang)
+  const asp = translateAspecto(a.aspecto, lang)
   if (lang === 'en') {
-    return `Active transit: ${a.planetaA} ${a.aspecto} ${a.planetaB} (orb ${a.orbe}°) - energy in motion in the sky right now.`
+    return `Active transit: ${pA} ${asp} ${pB} (orb ${a.orbe}) - energy in motion in the sky right now.`
   }
-  return `Trânsito activo: ${a.planetaA} ${a.aspecto} ${a.planetaB} (orbe ${a.orbe}°) - energia em movimento no céu neste momento.`
+  return `Trânsito activo: ${pA} ${asp} ${pB} (orbe ${a.orbe}) - energia em movimento no céu neste momento.`
 }
 
 /** @returns {{ tag: string, texto: string, hora: string }[]} */

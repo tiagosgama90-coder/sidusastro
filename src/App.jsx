@@ -69,11 +69,13 @@ import { useNavigate, useLocation } from 'react-router-dom'
 import { passoFromPath, pathFromPasso, langFromPath } from './lib/routes.js'
 import { initAdSense } from './lib/adsense.js'
 import { initGoogleAnalytics } from './lib/googleAnalytics.js'
+import { trackSignupConversion, trackMapaConversion, trackPurchaseConversion } from './lib/googleAds.js'
 import { AdSenseBanner } from './components/AdSenseBanner.jsx'
 import { CookieConsent } from './components/CookieConsent.jsx'
-import { allowsAds, applyAdConsentToGoogle, getCookieConsent } from './lib/cookieConsent.js'
+import { allowsAds, applyAdConsentToGoogle, applyAnalyticsConsentToGtag, getCookieConsent } from './lib/cookieConsent.js'
 import { LanguageSwitcher } from './components/LanguageSwitcher.jsx'
 import { useLanguage } from './lib/i18n/LanguageContext.jsx'
+import { formatSkyPosition, formatAspectoCurto } from './lib/i18n/astro.js'
 import { getFerramentas, getBeneficiosVip } from './lib/i18n/ferramentasData.js'
 import { validarOnboarding } from './lib/i18n/validation.js'
 import { traduzirErroAuth } from './lib/i18n/authErrors.js'
@@ -462,7 +464,6 @@ function calcularPlanetasParaData(dateObj, lista = PLANETAS_AGORA) {
       longitude: ecl.elon,
       signo,
       retrograde: false,
-      texto: `${p.nome} em ${signo.nome} ${signo.simbolo} (${signo.graus}°)`,
     }
   })
 }
@@ -484,8 +485,10 @@ function calcularAspetos(planetas) {
         .sort((x, y) => x.orbe - y.orbe)[0]
       if (nearest.orbe <= ORBE_ASPECTO) {
         lista.push({
-          planetaA: `${a.nome} ${a.simbolo}`,
-          planetaB: `${b.nome} ${b.simbolo}`,
+          planetaA: a.nome,
+          planetaB: b.nome,
+          simboloA: a.simbolo,
+          simboloB: b.simbolo,
           aspecto: nearest.nome,
           orbe: `${nearest.orbe.toFixed(1)}°`,
           distancia: angle.toFixed(1),
@@ -669,7 +672,6 @@ function calcularPlanetasComSwe(swe, dateUTC, lista = PLANETAS_AGORA) {
         longitude: pos.longitude,
         signo,
         retrograde: retro,
-        texto: `${p.nome} em ${signo.nome} ${signo.simbolo} (${signo.graus}°)${retro ? ' ℞' : ''}`,
       })
     } catch (e) {
       console.warn(`[Sidus] swe_calc_ut falhou para ${p.nome}:`, e?.message)
@@ -1274,6 +1276,7 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
           console.warn('[Sidus Auth] Email verificação:', emailErr?.code, emailErr?.message)
         }
         setInfo(t('auth.accountCreated'))
+        trackSignupConversion()
       } else {
         const cred = await signInWithEmailAndPassword(auth, email, senha)
         await reload(cred.user)
@@ -1802,8 +1805,8 @@ function Dashboard({ nome, mapaNatal, ceuAgora, aspetos, onOraculo, onPrivacidad
         </div>
 
         {(ceuAgora || []).map((p) => (
-          <div key={p.key} style={{ fontSize: 14, color: CORES.brancoSuave, padding: '7px 0', borderBottom: `1px solid ${CORES.vidroBorda}` }}>
-            {p.simbolo} {p.texto}
+          <div key={`${p.key}-${lang}`} style={{ fontSize: 14, color: CORES.brancoSuave, padding: '7px 0', borderBottom: `1px solid ${CORES.vidroBorda}` }}>
+            {formatSkyPosition(p, lang)}
           </div>
         ))}
       </div>
@@ -1818,14 +1821,17 @@ function Dashboard({ nome, mapaNatal, ceuAgora, aspetos, onOraculo, onPrivacidad
         {aspetos.length === 0 ? (
           <p style={{ fontSize: 13, color: CORES.brancoMuted }}>{t('home.noAspects', { orbe: ORBE_ASPECTO })}</p>
         ) : (
-          aspetos.slice(0, 8).map((a, i) => (
-            <div key={`${a.planetaA}-${a.planetaB}-${i}`} style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 0', borderBottom: i < aspetos.length - 1 ? `1px solid ${CORES.vidroBorda}` : 'none' }}>
+          aspetos.slice(0, 8).map((a, i) => {
+            const asp = formatAspectoCurto(a, lang)
+            return (
+            <div key={`${a.planetaA}-${a.planetaB}-${i}-${lang}`} style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 0', borderBottom: i < aspetos.length - 1 ? `1px solid ${CORES.vidroBorda}` : 'none' }}>
               <div style={{ fontSize: 14, color: CORES.branco }}>
-                {tp(a.planetaA)} <span style={{ color: CORES.dourado }}>{ta(a.aspecto)}</span> {tp(a.planetaB)}
+                {asp.esquerda} <span style={{ color: CORES.dourado }}>{asp.aspecto}</span> {asp.direita}
               </div>
               <div style={{ fontSize: 11, color: CORES.brancoMuted }}>{a.orbe}</div>
             </div>
-          ))
+            )
+          })
         )}
       </div>
 
@@ -3437,6 +3443,7 @@ export default function App() {
 
   useEffect(() => {
     if (!allowsAds()) return
+    applyAnalyticsConsentToGtag()
     initGoogleAnalytics()
     if (isPremium) return
     applyAdConsentToGoogle()
@@ -3571,18 +3578,21 @@ export default function App() {
         if (result.productType === 'premium') {
           setIsPremium(true)
           setMapaCompleto(true)
+          trackPurchaseConversion('premium')
           const destino = dadosNataisMinimos(dados) ? 'mapa' : 'onboarding'
           setPasso(destino)
           navigate(destino === 'mapa' ? '/mapaastral' : '/comecar', { replace: true })
           setPagamentoMsg({ tipo: 'sucesso', texto: t('payment.premiumWelcome') })
         } else if (result.productType === 'mapa') {
           setMapaCompleto(true)
+          trackPurchaseConversion('mapa')
           const destino = dadosNataisMinimos(dados) ? 'mapa' : 'onboarding'
           setPasso(destino)
           navigate(destino === 'mapa' ? '/mapaastral' : '/comecar', { replace: true })
           setPagamentoMsg({ tipo: 'sucesso', texto: t('payment.mapaUnlocked') })
         } else if (result.productType === 'tarot') {
           sessionStorage.setItem('sidus_tarot_paid', '1')
+          trackPurchaseConversion('tarot')
           setPasso('tarot')
           navigate('/tarot', { replace: true })
           setPagamentoMsg({ tipo: 'sucesso', texto: t('payment.tarotUnlocked') })
@@ -3736,6 +3746,7 @@ export default function App() {
     if (mapaNatalValido(mapa)) setMapaNatal(mapa)
     const guardado = await guardarPerfil(dados)
     setMapaGerado(true)
+    if (guardado) trackMapaConversion()
     irPara('mapa', { replace: !guardado })
   }
 
@@ -3824,6 +3835,10 @@ export default function App() {
           <p style={{ color: CORES.brancoMuted, marginTop: 16, fontSize: 14, textAlign: 'center' }}>{t('common.loading')}</p>
         </div>
         <RodapeSidus isDesktop={isDesktop} mostrarNavbar={false} />
+        <CookieConsent
+          onConsentChange={setCookieConsent}
+          onPrivacy={() => navigate('/privacidade')}
+        />
       </div>
     )
   }

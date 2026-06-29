@@ -23,6 +23,24 @@
 
     <title>Sidus - Astrologia</title>
 
+    <!-- Google Consent Mode + GA4 (tag visível para verificação; dados só após cookies) -->
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('consent', 'default', {
+        analytics_storage: 'denied',
+        ad_storage: 'denied',
+        ad_user_data: 'denied',
+        ad_personalization: 'denied',
+        wait_for_update: 500,
+      });
+    </script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-18FPC8HYE8"></script>
+    <script>
+      gtag('js', new Date());
+      gtag('config', 'G-18FPC8HYE8', { anonymize_ip: true });
+    </script>
+
     <style>
       * { box-sizing: border-box; margin: 0; padding: 0; }
       html {
