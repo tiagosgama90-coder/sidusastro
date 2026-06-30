@@ -1,1513 +1,937 @@
 /** Gerado por scripts/build-sinastria-locales.mjs */
 export const VENUS_REL_ES = {
   "Carneiro": {
-    "pt": "desperta paixão directa, conquista com ousadia e prefere intensidade a jogos prolongados",
-    "en": "awakens direct passion, conquers boldly and prefers intensity over prolonged games",
-    "es": "despierta pasión directa, conquista com ousadia e prefere intensidade a jogos prolongados"
+    "es": "despierta pasión directa, conquista con audacia y prefiere la intensidad a los juegos prolongados"
   },
   "Touro": {
-    "pt": "expressa amor através do corpo, do conforto e da constância sensorial",
-    "en": "expresses love through body, comfort and sensory constancy",
-    "es": "expresa amor atraveres do corpo, do conforto e da constância sensorial"
+    "es": "expresa amor a través del cuerpo, la comodidad y la constancia sensorial"
   },
   "Gémeos": {
-    "pt": "seduz com palavras, humor e variedade intelectual",
-    "en": "seduces with words, humour and intellectual variety",
-    "es": "seduce com palavras, humor e variedade intelectul"
+    "es": "seduce con palabras, humor y variedad intelectual"
   },
   "Caranguejo": {
-    "pt": "ama com profundidade protectora, precisa de segurança emocional para se entregar",
-    "en": "loves with protective depth, needs emotional safety to surrender",
-    "es": "ama com profundidad protectora, necesita de seguridad emocional para se entregar"
+    "es": "ama con profundidad protectora, necesita seguridad emocional para entregarse"
   },
   "Leão": {
-    "pt": "romantiza com grandiosidade, quer ser admirado e celebrado no amor",
-    "en": "romanticises with grandeur, wants to be admired and celebrated in love",
-    "es": "romantiza com grandiosidade, quer ser admirado e celebrado no amor"
+    "es": "romantiza con grandiosidad, quiere ser admirado y celebrado en el amor"
   },
   "Virgem": {
-    "pt": "demonstra carinho com actos de serviço e atenção aos detalhes",
-    "en": "shows affection through acts of service and attention to detail",
-    "es": "demuestra carinho com actos de serviço e atenção aos detalhes"
+    "es": "demuestra cariño con actos de servicio y atención al detalle"
   },
   "Balança": {
-    "pt": "busca harmonia, beleza e reciprocidade elegante na intimidade",
-    "en": "seeks harmony, beauty and elegant reciprocity in intimacy",
-    "es": "busca armonía, beleza e reciprocidade elegante na intimidad"
+    "es": "busca armonía, belleza y reciprocidad elegante en la intimidad"
   },
   "Escorpião": {
-    "pt": "vive o erotismo como fusão total - tudo ou nada",
-    "en": "lives eroticism as total fusion - all or nothing",
-    "es": "vive o erotismo como fusão total - tudo ou nada"
+    "es": "vive el erotismo como fusión total: todo o nada"
   },
   "Sagitário": {
-    "pt": "precisa de liberdade e aventura para manter a chama viva",
-    "en": "needs freedom and adventure to keep the flame alive",
-    "es": "necesita de libertad e aventura para manter a chama viva"
+    "es": "necesita libertad y aventura para mantener viva la llama"
   },
   "Capricórnio": {
-    "pt": "leva tempo a confiar, mas compromete-se com lealdade profunda",
-    "en": "takes time to trust, but commits with deep loyalty",
-    "es": "tarda tempo a confiar, mas compromete-se com lealdade profunda"
+    "es": "tarda en confiar, pero se compromete con lealtad profunda"
   },
   "Aquário": {
-    "pt": "valoriza amizade, originalidade e espaço dentro da paixão",
-    "en": "values friendship, originality and space within passion",
-    "es": "valora amizade, originalidade e espaço dentro da pasión"
+    "es": "valora la amistad, la originalidad y el espacio dentro de la pasión"
   },
   "Peixes": {
-    "pt": "idealiza o amor, funde-se emocionalmente e busca romance espiritual",
-    "en": "idealises love, merges emotionally and seeks spiritual romance",
-    "es": "idealiza o amor, funde-se emocionalmente e busca romance espiritul"
+    "es": "idealiza el amor, se fusiona emocionalmente y busca romance espiritual"
   }
 }
 
 export const VENUS_REL_IT = {
   "Carneiro": {
-    "pt": "desperta paixão directa, conquista com ousadia e prefere intensidade a jogos prolongados",
-    "en": "awakens direct passion, conquers boldly and prefers intensity over prolonged games",
-    "it": "sveglia passione directa, conquista com ousadia e prefere intensidade a jogos prolongados"
+    "it": "risveglia passione diretta, conquista con audacia e preferisce l'intensità ai giochi prolungati"
   },
   "Touro": {
-    "pt": "expressa amor através do corpo, do conforto e da constância sensorial",
-    "en": "expresses love through body, comfort and sensory constancy",
-    "it": "esprime amore através do corpo, do conforto e da constância sensorial"
+    "it": "esprime amore attraverso il corpo, il comfort e la costanza sensoriale"
   },
   "Gémeos": {
-    "pt": "seduz com palavras, humor e variedade intelectual",
-    "en": "seduces with words, humour and intellectual variety",
-    "it": "seduce com palavras, humor e variedade intelectual"
+    "it": "seduce con parole, umorismo e varietà intellettuale"
   },
   "Caranguejo": {
-    "pt": "ama com profundidade protectora, precisa de segurança emocional para se entregar",
-    "en": "loves with protective depth, needs emotional safety to surrender",
-    "it": "ama com profondità protectora, ha bisogno de sicurezza emocional para se entregar"
+    "it": "ama con profondità protettiva, ha bisogno di sicurezza emotiva per abbandonarsi"
   },
   "Leão": {
-    "pt": "romantiza com grandiosidade, quer ser admirado e celebrado no amor",
-    "en": "romanticises with grandeur, wants to be admired and celebrated in love",
-    "it": "romantiza com grandiosidade, quer ser admirado e celebrado no amore"
+    "it": "romantizza con grandiosità, vuole essere ammirato e celebrato nell'amore"
   },
   "Virgem": {
-    "pt": "demonstra carinho com actos de serviço e atenção aos detalhes",
-    "en": "shows affection through acts of service and attention to detail",
-    "it": "dimostra carinho com actos de serviço e atenção aos detalhes"
+    "it": "dimostra affetto con atti di servizio e attenzione ai dettagli"
   },
   "Balança": {
-    "pt": "busca harmonia, beleza e reciprocidade elegante na intimidade",
-    "en": "seeks harmony, beauty and elegant reciprocity in intimacy",
-    "it": "cerca armonia, beleza e reciprocidade elegante na intimidade"
+    "it": "cerca armonia, bellezza e reciprocità elegante nell'intimità"
   },
   "Escorpião": {
-    "pt": "vive o erotismo como fusão total - tudo ou nada",
-    "en": "lives eroticism as total fusion - all or nothing",
-    "it": "vive o erotismo como fusão total - tudo ou nada"
+    "it": "vive l'erotismo come fusione totale: tutto o niente"
   },
   "Sagitário": {
-    "pt": "precisa de liberdade e aventura para manter a chama viva",
-    "en": "needs freedom and adventure to keep the flame alive",
-    "it": "ha bisogno de liberdade e aventura para manter a chama viva"
+    "it": "ha bisogno di libertà e avventura per tenere viva la fiamma"
   },
   "Capricórnio": {
-    "pt": "leva tempo a confiar, mas compromete-se com lealdade profunda",
-    "en": "takes time to trust, but commits with deep loyalty",
-    "it": "leva tempo a confiar, mas compromete-se com lealdade profunda"
+    "it": "impiega tempo a fidarsi, ma si impegna con profonda lealtà"
   },
   "Aquário": {
-    "pt": "valoriza amizade, originalidade e espaço dentro da paixão",
-    "en": "values friendship, originality and space within passion",
-    "it": "valorizza amizade, originalidade e espaço dentro da passione"
+    "it": "valorizza amicizia, originalità e spazio dentro la passione"
   },
   "Peixes": {
-    "pt": "idealiza o amor, funde-se emocionalmente e busca romance espiritual",
-    "en": "idealises love, merges emotionally and seeks spiritual romance",
-    "it": "idealiza o amore, funde-se emocionalmente e cerca romance espiritual"
+    "it": "idealizza l'amore, si fonde emotivamente e cerca un romanticismo spirituale"
   }
 }
 
 export const VENUS_REL_DE = {
   "Carneiro": {
-    "pt": "desperta paixão directa, conquista com ousadia e prefere intensidade a jogos prolongados",
-    "en": "awakens direct passion, conquers boldly and prefers intensity over prolonged games",
-    "de": "erweckt Leidenschaft directa, conquista com ousadia e prefere intensidade a jogos prolongados"
+    "de": "weckt direkte Leidenschaft, erobert kühn und bevorzugt Intensität gegenüber langen Spielen"
   },
   "Touro": {
-    "pt": "expressa amor através do corpo, do conforto e da constância sensorial",
-    "en": "expresses love through body, comfort and sensory constancy",
-    "de": "drückt aus Liebe através do corpo, do conforto e da constância sensorial"
+    "de": "drückt Liebe durch Körper, Komfort und sinnliche Beständigkeit aus"
   },
   "Gémeos": {
-    "pt": "seduz com palavras, humor e variedade intelectual",
-    "en": "seduces with words, humour and intellectual variety",
-    "de": "verführt com palavras, humor e variedade intelecdeinel"
+    "de": "verführt mit Worten, Humor und intellektueller Vielfalt"
   },
   "Caranguejo": {
-    "pt": "ama com profundidade protectora, precisa de segurança emocional para se entregar",
-    "en": "loves with protective depth, needs emotional safety to surrender",
-    "de": "liebt com Tiefe protectora, braucht de Sicherheit emocional para se entregar"
+    "de": "liebt mit schützender Tiefe, braucht emotionale Sicherheit zum Hingeben"
   },
   "Leão": {
-    "pt": "romantiza com grandiosidade, quer ser admirado e celebrado no amor",
-    "en": "romanticises with grandeur, wants to be admired and celebrated in love",
-    "de": "romantiza com grandiosidade, quer ser admirado e celebrado no Liebe"
+    "de": "romantisiert mit Grandiosität, will in der Liebe bewundert und gefeiert werden"
   },
   "Virgem": {
-    "pt": "demonstra carinho com actos de serviço e atenção aos detalhes",
-    "en": "shows affection through acts of service and attention to detail",
-    "de": "demonstra carinho com actos de serviço e atenção aos detalhes"
+    "de": "zeigt Zuneigung durch Dienste und Liebe zum Detail"
   },
   "Balança": {
-    "pt": "busca harmonia, beleza e reciprocidade elegante na intimidade",
-    "en": "seeks harmony, beauty and elegant reciprocity in intimacy",
-    "de": "sucht Harmonie, beleza e reciprocidade elegante na intimidade"
+    "de": "sucht Harmonie, Schönheit und elegante Gegenseitigkeit in der Intimität"
   },
   "Escorpião": {
-    "pt": "vive o erotismo como fusão total - tudo ou nada",
-    "en": "lives eroticism as total fusion - all or nothing",
-    "de": "vive o erotismo como fusão total - tudo ou nada"
+    "de": "lebt Erotik als totale Verschmelzung – alles oder nichts"
   },
   "Sagitário": {
-    "pt": "precisa de liberdade e aventura para manter a chama viva",
-    "en": "needs freedom and adventure to keep the flame alive",
-    "de": "braucht de liberdade e aventura para manter a chliebt viva"
+    "de": "braucht Freiheit und Abenteuer, um die Flamme am Leben zu halten"
   },
   "Capricórnio": {
-    "pt": "leva tempo a confiar, mas compromete-se com lealdade profunda",
-    "en": "takes time to trust, but commits with deep loyalty",
-    "de": "leva tempo a confiar, mas compromete-se com lealdade profunda"
+    "de": "braucht Zeit zum Vertrauen, verpflichtet sich aber mit tiefer Loyalität"
   },
   "Aquário": {
-    "pt": "valoriza amizade, originalidade e espaço dentro da paixão",
-    "en": "values friendship, originality and space within passion",
-    "de": "schätzt amizade, originalidade e espaço dentro da Leidenschaft"
+    "de": "schätzt Freundschaft, Originalität und Raum innerhalb der Leidenschaft"
   },
   "Peixes": {
-    "pt": "idealiza o amor, funde-se emocionalmente e busca romance espiritual",
-    "en": "idealises love, merges emotionally and seeks spiritual romance",
-    "de": "idealiza o Liebe, funde-se emocionalmente e sucht romance espirideinel"
+    "de": "idealisiert Liebe, verschmilzt emotional und sucht spirituelle Romantik"
   }
 }
 
 export const VENUS_REL_FR = {
   "Carneiro": {
-    "pt": "desperta paixão directa, conquista com ousadia e prefere intensidade a jogos prolongados",
-    "en": "awakens direct passion, conquers boldly and prefers intensity over prolonged games",
-    "fr": "éveille passion directa, conquista com ousadia e prefere intensidade a jogos prolongados"
+    "fr": "éveille une passion directe, conquiert avec audace et préfère l'intensité aux jeux prolongés"
   },
   "Touro": {
-    "pt": "expressa amor através do corpo, do conforto e da constância sensorial",
-    "en": "expresses love through body, comfort and sensory constancy",
-    "fr": "exprime amour através do corpo, do conforto e da constância sensorial"
+    "fr": "exprime l'amour par le corps, le confort et une constance sensorielle"
   },
   "Gémeos": {
-    "pt": "seduz com palavras, humor e variedade intelectual",
-    "en": "seduces with words, humour and intellectual variety",
-    "fr": "séduit com palavras, humor e variedade intelectal"
+    "fr": "séduit par les mots, l'humour et la variété intellectuelle"
   },
   "Caranguejo": {
-    "pt": "ama com profundidade protectora, precisa de segurança emocional para se entregar",
-    "en": "loves with protective depth, needs emotional safety to surrender",
-    "fr": "aime com profondeur protectora, a besoin de sécurité emocional para se entregar"
+    "fr": "aime avec une profondeur protectrice, a besoin de sécurité émotionnelle pour se livrer"
   },
   "Leão": {
-    "pt": "romantiza com grandiosidade, quer ser admirado e celebrado no amor",
-    "en": "romanticises with grandeur, wants to be admired and celebrated in love",
-    "fr": "romantiza com grandiosidade, quer ser admirado e celebrado no amour"
+    "fr": "romantise avec grandeur, veut être admiré et célébré dans l'amour"
   },
   "Virgem": {
-    "pt": "demonstra carinho com actos de serviço e atenção aos detalhes",
-    "en": "shows affection through acts of service and attention to detail",
-    "fr": "demonstra carinho com actos de serviço e atenção aos detalhes"
+    "fr": "montre son affection par des actes de service et l'attention aux détails"
   },
   "Balança": {
-    "pt": "busca harmonia, beleza e reciprocidade elegante na intimidade",
-    "en": "seeks harmony, beauty and elegant reciprocity in intimacy",
-    "fr": "cherche harmonie, beleza e reciprocidade elegante na intimidade"
+    "fr": "cherche l'harmonie, la beauté et une réciprocité élégante dans l'intimité"
   },
   "Escorpião": {
-    "pt": "vive o erotismo como fusão total - tudo ou nada",
-    "en": "lives eroticism as total fusion - all or nothing",
-    "fr": "vive o erotismo como fusão total - tudo ou nada"
+    "fr": "vit l'érotisme comme une fusion totale : tout ou rien"
   },
   "Sagitário": {
-    "pt": "precisa de liberdade e aventura para manter a chama viva",
-    "en": "needs freedom and adventure to keep the flame alive",
-    "fr": "a besoin de liberdade e aventura para manter a chaime viva"
+    "fr": "a besoin de liberté et d'aventure pour garder la flamme vivante"
   },
   "Capricórnio": {
-    "pt": "leva tempo a confiar, mas compromete-se com lealdade profunda",
-    "en": "takes time to trust, but commits with deep loyalty",
-    "fr": "leva tempo a confiar, mas compromete-se com lealdade profunda"
+    "fr": "met du temps à faire confiance, mais s'engage avec une loyauté profonde"
   },
   "Aquário": {
-    "pt": "valoriza amizade, originalidade e espaço dentro da paixão",
-    "en": "values friendship, originality and space within passion",
-    "fr": "valorise amizade, originalidade e espaço dentro da passion"
+    "fr": "valorise l'amitié, l'originalité et l'espace au sein de la passion"
   },
   "Peixes": {
-    "pt": "idealiza o amor, funde-se emocionalmente e busca romance espiritual",
-    "en": "idealises love, merges emotionally and seeks spiritual romance",
-    "fr": "idealiza o amour, funde-se emocionalmente e cherche romance espirital"
+    "fr": "idéalise l'amour, fusionne émotionnellement et cherche un romantisme spirituel"
   }
 }
 
 export const MARTE_REL_ES = {
   "Carneiro": {
-    "pt": "actua com impulso, desejo rápido e iniciativa sexual directa",
-    "en": "acts with impulse, quick desire and direct sexual initiative",
-    "es": "actúa com impulso, deseo rápido e iniciativa sexual directa"
+    "es": "actúa con impulso, deseo rápido e iniciativa sexual directa"
   },
   "Touro": {
-    "pt": "persiste no prazer, ritmo lento e sensualidade prolongada",
-    "en": "persists in pleasure, slow rhythm and prolonged sensuality",
-    "es": "persiste no prazer, ritmo lento e sensualidade prolongada"
+    "es": "persiste en el placer, ritmo lento y sensualidad prolongada"
   },
   "Gémeos": {
-    "pt": "estimula-se com conversa, variedade e provocação mental",
-    "en": "gets aroused through talk, variety and mental provocation",
-    "es": "se estimula com conversa, variedade e provocação mental"
+    "es": "se excita con la conversación, la variedad y la provocación mental"
   },
   "Caranguejo": {
-    "pt": "defende quem ama, luta por segurança emocional e lar",
-    "en": "defends who they love, fights for emotional safety and home",
-    "es": "defende quem ama, luta por seguridad emocional e lar"
+    "es": "defiende a quien ama, lucha por la seguridad emocional y el hogar"
   },
   "Leão": {
-    "pt": "conquista com carisma, orgulho e necessidade de ser desejado",
-    "en": "conquers with charisma, pride and need to be desired",
-    "es": "conquista com carisma, orgulho e necessidade de ser desejado"
+    "es": "conquista con carisma, orgullo y necesidad de ser deseado"
   },
   "Virgem": {
-    "pt": "canaliza energia com precisão, pode ser crítico quando frustrado",
-    "en": "channels energy with precision, can be critical when frustrated",
-    "es": "canaliza energia com precisão, pode ser crítico quando frustrado"
+    "es": "canaliza energía con precisión, puede ser crítico cuando está frustrado"
   },
   "Balança": {
-    "pt": "evita conflito directo, mas reage quando a justiça é violada",
-    "en": "avoids direct conflict, but reacts when justice is violated",
-    "es": "evita conflito directo, mas reage quando a justiça é violada"
+    "es": "evita el conflicto directo, pero reacciona cuando se viola la justicia"
   },
   "Escorpião": {
-    "pt": "intensidade magnética, ciúme profundo, resistência emocional extrema",
-    "en": "magnetic intensity, deep jealousy, extreme emotional stamina",
-    "es": "intensidade magnética, ciúme profundo, resistência emocional extrema"
+    "es": "intensidad magnética, celos profundos, resistencia emocional extrema"
   },
   "Sagitário": {
-    "pt": "aventureiro, honesto demais, foge de possessividade",
-    "en": "adventurous, overly honest, runs from possessiveness",
-    "es": "aventureiro, honesto demais, foge de possessividade"
+    "es": "aventurero, demasiado honesto, huye de la posesividad"
   },
   "Capricórnio": {
-    "pt": "controlado, estratégico, liberta paixão apenas com confiança",
-    "en": "controlled, strategic, releases passion only with trust",
-    "es": "controlado, estratégico, liberta pasión apenas com confiança"
+    "es": "controlado, estratégico, libera la pasión solo con confianza"
   },
   "Aquário": {
-    "pt": "imprevisível, excitado pelo diferente, resiste a rotinas",
-    "en": "unpredictable, excited by the different, resists routines",
-    "es": "imprevisível, excitado pelo diferente, resiste a rotinas"
+    "es": "impredecible, excitado por lo diferente, resiste las rutinas"
   },
   "Peixes": {
-    "pt": "actua por intuição, pode sacrificar-se ou idealizar demasiado",
-    "en": "acts on intuition, may sacrifice or over-idealise",
-    "es": "actúa por intuição, pode sacrificar-se ou idealizar demasiado"
+    "es": "actúa por intuición, puede sacrificarse o idealizar demasiado"
   }
 }
 
 export const MARTE_REL_IT = {
   "Carneiro": {
-    "pt": "actua com impulso, desejo rápido e iniciativa sexual directa",
-    "en": "acts with impulse, quick desire and direct sexual initiative",
-    "it": "agisce com impulso, desiderio rápido e iniciativa sexual directa"
+    "it": "agisce con impulso, desiderio rapido e iniziativa sessuale diretta"
   },
   "Touro": {
-    "pt": "persiste no prazer, ritmo lento e sensualidade prolongada",
-    "en": "persists in pleasure, slow rhythm and prolonged sensuality",
-    "it": "persiste no prazer, ritmo lento e sensualidade prolongada"
+    "it": "persiste nel piacere, ritmo lento e sensualità prolungata"
   },
   "Gémeos": {
-    "pt": "estimula-se com conversa, variedade e provocação mental",
-    "en": "gets aroused through talk, variety and mental provocation",
-    "it": "estimula-se com conversa, variedade e provocação mental"
+    "it": "si eccita con la conversazione, la varietà e la provocazione mentale"
   },
   "Caranguejo": {
-    "pt": "defende quem ama, luta por segurança emocional e lar",
-    "en": "defends who they love, fights for emotional safety and home",
-    "it": "defende quem ama, luta por sicurezza emocional e lar"
+    "it": "difende chi ama, combatte per la sicurezza emotiva e la casa"
   },
   "Leão": {
-    "pt": "conquista com carisma, orgulho e necessidade de ser desejado",
-    "en": "conquers with charisma, pride and need to be desired",
-    "it": "conquista com carisma, orgulho e necessidade de ser desejado"
+    "it": "conquista con carisma, orgoglio e bisogno di essere desiderato"
   },
   "Virgem": {
-    "pt": "canaliza energia com precisão, pode ser crítico quando frustrado",
-    "en": "channels energy with precision, can be critical when frustrated",
-    "it": "canaliza energia com precisão, pode ser crítico quando frustrado"
+    "it": "canalizza energia con precisione, può essere critico quando frustrato"
   },
   "Balança": {
-    "pt": "evita conflito directo, mas reage quando a justiça é violada",
-    "en": "avoids direct conflict, but reacts when justice is violated",
-    "it": "evita conflito directo, mas reage quando a justiça é violada"
+    "it": "evita il conflitto diretto, ma reagisce quando la giustizia è violata"
   },
   "Escorpião": {
-    "pt": "intensidade magnética, ciúme profundo, resistência emocional extrema",
-    "en": "magnetic intensity, deep jealousy, extreme emotional stamina",
-    "it": "intensidade magnética, ciúme profundo, resistência emocional extrema"
+    "it": "intensità magnetica, gelosia profonda, resistenza emotiva estrema"
   },
   "Sagitário": {
-    "pt": "aventureiro, honesto demais, foge de possessividade",
-    "en": "adventurous, overly honest, runs from possessiveness",
-    "it": "aventureiro, honesto demais, foge de possessividade"
+    "it": "avventuroso, troppo onesto, fugge dalla possessività"
   },
   "Capricórnio": {
-    "pt": "controlado, estratégico, liberta paixão apenas com confiança",
-    "en": "controlled, strategic, releases passion only with trust",
-    "it": "controlado, estratégico, liberta passione apenas com confiança"
+    "it": "controllato, strategico, libera la passione solo con fiducia"
   },
   "Aquário": {
-    "pt": "imprevisível, excitado pelo diferente, resiste a rotinas",
-    "en": "unpredictable, excited by the different, resists routines",
-    "it": "imprevisível, excitado pelo diferente, resiste a rotinas"
+    "it": "imprevedibile, eccitato dal diverso, resiste alle routine"
   },
   "Peixes": {
-    "pt": "actua por intuição, pode sacrificar-se ou idealizar demasiado",
-    "en": "acts on intuition, may sacrifice or over-idealise",
-    "it": "agisce por intuição, pode sacrificar-se ou idealizar demasiado"
+    "it": "agisce per intuizione, può sacrificarsi o idealizzare troppo"
   }
 }
 
 export const MARTE_REL_DE = {
   "Carneiro": {
-    "pt": "actua com impulso, desejo rápido e iniciativa sexual directa",
-    "en": "acts with impulse, quick desire and direct sexual initiative",
-    "de": "handelt com impulso, Verlangen rápido e iniciativa sexual directa"
+    "de": "handelt impulsiv, mit schnellem Verlangen und direktiver sexueller Initiative"
   },
   "Touro": {
-    "pt": "persiste no prazer, ritmo lento e sensualidade prolongada",
-    "en": "persists in pleasure, slow rhythm and prolonged sensuality",
-    "de": "persiste no prazer, ritmo lento e sensualidade prolongada"
+    "de": "beharrlich im Genuss, langsames Tempo und ausgedehnte Sinnlichkeit"
   },
   "Gémeos": {
-    "pt": "estimula-se com conversa, variedade e provocação mental",
-    "en": "gets aroused through talk, variety and mental provocation",
-    "de": "estimula-se com conversa, variedade e provocação mental"
+    "de": "wird durch Gespräch, Abwechslung und mentale Provokation erregt"
   },
   "Caranguejo": {
-    "pt": "defende quem ama, luta por segurança emocional e lar",
-    "en": "defends who they love, fights for emotional safety and home",
-    "de": "defende quem liebt, luta por Sicherheit emocional e lar"
+    "de": "verteidigt Geliebte, kämpft für emotionale Sicherheit und Zuhause"
   },
   "Leão": {
-    "pt": "conquista com carisma, orgulho e necessidade de ser desejado",
-    "en": "conquers with charisma, pride and need to be desired",
-    "de": "conquista com carisma, orgulho e necessidade de ser desejado"
+    "de": "erobert mit Charisma, Stolz und dem Bedürfnis, begehrt zu werden"
   },
   "Virgem": {
-    "pt": "canaliza energia com precisão, pode ser crítico quando frustrado",
-    "en": "channels energy with precision, can be critical when frustrated",
-    "de": "canaliza energia com precisão, pode ser crítico quando frustrado"
+    "de": "lenkt Energie präzise, kann kritisch sein wenn frustriert"
   },
   "Balança": {
-    "pt": "evita conflito directo, mas reage quando a justiça é violada",
-    "en": "avoids direct conflict, but reacts when justice is violated",
-    "de": "evita conflito directo, mas reage quando a justiça é violada"
+    "de": "meidet direkten Konflikt, reagiert aber wenn Gerechtigkeit verletzt wird"
   },
   "Escorpião": {
-    "pt": "intensidade magnética, ciúme profundo, resistência emocional extrema",
-    "en": "magnetic intensity, deep jealousy, extreme emotional stamina",
-    "de": "intensidade magnética, ciúme profundo, resistência emocional extrema"
+    "de": "magnetische Intensität, tiefe Eifersucht, extreme emotionale Ausdauer"
   },
   "Sagitário": {
-    "pt": "aventureiro, honesto demais, foge de possessividade",
-    "en": "adventurous, overly honest, runs from possessiveness",
-    "de": "aventureiro, honesto demais, foge de possessividade"
+    "de": "abenteuerlustig, zu ehrlich, flieht vor Besitzdenken"
   },
   "Capricórnio": {
-    "pt": "controlado, estratégico, liberta paixão apenas com confiança",
-    "en": "controlled, strategic, releases passion only with trust",
-    "de": "controlado, estratégico, liberta Leidenschaft apenas com confiança"
+    "de": "kontrolliert, strategisch, lässt Leidenschaft nur mit Vertrauen frei"
   },
   "Aquário": {
-    "pt": "imprevisível, excitado pelo diferente, resiste a rotinas",
-    "en": "unpredictable, excited by the different, resists routines",
-    "de": "imprevisível, excitado pelo diferente, resiste a rotinas"
+    "de": "unberechenbar, erregt vom Anderssein, widersteht Routinen"
   },
   "Peixes": {
-    "pt": "actua por intuição, pode sacrificar-se ou idealizar demasiado",
-    "en": "acts on intuition, may sacrifice or over-idealise",
-    "de": "handelt por intuição, pode sacrificar-se ou idealizar demasiado"
+    "de": "handelt intuitiv, kann sich opfern oder zu sehr idealisieren"
   }
 }
 
 export const MARTE_REL_FR = {
   "Carneiro": {
-    "pt": "actua com impulso, desejo rápido e iniciativa sexual directa",
-    "en": "acts with impulse, quick desire and direct sexual initiative",
-    "fr": "agit com impulso, désir rápido e iniciativa sexual directa"
+    "fr": "agit avec impulsion, désir rapide et initiative sexuelle directe"
   },
   "Touro": {
-    "pt": "persiste no prazer, ritmo lento e sensualidade prolongada",
-    "en": "persists in pleasure, slow rhythm and prolonged sensuality",
-    "fr": "persiste no prazer, ritmo lento e sensualidade prolongada"
+    "fr": "persiste dans le plaisir, rythme lent et sensualité prolongée"
   },
   "Gémeos": {
-    "pt": "estimula-se com conversa, variedade e provocação mental",
-    "en": "gets aroused through talk, variety and mental provocation",
-    "fr": "estimula-se com conversa, variedade e provocação mental"
+    "fr": "s'excite par la conversation, la variété et la provocation mentale"
   },
   "Caranguejo": {
-    "pt": "defende quem ama, luta por segurança emocional e lar",
-    "en": "defends who they love, fights for emotional safety and home",
-    "fr": "defende quem aime, luta por sécurité emocional e lar"
+    "fr": "défend ceux qu'il aime, se bat pour la sécurité émotionnelle et le foyer"
   },
   "Leão": {
-    "pt": "conquista com carisma, orgulho e necessidade de ser desejado",
-    "en": "conquers with charisma, pride and need to be desired",
-    "fr": "conquista com carisma, orgulho e necessidade de ser desejado"
+    "fr": "conquiert avec charisme, fierté et besoin d'être désiré"
   },
   "Virgem": {
-    "pt": "canaliza energia com precisão, pode ser crítico quando frustrado",
-    "en": "channels energy with precision, can be critical when frustrated",
-    "fr": "canaliza energia com precisão, pode ser crítico quando frustrado"
+    "fr": "canalise l'énergie avec précision, peut être critique quand frustré"
   },
   "Balança": {
-    "pt": "evita conflito directo, mas reage quando a justiça é violada",
-    "en": "avoids direct conflict, but reacts when justice is violated",
-    "fr": "evita conflito directo, mas reage quando a justiça é violada"
+    "fr": "évite le conflit direct, mais réagit quand la justice est bafouée"
   },
   "Escorpião": {
-    "pt": "intensidade magnética, ciúme profundo, resistência emocional extrema",
-    "en": "magnetic intensity, deep jealousy, extreme emotional stamina",
-    "fr": "intensidade magnética, ciúme profundo, resistência emocional extrema"
+    "fr": "intensité magnétique, jalousie profonde, endurance émotionnelle extrême"
   },
   "Sagitário": {
-    "pt": "aventureiro, honesto demais, foge de possessividade",
-    "en": "adventurous, overly honest, runs from possessiveness",
-    "fr": "aventureiro, honesto demais, foge de possessividade"
+    "fr": "aventurier, trop honnête, fuit la possessivité"
   },
   "Capricórnio": {
-    "pt": "controlado, estratégico, liberta paixão apenas com confiança",
-    "en": "controlled, strategic, releases passion only with trust",
-    "fr": "controlado, estratégico, liberta passion apenas com confiança"
+    "fr": "contrôlé, stratégique, libère la passion seulement avec confiance"
   },
   "Aquário": {
-    "pt": "imprevisível, excitado pelo diferente, resiste a rotinas",
-    "en": "unpredictable, excited by the different, resists routines",
-    "fr": "imprevisível, excitado pelo diferente, resiste a rotinas"
+    "fr": "imprévisible, excité par le différent, résiste aux routines"
   },
   "Peixes": {
-    "pt": "actua por intuição, pode sacrificar-se ou idealizar demasiado",
-    "en": "acts on intuition, may sacrifice or over-idealise",
-    "fr": "agit por intuição, pode sacrificar-se ou idealizar demasiado"
+    "fr": "agit par intuition, peut se sacrifier ou trop idéaliser"
   }
 }
 
 export const LUA_EMOC_ES = {
   "Carneiro": {
-    "pt": "precisa de independência emocional e respostas rápidas",
-    "en": "needs emotional independence and quick responses",
-    "es": "necesita de independência emocional e respostas rápidas"
+    "es": "necesita independencia emocional y respuestas rápidas"
   },
   "Touro": {
-    "pt": "busca estabilidade, toque físico e rotinas reconfortantes",
-    "en": "seeks stability, physical touch and comforting routines",
-    "es": "busca estabilidade, toque físico e rotinas reconfortantes"
+    "es": "busca estabilidad, contacto físico y rutinas reconfortantes"
   },
   "Gémeos": {
-    "pt": "processa emoções falando, muda de humor com facilidade",
-    "en": "processes emotions by talking, shifts mood easily",
-    "es": "processa emoções falando, muda de humor com facilidade"
+    "es": "procesa emociones hablando, cambia de humor con facilidad"
   },
   "Caranguejo": {
-    "pt": "memória emocional profunda, lar é santuário",
-    "en": "deep emotional memory, home is sanctuary",
-    "es": "memória emocional profunda, lar é santuário"
+    "es": "memoria emocional profunda, el hogar es santuario"
   },
   "Leão": {
-    "pt": "precisa de ser valorizado, ferido pelo indiferença",
-    "en": "needs to be valued, wounded by indifference",
-    "es": "necesita de ser valorado, ferido pelo indiferença"
+    "es": "necesita ser valorado, herido por la indiferencia"
   },
   "Virgem": {
-    "pt": "mostra cuidado com actos, ansiedade quando desordenado",
-    "en": "shows care through acts, anxiety when disorderly",
-    "es": "mostra cuidado com actos, ansiedade quando desordenado"
+    "es": "muestra cuidado con actos, ansiedad cuando hay desorden"
   },
   "Balança": {
-    "pt": "sofre com conflito, precisa de parceria equilibrada",
-    "en": "suffers from conflict, needs balanced partnership",
-    "es": "sofre com conflito, necesita de parceria equilibrada"
+    "es": "sufre con el conflicto, necesita una pareja equilibrada"
   },
   "Escorpião": {
-    "pt": "lealdade absoluta, traição marca para sempre",
-    "en": "absolute loyalty, betrayal marks forever",
-    "es": "lealdade absoluta, traição marca para sempre"
+    "es": "lealtad absoluta, la traición marca para siempre"
   },
   "Sagitário": {
-    "pt": "optimismo emocional, fuga quando sente prisão",
-    "en": "emotional optimism, escapes when feeling trapped",
-    "es": "optimismo emocional, fuga quando sente prisão"
+    "es": "optimismo emocional, huye cuando se siente atrapado"
   },
   "Capricórnio": {
-    "pt": "contém sentimentos, demonstra amor com responsabilidade",
-    "en": "contains feelings, shows love through responsibility",
-    "es": "contém sentimentos, demuestra amor com responsabilidade"
+    "es": "contiene sentimientos, demuestra amor con responsabilidad"
   },
   "Aquário": {
-    "pt": "distancia-se para processar, valoriza amizade emocional",
-    "en": "distances to process, values emotional friendship",
-    "es": "distancia-se para processar, valora amizade emocional"
+    "es": "se distancia para procesar, valora la amistad emocional"
   },
   "Peixes": {
-    "pt": "absorve emoções alheias, fronteiras difusas",
-    "en": "absorbs others' emotions, diffuse boundaries",
-    "es": "absorve emoções alheias, fronteiras difusas"
+    "es": "absorbe emociones ajenas, límites difusos"
   }
 }
 
 export const LUA_EMOC_IT = {
   "Carneiro": {
-    "pt": "precisa de independência emocional e respostas rápidas",
-    "en": "needs emotional independence and quick responses",
-    "it": "ha bisogno de independência emocional e respostas rápidas"
+    "it": "ha bisogno di indipendenza emotiva e risposte rapide"
   },
   "Touro": {
-    "pt": "busca estabilidade, toque físico e rotinas reconfortantes",
-    "en": "seeks stability, physical touch and comforting routines",
-    "it": "cerca estabilidade, toque físico e rotinas reconfortantes"
+    "it": "cerca stabilità, contatto fisico e routine confortanti"
   },
   "Gémeos": {
-    "pt": "processa emoções falando, muda de humor com facilidade",
-    "en": "processes emotions by talking, shifts mood easily",
-    "it": "processa emoções falando, muda de humor com facilidade"
+    "it": "elabora le emozioni parlando, cambia umore con facilità"
   },
   "Caranguejo": {
-    "pt": "memória emocional profunda, lar é santuário",
-    "en": "deep emotional memory, home is sanctuary",
-    "it": "memória emocional profunda, lar é santuário"
+    "it": "memoria emotiva profonda, la casa è santuario"
   },
   "Leão": {
-    "pt": "precisa de ser valorizado, ferido pelo indiferença",
-    "en": "needs to be valued, wounded by indifference",
-    "it": "ha bisogno de ser valorizzado, ferido pelo indiferença"
+    "it": "ha bisogno di essere valorizzato, ferito dall'indifferenza"
   },
   "Virgem": {
-    "pt": "mostra cuidado com actos, ansiedade quando desordenado",
-    "en": "shows care through acts, anxiety when disorderly",
-    "it": "mostra cuidado com actos, ansiedade quando desordenado"
+    "it": "mostra cura con atti, ansia quando c'è disordine"
   },
   "Balança": {
-    "pt": "sofre com conflito, precisa de parceria equilibrada",
-    "en": "suffers from conflict, needs balanced partnership",
-    "it": "sofre com conflito, ha bisogno de parceria equilibrada"
+    "it": "soffre per il conflitto, ha bisogno di una partnership equilibrata"
   },
   "Escorpião": {
-    "pt": "lealdade absoluta, traição marca para sempre",
-    "en": "absolute loyalty, betrayal marks forever",
-    "it": "lealdade absoluta, traição marca para sempre"
+    "it": "lealtà assoluta, il tradimento segna per sempre"
   },
   "Sagitário": {
-    "pt": "optimismo emocional, fuga quando sente prisão",
-    "en": "emotional optimism, escapes when feeling trapped",
-    "it": "optimismo emocional, fuga quando sente prisão"
+    "it": "ottimismo emotivo, fugge quando si sente intrappolato"
   },
   "Capricórnio": {
-    "pt": "contém sentimentos, demonstra amor com responsabilidade",
-    "en": "contains feelings, shows love through responsibility",
-    "it": "contém sentimentos, dimostra amore com responsabilidade"
+    "it": "contiene i sentimenti, dimostra amore con responsabilità"
   },
   "Aquário": {
-    "pt": "distancia-se para processar, valoriza amizade emocional",
-    "en": "distances to process, values emotional friendship",
-    "it": "distancia-se para processar, valorizza amizade emocional"
+    "it": "si distanzia per elaborare, valorizza l'amicizia emotiva"
   },
   "Peixes": {
-    "pt": "absorve emoções alheias, fronteiras difusas",
-    "en": "absorbs others' emotions, diffuse boundaries",
-    "it": "absorve emoções alheias, fronteiras difusas"
+    "it": "assorbe le emozioni altrui, confini diffusi"
   }
 }
 
 export const LUA_EMOC_DE = {
   "Carneiro": {
-    "pt": "precisa de independência emocional e respostas rápidas",
-    "en": "needs emotional independence and quick responses",
-    "de": "braucht de independência emocional e respostas rápidas"
+    "de": "braucht emotionale Unabhängigkeit und schnelle Reaktionen"
   },
   "Touro": {
-    "pt": "busca estabilidade, toque físico e rotinas reconfortantes",
-    "en": "seeks stability, physical touch and comforting routines",
-    "de": "sucht estabilidade, toque físico e rotinas reconfortantes"
+    "de": "sucht Stabilität, körperliche Nähe und tröstende Routinen"
   },
   "Gémeos": {
-    "pt": "processa emoções falando, muda de humor com facilidade",
-    "en": "processes emotions by talking, shifts mood easily",
-    "de": "processa emoções falando, muda de humor com facilidade"
+    "de": "verarbeitet Gefühle durch Reden, wechselt leicht die Stimmung"
   },
   "Caranguejo": {
-    "pt": "memória emocional profunda, lar é santuário",
-    "en": "deep emotional memory, home is sanctuary",
-    "de": "memória emocional profunda, lar é santuário"
+    "de": "tiefe emotionale Erinnerung, Zuhause ist Heiligtum"
   },
   "Leão": {
-    "pt": "precisa de ser valorizado, ferido pelo indiferença",
-    "en": "needs to be valued, wounded by indifference",
-    "de": "braucht de ser schätztdo, ferido pelo indiferença"
+    "de": "muss wertgeschätzt werden, verletzt durch Gleichgültigkeit"
   },
   "Virgem": {
-    "pt": "mostra cuidado com actos, ansiedade quando desordenado",
-    "en": "shows care through acts, anxiety when disorderly",
-    "de": "mostra cuidado com actos, ansiedade quando desordenado"
+    "de": "zeigt Fürsorge durch Taten, Angst bei Unordnung"
   },
   "Balança": {
-    "pt": "sofre com conflito, precisa de parceria equilibrada",
-    "en": "suffers from conflict, needs balanced partnership",
-    "de": "sofre com conflito, braucht de parceria equilibrada"
+    "de": "leidet unter Konflikt, braucht ausgewogene Partnerschaft"
   },
   "Escorpião": {
-    "pt": "lealdade absoluta, traição marca para sempre",
-    "en": "absolute loyalty, betrayal marks forever",
-    "de": "lealdade absoluta, traição marca para sempre"
+    "de": "absolute Loyalität, Verrat prägt für immer"
   },
   "Sagitário": {
-    "pt": "optimismo emocional, fuga quando sente prisão",
-    "en": "emotional optimism, escapes when feeling trapped",
-    "de": "optimismo emocional, fuga quando sente prisão"
+    "de": "emotionaler Optimismus, flieht wenn er sich gefangen fühlt"
   },
   "Capricórnio": {
-    "pt": "contém sentimentos, demonstra amor com responsabilidade",
-    "en": "contains feelings, shows love through responsibility",
-    "de": "contém sentimentos, demonstra Liebe com responsabilidade"
+    "de": "hält Gefühle zurück, zeigt Liebe durch Verantwortung"
   },
   "Aquário": {
-    "pt": "distancia-se para processar, valoriza amizade emocional",
-    "en": "distances to process, values emotional friendship",
-    "de": "distancia-se para processar, schätzt amizade emocional"
+    "de": "distanziert sich zum Verarbeiten, schätzt emotionale Freundschaft"
   },
   "Peixes": {
-    "pt": "absorve emoções alheias, fronteiras difusas",
-    "en": "absorbs others' emotions, diffuse boundaries",
-    "de": "absorve emoções alheias, fronteiras difusas"
+    "de": "absorbiert fremde Gefühle, diffuse Grenzen"
   }
 }
 
 export const LUA_EMOC_FR = {
   "Carneiro": {
-    "pt": "precisa de independência emocional e respostas rápidas",
-    "en": "needs emotional independence and quick responses",
-    "fr": "a besoin de independência emocional e respostas rápidas"
+    "fr": "a besoin d'indépendance émotionnelle et de réponses rapides"
   },
   "Touro": {
-    "pt": "busca estabilidade, toque físico e rotinas reconfortantes",
-    "en": "seeks stability, physical touch and comforting routines",
-    "fr": "cherche estabilidade, toque físico e rotinas reconfortantes"
+    "fr": "cherche la stabilité, le contact physique et des routines réconfortantes"
   },
   "Gémeos": {
-    "pt": "processa emoções falando, muda de humor com facilidade",
-    "en": "processes emotions by talking, shifts mood easily",
-    "fr": "processa emoções falando, muda de humor com facilidade"
+    "fr": "traite les émotions en parlant, change d'humeur facilement"
   },
   "Caranguejo": {
-    "pt": "memória emocional profunda, lar é santuário",
-    "en": "deep emotional memory, home is sanctuary",
-    "fr": "memória emocional profunda, lar é santuário"
+    "fr": "mémoire émotionnelle profonde, la maison est un sanctuaire"
   },
   "Leão": {
-    "pt": "precisa de ser valorizado, ferido pelo indiferença",
-    "en": "needs to be valued, wounded by indifference",
-    "fr": "a besoin de ser valorisedo, ferido pelo indiferença"
+    "fr": "a besoin d'être valorisé, blessé par l'indifférence"
   },
   "Virgem": {
-    "pt": "mostra cuidado com actos, ansiedade quando desordenado",
-    "en": "shows care through acts, anxiety when disorderly",
-    "fr": "mostra cuidado com actos, ansiedade quando desordenado"
+    "fr": "montre son attention par des actes, anxieux quand c'est désordonné"
   },
   "Balança": {
-    "pt": "sofre com conflito, precisa de parceria equilibrada",
-    "en": "suffers from conflict, needs balanced partnership",
-    "fr": "sofre com conflito, a besoin de parceria equilibrada"
+    "fr": "souffre du conflit, a besoin d'un partenariat équilibré"
   },
   "Escorpião": {
-    "pt": "lealdade absoluta, traição marca para sempre",
-    "en": "absolute loyalty, betrayal marks forever",
-    "fr": "lealdade absoluta, traição marca para sempre"
+    "fr": "loyauté absolue, la trahison marque à jamais"
   },
   "Sagitário": {
-    "pt": "optimismo emocional, fuga quando sente prisão",
-    "en": "emotional optimism, escapes when feeling trapped",
-    "fr": "optimismo emocional, fuga quando sente prisão"
+    "fr": "optimisme émotionnel, fuit quand il se sent enfermé"
   },
   "Capricórnio": {
-    "pt": "contém sentimentos, demonstra amor com responsabilidade",
-    "en": "contains feelings, shows love through responsibility",
-    "fr": "contém sentimentos, demonstra amour com responsabilidade"
+    "fr": "retient ses sentiments, montre l'amour par la responsabilité"
   },
   "Aquário": {
-    "pt": "distancia-se para processar, valoriza amizade emocional",
-    "en": "distances to process, values emotional friendship",
-    "fr": "distancia-se para processar, valorise amizade emocional"
+    "fr": "prend de la distance pour digérer, valorise l'amitié émotionnelle"
   },
   "Peixes": {
-    "pt": "absorve emoções alheias, fronteiras difusas",
-    "en": "absorbs others' emotions, diffuse boundaries",
-    "fr": "absorve emoções alheias, fronteiras difusas"
+    "fr": "absorbe les émotions des autres, frontières floues"
   }
 }
 
 export const MERCURIO_COM_ES = {
   "Carneiro": {
-    "pt": "fala directo, impaciente com rodeios",
-    "en": "speaks directly, impatient with detours",
-    "es": "fala directo, impaciente com rodeios"
+    "es": "habla directo, impaciente con rodeos"
   },
   "Touro": {
-    "pt": "pensa devagar mas com solidez, teimoso nas ideias",
-    "en": "thinks slowly but solidly, stubborn in ideas",
-    "es": "pensa devagar mas com solidez, teimoso nas ideias"
+    "es": "piensa despacio pero con solidez, terco en las ideas"
   },
   "Gémeos": {
-    "pt": "conversa fluida, multitarefa mental, humor rápido",
-    "en": "fluid conversation, mental multitasking, quick humour",
-    "es": "conversa fluida, multitarefa mental, humor rápido"
+    "es": "conversación fluida, multitarea mental, humor rápido"
   },
   "Caranguejo": {
-    "pt": "comunica pelo tom emocional mais que pelas palavras",
-    "en": "communicates through emotional tone more than words",
-    "es": "comunica pelo tom emocional mais que pelas palavras"
+    "es": "comunica más por el tono emocional que por las palabras"
   },
   "Leão": {
-    "pt": "expressivo, dramático, precisa de ser ouvido",
-    "en": "expressive, dramatic, needs to be heard",
-    "es": "expressivo, dramático, necesita de ser ouvido"
+    "es": "expresivo, dramático, necesita ser escuchado"
   },
   "Virgem": {
-    "pt": "analítico, preciso, pode ser crítico na linguagem",
-    "en": "analytical, precise, can be critical in language",
-    "es": "analítico, preciso, pode ser crítico na linguagem"
+    "es": "analítico, preciso, puede ser crítico en el lenguaje"
   },
   "Balança": {
-    "pt": "diplomático, evita palavras duras, busca consenso",
-    "en": "diplomatic, avoids harsh words, seeks consensus",
-    "es": "diplomático, evita palavras duras, busca consenso"
+    "es": "diplomático, evita palabras duras, busca consenso"
   },
   "Escorpião": {
-    "pt": "silencioso até confiar, depois profundamente penetrante",
-    "en": "silent until trusting, then deeply penetrating",
-    "es": "silencioso até confiar, depois profundamente penetrante"
+    "es": "silencioso hasta confiar, luego profundamente penetrante"
   },
   "Sagitário": {
-    "pt": "honesto, filosófico, pode ser tactless",
-    "en": "honest, philosophical, can be tactless",
-    "es": "honesto, filosófico, pode ser tactless"
+    "es": "honesto, filosófico, puede ser demasiado directo"
   },
   "Capricórnio": {
-    "pt": "economiza palavras, estratégico, formal",
-    "en": "economises words, strategic, formal",
-    "es": "economiza palavras, estratégico, formal"
+    "es": "ahorra palabras, estratégico, formal"
   },
   "Aquário": {
-    "pt": "original, distanciado, debates ideias",
-    "en": "original, detached, debates ideas",
-    "es": "original, distanciado, debates ideias"
+    "es": "original, distanciado, debate ideas"
   },
   "Peixes": {
-    "pt": "metafórico, intuitivo, dificuldade em definir limites verbais",
-    "en": "metaphorical, intuitive, difficulty defining verbal boundaries",
-    "es": "metafórico, intuitivo, dificuldade em definir limites verbais"
+    "es": "metafórico, intuitivo, dificultad para definir límites verbales"
   }
 }
 
 export const MERCURIO_COM_IT = {
   "Carneiro": {
-    "pt": "fala directo, impaciente com rodeios",
-    "en": "speaks directly, impatient with detours",
-    "it": "fala directo, impaciente com rodeios"
+    "it": "parla diretto, impaziente con i giri di parole"
   },
   "Touro": {
-    "pt": "pensa devagar mas com solidez, teimoso nas ideias",
-    "en": "thinks slowly but solidly, stubborn in ideas",
-    "it": "pensa devagar mas com solidez, teimoso nas ideias"
+    "it": "pensa lentamente ma con solidità, testardo nelle idee"
   },
   "Gémeos": {
-    "pt": "conversa fluida, multitarefa mental, humor rápido",
-    "en": "fluid conversation, mental multitasking, quick humour",
-    "it": "conversa fluida, multitarefa mental, humor rápido"
+    "it": "conversazione fluida, multitasking mentale, umorismo rapido"
   },
   "Caranguejo": {
-    "pt": "comunica pelo tom emocional mais que pelas palavras",
-    "en": "communicates through emotional tone more than words",
-    "it": "comunica pelo tom emocional mais que pelas palavras"
+    "it": "comunica più con il tono emotivo che con le parole"
   },
   "Leão": {
-    "pt": "expressivo, dramático, precisa de ser ouvido",
-    "en": "expressive, dramatic, needs to be heard",
-    "it": "expressivo, dramático, ha bisogno de ser ouvido"
+    "it": "espressivo, drammatico, ha bisogno di essere ascoltato"
   },
   "Virgem": {
-    "pt": "analítico, preciso, pode ser crítico na linguagem",
-    "en": "analytical, precise, can be critical in language",
-    "it": "analítico, preciso, pode ser crítico na linguagem"
+    "it": "analitico, preciso, può essere critico nel linguaggio"
   },
   "Balança": {
-    "pt": "diplomático, evita palavras duras, busca consenso",
-    "en": "diplomatic, avoids harsh words, seeks consensus",
-    "it": "diplomático, evita palavras duras, cerca consenso"
+    "it": "diplomatico, evita parole dure, cerca consenso"
   },
   "Escorpião": {
-    "pt": "silencioso até confiar, depois profundamente penetrante",
-    "en": "silent until trusting, then deeply penetrating",
-    "it": "silencioso até confiar, depois profundamente penetrante"
+    "it": "silenzioso finché non si fida, poi profondamente penetrante"
   },
   "Sagitário": {
-    "pt": "honesto, filosófico, pode ser tactless",
-    "en": "honest, philosophical, can be tactless",
-    "it": "honesto, filosófico, pode ser tactless"
+    "it": "onesto, filosofico, può essere troppo diretto"
   },
   "Capricórnio": {
-    "pt": "economiza palavras, estratégico, formal",
-    "en": "economises words, strategic, formal",
-    "it": "economiza palavras, estratégico, formal"
+    "it": "risparmia le parole, strategico, formale"
   },
   "Aquário": {
-    "pt": "original, distanciado, debates ideias",
-    "en": "original, detached, debates ideas",
-    "it": "original, distanciado, debates ideias"
+    "it": "originale, distaccato, dibatte idee"
   },
   "Peixes": {
-    "pt": "metafórico, intuitivo, dificuldade em definir limites verbais",
-    "en": "metaphorical, intuitive, difficulty defining verbal boundaries",
-    "it": "metafórico, intuitivo, dificuldade em definir limites verbais"
+    "it": "metaforico, intuitivo, difficoltà a definire limiti verbali"
   }
 }
 
 export const MERCURIO_COM_DE = {
   "Carneiro": {
-    "pt": "fala directo, impaciente com rodeios",
-    "en": "speaks directly, impatient with detours",
-    "de": "fala directo, impaciente com rodeios"
+    "de": "spricht direkt, ungeduldig mit Umwegen"
   },
   "Touro": {
-    "pt": "pensa devagar mas com solidez, teimoso nas ideias",
-    "en": "thinks slowly but solidly, stubborn in ideas",
-    "de": "pensa devagar mas com solidez, teimoso nas ideias"
+    "de": "denkt langsam aber solide, stur in Ideen"
   },
   "Gémeos": {
-    "pt": "conversa fluida, multitarefa mental, humor rápido",
-    "en": "fluid conversation, mental multitasking, quick humour",
-    "de": "conversa fluida, multitarefa mental, humor rápido"
+    "de": "fließendes Gespräch, mentales Multitasking, schneller Humor"
   },
   "Caranguejo": {
-    "pt": "comunica pelo tom emocional mais que pelas palavras",
-    "en": "communicates through emotional tone more than words",
-    "de": "comunica pelo tom emocional mais que pelas palavras"
+    "de": "kommuniziert eher durch emotionalen Ton als durch Worte"
   },
   "Leão": {
-    "pt": "expressivo, dramático, precisa de ser ouvido",
-    "en": "expressive, dramatic, needs to be heard",
-    "de": "expressivo, dramático, braucht de ser ouvido"
+    "de": "ausdrucksstark, dramatisch, muss gehört werden"
   },
   "Virgem": {
-    "pt": "analítico, preciso, pode ser crítico na linguagem",
-    "en": "analytical, precise, can be critical in language",
-    "de": "analítico, preciso, pode ser crítico na linguagem"
+    "de": "analytisch, präzise, kann in der Sprache kritisch sein"
   },
   "Balança": {
-    "pt": "diplomático, evita palavras duras, busca consenso",
-    "en": "diplomatic, avoids harsh words, seeks consensus",
-    "de": "diplomático, evita palavras duras, sucht consenso"
+    "de": "diplomatisch, meidet harte Worte, sucht Konsens"
   },
   "Escorpião": {
-    "pt": "silencioso até confiar, depois profundamente penetrante",
-    "en": "silent until trusting, then deeply penetrating",
-    "de": "silencioso até confiar, depois profundamente penetrante"
+    "de": "schweigsam bis Vertrauen da ist, dann tief durchdringend"
   },
   "Sagitário": {
-    "pt": "honesto, filosófico, pode ser tactless",
-    "en": "honest, philosophical, can be tactless",
-    "de": "honesto, filosófico, pode ser tactless"
+    "de": "ehrlich, philosophisch, kann taktlos sein"
   },
   "Capricórnio": {
-    "pt": "economiza palavras, estratégico, formal",
-    "en": "economises words, strategic, formal",
-    "de": "economiza palavras, estratégico, formal"
+    "de": "spart mit Worten, strategisch, formell"
   },
   "Aquário": {
-    "pt": "original, distanciado, debates ideias",
-    "en": "original, detached, debates ideas",
-    "de": "original, distanciado, debates ideias"
+    "de": "originell, distanziert, debattiert Ideen"
   },
   "Peixes": {
-    "pt": "metafórico, intuitivo, dificuldade em definir limites verbais",
-    "en": "metaphorical, intuitive, difficulty defining verbal boundaries",
-    "de": "metafórico, intuitivo, dificuldade em definir limites verbais"
+    "de": "metaphorisch, intuitiv, Schwierigkeit verbale Grenzen zu setzen"
   }
 }
 
 export const MERCURIO_COM_FR = {
   "Carneiro": {
-    "pt": "fala directo, impaciente com rodeios",
-    "en": "speaks directly, impatient with detours",
-    "fr": "fala directo, impaciente com rodeios"
+    "fr": "parle directement, impatient des détours"
   },
   "Touro": {
-    "pt": "pensa devagar mas com solidez, teimoso nas ideias",
-    "en": "thinks slowly but solidly, stubborn in ideas",
-    "fr": "pensa devagar mas com solidez, teimoso nas ideias"
+    "fr": "pense lentement mais solidement, têtu dans ses idées"
   },
   "Gémeos": {
-    "pt": "conversa fluida, multitarefa mental, humor rápido",
-    "en": "fluid conversation, mental multitasking, quick humour",
-    "fr": "conversa fluida, multitarefa mental, humor rápido"
+    "fr": "conversation fluide, multitâche mental, humour vif"
   },
   "Caranguejo": {
-    "pt": "comunica pelo tom emocional mais que pelas palavras",
-    "en": "communicates through emotional tone more than words",
-    "fr": "comunica pelo tom emocional mais que pelas palavras"
+    "fr": "communique davantage par le ton émotionnel que par les mots"
   },
   "Leão": {
-    "pt": "expressivo, dramático, precisa de ser ouvido",
-    "en": "expressive, dramatic, needs to be heard",
-    "fr": "expressivo, dramático, a besoin de ser ouvido"
+    "fr": "expressif, dramatique, a besoin d'être entendu"
   },
   "Virgem": {
-    "pt": "analítico, preciso, pode ser crítico na linguagem",
-    "en": "analytical, precise, can be critical in language",
-    "fr": "analítico, preciso, pode ser crítico na linguagem"
+    "fr": "analytique, précis, peut être critique dans le langage"
   },
   "Balança": {
-    "pt": "diplomático, evita palavras duras, busca consenso",
-    "en": "diplomatic, avoids harsh words, seeks consensus",
-    "fr": "diplomático, evita palavras duras, cherche consenso"
+    "fr": "diplomate, évite les mots durs, cherche le consensus"
   },
   "Escorpião": {
-    "pt": "silencioso até confiar, depois profundamente penetrante",
-    "en": "silent until trusting, then deeply penetrating",
-    "fr": "silencioso até confiar, depois profundamente penetrante"
+    "fr": "silencieux jusqu'à la confiance, puis profondément pénétrant"
   },
   "Sagitário": {
-    "pt": "honesto, filosófico, pode ser tactless",
-    "en": "honest, philosophical, can be tactless",
-    "fr": "honesto, filosófico, pode ser tactless"
+    "fr": "honnête, philosophique, peut manquer de tact"
   },
   "Capricórnio": {
-    "pt": "economiza palavras, estratégico, formal",
-    "en": "economises words, strategic, formal",
-    "fr": "economiza palavras, estratégico, formal"
+    "fr": "économise les mots, stratégique, formel"
   },
   "Aquário": {
-    "pt": "original, distanciado, debates ideias",
-    "en": "original, detached, debates ideas",
-    "fr": "original, distanciado, debates ideias"
+    "fr": "original, distant, débat des idées"
   },
   "Peixes": {
-    "pt": "metafórico, intuitivo, dificuldade em definir limites verbais",
-    "en": "metaphorical, intuitive, difficulty defining verbal boundaries",
-    "fr": "metafórico, intuitivo, dificuldade em definir limites verbais"
+    "fr": "métaphorique, intuitif, difficulté à poser des limites verbales"
   }
 }
 
 export const NODO_NORTE_ES = {
   "Carneiro": {
-    "pt": "evoluir para coragem individual, iniciativa própria e auto-afirmação",
-    "en": "evolve toward individual courage, own initiative and self-assertion",
-    "es": "evoluir para coraje individual, iniciativa própria e auto-afirmação"
+    "es": "evolucionar hacia el coraje individual, la iniciativa propia y la autoafirmación"
   },
   "Touro": {
-    "pt": "evoluir para estabilidade, valor próprio e prazer encarnado",
-    "en": "evolve toward stability, self-worth and embodied pleasure",
-    "es": "evoluir para estabilidade, valor próprio e prazer encarnado"
+    "es": "evolucionar hacia la estabilidad, el valor propio y el placer encarnado"
   },
   "Gémeos": {
-    "pt": "evoluir para curiosidade, diálogo e mente aberta",
-    "en": "evolve toward curiosity, dialogue and open mind",
-    "es": "evoluir para curiosidade, diálogo e mente aberta"
+    "es": "evolucionar hacia la curiosidad, el diálogo y la mente abierta"
   },
   "Caranguejo": {
-    "pt": "evoluir para acolhimento, família emocional e vulnerabilidade",
-    "en": "evolve toward welcoming, emotional family and vulnerability",
-    "es": "evoluir para acolhimento, família emocional e vulnerabilidade"
+    "es": "evolucionar hacia el acogimiento, la familia emocional y la vulnerabilidad"
   },
   "Leão": {
-    "pt": "evoluir para criatividade, auto-expressão e generosidade",
-    "en": "evolve toward creativity, self-expression and generosity",
-    "es": "evoluir para criatividade, auto-expressão e generosidade"
+    "es": "evolucionar hacia la creatividad, la autoexpresión y la generosidad"
   },
   "Virgem": {
-    "pt": "evoluir para serviço consciente, saúde e ordem útil",
-    "en": "evolve toward conscious service, health and useful order",
-    "es": "evoluir para serviço consciente, saúde e ordem útil"
+    "es": "evolucionar hacia el servicio consciente, la salud y el orden útil"
   },
   "Balança": {
-    "pt": "evoluir para parceria equilibrada, justiça e cooperação",
-    "en": "evolve toward balanced partnership, justice and cooperation",
-    "es": "evoluir para parceria equilibrada, justiça e cooperação"
+    "es": "evolucionar hacia la pareja equilibrada, la justicia y la cooperación"
   },
   "Escorpião": {
-    "pt": "evoluir para profundidade, entrega emocional e transformação",
-    "en": "evolve toward depth, emotional surrender and transformation",
-    "es": "evoluir para profundidad, entrega emocional e transformação"
+    "es": "evolucionar hacia la profundidad, la entrega emocional y la transformación"
   },
   "Sagitário": {
-    "pt": "evoluir para significado, fé e horizontes amplos",
-    "en": "evolve toward meaning, faith and wide horizons",
-    "es": "evoluir para significado, fé e horizontes amplos"
+    "es": "evolucionar hacia el significado, la fe y los horizontes amplios"
   },
   "Capricórnio": {
-    "pt": "evoluir para responsabilidade, maturidade e legado",
-    "en": "evolve toward responsibility, maturity and legacy",
-    "es": "evoluir para responsabilidade, maturidade e legado"
+    "es": "evolucionar hacia la responsabilidad, la madurez y el legado"
   },
   "Aquário": {
-    "pt": "evoluir para humanidade, originalidade e visão colectiva",
-    "en": "evolve toward humanity, originality and collective vision",
-    "es": "evoluir para humanidade, originalidade e visão colectiva"
+    "es": "evolucionar hacia la humanidad, la originalidad y la visión colectiva"
   },
   "Peixes": {
-    "pt": "evoluir para compaixão, entrega espiritual e desapego",
-    "en": "evolve toward compassion, spiritual surrender and detachment",
-    "es": "evoluir para compasión, entrega espiritul e desapego"
+    "es": "evolucionar hacia la compasión, la entrega espiritual y el desapego"
   }
 }
 
 export const NODO_NORTE_IT = {
   "Carneiro": {
-    "pt": "evoluir para coragem individual, iniciativa própria e auto-afirmação",
-    "en": "evolve toward individual courage, own initiative and self-assertion",
-    "it": "evoluir para coragem individual, iniciativa própria e auto-afirmação"
+    "it": "evolvere verso il coraggio individuale, l'iniziativa propria e l'autoaffermazione"
   },
   "Touro": {
-    "pt": "evoluir para estabilidade, valor próprio e prazer encarnado",
-    "en": "evolve toward stability, self-worth and embodied pleasure",
-    "it": "evoluir para estabilidade, valor próprio e prazer encarnado"
+    "it": "evolvere verso stabilità, autostima e piacere incarnato"
   },
   "Gémeos": {
-    "pt": "evoluir para curiosidade, diálogo e mente aberta",
-    "en": "evolve toward curiosity, dialogue and open mind",
-    "it": "evoluir para curiosidade, diálogo e mente aberta"
+    "it": "evolvere verso curiosità, dialogo e mente aperta"
   },
   "Caranguejo": {
-    "pt": "evoluir para acolhimento, família emocional e vulnerabilidade",
-    "en": "evolve toward welcoming, emotional family and vulnerability",
-    "it": "evoluir para acolhimento, família emocional e vulnerabilidade"
+    "it": "evolvere verso accoglienza, famiglia emotiva e vulnerabilità"
   },
   "Leão": {
-    "pt": "evoluir para criatividade, auto-expressão e generosidade",
-    "en": "evolve toward creativity, self-expression and generosity",
-    "it": "evoluir para criatividade, auto-expressão e generosidade"
+    "it": "evolvere verso creatività, autoespressione e generosità"
   },
   "Virgem": {
-    "pt": "evoluir para serviço consciente, saúde e ordem útil",
-    "en": "evolve toward conscious service, health and useful order",
-    "it": "evoluir para serviço consciente, saúde e ordem útil"
+    "it": "evolvere verso servizio consapevole, salute e ordine utile"
   },
   "Balança": {
-    "pt": "evoluir para parceria equilibrada, justiça e cooperação",
-    "en": "evolve toward balanced partnership, justice and cooperation",
-    "it": "evoluir para parceria equilibrada, justiça e cooperação"
+    "it": "evolvere verso partnership equilibrata, giustizia e cooperazione"
   },
   "Escorpião": {
-    "pt": "evoluir para profundidade, entrega emocional e transformação",
-    "en": "evolve toward depth, emotional surrender and transformation",
-    "it": "evoluir para profondità, entrega emocional e transformação"
+    "it": "evolvere verso profondità, abbandono emotivo e trasformazione"
   },
   "Sagitário": {
-    "pt": "evoluir para significado, fé e horizontes amplos",
-    "en": "evolve toward meaning, faith and wide horizons",
-    "it": "evoluir para significado, fé e horizontes amplos"
+    "it": "evolvere verso significato, fede e orizzonti ampi"
   },
   "Capricórnio": {
-    "pt": "evoluir para responsabilidade, maturidade e legado",
-    "en": "evolve toward responsibility, maturity and legacy",
-    "it": "evoluir para responsabilidade, maturidade e legado"
+    "it": "evolvere verso responsabilità, maturità e eredità"
   },
   "Aquário": {
-    "pt": "evoluir para humanidade, originalidade e visão colectiva",
-    "en": "evolve toward humanity, originality and collective vision",
-    "it": "evoluir para humanidade, originalidade e visão colectiva"
+    "it": "evolvere verso umanità, originalità e visione collettiva"
   },
   "Peixes": {
-    "pt": "evoluir para compaixão, entrega espiritual e desapego",
-    "en": "evolve toward compassion, spiritual surrender and detachment",
-    "it": "evoluir para compassione, entrega espiritual e desapego"
+    "it": "evolvere verso compassione, abbandono spirituale e distacco"
   }
 }
 
 export const NODO_NORTE_DE = {
   "Carneiro": {
-    "pt": "evoluir para coragem individual, iniciativa própria e auto-afirmação",
-    "en": "evolve toward individual courage, own initiative and self-assertion",
-    "de": "evoluir para coragem individual, iniciativa própria e auto-afirmação"
+    "de": "sich zu individuellem Mut, eigener Initiative und Selbstbehauptung entwickeln"
   },
   "Touro": {
-    "pt": "evoluir para estabilidade, valor próprio e prazer encarnado",
-    "en": "evolve toward stability, self-worth and embodied pleasure",
-    "de": "evoluir para estabilidade, valor próprio e prazer encarnado"
+    "de": "sich zu Stabilität, Selbstwert und verkörpertem Genuss entwickeln"
   },
   "Gémeos": {
-    "pt": "evoluir para curiosidade, diálogo e mente aberta",
-    "en": "evolve toward curiosity, dialogue and open mind",
-    "de": "evoluir para curiosidade, diálogo e mente aberta"
+    "de": "sich zu Neugier, Dialog und offenem Geist entwickeln"
   },
   "Caranguejo": {
-    "pt": "evoluir para acolhimento, família emocional e vulnerabilidade",
-    "en": "evolve toward welcoming, emotional family and vulnerability",
-    "de": "evoluir para acolhimento, família emocional e vulnerabilidade"
+    "de": "sich zu Aufnahme, emotionaler Familie und Verletzlichkeit entwickeln"
   },
   "Leão": {
-    "pt": "evoluir para criatividade, auto-expressão e generosidade",
-    "en": "evolve toward creativity, self-expression and generosity",
-    "de": "evoluir para criatividade, auto-expressão e generosidade"
+    "de": "sich zu Kreativität, Selbstausdruck und Großzügigkeit entwickeln"
   },
   "Virgem": {
-    "pt": "evoluir para serviço consciente, saúde e ordem útil",
-    "en": "evolve toward conscious service, health and useful order",
-    "de": "evoluir para serviço consciente, saúde e ordem útil"
+    "de": "sich zu bewusstem Dienst, Gesundheit und nützlicher Ordnung entwickeln"
   },
   "Balança": {
-    "pt": "evoluir para parceria equilibrada, justiça e cooperação",
-    "en": "evolve toward balanced partnership, justice and cooperation",
-    "de": "evoluir para parceria equilibrada, justiça e cooperação"
+    "de": "sich zu ausgewogener Partnerschaft, Gerechtigkeit und Kooperation entwickeln"
   },
   "Escorpião": {
-    "pt": "evoluir para profundidade, entrega emocional e transformação",
-    "en": "evolve toward depth, emotional surrender and transformation",
-    "de": "evoluir para Tiefe, entrega emocional e transformação"
+    "de": "sich zu Tiefe, emotionaler Hingabe und Transformation entwickeln"
   },
   "Sagitário": {
-    "pt": "evoluir para significado, fé e horizontes amplos",
-    "en": "evolve toward meaning, faith and wide horizons",
-    "de": "evoluir para significado, fé e horizontes amplos"
+    "de": "sich zu Sinn, Glauben und weiten Horizonten entwickeln"
   },
   "Capricórnio": {
-    "pt": "evoluir para responsabilidade, maturidade e legado",
-    "en": "evolve toward responsibility, maturity and legacy",
-    "de": "evoluir para responsabilidade, maturidade e legado"
+    "de": "sich zu Verantwortung, Reife und Vermächtnis entwickeln"
   },
   "Aquário": {
-    "pt": "evoluir para humanidade, originalidade e visão colectiva",
-    "en": "evolve toward humanity, originality and collective vision",
-    "de": "evoluir para humanidade, originalidade e visão colectiva"
+    "de": "sich zu Menschlichkeit, Originalität und kollektiver Vision entwickeln"
   },
   "Peixes": {
-    "pt": "evoluir para compaixão, entrega espiritual e desapego",
-    "en": "evolve toward compassion, spiritual surrender and detachment",
-    "de": "evoluir para comLeidenschaft, entrega espirideinel e desapego"
+    "de": "sich zu Mitgefühl, spiritueller Hingabe und Loslösung entwickeln"
   }
 }
 
 export const NODO_NORTE_FR = {
   "Carneiro": {
-    "pt": "evoluir para coragem individual, iniciativa própria e auto-afirmação",
-    "en": "evolve toward individual courage, own initiative and self-assertion",
-    "fr": "evoluir para coragem individual, iniciativa própria e auto-afirmação"
+    "fr": "évoluer vers le courage individuel, l'initiative propre et l'affirmation de soi"
   },
   "Touro": {
-    "pt": "evoluir para estabilidade, valor próprio e prazer encarnado",
-    "en": "evolve toward stability, self-worth and embodied pleasure",
-    "fr": "evoluir para estabilidade, valor próprio e prazer encarnado"
+    "fr": "évoluer vers la stabilité, l'estime de soi et le plaisir incarné"
   },
   "Gémeos": {
-    "pt": "evoluir para curiosidade, diálogo e mente aberta",
-    "en": "evolve toward curiosity, dialogue and open mind",
-    "fr": "evoluir para curiosidade, diálogo e mente aberta"
+    "fr": "évoluer vers la curiosité, le dialogue et l'esprit ouvert"
   },
   "Caranguejo": {
-    "pt": "evoluir para acolhimento, família emocional e vulnerabilidade",
-    "en": "evolve toward welcoming, emotional family and vulnerability",
-    "fr": "evoluir para acolhimento, família emocional e vulnerabilidade"
+    "fr": "évoluer vers l'accueil, la famille émotionnelle et la vulnérabilité"
   },
   "Leão": {
-    "pt": "evoluir para criatividade, auto-expressão e generosidade",
-    "en": "evolve toward creativity, self-expression and generosity",
-    "fr": "evoluir para criatividade, auto-expressão e generosidade"
+    "fr": "évoluer vers la créativité, l'expression de soi et la générosité"
   },
   "Virgem": {
-    "pt": "evoluir para serviço consciente, saúde e ordem útil",
-    "en": "evolve toward conscious service, health and useful order",
-    "fr": "evoluir para serviço consciente, saúde e ordem útil"
+    "fr": "évoluer vers le service conscient, la santé et l'ordre utile"
   },
   "Balança": {
-    "pt": "evoluir para parceria equilibrada, justiça e cooperação",
-    "en": "evolve toward balanced partnership, justice and cooperation",
-    "fr": "evoluir para parceria equilibrada, justiça e cooperação"
+    "fr": "évoluer vers le partenariat équilibré, la justice et la coopération"
   },
   "Escorpião": {
-    "pt": "evoluir para profundidade, entrega emocional e transformação",
-    "en": "evolve toward depth, emotional surrender and transformation",
-    "fr": "evoluir para profondeur, entrega emocional e transformação"
+    "fr": "évoluer vers la profondeur, l'abandon émotionnel et la transformation"
   },
   "Sagitário": {
-    "pt": "evoluir para significado, fé e horizontes amplos",
-    "en": "evolve toward meaning, faith and wide horizons",
-    "fr": "evoluir para significado, fé e horizontes amplos"
+    "fr": "évoluer vers le sens, la foi et les horizons larges"
   },
   "Capricórnio": {
-    "pt": "evoluir para responsabilidade, maturidade e legado",
-    "en": "evolve toward responsibility, maturity and legacy",
-    "fr": "evoluir para responsabilidade, maturidade e legado"
+    "fr": "évoluer vers la responsabilité, la maturité et l'héritage"
   },
   "Aquário": {
-    "pt": "evoluir para humanidade, originalidade e visão colectiva",
-    "en": "evolve toward humanity, originality and collective vision",
-    "fr": "evoluir para humanidade, originalidade e visão colectiva"
+    "fr": "évoluer vers l'humanité, l'originalité et la vision collective"
   },
   "Peixes": {
-    "pt": "evoluir para compaixão, entrega espiritual e desapego",
-    "en": "evolve toward compassion, spiritual surrender and detachment",
-    "fr": "evoluir para compassion, entrega espirital e desapego"
+    "fr": "évoluer vers la compassion, l'abandon spirituel et le détachement"
   }
 }
 
 export const NODO_SUL_ES = {
   "Carneiro": {
-    "pt": "zona de conforto: dependência do outro para agir; padrão de passividade ou projeção de liderança",
-    "en": "comfort zone: dependence on other to act; pattern of passivity or projected leadership",
-    "es": "zona de conforto: dependência do outro para agir; patrón de passividade ou projeção de liderança"
+    "es": "zona de confort: dependencia del otro para actuar; patrón de pasividad o proyección de liderazgo"
   },
   "Touro": {
-    "pt": "zona de conforto: possessividade, apego material ou resistência à mudança",
-    "en": "comfort zone: possessiveness, material attachment or resistance to change",
-    "es": "zona de conforto: possessividade, apego material ou resistência à mudança"
+    "es": "zona de confort: posesividad, apego material o resistencia al cambio"
   },
   "Gémeos": {
-    "pt": "zona de conforto: superficialidade, dispersão ou fuga emocional pela mente",
-    "en": "comfort zone: superficiality, scattering or emotional escape through mind",
-    "es": "zona de conforto: superficialidade, dispersão ou fuga emocional pela mente"
+    "es": "zona de confort: superficialidad, dispersión o escape emocional por la mente"
   },
   "Caranguejo": {
-    "pt": "zona de conforto: dependência emocional, vitimização ou ficar preso ao passado",
-    "en": "comfort zone: emotional dependence, victimhood or stuck in past",
-    "es": "zona de conforto: dependência emocional, vitimização ou ficar preso ao passado"
+    "es": "zona de confort: dependencia emocional, victimización o quedarse atrapado en el pasado"
   },
   "Leão": {
-    "pt": "zona de conforto: orgulho ferido, drama ou necessidade de controlo",
-    "en": "comfort zone: wounded pride, drama or need for control",
-    "es": "zona de conforto: orgulho ferido, drama ou necessidade de controlo"
+    "es": "zona de confort: orgullo herido, drama o necesidad de control"
   },
   "Virgem": {
-    "pt": "zona de conforto: crítica excessiva, perfeccionismo paralisante",
-    "en": "comfort zone: excessive criticism, paralysing perfectionism",
-    "es": "zona de conforto: crítica excessiva, perfeccionismo paralisante"
+    "es": "zona de confort: crítica excesiva, perfeccionismo paralizante"
   },
   "Balança": {
-    "pt": "zona de conforto: codependência, evitar conflito a qualquer custo",
-    "en": "comfort zone: codependency, avoiding conflict at any cost",
-    "es": "zona de conforto: codependência, evitar conflito a qualquer custo"
+    "es": "zona de confort: codependencia, evitar el conflicto a cualquier precio"
   },
   "Escorpião": {
-    "pt": "zona de conforto: manipulação, ciúme, vingança ou poder oculto",
-    "en": "comfort zone: manipulation, jealousy, revenge or hidden power",
-    "es": "zona de conforto: manipulação, ciúme, vingança ou poder oculto"
+    "es": "zona de confort: manipulación, celos, venganza o poder oculto"
   },
   "Sagitário": {
-    "pt": "zona de conforto: arrogância, fuga, promessas vazias",
-    "en": "comfort zone: arrogance, escape, empty promises",
-    "es": "zona de conforto: arrogância, fuga, promessas vazias"
+    "es": "zona de confort: arrogancia, huida, promesas vacías"
   },
   "Capricórnio": {
-    "pt": "zona de conforto: frieza, status, workaholic sem alma",
-    "en": "comfort zone: coldness, status, soulless workaholism",
-    "es": "zona de conforto: frieza, status, workaholic sem alma"
+    "es": "zona de confort: frialdad, estatus, workaholic sin alma"
   },
   "Aquário": {
-    "pt": "zona de conforto: distanciamento, rebeldia vazia, frieza emocional",
-    "en": "comfort zone: detachment, empty rebellion, emotional coldness",
-    "es": "zona de conforto: distanciamento, rebeldia vazia, frieza emocional"
+    "es": "zona de confort: distanciamiento, rebeldía vacía, frialdad emocional"
   },
   "Peixes": {
-    "pt": "zona de conforto: ilusão, escapismo, sacrifício martírio",
-    "en": "comfort zone: illusion, escapism, martyrdom sacrifice",
-    "es": "zona de conforto: ilusão, escapismo, sacrifício martírio"
+    "es": "zona de confort: ilusión, escapismo, sacrificio martirial"
   }
 }
 
 export const NODO_SUL_IT = {
   "Carneiro": {
-    "pt": "zona de conforto: dependência do outro para agir; padrão de passividade ou projeção de liderança",
-    "en": "comfort zone: dependence on other to act; pattern of passivity or projected leadership",
-    "it": "zona de conforto: dependência do outro para agir; padrão de passividade ou projeção de liderança"
+    "it": "zona di comfort: dipendenza dall'altro per agire; schema di passività o leadership proiettata"
   },
   "Touro": {
-    "pt": "zona de conforto: possessividade, apego material ou resistência à mudança",
-    "en": "comfort zone: possessiveness, material attachment or resistance to change",
-    "it": "zona de conforto: possessividade, apego material ou resistência à mudança"
+    "it": "zona di comfort: possessività, attaccamento materiale o resistenza al cambiamento"
   },
   "Gémeos": {
-    "pt": "zona de conforto: superficialidade, dispersão ou fuga emocional pela mente",
-    "en": "comfort zone: superficiality, scattering or emotional escape through mind",
-    "it": "zona de conforto: superficialidade, dispersão ou fuga emocional pela mente"
+    "it": "zona di comfort: superficialità, dispersione o fuga emotiva tramite la mente"
   },
   "Caranguejo": {
-    "pt": "zona de conforto: dependência emocional, vitimização ou ficar preso ao passado",
-    "en": "comfort zone: emotional dependence, victimhood or stuck in past",
-    "it": "zona de conforto: dependência emocional, vitimização ou ficar preso ao passado"
+    "it": "zona di comfort: dipendenza emotiva, vittimismo o restare bloccati nel passato"
   },
   "Leão": {
-    "pt": "zona de conforto: orgulho ferido, drama ou necessidade de controlo",
-    "en": "comfort zone: wounded pride, drama or need for control",
-    "it": "zona de conforto: orgulho ferido, drama ou necessidade de controlo"
+    "it": "zona di comfort: orgoglio ferito, dramma o bisogno di controllo"
   },
   "Virgem": {
-    "pt": "zona de conforto: crítica excessiva, perfeccionismo paralisante",
-    "en": "comfort zone: excessive criticism, paralysing perfectionism",
-    "it": "zona de conforto: crítica excessiva, perfeccionismo paralisante"
+    "it": "zona di comfort: critica eccessiva, perfezionismo paralizzante"
   },
   "Balança": {
-    "pt": "zona de conforto: codependência, evitar conflito a qualquer custo",
-    "en": "comfort zone: codependency, avoiding conflict at any cost",
-    "it": "zona de conforto: codependência, evitar conflito a qualquer custo"
+    "it": "zona di comfort: codependenza, evitare il conflitto a ogni costo"
   },
   "Escorpião": {
-    "pt": "zona de conforto: manipulação, ciúme, vingança ou poder oculto",
-    "en": "comfort zone: manipulation, jealousy, revenge or hidden power",
-    "it": "zona de conforto: manipulação, ciúme, vingança ou poder oculto"
+    "it": "zona di comfort: manipolazione, gelosia, vendetta o potere occulto"
   },
   "Sagitário": {
-    "pt": "zona de conforto: arrogância, fuga, promessas vazias",
-    "en": "comfort zone: arrogance, escape, empty promises",
-    "it": "zona de conforto: arrogância, fuga, promessas vazias"
+    "it": "zona di comfort: arroganza, fuga, promesse vuote"
   },
   "Capricórnio": {
-    "pt": "zona de conforto: frieza, status, workaholic sem alma",
-    "en": "comfort zone: coldness, status, soulless workaholism",
-    "it": "zona de conforto: frieza, status, workaholic sem alma"
+    "it": "zona di comfort: freddezza, status, workaholic senza anima"
   },
   "Aquário": {
-    "pt": "zona de conforto: distanciamento, rebeldia vazia, frieza emocional",
-    "en": "comfort zone: detachment, empty rebellion, emotional coldness",
-    "it": "zona de conforto: distanciamento, rebeldia vazia, frieza emocional"
+    "it": "zona di comfort: distacco, ribellione vuota, freddezza emotiva"
   },
   "Peixes": {
-    "pt": "zona de conforto: ilusão, escapismo, sacrifício martírio",
-    "en": "comfort zone: illusion, escapism, martyrdom sacrifice",
-    "it": "zona de conforto: ilusão, escapismo, sacrifício martírio"
+    "it": "zona di comfort: illusione, evasione, sacrificio martiriale"
   }
 }
 
 export const NODO_SUL_DE = {
   "Carneiro": {
-    "pt": "zona de conforto: dependência do outro para agir; padrão de passividade ou projeção de liderança",
-    "en": "comfort zone: dependence on other to act; pattern of passivity or projected leadership",
-    "de": "zona de conforto: dependência do outro para agir; padrão de passividade ou projeção de liderança"
+    "de": "Komfortzone: Abhängigkeit vom anderen zum Handeln; Muster von Passivität oder projizierter Führung"
   },
   "Touro": {
-    "pt": "zona de conforto: possessividade, apego material ou resistência à mudança",
-    "en": "comfort zone: possessiveness, material attachment or resistance to change",
-    "de": "zona de conforto: possessividade, apego material ou resistência à mudança"
+    "de": "Komfortzone: Besitzdenken, materielle Bindung oder Widerstand gegen Veränderung"
   },
   "Gémeos": {
-    "pt": "zona de conforto: superficialidade, dispersão ou fuga emocional pela mente",
-    "en": "comfort zone: superficiality, scattering or emotional escape through mind",
-    "de": "zona de conforto: superficialidade, dispersão ou fuga emocional pela mente"
+    "de": "Komfortzone: Oberflächlichkeit, Zerstreutheit oder emotionaler Flucht durch den Geist"
   },
   "Caranguejo": {
-    "pt": "zona de conforto: dependência emocional, vitimização ou ficar preso ao passado",
-    "en": "comfort zone: emotional dependence, victimhood or stuck in past",
-    "de": "zona de conforto: dependência emocional, vitimização ou ficar preso ao passado"
+    "de": "Komfortzone: emotionale Abhängigkeit, Opferrolle oder Festhalten in der Vergangenheit"
   },
   "Leão": {
-    "pt": "zona de conforto: orgulho ferido, drama ou necessidade de controlo",
-    "en": "comfort zone: wounded pride, drama or need for control",
-    "de": "zona de conforto: orgulho ferido, drliebt ou necessidade de controlo"
+    "de": "Komfortzone: verletzter Stolz, Drama oder Kontrollbedürfnis"
   },
   "Virgem": {
-    "pt": "zona de conforto: crítica excessiva, perfeccionismo paralisante",
-    "en": "comfort zone: excessive criticism, paralysing perfectionism",
-    "de": "zona de conforto: crítica excessiva, perfeccionismo paralisante"
+    "de": "Komfortzone: übermäßige Kritik, lähmender Perfektionismus"
   },
   "Balança": {
-    "pt": "zona de conforto: codependência, evitar conflito a qualquer custo",
-    "en": "comfort zone: codependency, avoiding conflict at any cost",
-    "de": "zona de conforto: codependência, evitar conflito a qualquer custo"
+    "de": "Komfortzone: Co-Abhängigkeit, Konflikt um jeden Preis vermeiden"
   },
   "Escorpião": {
-    "pt": "zona de conforto: manipulação, ciúme, vingança ou poder oculto",
-    "en": "comfort zone: manipulation, jealousy, revenge or hidden power",
-    "de": "zona de conforto: manipulação, ciúme, vingança ou poder oculto"
+    "de": "Komfortzone: Manipulation, Eifersucht, Rache oder verborgene Macht"
   },
   "Sagitário": {
-    "pt": "zona de conforto: arrogância, fuga, promessas vazias",
-    "en": "comfort zone: arrogance, escape, empty promises",
-    "de": "zona de conforto: arrogância, fuga, promessas vazias"
+    "de": "Komfortzone: Arroganz, Flucht, leere Versprechen"
   },
   "Capricórnio": {
-    "pt": "zona de conforto: frieza, status, workaholic sem alma",
-    "en": "comfort zone: coldness, status, soulless workaholism",
-    "de": "zona de conforto: frieza, status, workaholic sem alma"
+    "de": "Komfortzone: Kälte, Status, seelenloser Workaholic"
   },
   "Aquário": {
-    "pt": "zona de conforto: distanciamento, rebeldia vazia, frieza emocional",
-    "en": "comfort zone: detachment, empty rebellion, emotional coldness",
-    "de": "zona de conforto: distanciamento, rebeldia vazia, frieza emocional"
+    "de": "Komfortzone: Distanz, leerer Rebellion, emotionale Kälte"
   },
   "Peixes": {
-    "pt": "zona de conforto: ilusão, escapismo, sacrifício martírio",
-    "en": "comfort zone: illusion, escapism, martyrdom sacrifice",
-    "de": "zona de conforto: ilusão, escapismo, sacrifício martírio"
+    "de": "Komfortzone: Illusion, Eskapismus, Märtyreropfer"
   }
 }
 
 export const NODO_SUL_FR = {
   "Carneiro": {
-    "pt": "zona de conforto: dependência do outro para agir; padrão de passividade ou projeção de liderança",
-    "en": "comfort zone: dependence on other to act; pattern of passivity or projected leadership",
-    "fr": "zona de conforto: dependência do outro para agir; padrão de passividade ou projeção de liderança"
+    "fr": "zone de confort : dépendance à l'autre pour agir ; schéma de passivité ou de leadership projeté"
   },
   "Touro": {
-    "pt": "zona de conforto: possessividade, apego material ou resistência à mudança",
-    "en": "comfort zone: possessiveness, material attachment or resistance to change",
-    "fr": "zona de conforto: possessividade, apego material ou resistência à mudança"
+    "fr": "zone de confort : possessivité, attachement matériel ou résistance au changement"
   },
   "Gémeos": {
-    "pt": "zona de conforto: superficialidade, dispersão ou fuga emocional pela mente",
-    "en": "comfort zone: superficiality, scattering or emotional escape through mind",
-    "fr": "zona de conforto: superficialidade, dispersão ou fuga emocional pela mente"
+    "fr": "zone de confort : superficialité, dispersion ou fuite émotionnelle par l'esprit"
   },
   "Caranguejo": {
-    "pt": "zona de conforto: dependência emocional, vitimização ou ficar preso ao passado",
-    "en": "comfort zone: emotional dependence, victimhood or stuck in past",
-    "fr": "zona de conforto: dependência emocional, vitimização ou ficar preso ao passado"
+    "fr": "zone de confort : dépendance émotionnelle, victimisation ou blocage dans le passé"
   },
   "Leão": {
-    "pt": "zona de conforto: orgulho ferido, drama ou necessidade de controlo",
-    "en": "comfort zone: wounded pride, drama or need for control",
-    "fr": "zona de conforto: orgulho ferido, draime ou necessidade de controlo"
+    "fr": "zone de confort : fierté blessée, drame ou besoin de contrôle"
   },
   "Virgem": {
-    "pt": "zona de conforto: crítica excessiva, perfeccionismo paralisante",
-    "en": "comfort zone: excessive criticism, paralysing perfectionism",
-    "fr": "zona de conforto: crítica excessiva, perfeccionismo paralisante"
+    "fr": "zone de confort : critique excessive, perfectionnisme paralysant"
   },
   "Balança": {
-    "pt": "zona de conforto: codependência, evitar conflito a qualquer custo",
-    "en": "comfort zone: codependency, avoiding conflict at any cost",
-    "fr": "zona de conforto: codependência, evitar conflito a qualquer custo"
+    "fr": "zone de confort : codépendance, éviter le conflit à tout prix"
   },
   "Escorpião": {
-    "pt": "zona de conforto: manipulação, ciúme, vingança ou poder oculto",
-    "en": "comfort zone: manipulation, jealousy, revenge or hidden power",
-    "fr": "zona de conforto: manipulação, ciúme, vingança ou poder oculto"
+    "fr": "zone de confort : manipulation, jalousie, vengeance ou pouvoir caché"
   },
   "Sagitário": {
-    "pt": "zona de conforto: arrogância, fuga, promessas vazias",
-    "en": "comfort zone: arrogance, escape, empty promises",
-    "fr": "zona de conforto: arrogância, fuga, promessas vazias"
+    "fr": "zone de confort : arrogance, fuite, promesses vides"
   },
   "Capricórnio": {
-    "pt": "zona de conforto: frieza, status, workaholic sem alma",
-    "en": "comfort zone: coldness, status, soulless workaholism",
-    "fr": "zona de conforto: frieza, status, workaholic sem alma"
+    "fr": "zone de confort : froideur, statut, workaholic sans âme"
   },
   "Aquário": {
-    "pt": "zona de conforto: distanciamento, rebeldia vazia, frieza emocional",
-    "en": "comfort zone: detachment, empty rebellion, emotional coldness",
-    "fr": "zona de conforto: distanciamento, rebeldia vazia, frieza emocional"
+    "fr": "zone de confort : distance, rébellion vide, froideur émotionnelle"
   },
   "Peixes": {
-    "pt": "zona de conforto: ilusão, escapismo, sacrifício martírio",
-    "en": "comfort zone: illusion, escapism, martyrdom sacrifice",
-    "fr": "zona de conforto: ilusão, escapismo, sacrifício martírio"
+    "fr": "zone de confort : illusion, évasion, sacrifice martyr"
   }
 }
 
