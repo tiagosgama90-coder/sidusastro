@@ -2,6 +2,40 @@ import admin from 'firebase-admin'
 import { env } from './env.mjs'
 
 let initialized = false
+let lastInitError = null
+
+function normalizePrivateKey(key) {
+  if (!key || typeof key !== 'string') return null
+  let k = key.trim()
+  if (k.includes('\\n')) k = k.replace(/\\n/g, '\n')
+  k = k.replace(/\r\n/g, '\n').replace(/\r/g, '\n')
+  // PEM colado numa linha só (sem \n entre BEGIN e o corpo)
+  if (!k.includes('\n') && k.includes('-----BEGIN')) {
+    k = k
+      .replace(/-----BEGIN PRIVATE KEY-----/g, '-----BEGIN PRIVATE KEY-----\n')
+      .replace(/-----END PRIVATE KEY-----/g, '\n-----END PRIVATE KEY-----\n')
+  }
+  if (!k.endsWith('\n')) k += '\n'
+  return k
+}
+
+function prepareServiceAccount(raw) {
+  const parsed = parseServiceAccount(raw)
+  if (!parsed) return null
+  const private_key = normalizePrivateKey(parsed.private_key)
+  if (!private_key?.includes('BEGIN PRIVATE KEY')) return null
+  return { ...parsed, private_key }
+}
+
+function classifyInitError(msg) {
+  if (!msg) return 'unknown'
+  const m = msg.toLowerCase()
+  if (m.includes('pem') || m.includes('decoder') || m.includes('private key') || m.includes('secretorkey')) {
+    return 'invalid_private_key'
+  }
+  if (m.includes('already exists')) return 'duplicate_app'
+  return 'init_error'
+}
 
 function parseServiceAccount(raw) {
   if (!raw) return null
@@ -36,23 +70,42 @@ function parseServiceAccount(raw) {
 
 export function firebaseAdminStatus() {
   const raw = env('FIREBASE_SERVICE_ACCOUNT')
-  const serviceAccount = parseServiceAccount(raw)
+  const serviceAccount = prepareServiceAccount(raw)
   if (!raw) return { ok: false, reason: 'missing' }
-  if (!serviceAccount) return { ok: false, reason: 'invalid_json' }
-  if (!ensureInit()) return { ok: false, reason: 'init_failed', projectId: serviceAccount.project_id }
+  if (!serviceAccount) return { ok: false, reason: 'invalid_json_or_private_key' }
+  if (!ensureInit()) {
+    return {
+      ok: false,
+      reason: 'init_failed',
+      projectId: serviceAccount.project_id,
+      hint: classifyInitError(lastInitError),
+    }
+  }
   return { ok: true, projectId: serviceAccount.project_id }
 }
 
 function ensureInit() {
   if (initialized) return true
-  const serviceAccount = parseServiceAccount(env('FIREBASE_SERVICE_ACCOUNT'))
-  if (!serviceAccount) return false
+  lastInitError = null
+  const serviceAccount = prepareServiceAccount(env('FIREBASE_SERVICE_ACCOUNT'))
+  if (!serviceAccount) {
+    lastInitError = 'invalid service account shape'
+    return false
+  }
   try {
-    admin.initializeApp({ credential: admin.credential.cert(serviceAccount) })
+    if (admin.apps?.length) {
+      initialized = true
+      return true
+    }
+    admin.initializeApp({
+      credential: admin.credential.cert(serviceAccount),
+      projectId: serviceAccount.project_id,
+    })
     initialized = true
     return true
   } catch (e) {
-    console.error('[Firebase Admin] init failed:', e?.message)
+    lastInitError = e?.message || 'init failed'
+    console.error('[Firebase Admin] init failed:', lastInitError)
     return false
   }
 }

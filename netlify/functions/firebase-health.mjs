@@ -12,6 +12,7 @@ export default async () => {
     projectMatch: status.projectId && webProject ? status.projectId === webProject : null,
     hasServiceAccountVar: !!env('FIREBASE_SERVICE_ACCOUNT'),
     hasWebApiKey: !!(env('FIREBASE_WEB_API_KEY') || env('VITE_FIREBASE_API_KEY')),
+    hint: status.hint || null,
   }
   return new Response(JSON.stringify(body), {
     status: status.ok ? 200 : 503,
