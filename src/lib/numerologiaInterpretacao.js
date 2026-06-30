@@ -43,6 +43,12 @@ const TITULOS_PT = {
   11: 'O Inspirador', 22: 'O Arquitecto', 33: 'O Curador',
 }
 
+const TITULOS_EN = {
+  1: 'The Pioneer', 2: 'The Mediator', 3: 'The Creator', 4: 'The Builder', 5: 'The Explorer',
+  6: 'The Guardian', 7: 'The Mystic', 8: 'The Achiever', 9: 'The Humanitarian',
+  11: 'The Inspirer', 22: 'The Architect', 33: 'The Healer',
+}
+
 const TITULOS_ES = {
   1: 'El Pionero', 2: 'El Mediador', 3: 'El Creador', 4: 'El Constructor', 5: 'El Explorador',
   6: 'El Guardián', 7: 'El Místico', 8: 'El Realizador', 9: 'El Humanitario',
