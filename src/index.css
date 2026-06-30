@@ -395,24 +395,40 @@ html.sidus-no-ads .google-auto-placed {
   scroll-margin-top: 24px;
 }
 
+.landing-auth-password-block {
+  display: block;
+}
+
+.landing-auth-password-input {
+  position: relative;
+  display: block;
+  width: 100%;
+}
+
 .landing-auth-forgot-wrap {
-  margin-top: 8px;
+  display: block;
+  width: 100%;
+  margin-top: 10px;
+  margin-bottom: 4px;
   text-align: right;
+  clear: both;
 }
 
 .landing-auth-forgot {
+  display: inline-block;
   background: none;
   border: none;
-  color: #DFB76C;
+  color: #DFB76C !important;
   cursor: pointer;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 600;
-  padding: 2px 0;
+  padding: 4px 0;
   text-decoration: underline;
   text-underline-offset: 3px;
   white-space: nowrap;
   position: relative;
-  z-index: 2;
+  z-index: 5;
+  line-height: 1.4;
 }
 
 .landing-auth-forgot-row {
@@ -982,6 +998,16 @@ html.sidus-no-ads .google-auto-placed {
 
   .landing-auth-field--last {
     margin-bottom: 10px !important;
+  }
+
+  #sidus-auth-panel .landing-auth-forgot-wrap {
+    display: block !important;
+    margin-top: 10px !important;
+    margin-bottom: 6px !important;
+  }
+
+  #sidus-auth-panel .landing-auth-forgot {
+    font-size: 12px !important;
   }
 
   #sidus-auth-panel input {

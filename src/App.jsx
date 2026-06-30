@@ -1395,9 +1395,9 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
 
         {/* Senha */}
         {!emRecuperacao && (
-        <div className={`landing-auth-field${tipo === 'register' ? '' : ' landing-auth-field--last'}`} style={{ marginBottom: tipo === 'register' ? 16 : 12 }}>
+        <div className="landing-auth-field landing-auth-password-block" style={{ marginBottom: tipo === 'register' ? 16 : 20 }}>
           <label style={estilos.label}>{t('auth.password')}</label>
-          <div style={{ position: 'relative' }}>
+          <div className="landing-auth-password-input">
             <Lock size={15} color={CORES.brancoMuted} style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }} />
             <input
               type={verSenha ? 'text' : 'password'}
@@ -1415,35 +1415,21 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
               {verSenha ? <EyeOff size={16} /> : <Eye size={16} />}
             </button>
           </div>
-          {tipo === 'login' && (
-            <div className="landing-auth-forgot-wrap">
-              <button
-                type="button"
-                className="landing-auth-forgot"
-                onClick={() => { setEmRecuperacao(true); setErro(null); setInfo(null) }}
-              >
-                {t('auth.forgotPassword')}
-              </button>
-            </div>
-          )}
-        </div>
-        )}
-
-        {tipo === 'register' && !emRecuperacao && (
-          <p className="landing-auth-forgot-row">
-            {t('auth.hasAccount')}{' '}
-            <button type="button" className="landing-auth-forgot-inline" onClick={() => onMudar('login')}>
-              {t('auth.loginHere')}
-            </button>
-            <span aria-hidden> · </span>
+          <div className="landing-auth-forgot-wrap">
             <button
               type="button"
-              className="landing-auth-forgot-inline"
-              onClick={() => { onMudar('login'); setEmRecuperacao(true); setErro(null); setInfo(null) }}
+              className="landing-auth-forgot"
+              onClick={() => {
+                if (tipo === 'register') onMudar('login')
+                setEmRecuperacao(true)
+                setErro(null)
+                setInfo(null)
+              }}
             >
               {t('auth.forgotPassword')}
             </button>
-          </p>
+          </div>
+        </div>
         )}
 
         {emRecuperacao && <div style={{ marginBottom: 24 }} />}
