@@ -395,6 +395,42 @@ html.sidus-no-ads .google-auto-placed {
   scroll-margin-top: 24px;
 }
 
+.landing-auth-forgot {
+  background: none;
+  border: none;
+  color: #DFB76C;
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 0;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 2;
+}
+
+.landing-auth-forgot-row {
+  margin: -4px 0 14px;
+  font-size: 12px;
+  line-height: 1.5;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.landing-auth-forgot-inline {
+  background: none;
+  border: none;
+  color: #DFB76C;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 0;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
 /* FAQ - fundo da landing (SEO / AdSense) */
 .landing-faq {
   margin-top: 28px;

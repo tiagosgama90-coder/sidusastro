@@ -1396,7 +1396,18 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
         {/* Senha */}
         {!emRecuperacao && (
         <div className={`landing-auth-field${tipo === 'register' ? '' : ' landing-auth-field--last'}`} style={{ marginBottom: tipo === 'register' ? 16 : 12 }}>
-          <label style={estilos.label}>{t('auth.password')}</label>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, marginBottom: 6 }}>
+            <label style={{ ...estilos.label, marginBottom: 0 }}>{t('auth.password')}</label>
+            {tipo === 'login' && (
+              <button
+                type="button"
+                className="landing-auth-forgot"
+                onClick={() => { setEmRecuperacao(true); setErro(null); setInfo(null) }}
+              >
+                {t('auth.forgotPassword')}
+              </button>
+            )}
+          </div>
           <div style={{ position: 'relative' }}>
             <Lock size={15} color={CORES.brancoMuted} style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }} />
             <input
@@ -1418,16 +1429,21 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
         </div>
         )}
 
-        {isLogin && !emRecuperacao && (
-          <div style={{ marginBottom: 20, textAlign: 'right' }}>
+        {tipo === 'register' && !emRecuperacao && (
+          <p className="landing-auth-forgot-row">
+            {t('auth.hasAccount')}{' '}
+            <button type="button" className="landing-auth-forgot-inline" onClick={() => onMudar('login')}>
+              {t('auth.loginHere')}
+            </button>
+            <span aria-hidden> · </span>
             <button
               type="button"
-              onClick={() => { setEmRecuperacao(true); setErro(null); setInfo(null) }}
-              style={{ background: 'none', border: 'none', color: CORES.dourado, cursor: 'pointer', fontSize: 12, fontWeight: 600, padding: 0, textDecoration: 'underline', textUnderlineOffset: 3 }}
+              className="landing-auth-forgot-inline"
+              onClick={() => { onMudar('login'); setEmRecuperacao(true); setErro(null); setInfo(null) }}
             >
               {t('auth.forgotPassword')}
             </button>
-          </div>
+          </p>
         )}
 
         {emRecuperacao && <div style={{ marginBottom: 24 }} />}
