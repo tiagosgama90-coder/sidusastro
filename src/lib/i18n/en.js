@@ -305,7 +305,10 @@ export default {
   },
   share: {
     button: 'Share my sign',
-    copied: 'Copied!',
+    loading: 'Preparing…',
+    copied: 'Shared!',
+    copiedDesktop: 'Text copied · image saved',
+    fail: 'Try again — or copy sidusastro.com manually',
     title: 'My birth chart — Sidusastro',
     text: '☉ {sun} · ☽ {moon} — discover your chart at {url}',
   },

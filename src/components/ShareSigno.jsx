@@ -4,12 +4,15 @@ import { useLanguage } from '../lib/i18n/LanguageContext.jsx'
 
 const CORES = {
   dourado: '#DFB76C',
-  branco: '#FFFFFF',
-  brancoMuted: 'rgba(255, 255, 255, 0.55)',
   vidroBorda: 'rgba(223, 183, 108, 0.22)',
 }
 
-function gerarImagemPartilha({ signoSol, signoLua, nome, lang, siteUrl }) {
+function dispositivoMovel() {
+  if (typeof navigator === 'undefined') return false
+  return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent)
+}
+
+function criarCanvasPartilha({ signoSol, signoLua, nome, lang }) {
   const W = 600
   const H = 315
   const canvas = document.createElement('canvas')
@@ -53,15 +56,63 @@ function gerarImagemPartilha({ signoSol, signoLua, nome, lang, siteUrl }) {
     : 'Discover your birth chart at sidusastro.com'
   ctx.fillText(tagline, W / 2, H - 28)
 
-  return canvas.toDataURL('image/png')
+  return canvas
 }
 
-/**
- * Partilha signo / excerto do mapa (Web Share API + canvas).
- */
+function canvasParaBlob(canvas) {
+  return new Promise((resolve, reject) => {
+    canvas.toBlob((blob) => {
+      if (blob) resolve(blob)
+      else reject(new Error('canvas_blob'))
+    }, 'image/png')
+  })
+}
+
+async function copiarTexto(texto) {
+  if (navigator.clipboard?.writeText) {
+    await navigator.clipboard.writeText(texto)
+    return true
+  }
+  const ta = document.createElement('textarea')
+  ta.value = texto
+  ta.setAttribute('readonly', '')
+  ta.style.position = 'fixed'
+  ta.style.left = '-9999px'
+  document.body.appendChild(ta)
+  ta.select()
+  const ok = document.execCommand('copy')
+  document.body.removeChild(ta)
+  return ok
+}
+
+function descarregarBlob(blob, nomeFicheiro) {
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = nomeFicheiro
+  a.rel = 'noopener'
+  document.body.appendChild(a)
+  a.click()
+  document.body.removeChild(a)
+  URL.revokeObjectURL(url)
+}
+
+async function partilharNativo(payload) {
+  if (!navigator.share) return false
+  try {
+    if (navigator.canShare && !navigator.canShare(payload)) return false
+    await navigator.share(payload)
+    return true
+  } catch (e) {
+    if (e?.name === 'AbortError') throw e
+    return false
+  }
+}
+
+/** Partilha signo / excerto do mapa (Web Share API em mobile; clipboard + download no desktop). */
 export function ShareSigno({ mapaNatal, nome }) {
   const { lang, t, ts } = useLanguage()
-  const [estado, setEstado] = useState('idle') // idle | loading | done
+  const [estado, setEstado] = useState('idle') // idle | loading | done | error
 
   const signoSol = mapaNatal?.solar?.nome ? ts(mapaNatal.solar.nome) : null
   const signoLua = mapaNatal?.lunar?.nome ? ts(mapaNatal.lunar.nome) : null
@@ -76,47 +127,65 @@ export function ShareSigno({ mapaNatal, nome }) {
         moon: signoLua || '—',
         url: siteUrl,
       })
-      const dataUrl = gerarImagemPartilha({
+      const canvas = criarCanvasPartilha({
         signoSol,
         signoLua,
         nome: nome?.trim() || null,
         lang,
-        siteUrl,
       })
-
-      const blob = await (await fetch(dataUrl)).blob()
+      const blob = await canvasParaBlob(canvas)
       const file = new File([blob], 'sidusastro-signo.png', { type: 'image/png' })
 
-      if (navigator.share && navigator.canShare?.({ files: [file] })) {
-        await navigator.share({
-          title: t('share.title'),
-          text: texto,
-          files: [file],
-        })
-      } else if (navigator.share) {
-        await navigator.share({ title: t('share.title'), text: texto, url: siteUrl })
-      } else {
-        await navigator.clipboard.writeText(texto)
-      }
-      setEstado('done')
-      setTimeout(() => setEstado('idle'), 2500)
-    } catch (e) {
-      if (e?.name !== 'AbortError') {
-        try {
-          const texto = t('share.text', { sun: signoSol, moon: signoLua || '—', url: window.location.origin })
-          await navigator.clipboard.writeText(texto)
+      if (dispositivoMovel() && navigator.share) {
+        const comImagem = { title: t('share.title'), text: texto, files: [file] }
+        if (await partilharNativo(comImagem)) {
           setEstado('done')
           setTimeout(() => setEstado('idle'), 2500)
-        } catch {
-          setEstado('idle')
+          return
         }
-      } else {
-        setEstado('idle')
+        if (await partilharNativo({ title: t('share.title'), text: texto })) {
+          setEstado('done')
+          setTimeout(() => setEstado('idle'), 2500)
+          return
+        }
       }
+
+      const copiou = await copiarTexto(texto)
+      if (!dispositivoMovel()) descarregarBlob(blob, 'sidusastro-signo.png')
+
+      if (copiou) {
+        setEstado('done')
+        setTimeout(() => setEstado('idle'), 2500)
+        return
+      }
+
+      if (!dispositivoMovel()) {
+        setEstado('done')
+        setTimeout(() => setEstado('idle'), 2500)
+        return
+      }
+
+      setEstado('error')
+      setTimeout(() => setEstado('idle'), 3500)
+    } catch (e) {
+      if (e?.name === 'AbortError') {
+        setEstado('idle')
+        return
+      }
+      setEstado('error')
+      setTimeout(() => setEstado('idle'), 3500)
     }
   }, [signoSol, signoLua, nome, lang, t])
 
   if (!signoSol) return null
+
+  const label = estado === 'loading'
+    ? t('share.loading')
+    : estado === 'done'
+      ? (dispositivoMovel() ? t('share.copied') : t('share.copiedDesktop'))
+      : estado === 'error'
+        ? t('share.fail')
+        : t('share.button')
 
   return (
     <button
@@ -131,16 +200,20 @@ export function ShareSigno({ mapaNatal, nome }) {
         padding: '8px 14px',
         borderRadius: 20,
         border: `1px solid ${CORES.vidroBorda}`,
-        background: 'rgba(223,183,108,0.1)',
-        color: CORES.dourado,
+        background: estado === 'error' ? 'rgba(248,113,113,0.12)' : 'rgba(223,183,108,0.1)',
+        color: estado === 'error' ? '#F87171' : CORES.dourado,
         fontSize: 12,
         fontWeight: 600,
         cursor: estado === 'loading' ? 'default' : 'pointer',
         opacity: estado === 'loading' ? 0.7 : 1,
       }}
     >
-      {estado === 'loading' ? <Loader2 size={14} style={{ animation: 'spin 1s linear infinite' }} /> : estado === 'done' ? <Check size={14} /> : <Share2 size={14} />}
-      {estado === 'done' ? t('share.copied') : t('share.button')}
+      {estado === 'loading'
+        ? <Loader2 size={14} style={{ animation: 'spin 1s linear infinite' }} />
+        : estado === 'done'
+          ? <Check size={14} />
+          : <Share2 size={14} />}
+      {label}
     </button>
   )
 }

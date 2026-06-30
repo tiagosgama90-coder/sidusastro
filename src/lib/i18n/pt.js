@@ -305,7 +305,10 @@ export default {
   },
   share: {
     button: 'Partilhar o meu signo',
-    copied: 'Copiado!',
+    loading: 'A preparar…',
+    copied: 'Partilhado!',
+    copiedDesktop: 'Texto copiado · imagem guardada',
+    fail: 'Tenta outra vez — ou copia manualmente o link sidusastro.com',
     title: 'O meu mapa astral — Sidusastro',
     text: '☉ {sun} · ☽ {moon} — descobre o teu mapa em {url}',
   },
