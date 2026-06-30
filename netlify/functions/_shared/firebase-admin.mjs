@@ -5,17 +5,42 @@ let initialized = false
 
 function parseServiceAccount(raw) {
   if (!raw) return null
-  try {
-    return JSON.parse(raw)
-  } catch {
-    /* JSON colado no Netlify por vezes vem com aspas escapadas em duplicado */
+  let text = String(raw).trim()
+  if ((text.startsWith("'") && text.endsWith("'")) || (text.startsWith('"') && text.endsWith('"'))) {
+    text = text.slice(1, -1).trim()
   }
-  try {
-    return JSON.parse(raw.replace(/\\n/g, '\n').replace(/\\"/g, '"'))
-  } catch (e) {
-    console.error('[Firebase Admin] JSON inválido em FIREBASE_SERVICE_ACCOUNT:', e?.message)
-    return null
+
+  const attempts = [
+    () => JSON.parse(text),
+    () => JSON.parse(text.replace(/\\n/g, '\n').replace(/\\"/g, '"')),
+    () => {
+      // JSON colado com quebras de linha reais no private_key
+      const fixed = text.replace(
+        /("private_key"\s*:\s*")([^"]*(?:\n[^"]*)*)(")/,
+        (_, a, key, c) => `${a}${key.replace(/\r?\n/g, '\\n')}${c}`,
+      )
+      return JSON.parse(fixed)
+    },
+  ]
+
+  for (const attempt of attempts) {
+    try {
+      const parsed = attempt()
+      if (parsed?.type === 'service_account' && parsed.project_id && parsed.private_key) return parsed
+    } catch { /* tenta próximo formato */ }
   }
+
+  console.error('[Firebase Admin] JSON inválido em FIREBASE_SERVICE_ACCOUNT')
+  return null
+}
+
+export function firebaseAdminStatus() {
+  const raw = env('FIREBASE_SERVICE_ACCOUNT')
+  const serviceAccount = parseServiceAccount(raw)
+  if (!raw) return { ok: false, reason: 'missing' }
+  if (!serviceAccount) return { ok: false, reason: 'invalid_json' }
+  if (!ensureInit()) return { ok: false, reason: 'init_failed', projectId: serviceAccount.project_id }
+  return { ok: true, projectId: serviceAccount.project_id }
 }
 
 function ensureInit() {
@@ -108,8 +133,13 @@ export async function activarPremium(userId, extra = {}) {
     updates.stripeCustomerId = extra.stripeCustomerId
   }
 
-  await db.collection('users').doc(userId).set(updates, { merge: true })
-  return true
+  try {
+    await db.collection('users').doc(userId).set(updates, { merge: true })
+    return true
+  } catch (e) {
+    console.error('[activarPremium] escrita Firestore falhou:', e?.message)
+    return false
+  }
 }
 
 export async function activarMapaCompleto(userId) {
