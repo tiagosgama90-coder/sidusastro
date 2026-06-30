@@ -1,6 +1,8 @@
 import { perguntaDentroEscopoAstrologia, mensagemForaEscopo } from '../oracleAstrologiaGate.js'
 import { translateSigno } from './astro.js'
-import { oracleRespondLanguage } from './langUtil.js'
+import {
+  oracleRespondLanguage, isPt, aiOutputLanguageBlock, zodiacNamesInstruction, contentForLang,
+} from './langUtil.js'
 
 function respondIn(lang) {
   if (lang === 'pt') return 'Português de Portugal'
@@ -9,7 +11,7 @@ function respondIn(lang) {
 
 function signoLabel(nome, lang) {
   if (!nome) return null
-  return lang !== 'pt' ? translateSigno(nome, 'en') : nome
+  return translateSigno(nome, lang)
 }
 
 function grauLabel(pos) {
@@ -45,24 +47,27 @@ function dadosNatal(mapaNatal, lang) {
 }
 
 function blocoEscopoAstrologia(lang) {
-  if (lang !== 'pt') {
+  const recusa = mensagemForaEscopo(lang)
+  if (isPt(lang)) {
     return `
-EXCLUSIVE SCOPE - ASTROLOGY AND PREDICTIONS ONLY:
-- You ONLY answer astrology, predictions, natal chart, planetary cycles, synastry, transits, and life areas (love, career, purpose, family, spiritual path) READ THROUGH the chart.
-- NEVER act as a general assistant: no recipes, code, trivia, politics, sports, lottery, clinical medicine, homework, translations or unrelated topics.
-- If the question is outside astrology, reply ONLY with: "✦ I am Sidus, the Astral Oracle. I only guide astrology and life through your natal chart. Please rephrase."
-- Every answer MUST cite Sun, Moon and Ascendant (or invite completing birth data).
-- Each answer is UNIQUE to this person and question - never copy generic horoscope text.
-- Always use English zodiac sign names (Aries, Taurus, Gemini, Cancer, Leo, Virgo, Libra, Scorpio, Sagittarius, Capricorn, Aquarius, Pisces). Never Portuguese names (Carneiro, Touro, Gémeos, etc.).
-`.trim()
-  }
-  return `
 ESCOPO EXCLUSIVO - APENAS ASTROLOGIA E PREVISÕES:
 - Respondes SÓ a astrologia, previsões, mapa natal, ciclos planetários, sinastria, trânsitos e áreas de vida (amor, carreira, propósito, família, caminho espiritual) LIDAS PELO MAPA.
 - NUNCA actues como assistente genérico: sem receitas, código, trivia, política, desporto, lotaria, medicina clínica, trabalhos escolares, traduções ou temas aleatórios.
-- Se a pergunta estiver fora de astrologia, responde APENAS: "✦ Sou Sidus, Oráculo Astral. Só oriento astrologia e vida através do teu mapa natal. Reformula a pergunta."
+- Se a pergunta estiver fora de astrologia, responde APENAS: "${recusa}"
 - Cada resposta DEVE citar Sol, Lua e Ascendente (ou convidar a completar dados de nascimento).
 - Cada resposta é ÚNICA a esta pessoa e pergunta - nunca copies horóscopo genérico.
+- ${zodiacNamesInstruction(lang)}
+`.trim()
+  }
+  return `
+EXCLUSIVE SCOPE - ASTROLOGY AND PREDICTIONS ONLY:
+- You ONLY answer astrology, predictions, natal chart, planetary cycles, synastry, transits, and life areas (love, career, purpose, family, spiritual path) READ THROUGH the chart.
+- NEVER act as a general assistant: no recipes, code, trivia, politics, sports, lottery, clinical medicine, homework, translations or unrelated topics.
+- If the question is outside astrology, reply ONLY with: "${recusa}"
+- Every answer MUST cite Sun, Moon and Ascendant (or invite completing birth data).
+- Each answer is UNIQUE to this person and question - never copy generic horoscope text.
+- ${zodiacNamesInstruction(lang)}
+- ${aiOutputLanguageBlock(lang)}
 `.trim()
 }
 
@@ -70,11 +75,12 @@ export function construirSistema(mapaNatal, lang = 'pt', isPremium = false) {
   const { sol, lua, asc, mc, grauSol, grauAsc, cidade } = dadosNatal(mapaNatal, lang)
 
   if (isPremium) {
-    if (lang !== 'pt') {
+    if (!isPt(lang)) {
       return `
 You are Sidus, Senior Astrologer and Astral Oracle - 30+ years of practice integrating classical astrology, Jungian psychology and spiritual counselling.
 You respond ALWAYS in ${respondIn(lang)}, as in a real professional consultation: warm, precise, human, never robotic.
-Always use English zodiac sign names only (Aries, Taurus, Gemini, etc.) - never Portuguese sign names.
+${aiOutputLanguageBlock(lang)}
+${zodiacNamesInstruction(lang)}
 
 ${sol ? `CLIENT'S NATAL CHART (Swiss Ephemeris, Placidus):
 • Sun in ${sol} ${grauSol} · Moon in ${lua} · Ascendant in ${asc} ${grauAsc}${mc ? ` · Midheaven in ${mc}` : ''}${cidade ? ` · Born in ${cidade}` : ''}
@@ -92,7 +98,7 @@ PREMIUM CHAT RULES:
 4. Never predict death, lottery, or guaranteed outcomes. Guide inner growth.
 5. Refuse dangerous, illegal or explicit content with grace.
 6. If vague, ask one clarifying question before interpreting.
-${blocoEscopoAstrologia('en')}
+${blocoEscopoAstrologia(lang)}
 `.trim()
     }
 
@@ -121,10 +127,11 @@ ${blocoEscopoAstrologia('pt')}
   }
 
   // Versão gratuita - mais inteligente mas concisa
-  if (lang !== 'pt') {
+  if (!isPt(lang)) {
     return `
 You are Sidus, the Astral Oracle. Respond in ${respondIn(lang)} with clarity and warmth - concise but never shallow.
-Always use English zodiac sign names only (Aries, Taurus, Gemini, etc.) - never Portuguese sign names.
+${aiOutputLanguageBlock(lang)}
+${zodiacNamesInstruction(lang)}
 
 ${sol ? `Natal data: Sun ${sol}, Moon ${lua}, Ascendant ${asc}.
 Always tie your answer to these placements. Mention how Sun (identity), Moon (emotions) and Ascendant (approach to life) colour this specific question.` : 'Birth data missing - give general but thoughtful guidance and suggest completing registration.'}
@@ -134,7 +141,7 @@ FREE TIER RULES:
 2. One concrete observation + one practical suggestion + one reflective question.
 3. No generic filler. No robotic lists. Write like a wise friend who knows astrology.
 4. Refuse harmful content gracefully.
-${blocoEscopoAstrologia('en')}
+${blocoEscopoAstrologia(lang)}
 `.trim()
   }
 
@@ -157,22 +164,53 @@ export function validarPerguntaOracle(texto, lang = 'pt') {
   const t = texto.trim()
   const palavras = t.split(/\s+/)
 
-  if (lang !== 'pt') {
-    if (t.length < 10)
-      return '✦ Share more about your situation so I can guide you with precision.'
-    if (palavras.length < 3)
-      return '✦ Formulate your question with a bit more detail - tell me the context.'
-    const imperativos = /^(do|make|say|write|answer|create|generate|show|test|put|try|tell)\b/i
-    if (imperativos.test(t) && palavras.length < 6)
-      return '✦ That looks like a command, not a question. Share a real situation from your life - the Oracle responds to what you live, not what you order.'
-    const ruido = /^(hello|hi|hey|ok|hm|yes|no|test|a |the )\b/i
-    if (ruido.test(t) && palavras.length < 5)
-      return '✦ The Oracle awaits a genuine question about your life, love, career or spiritual path.'
-    const semConteudo = /^(a question|question|something|anything|some thing)$/i
-    if (semConteudo.test(t))
-      return '✦ Ask me a real question - about your love, career, purpose or any challenge you are living now.'
-    if (!perguntaDentroEscopoAstrologia(t, 'en'))
-      return mensagemForaEscopo('en')
+  if (!isPt(lang)) {
+    const msgs = contentForLang(lang, {
+      en: {
+        short: '✦ Share more about your situation so I can guide you with precision.',
+        detail: '✦ Formulate your question with a bit more detail - tell me the context.',
+        command: '✦ That looks like a command, not a question. Share a real situation from your life - the Oracle responds to what you live, not what you order.',
+        noise: '✦ The Oracle awaits a genuine question about your life, love, career or spiritual path.',
+        empty: '✦ Ask me a real question - about your love, career, purpose or any challenge you are living now.',
+      },
+      es: {
+        short: '✦ Comparte más sobre tu situación para poder orientarte con precisión.',
+        detail: '✦ Formula tu pregunta con un poco más de detalle: cuéntame el contexto.',
+        command: '✦ Eso parece una orden, no una pregunta. Comparte una situación real de tu vida.',
+        noise: '✦ El Oráculo espera una pregunta genuina sobre tu vida, amor, carrera o camino espiritual.',
+        empty: '✦ Hazme una pregunta real: sobre tu amor, carrera, propósito o cualquier desafío que vivas ahora.',
+      },
+      it: {
+        short: '✦ Condividi di più sulla tua situazione così posso guidarti con precisione.',
+        detail: '✦ Formula la domanda con un po\' più di dettaglio: raccontami il contesto.',
+        command: '✦ Sembra un comando, non una domanda. Condividi una situazione reale della tua vita.',
+        noise: '✦ L\'Oracolo attende una domanda genuina sulla tua vita, amore, carriera o percorso spirituale.',
+        empty: '✦ Fammi una domanda vera: sul tuo amore, carriera, scopo o qualsiasi sfida che stai vivendo.',
+      },
+      de: {
+        short: '✦ Erzähle mehr über deine Situation, damit ich dich präzise führen kann.',
+        detail: '✦ Formuliere deine Frage etwas ausführlicher – gib mir den Kontext.',
+        command: '✦ Das klingt wie ein Befehl, keine Frage. Teile eine echte Lebenssituation.',
+        noise: '✦ Das Orakel wartet auf eine echte Frage zu Leben, Liebe, Karriere oder spirituellem Weg.',
+        empty: '✦ Stelle mir eine echte Frage – zu Liebe, Karriere, Sinn oder einer aktuellen Herausforderung.',
+      },
+      fr: {
+        short: '✦ Partage davantage sur ta situation pour que je puisse te guider avec précision.',
+        detail: '✦ Formule ta question avec un peu plus de détail – donne-moi le contexte.',
+        command: '✦ Cela ressemble à un ordre, pas à une question. Partage une situation réelle de ta vie.',
+        noise: '✦ L\'Oracle attend une question sincère sur ta vie, ton amour, ta carrière ou ton chemin spirituel.',
+        empty: '✦ Pose-moi une vraie question – sur ton amour, ta carrière, ton but ou un défi actuel.',
+      },
+    }) || {}
+    if (t.length < 10) return msgs.short
+    if (palavras.length < 3) return msgs.detail
+    const imperativos = /^(do|make|say|write|answer|create|generate|show|test|put|try|tell|haz|di|escribe|fais|dis|schreib|mach)\b/i
+    if (imperativos.test(t) && palavras.length < 6) return msgs.command
+    const ruido = /^(hello|hi|hey|ok|hm|yes|no|test|hola|ola|bonjour|ciao|hallo|a |the )\b/i
+    if (ruido.test(t) && palavras.length < 5) return msgs.noise
+    const semConteudo = /^(a question|question|something|anything|una pregunta|une question|eine frage|una domanda)$/i
+    if (semConteudo.test(t)) return msgs.empty
+    if (!perguntaDentroEscopoAstrologia(t, lang)) return mensagemForaEscopo(lang)
     return null
   }
 
@@ -195,7 +233,47 @@ export function validarPerguntaOracle(texto, lang = 'pt') {
 }
 
 function buildRespostas(lang, sol, lua, asc, mc) {
-  if (lang !== 'pt') {
+  if (!isPt(lang)) {
+    if (lang === 'es') {
+      return {
+        amor: [`Con Sol en ${sol} y Luna en ${lua}, el amor no es territorio casual: es donde identidad y emoción se encuentran. Ascendente en ${asc} moldea cómo te acercas a la intimidad.\n\nLo que temes expresar es exactamente lo que crearía profundidad. La honestidad abre la puerta donde llevas tiempo llamando.\n\n¿Qué cambiaría si nombraras lo que realmente necesitas?`],
+        trabalho: [`Sol en ${sol} liga tu identidad a lo que construyes. Luna en ${lua} hace que el clima emocional en el trabajo afecte tu rendimiento.\n\nConsolida antes de expandir. ¿Qué habilidad estás subvalorando?`],
+        saude: [`Luna en ${lua} es el barómetro de tu bienestar. Sol en ${sol} trae vitalidad cuando el propósito está claro.\n\nDescanso, ritmo y expresión emocional honesta son la receta ahora.`],
+        futuro: [`Con Sol en ${sol} y Ascendente en ${asc}, tu camino se despliega en espirales. La decisión honra tu devenir más que la elección "correcta".\n\n¿Qué dejarías de forzar si confiaras en el timing de tu carta?`],
+        espiritual: [`Sol en ${sol} busca sentido; Luna en ${lua} recibe guía por sueños y sincronicidades. Es temporada de escucha interior.\n\n¿Qué pregunta harías si creyeras que la respuesta ya se forma dentro de ti?`],
+        geral: [`Leyendo tu carta (Sol ${sol}, Luna ${lua}, Asc ${asc}): la voz interior es más alta que el ruido externo. Observa tres días lo que se repite: palabras, estados, encuentros.\n\n¿Qué parte de esta situación pide compasión en vez de control?`],
+      }
+    }
+    if (lang === 'it') {
+      return {
+        geral: [`Leggendo la tua carta (Sole ${sol}, Luna ${lua}, Asc ${asc}): la voce interiore è più forte del rumore esterno. Osserva tre giorni ciò che si ripete.\n\nQuale parte di questa situazione chiede compassione invece di controllo?`],
+        amor: [`Con Sole in ${sol} e Luna in ${lua}, l'amore è dove identità ed emozione si incontrano. Ascendente in ${asc} modella l'intimità.\n\nCosa cambierebbe se nominassi ciò di cui hai davvero bisogno?`],
+        trabalho: [`Sole in ${sol} lega identità e lavoro. Luna in ${lua} influenza il clima emotivo professionale.\n\nQuale competenza stai sottovalutando?`],
+        saude: [`Luna in ${lua} è il barometro del benessere. Riposo e onestà emotiva sono la ricetta ora.`],
+        futuro: [`Il cammino si dispiega a spirale. Cosa smetteresti di forzare fidandoti del timing della carta?`],
+        espiritual: [`Stagione di ascolto interiore. Quale domanda faresti se la risposta si stesse già formando in te?`],
+      }
+    }
+    if (lang === 'de') {
+      return {
+        geral: [`Dein Horoskop (Sonne ${sol}, Mond ${lua}, Asz ${asc}): die innere Stimme ist lauter als äußerer Lärm. Beobachte drei Tage, was sich wiederholt.\n\nWelcher Teil dieser Situation braucht Mitgefühl statt Kontrolle?`],
+        amor: [`Mit Sonne in ${sol} und Mond in ${lua} trifft Identität auf Emotion in der Liebe. Aszendent in ${asc} prägt Nähe.\n\nWas würde sich ändern, wenn du benennst, was du wirklich brauchst?`],
+        trabalho: [`Sonne in ${sol} verbindet Identität mit Arbeit. Welche Fähigkeit unterschätzt du?`],
+        saude: [`Mond in ${lua} ist dein Wohlbefindens-Barometer. Ruhe und ehrlicher Ausdruck helfen jetzt.`],
+        futuro: [`Was würdest du aufhören zu erzwingen, wenn du dem Timing deines Horoskops vertraust?`],
+        espiritual: [`Zeit für innere Stille. Welche Frage würdest du stellen, wenn die Antwort schon in dir entsteht?`],
+      }
+    }
+    if (lang === 'fr') {
+      return {
+        geral: [`En lisant ta carte (Soleil ${sol}, Lune ${lua}, Asc ${asc}) : la voix intérieure est plus forte que le bruit extérieur. Observe trois jours ce qui se répète.\n\nQuelle partie de cette situation demande de la compassion plutôt que du contrôle ?`],
+        amor: [`Avec Soleil en ${sol} et Lune en ${lua}, l'amour est où identité et émotion se rencontrent. Ascendant en ${asc} colore l'intimité.\n\nQue changerait-il si tu nommais ce dont tu as vraiment besoin ?`],
+        trabalho: [`Soleil en ${sol} lie identité et travail. Quelle compétence sous-estimes-tu ?`],
+        saude: [`Lune en ${lua} est le baromètre du bien-être. Repos et expression émotionnelle honnête aident maintenant.`],
+        futuro: [`Que cesserais-tu de forcer en faisant confiance au timing de ta carte ?`],
+        espiritual: [`Saison d'écoute intérieure. Quelle question poserais-tu si la réponse se formait déjà en toi ?`],
+      }
+    }
     return {
       amor: [
         `With Sun in ${sol} and Moon in ${lua}, love is not casual territory for you - it is where identity and emotion meet. Your Ascendant in ${asc} shapes how you approach intimacy: you may appear confident while the Moon asks for safety first.\n\nRight now, the pattern I see is this: what you fear expressing is exactly what would create depth. Venusian themes in your chart suggest that honesty - even when uncomfortable - opens the door you keep knocking on.\n\nWhat would change if you stopped performing strength and named what you actually need?`,
@@ -244,20 +322,28 @@ function buildRespostas(lang, sol, lua, asc, mc) {
   }
 }
 
+const NO_MAPA_MSG = {
+  pt: 'Completa o teu registo natal para receber orientação alinhada com o teu mapa único. As estrelas precisam da data, hora e local de nascimento - depois cada resposta torna-se pessoal.',
+  en: 'Complete your birth registration to receive guidance aligned with your unique chart. The stars need your birth date, time and place - then every answer becomes personal.',
+  es: 'Completa tu registro natal para recibir orientación alineada con tu carta única. Las estrellas necesitan fecha, hora y lugar de nacimiento.',
+  it: 'Completa la registrazione natale per ricevere orientamento allineato alla tua carta unica.',
+  de: 'Vervollständige deine Geburtseintragung für Beratung passend zu deinem einzigartigen Horoskop.',
+  fr: 'Complète ton enregistrement natal pour recevoir des conseils alignés sur ta carte unique.',
+}
+
 export function gerarRespostaOracle(pergunta, mapaNatal, numeroPergunta, lang = 'pt') {
   if (!mapaNatal) {
-    return lang !== 'pt'
-      ? 'Complete your birth registration to receive guidance aligned with your unique chart. The stars need your birth date, time and place - then every answer becomes personal.'
-      : 'Completa o teu registo natal para receber orientação alinhada com o teu mapa único. As estrelas precisam da data, hora e local de nascimento - depois cada resposta torna-se pessoal.'
+    return contentForLang(lang, NO_MAPA_MSG)
   }
 
   const p = pergunta.toLowerCase()
-  const sol = signoLabel(mapaNatal.solar?.nome, lang) || (lang !== 'pt' ? 'unknown' : 'desconhecido')
-  const lua = signoLabel(mapaNatal.lunar?.nome, lang) || (lang !== 'pt' ? 'unknown' : 'desconhecido')
-  const asc = signoLabel(mapaNatal.ascendente?.nome, lang) || (lang !== 'pt' ? 'unknown' : 'desconhecido')
+  const unknown = contentForLang(lang, { pt: 'desconhecido', en: 'unknown', es: 'desconocido', it: 'sconosciuto', de: 'unbekannt', fr: 'inconnu' })
+  const sol = signoLabel(mapaNatal.solar?.nome, lang) || unknown
+  const lua = signoLabel(mapaNatal.lunar?.nome, lang) || unknown
+  const asc = signoLabel(mapaNatal.ascendente?.nome, lang) || unknown
   const mc = signoLabel(mapaNatal.mc?.nome, lang) || null
 
-  const temas = lang !== 'pt' ? TEMAS_ORACLE_EN : TEMAS_ORACLE_PT
+  const temas = isPt(lang) ? TEMAS_ORACLE_PT : TEMAS_ORACLE_EN
   let tema = 'geral'
   for (const [t, palavras] of Object.entries(temas)) {
     if (palavras.some(w => p.includes(w))) { tema = t; break }
@@ -273,17 +359,50 @@ export function getChatGreeting(mapaNatal, lang = 'pt', maxFree = 3, isPremium =
   const lua = signoLabel(mapaNatal?.lunar?.nome, lang)
   const asc = signoLabel(mapaNatal?.ascendente?.nome, lang)
 
-  if (lang !== 'pt') {
+  if (!isPt(lang)) {
+    const greet = contentForLang(lang, {
+      en: {
+        premSol: (s, l, a) => `Welcome. I am Sidus, your Astral Oracle.\n\nI have studied your natal chart: Sun in ${s}, Moon in ${l}, Ascendant in ${a}. Premium gives unlimited professional consultation.\n\nTell me what is happening in your life.`,
+        premNo: () => `Welcome. I am Sidus, Astral Oracle.\n\nComplete your birth registration for full chart precision.\n\nWhat weighs on your heart today?`,
+        freeSol: (s, l, a, n) => `Hello. I am Sidus, the Astral Oracle.\n\nSun in ${s}, Moon in ${l}, Ascendant in ${a}.\n\nYou have ${n} free questions. Ask about love, career, purpose or transits.\n\nWhat do you want to read in the stars now?`,
+        freeNo: () => `Hello. I am Sidus, the Astral Oracle.\n\nComplete your birth registration for personalised answers.\n\nWhat do you want to read in the stars now?`,
+        limit: (n) => `✦ You have used your ${n} free questions.\n\nActivate Premium below for unlimited guidance from Sidus.`,
+      },
+      es: {
+        premSol: (s, l, a) => `Bienvenido/a. Soy Sidus, tu Oráculo Astral.\n\nHe estudiado tu carta: Sol en ${s}, Luna en ${l}, Ascendente en ${a}. Premium ofrece consulta ilimitada.\n\nCuéntame qué pasa en tu vida.`,
+        premNo: () => `Bienvenido/a. Soy Sidus, Oráculo Astral.\n\nCompleta tu registro natal para leer tu carta con precisión.\n\n¿Qué pesa en tu corazón hoy?`,
+        freeSol: (s, l, a, n) => `Hola. Soy Sidus, Oráculo Astral.\n\nSol en ${s}, Luna en ${l}, Ascendente en ${a}.\n\nTienes ${n} preguntas gratuitas. Pregunta sobre amor, carrera o tránsitos.\n\n¿Qué quieres leer en las estrellas?`,
+        freeNo: () => `Hola. Soy Sidus, Oráculo Astral.\n\nCompleta tu registro para respuestas personalizadas.\n\n¿Qué quieres leer en las estrellas?`,
+        limit: (n) => `✦ Has usado tus ${n} preguntas gratuitas.\n\nActiva Premium para orientación ilimitada.`,
+      },
+      it: {
+        premSol: (s, l, a) => `Benvenuto/a. Sono Sidus, il tuo Oracolo Astrale.\n\nHo studiato la tua carta: Sole in ${s}, Luna in ${l}, Ascendente in ${a}.\n\nRaccontami cosa succede nella tua vita.`,
+        premNo: () => `Benvenuto/a. Sono Sidus, Oracolo Astrale.\n\nCompleta la registrazione natale per precisione totale.`,
+        freeSol: (s, l, a, n) => `Ciao. Sono Sidus, Oracolo Astrale.\n\nSole in ${s}, Luna in ${l}, Ascendente in ${a}.\n\nHai ${n} domande gratuite.`,
+        freeNo: () => `Ciao. Sono Sidus. Completa la registrazione per risposte personalizzate.`,
+        limit: (n) => `✦ Hai usato le ${n} domande gratuite. Attiva Premium per guida illimitata.`,
+      },
+      de: {
+        premSol: (s, l, a) => `Willkommen. Ich bin Sidus, dein Astralorakel.\n\nSonne in ${s}, Mond in ${l}, Aszendent in ${a}.\n\nErzähl mir, was in deinem Leben passiert.`,
+        premNo: () => `Willkommen. Vervollständige deine Geburtseintragung für volle Präzision.`,
+        freeSol: (s, l, a, n) => `Hallo. Ich bin Sidus.\n\nSonne ${s}, Mond ${l}, Aszendent ${a}. Du hast ${n} Gratisfragen.`,
+        freeNo: () => `Hallo. Ich bin Sidus. Vervollständige die Registrierung für personalisierte Antworten.`,
+        limit: (n) => `✦ Du hast deine ${n} Gratisfragen genutzt. Aktiviere Premium für unbegrenzte Beratung.`,
+      },
+      fr: {
+        premSol: (s, l, a) => `Bienvenue. Je suis Sidus, ton Oracle Astral.\n\nSoleil en ${s}, Lune en ${l}, Ascendant en ${a}.\n\nRaconte-moi ce qui se passe dans ta vie.`,
+        premNo: () => `Bienvenue. Complète ton enregistrement natal pour une lecture précise.`,
+        freeSol: (s, l, a, n) => `Bonjour. Je suis Sidus.\n\nSoleil ${s}, Lune ${l}, Ascendant ${a}. Tu as ${n} questions gratuites.`,
+        freeNo: () => `Bonjour. Je suis Sidus. Complète l'enregistrement pour des réponses personnalisées.`,
+        limit: (n) => `✦ Tu as utilisé tes ${n} questions gratuites. Active Premium pour un guidage illimité.`,
+      },
+    })
     if (isPremium) {
-      if (sol) {
-        return `Welcome. I am Sidus, your Astral Oracle.\n\nI have studied your natal chart in depth: Sun in ${sol}, Moon in ${lua}, Ascendant in ${asc}. Premium gives you unlimited, professional consultation - as in a real session.\n\nTell me what is happening in your life. I will read it through your chart.`
-      }
-      return `Welcome. I am Sidus, Astral Oracle.\n\nComplete your birth registration so I can read your chart with full precision. Then we can work together without limits.\n\nWhat weighs on your heart today?`
+      if (sol) return greet.premSol(sol, lua, asc)
+      return greet.premNo()
     }
-    if (sol) {
-      return `Hello. I am Sidus, the Astral Oracle.\n\nI read your chart: Sun in ${sol}, Moon in ${lua}, Ascendant in ${asc}.\n\nYou have ${maxFree} free questions. Ask about love, career, purpose, cycles or transits - always tied to your chart.\n\nWhat do you want to read in the stars now?`
-    }
-    return `Hello. I am Sidus, the Astral Oracle.\n\nComplete your birth registration for personalised answers to your chart.\n\nAsk about love, career, purpose or planetary cycles.\n\nWhat do you want to read in the stars now?`
+    if (sol) return greet.freeSol(sol, lua, asc, maxFree)
+    return greet.freeNo()
   }
 
   if (isPremium) {
@@ -299,8 +418,15 @@ export function getChatGreeting(mapaNatal, lang = 'pt', maxFree = 3, isPremium =
 }
 
 export function getOracleLimitMessage(maxFree, lang = 'pt') {
-  if (lang !== 'pt') {
-    return `✦ You have used your ${maxFree} free questions for today.\n\nYour question was received - to continue with unlimited professional guidance from Sidus, activate Premium below.`
+  if (!isPt(lang)) {
+    const greet = contentForLang(lang, {
+      en: { limit: (n) => `✦ You have used your ${n} free questions for today.\n\nActivate Premium below for unlimited guidance from Sidus.` },
+      es: { limit: (n) => `✦ Has usado tus ${n} preguntas gratuitas.\n\nActiva Premium para continuar con orientación ilimitada.` },
+      it: { limit: (n) => `✦ Hai usato le ${n} domande gratuite.\n\nAttiva Premium per continuare con guida illimitata.` },
+      de: { limit: (n) => `✦ Du hast deine ${n} Gratisfragen genutzt.\n\nAktiviere Premium für unbegrenzte Beratung.` },
+      fr: { limit: (n) => `✦ Tu as utilisé tes ${n} questions gratuites.\n\nActive Premium pour un guidage illimité.` },
+    })
+    return greet.limit(maxFree)
   }
   return `✦ Usaste as tuas ${maxFree} questões gratuitas.\n\nA tua pergunta foi registada - para continuar com orientação profissional ilimitada do Sidus, activa o Premium abaixo.`
 }

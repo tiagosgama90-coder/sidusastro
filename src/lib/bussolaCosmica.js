@@ -3,26 +3,17 @@
  * Isolado do mapa natal; não altera cálculos do mapa.
  */
 import { Body, Ecliptic, GeoVector, MakeTime } from 'astronomy-engine'
+import { SIGNOS_PT, translateSigno, translatePlaneta } from './i18n/astro.js'
+import { contentForLang, isPt, prepInSign } from './i18n/langUtil.js'
 
-const SIGNOS = [
-  'Carneiro', 'Touro', 'Gémeos', 'Caranguejo', 'Leão', 'Virgem',
-  'Balança', 'Escorpião', 'Sagitário', 'Capricórnio', 'Aquário', 'Peixes',
-]
-
-const SIGNOS_EN = [
-  'Aries', 'Taurus', 'Gemini', 'Cancer', 'Leo', 'Virgo',
-  'Libra', 'Scorpio', 'Sagittarius', 'Capricorn', 'Aquarius', 'Pisces',
-]
-
-const MESES_PT = [
-  'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
-  'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro',
-]
-
-const MESES_EN = [
-  'January', 'February', 'March', 'April', 'May', 'June',
-  'July', 'August', 'September', 'October', 'November', 'December',
-]
+const MESES_BY_LANG = {
+  pt: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
+  en: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+  es: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+  it: ['Gennaio', 'Febbraio', 'Marzo', 'Aprile', 'Maggio', 'Giugno', 'Luglio', 'Agosto', 'Settembre', 'Ottobre', 'Novembre', 'Dicembre'],
+  de: ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'],
+  fr: ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'],
+}
 
 const PLANETAS = [
   { nome: 'Sol', nomeEn: 'Sun', corpo: Body.Sun, simbolo: '☉', peso: 1 },
@@ -49,9 +40,9 @@ function lonEcliptica(corpo, date) {
 }
 
 function signoDeLongitude(lon, lang) {
-  const lista = lang !== 'pt' ? SIGNOS_EN : SIGNOS
   const n = ((Number(lon) % 360) + 360) % 360
-  return lista[Math.min(11, Math.floor(n / 30))]
+  const ptNome = SIGNOS_PT[Math.min(11, Math.floor(n / 30))]
+  return translateSigno(ptNome, lang)
 }
 
 function grausNoSigno(lon) {
@@ -100,20 +91,21 @@ function impactoDe(transito) {
 }
 
 function descricaoMes(transito, lang, posicoes) {
-  const p = lang !== 'pt' ? transito.planetaEn : transito.planeta
+  const p = translatePlaneta(transito.planeta, lang)
   const s = transito.signo
   const graus = transito.graus
   const retro = transito.retrogrado
   const tipo = transito.tipo
+  const prep = prepInSign(lang)
 
   const outros = posicoes
     .filter((x) => x.nome !== transito.planeta && x.peso >= 2)
     .slice(0, 3)
-    .map((x) => `${lang !== 'pt' ? x.nomeEn : x.nome} ${lang !== 'pt' ? 'in' : 'em'} ${x.signo} (${x.graus}°)`)
+    .map((x) => `${translatePlaneta(x.nome, lang)} ${prep} ${x.signo} (${x.graus}°)`)
     .join(' · ')
 
-  if (lang !== 'pt') {
-    let base = `${p} in ${s} at ${graus}°`
+  if (!isPt(lang)) {
+    let base = `${p} ${prep} ${s} at ${graus}°`
     if (retro) base += ' ℞'
     if (tipo === 'ingresso') base = `${p} enters ${s} this month - a shift in collective tone and personal strategy.`
     else if (tipo === 'retrógrado') base = `${p} retrograde in ${s}: review, revise and deepen; avoid rushing new starts in this area.`
@@ -198,10 +190,16 @@ const AFINIDADE = {
 }
 
 export function calcularBussola2026(lang = 'pt') {
-  const meses = lang !== 'pt' ? MESES_EN : MESES_PT
-  const impactoMap = lang !== 'pt'
-    ? { alto: 'high', médio: 'medium', baixo: 'low', atenção: 'caution', intenso: 'intense', transformador: 'transformative', desafio: 'challenge', padrão: 'standard', optimismo: 'optimism' }
-    : { alto: 'alto', médio: 'médio', baixo: 'baixo', atenção: 'atenção', intenso: 'intenso', transformador: 'transformador', desafio: 'desafio', padrão: 'padrão', optimismo: 'optimismo' }
+  const meses = contentForLang(lang, MESES_BY_LANG) || MESES_BY_LANG.en
+  const IMPACTO_BY_LANG = {
+    pt: { alto: 'alto', médio: 'médio', baixo: 'baixo', atenção: 'atenção', intenso: 'intenso', transformador: 'transformador', desafio: 'desafio', padrão: 'padrão', optimismo: 'optimismo' },
+    en: { alto: 'high', médio: 'medium', baixo: 'low', atenção: 'caution', intenso: 'intense', transformador: 'transformative', desafio: 'challenge', padrão: 'standard', optimismo: 'optimism' },
+    es: { alto: 'alto', médio: 'medio', baixo: 'bajo', atenção: 'atención', intenso: 'intenso', transformador: 'transformador', desafio: 'desafío', padrão: 'estándar', optimismo: 'optimismo' },
+    it: { alto: 'alto', médio: 'medio', baixo: 'basso', atenção: 'attenzione', intenso: 'intenso', transformador: 'trasformativo', desafio: 'sfida', padrão: 'standard', optimismo: 'ottimismo' },
+    de: { alto: 'hoch', médio: 'mittel', baixo: 'niedrig', atenção: 'Vorsicht', intenso: 'intensiv', transformador: 'transformativ', desafio: 'Herausforderung', padrão: 'Standard', optimismo: 'Optimismus' },
+    fr: { alto: 'élevé', médio: 'moyen', baixo: 'faible', atenção: 'attention', intenso: 'intense', transformador: 'transformateur', desafio: 'défi', padrão: 'standard', optimismo: 'optimisme' },
+  }
+  const impactoMap = contentForLang(lang, IMPACTO_BY_LANG) || IMPACTO_BY_LANG.en
 
   const transitos = []
 

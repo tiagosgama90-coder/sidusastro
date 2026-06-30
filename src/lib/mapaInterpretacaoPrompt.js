@@ -4,6 +4,7 @@
 
 import { formatarTextoPlano } from './mapaInterpretacao.js'
 import { getMapaCopy } from './i18n/mapaCopy.js'
+import { localeTag, aiOutputLanguageBlock, oracleRespondLanguage, isPt } from './i18n/langUtil.js'
 
 const ELEMENTO = {
   Carneiro: 'Fogo', Leão: 'Fogo', Sagitário: 'Fogo',
@@ -59,7 +60,7 @@ function labelsFromCopy(lang) {
     nodo: L.nodo,
     quiron: L.quiron,
     orientacao: L.orientacao,
-    mapaNatal: lang !== 'pt' ? 'Your natal chart' : 'O teu mapa natal',
+    mapaNatal: isPt(lang) ? 'O teu mapa natal' : (lang === 'es' ? 'Tu carta natal' : lang === 'it' ? 'La tua carta natale' : lang === 'de' ? 'Dein Geburtshoroskop' : lang === 'fr' ? 'Ta carte natale' : 'Your natal chart'),
   }
 }
 
@@ -121,7 +122,7 @@ export function construirPayloadMapa(mapaNatal, planetas, aspetos, dados, lang =
 
   return {
     sistema: 'Tropical · Casas Placidus · Swiss Ephemeris',
-    idioma_saida: lang !== 'pt' ? 'en-GB' : 'pt-PT',
+    idioma_saida: localeTag(lang),
     nativo: {
       nome: dados?.nome || null,
       data: dados?.data || null,
@@ -152,7 +153,7 @@ export function construirPayloadMapa(mapaNatal, planetas, aspetos, dados, lang =
 
 export function serializarMapaParaIA(mapaNatal, planetas, aspetos, dados, lang = 'pt') {
   const payload = construirPayloadMapa(mapaNatal, planetas, aspetos, dados, lang)
-  const en = lang !== 'pt'
+  const en = !isPt(lang)
   return [
     en ? 'AUTHORITATIVE CHART JSON (Swiss Ephemeris - never invent positions):' : 'JSON AUTORITATIVO DO MAPA (Swiss Ephemeris - nunca inventes posições):',
     JSON.stringify(payload, null, 2),
@@ -191,9 +192,12 @@ export function analiseIaPremiumValida(analise) {
 export function construirSistemaMapa(lang = 'pt') {
   const L = labelsFromCopy(lang)
 
-  if (lang !== 'pt') {
+  if (!isPt(lang)) {
     return `
 You are Sidus Astro's Senior Psychological and Evolutionary Astrologer. Tropical zodiac, Placidus houses, Swiss Ephemeris precision.
+
+${aiOutputLanguageBlock(lang)}
+Write ALL section titles, subtitles and body text in ${oracleRespondLanguage(lang)} only.
 
 IDENTITY: Literary, dense, engaging, therapeutic writing for THIS chart only. You write a permanent premium natal report - a literary work, not a template engine.
 
@@ -276,7 +280,7 @@ Cada "texto" é prosa contínua em parágrafos. Este relatório é imutável e �
 
 export function construirPedidoMapa({ mapaNatal, planetas, aspetos, dados, lang, retryCurto = false, retryRobotic = false }) {
   const facts = serializarMapaParaIA(mapaNatal, planetas, aspetos, dados, lang)
-  const en = lang !== 'pt'
+  const en = !isPt(lang)
 
   let extra = ''
   if (retryCurto) {
@@ -290,8 +294,12 @@ export function construirPedidoMapa({ mapaNatal, planetas, aspetos, dados, lang,
       : '\n\nCRÍTICO: A resposta anterior usou frases-feitas. Reescreve do zero. Proibido templates. Astrologia psicológica literária pura.'
   }
 
+  const langInstr = isPt(lang)
+    ? ''
+    : `\n\nMANDATORY: Write the complete JSON report in ${oracleRespondLanguage(lang)}. All titles and text in that language.`
+
   return en
-    ? `${facts}${extra}\n\nWrite the complete JSON report now. Cross-weave all chart factors. Shadow, light and practical counsel in every major block. Valid JSON only.`
+    ? `${facts}${extra}${langInstr}\n\nWrite the complete JSON report now. Cross-weave all chart factors. Shadow, light and practical counsel in every major block. Valid JSON only.`
     : `${facts}${extra}\n\nRedige agora o relatório JSON completo. Cruza todos os factores do mapa. Sombra, luz e conselho prático em cada bloco principal. Só JSON válido.`
 }
 

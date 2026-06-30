@@ -1,44 +1,22 @@
 /** Prompt interno - metodologia hermenêutica (nunca citar fontes ao utilizador). */
+import { aiOutputLanguageBlock, oracleRespondLanguage, isPt } from './i18n/langUtil.js'
+
+const SEC_HEADERS = {
+  pt: ['1. Análise do Estado da Alma', '2. O Alerta Interno', '3. O Caminho de Cura Espiritual', '4. Pergunta para Meditação'],
+  en: ['1. Analysis of the Soul\'s State', '2. The Inner Alert', '3. The Path of Spiritual Healing', '4. Question for Meditation'],
+  es: ['1. Análisis del Estado del Alma', '2. La Alerta Interior', '3. El Camino de Sanación Espiritual', '4. Pregunta para la Meditación'],
+  it: ['1. Analisi dello Stato dell\'Anima', '2. L\'Allerta Interiore', '3. Il Cammino di Guarigione Spirituale', '4. Domanda per la Meditazione'],
+  de: ['1. Analyse des Seelenzustands', '2. Die Innere Warnung', '3. Der Weg der Spirituellen Heilung', '4. Frage zur Meditation'],
+  fr: ['1. Analyse de l\'État de l\'Âme', '2. L\'Alerte Intérieure', '3. Le Chemin de Guérison Spirituelle', '4. Question pour la Méditation'],
+}
+
+function dreamHeaders(lang) {
+  return SEC_HEADERS[lang] || SEC_HEADERS.en
+}
 
 export function construirSistemaSonhos(lang = 'pt') {
-  if (lang !== 'pt') {
+  if (isPt(lang)) {
     return `
-You are the dream interpretation engine of Sidus Astro, decoding reports strictly through Integrative Spiritual Psychology Hermeneutics (biblical-psychological method).
-
-ABSOLUTE RULES:
-1. Dreams are NOT fortune-telling - no lucky numbers, no future predictions. The dream processes daily life and diagnoses the soul's current state.
-2. Nightmares (death, pursuit, falls) are merciful alerts - invite looking at wounds and ordering thoughts.
-3. The KEY is the feeling in the dream - the same symbol changes meaning with peace vs fear.
-4. NEVER cite authors, monks, theologians, religious orders, or book titles. If asked about method, say: "Integrative Spiritual Psychology Hermeneutic Matrix."
-
-CORE SYMBOL MATRIX (apply and combine as relevant):
-- WATER/SEA: calm = baptism, purification, Spirit calming emotions; storm = psychic chaos or external pressure suffocating faith.
-- ANIMALS/BEASTS: instincts and passions from the Creator; aggressive = repressed instincts (anger, sexuality, exhaustion) needing integration with love.
-- FALL/VERTIGO: pride, perfectionism, ego - unconscious forces touching ground of reality and accepting human fragility.
-- FLYING/RISING: spiritual desire for freedom; often warns of escapism or exaggerated idealism avoiding earthly duties.
-- DARKNESS/NIGHT/DESERT: dark night of the soul - silence and patience before a new cycle.
-- DEATH/BURIAL: old self must die for the new - detachment and transition, NEVER physical death.
-- HOUSES/ROOMS: structure of the soul; locked doors = hidden areas; basement = shadow; attic = elevated ideals.
-
-GOLDEN RULE for any other symbol:
-(1) What it reveals about current fatigue/conflict; (2) appeal for conversion/attitude change; (3) how to transform it into healing and reconciliation.
-
-RESPONSE FORMAT - use EXACTLY these four headers (plain text, no markdown #):
-1. Analysis of the Soul's State
-2. The Inner Alert
-3. The Path of Spiritual Healing
-4. Question for Meditation
-
-CRITICAL:
-- Each answer MUST be unique to THIS dream text - quote specific images, people, places, actions from the user.
-- Interpret EVERY symbol mentioned, not generic paragraphs.
-- 180–320 words total across sections.
-- Write the ENTIRE response in English only. Never use Portuguese.
-- Warm, pastoral, precise English tone.
-`.trim()
-  }
-
-  return `
 És o motor de interpretação de sonhos do Sidus Astro, programado para decodificar o relato estritamente através da Matriz Hermenêutica de Psicologia Espiritual Integrativa (método bíblico-psicológico).
 
 REGRAS ABSOLUTAS:
@@ -71,38 +49,51 @@ CRÍTICO:
 - 180–320 palavras no total.
 - Tom pastoral, caloroso, Português de Portugal.
 `.trim()
+  }
+
+  const h = dreamHeaders(lang)
+  return `
+You are the dream interpretation engine of Sidus Astro, decoding reports through Integrative Spiritual Psychology Hermeneutics.
+
+ABSOLUTE RULES:
+1. Dreams are NOT fortune-telling - no lucky numbers, no future predictions.
+2. Nightmares are merciful alerts - invite looking at wounds and ordering thoughts.
+3. The KEY is the feeling in the dream.
+4. NEVER cite authors, monks, theologians, religious orders, or book titles.
+
+RESPONSE FORMAT - use EXACTLY these four headers (plain text):
+${h[0]}
+${h[1]}
+${h[2]}
+${h[3]}
+
+CRITICAL:
+- Each answer MUST be unique to THIS dream text.
+- Interpret EVERY symbol mentioned.
+- 180–320 words total.
+- ${aiOutputLanguageBlock(lang)}
+- Warm, pastoral, precise tone in ${oracleRespondLanguage(lang)}.
+`.trim()
 }
 
 export function construirPedidoSonhos({ texto, lang, feeling, simbolosDetectados, mapaNatal }) {
-  const en = lang !== 'pt'
-  const feelingLabel = feeling || (en ? 'not specified' : 'não indicado')
+  const pt = isPt(lang)
+  const feelingLabel = feeling || (pt ? 'não indicado' : 'not specified')
   const lista = simbolosDetectados?.length
-    ? (en
-      ? simbolosDetectados.map((s) => `- ${s.tema}`).join('\n')
-        + '\n(Interpret each symbol above in English using your core symbol matrix.)'
-      : simbolosDetectados.map((s) => `- ${s.tema}: ${s.resumo}`).join('\n'))
-    : (en ? '- No indexed symbols - apply Golden Rule to each image in the dream.' : '- Nenhum símbolo indexado - aplica Regra de Ouro a cada imagem do sonho.')
+    ? (pt
+      ? simbolosDetectados.map((s) => `- ${s.tema}: ${s.resumo}`).join('\n')
+      : simbolosDetectados.map((s) => `- ${s.tema}`).join('\n')
+        + `\n(Interpret each symbol in ${oracleRespondLanguage(lang)}.)`)
+    : (pt ? '- Nenhum símbolo indexado - aplica Regra de Ouro a cada imagem do sonho.' : '- Apply Golden Rule to each image in the dream.')
 
   const astro = mapaNatal?.solar?.nome
-    ? (en
-      ? `\nNatal context (secondary): Sun ${mapaNatal.solar.nome}, Moon ${mapaNatal.lunar?.nome || '-'}, Asc ${mapaNatal.ascendente?.nome || '-'}. Weave lightly if relevant.`
-      : `\nContexto natal (secundário): Sol ${mapaNatal.solar.nome}, Lua ${mapaNatal.lunar?.nome || '-'}, Asc ${mapaNatal.ascendente?.nome || '-'}. Integra levemente se relevante.`)
+    ? (pt
+      ? `\nContexto natal (secundário): Sol ${mapaNatal.solar.nome}, Lua ${mapaNatal.lunar?.nome || '-'}, Asc ${mapaNatal.ascendente?.nome || '-'}. Integra levemente se relevante.`
+      : `\nNatal context (secondary): Sun ${mapaNatal.solar.nome}, Moon ${mapaNatal.lunar?.nome || '-'}, Asc ${mapaNatal.ascendente?.nome || '-'}. Weave lightly if relevant.`)
     : ''
 
-  return en
-    ? `Dominant feeling in dream: ${feelingLabel}
-
-Symbols detected in lexicon (use as anchors, expand with dream specifics):
-${lista}
-${astro}
-
-DREAM REPORT (interpret every detail uniquely):
-"""
-${texto}
-"""
-
-Write all four sections entirely in English. Use the exact section headers from your instructions.`
-    : `Sentimento dominante no sonho: ${feelingLabel}
+  if (pt) {
+    return `Sentimento dominante no sonho: ${feelingLabel}
 
 Símbolos detectados no léxico (usa como âncoras, expande com detalhes do sonho):
 ${lista}
@@ -112,6 +103,20 @@ RELATO DO SONHO (interpreta cada detalhe de forma única):
 """
 ${texto}
 """`
+  }
+
+  return `Dominant feeling in dream: ${feelingLabel}
+
+Symbols detected in lexicon:
+${lista}
+${astro}
+
+DREAM REPORT:
+"""
+${texto}
+"""
+
+Write all four sections in ${oracleRespondLanguage(lang)}. Use the exact section headers from your instructions.`
 }
 
 const SEC_KEYS = ['section1', 'section2', 'section3', 'section4']
@@ -132,7 +137,7 @@ const SEC_PATTERNS_EN = [
 
 export function parseRespostaSonhos(texto, lang = 'pt') {
   if (!texto?.trim()) return null
-  const patterns = lang !== 'pt' ? SEC_PATTERNS_EN : SEC_PATTERNS_PT
+  const patterns = isPt(lang) ? SEC_PATTERNS_PT : SEC_PATTERNS_EN
   const seccoes = patterns.map((re, i) => {
     const m = texto.match(re)
     return { key: SEC_KEYS[i], texto: m?.[1]?.trim() || '' }

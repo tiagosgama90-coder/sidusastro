@@ -1,7 +1,8 @@
+import { contentForLang } from './i18n/langUtil.js'
+
 /**
  * Horas Iguais - interpretação inspirada nos ensinamentos de Doreen Virtue
  * sobre números angélicos e sincronias do relógio.
- * Cada hora igual (HH:MM com dígitos espelhados) traz uma mensagem dos anjos.
  */
 
 const HORAS_PT = {
@@ -238,15 +239,34 @@ export function isHoraEspelho(hora, minuto) {
   return h === m.split('').reverse().join('')
 }
 
+const NEUTRO = {
+  pt: { titulo: 'Momento Presente', anjo: 'Os Teus Anjos', palavraChave: 'Presença', mensagem: 'Cada momento traz orientação angelical. Doreen Virtue ensinava que números repetidos são toques divinos - mantém-te atento/a à próxima sincronia.', conselho: 'Respira três vezes conscientemente e pergunta: "Anjos, o que querem que eu saiba agora?"' },
+  en: { titulo: 'Present Moment', anjo: 'Your Angels', palavraChave: 'Presence', mensagem: 'Every moment carries angelic guidance. Repeated numbers are divine nudges - stay attentive to the next synchronicity.', conselho: 'Take three conscious breaths and ask: "Angels, what do you want me to know now?"' },
+  es: { titulo: 'Momento Presente', anjo: 'Tus Ángeles', palavraChave: 'Presencia', mensagem: 'Cada momento trae orientación angelical. Los números repetidos son toques divinos: mantente atento a la próxima sincronía.', conselho: 'Respira tres veces conscientemente y pregunta: "Ángeles, ¿qué queréis que sepa ahora?"' },
+  it: { titulo: 'Momento Presente', anjo: 'I Tuoi Angeli', palavraChave: 'Presenza', mensagem: 'Ogni momento porta guida angelica. I numeri ripetuti sono tocchi divini: resta attento alla prossima sincronicità.', conselho: 'Respira tre volte e chiedi: "Angeli, cosa volete che sappia ora?"' },
+  de: { titulo: 'Gegenwärtiger Moment', anjo: 'Deine Engel', palavraChave: 'Präsenz', mensagem: 'Jeder Moment trägt engelische Führung. Wiederholte Zahlen sind göttliche Hinweise.', conselho: 'Atme dreimal bewusst und frage: "Engel, was soll ich jetzt wissen?"' },
+  fr: { titulo: 'Moment Présent', anjo: 'Tes Anges', palavraChave: 'Présence', mensagem: 'Chaque moment apporte une guidance angélique. Les nombres répétés sont des signes divins.', conselho: 'Respire trois fois et demande : "Anges, que voulez-vous que je sache maintenant ?"' },
+}
+
+const HORAS_PACKS = { pt: () => HORAS_PT, en: () => HORAS_EN, es: () => HORAS_EN, it: () => HORAS_EN, de: () => HORAS_EN, fr: () => HORAS_EN }
+const ESPELHOS_PACKS = { pt: () => ESPELHOS_PT, en: () => ESPELHOS_EN, es: () => ESPELHOS_EN, it: () => ESPELHOS_EN, de: () => ESPELHOS_EN, fr: () => ESPELHOS_EN }
+
+function packHoras(lang) {
+  return (HORAS_PACKS[lang] || HORAS_PACKS.en)()
+}
+
+function packEspelhos(lang) {
+  return (ESPELHOS_PACKS[lang] || ESPELHOS_PACKS.en)()
+}
+
 export function listarHorasIguais(lang = 'pt') {
-  const base = lang !== 'pt' ? HORAS_EN : HORAS_PT
-  return Object.keys(base).sort()
+  return Object.keys(packHoras(lang)).sort()
 }
 
 export function interpretarHorario(hora, minuto, lang = 'pt') {
   const chave = formatarHora(hora, minuto)
-  const iguais = lang !== 'pt' ? HORAS_EN : HORAS_PT
-  const espelhos = lang !== 'pt' ? ESPELHOS_EN : ESPELHOS_PT
+  const iguais = packHoras(lang)
+  const espelhos = packEspelhos(lang)
 
   if (iguais[chave]) {
     return { tipo: 'igual', chave, ...iguais[chave] }
@@ -259,19 +279,8 @@ export function interpretarHorario(hora, minuto, lang = 'pt') {
     if (iguais[reduzida]) return { tipo: 'igual', chave: reduzida, ...iguais[reduzida] }
   }
 
-  return {
-    tipo: 'neutro',
-    chave,
-    titulo: lang !== 'pt' ? 'Present Moment' : 'Momento Presente',
-    anjo: lang !== 'pt' ? 'Your Angels' : 'Os Teus Anjos',
-    mensagem: lang !== 'pt'
-      ? 'Every moment carries angelic guidance. Doreen Virtue taught that repeated numbers are divine nudges - stay attentive to the next synchronicity.'
-      : 'Cada momento traz orientação angelical. Doreen Virtue ensinava que números repetidos são toques divinos - mantém-te atento/a à próxima sincronia.',
-    conselho: lang !== 'pt'
-      ? 'Take three conscious breaths and ask: "Angels, what do you want me to know now?"'
-      : 'Respira três vezes conscientemente e pergunta: "Anjos, o que querem que eu saiba agora?"',
-    palavraChave: lang !== 'pt' ? 'Presence' : 'Presença',
-  }
+  const n = contentForLang(lang, NEUTRO) || NEUTRO.en
+  return { tipo: 'neutro', chave, ...n }
 }
 
 export function interpretarAgora(lang = 'pt') {

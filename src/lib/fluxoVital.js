@@ -5,7 +5,8 @@
  */
 import { Body, Ecliptic, GeoVector, MakeTime } from 'astronomy-engine'
 import { calcularFaseLua } from './faseLua.js'
-import { SIGNOS_PT, SIGNO_EN_TO_PT } from './i18n/astro.js'
+import { SIGNOS_PT, SIGNO_EN_TO_PT, translateSigno, translateElemento, translatePlaneta } from './i18n/astro.js'
+import { isPt } from './i18n/langUtil.js'
 
 const ALIAS_SIGNO = {
   Áries: 'Carneiro', Aries: 'Carneiro',
@@ -89,7 +90,7 @@ function signoNatalLongitude(nomeSigno, mapaNatal) {
 }
 
 export function analisarFluxoVital({ fisico, emocional, intelectual, mapaNatal, lang = 'pt' }) {
-  const pt = lang !== 'en'
+  const pt = isPt(lang)
   const hoje = new Date()
   const ceu = calcularCeuMomento(hoje)
   const faseLua = calcularFaseLua(hoje, lang)
@@ -97,6 +98,10 @@ export function analisarFluxoVital({ fisico, emocional, intelectual, mapaNatal, 
   const solar = normalizarSigno(mapaNatal?.solar?.nome)
   const lunar = normalizarSigno(mapaNatal?.lunar?.nome)
   const ascendente = normalizarSigno(mapaNatal?.ascendente?.nome)
+
+  const ts = (s) => translateSigno(s, lang)
+  const te = (e) => translateElemento(e, lang)
+  const tp = (p) => translatePlaneta(p, lang)
 
   const cruzCritica = [fisico, emocional, intelectual].filter((v) => Math.abs(v) < 15).length >= 2
   const todosAltos = fisico > 50 && emocional > 50 && intelectual > 50
@@ -115,7 +120,7 @@ export function analisarFluxoVital({ fisico, emocional, intelectual, mapaNatal, 
 
   const faseTxt = pt
     ? `${faseLua.emoji} ${faseLua.nome} - ${faseLua.iluminacao}% iluminada. ${faseLua.desc}`
-    : `${faseLua.emoji} ${faseLua.nome} - ${faseLua.iluminacao}% illuminated. ${faseLua.desc}`
+    : `${faseLua.emoji} ${faseLua.nome} - ${faseLua.iluminacao}% ${lang === 'es' ? 'iluminada' : lang === 'de' ? 'beleuchtet' : lang === 'fr' ? 'illuminée' : 'illuminated'}. ${faseLua.desc}`
 
   let ritmoElementar = ''
   if (solar && lunar) {
@@ -123,27 +128,31 @@ export function analisarFluxoVital({ fisico, emocional, intelectual, mapaNatal, 
     const elLua = ELEMENTO[lunar]
     const modSol = MODALIDADE[solar]
     const regente = PLANETA_REGENTE[ceu.sol.signo]
+    const solTr = ts(ceu.sol.signo)
+    const elSolTr = te(elSol)
+    const elLuaTr = te(elLua)
+    const regTr = tp(regente)
     ritmoElementar = pt
       ? `Eixo natal ${elSol}/${elLua} (${modSol}). Hoje o Sol transita ${ceu.sol.signo} (${ELEMENTO[ceu.sol.signo]}), regido por ${regente}, em ${aspectoSol.tipo} com o teu Sol natal - ${aspectoSol.natureza} de energia. A Lua em ${ceu.lua.signo} modula o ritmo emocional do dia.`
-      : `Natal axis ${elSol}/${elLua} (${modSol}). Today the Sun transits ${ceu.sol.signo} (${ELEMENTO[ceu.sol.signo]}), ruled by ${regente}, ${aspectoSol.tipo} your natal Sun - ${aspectoSol.natureza} energy. The Moon in ${ceu.lua.signo} shapes today's emotional rhythm.`
+      : `Natal axis ${elSolTr}/${elLuaTr} (${modSol}). Today the Sun transits ${solTr} (${te(ELEMENTO[ceu.sol.signo])}), ruled by ${regTr}, ${aspectoSol.tipo} your natal Sun - ${aspectoSol.natureza} energy. The Moon in ${ts(ceu.lua.signo)} shapes today's emotional rhythm.`
   } else {
     ritmoElementar = pt
       ? `Sol em ${ceu.sol.signo}, Lua em ${ceu.lua.signo}. Observa como o elemento ${ELEMENTO[ceu.sol.signo]} colore a tua energia hoje.`
-      : `Sun in ${ceu.sol.signo}, Moon in ${ceu.lua.signo}. Notice how ${ELEMENTO[ceu.sol.signo]} colours your energy today.`
+      : `Sun in ${ts(ceu.sol.signo)}, Moon in ${ts(ceu.lua.signo)}. Notice how ${te(ELEMENTO[ceu.sol.signo])} colours your energy today.`
   }
 
   let luaNatal = ''
   if (lunar && aspectoLua) {
     luaNatal = pt
       ? `Lua natal em ${lunar} (${ELEMENTO[lunar]}): trânsito lunar em ${aspectoLua.tipo} (${aspectoLua.score}% harmonia). ${aspectoLua.score >= 75 ? 'Emoções fluem com clareza - bom momento para diálogo íntimo.' : aspectoLua.score <= 45 ? 'Sensibilidade amplificada; protege o espaço emocional.' : 'Equilíbrio entre razão e sentimento nas decisões.'}`
-      : `Natal Moon in ${lunar} (${ELEMENTO[lunar]}): lunar transit ${aspectoLua.tipo} (${aspectoLua.score}% harmony). ${aspectoLua.score >= 75 ? 'Emotions flow clearly - good for intimate dialogue.' : aspectoLua.score <= 45 ? 'Heightened sensitivity; protect emotional space.' : 'Balance reason and feeling in decisions.'}`
+      : `Natal Moon in ${ts(lunar)} (${te(ELEMENTO[lunar])}): lunar transit ${aspectoLua.tipo} (${aspectoLua.score}% harmony). ${aspectoLua.score >= 75 ? 'Emotions flow clearly - good for intimate dialogue.' : aspectoLua.score <= 45 ? 'Heightened sensitivity; protect emotional space.' : 'Balance reason and feeling in decisions.'}`
   }
 
   let ascendenteNota = ''
   if (ascendente) {
     ascendenteNota = pt
       ? `Ascendente em ${ascendente}: ciclo físico a ${Math.round(fisico)}% - ${fisico > 30 ? 'corpo pede expressão visível e movimento' : fisico < -30 ? 'privilegia descanso e rotinas suaves' : 'presença equilibrada no mundo exterior'}.`
-      : `Ascendant in ${ascendente}: physical cycle at ${Math.round(fisico)}% - ${fisico > 30 ? 'body asks for visible expression and movement' : fisico < -30 ? 'favour rest and gentle routines' : 'balanced presence outward'}.`
+      : `Ascendant in ${ts(ascendente)}: physical cycle at ${Math.round(fisico)}% - ${fisico > 30 ? 'body asks for visible expression and movement' : fisico < -30 ? 'favour rest and gentle routines' : 'balanced presence outward'}.`
   }
 
   let estrategia = ''

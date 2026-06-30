@@ -1,6 +1,5 @@
-/**
- * Interpretação numerológica - vibração do nome, significado espiritual e ponte astrológica.
- */
+import { contentForLang, isPt } from './i18n/langUtil.js'
+import { translatePlaneta, translateSigno } from './i18n/astro.js'
 
 const PLANETA_NUM = {
   1: { pt: 'Sol', en: 'Sun', tema: { pt: 'identidade e vontade', en: 'identity and will' } },
@@ -23,10 +22,25 @@ const TITULOS_PT = {
   11: 'O Inspirador', 22: 'O Arquitecto', 33: 'O Curador',
 }
 
-const TITULOS_EN = {
-  1: 'The Pioneer', 2: 'The Mediator', 3: 'The Creator', 4: 'The Builder', 5: 'The Explorer',
-  6: 'The Guardian', 7: 'The Mystic', 8: 'The Achiever', 9: 'The Humanitarian',
-  11: 'The Inspirer', 22: 'The Architect', 33: 'The Healer',
+const TITULOS_ES = {
+  1: 'El Pionero', 2: 'El Mediador', 3: 'El Creador', 4: 'El Constructor', 5: 'El Explorador',
+  6: 'El Guardián', 7: 'El Místico', 8: 'El Realizador', 9: 'El Humanitario',
+  11: 'El Inspirador', 22: 'El Arquitecto', 33: 'El Sanador',
+}
+const TITULOS_IT = {
+  1: 'Il Pioniere', 2: 'Il Mediatore', 3: 'Il Creatore', 4: 'Il Costruttore', 5: 'L\'Esploratore',
+  6: 'Il Guardiano', 7: 'Il Mistico', 8: 'Il Realizzatore', 9: 'L\'Umanitario',
+  11: 'L\'Ispiratore', 22: 'L\'Architetto', 33: 'Il Guaritore',
+}
+const TITULOS_DE = {
+  1: 'Der Pionier', 2: 'Der Vermittler', 3: 'Der Schöpfer', 4: 'Der Baumeister', 5: 'Der Entdecker',
+  6: 'Der Hüter', 7: 'Der Mystiker', 8: 'Der Erreicher', 9: 'Der Humanist',
+  11: 'Der Inspirator', 22: 'Der Architekt', 33: 'Der Heiler',
+}
+const TITULOS_FR = {
+  1: 'Le Pionnier', 2: 'Le Médiateur', 3: 'Le Créateur', 4: 'Le Bâtisseur', 5: 'L\'Explorateur',
+  6: 'Le Gardien', 7: 'Le Mystique', 8: 'Le Réalisateur', 9: 'L\'Humanitaire',
+  11: 'L\'Inspirateur', 22: 'L\'Architecte', 33: 'Le Guérisseur',
 }
 
 const INTERPRETACOES_PT = {
@@ -147,17 +161,17 @@ const INTERPRETACOES_EN = {
   },
 }
 
-function interp(tipo, num, lang) {
-  const map = lang !== 'pt' ? INTERPRETACOES_EN : INTERPRETACOES_PT
-  return map[tipo]?.[num] || map[tipo]?.[reduzirMestre(num)] || null
-}
-
 function reduzirMestre(n) {
   return n
 }
 
+function interp(tipo, num, lang) {
+  const map = isPt(lang) ? INTERPRETACOES_PT : INTERPRETACOES_EN
+  return map[tipo]?.[num] || map[tipo]?.[reduzirMestre(num)] || null
+}
+
 function tituloNum(num, lang) {
-  const map = lang !== 'pt' ? TITULOS_EN : TITULOS_PT
+  const map = contentForLang(lang, { pt: TITULOS_PT, en: TITULOS_EN, es: TITULOS_ES, it: TITULOS_IT, de: TITULOS_DE, fr: TITULOS_FR }) || TITULOS_EN
   return map[num] || map[reduzirMestre(num)] || ''
 }
 
@@ -165,12 +179,12 @@ function ponteAstro(num, mapaNatal, lang) {
   if (!mapaNatal) return null
   const p = PLANETA_NUM[num]
   if (!p) return null
-  const planeta = lang !== 'pt' ? p.en : p.pt
-  const tema = lang !== 'pt' ? p.tema.en : p.tema.pt
-  const sol = mapaNatal.solar?.nome || '-'
-  const lua = mapaNatal.lunar?.nome || '-'
-  const asc = mapaNatal.ascendente?.nome || '-'
-  if (lang !== 'pt') {
+  const planeta = isPt(lang) ? p.pt : translatePlaneta(p.pt, lang)
+  const tema = isPt(lang) ? p.tema.pt : p.tema.en
+  const sol = translateSigno(mapaNatal.solar?.nome, lang) || '-'
+  const lua = translateSigno(mapaNatal.lunar?.nome, lang) || '-'
+  const asc = translateSigno(mapaNatal.ascendente?.nome, lang) || '-'
+  if (!isPt(lang)) {
     return { planeta, tema, sol, lua, asc, texto: `This vibration connects with ${planeta} (${tema}). In your chart: Sun in ${sol}, Moon in ${lua}, Ascendant ${asc}.` }
   }
   return { planeta, tema, sol, lua, asc, texto: `Esta vibração liga-se a ${planeta} (${tema}). No teu mapa: Sol em ${sol}, Lua em ${lua}, Ascendente ${asc}.` }

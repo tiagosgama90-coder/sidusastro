@@ -7,6 +7,7 @@ import { SIGNOS_PT, SIGNOS_EN } from '../lib/i18n/astro.js'
 import { calcularFaseLua } from '../lib/faseLua.js'
 import { gerarNoticiasAstrologia } from '../lib/astroNews.js'
 import { emailTemPremiumPrivilegiado } from '../lib/premiumAccess.js'
+import { dateLocale } from '../lib/i18n/langUtil.js'
 
 const CORES = {
   dourado: '#DFB76C',
@@ -24,8 +25,7 @@ const vidro = {
 }
 
 function formatarHoje(lang) {
-  const loc = lang !== 'pt' ? 'en-GB' : 'pt-PT'
-  return new Date().toLocaleDateString(loc, { day: 'numeric', month: 'long', year: 'numeric' })
+  return new Date().toLocaleDateString(dateLocale(lang), { day: 'numeric', month: 'long', year: 'numeric' })
 }
 
 export function ConteudoDinamicoSidus({ mapaNatal, aspetos = [], isPremium, onUpgrade, onOraculo, userEmail }) {
@@ -35,9 +35,7 @@ export function ConteudoDinamicoSidus({ mapaNatal, aspetos = [], isPremium, onUp
   const [copied, setCopied] = useState(false)
 
   const isAdmin = emailTemPremiumPrivilegiado({ email: userEmail })
-  const fasePt = useMemo(() => calcularFaseLua(new Date(), 'pt'), [])
-  const faseEn = useMemo(() => calcularFaseLua(new Date(), 'en'), [])
-
+  const faseAtual = useMemo(() => calcularFaseLua(new Date(), lang), [lang])
   const transitSummary = useMemo(() => {
     if (!aspetos?.length) return ''
     return aspetos.slice(0, 4).map((a) => `${tp(a.planetaA)} ${ta(a.aspecto)} ${tp(a.planetaB)}`).join('; ')
@@ -48,19 +46,19 @@ export function ConteudoDinamicoSidus({ mapaNatal, aspetos = [], isPremium, onUp
     ;(async () => {
       try {
         const data = await fetchDailyContent({
-          fasePt: fasePt.nome,
-          faseEn: faseEn.nome,
+          fasePt: faseAtual.nome,
+          faseEn: faseAtual.nome,
           transit: transitSummary,
         })
         if (!cancelled) setPack(data)
       } catch {
         if (!cancelled) {
-          setPack(buildLocalDailyContent({ fasePt: fasePt.nome, faseEn: faseEn.nome, lang }))
+          setPack(buildLocalDailyContent({ fasePt: faseAtual.nome, faseEn: faseAtual.nome, lang }))
         }
       }
     })()
     return () => { cancelled = true }
-  }, [fasePt.nome, faseEn.nome, transitSummary, lang])
+  }, [faseAtual.nome, transitSummary, lang])
 
   const signList = lang !== 'pt' ? SIGNOS_EN : SIGNOS_PT
   const horoMap = pack?.horoscopes?.[lang] || {}

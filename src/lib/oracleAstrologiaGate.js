@@ -81,27 +81,36 @@ const RESPOSTA_FORA_EN = [
 ]
 
 export function mensagemForaEscopo(lang = 'pt') {
-  return lang !== 'pt'
-    ? '✦ I am Sidus, the Astral Oracle. I only guide astrology, predictions and life read through your natal chart (love, career, purpose, cycles, transits, compatibility). Please rephrase your question in that scope.'
-    : '✦ Sou Sidus, Oráculo Astral. Só oriento astrologia, previsões e vida lidas pelo teu mapa natal (amor, carreira, propósito, ciclos, trânsitos, compatibilidade). Reformula a tua pergunta nesse âmbito.'
+  const msgs = {
+    pt: '✦ Sou Sidus, Oráculo Astral. Só oriento astrologia, previsões e vida lidas pelo teu mapa natal (amor, carreira, propósito, ciclos, trânsitos, compatibilidade). Reformula a tua pergunta nesse âmbito.',
+    en: '✦ I am Sidus, the Astral Oracle. I only guide astrology, predictions and life read through your natal chart (love, career, purpose, cycles, transits, compatibility). Please rephrase your question in that scope.',
+    es: '✦ Soy Sidus, Oráculo Astral. Solo oriento astrología, predicciones y vida leídas por tu carta natal. Reformula tu pregunta en ese ámbito.',
+    it: '✦ Sono Sidus, Oracolo Astrale. Guido solo astrologia, previsioni e vita lette dalla tua carta natale. Riformula la domanda in questo ambito.',
+    de: '✦ Ich bin Sidus, das Astralorakel. Ich berate nur Astrologie und Lebensthemen über dein Geburtshoroskop. Formuliere deine Frage in diesem Rahmen neu.',
+    fr: '✦ Je suis Sidus, Oracle Astral. Je guide uniquement l\'astrologie et la vie lues par ta carte natale. Reformule ta question dans ce cadre.',
+  }
+  return msgs[lang] || msgs.en
 }
+
+import { aiOutputLanguageBlock, zodiacNamesInstruction, oracleRespondLanguage } from './i18n/langUtil.js'
 
 /** Instrução extra injectada apenas nas chamadas Gemini (Oráculo). */
 export function reforcoInstrucaoGeminiAstrologia(lang = 'pt') {
-  if (lang !== 'pt') {
+  if (lang === 'pt') {
     return `
-GEMINI RESTRICTION - MANDATORY:
-You are NOT a general-purpose AI. You ONLY answer: natal chart, transits, predictions, synastry, planetary cycles, and life areas READ THROUGH astrology.
-If the user asks anything else (recipes, code, trivia, medicine, homework, sports, politics, general chat), reply ONLY with the refusal sentence from your system prompt - do NOT answer the off-topic question even partially.
-Always use English zodiac sign names only (Aries, Taurus, Gemini, etc.) - never Portuguese sign names.
-Never use Gemini as a generic chatbot. Astrology and chart-based predictions only.
-`.trim()
-  }
-  return `
 RESTRIÇÃO GEMINI - OBRIGATÓRIO:
 NÃO és IA genérica. Respondes SÓ a: mapa natal, trânsitos, previsões, sinastria, ciclos planetários e áreas de vida LIDAS PELA ASTROLOGIA.
 Se o utilizador pedir outro tema (receitas, código, trivia, medicina, trabalhos escolares, desporto, política, conversa geral), responde APENAS com a frase de recusa do system prompt - NÃO respondas parcialmente ao tema errado.
 Nunca actues como chatbot genérico. Apenas astrologia e previsões via mapa.
+`.trim()
+  }
+  return `
+GEMINI RESTRICTION - MANDATORY:
+You are NOT a general-purpose AI. You ONLY answer: natal chart, transits, predictions, synastry, planetary cycles, and life areas READ THROUGH astrology.
+If the user asks anything else (recipes, code, trivia, medicine, homework, sports, politics, general chat), reply ONLY with the refusal sentence from your system prompt - do NOT answer the off-topic question even partially.
+${aiOutputLanguageBlock(lang)}
+${zodiacNamesInstruction(lang)}
+Never use Gemini as a generic chatbot. Astrology and chart-based predictions only. Output language: ${oracleRespondLanguage(lang)}.
 `.trim()
 }
 
@@ -109,7 +118,7 @@ Nunca actues como chatbot genérico. Apenas astrologia e previsões via mapa.
 export function respostaPareceForaEscopoAstrologia(texto, lang = 'pt') {
   if (!texto?.trim()) return true
   const lower = texto.toLowerCase()
-  const lista = lang !== 'pt' ? RESPOSTA_FORA_EN : RESPOSTA_FORA_PT
+  const lista = lang === 'pt' ? RESPOSTA_FORA_PT : RESPOSTA_FORA_EN
   if (lista.some((k) => lower.includes(k))) return true
   const recusa = lower.includes('sidus')
   const recusaEscopo = lower.includes('só oriento') || lower.includes('only guide') || lower.includes('reformula')
@@ -121,9 +130,9 @@ export function perguntaDentroEscopoAstrologia(texto, lang = 'pt') {
   const lower = texto.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
   const raw = texto.toLowerCase()
 
-  const fora = lang !== 'pt' ? FORA_ESCOPO_EN : FORA_ESCOPO_PT
-  const astro = lang !== 'pt' ? ASTRO_EN : ASTRO_PT
-  const vida = lang !== 'pt' ? VIDA_VIA_MAPA_EN : VIDA_VIA_MAPA_PT
+  const fora = lang === 'pt' ? FORA_ESCOPO_PT : FORA_ESCOPO_EN
+  const astro = lang === 'pt' ? ASTRO_PT : ASTRO_EN
+  const vida = lang === 'pt' ? VIDA_VIA_MAPA_PT : VIDA_VIA_MAPA_EN
 
   const temFora = fora.some((k) => {
     const kn = k.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
@@ -143,7 +152,7 @@ export function perguntaDentroEscopoAstrologia(texto, lang = 'pt') {
 
   const pessoalPt = /^(porque|por que|como posso|ajuda|estou|sinto|devo|deveria|nao sei|não sei|quando|onde|o que|que devo|será que|sera que)/i
   const pessoalEn = /^(why |how can i|help |i feel|should i|i am |i'm |when |what |will i )/i
-  const pessoal = lang !== 'pt' ? pessoalEn.test(texto.trim()) : pessoalPt.test(texto.trim())
+  const pessoal = lang === 'pt' ? pessoalPt.test(texto.trim()) : pessoalEn.test(texto.trim())
   const palavras = texto.trim().split(/\s+/).length
 
   if (pessoal && palavras >= 4) return true

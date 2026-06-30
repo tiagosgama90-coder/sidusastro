@@ -7,6 +7,7 @@
  */
 import { useState, useEffect } from 'react'
 import { useLanguage } from '../lib/i18n/LanguageContext.jsx'
+import { dateLocale, isPt } from '../lib/i18n/langUtil.js'
 import {
   calcularBussola2026Async, relevanciaParaMapa, TIPO_ICO, IMPACTO_COR,
 } from '../lib/bussolaCosmica.js'
@@ -54,7 +55,7 @@ export function BussolaCosmica({ mapaNatal, onVoltar }) {
   const [mesAberto, setMesAberto] = useState(null)
   const [dados, setDados] = useState(null)
   const [carregando, setCarregando] = useState(true)
-  const locale = lang !== 'pt' ? 'en-US' : 'pt-PT'
+  const locale = dateLocale(lang)
   const mesAtual = new Date().toLocaleString(locale, { month: 'long' })
 
   useEffect(() => {
@@ -142,7 +143,7 @@ export function BussolaCosmica({ mapaNatal, onVoltar }) {
                     {relevante && <span style={{fontSize:10,color:'#34D399'}}>{relevante}</span>}
                   </div>
                   <div style={{fontSize:12,color:CORES.brancoMuted,marginTop:2}}>
-                    {tp(transito.planeta)} {lang !== 'pt' ? 'in' : 'em'} {ts(transito.signo)}
+                    {tp(transito.planeta)} {isPt(lang) ? 'em' : (lang === 'es' || lang === 'fr' ? 'en' : 'in')} {ts(transito.signo)}
                   </div>
                 </div>
                 <span style={{
@@ -524,7 +525,7 @@ export function Biorritmo({ dados, utilizador, mapaNatal, onVoltar }) {
 
   const estado = (v) => v > 60 ? t('ferramentasPremium.biorritmo.phaseHigh') : v < -60 ? t('ferramentasPremium.biorritmo.phaseCritical') : t('ferramentasPremium.biorritmo.phaseTransition')
 
-  const locale = lang !== 'pt' ? 'en-US' : 'pt-PT'
+  const locale = dateLocale(lang)
 
   return (
     <div style={{ padding: '20px 20px 110px' }}>
@@ -646,7 +647,7 @@ export function DiarioAstral({ mapaNatal }) {
     {id:'transformador',ico:'🌑',label: t('ferramentasPremium.diario.moods.transformador')},
   ]
 
-  const locale = lang !== 'pt' ? 'en-US' : 'pt-PT'
+  const locale = dateLocale(lang)
 
   const guardar = () => {
     if (!nova.trim()) return
@@ -1254,7 +1255,7 @@ export function HorasIguais({ onVoltar }) {
     return () => clearInterval(id)
   }, [lang, modoManual])
 
-  const locale = lang !== 'pt' ? 'en-US' : 'pt-PT'
+  const locale = dateLocale(lang)
   const horaActual = agora.toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' })
   const proxima = proximaHoraIgual(agora)
   const horasPopulares = ['11:11', '22:22', '12:12', '01:01', '04:04']
