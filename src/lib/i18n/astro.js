@@ -107,7 +107,7 @@ export function formatSkyPosition(p, lang = 'pt') {
   if (!p) return ''
   const planet = translatePlaneta(p.nome, lang)
   const sign = translateSigno(p.signo?.nome, lang)
-  const prep = lang === 'en' ? 'in' : 'em'
+  const prep = lang === 'pt' ? 'em' : 'in'
   const retro = p.retrograde ? ' ℞' : ''
   const graus = p.signo?.graus ?? ''
   const symSign = p.signo?.simbolo || ''

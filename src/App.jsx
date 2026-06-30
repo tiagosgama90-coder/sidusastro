@@ -1913,7 +1913,8 @@ function CartaDoDia() {
   const idx = (ano * 1000 + (mes - 1) * 31 + dia) % 22
   const cartaBase = ARCANOS_NOMES[idx]
   const carta = localizeArcano(cartaBase, lang)
-  const dataFormatada = `${String(dia).padStart(2, '0')}/${String(mes).padStart(2, '0')}/${ano}`
+  const locale = lang === 'pt' ? 'pt-PT' : lang === 'es' ? 'es-ES' : lang === 'it' ? 'it-IT' : lang === 'de' ? 'de-DE' : 'en-GB'
+  const dataFormatada = new Date(Date.UTC(ano, mes - 1, dia)).toLocaleDateString(locale)
 
   if (!carta?.nome) return null
 
@@ -2578,7 +2579,7 @@ function Paywall({ onVoltar, onPagar, onSucesso, isDesktop }) {
         <div style={{ fontSize: 40, fontWeight: 700, color: CORES.branco }}>{t('vip.price')} <span style={{ fontSize: 16, color: CORES.brancoMuted, fontWeight: 400 }}>{t('common.perMonth')}</span></div>
         <p style={{ fontSize: 12, color: CORES.brancoMuted, marginTop: 6 }}>{t('vip.cancelAnytime')}</p>
       </div>
-      <button type="button" onClick={() => onPagar(lang === 'en' ? 'Sidus VIP - Monthly subscription' : 'Sidus VIP - Subscrição mensal', PRECO_PREMIUM_MENSAL, onSucesso, { productType: 'premium' })} style={estilos.botaoDourado}>
+      <button type="button" onClick={() => onPagar(lang !== 'pt' ? 'Sidus VIP - Monthly subscription' : 'Sidus VIP - Subscrição mensal', PRECO_PREMIUM_MENSAL, onSucesso, { productType: 'premium' })} style={estilos.botaoDourado}>
         {t('vip.cta')}
       </button>
       <p style={{ textAlign: 'center', fontSize: 11, color: CORES.brancoMuted, marginTop: 12 }}>

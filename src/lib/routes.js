@@ -32,19 +32,19 @@ PATH_TO_PASSO['/premium'] = 'paywall'
 PATH_TO_PASSO['/horoscopo'] = 'home'
 PATH_TO_PASSO['/horoscope'] = 'home'
 
-const SUPPORTED_LANGS = new Set(['pt', 'en'])
+const SUPPORTED_LANGS = new Set(['pt', 'en', 'es', 'it', 'de'])
 
 /** Extrai pt|en do prefixo /pt/... ou /en/... */
 export function langFromPath(pathname) {
   const path = (pathname || '/').replace(/\/$/, '') || '/'
-  const m = path.match(/^\/(pt|en)(?:\/|$)/)
+  const m = path.match(/^\/(pt|en|es|it|de)(?:\/|$)/)
   return m && SUPPORTED_LANGS.has(m[1]) ? m[1] : null
 }
 
 /** Remove prefixo de idioma (/pt/tarot → /tarot). */
 export function stripLangPrefix(pathname) {
   let path = (pathname || '/').replace(/\/$/, '') || '/'
-  const m = path.match(/^\/(pt|en)(\/.*|$)/)
+  const m = path.match(/^\/(pt|en|es|it|de)(\/.*|$)/)
   if (m) {
     path = m[2] || '/'
     if (!path.startsWith('/')) path = `/${path}`
@@ -60,8 +60,7 @@ export function passoFromPath(pathname) {
 /** Gera path público; com lang → prefixo /pt ou /en (SEO). */
 export function pathFromPasso(passo, lang = null) {
   const base = PASSO_TO_PATH[passo] || '/'
-  if (lang === 'pt') return base === '/' ? '/pt' : `/pt${base}`
-  if (lang === 'en') return base === '/' ? '/en' : `/en${base}`
+  if (SUPPORTED_LANGS.has(lang)) return base === '/' ? `/${lang}` : `/${lang}${base}`
   return base
 }
 

@@ -7,7 +7,7 @@
  */
 import { useState, useEffect, useRef } from 'react'
 import { useLanguage } from '../lib/i18n/LanguageContext.jsx'
-import { localizeArcano, TIPOS_EN, POSICOES_EN } from '../lib/i18n/tarotArcana.js'
+import { localizeArcano, getTiposTarot, getPosicoesTarot } from '../lib/i18n/tarotArcana.js'
 import { PRECO_TAROT } from '../lib/pricing.js'
 import { gerarMensagemAnjos } from '../lib/tarotAnjos.js'
 import {
@@ -287,7 +287,8 @@ function interpretarLeitura(cartas, tipoId, pergunta, mapaNatal, lang = 'pt', t)
     }
   }
 
-  const posicoes = (lang === 'en' ? POSICOES_EN[tipoId] : null) || POSICOES[tipoId] || []
+  const mapaPosicoes = getPosicoesTarot(lang)
+  const posicoes = (mapaPosicoes?.[tipoId]) || POSICOES[tipoId] || []
   const linhas = cartasLocalizadas.map((c,i) => {
     const pos = posicoes[i] || tr('tarot.cardN', { n: i + 1 })
     const revLabel = tr('tarot.reversedLabel')
@@ -367,10 +368,11 @@ export function EcraTarot({ mapaNatal, isPremium, userId, leiturasTarotUsadas = 
   }, [fase])
 
   const tipo = TIPOS.find(t=>t.id===tipoId)
-  const tipoLabel = tipo && lang === 'en' && TIPOS_EN[tipo.id]
-    ? { ...tipo, nome: TIPOS_EN[tipo.id].nome, desc: TIPOS_EN[tipo.id].desc }
+  const mapaTipos = getTiposTarot(lang)
+  const tipoLabel = tipo && mapaTipos?.[tipo.id]
+    ? { ...tipo, nome: mapaTipos[tipo.id].nome, desc: mapaTipos[tipo.id].desc }
     : tipo
-  const posicoes = (lang === 'en' ? POSICOES_EN[tipoId] : null) || POSICOES[tipoId] || []
+  const posicoes = (mapaPosicoes?.[tipoId]) || POSICOES[tipoId] || []
   const usadas = leiturasGratisUsadas(userId, leiturasTarotUsadas)
   const restantes = leiturasGratisRestantes(isPremium, userId, leiturasTarotUsadas)
   const podeLer = podeLerGratis(isPremium, userId, leiturasTarotUsadas)
@@ -483,7 +485,7 @@ export function EcraTarot({ mapaNatal, isPremium, userId, leiturasTarotUsadas = 
   }
 
   if (fase==='seleccionar') return (
-    <TelaSeleccionar tipos={TIPOS.map(t => lang === 'en' && TIPOS_EN[t.id] ? { ...t, nome: TIPOS_EN[t.id].nome, desc: TIPOS_EN[t.id].desc } : t)} lang={lang} t={t} userId={userId} onSeleccionar={iniciarLeitura} isPremium={isPremium} gratisEsgotada={gratisEsgotada} restantes={restantes} tick={tick} onVoltar={onVoltar}/>
+    <TelaSeleccionar tipos={TIPOS.map((t) => mapaTipos?.[t.id] ? { ...t, nome: mapaTipos[t.id].nome, desc: mapaTipos[t.id].desc } : t)} lang={lang} t={t} userId={userId} onSeleccionar={iniciarLeitura} isPremium={isPremium} gratisEsgotada={gratisEsgotada} restantes={restantes} tick={tick} onVoltar={onVoltar}/>
   )
 
   if (fase==='pergunta') return (

@@ -1,6 +1,9 @@
 import { createContext, useContext, useState, useCallback, useMemo, useEffect } from 'react'
 import pt from './pt.js'
 import en from './en.js'
+import es from './es.js'
+import it from './it.js'
+import de from './de.js'
 import {
   translateSigno, translatePlaneta, translateElemento,
   translateModalidade, translateAspecto, localizeSignoObj,
@@ -8,7 +11,8 @@ import {
 
 const STORAGE_KEY = 'sidus_lang'
 
-const LOCALES = { pt, en }
+const LOCALES = { pt, en, es, it, de }
+const SUPPORTED_LANGS = new Set(['pt', 'en', 'es', 'it', 'de'])
 
 const LanguageContext = createContext(null)
 
@@ -25,18 +29,21 @@ export function LanguageProvider({ children }) {
   const [lang, setLangState] = useState(() => {
     if (typeof window === 'undefined') return 'pt'
     const saved = localStorage.getItem(STORAGE_KEY)
-    return saved === 'en' ? 'en' : 'pt'
+    return SUPPORTED_LANGS.has(saved) ? saved : 'pt'
   })
 
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, lang)
-    document.documentElement.lang = lang === 'en' ? 'en' : 'pt'
+    document.documentElement.lang = SUPPORTED_LANGS.has(lang) ? lang : 'pt'
   }, [lang])
 
-  const setLang = useCallback((l) => setLangState(l === 'en' ? 'en' : 'pt'), [])
+  const setLang = useCallback((l) => setLangState(SUPPORTED_LANGS.has(l) ? l : 'pt'), [])
 
   const t = useCallback((key, vars) => {
-    const val = getNested(LOCALES[lang], key) ?? getNested(LOCALES.pt, key) ?? key
+    const val = getNested(LOCALES[lang], key)
+      ?? getNested(LOCALES.en, key)
+      ?? getNested(LOCALES.pt, key)
+      ?? key
     return interpolate(val, vars)
   }, [lang])
 

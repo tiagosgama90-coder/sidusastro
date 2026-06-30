@@ -93,18 +93,101 @@ const PALAVRAS_EN = {
   21: ['completion', 'integration', 'wholeness'],
 }
 
+const NOMES_ES = {
+  0: 'El Loco', 1: 'El Mago', 2: 'La Sacerdotisa', 3: 'La Emperatriz', 4: 'El Emperador',
+  5: 'El Hierofante', 6: 'Los Enamorados', 7: 'El Carro', 8: 'La Fuerza', 9: 'El Ermitaño',
+  10: 'La Rueda de la Fortuna', 11: 'La Justicia', 12: 'El Colgado', 13: 'La Muerte',
+  14: 'La Templanza', 15: 'El Diablo', 16: 'La Torre', 17: 'La Estrella', 18: 'La Luna',
+  19: 'El Sol', 20: 'El Juicio', 21: 'El Mundo',
+}
+const PALAVRAS_ES = {
+  0: ['aventura', 'libertad', 'nuevo inicio'], 1: ['poder', 'voluntad', 'manifestación'], 2: ['intuición', 'misterio', 'sabiduría'],
+  3: ['abundancia', 'fertilidad', 'amor'], 4: ['autoridad', 'estructura', 'protección'], 5: ['tradición', 'fe', 'enseñanza'],
+  6: ['amor', 'elección', 'armonía'], 7: ['victoria', 'determinación', 'control'], 8: ['coraje', 'compasión', 'dominio'],
+  9: ['reflexión', 'soledad', 'guía'], 10: ['destino', 'ciclos', 'cambio'], 11: ['equilibrio', 'verdad', 'karma'],
+  12: ['sacrificio', 'perspectiva', 'pausa'], 13: ['transformación', 'final', 'renacimiento'], 14: ['equilibrio', 'paciencia', 'alquimia'],
+  15: ['apego', 'ilusión', 'liberación'], 16: ['ruptura', 'revelación', 'reconstrucción'], 17: ['esperanza', 'sanación', 'inspiración'],
+  18: ['intuición', 'inconsciente', 'sueños'], 19: ['alegría', 'éxito', 'claridad'], 20: ['despertar', 'redención', 'llamado'],
+  21: ['culminación', 'integración', 'plenitud'],
+}
+const NOMES_IT = {
+  0: 'Il Matto', 1: 'Il Mago', 2: 'La Papessa', 3: 'L\'Imperatrice', 4: 'L\'Imperatore',
+  5: 'Il Papa', 6: 'Gli Amanti', 7: 'Il Carro', 8: 'La Forza', 9: 'L\'Eremita',
+  10: 'La Ruota della Fortuna', 11: 'La Giustizia', 12: 'L\'Appeso', 13: 'La Morte',
+  14: 'La Temperanza', 15: 'Il Diavolo', 16: 'La Torre', 17: 'La Stella', 18: 'La Luna',
+  19: 'Il Sole', 20: 'Il Giudizio', 21: 'Il Mondo',
+}
+const PALAVRAS_IT = {
+  0: ['avventura', 'libertà', 'nuovo inizio'], 1: ['potere', 'volontà', 'manifestazione'], 2: ['intuizione', 'mistero', 'saggezza'],
+  3: ['abbondanza', 'fertilità', 'amore'], 4: ['autorità', 'struttura', 'protezione'], 5: ['tradizione', 'fede', 'insegnamento'],
+  6: ['amore', 'scelta', 'armonia'], 7: ['vittoria', 'determinazione', 'controllo'], 8: ['coraggio', 'compassione', 'maestria'],
+  9: ['riflessione', 'solitudine', 'guida'], 10: ['destino', 'cicli', 'cambiamento'], 11: ['equilibrio', 'verità', 'karma'],
+  12: ['sacrificio', 'prospettiva', 'pausa'], 13: ['trasformazione', 'fine', 'rinascita'], 14: ['equilibrio', 'pazienza', 'alchimia'],
+  15: ['attaccamento', 'illusione', 'liberazione'], 16: ['rottura', 'rivelazione', 'ricostruzione'], 17: ['speranza', 'guarigione', 'ispirazione'],
+  18: ['intuizione', 'inconscio', 'sogni'], 19: ['gioia', 'successo', 'chiarezza'], 20: ['risveglio', 'redenzione', 'chiamata'],
+  21: ['compimento', 'integrazione', 'pienezza'],
+}
+const NOMES_DE = {
+  0: 'Der Narr', 1: 'Der Magier', 2: 'Die Hohepriesterin', 3: 'Die Herrscherin', 4: 'Der Herrscher',
+  5: 'Der Hierophant', 6: 'Die Liebenden', 7: 'Der Wagen', 8: 'Die Kraft', 9: 'Der Eremit',
+  10: 'Rad des Schicksals', 11: 'Die Gerechtigkeit', 12: 'Der Gehängte', 13: 'Der Tod',
+  14: 'Die Mäßigkeit', 15: 'Der Teufel', 16: 'Der Turm', 17: 'Der Stern', 18: 'Der Mond',
+  19: 'Die Sonne', 20: 'Das Gericht', 21: 'Die Welt',
+}
+const PALAVRAS_DE = {
+  0: ['Abenteuer', 'Freiheit', 'Neubeginn'], 1: ['Kraft', 'Wille', 'Manifestation'], 2: ['Intuition', 'Geheimnis', 'Weisheit'],
+  3: ['Fülle', 'Fruchtbarkeit', 'Liebe'], 4: ['Autorität', 'Struktur', 'Schutz'], 5: ['Tradition', 'Glaube', 'Lehre'],
+  6: ['Liebe', 'Wahl', 'Harmonie'], 7: ['Sieg', 'Entschlossenheit', 'Kontrolle'], 8: ['Mut', 'Mitgefühl', 'Meisterschaft'],
+  9: ['Reflexion', 'Einsamkeit', 'Führung'], 10: ['Schicksal', 'Zyklen', 'Wandel'], 11: ['Balance', 'Wahrheit', 'Karma'],
+  12: ['Opfer', 'Perspektive', 'Pause'], 13: ['Transformation', 'Ende', 'Wiedergeburt'], 14: ['Balance', 'Geduld', 'Alchemie'],
+  15: ['Bindung', 'Illusion', 'Befreiung'], 16: ['Bruch', 'Enthüllung', 'Neuaufbau'], 17: ['Hoffnung', 'Heilung', 'Inspiration'],
+  18: ['Intuition', 'Unterbewusstsein', 'Träume'], 19: ['Freude', 'Erfolg', 'Klarheit'], 20: ['Erwachen', 'Erlösung', 'Ruf'],
+  21: ['Vollendung', 'Integration', 'Ganzheit'],
+}
+
 export function localizeArcano(carta, lang) {
-  if (!carta || lang !== 'en') return carta
-  const en = ARCANOS_EN[carta.id]
-  if (!en) return carta
+  if (!carta || lang === 'pt') return carta
+  const en = ARCANOS_EN[carta.id] || {}
+  if (lang === 'en') {
+    return {
+      ...carta,
+      nome: en.nome,
+      luz: en.luz,
+      sombra: en.sombra,
+      conselho: en.conselho,
+      palavras: PALAVRAS_EN[carta.id] || carta.palavras,
+      invertidaLabel: carta.invertida ? 'REVERSED' : undefined,
+    }
+  }
+  const nomeMap = lang === 'es' ? NOMES_ES : lang === 'it' ? NOMES_IT : NOMES_DE
+  const palavrasMap = lang === 'es' ? PALAVRAS_ES : lang === 'it' ? PALAVRAS_IT : PALAVRAS_DE
+  const reversed = lang === 'es' ? 'INVERTIDA' : lang === 'it' ? 'ROVESCIO' : 'UMGEKEHRT'
+  const k1 = palavrasMap[carta.id]?.[0] || (PALAVRAS_EN[carta.id]?.[0] || '')
+  const k2 = palavrasMap[carta.id]?.[1] || (PALAVRAS_EN[carta.id]?.[1] || '')
+  const k3 = palavrasMap[carta.id]?.[2] || (PALAVRAS_EN[carta.id]?.[2] || '')
+  const luz = lang === 'es'
+    ? `Esta carta activa ${k1}, ${k2} y ${k3}. Si avanzas con foco y presencia, el camino se abre.`
+    : lang === 'it'
+      ? `Questa carta attiva ${k1}, ${k2} e ${k3}. Se avanzi con focus e presenza, la strada si apre.`
+      : `Diese Karte aktiviert ${k1}, ${k2} und ${k3}. Wenn du mit Fokus und Präsenz vorangehst, öffnet sich der Weg.`
+  const sombra = lang === 'es'
+    ? `En sombra, ${nomeMap[carta.id]} trae exceso, ansiedad o bloqueo. Vuelve al centro antes de decidir.`
+    : lang === 'it'
+      ? `In ombra, ${nomeMap[carta.id]} porta eccesso, ansia o blocco. Torna al centro prima di decidere.`
+      : `Im Schatten bringt ${nomeMap[carta.id]} Übermaß, Unruhe oder Blockade. Kehre vor Entscheidungen in deine Mitte zurück.`
+  const conselho = lang === 'es'
+    ? `Consejo: transforma ${k1} en acción concreta, cuida ${k2} con equilibrio y usa ${k3} con sabiduría.`
+    : lang === 'it'
+      ? `Consiglio: trasforma ${k1} in azione concreta, coltiva ${k2} con equilibrio e usa ${k3} con saggezza.`
+      : `Rat: verwandle ${k1} in konkrete Handlung, pflege ${k2} im Gleichgewicht und nutze ${k3} mit Weisheit.`
   return {
     ...carta,
-    nome: en.nome,
-    luz: en.luz,
-    sombra: en.sombra,
-    conselho: en.conselho,
-    palavras: PALAVRAS_EN[carta.id] || carta.palavras,
-    invertidaLabel: carta.invertida ? 'REVERSED' : undefined,
+    nome: nomeMap[carta.id] || en.nome || carta.nome,
+    luz,
+    sombra,
+    conselho,
+    palavras: palavrasMap[carta.id] || PALAVRAS_EN[carta.id] || carta.palavras,
+    invertidaLabel: carta.invertida ? reversed : undefined,
   }
 }
 
@@ -117,6 +200,31 @@ export const TIPOS_EN = {
   oraculo: { nome: 'Oracle Tarot',      desc: 'Deep consultation of your destiny' },
 }
 
+export const TIPOS_ES = {
+  diaria: { nome: 'Lectura diaria', desc: 'Una carta para guiar tu día' },
+  simnao: { nome: 'Tarot Sí o No', desc: 'Respuesta directa y clara a tu pregunta' },
+  amor: { nome: 'Tarot del Amor', desc: 'Tú · El vínculo · El futuro juntos' },
+  geral: { nome: 'Lectura general', desc: 'Pasado · Presente · Futuro' },
+  cigano: { nome: 'Baraja gitana', desc: 'Lectura ancestral gitana de 5 cartas' },
+  oraculo: { nome: 'Tarot Oráculo', desc: 'Consulta profunda de tu destino' },
+}
+export const TIPOS_IT = {
+  diaria: { nome: 'Lettura quotidiana', desc: 'Una carta per guidare la tua giornata' },
+  simnao: { nome: 'Tarocchi Sì o No', desc: 'Risposta diretta e chiara alla tua domanda' },
+  amor: { nome: 'Tarocchi dell’Amore', desc: 'Tu · Il legame · Il futuro insieme' },
+  geral: { nome: 'Lettura generale', desc: 'Passato · Presente · Futuro' },
+  cigano: { nome: 'Mazzo gitano', desc: 'Lettura ancestrale gitana a 5 carte' },
+  oraculo: { nome: 'Tarocchi Oracolo', desc: 'Consulto profondo del tuo destino' },
+}
+export const TIPOS_DE = {
+  diaria: { nome: 'Tageslegung', desc: 'Eine Karte für deinen Tag' },
+  simnao: { nome: 'Ja/Nein Tarot', desc: 'Eine direkte und klare Antwort auf deine Frage' },
+  amor: { nome: 'Liebes-Tarot', desc: 'Du · Die Verbindung · Die gemeinsame Zukunft' },
+  geral: { nome: 'Allgemeine Legung', desc: 'Vergangenheit · Gegenwart · Zukunft' },
+  cigano: { nome: 'Zigeuner-Deck', desc: 'Ahnen-Legung mit 5 Karten' },
+  oraculo: { nome: 'Orakel-Tarot', desc: 'Tiefe Beratung zu deinem Schicksal' },
+}
+
 export const POSICOES_EN = {
   diaria:  ['Your card for today'],
   simnao:  ['The answer'],
@@ -124,4 +232,45 @@ export const POSICOES_EN = {
   geral:   ['Past', 'Present', 'Future'],
   cigano:  ['Root', 'Challenge', 'Past', 'Future', 'Outcome'],
   oraculo: ['Situation', 'Obstacle', 'Advice', 'Hidden influence', 'Outcome'],
+}
+
+export const POSICOES_ES = {
+  diaria: ['Tu carta de hoy'],
+  simnao: ['La respuesta'],
+  amor: ['Tú', 'La conexión', 'El futuro juntos'],
+  geral: ['Pasado', 'Presente', 'Futuro'],
+  cigano: ['Raíz', 'Desafío', 'Pasado', 'Futuro', 'Resultado'],
+  oraculo: ['Situación', 'Obstáculo', 'Consejo', 'Influencia oculta', 'Resultado'],
+}
+export const POSICOES_IT = {
+  diaria: ['La tua carta di oggi'],
+  simnao: ['La risposta'],
+  amor: ['Tu', 'La connessione', 'Il futuro insieme'],
+  geral: ['Passato', 'Presente', 'Futuro'],
+  cigano: ['Radice', 'Sfida', 'Passato', 'Futuro', 'Esito'],
+  oraculo: ['Situazione', 'Ostacolo', 'Consiglio', 'Influenza nascosta', 'Esito'],
+}
+export const POSICOES_DE = {
+  diaria: ['Deine Karte für heute'],
+  simnao: ['Die Antwort'],
+  amor: ['Du', 'Die Verbindung', 'Die gemeinsame Zukunft'],
+  geral: ['Vergangenheit', 'Gegenwart', 'Zukunft'],
+  cigano: ['Wurzel', 'Herausforderung', 'Vergangenheit', 'Zukunft', 'Ergebnis'],
+  oraculo: ['Situation', 'Hindernis', 'Rat', 'Verborgener Einfluss', 'Ergebnis'],
+}
+
+export function getTiposTarot(lang) {
+  if (lang === 'es') return TIPOS_ES
+  if (lang === 'it') return TIPOS_IT
+  if (lang === 'de') return TIPOS_DE
+  if (lang === 'en') return TIPOS_EN
+  return null
+}
+
+export function getPosicoesTarot(lang) {
+  if (lang === 'es') return POSICOES_ES
+  if (lang === 'it') return POSICOES_IT
+  if (lang === 'de') return POSICOES_DE
+  if (lang === 'en') return POSICOES_EN
+  return null
 }

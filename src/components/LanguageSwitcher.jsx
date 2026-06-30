@@ -1,5 +1,7 @@
 import { createPortal } from 'react-dom'
+import { useState } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
+import { Languages } from 'lucide-react'
 import { useLanguage } from '../lib/i18n/LanguageContext.jsx'
 import { passoFromPath, pathFromPasso } from '../lib/routes.js'
 
@@ -9,9 +11,18 @@ const CORES = {
   vidroBorda: 'rgba(223, 183, 108, 0.22)',
 }
 
-const LABELS = { pt: 'PT', en: 'ENG' }
+const LABELS = { pt: 'PT', en: 'EN', es: 'ES', it: 'IT', de: 'DE' }
+const TITLES = {
+  pt: '🇵🇹 Português',
+  en: '🇬🇧 English',
+  es: '🇪🇸 Español',
+  it: '🇮🇹 Italiano',
+  de: '🇩🇪 Deutsch',
+}
+const LANG_ORDER = ['pt', 'en', 'es', 'it', 'de']
 
 function SwitcherButtons({ lang, setLang, size = 'fixed' }) {
+  const [open, setOpen] = useState(false)
   const compact = size === 'compact'
   const inline = size === 'inline'
   const navigate = useNavigate()
@@ -23,9 +34,10 @@ function SwitcherButtons({ lang, setLang, size = 'fixed' }) {
     const passo = passoFromPath(location.pathname)
     const newPath = pathFromPasso(passo, code)
     navigate(`${newPath}${location.search}${location.hash}`, { replace: true })
+    setOpen(false)
   }
 
-  const btn = (code, title) => {
+  const item = (code, title) => {
     const active = lang === code
     return (
       <button
@@ -35,21 +47,24 @@ function SwitcherButtons({ lang, setLang, size = 'fixed' }) {
         style={{
           display: 'flex',
           alignItems: 'center',
-          justifyContent: 'center',
-          padding: compact ? '2px 4px' : inline ? '2px 5px' : '2px 6px',
-          borderRadius: compact ? 4 : 6,
+          justifyContent: 'space-between',
+          width: '100%',
+          padding: '6px 8px',
+          borderRadius: 6,
           border: `1px solid ${active ? CORES.dourado : CORES.vidroBorda}`,
           background: active ? 'rgba(223,183,108,0.18)' : 'rgba(255,255,255,0.04)',
           color: active ? CORES.dourado : CORES.brancoMuted,
-          fontSize: compact ? 7 : inline ? 8 : 8,
+          fontSize: 11,
           fontWeight: active ? 700 : 500,
           cursor: 'pointer',
           transition: 'all 0.2s ease',
           lineHeight: 1,
           letterSpacing: '0.04em',
+          gap: 8,
         }}
       >
-        {LABELS[code]}
+        <span>{title}</span>
+        <span>{LABELS[code]}</span>
       </button>
     )
   }
@@ -68,10 +83,56 @@ function SwitcherButtons({ lang, setLang, size = 'fixed' }) {
         border: compact ? 'none' : `1px solid ${CORES.vidroBorda}`,
         boxShadow: compact ? 'none' : '0 2px 12px rgba(0,0,0,0.45)',
         flexShrink: 0,
+        position: 'relative',
       }}
     >
-      {btn('pt', 'Português')}
-      {btn('en', 'English')}
+      <button
+        type="button"
+        title="Change language"
+        onClick={() => setOpen((v) => !v)}
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: compact ? 2 : 5,
+          padding: compact ? '2px 6px' : inline ? '3px 8px' : '3px 8px',
+          borderRadius: compact ? 4 : 6,
+          border: `1px solid ${CORES.vidroBorda}`,
+          background: 'rgba(255,255,255,0.04)',
+          color: CORES.dourado,
+          fontSize: compact ? 8 : 10,
+          fontWeight: 700,
+          cursor: 'pointer',
+          lineHeight: 1,
+          letterSpacing: '0.04em',
+          minWidth: compact ? 42 : 52,
+        }}
+      >
+        <Languages size={compact ? 12 : 13} />
+        {!compact && <span>{lang.toUpperCase()} ▾</span>}
+      </button>
+
+      {open && (
+        <div
+          style={{
+            position: 'absolute',
+            top: compact ? 28 : 34,
+            right: 0,
+            width: 140,
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 5,
+            padding: 6,
+            borderRadius: 8,
+            background: 'rgba(11,7,30,0.98)',
+            border: `1px solid ${CORES.vidroBorda}`,
+            boxShadow: '0 10px 28px rgba(0,0,0,0.45)',
+            zIndex: 180,
+          }}
+        >
+          {LANG_ORDER.map((code) => item(code, TITLES[code]))}
+        </div>
+      )}
     </div>
   )
 }

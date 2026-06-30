@@ -1021,6 +1021,9 @@ html.sidus-no-ads .google-auto-placed {
   display: flex;
   justify-content: flex-end;
   padding: 4px 2px 6px;
+  margin-bottom: 10px;
+  position: relative;
+  z-index: 2;
 }
 .landing-lang-bar-inner {
   display: flex;
