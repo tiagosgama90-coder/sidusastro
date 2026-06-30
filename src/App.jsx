@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback, useMemo } from 'react'
+﻿import { useState, useEffect, useRef, useCallback, useMemo } from 'react'
 import {
   Sparkles,
   Moon,
@@ -69,13 +69,11 @@ import { useNavigate, useLocation } from 'react-router-dom'
 import { passoFromPath, pathFromPasso, langFromPath } from './lib/routes.js'
 import { initAdSense } from './lib/adsense.js'
 import { initGoogleAnalytics } from './lib/googleAnalytics.js'
-import { trackSignupConversion, trackMapaConversion, trackPurchaseConversion } from './lib/googleAds.js'
 import { AdSenseBanner } from './components/AdSenseBanner.jsx'
 import { CookieConsent } from './components/CookieConsent.jsx'
-import { allowsAds, applyAdConsentToGoogle, applyAnalyticsConsentToGtag, getCookieConsent } from './lib/cookieConsent.js'
+import { allowsAds, applyAdConsentToGoogle, getCookieConsent } from './lib/cookieConsent.js'
 import { LanguageSwitcher } from './components/LanguageSwitcher.jsx'
 import { useLanguage } from './lib/i18n/LanguageContext.jsx'
-import { formatSkyPosition, formatAspectoCurto } from './lib/i18n/astro.js'
 import { getFerramentas, getBeneficiosVip } from './lib/i18n/ferramentasData.js'
 import { validarOnboarding } from './lib/i18n/validation.js'
 import { traduzirErroAuth } from './lib/i18n/authErrors.js'
@@ -87,7 +85,6 @@ import { consultarOracleServidor, interpretarMapaServidor } from './lib/apiAi.js
 import { localizeArcano } from './lib/i18n/tarotArcana.js'
 import { normalizarDataISO, criarDataUTCporLocal, localToUTC } from './lib/datetime.js'
 import { readMapaIACache, writeMapaIACache, interpretacaoValidaParaMapa, gerarChaveMapa, analiseMapaValida, contarPalavrasAnalise } from './lib/mapaInterpretacaoCache.js'
-import { analiseIaPremiumValida } from './lib/mapaInterpretacaoPrompt.js'
 import { calcularAngulosCasas } from './lib/natalHouses.js'
 import { utilizadorTemPremium, emailTemPremiumPrivilegiado } from './lib/premiumAccess.js'
 import {
@@ -464,6 +461,7 @@ function calcularPlanetasParaData(dateObj, lista = PLANETAS_AGORA) {
       longitude: ecl.elon,
       signo,
       retrograde: false,
+      texto: `${p.nome} em ${signo.nome} ${signo.simbolo} (${signo.graus}°)`,
     }
   })
 }
@@ -485,10 +483,8 @@ function calcularAspetos(planetas) {
         .sort((x, y) => x.orbe - y.orbe)[0]
       if (nearest.orbe <= ORBE_ASPECTO) {
         lista.push({
-          planetaA: a.nome,
-          planetaB: b.nome,
-          simboloA: a.simbolo,
-          simboloB: b.simbolo,
+          planetaA: `${a.nome} ${a.simbolo}`,
+          planetaB: `${b.nome} ${b.simbolo}`,
           aspecto: nearest.nome,
           orbe: `${nearest.orbe.toFixed(1)}°`,
           distancia: angle.toFixed(1),
@@ -672,6 +668,7 @@ function calcularPlanetasComSwe(swe, dateUTC, lista = PLANETAS_AGORA) {
         longitude: pos.longitude,
         signo,
         retrograde: retro,
+        texto: `${p.nome} em ${signo.nome} ${signo.simbolo} (${signo.graus}°)${retro ? ' ℞' : ''}`,
       })
     } catch (e) {
       console.warn(`[Sidus] swe_calc_ut falhou para ${p.nome}:`, e?.message)
@@ -1276,7 +1273,6 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
           console.warn('[Sidus Auth] Email verificação:', emailErr?.code, emailErr?.message)
         }
         setInfo(t('auth.accountCreated'))
-        trackSignupConversion()
       } else {
         const cred = await signInWithEmailAndPassword(auth, email, senha)
         await reload(cred.user)
@@ -1805,8 +1801,8 @@ function Dashboard({ nome, mapaNatal, ceuAgora, aspetos, onOraculo, onPrivacidad
         </div>
 
         {(ceuAgora || []).map((p) => (
-          <div key={`${p.key}-${lang}`} style={{ fontSize: 14, color: CORES.brancoSuave, padding: '7px 0', borderBottom: `1px solid ${CORES.vidroBorda}` }}>
-            {formatSkyPosition(p, lang)}
+          <div key={p.key} style={{ fontSize: 14, color: CORES.brancoSuave, padding: '7px 0', borderBottom: `1px solid ${CORES.vidroBorda}` }}>
+            {p.simbolo} {p.texto}
           </div>
         ))}
       </div>
@@ -1821,17 +1817,14 @@ function Dashboard({ nome, mapaNatal, ceuAgora, aspetos, onOraculo, onPrivacidad
         {aspetos.length === 0 ? (
           <p style={{ fontSize: 13, color: CORES.brancoMuted }}>{t('home.noAspects', { orbe: ORBE_ASPECTO })}</p>
         ) : (
-          aspetos.slice(0, 8).map((a, i) => {
-            const asp = formatAspectoCurto(a, lang)
-            return (
-            <div key={`${a.planetaA}-${a.planetaB}-${i}-${lang}`} style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 0', borderBottom: i < aspetos.length - 1 ? `1px solid ${CORES.vidroBorda}` : 'none' }}>
+          aspetos.slice(0, 8).map((a, i) => (
+            <div key={`${a.planetaA}-${a.planetaB}-${i}`} style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 0', borderBottom: i < aspetos.length - 1 ? `1px solid ${CORES.vidroBorda}` : 'none' }}>
               <div style={{ fontSize: 14, color: CORES.branco }}>
-                {asp.esquerda} <span style={{ color: CORES.dourado }}>{asp.aspecto}</span> {asp.direita}
+                {tp(a.planetaA)} <span style={{ color: CORES.dourado }}>{ta(a.aspecto)}</span> {tp(a.planetaB)}
               </div>
               <div style={{ fontSize: 11, color: CORES.brancoMuted }}>{a.orbe}</div>
             </div>
-            )
-          })
+          ))
         )}
       </div>
 
@@ -2051,8 +2044,7 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
   const analiseLexicon = useMemo(() => {
     if (!mapaNatal || !planetasProntos) return null
     try {
-      const analise = gerarAnaliseCompleta(mapaNatal, planetasComCasa, aspetosNatais, dados, lang)
-      return analise?.seccoes?.length ? analise : null
+      return gerarAnaliseCompleta(mapaNatal, planetasComCasa, aspetosNatais, dados, lang)
     } catch (e) {
       console.warn('[Sidus] Análise mapa:', e?.message)
       return null
@@ -2060,31 +2052,21 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
   }, [mapaNatal, planetasComCasa, aspetosNatais, dados, lang, planetasProntos])
 
   const analiseCompleta = useMemo(() => {
-    const lexPalavras = analiseLexicon?.seccoes?.length ? contarPalavrasAnalise(analiseLexicon) : 0
+    if (!analiseLexicon?.seccoes?.length) return null
+    const lexPalavras = contarPalavrasAnalise(analiseLexicon)
     if (
       mapaCompletoDesbloqueado
       && analiseIA?.seccoes?.length
-      && analiseIA.fonte === 'ia'
-      && analiseIaPremiumValida(analiseIA)
-      && (lexPalavras === 0 || contarPalavrasAnalise(analiseIA) >= lexPalavras)
+      && analiseMapaValida(analiseIA)
+      && contarPalavrasAnalise(analiseIA) >= lexPalavras
     ) {
       return analiseIA
     }
-    if (
-      mapaCompletoDesbloqueado
-      && analiseIA?.seccoes?.length
-      && interpretacaoValidaParaMapa(analiseIA, dados, lang)
-      && (analiseIA.fonte !== 'ia' || analiseIaPremiumValida(analiseIA))
-    ) {
-      return analiseIA
-    }
-    return analiseLexicon?.seccoes?.length ? analiseLexicon : null
-  }, [mapaCompletoDesbloqueado, analiseIA, analiseLexicon, dados, lang])
-
-  const analiseParaUi = analiseCompleta || analiseLexicon
+    return analiseLexicon
+  }, [mapaCompletoDesbloqueado, analiseIA, analiseLexicon])
 
   useEffect(() => {
-    if (!mapaCompletoDesbloqueado || !mapaNatal) {
+    if (!mapaCompletoDesbloqueado || !mapaNatal || !analiseLexicon) {
       setAnaliseIA(null)
       setAnaliseIAUpgrading(false)
       chaveMapaRef.current = ''
@@ -2098,15 +2080,13 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
       pedidoInterpretacaoRef.current = false
     }
     const aplicar = (analise) => {
-      if (!analise?.seccoes?.length) return
-      if (analise.fonte === 'ia' && !analiseIaPremiumValida(analise)) return
-      if (analise.fonte !== 'ia' && !analiseMapaValida(analise)) return
+      if (!analiseMapaValida(analise)) return
       setAnaliseIA({
         ...analise,
         chave,
         lang,
       })
-      if (analise.fonte === 'ia') writeMapaIACache(dados, lang, analise)
+      writeMapaIACache(dados, lang, analise)
     }
 
     if (interpretacaoValidaParaMapa(interpretacaoPerfil, dados, lang)) {
@@ -2117,8 +2097,6 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
     const cached = readMapaIACache(dados, lang)
     if (cached?.seccoes?.length) {
       aplicar(cached)
-    } else if (analiseLexicon?.seccoes?.length) {
-      aplicar({ ...analiseLexicon, fonte: 'lexicon' })
     }
 
     if (pedidoInterpretacaoRef.current) return undefined
@@ -2157,7 +2135,7 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
         }
 
         if (cancelled || !resultado?.seccoes?.length) return
-        if (resultado.fonte === 'ia' && !analiseIaPremiumValida(resultado)) return
+        if (!analiseMapaValida(resultado)) return
         aplicar({
           seccoes: resultado.seccoes,
           textoPlano: resultado.textoPlano,
@@ -2183,14 +2161,14 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
     }
   }, [mapaCompletoDesbloqueado, mapaNatal, lang])
 
-  const mapaCompletoVisivel = mapaCompletoDesbloqueado && planetasComCasa.length > 0
+  const mapaCompletoVisivel = planetasComCasa.length > 0
 
   const downloadPdf = async () => {
     if (gerandoPdf) return
     setGerandoPdf(true)
     try {
       const { gerarPdfMapaAstral } = await import('./components/PdfMapa.jsx')
-      await gerarPdfMapaAstral(mapaNatal, dados, planetasComCasa, analiseCompleta, lang)
+      await gerarPdfMapaAstral(mapaNatal, dados, planetasComCasa, analiseCompleta)
     } catch (e) {
       console.error('PDF error:', e)
       alert(t('mapa.pdfError'))
@@ -2274,7 +2252,7 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
     ...(mapaNatal.mc ? [{ titulo: t('mapa.mc'), icon: Star, corBorda: 'rgba(52,211,153,0.35)', corFundo: 'rgba(52,211,153,0.12)', corIcone: '#34D399', ...mapaNatal.mc, nome: ts(mapaNatal.mc.nome), elemento: te(mapaNatal.mc.elemento) }] : []),
   ]
 
-  const balEl  = planetasComCasa.length > 0 ? calcularBalancaElementos(planetasComCasa) : null
+  const balEl  = mapaCompletoVisivel ? calcularBalancaElementos(planetasComCasa) : null
   const balMod = mapaCompletoVisivel ? calcularBalancaModalidades(planetasComCasa) : null
   const totalPlanetas = planetasComCasa.length
 
@@ -2376,13 +2354,13 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
       )}
 
       {/* ── Interpretação + premium ── */}
-      {analiseParaUi && mapaCompletoDesbloqueado && (
+      {analiseCompleta && mapaCompletoDesbloqueado && (
         <>
           <InterpretacaoMapa
-            analise={analiseParaUi}
+            analise={analiseCompleta}
             estilosVidro={estilos.vidro}
             lang={lang}
-            upgrading={analiseIAUpgrading && !analiseIaPremiumValida(analiseIA)}
+            upgrading={analiseIAUpgrading && analiseCompleta?.fonte !== 'ia' && !interpretacaoValidaParaMapa(interpretacaoPerfil, dados, lang)}
             upgradingLabel={t('mapa.aiUpgrading')}
           />
 
@@ -2455,23 +2433,15 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
         </>
       )}
 
-      {!mapaCompletoDesbloqueado && mapaNatalValido(mapaNatal) && (
+      {analiseCompleta && !mapaCompletoDesbloqueado && (
         <>
-          {analiseParaUi?.seccoes?.[0]?.blocos?.length > 0 && (
+          {analiseCompleta.seccoes?.length > 0 && (
             <InterpretacaoMapa
-              analise={{
-                ...analiseParaUi,
-                seccoes: [{
-                  ...analiseParaUi.seccoes[0],
-                  blocos: analiseParaUi.seccoes[0].blocos.slice(0, 1),
-                }],
-              }}
+              analise={{ ...analiseCompleta, seccoes: analiseCompleta.seccoes.slice(0, 1) }}
               estilosVidro={estilos.vidro}
               lang={lang}
             />
           )}
-
-          <p className="mapa-free-taste-hint">{t('mapa.freeTasteHint')}</p>
 
           <div className="mapa-paywall-inline" role="region" aria-label={t('mapa.unlockFullChart')}>
             <div className="mapa-paywall-card">
@@ -2490,75 +2460,63 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
             </div>
           </div>
 
-          <div className="mapa-premium-teaser" aria-hidden>
-            <div className="mapa-preview-blurred">
-              {analiseParaUi?.seccoes?.length > 0 && (
+          {analiseCompleta.seccoes?.length > 1 && (
+            <div className="mapa-premium-teaser">
+              <div className="mapa-preview-blurred">
                 <InterpretacaoMapa
-                  analise={{
-                    ...analiseParaUi,
-                    seccoes: analiseParaUi.seccoes.map((sec, idx) => (
-                      idx === 0
-                        ? { ...sec, blocos: sec.blocos.slice(1) }
-                        : sec
-                    )).filter((sec) => sec.blocos?.length > 0),
-                  }}
+                  analise={{ ...analiseCompleta, seccoes: analiseCompleta.seccoes.slice(1) }}
                   estilosVidro={estilos.vidro}
                   lang={lang}
                 />
-              )}
 
-              {planetasComCasa.length > 0 && (
-                <>
-                  {balEl && (
-                    <div style={{ ...estilos.vidro, padding: 18, marginBottom: 14 }}>
-                      <div style={{ fontSize: 11, color: CORES.dourado, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 14, fontWeight: 700 }}>
-                        {t('mapa.elementBalance')}
-                      </div>
-                      <BarraElemento label={t('mapa.fire')}  valor={balEl.Fogo}  total={totalPlanetas} cor="#FB923C" />
-                      <BarraElemento label={t('mapa.earth')} valor={balEl.Terra} total={totalPlanetas} cor="#4ADE80" />
-                      <BarraElemento label={t('mapa.air')}   valor={balEl.Ar}   total={totalPlanetas} cor="#93C5FD" />
-                      <BarraElemento label={t('mapa.water')}   valor={balEl.Água} total={totalPlanetas} cor="#818CF8" />
-                    </div>
-                  )}
-
-                  <div style={{ ...estilos.vidro, padding: 18, marginBottom: 14 }}>
-                    <div style={{ fontSize: 11, color: CORES.dourado, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 14, fontWeight: 700 }}>
-                      {t('mapa.positions')}
-                    </div>
-                    {planetasComCasa.map((p) => (
-                      <div key={p.key} style={{ padding: '10px 0', borderBottom: `1px solid ${CORES.vidroBorda}` }}>
-                        <span style={{ fontSize: 14, color: CORES.branco }}>{p.simbolo} {tp(p.nome)} · {ts(p.signo?.nome)}</span>
-                      </div>
-                    ))}
+                <div style={{ ...estilos.vidro, padding: 18, marginBottom: 14 }}>
+                  <div style={{ fontSize: 11, color: CORES.dourado, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 14, fontWeight: 700 }}>
+                    {t('mapa.lifeSpheres')}
                   </div>
-
-                  {aspetosNatais.length > 0 && (
-                    <div style={{ ...estilos.vidro, padding: 18, marginBottom: 14 }}>
-                      <div style={{ fontSize: 11, color: CORES.dourado, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 14, fontWeight: 700 }}>
-                        {t('mapa.aspects')}
+                  {[
+                    {
+                      area: t('mapa.love'),
+                      planetas: planetasComCasa.filter(p => ['Vénus', 'Lua', 'Marte'].includes(p.nome)),
+                    },
+                    {
+                      area: t('mapa.career'),
+                      planetas: planetasComCasa.filter(p => ['Sol', 'Saturno', 'Marte'].includes(p.nome)),
+                    },
+                    {
+                      area: t('mapa.spirit'),
+                      planetas: planetasComCasa.filter(p => ['Neptuno', 'Plutão', 'Lua', 'Quíron'].includes(p.nome)),
+                    },
+                  ].map(({ area, planetas: ps }) => (
+                    <div key={area} style={{ padding: '10px 0', borderBottom: `1px solid ${CORES.vidroBorda}` }}>
+                      <div style={{ fontSize: 13, color: CORES.branco, fontWeight: 600, marginBottom: 3 }}>{area}</div>
+                      <div style={{ fontSize: 12, color: CORES.brancoMuted }}>
+                        {ps.length > 0
+                          ? ps.map(p => t('mapa.planetIn', { planet: tp(p.nome), sign: ts(p.signo?.nome) }) + (p.casa ? ` (${t('mapa.house')} ${p.casa})` : '')).join(' · ')
+                          : '-'}
                       </div>
-                      {aspetosNatais.slice(0, 6).map((a, i) => (
-                        <div key={i} style={{ fontSize: 12, color: CORES.brancoMuted, padding: '6px 0' }}>
-                          {tp(a.planetaA)} · {tp(a.planetaB)} - {ta(a.aspecto)}
-                        </div>
-                      ))}
                     </div>
-                  )}
-                </>
-              )}
-
-              <div style={{ ...estilos.vidro, padding: 18, marginBottom: 14 }}>
-                <div style={{ fontSize: 11, color: CORES.dourado, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 14, fontWeight: 700 }}>
-                  {t('mapa.lifeSpheres')}
+                  ))}
                 </div>
-                <p style={{ fontSize: 12, color: CORES.brancoMuted, margin: 0 }}>{t('mapa.freeBlurTeaser')}</p>
+
+                <div style={{ fontSize: 11, color: CORES.dourado, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 10, fontWeight: 700 }}>
+                  {t('mapa.export')}
+                </div>
+
+                <div style={{ ...estilos.vidro, padding: 14, marginBottom: 14 }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '5px 12px', fontSize: 11 }}>
+                    <span style={{ color: CORES.brancoMuted }}>{t('mapa.utDate')}</span>
+                    <span style={{ color: CORES.branco }}>{mapaNatal.instanteUTC ? mapaNatal.instanteUTC.replace('T', ' ').slice(0, 16) + ' UTC' : '-'}</span>
+                    <span style={{ color: CORES.brancoMuted }}>{t('mapa.timezone')}</span>
+                    <span style={{ color: CORES.branco }}>
+                      {typeof mapaNatal.fuso === 'string' ? mapaNatal.fuso : `UTC${(mapaNatal.fuso ?? 0) >= 0 ? '+' : ''}${mapaNatal.fuso ?? 0}`}
+                    </span>
+                    <span style={{ color: CORES.brancoMuted }}>{t('mapa.coordinates')}</span>
+                    <span style={{ color: CORES.branco }}>{mapaNatal.lat != null ? `${mapaNatal.lat.toFixed(3)}°N  ${mapaNatal.lon?.toFixed(3)}°E` : '-'}</span>
+                  </div>
+                </div>
               </div>
             </div>
-            <div className="mapa-premium-teaser-lock">
-              <Crown size={22} color={CORES.dourado} />
-              <span>{t('mapa.unlockFullChart')}</span>
-            </div>
-          </div>
+          )}
         </>
       )}
     </div>
@@ -3447,7 +3405,6 @@ export default function App() {
 
   useEffect(() => {
     if (!allowsAds()) return
-    applyAnalyticsConsentToGtag()
     initGoogleAnalytics()
     if (isPremium) return
     applyAdConsentToGoogle()
@@ -3582,21 +3539,18 @@ export default function App() {
         if (result.productType === 'premium') {
           setIsPremium(true)
           setMapaCompleto(true)
-          trackPurchaseConversion('premium')
           const destino = dadosNataisMinimos(dados) ? 'mapa' : 'onboarding'
           setPasso(destino)
           navigate(destino === 'mapa' ? '/mapaastral' : '/comecar', { replace: true })
           setPagamentoMsg({ tipo: 'sucesso', texto: t('payment.premiumWelcome') })
         } else if (result.productType === 'mapa') {
           setMapaCompleto(true)
-          trackPurchaseConversion('mapa')
           const destino = dadosNataisMinimos(dados) ? 'mapa' : 'onboarding'
           setPasso(destino)
           navigate(destino === 'mapa' ? '/mapaastral' : '/comecar', { replace: true })
           setPagamentoMsg({ tipo: 'sucesso', texto: t('payment.mapaUnlocked') })
         } else if (result.productType === 'tarot') {
           sessionStorage.setItem('sidus_tarot_paid', '1')
-          trackPurchaseConversion('tarot')
           setPasso('tarot')
           navigate('/tarot', { replace: true })
           setPagamentoMsg({ tipo: 'sucesso', texto: t('payment.tarotUnlocked') })
@@ -3750,7 +3704,6 @@ export default function App() {
     if (mapaNatalValido(mapa)) setMapaNatal(mapa)
     const guardado = await guardarPerfil(dados)
     setMapaGerado(true)
-    if (guardado) trackMapaConversion()
     irPara('mapa', { replace: !guardado })
   }
 
@@ -3839,10 +3792,6 @@ export default function App() {
           <p style={{ color: CORES.brancoMuted, marginTop: 16, fontSize: 14, textAlign: 'center' }}>{t('common.loading')}</p>
         </div>
         <RodapeSidus isDesktop={isDesktop} mostrarNavbar={false} />
-        <CookieConsent
-          onConsentChange={setCookieConsent}
-          onPrivacy={() => navigate('/privacidade')}
-        />
       </div>
     )
   }

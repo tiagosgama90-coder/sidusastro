@@ -1,7 +1,7 @@
 /**
  * Textos de interpretação do mapa natal - PT e EN.
  */
-import { translatePlaneta, translateAspecto } from './astro.js'
+import { translateSigno, translateAspecto } from './astro.js'
 
 const TEMAS_CASA_PT = {
   1:  { nome: 'Identidade e Aparência',       foco: 'quem és, o corpo, a primeira impressão e a forma como inicias a vida' },
@@ -342,8 +342,8 @@ export function getMapaCopy(lang = 'pt') {
       }
     }
     const nomeAsp = asp.aspecto === 'Oposicao' ? (lang === 'en' ? 'Opposition' : 'Oposição') : (lang === 'en' ? translateAspecto(asp.aspecto, 'en') : asp.aspecto)
-    const pA = translatePlaneta(asp.planetaA, lang)
-    const pB = translatePlaneta(asp.planetaB, lang)
+    const pA = lang === 'en' ? (asp.planetaA === 'Sol' ? 'Sun' : asp.planetaA) : asp.planetaA
+    const pB = lang === 'en' ? (asp.planetaB === 'Lua' ? 'Moon' : asp.planetaB) : asp.planetaB
     if (lang === 'en') {
       return {
         titulo: `${nomeAsp} ${pA} · ${pB} (orb ${asp.orbe})`,
@@ -352,8 +352,8 @@ export function getMapaCopy(lang = 'pt') {
       }
     }
     return {
-      titulo: `${nomeAsp} ${pA} · ${pB} (orbe ${asp.orbe})`,
-      texto: `O aspecto mais tenso do teu mapa é a ${nomeAsp} entre ${pA} e ${pB}. Esta tensão não é maldição - é combustível evolutivo. Onde sentes «puxar para lados opostos», nasce a tua maior competência quando aprendes a negociar internamente em vez de escolher um polo e rejeitar o outro.`,
+      titulo: `${nomeAsp} ${asp.planetaA} · ${asp.planetaB} (orbe ${asp.orbe})`,
+      texto: `O aspecto mais tenso do teu mapa é a ${nomeAsp} entre ${asp.planetaA} e ${asp.planetaB}. Esta tensão não é maldição - é combustível evolutivo. Onde sentes «puxar para lados opostos», nasce a tua maior competência quando aprendes a negociar internamente em vez de escolher um polo e rejeitar o outro.`,
       conselho: `Usa a ${nomeAsp} como professor/a: quando surgir conflito entre estas energias, pausa e pergunta «o que cada uma precisa de ser ouvida?». A integração deste aspecto é o teu superpoder de maturidade.`,
     }
   }
