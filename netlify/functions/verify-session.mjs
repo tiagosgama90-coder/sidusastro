@@ -26,7 +26,21 @@ export default async (req) => {
       expand: ['subscription', 'payment_intent'],
     })
 
-    const paid = session.payment_status === 'paid' || session.status === 'complete'
+    const paid = session.payment_status === 'paid'
+      || session.payment_status === 'no_payment_required'
+    const pendingAsync = session.status === 'complete' && session.payment_status === 'unpaid'
+
+    if (pendingAsync) {
+      return new Response(JSON.stringify({
+        ok: false,
+        pending: true,
+        status: session.payment_status,
+      }), {
+        status: 200,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      })
+    }
+
     if (!paid) {
       return new Response(JSON.stringify({ ok: false, status: session.payment_status }), {
         status: 200,

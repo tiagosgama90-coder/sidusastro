@@ -362,6 +362,8 @@ export default {
     tarotUnlocked: '✦ Pagamento confirmado! A tua leitura de Tarot está desbloqueada.',
     processing: 'Pagamento recebido mas ainda a processar. Recarrega a página dentro de 1 minuto ou contacta-nos.',
     verifyFail: 'Não foi possível confirmar o pagamento. Se foste cobrado/a, contacta suporte.sidusapp@gmail.com',
+    verifyFailFirebase: 'Pagamento recebido no Stripe, mas o servidor não conseguiu activar o VIP. Confirma FIREBASE_SERVICE_ACCOUNT no Netlify e recarrega a página.',
+    verifyFailUser: 'A sessão de pagamento não corresponde à conta com que iniciaste sessão. Entra com o mesmo e-mail e recarrega.',
     close: 'Fechar',
     needLogin: 'Precisas de iniciar sessão antes de pagar.',
     secureTitle: 'Pagamento seguro',
@@ -644,6 +646,8 @@ export default {
     tarotUnlocked: '✦ Pagamento confirmado! A tua leitura de Tarot está desbloqueada.',
     processing: 'Pagamento recebido mas ainda a processar. Recarrega a página dentro de 1 minuto ou contacta-nos.',
     verifyFail: 'Não foi possível confirmar o pagamento. Se foste cobrado/a, contacta suporte.sidusapp@gmail.com',
+    verifyFailFirebase: 'Pagamento recebido no Stripe, mas o servidor não conseguiu activar o VIP. Confirma FIREBASE_SERVICE_ACCOUNT no Netlify e recarrega a página.',
+    verifyFailUser: 'A sessão de pagamento não corresponde à conta com que iniciaste sessão. Entra com o mesmo e-mail e recarrega.',
     close: 'Fechar',
   },
 }

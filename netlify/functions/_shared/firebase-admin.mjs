@@ -3,12 +3,26 @@ import { env } from './env.mjs'
 
 let initialized = false
 
+function parseServiceAccount(raw) {
+  if (!raw) return null
+  try {
+    return JSON.parse(raw)
+  } catch {
+    /* JSON colado no Netlify por vezes vem com aspas escapadas em duplicado */
+  }
+  try {
+    return JSON.parse(raw.replace(/\\n/g, '\n').replace(/\\"/g, '"'))
+  } catch (e) {
+    console.error('[Firebase Admin] JSON inválido em FIREBASE_SERVICE_ACCOUNT:', e?.message)
+    return null
+  }
+}
+
 function ensureInit() {
   if (initialized) return true
-  const raw = env('FIREBASE_SERVICE_ACCOUNT')
-  if (!raw) return false
+  const serviceAccount = parseServiceAccount(env('FIREBASE_SERVICE_ACCOUNT'))
+  if (!serviceAccount) return false
   try {
-    const serviceAccount = JSON.parse(raw)
     admin.initializeApp({ credential: admin.credential.cert(serviceAccount) })
     initialized = true
     return true

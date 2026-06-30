@@ -362,6 +362,8 @@ export default {
     tarotUnlocked: '✦ Payment confirmed! Your Tarot reading is unlocked.',
     processing: 'Payment received but still processing. Reload the page in 1 minute or contact us.',
     verifyFail: 'Could not confirm payment. If you were charged, contact suporte.sidusapp@gmail.com',
+    verifyFailFirebase: 'Payment received in Stripe but the server could not activate VIP. Check FIREBASE_SERVICE_ACCOUNT on Netlify and reload.',
+    verifyFailUser: 'The payment session does not match your signed-in account. Sign in with the same email and reload.',
     close: 'Close',
     needLogin: 'You need to sign in before paying.',
     secureTitle: 'Secure payment',
@@ -644,6 +646,8 @@ export default {
     tarotUnlocked: '✦ Payment confirmed! Your Tarot reading is unlocked.',
     processing: 'Payment received but still processing. Reload the page in 1 minute or contact us.',
     verifyFail: 'Could not confirm payment. If you were charged, contact suporte.sidusapp@gmail.com',
+    verifyFailFirebase: 'Payment received in Stripe but the server could not activate VIP. Check FIREBASE_SERVICE_ACCOUNT on Netlify and reload.',
+    verifyFailUser: 'The payment session does not match your signed-in account. Sign in with the same email and reload.',
     close: 'Close',
   },
 }

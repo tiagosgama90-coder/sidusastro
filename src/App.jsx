@@ -3540,18 +3540,32 @@ export default function App() {
 
     const verifyKey = `${utilizador.uid}:${sessionId}`
     if (paymentVerificadoRef.current.has(verifyKey)) return
-    paymentVerificadoRef.current.add(verifyKey)
 
-    ;(async () => {
+    const tentarVerificar = async (tentativa = 0) => {
+      paymentVerificadoRef.current.add(verifyKey)
       try {
         const result = await verificarSessaoPagamento(sessionId, utilizador.uid)
-        sessionStorage.removeItem('sidus_stripe_session')
 
         if (!result.ok) {
-          setPagamentoMsg({ tipo: 'erro', texto: t('payment.processing') })
+          if (result.pending && tentativa < 10) {
+            paymentVerificadoRef.current.delete(verifyKey)
+            setPagamentoMsg({ tipo: 'info', texto: t('payment.processing') })
+            window.setTimeout(() => tentarVerificar(tentativa + 1), 8000)
+            return
+          }
+          if (result.pending) {
+            sessionStorage.setItem('sidus_stripe_session', sessionId)
+            setPagamentoMsg({ tipo: 'info', texto: t('payment.processing') })
+            navigate(pathFromPasso('mapa', lang), { replace: true })
+            return
+          }
+          paymentVerificadoRef.current.delete(verifyKey)
+          setPagamentoMsg({ tipo: 'info', texto: t('payment.processing') })
           navigate(pathFromPasso('mapa', lang), { replace: true })
           return
         }
+
+        sessionStorage.removeItem('sidus_stripe_session')
 
         if (result.productType === 'premium') {
           setIsPremium(true)
@@ -3576,10 +3590,18 @@ export default function App() {
       } catch (e) {
         console.error('[Sidus Pagamento] Verificação falhou:', e?.message)
         paymentVerificadoRef.current.delete(verifyKey)
-        setPagamentoMsg({ tipo: 'erro', texto: e?.message?.includes('Firestore') ? t('payment.verifyFail') : t('payment.verifyFail') })
+        const msg = e?.message?.includes('FIREBASE_SERVICE_ACCOUNT')
+          || e?.message?.includes('Firestore')
+          ? t('payment.verifyFailFirebase')
+          : e?.message?.includes('utilizador')
+            ? t('payment.verifyFailUser')
+            : t('payment.verifyFail')
+        setPagamentoMsg({ tipo: 'erro', texto: msg })
         navigate(pathFromPasso('mapa', lang), { replace: true })
       }
-    })()
+    }
+
+    tentarVerificar()
   }, [utilizador, authCarregando, location.search, location.pathname, navigate, t, lang, dados])
 
   // ── Guarda dados natais no Firestore quando o onboarding termina (1x por conta) ──

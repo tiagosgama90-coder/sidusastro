@@ -27,8 +27,13 @@ export default async (req) => {
 
   try {
     switch (event.type) {
-      case 'checkout.session.completed': {
+      case 'checkout.session.completed':
+      case 'checkout.session.async_payment_succeeded': {
         const session = event.data.object
+        if (session.payment_status !== 'paid' && session.payment_status !== 'no_payment_required') {
+          console.log('[stripe-webhook] pagamento pendente:', session.id, session.payment_status)
+          break
+        }
         const userId = session.metadata?.userId || session.client_reference_id
         const productType = session.metadata?.productType
           || (session.mode === 'subscription' ? 'premium' : 'tarot')
