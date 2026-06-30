@@ -49,6 +49,19 @@ export default {
     "hasAccount": "Sie haben bereits ein Konto?",
     "createHere": "Erstellen Sie hier eines",
     "loginHere": "Melden Sie sich hier an",
+    "forgotPassword": "Passwort vergessen?",
+    "forgot": {
+      "title": "Passwort zurücksetzen",
+      "intro": "Gib deine E-Mail ein und wir senden dir einen Link zum Festlegen eines neuen Passworts.",
+      "submit": "Link zum Zurücksetzen senden",
+      "backToLogin": "Zurück zur Anmeldung",
+      "sent": "Wenn ein Konto mit {email} existiert, erhältst du eine E-Mail mit dem Link zum neuen Passwort.",
+      "checkSpam": "Prüfe Posteingang und Spam. Die E-Mail kann einige Minuten dauern.",
+      "errors": {
+        "notFound": "Wenn die E-Mail registriert ist, erhältst du in Kürze Anweisungen.",
+        "sendFailed": "Die Wiederherstellungs-E-Mail konnte nicht gesendet werden. Bitte erneut versuchen."
+      }
+    },
     "fillAll": "Füllen Sie alle Felder aus.",
     "confirmRobot": "Bitte bestätigen Sie, dass Sie kein Roboter sind.",
     "passwordsMismatch": "Passwörter stimmen nicht überein.",

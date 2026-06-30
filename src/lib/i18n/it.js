@@ -49,6 +49,19 @@ export default {
     "hasAccount": "Hai già un account?",
     "createHere": "Creane uno qui",
     "loginHere": "Accedi qui",
+    "forgotPassword": "Hai dimenticato la password?",
+    "forgot": {
+      "title": "Recupera password",
+      "intro": "Inserisci la tua e-mail e ti invieremo un link per impostare una nuova password.",
+      "submit": "Invia link di recupero",
+      "backToLogin": "Torna all'accesso",
+      "sent": "Se esiste un account con {email}, riceverai un'e-mail con il link per impostare una nuova password.",
+      "checkSpam": "Controlla la posta in arrivo e lo spam. L'e-mail può richiedere alcuni minuti.",
+      "errors": {
+        "notFound": "Se l'e-mail è registrata, riceverai istruzioni a breve.",
+        "sendFailed": "Impossibile inviare l'e-mail di recupero. Riprova."
+      }
+    },
     "fillAll": "Compila tutti i campi.",
     "confirmRobot": "Per favore conferma che non sei un robot.",
     "passwordsMismatch": "Le password non corrispondono.",

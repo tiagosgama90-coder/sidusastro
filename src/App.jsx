@@ -50,7 +50,7 @@ import { LandingSkyLive } from './components/LandingSkyLive.jsx'
 import { HeroHomeSidus } from './components/HeroHomeSidus.jsx'
 import { ErrorBoundary } from './components/ErrorBoundary.jsx'
 import { auth, db, firebaseDisponivel } from './lib/firebase'
-import { enviarEmailVerificacao, traduzirErroEmail } from './lib/authEmail'
+import { enviarEmailVerificacao, enviarEmailRecuperacaoSenha, traduzirErroEmail } from './lib/authEmail'
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -1240,10 +1240,14 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
   const [info, setInfo]         = useState(null)
   const [recaptchaOk, setRecaptchaOk] = useState(false)
   const [recaptchaKey, setRecaptchaKey] = useState(0)
+  const [emRecuperacao, setEmRecuperacao] = useState(false)
 
   useEffect(() => {
     setRecaptchaOk(false)
     setRecaptchaKey((k) => k + 1)
+    setEmRecuperacao(false)
+    setErro(null)
+    setInfo(null)
   }, [tipo])
 
   const traduzirErro = (code) => traduzirErroAuth(code, lang)
@@ -1252,11 +1256,35 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
   const precisaRecaptcha = !isLogin
 
   useEffect(() => {
-    document.title = isLogin ? `Sidus - ${t('auth.login')}` : `Sidus - ${t('auth.register')}`
+    const titulo = emRecuperacao
+      ? t('auth.forgot.title')
+      : (isLogin ? t('auth.login') : t('auth.register'))
+    document.title = `Sidusastro - ${titulo}`
     return () => { document.title = 'Sidusastro - O Seu Guia Cósmico' }
-  }, [isLogin, t])
+  }, [isLogin, emRecuperacao, t])
+
+  const handleRecuperarSenha = async () => {
+    setErro(null)
+    setInfo(null)
+    if (!email?.trim()) { setErro(t('auth.errors.auth/missing-email')); return }
+    if (!auth) { setErro(t('auth.firebaseMissing')); return }
+    setCarregando(true)
+    try {
+      const addr = await enviarEmailRecuperacaoSenha(email)
+      setInfo(`${t('auth.forgot.sent', { email: addr })}\n\n${t('auth.forgot.checkSpam')}`)
+    } catch (e) {
+      console.error('[Sidus Auth] Recuperar senha:', e?.code, e?.message)
+      setErro(traduzirErroEmail(e?.code, e?.message, lang))
+    } finally {
+      setCarregando(false)
+    }
+  }
 
   const handleSubmit = async () => {
+    if (emRecuperacao) {
+      await handleRecuperarSenha()
+      return
+    }
     setErro(null)
     setInfo(null)
     if (!email || !senha) { setErro(t('auth.fillAll')); return }
@@ -1336,8 +1364,14 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
           </div>
         )}
         <h2 className="landing-auth-heading" style={{ margin: '0 0 24px', fontSize: 18, fontWeight: 600, color: CORES.branco, textAlign: 'center' }}>
-          {isLogin ? t('auth.login') : t('auth.register')}
+          {emRecuperacao ? t('auth.forgot.title') : (isLogin ? t('auth.login') : t('auth.register'))}
         </h2>
+
+        {emRecuperacao && (
+          <p style={{ margin: '0 0 20px', fontSize: 13, color: CORES.brancoMuted, lineHeight: 1.6, textAlign: 'center' }}>
+            {t('auth.forgot.intro')}
+          </p>
+        )}
 
         {/* Email */}
         <div className="landing-auth-field" style={{ marginBottom: 16 }}>
@@ -1356,7 +1390,8 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
         </div>
 
         {/* Senha */}
-        <div className={`landing-auth-field${tipo === 'register' ? '' : ' landing-auth-field--last'}`} style={{ marginBottom: tipo === 'register' ? 16 : 24 }}>
+        {!emRecuperacao && (
+        <div className={`landing-auth-field${tipo === 'register' ? '' : ' landing-auth-field--last'}`} style={{ marginBottom: tipo === 'register' ? 16 : 12 }}>
           <label style={estilos.label}>{t('auth.password')}</label>
           <div style={{ position: 'relative' }}>
             <Lock size={15} color={CORES.brancoMuted} style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }} />
@@ -1377,9 +1412,24 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
             </button>
           </div>
         </div>
+        )}
+
+        {isLogin && !emRecuperacao && (
+          <div style={{ marginBottom: 20, textAlign: 'right' }}>
+            <button
+              type="button"
+              onClick={() => { setEmRecuperacao(true); setErro(null); setInfo(null) }}
+              style={{ background: 'none', border: 'none', color: CORES.dourado, cursor: 'pointer', fontSize: 12, fontWeight: 600, padding: 0, textDecoration: 'underline', textUnderlineOffset: 3 }}
+            >
+              {t('auth.forgotPassword')}
+            </button>
+          </div>
+        )}
+
+        {emRecuperacao && <div style={{ marginBottom: 24 }} />}
 
         {/* Confirmar senha (só no registo) */}
-        {tipo === 'register' && (
+        {tipo === 'register' && !emRecuperacao && (
           <div className="landing-auth-field landing-auth-field--last" style={{ marginBottom: 24 }}>
             <label style={estilos.label}>{t('auth.confirmPassword')}</label>
             <div style={{ position: 'relative' }}>
@@ -1403,7 +1453,7 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
         )}
 
         {info && (
-          <div style={{ marginBottom: 16, padding: '10px 14px', borderRadius: 10, background: 'rgba(52,211,153,0.1)', border: '1px solid rgba(52,211,153,0.3)', fontSize: 13, color: '#34D399', lineHeight: 1.5 }}>
+          <div style={{ marginBottom: 16, padding: '10px 14px', borderRadius: 10, background: 'rgba(52,211,153,0.1)', border: '1px solid rgba(52,211,153,0.3)', fontSize: 13, color: '#34D399', lineHeight: 1.5, whiteSpace: 'pre-line' }}>
             {info}
           </div>
         )}
@@ -1422,9 +1472,23 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
         >
           {carregando
             ? <Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} />
-            : isLogin ? t('auth.login') : t('auth.register')}
+            : emRecuperacao
+              ? t('auth.forgot.submit')
+              : (isLogin ? t('auth.login') : t('auth.register'))}
         </button>
 
+        {emRecuperacao ? (
+          <p style={{ textAlign: 'center', marginTop: 20, fontSize: 13, color: CORES.brancoMuted }}>
+            <button
+              type="button"
+              onClick={() => { setEmRecuperacao(false); setErro(null); setInfo(null) }}
+              style={{ background: 'none', border: 'none', color: CORES.dourado, cursor: 'pointer', fontSize: 13, fontWeight: 600, padding: 0 }}
+            >
+              ← {t('auth.forgot.backToLogin')}
+            </button>
+          </p>
+        ) : (
+        <>
         {/* Divisor */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, margin: '20px 0' }}>
           <div style={{ flex: 1, height: 1, background: CORES.vidroBorda }} />
@@ -1489,6 +1553,8 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
             {isLogin ? t('auth.createHere') : t('auth.loginHere')}
           </button>
         </p>
+        </>
+        )}
           </div>
         </div>
       </div>

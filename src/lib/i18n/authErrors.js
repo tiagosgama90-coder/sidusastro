@@ -1,10 +1,15 @@
 import pt from './pt.js'
 import en from './en.js'
+import es from './es.js'
+import it from './it.js'
+import de from './de.js'
+import fr from './fr.js'
 
-const LOCALES = { pt, en }
+const LOCALES = { pt, en, es, it, de, fr }
 
 function t(lang, key) {
   return key.split('.').reduce((o, k) => o?.[k], LOCALES[lang])
+    ?? key.split('.').reduce((o, k) => o?.[k], LOCALES.en)
     ?? key.split('.').reduce((o, k) => o?.[k], LOCALES.pt)
     ?? key
 }
@@ -23,6 +28,8 @@ export function traduzirErroEmail(code, message, lang = 'pt') {
     'auth/network-request-failed': 'emailVerify.errors.network',
     'auth/internal-error': 'emailVerify.errors.internal',
     'auth/missing-email': 'emailVerify.errors.missingEmail',
+    'auth/invalid-email': 'auth.errors.auth/invalid-email',
+    'auth/user-not-found': 'auth.forgot.errors.notFound',
   }
   const texto = message || ''
   if (/TOO_MANY_ATTEMPTS/i.test(texto)) return t(lang, 'emailVerify.errors.tooMany')

@@ -1,4 +1,4 @@
-import { sendEmailVerification } from 'firebase/auth'
+import { sendEmailVerification, sendPasswordResetEmail } from 'firebase/auth'
 import { auth } from './firebase'
 import { traduzirErroEmail as traduzirErroEmailFromAuth } from './i18n/authErrors.js'
 /** URL de retorno após clicar no link do e-mail (domínio tem de estar autorizado no Firebase). */
@@ -10,6 +10,31 @@ export function emailActionSettings() {
     url: `${origin}/home`,
     handleCodeInApp: true,
   }
+}
+
+function resetPasswordSettings() {
+  const origin = typeof window !== 'undefined'
+    ? window.location.origin
+    : 'https://sidusastro.com'
+  return {
+    url: `${origin}/login`,
+    handleCodeInApp: false,
+  }
+}
+
+/**
+ * Envia e-mail de recuperação de senha (link Firebase para definir nova senha).
+ */
+export async function enviarEmailRecuperacaoSenha(email) {
+  if (!auth) throw new Error('Firebase não configurado')
+  const addr = email?.trim()
+  if (!addr) {
+    const err = new Error('missing-email')
+    err.code = 'auth/missing-email'
+    throw err
+  }
+  await sendPasswordResetEmail(auth, addr, resetPasswordSettings())
+  return addr
 }
 
 async function enviarViaServidor(user) {

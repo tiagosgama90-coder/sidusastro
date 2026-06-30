@@ -49,6 +49,19 @@ export default {
     "hasAccount": "¿Ya tienes una cuenta?",
     "createHere": "Crea uno aquí",
     "loginHere": "Regístrate aquí",
+    "forgotPassword": "¿Olvidaste tu contraseña?",
+    "forgot": {
+      "title": "Recuperar contraseña",
+      "intro": "Introduce tu correo y te enviaremos un enlace para definir una nueva contraseña.",
+      "submit": "Enviar enlace de recuperación",
+      "backToLogin": "Volver al inicio de sesión",
+      "sent": "Si existe una cuenta con {email}, recibirás un correo con el enlace para definir una nueva contraseña.",
+      "checkSpam": "Revisa la bandeja de entrada y la carpeta de spam. El correo puede tardar unos minutos.",
+      "errors": {
+        "notFound": "Si el correo está registrado, recibirás instrucciones en breve.",
+        "sendFailed": "No se pudo enviar el correo de recuperación. Inténtalo de nuevo."
+      }
+    },
     "fillAll": "Complete todos los campos.",
     "confirmRobot": "Confirma que no eres un robot.",
     "passwordsMismatch": "Las contraseñas no coinciden.",
