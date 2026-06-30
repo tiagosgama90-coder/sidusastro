@@ -35,7 +35,7 @@ import { Body, GeoVector, Ecliptic, MakeTime, SiderealTime } from 'astronomy-eng
 import { pesquisarCidades, pesquisarFusoHorario, geocodificarCidade } from './lib/geocoding'
 import { EcraTarot } from './components/Tarot'
 import { ModalPagamento, verificarSessaoPagamento } from './components/Pagamento'
-import { PRECO_MAPA_COMPLETO, PRECO_PREMIUM_MENSAL } from './lib/pricing.js'
+import { PRECO_MAPA_COMPLETO, PRECO_PREMIUM_UNICO } from './lib/pricing.js'
 import { RecaptchaCheckbox } from './components/Recaptcha'
 import { Perfil } from './components/Perfil'
 import { PoliticaPrivacidade } from './components/PoliticaPrivacidade'
@@ -2568,10 +2568,10 @@ function Paywall({ onVoltar, onPagar, onSucesso, isDesktop }) {
         ))}
       </div>
       <div style={{ ...estilos.vidro, padding: 24, textAlign: 'center', border: `1px solid ${CORES.dourado}`, marginBottom: 20 }}>
-        <div style={{ fontSize: 40, fontWeight: 700, color: CORES.branco }}>{t('vip.price')} <span style={{ fontSize: 16, color: CORES.brancoMuted, fontWeight: 400 }}>{t('common.perMonth')}</span></div>
-        <p style={{ fontSize: 12, color: CORES.brancoMuted, marginTop: 6 }}>{t('vip.cancelAnytime')}</p>
+        <div style={{ fontSize: 40, fontWeight: 700, color: CORES.branco }}>{t('vip.price')} <span style={{ fontSize: 16, color: CORES.brancoMuted, fontWeight: 400 }}>{t('common.oneTime')}</span></div>
+        <p style={{ fontSize: 12, color: CORES.brancoMuted, marginTop: 6 }}>{t('vip.oneTimeAccess')}</p>
       </div>
-      <button type="button" onClick={() => onPagar(lang !== 'pt' ? 'Sidus VIP - Monthly subscription' : 'Sidus VIP - Subscrição mensal', PRECO_PREMIUM_MENSAL, onSucesso, { productType: 'premium' })} style={estilos.botaoDourado}>
+      <button type="button" onClick={() => onPagar(lang === 'en' ? 'Sidus VIP - Lifetime access' : 'Sidus VIP - Acesso vitalício', PRECO_PREMIUM_UNICO, onSucesso, { productType: 'premium' })} style={estilos.botaoDourado}>
         {t('vip.cta')}
       </button>
       <p style={{ textAlign: 'center', fontSize: 11, color: CORES.brancoMuted, marginTop: 12 }}>
@@ -2617,8 +2617,8 @@ function OraclePremiumUpsell({ onUpgrade, compact = false }) {
         border: '1px solid rgba(223,183,108,0.25)',
       }}>
         <span style={{ fontSize: 22, fontWeight: 700, color: CORES.branco }}>{t('vip.price')}</span>
-        <span style={{ fontSize: 12, color: CORES.brancoMuted }}> {t('common.perMonth')}</span>
-        <div style={{ fontSize: 11, color: CORES.brancoMuted, marginTop: 4 }}>{t('vip.cancelAnytime')}</div>
+        <span style={{ fontSize: 12, color: CORES.brancoMuted }}> {t('common.oneTime')}</span>
+        <div style={{ fontSize: 11, color: CORES.brancoMuted, marginTop: 4 }}>{t('vip.oneTimeAccess')}</div>
       </div>
       <button
         type="button"
@@ -3250,6 +3250,7 @@ export default function App() {
   const prevUserRef = useRef(undefined)
   const oobCodeTratado = useRef(false)
   const passoRef = useRef(passo)
+  const paymentVerificadoRef = useRef(new Set())
   useEffect(() => { passoRef.current = passo }, [passo])
 
   // ── Escuta o estado de autenticação Firebase + perfil em tempo real ─────────
@@ -3513,25 +3514,42 @@ export default function App() {
   useEffect(() => {
     if (authCarregando) return
     const params = new URLSearchParams(location.search)
-    const payment = params.get('payment')
+    let payment = params.get('payment')
+    let sessionId = params.get('session_id')
+
+    if (!payment && !sessionId) {
+      sessionId = sessionStorage.getItem('sidus_stripe_session')
+      if (sessionId) payment = 'success'
+    }
+
     if (!payment) return
 
     if (payment === 'cancelled') {
-      navigate(pathFromPasso(passoFromPath(location.pathname)), { replace: true })
+      sessionStorage.removeItem('sidus_stripe_session')
+      navigate(pathFromPasso(passoFromPath(location.pathname), lang), { replace: true })
       setPagamentoMsg({ tipo: 'info', texto: t('payment.cancelled') })
       return
     }
 
-    if (payment !== 'success' || !utilizador) return
-    const sessionId = params.get('session_id')
-    if (!sessionId) return
+    if (payment !== 'success' || !sessionId) return
+
+    if (!utilizador) {
+      sessionStorage.setItem('sidus_stripe_session', sessionId)
+      return
+    }
+
+    const verifyKey = `${utilizador.uid}:${sessionId}`
+    if (paymentVerificadoRef.current.has(verifyKey)) return
+    paymentVerificadoRef.current.add(verifyKey)
 
     ;(async () => {
       try {
         const result = await verificarSessaoPagamento(sessionId, utilizador.uid)
+        sessionStorage.removeItem('sidus_stripe_session')
+
         if (!result.ok) {
           setPagamentoMsg({ tipo: 'erro', texto: t('payment.processing') })
-          navigate('/mapaastral', { replace: true })
+          navigate(pathFromPasso('mapa', lang), { replace: true })
           return
         }
 
@@ -3540,28 +3558,29 @@ export default function App() {
           setMapaCompleto(true)
           const destino = dadosNataisMinimos(dados) ? 'mapa' : 'onboarding'
           setPasso(destino)
-          navigate(destino === 'mapa' ? '/mapaastral' : '/comecar', { replace: true })
+          navigate(pathFromPasso(destino, lang), { replace: true })
           setPagamentoMsg({ tipo: 'sucesso', texto: t('payment.premiumWelcome') })
         } else if (result.productType === 'mapa') {
           setMapaCompleto(true)
           const destino = dadosNataisMinimos(dados) ? 'mapa' : 'onboarding'
           setPasso(destino)
-          navigate(destino === 'mapa' ? '/mapaastral' : '/comecar', { replace: true })
+          navigate(pathFromPasso(destino, lang), { replace: true })
           setPagamentoMsg({ tipo: 'sucesso', texto: t('payment.mapaUnlocked') })
         } else if (result.productType === 'tarot') {
           sessionStorage.setItem('sidus_tarot_paid', '1')
           setPasso('tarot')
-          navigate('/tarot', { replace: true })
+          navigate(pathFromPasso('tarot', lang), { replace: true })
           setPagamentoMsg({ tipo: 'sucesso', texto: t('payment.tarotUnlocked') })
         }
         sessionStorage.removeItem('sidus_payment_pending')
       } catch (e) {
         console.error('[Sidus Pagamento] Verificação falhou:', e?.message)
-        setPagamentoMsg({ tipo: 'erro', texto: t('payment.verifyFail') })
-        navigate('/mapaastral', { replace: true })
+        paymentVerificadoRef.current.delete(verifyKey)
+        setPagamentoMsg({ tipo: 'erro', texto: e?.message?.includes('Firestore') ? t('payment.verifyFail') : t('payment.verifyFail') })
+        navigate(pathFromPasso('mapa', lang), { replace: true })
       }
     })()
-  }, [utilizador, authCarregando, location.search, location.pathname, navigate, t])
+  }, [utilizador, authCarregando, location.search, location.pathname, navigate, t, lang, dados])
 
   // ── Guarda dados natais no Firestore quando o onboarding termina (1x por conta) ──
   const guardarPerfil = useCallback(async (dadosNovos) => {

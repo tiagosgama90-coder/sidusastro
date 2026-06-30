@@ -1,7 +1,5 @@
 import { getStripe, siteOrigin } from './_shared/stripe.mjs'
 
-const METODOS_RECORRENTES = new Set(['card', 'paypal', 'link'])
-
 function resolverMetodoPagamento(raw) {
   const key = String(raw || 'card').trim().toLowerCase().replace(/-/g, '_')
   const validos = ['card', 'mb_way', 'multibanco', 'paypal', 'pix', 'link']
@@ -49,11 +47,8 @@ export default async (req) => {
     const isPremium = productType === 'premium'
     const metodo = resolverMetodoPagamento(paymentMethod)
 
-    // VIP: cartão/PayPal/Link = subscrição mensal; MB Way/Multibanco/PIX = 1 mês pré-pago
-    const subscricaoRecorrente = isPremium && METODOS_RECORRENTES.has(metodo)
-    const billingType = isPremium
-      ? (subscricaoRecorrente ? 'recurring' : 'prepaid_month')
-      : 'one_time'
+    // VIP: pagamento único — acesso permanente (todos os métodos)
+    const billingType = isPremium ? 'lifetime' : 'one_time'
 
     const metadata = {
       userId: String(userId),
@@ -66,12 +61,12 @@ export default async (req) => {
     const returnPath = RETURN_PATH[productType] || '/tarot'
     const cancelPath = CANCEL_PATH[productType] || '/tarot'
 
-    const nomeProduto = billingType === 'prepaid_month'
-      ? 'Sidus VIP - 1 mês'
+    const nomeProduto = isPremium
+      ? (descricao || 'Sidus VIP - Acesso completo')
       : descricao
 
     const sessionParams = {
-      mode: subscricaoRecorrente ? 'subscription' : 'payment',
+      mode: 'payment',
       customer_email: userEmail || undefined,
       client_reference_id: String(userId),
       metadata,
@@ -84,16 +79,10 @@ export default async (req) => {
           currency: 'eur',
           product_data: { name: nomeProduto },
           unit_amount: Math.round(v * 100),
-          ...(subscricaoRecorrente ? { recurring: { interval: 'month' } } : {}),
         },
       }],
       payment_method_types: tiposPagamentoCheckout(metodo),
-    }
-
-    if (subscricaoRecorrente) {
-      sessionParams.subscription_data = { metadata }
-    } else {
-      sessionParams.payment_intent_data = { metadata }
+      payment_intent_data: { metadata },
     }
 
     const session = await stripe.checkout.sessions.create(sessionParams)

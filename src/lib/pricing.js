@@ -1,7 +1,9 @@
 /** Preços Sidus (EUR) - fonte única para UI e Stripe. */
 export const PRECO_TAROT = 2
 export const PRECO_MAPA_COMPLETO = 10
-export const PRECO_PREMIUM_MENSAL = 9.99
+/** VIP: pagamento único, acesso permanente */
+export const PRECO_PREMIUM_UNICO = 9.99
+export const PRECO_PREMIUM_MENSAL = PRECO_PREMIUM_UNICO
 
 export function inferProductType(valor, descricao, explicit) {
   if (explicit) return explicit

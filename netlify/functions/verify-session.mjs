@@ -46,15 +46,24 @@ export default async (req) => {
       || (session.mode === 'subscription' ? 'premium' : 'tarot')
 
     if (metaUserId && productType === 'premium') {
-      const billingType = session.metadata?.billingType
-      const isRecurring = session.mode === 'subscription' || session.subscription
-      await activarPremium(metaUserId, {
+      const isRecurring = session.mode === 'subscription' && session.subscription
+      const activado = await activarPremium(metaUserId, {
         stripeCustomerId: session.customer || null,
         stripeSubscriptionId: isRecurring ? (session.subscription?.id || session.subscription || null) : null,
-        billingType: isRecurring ? 'recurring' : (billingType === 'prepaid_month' ? 'prepaid_month' : undefined),
+        billingType: isRecurring ? 'recurring' : 'lifetime',
       })
+      if (!activado) {
+        return new Response(JSON.stringify({
+          error: 'Não foi possível activar VIP no Firestore. Verifica FIREBASE_SERVICE_ACCOUNT no Netlify.',
+        }), { status: 503, headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
+      }
     } else if (metaUserId && productType === 'mapa') {
-      await activarMapaCompleto(metaUserId)
+      const activado = await activarMapaCompleto(metaUserId)
+      if (!activado) {
+        return new Response(JSON.stringify({
+          error: 'Não foi possível desbloquear o mapa no Firestore. Verifica FIREBASE_SERVICE_ACCOUNT no Netlify.',
+        }), { status: 503, headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
+      }
     }
 
     return new Response(JSON.stringify({

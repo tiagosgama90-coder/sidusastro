@@ -1,11 +1,11 @@
 /** Métodos activos no Dashboard Stripe - todos disponíveis em qualquer compra. */
 export const METODOS_PAGAMENTO = [
-  { stripeType: 'card', i18nKey: 'card', icone: '💳', recorrente: true },
+  { stripeType: 'card', i18nKey: 'card', icone: '💳', recorrente: false },
   { stripeType: 'mb_way', i18nKey: 'mbway', icone: '📱', recorrente: false },
   { stripeType: 'multibanco', i18nKey: 'multibanco', icone: '🏧', recorrente: false },
-  { stripeType: 'paypal', i18nKey: 'paypal', icone: '🅿️', recorrente: true },
+  { stripeType: 'paypal', i18nKey: 'paypal', icone: '🅿️', recorrente: false },
   { stripeType: 'pix', i18nKey: 'pix', icone: '💚', recorrente: false },
-  { stripeType: 'link', i18nKey: 'link', icone: '🔗', recorrente: true },
+  { stripeType: 'link', i18nKey: 'link', icone: '🔗', recorrente: false },
 ]
 
 const STRIPE_TYPES = new Set(METODOS_PAGAMENTO.map((m) => m.stripeType))
@@ -14,9 +14,8 @@ export function metodosParaProduto() {
   return METODOS_PAGAMENTO
 }
 
-export function metodoUsaSubscricaoRecorrente(stripeType) {
-  const m = METODOS_PAGAMENTO.find((x) => x.stripeType === stripeType)
-  return m?.recorrente !== false
+export function metodoUsaSubscricaoRecorrente() {
+  return false
 }
 
 export function normalizarMetodoStripe(raw) {

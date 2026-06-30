@@ -68,7 +68,10 @@ function premiumUntilFromExisting(existingUntil, dias = 30) {
 
 export async function activarPremium(userId, extra = {}) {
   const db = getFirestore()
-  if (!db || !userId) return false
+  if (!db || !userId) {
+    console.error('[activarPremium] Firestore indisponível — confirma FIREBASE_SERVICE_ACCOUNT no Netlify')
+    return false
+  }
 
   const updates = {
     isPremium: true,
@@ -80,11 +83,10 @@ export async function activarPremium(userId, extra = {}) {
     updates.stripeSubscriptionId = extra.stripeSubscriptionId
     updates.stripeCustomerId = extra.stripeCustomerId || null
     updates.premiumBilling = 'recurring'
-  } else if (extra.billingType === 'prepaid_month') {
-    const snap = await db.collection('users').doc(userId).get()
-    const data = snap.exists ? snap.data() : {}
-    updates.premiumUntil = premiumUntilFromExisting(data.premiumUntil, 30)
-    updates.premiumBilling = 'prepaid'
+  } else {
+    updates.premiumBilling = 'lifetime'
+    updates.premiumUntil = admin.firestore.FieldValue.delete()
+    updates.stripeSubscriptionId = admin.firestore.FieldValue.delete()
     if (extra.stripeCustomerId) updates.stripeCustomerId = extra.stripeCustomerId
   }
 
@@ -98,7 +100,10 @@ export async function activarPremium(userId, extra = {}) {
 
 export async function activarMapaCompleto(userId) {
   const db = getFirestore()
-  if (!db || !userId) return false
+  if (!db || !userId) {
+    console.error('[activarMapaCompleto] Firestore indisponível — confirma FIREBASE_SERVICE_ACCOUNT no Netlify')
+    return false
+  }
   await db.collection('users').doc(userId).set(
     { mapaCompleto: true, mapaCompletoAt: admin.firestore.FieldValue.serverTimestamp() },
     { merge: true }

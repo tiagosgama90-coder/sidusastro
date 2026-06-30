@@ -32,6 +32,7 @@ export function utilizadorTemPremium(user, perfil) {
   if (!perfil) return false
   if (perfil.stripeSubscriptionId) return true
   if (premiumPrepaidActivo(perfil)) return true
+  if (perfil.isPremium === true && perfil.premiumBilling === 'lifetime') return true
   if (perfil.isPremium === true && perfil.premiumBilling === 'recurring') return true
   if (perfil.isPremium === true && !perfil.premiumUntil) return true
   if (perfil.mapaCompleto === true) return true

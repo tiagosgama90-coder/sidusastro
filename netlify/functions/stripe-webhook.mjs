@@ -34,15 +34,16 @@ export default async (req) => {
           || (session.mode === 'subscription' ? 'premium' : 'tarot')
 
         if (userId && productType === 'premium') {
-          const billingType = session.metadata?.billingType
-          const isRecurring = session.mode === 'subscription' || session.subscription
-          await activarPremium(userId, {
+          const isRecurring = session.mode === 'subscription' && session.subscription
+          const activado = await activarPremium(userId, {
             stripeCustomerId: session.customer || null,
             stripeSubscriptionId: isRecurring ? (session.subscription || null) : null,
-            billingType: isRecurring ? 'recurring' : (billingType === 'prepaid_month' ? 'prepaid_month' : undefined),
+            billingType: isRecurring ? 'recurring' : 'lifetime',
           })
+          if (!activado) console.error('[stripe-webhook] activarPremium falhou para', userId)
         } else if (userId && productType === 'mapa') {
-          await activarMapaCompleto(userId)
+          const activado = await activarMapaCompleto(userId)
+          if (!activado) console.error('[stripe-webhook] activarMapaCompleto falhou para', userId)
         }
         break
       }
