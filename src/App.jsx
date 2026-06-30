@@ -2051,7 +2051,8 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
   const analiseLexicon = useMemo(() => {
     if (!mapaNatal || !planetasProntos) return null
     try {
-      return gerarAnaliseCompleta(mapaNatal, planetasComCasa, aspetosNatais, dados, lang)
+      const analise = gerarAnaliseCompleta(mapaNatal, planetasComCasa, aspetosNatais, dados, lang)
+      return analise?.seccoes?.length ? analise : null
     } catch (e) {
       console.warn('[Sidus] Análise mapa:', e?.message)
       return null
@@ -2074,12 +2075,14 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
       mapaCompletoDesbloqueado
       && analiseIA?.seccoes?.length
       && interpretacaoValidaParaMapa(analiseIA, dados, lang)
-      && analiseIaPremiumValida(analiseIA)
+      && (analiseIA.fonte !== 'ia' || analiseIaPremiumValida(analiseIA))
     ) {
       return analiseIA
     }
     return analiseLexicon
   }, [mapaCompletoDesbloqueado, analiseIA, analiseLexicon, dados, lang])
+
+  const analiseParaUi = analiseCompleta || analiseLexicon
 
   useEffect(() => {
     if (!mapaCompletoDesbloqueado || !mapaNatal || !analiseLexicon) {
@@ -2115,6 +2118,8 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
     const cached = readMapaIACache(dados, lang)
     if (cached?.seccoes?.length) {
       aplicar(cached)
+    } else if (analiseLexicon?.seccoes?.length) {
+      aplicar({ ...analiseLexicon, fonte: 'lexicon' })
     }
 
     if (pedidoInterpretacaoRef.current) return undefined
@@ -2372,10 +2377,10 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
       )}
 
       {/* ── Interpretação + premium ── */}
-      {analiseCompleta && mapaCompletoDesbloqueado && (
+      {analiseParaUi && mapaCompletoDesbloqueado && (
         <>
           <InterpretacaoMapa
-            analise={analiseCompleta}
+            analise={analiseParaUi}
             estilosVidro={estilos.vidro}
             lang={lang}
             upgrading={analiseIAUpgrading && !analiseIaPremiumValida(analiseIA)}
@@ -2451,15 +2456,15 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
         </>
       )}
 
-      {analiseCompleta && !mapaCompletoDesbloqueado && (
+      {!mapaCompletoDesbloqueado && mapaNatalValido(mapaNatal) && (
         <>
-          {analiseCompleta.seccoes?.[0]?.blocos?.length > 0 && (
+          {analiseParaUi?.seccoes?.[0]?.blocos?.length > 0 && (
             <InterpretacaoMapa
               analise={{
-                ...analiseCompleta,
+                ...analiseParaUi,
                 seccoes: [{
-                  ...analiseCompleta.seccoes[0],
-                  blocos: analiseCompleta.seccoes[0].blocos.slice(0, 1),
+                  ...analiseParaUi.seccoes[0],
+                  blocos: analiseParaUi.seccoes[0].blocos.slice(0, 1),
                 }],
               }}
               estilosVidro={estilos.vidro}
@@ -2488,11 +2493,11 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
 
           <div className="mapa-premium-teaser" aria-hidden>
             <div className="mapa-preview-blurred">
-              {analiseCompleta.seccoes?.length > 0 && (
+              {analiseParaUi?.seccoes?.length > 0 && (
                 <InterpretacaoMapa
                   analise={{
-                    ...analiseCompleta,
-                    seccoes: analiseCompleta.seccoes.map((sec, idx) => (
+                    ...analiseParaUi,
+                    seccoes: analiseParaUi.seccoes.map((sec, idx) => (
                       idx === 0
                         ? { ...sec, blocos: sec.blocos.slice(1) }
                         : sec

@@ -272,22 +272,23 @@ const POSICOES={
 // ── Interpretação final da leitura ────────────────────────────────────────────
 function interpretarLeitura(cartas, tipoId, pergunta, mapaNatal, lang = 'pt', t) {
   const tr = (key, vars) => (t ? t(key, vars) : key)
+  const cartasLocalizadas = cartas.map((c) => localizeArcano(c, lang))
   const astro = mapaNatal
     ? `\n${tr('tarot.natalContext', { solar: mapaNatal.solar?.nome, lunar: mapaNatal.lunar?.nome, asc: mapaNatal.ascendente?.nome })}`
     : ''
 
   if (tipoId === 'simnao') {
     const cartasPositivas = new Set([0,1,3,4,6,7,8,10,11,14,17,19,20,21])
-    const positiva = !cartas[0].invertida && cartasPositivas.has(cartas[0].id)
+    const positiva = !cartasLocalizadas[0].invertida && cartasPositivas.has(cartasLocalizadas[0].id)
     return {
       resposta: positiva ? tr('tarot.yes') : tr('tarot.no'),
-      detalhe: `${astro}\n\n${cartas[0].invertida ? cartas[0].sombra : cartas[0].luz}\n\n${cartas[0].conselho}`,
-      mensagemAnjos: gerarMensagemAnjos(cartas, mapaNatal, lang),
+      detalhe: `${astro}\n\n${cartasLocalizadas[0].invertida ? cartasLocalizadas[0].sombra : cartasLocalizadas[0].luz}\n\n${cartasLocalizadas[0].conselho}`,
+      mensagemAnjos: gerarMensagemAnjos(cartasLocalizadas, mapaNatal, lang),
     }
   }
 
-  const posicoes = POSICOES[tipoId] || []
-  const linhas = cartas.map((c,i) => {
+  const posicoes = (lang === 'en' ? POSICOES_EN[tipoId] : null) || POSICOES[tipoId] || []
+  const linhas = cartasLocalizadas.map((c,i) => {
     const pos = posicoes[i] || tr('tarot.cardN', { n: i + 1 })
     const revLabel = tr('tarot.reversedLabel')
     const txt = c.invertida ? c.sombra : c.luz
@@ -297,24 +298,24 @@ function interpretarLeitura(cartas, tipoId, pergunta, mapaNatal, lang = 'pt', t)
   let conclusao = ''
   if (tipoId === 'amor') {
     conclusao = `\n\n${tr('tarot.synthesisAmor', {
-      theme: cartas[0].palavras?.[0] || cartas[0].nome,
-      outcome: cartas[2]?.invertida ? tr('tarot.synthesisAmorChallenge') : tr('tarot.synthesisAmorOpen'),
+      theme: cartasLocalizadas[0].palavras?.[0] || cartasLocalizadas[0].nome,
+      outcome: cartasLocalizadas[2]?.invertida ? tr('tarot.synthesisAmorChallenge') : tr('tarot.synthesisAmorOpen'),
     })}`
   } else if (tipoId === 'geral') {
     conclusao = `\n\n${tr('tarot.synthesisGeral', {
-      root: cartas[0].nome.toLowerCase(),
-      present: cartas[1]?.palavras?.[0] || '',
-      future: cartas[2]?.palavras?.[1] || cartas[2]?.palavras?.[0] || '',
+      root: cartasLocalizadas[0].nome.toLowerCase(),
+      present: cartasLocalizadas[1]?.palavras?.[0] || '',
+      future: cartasLocalizadas[2]?.palavras?.[1] || cartasLocalizadas[2]?.palavras?.[0] || '',
     })}`
   } else if (tipoId === 'cigano' || tipoId === 'oraculo') {
     conclusao = `\n\n${tr('tarot.synthesisCigano', {
-      start: cartas[0].nome,
-      end: cartas[4]?.nome || cartas[cartas.length - 1]?.nome,
-      path: cartas[2]?.palavras?.[0] || '',
+      start: cartasLocalizadas[0].nome,
+      end: cartasLocalizadas[4]?.nome || cartasLocalizadas[cartasLocalizadas.length - 1]?.nome,
+      path: cartasLocalizadas[2]?.palavras?.[0] || '',
     })}`
   }
 
-  const mensagemAnjos = gerarMensagemAnjos(cartas, mapaNatal, lang)
+  const mensagemAnjos = gerarMensagemAnjos(cartasLocalizadas, mapaNatal, lang)
 
   return { resposta: null, detalhe: `${astro}\n\n${linhas.join('\n\n')}${conclusao}`, mensagemAnjos }
 }

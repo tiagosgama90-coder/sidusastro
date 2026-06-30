@@ -148,6 +148,5 @@ export function mapaPlanetasProntos(planetas, mapaNatal) {
   if (!mapaNatal?.solar?.nome || !Array.isArray(planetas) || planetas.length < 7) return false
   const sol = resolverPlaneta(planetas, mapaNatal, 'Sol')
   const lua = resolverPlaneta(planetas, mapaNatal, 'Lua')
-  const mer = resolverPlaneta(planetas, mapaNatal, 'Mercúrio')
-  return Boolean(sol?.signo?.nome && lua?.signo?.nome && mer?.signo?.nome)
+  return Boolean(sol?.signo?.nome && lua?.signo?.nome)
 }
