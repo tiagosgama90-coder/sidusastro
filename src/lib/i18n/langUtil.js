@@ -19,6 +19,38 @@ export function contentForLang(lang, bundle) {
   return bundle.pt ?? null
 }
 
+/** «Signo · Casa 10» com etiqueta de casa por idioma. */
+export function formatCasaMeta(lang, signo, casa) {
+  if (!signo) return '-'
+  if (!casa) return signo
+  const labels = {
+    pt: (s, c) => `${s} · Casa ${c}`,
+    en: (s, c) => `${s} · House ${c}`,
+    es: (s, c) => `${s} · Casa ${c}`,
+    it: (s, c) => `${s} · Casa ${c}`,
+    de: (s, c) => `${s} · Haus ${c}`,
+    fr: (s, c) => `${s} · Maison ${c}`,
+  }
+  const fn = labels[lang] || labels.en
+  return fn(signo, casa)
+}
+
+/** Sufixo « (Maison 3) » para narrativas de aspectos. */
+export function casaParentese(lang, casa) {
+  if (!casa) return ''
+  const word = { pt: 'Casa', en: 'House', es: 'Casa', it: 'Casa', de: 'Haus', fr: 'Maison' }[lang]
+    || 'House'
+  return ` (${word} ${casa})`
+}
+
+/** Sufixo «, Maison 3» após signo. */
+export function casaVirgula(lang, casa) {
+  if (!casa) return ''
+  const word = { pt: 'Casa', en: 'House', es: 'Casa', it: 'Casa', de: 'Haus', fr: 'Maison' }[lang]
+    || 'House'
+  return `, ${word} ${casa}`
+}
+
 export function localeTag(lang) {
   const map = {
     pt: 'pt-PT',

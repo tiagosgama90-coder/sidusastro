@@ -6,13 +6,10 @@ import { planetaPorNome, getTemaCasa } from './casasPlacidus.js'
 import { translateSigno, translatePlaneta, translateAspecto } from './i18n/astro.js'
 import { contentForLang } from './i18n/langUtil.js'
 import { getMapaStatic } from './i18n/packs/mapaStatic.js'
-import {
-  SOL_ES, SOL_IT, SOL_DE, SOL_FR,
-  LUA_ES, LUA_IT, LUA_DE, LUA_FR,
-  ASC_ES, ASC_IT, ASC_DE, ASC_FR,
-} from './i18n/packs/mapaEssenciaLocales.js'
 import { glueBlocoCasa, glueBlocoGraus, glueBlocoAspectos, glueFaseLunar } from './i18n/packs/mapaEssenciaGlue.js'
-import { comporInterpretacaoPlaneta } from './lexicon/compositor.js'
+import { buildParagrafoAsc } from './i18n/packs/mapaParagraphs.js'
+import { comporInterpretacaoPlaneta, textoPlanetSign } from './lexicon/compositor.js'
+import { casaParentese } from './i18n/langUtil.js'
 
 const ELEMENTO = {
   Carneiro: 'Fogo', Leão: 'Fogo', Sagitário: 'Fogo',
@@ -97,10 +94,12 @@ function blocoAspectos(planeta, aspetos, planetas, lang) {
     const casaOut = pOut?.casa
     const outroTr = tp(outro, lang)
     const orbeLbl = lang === 'pt' ? 'orbe' : 'orb'
+    const casaSuf = casaOut ? casaParentese(lang, casaOut) : ''
     if (lang === 'pt') {
-      return `${asp} ${outro} em ${signoOut}${casaOut ? ` (C${casaOut})` : ''} ${orbeLbl} ${a.orbe}`
+      return `${asp} ${outro} em ${signoOut}${casaSuf} ${orbeLbl} ${a.orbe}`
     }
-    return `${asp} ${outroTr} in ${signoOut}${casaOut ? ` (H${casaOut})` : ''} ${orbeLbl} ${a.orbe}`
+    const prep = { en: 'in', es: 'en', it: 'in', de: 'in', fr: 'en' }[lang] || 'in'
+    return `${asp} ${outroTr} ${prep} ${signoOut}${casaSuf} ${orbeLbl} ${a.orbe}`
   })
   return glueBlocoAspectos(lang, partes)
 }
@@ -202,17 +201,24 @@ const ASC_EN = {
   Pisces: 'Pisces Ascendant - soft aura, dreamy gaze, visible empathy. You seem artistic or spiritual. Integration keeps boundaries without losing compassion.',
 }
 
-function textoEssencia(mapaPt, mapaEn, mapaLoc, signo, lang) {
+function textoEssencia(planeta, mapaPt, mapaEn, signo, lang, modo = 'planeta') {
   const chave = normalizarSigno(signo)
-  if (lang === 'en') return mapaEn[sn(chave, 'en')] || ''
   if (lang === 'pt') return mapaPt[chave] || ''
-  const loc = contentForLang(lang, mapaLoc)
-  return loc?.[chave] || mapaEn[sn(chave, 'en')] || mapaPt[chave] || ''
-}
 
-const SOL_LOC = { es: SOL_ES, it: SOL_IT, de: SOL_DE, fr: SOL_FR }
-const LUA_LOC = { es: LUA_ES, it: LUA_IT, de: LUA_DE, fr: LUA_FR }
-const ASC_LOC = { es: ASC_ES, it: ASC_IT, de: ASC_DE, fr: ASC_FR }
+  if (modo === 'asc') {
+    if (lang === 'en') return mapaEn[sn(chave, 'en')] || ''
+    const { essencia } = getMapaStatic(lang)
+    const ess = essencia[chave] || ''
+    return buildParagrafoAsc(lang, { s: sn(signo, lang), signo: chave, essencia: ess })
+      || mapaEn[sn(chave, 'en')]
+      || ''
+  }
+
+  const fromLex = textoPlanetSign(planeta, signo, lang)
+  if (fromLex) return fromLex
+  if (lang === 'en') return mapaEn[sn(chave, 'en')] || ''
+  return mapaEn[sn(chave, 'en')] || ''
+}
 
 function blocoRegenteAsc(asc, planetas, lang) {
   const chave = normalizarSigno(asc)
@@ -243,14 +249,14 @@ function blocoRegenteAsc(asc, planetas, lang) {
 export function interpretarSolEssencia(pSol, mapaNatal, aspetos, planetas, lang = 'pt') {
   if (!pSol) return ''
   const signo = pSol.signo?.nome
-  const rico = textoEssencia(SOL_PT, SOL_EN, SOL_LOC, signo, lang)
+  const rico = textoEssencia('Sol', SOL_PT, SOL_EN, signo, lang)
   return comporInterpretacaoPlaneta('Sol', pSol, aspetos, planetas, lang, rico)
 }
 
 export function interpretarLuaEssencia(pLua, mapaNatal, aspetos, planetas, lang = 'pt') {
   if (!pLua) return ''
   const signo = pLua.signo?.nome
-  let rico = textoEssencia(LUA_PT, LUA_EN, LUA_LOC, signo, lang)
+  let rico = textoEssencia('Lua', LUA_PT, LUA_EN, signo, lang)
   const pSol = planetaPorNome(planetas, 'Sol')
   rico += faseLunar(pSol?.longitude, pLua.longitude, lang)
   return comporInterpretacaoPlaneta('Lua', pLua, aspetos, planetas, lang, rico)
@@ -258,7 +264,7 @@ export function interpretarLuaEssencia(pLua, mapaNatal, aspetos, planetas, lang 
 
 export function interpretarAscEssencia(asc, mapaNatal, aspetos, planetas, lang = 'pt') {
   if (!asc) return ''
-  let rico = textoEssencia(ASC_PT, ASC_EN, ASC_LOC, asc, lang)
+  let rico = textoEssencia('Ascendente', ASC_PT, ASC_EN, asc, lang, 'asc')
   rico += blocoRegenteAsc(asc, planetas, lang)
   const mc = mapaNatal?.mc?.nome
   if (mc) {

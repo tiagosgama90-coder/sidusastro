@@ -5,6 +5,7 @@
 
 import { planetaPorNome, resolverPlaneta, mapaPlanetasProntos } from './casasPlacidus.js'
 import { getMapaCopy } from './i18n/mapaCopy.js'
+import { formatCasaMeta } from './i18n/langUtil.js'
 import { interpretarTranspessoal, gerarSinteseEvolutiva } from './mapaProfundo.js'
 import { interpretarAspectosNatais } from './lexicon/aspectosNarrativa.js'
 import {
@@ -17,8 +18,7 @@ function metaSigno(signo, casa, lang) {
   const C = getMapaCopy(lang)
   const s = C.sn(signo)
   if (!s) return '-'
-  if (!casa) return s
-  return lang !== 'pt' ? `${s} · House ${casa}` : `${s} · Casa ${casa}`
+  return formatCasaMeta(lang, s, casa)
 }
 
 /** Resumo mínimo para utilizadores free */
@@ -72,7 +72,7 @@ export function gerarAnaliseCompleta(mapaNatal, planetas, aspetos = [], dados = 
       id: 0,
       titulo: L.sec0,
       blocos: [
-        { subtitulo: lang !== 'pt' ? 'Your natal chart' : 'O teu mapa natal', texto: C.introTecnica(mapaNatal, dados), destaque: true },
+        { subtitulo: L.natalChartNote, texto: C.introTecnica(mapaNatal, dados), destaque: true },
       ],
     },
     {
@@ -81,7 +81,7 @@ export function gerarAnaliseCompleta(mapaNatal, planetas, aspetos = [], dados = 
       blocos: [
         { subtitulo: L.sol, texto: interpretarSolEssencia(pSol, mapaNatal, aspetos, planetas, lang), meta: metaSigno(sol, pSol?.casa, lang) },
         { subtitulo: L.lua, texto: interpretarLuaEssencia(pLua, mapaNatal, aspetos, planetas, lang), meta: metaSigno(lua, pLua?.casa, lang) },
-        { subtitulo: L.asc, texto: interpretarAscEssencia(asc, mapaNatal, aspetos, planetas, lang), meta: lang !== 'pt' ? `${C.sn(asc)} · House 1` : `${asc} · Casa 1` },
+        { subtitulo: L.asc, texto: interpretarAscEssencia(asc, mapaNatal, aspetos, planetas, lang), meta: formatCasaMeta(lang, C.sn(asc), 1) },
         { subtitulo: L.big3, texto: interpretarBig3Essencia(mapaNatal, planetas, aspetos, lang), destaque: true },
       ],
     },
@@ -107,7 +107,7 @@ export function gerarAnaliseCompleta(mapaNatal, planetas, aspetos = [], dados = 
       titulo: L.secAspetos,
       blocos: [
         {
-          subtitulo: lang !== 'pt' ? 'Major planetary aspects' : 'Aspetos planetários principais',
+          subtitulo: L.majorAspects,
           texto: interpretarAspectosNatais(aspetos, planetas, lang),
           destaque: true,
         },
@@ -117,7 +117,7 @@ export function gerarAnaliseCompleta(mapaNatal, planetas, aspetos = [], dados = 
       id: 4,
       titulo: L.sec4,
       blocos: [
-        { subtitulo: L.mc, texto: C.paragrafoMC(mc), meta: mc ? (lang !== 'pt' ? `${C.sn(mc)} · House 10` : `${mc} · Casa 10`) : '-' },
+        { subtitulo: L.mc, texto: C.paragrafoMC(mc), meta: mc ? formatCasaMeta(lang, C.sn(mc), 10) : '-' },
       ],
     },
     ...(blocosGeracionais.length > 0 ? [{

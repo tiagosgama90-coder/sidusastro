@@ -2,12 +2,11 @@
  * Interpretação profunda - secções 5 (transpessoais) e 6 (síntese).
  * Cada texto é único: signo, casa Placidus, aspectos e Big 3.
  */
-import { comporInterpretacaoPlaneta } from './lexicon/compositor.js'
+import { comporInterpretacaoPlaneta, textoPlanetSign } from './lexicon/compositor.js'
 import { planetaPorNome, getTemaCasa } from './casasPlacidus.js'
 import { translateSigno, translatePlaneta, translateAspecto } from './i18n/astro.js'
-import { contentForLang } from './i18n/langUtil.js'
+import { contentForLang, casaParentese, casaVirgula } from './i18n/langUtil.js'
 import { getMapaStatic } from './i18n/packs/mapaStatic.js'
-import { NUCLEO_ES, NUCLEO_IT, NUCLEO_DE, NUCLEO_FR } from './i18n/packs/mapaProfundoLocales.js'
 
 const SIGNOS = [
   'Carneiro', 'Touro', 'Gémeos', 'Caranguejo', 'Leão', 'Virgem',
@@ -80,10 +79,13 @@ function textoAspectos(planeta, aspetos, planetas, lang) {
     const casaOut = pOut?.casa
     const outroTr = translatePlaneta(outro, lang)
     const orbeLbl = lang === 'pt' ? 'orbe' : 'orb'
+    const casaSuf = casaOut ? casaParentese(lang, casaOut) : ''
     if (lang === 'pt') {
-      return `${asp} com ${outro} em ${signoOut}${casaOut ? ` (Casa ${casaOut})` : ''} (${orbeLbl} ${a.orbe})`
+      return `${asp} com ${outro} em ${signoOut}${casaSuf} (${orbeLbl} ${a.orbe})`
     }
-    return `${asp} with ${outroTr} in ${signoOut}${casaOut ? ` (House ${casaOut})` : ''} (${orbeLbl} ${a.orbe})`
+    const prep = { en: 'with', es: 'con', it: 'con', de: 'mit', fr: 'avec' }[lang] || 'with'
+    const inPrep = { en: 'in', es: 'en', it: 'in', de: 'in', fr: 'en' }[lang] || 'in'
+    return `${asp} ${prep} ${outroTr} ${inPrep} ${signoOut}${casaSuf} (${orbeLbl} ${a.orbe})`
   })
   return contentForLang(lang, {
     pt: ` Aspectos activos: ${partes.join('; ')}.`,
@@ -243,17 +245,13 @@ const NUCLEO_EN = {
   },
 }
 
-const NUCLEO_LOC = { es: NUCLEO_ES, it: NUCLEO_IT, de: NUCLEO_DE, fr: NUCLEO_FR }
-
 function nucleoPlaneta(nome, signo, lang) {
   const chave = normalizarSigno(signo)
-  if (lang === 'en') {
-    const enSign = sn(chave, 'en')
-    return NUCLEO_EN[nome]?.[enSign] || ''
-  }
   if (lang === 'pt') return NUCLEO_PT[nome]?.[chave] || ''
-  const loc = contentForLang(lang, NUCLEO_LOC)
-  return loc?.[nome]?.[chave] || NUCLEO_EN[nome]?.[sn(chave, 'en')] || NUCLEO_PT[nome]?.[chave] || ''
+  if (lang === 'en') return NUCLEO_EN[nome]?.[sn(chave, 'en')] || ''
+  const fromLex = textoPlanetSign(nome, signo, lang)
+  if (fromLex) return fromLex
+  return NUCLEO_EN[nome]?.[sn(chave, 'en')] || ''
 }
 
 function blocoCasa(casa, lang) {
@@ -423,8 +421,8 @@ export function gerarSinteseEvolutiva(mapaNatal, planetas, aspetos, lang = 'pt')
     const titulo = `${aspNome} ${translatePlaneta(pA, lang)} · ${translatePlaneta(pB, lang)} (${orbeLbl} ${tenso.orbe})`
     const focoA = getTemaCasa(posA?.casa, lang)?.foco || contentForLang(lang, { pt: 'uma esfera da vida', en: 'one life sphere', es: 'una esfera de la vida', it: 'una sfera della vita', de: 'eine Lebenssphäre', fr: 'une sphère de vie' })
     const focoB = getTemaCasa(posB?.casa, lang)?.foco || contentForLang(lang, { pt: 'outra', en: 'another', es: 'otra', it: 'un\'altra', de: 'eine andere', fr: 'une autre' })
-    const casaA = posA?.casa ? (lang === 'pt' ? ` (Casa ${posA.casa})` : ` (House ${posA.casa})`) : ''
-    const casaB = posB?.casa ? (lang === 'pt' ? ` (Casa ${posB.casa})` : ` (House ${posB.casa})`) : ''
+    const casaA = posA?.casa ? casaParentese(lang, posA.casa) : ''
+    const casaB = posB?.casa ? casaParentese(lang, posB.casa) : ''
 
     const texto = contentForLang(lang, {
       pt: `A tensão evolutiva central do teu mapa é a ${aspNome} entre ${pA} em ${sn(posA?.signo?.nome, lang)}${casaA} e ${pB} em ${sn(posB?.signo?.nome, lang)}${casaB}. Com Sol em ${sn(sol, lang)}, Lua em ${sn(lua, lang)} e Ascendente em ${sn(asc, lang)}, este aspecto colore como equilibras ${focoA} com ${focoB}. O atrito é combustível: a maturidade nasce de negociar os dois polos em vez de silenciar um.`,
@@ -487,7 +485,7 @@ export function gerarSinteseEvolutiva(mapaNatal, planetas, aspetos, lang = 'pt')
   }
   if (pNod) {
     const focoNod = getTemaCasa(pNod.casa, lang)?.foco || contentForLang(lang, { pt: 'crescimento evolutivo', en: 'evolutionary growth', es: 'crecimiento evolutivo', it: 'crescita evolutiva', de: 'evolutionäres Wachstum', fr: 'croissance évolutive' })
-    const casaNod = pNod.casa ? (lang === 'pt' ? `, Casa ${pNod.casa}` : `, House ${pNod.casa}`) : ''
+    const casaNod = casaVirgula(lang, pNod.casa)
     texto += contentForLang(lang, {
       pt: `Nodo Norte em ${sn(pNod.signo?.nome, lang)}${casaNod} aponta a alma para ${focoNod}. `,
       en: `North Node in ${sn(pNod.signo?.nome, lang)}${casaNod} points your soul toward ${focoNod}. `,

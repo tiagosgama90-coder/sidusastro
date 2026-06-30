@@ -3,11 +3,7 @@
  * Sem orbes, graus ou jargão matemático.
  */
 import { translatePlaneta, translateSigno, translateAspecto } from '../i18n/astro.js'
-import { contentForLang } from '../i18n/langUtil.js'
-import {
-  ASPETO_NUCLEO_ES, ASPETO_NUCLEO_IT, ASPETO_NUCLEO_DE, ASPETO_NUCLEO_FR,
-  PAR_DINAMICA_ES, PAR_DINAMICA_IT, PAR_DINAMICA_DE, PAR_DINAMICA_FR,
-} from '../i18n/packs/aspectosLocales.js'
+import { contentForLang, casaParentese } from '../i18n/langUtil.js'
 import { planetaPorNome } from '../casasPlacidus.js'
 
 const ASPETO_NUCLEO_PT = {
@@ -58,6 +54,105 @@ const PAR_DINAMICA_EN = {
   'Jupiter-Saturn': 'Expansion and contraction: knowing when to grow and when to consolidate.',
 }
 
+const ASPETO_NUCLEO_ES = {
+  Conjunção: 'dos fuerzas se funden en un solo canal — se intensifican mutuamente, para bien o para tensión concentrada',
+  Conjuncao: 'dos fuerzas se funden en un solo canal — se intensifican mutuamente, para bien o para tensión concentrada',
+  Oposição: 'polos opuestos piden integración consciente — el otro revela lo que niegas en ti',
+  Oposicao: 'polos opuestos piden integración consciente — el otro revela lo que niegas en ti',
+  Trígono: 'flujo natural y talento espontáneo — el don debe usarse, no solo poseerse',
+  Trigono: 'flujo natural y talento espontáneo — el don debe usarse, no solo poseerse',
+  Quadratura: 'fricción creativa que exige acción — la incomodidad impulsa el crecimiento cuando no huyes',
+  Sextil: 'oportunidad amable que requiere iniciativa — la puerta se abre a quien llama',
+}
+
+const PAR_DINAMICA_ES = {
+  'Sol-Lua': 'El eje identidad–emoción: quién quieres ser y qué necesitas sentir para estar entero/a.',
+  'Sol-Saturno': 'El encuentro entre voluntad y límite: autoridad interior frente al miedo a fallar.',
+  'Sol-Júpiter': 'Expansión de la identidad: fe en ti mismo/a y exceso de promesas.',
+  'Lua-Saturno': 'Emoción contenida: necesidad de seguridad frente al miedo a la vulnerabilidad.',
+  'Lua-Vénus': 'Afecto y placer: cómo amas y cómo necesitas ser amado/a.',
+  'Mercúrio-Marte': 'Pensamiento y acción: palabras como espada o como puente.',
+  'Vénus-Marte': 'Deseo y atracción: magnetismo relacional y tensión creativa.',
+  'Marte-Saturno': 'Impulso frente a disciplina: donde la ira encuentra el muro o el maestro.',
+  'Júpiter-Saturno': 'Expansión y contracción: saber cuándo crecer y cuándo consolidar.',
+}
+
+const ASPETO_NUCLEO_IT = {
+  Conjunção: 'due forze si fondono in un solo canale — si intensificano a vicenda, per il meglio o per tensione concentrata',
+  Conjuncao: 'due forze si fondono in un solo canale — si intensificano a vicenda, per il meglio o per tensione concentrata',
+  Oposição: 'poli opposti chiedono integrazione consapevole — l\'altro rivela ciò che neghi in te',
+  Oposicao: 'poli opposti chiedono integrazione consapevole — l\'altro rivela ciò che neghi in te',
+  Trígono: 'flusso naturale e talento spontaneo — il dono va usato, non solo posseduto',
+  Trigono: 'flusso naturale e talento spontaneo — il dono va usato, non solo posseduto',
+  Quadratura: 'attrito creativo che esige azione — il disagio è motore di crescita quando non fuggi',
+  Sextil: 'opportunità gentile che richiede iniziativa — la porta si apre a chi bussa',
+}
+
+const PAR_DINAMICA_IT = {
+  'Sol-Lua': 'L\'asse identità–emozione: chi vuoi essere e cosa hai bisogno di sentire per essere intero/a.',
+  'Sol-Saturno': 'L\'incontro tra volontà e limite: autorità interiore contro paura di fallire.',
+  'Sol-Júpiter': 'Espansione dell\'identità: fede in te stesso/a ed eccesso di promesse.',
+  'Lua-Saturno': 'Emozione contenuta: bisogno di sicurezza contro paura della vulnerabilità.',
+  'Lua-Vénus': 'Affetto e piacere: come ami e come hai bisogno di essere amato/a.',
+  'Mercúrio-Marte': 'Pensiero e azione: parole come spada o come ponte.',
+  'Vénus-Marte': 'Desiderio e attrazione: magnetismo relazionale e tensione creativa.',
+  'Marte-Saturno': 'Impulso contro disciplina: dove la rabbia incontra il muro o il maestro.',
+  'Júpiter-Saturno': 'Espansione e contrazione: sapere quando crescere e quando consolidare.',
+}
+
+const ASPETO_NUCLEO_DE = {
+  Conjunção: 'zwei Kräfte verschmelzen zu einem Kanal — sie verstärken sich gegenseitig, zum Guten oder als konzentrierte Spannung',
+  Conjuncao: 'zwei Kräfte verschmelzen zu einem Kanal — sie verstärken sich gegenseitig, zum Guten oder als konzentrierte Spannung',
+  Oposição: 'gegensätzliche Pole verlangen bewusste Integration — der andere zeigt, was du in dir verleugnest',
+  Oposicao: 'gegensätzliche Pole verlangen bewusste Integration — der andere zeigt, was du in dir verleugnest',
+  Trígono: 'natürlicher Fluss und spontanes Talent — die Gabe muss genutzt werden, nicht nur besessen',
+  Trigono: 'natürlicher Fluss und spontanes Talent — die Gabe muss genutzt werden, nicht nur besessen',
+  Quadratura: 'kreative Reibung, die Handlung verlangt — Unbehagen treibt Wachstum, wenn du nicht fliehst',
+  Sextil: 'sanfte Gelegenheit, die Initiative erfordert — die Tür öffnet sich für die, die klopfen',
+}
+
+const PAR_DINAMICA_DE = {
+  'Sol-Lua': 'Die Identitäts–Emotions-Achse: wer du sein willst und was du fühlen musst, um ganz zu sein.',
+  'Sol-Saturno': 'Die Begegnung von Wille und Grenze: innere Autorität versus Angst zu scheitern.',
+  'Sol-Júpiter': 'Identitätsexpansion: Vertrauen in dich und Überschuss an Versprechen.',
+  'Lua-Saturno': 'Gezügelte Emotion: Sicherheitsbedürfnis versus Angst vor Verletzlichkeit.',
+  'Lua-Vénus': 'Zuneigung und Genuss: wie du liebst und geliebt werden musst.',
+  'Mercúrio-Marte': 'Gedanke und Handlung: Worte als Schwert oder Brücke.',
+  'Vénus-Marte': 'Begehren und Anziehung: relationale Magnetik und kreative Spannung.',
+  'Marte-Saturno': 'Impuls versus Disziplin: wo Wut auf Mauer oder Lehrer trifft.',
+  'Júpiter-Saturno': 'Expansion und Kontraktion: wissen, wann wachsen und wann festigen.',
+}
+
+const ASPETO_NUCLEO_FR = {
+  Conjunção: 'deux forces fusionnent en un seul canal — elles s\'intensifient mutuellement, pour le meilleur ou une tension concentrée',
+  Conjuncao: 'deux forces fusionnent en un seul canal — elles s\'intensifient mutuellement, pour le meilleur ou une tension concentrée',
+  Oposição: 'des pôles opposés demandent une intégration consciente — l\'autre révèle ce que tu nies en toi',
+  Oposicao: 'des pôles opposés demandent une intégration consciente — l\'autre révèle ce que tu nies en toi',
+  Trígono: 'flux naturel et talent spontané — le don doit être utilisé, pas seulement possédé',
+  Trigono: 'flux naturel et talent spontané — le don doit être utilisé, pas seulement possédé',
+  Quadratura: 'friction créative qui exige l\'action — l\'inconfort est moteur de croissance quand tu ne fuis pas',
+  Sextil: 'opportunité douce qui demande de l\'initiative — la porte s\'ouvre à celui qui frappe',
+}
+
+const PAR_DINAMICA_FR = {
+  'Sol-Lua': 'L\'axe identité–émotion : qui tu veux être et ce dont tu as besoin pour te sentir entier(ère).',
+  'Sol-Saturno': 'La rencontre entre volonté et limite : autorité intérieure face à la peur d\'échouer.',
+  'Sol-Júpiter': 'Expansion de l\'identité : foi en toi et excès de promesses.',
+  'Lua-Saturno': 'Émotion contenue : besoin de sécurité face à la peur de la vulnérabilité.',
+  'Lua-Vénus': 'Affection et plaisir : comment tu aimes et comment tu as besoin d\'être aimé(e).',
+  'Mercúrio-Marte': 'Pensée et action : les mots comme épée ou comme pont.',
+  'Vénus-Marte': 'Désir et attraction : magnétisme relationnel et tension créative.',
+  'Marte-Saturno': 'Impulsion contre discipline : là où la colère rencontre le mur ou le maître.',
+  'Júpiter-Saturno': 'Expansion et contraction : savoir quand grandir et quand consolider.',
+}
+
+const ASPETO_BY_LANG = {
+  es: ASPETO_NUCLEO_ES, it: ASPETO_NUCLEO_IT, de: ASPETO_NUCLEO_DE, fr: ASPETO_NUCLEO_FR,
+}
+const PAR_BY_LANG = {
+  es: PAR_DINAMICA_ES, it: PAR_DINAMICA_IT, de: PAR_DINAMICA_DE, fr: PAR_DINAMICA_FR,
+}
+
 function nomePlaneta(str) {
   return (str || '').split(' ')[0]
 }
@@ -75,18 +170,14 @@ function tp(nome, lang) {
   return translatePlaneta(nome, lang) || nome
 }
 
-const ASPETO_LOC = {
-  es: ASPETO_NUCLEO_ES, it: ASPETO_NUCLEO_IT, de: ASPETO_NUCLEO_DE, fr: ASPETO_NUCLEO_FR,
-}
-const PAR_LOC = {
-  es: PAR_DINAMICA_ES, it: PAR_DINAMICA_IT, de: PAR_DINAMICA_DE, fr: PAR_DINAMICA_FR,
-}
-
 function nucleoAspeto(tipo, lang) {
   if (lang === 'pt') return ASPETO_NUCLEO_PT[tipo] || ASPETO_NUCLEO_PT[translateAspecto(tipo, 'pt')] || ''
   if (lang === 'en') return ASPETO_NUCLEO_EN[tipo] || ASPETO_NUCLEO_EN[translateAspecto(tipo, 'en')] || ''
-  const loc = contentForLang(lang, ASPETO_LOC)
-  return loc?.[tipo] || loc?.[translateAspecto(tipo, lang)] || ASPETO_NUCLEO_EN[translateAspecto(tipo, 'en')] || ''
+  const map = ASPETO_BY_LANG[lang]
+  if (map) {
+    return map[tipo] || map[translateAspecto(tipo, lang)] || ASPETO_NUCLEO_EN[translateAspecto(tipo, 'en')] || ''
+  }
+  return ASPETO_NUCLEO_EN[translateAspecto(tipo, 'en')] || ''
 }
 
 function parDinamica(pa, pb, lang) {
@@ -94,8 +185,9 @@ function parDinamica(pa, pb, lang) {
   const parKeyEn = chavePar(tp(pa, 'en'), tp(pb, 'en'))
   if (lang === 'pt') return PAR_DINAMICA_PT[parKey] || ''
   if (lang === 'en') return PAR_DINAMICA_EN[parKeyEn] || PAR_DINAMICA_EN[parKey] || ''
-  const loc = contentForLang(lang, PAR_LOC)
-  return loc?.[parKey] || loc?.[parKeyEn] || PAR_DINAMICA_EN[parKeyEn] || PAR_DINAMICA_EN[parKey] || ''
+  const map = PAR_BY_LANG[lang]
+  if (map) return map[parKey] || PAR_DINAMICA_EN[parKeyEn] || PAR_DINAMICA_EN[parKey] || ''
+  return PAR_DINAMICA_EN[parKeyEn] || PAR_DINAMICA_EN[parKey] || ''
 }
 
 export function narrarAspecto(aspecto, planetas, lang = 'pt') {
@@ -114,12 +206,17 @@ export function narrarAspecto(aspecto, planetas, lang = 'pt') {
   const nucleo = nucleoAspeto(aspecto.aspecto, lang)
   const a = tp(pa, lang)
   const b = tp(pb, lang)
-  const casaA = pA?.casa ? (lang === 'pt' ? ` (Casa ${pA.casa})` : ` (House ${pA.casa})`) : ''
-  const casaB = pB?.casa ? (lang === 'pt' ? ` (Casa ${pB.casa})` : ` (House ${pB.casa})`) : ''
+  const casaA = pA?.casa ? casaParentese(lang, pA.casa) : ''
+  const casaB = pB?.casa ? casaParentese(lang, pB.casa) : ''
 
-  const intro = lang === 'pt'
-    ? `${pa} em ${aspLabel.toLowerCase()} com ${pb}: ${nucleo}.`
-    : `${a} ${aspLabel.toLowerCase()} ${b}: ${nucleo}.`
+  const intro = contentForLang(lang, {
+    pt: `${pa} em ${aspLabel.toLowerCase()} com ${pb}: ${nucleo}.`,
+    en: `${a} ${aspLabel.toLowerCase()} ${b}: ${nucleo}.`,
+    es: `${a} en ${aspLabel.toLowerCase()} con ${b}: ${nucleo}.`,
+    it: `${a} in ${aspLabel.toLowerCase()} con ${b}: ${nucleo}.`,
+    de: `${a} ${aspLabel.toLowerCase()} ${b}: ${nucleo}.`,
+    fr: `${a} en ${aspLabel.toLowerCase()} avec ${b} : ${nucleo}.`,
+  })
 
   const meio = contentForLang(lang, {
     pt: `Com ${pa} em ${signoA}${casaA} e ${pb} em ${signoB}${casaB}, este diálogo molda a forma como vives ambas as funções no quotidiano.`,
