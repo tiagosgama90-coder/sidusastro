@@ -17,7 +17,7 @@ export async function gerarPdfMapaAstral(mapaNatal, dados, planetas = [], analis
   const { jsPDF } = await import('jspdf')
 
   const analiseFinal = analise || gerarAnaliseCompleta(mapaNatal, planetas, [], dados)
-  const copyright = lang === 'en' ? SIDUS_COPYRIGHT_EN : SIDUS_COPYRIGHT_PT
+  const copyright = lang !== 'pt' ? SIDUS_COPYRIGHT_EN : SIDUS_COPYRIGHT_PT
   const logoData = await sidusLogoParaPdf()
 
   const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' })
@@ -256,7 +256,7 @@ export async function gerarPdfMapaAstral(mapaNatal, dados, planetas = [], analis
     doc.setTextColor(...MUTED)
     doc.setFontSize(6.5)
     doc.setFont('helvetica', 'normal')
-    const footerLine = `Sidus Astro · ${dados.nome || ''} · Tropical Placidus · ${new Date().toLocaleDateString(lang === 'en' ? 'en-GB' : 'pt-PT')} · Pág. ${i}/${totalPaginas}`
+    const footerLine = `Sidus Astro · ${dados.nome || ''} · Tropical Placidus · ${new Date().toLocaleDateString(lang !== 'pt' ? 'en-GB' : 'pt-PT')} · Pág. ${i}/${totalPaginas}`
     doc.text(footerLine, 105, 290, { align: 'center' })
     const footCopy = doc.splitTextToSize(copyright, W)
     doc.setFontSize(5.5)

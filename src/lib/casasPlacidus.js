@@ -34,7 +34,7 @@ export const TEMAS_CASA_EN = {
 }
 
 export function getTemaCasa(casa, lang = 'pt') {
-  const map = lang === 'en' ? TEMAS_CASA_EN : TEMAS_CASA
+  const map = lang !== 'pt' ? TEMAS_CASA_EN : TEMAS_CASA
   return map[casa] || null
 }
 

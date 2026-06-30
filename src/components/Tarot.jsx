@@ -369,6 +369,7 @@ export function EcraTarot({ mapaNatal, isPremium, userId, leiturasTarotUsadas = 
 
   const tipo = TIPOS.find(t=>t.id===tipoId)
   const mapaTipos = getTiposTarot(lang)
+  const mapaPosicoes = getPosicoesTarot(lang)
   const tipoLabel = tipo && mapaTipos?.[tipo.id]
     ? { ...tipo, nome: mapaTipos[tipo.id].nome, desc: mapaTipos[tipo.id].desc }
     : tipo

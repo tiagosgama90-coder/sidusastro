@@ -198,7 +198,7 @@ const SIGNIFICADOS_EN = {
 import { enriquecerMapaNumerologia } from './numerologiaInterpretacao.js'
 
 export function calcularMapaNumerologia(nome, dataISO, lang = 'pt', mapaNatal = null) {
-  const sig = lang === 'en' ? SIGNIFICADOS_EN : SIGNIFICADOS_PT
+  const sig = lang !== 'pt' ? SIGNIFICADOS_EN : SIGNIFICADOS_PT
   const nomeData = analisarNome(nome)
   const caminho = caminhoVida(dataISO)
   const ano = anoPessoal(dataISO)

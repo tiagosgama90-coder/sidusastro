@@ -25,7 +25,7 @@ export function HeroAuthSidus() {
     return () => clearInterval(id)
   }, [])
 
-  const hoje = new Date().toLocaleDateString(lang === 'en' ? 'en-GB' : 'pt-PT', {
+  const hoje = new Date().toLocaleDateString(lang !== 'pt' ? 'en-GB' : 'pt-PT', {
     weekday: 'long', day: 'numeric', month: 'long',
   })
 

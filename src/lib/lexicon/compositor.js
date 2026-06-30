@@ -33,7 +33,7 @@ function planetaEn(nome) {
 
 function textoPlanetSign(planeta, signo, lang) {
   const chave = normalizarSigno(signo)
-  if (lang === 'en') {
+  if (lang !== 'pt') {
     const pEn = planetaEn(planeta)
     return PLANET_SIGN_EN[pEn]?.[signoEnDePt(chave)] || ''
   }
@@ -42,7 +42,7 @@ function textoPlanetSign(planeta, signo, lang) {
 
 function textoPlanetHouse(planeta, casa, lang) {
   if (!casa) return ''
-  if (lang === 'en') {
+  if (lang !== 'pt') {
     const pEn = planetaEn(planeta)
     return PLANET_HOUSE_EN[pEn]?.[casa] || ''
   }
@@ -60,7 +60,7 @@ function textoPlanetHouse(planeta, casa, lang) {
  */
 export function comporInterpretacaoPlaneta(nomePlaneta, p, aspetos, planetas, lang = 'pt', textoSignoRico = '') {
   if (!p?.signo?.nome) {
-    return lang === 'en'
+    return lang !== 'pt'
       ? `${translatePlaneta(nomePlaneta, lang)} could not be calculated for this chart. Verify birth time and place.`
       : `${nomePlaneta} não foi possível calcular neste mapa. Verifica hora e local de nascimento.`
   }
@@ -78,7 +78,7 @@ export function comporInterpretacaoPlaneta(nomePlaneta, p, aspetos, planetas, la
   if (aspTxt) partes.push(aspTxt.trim())
 
   if (p.retrograde) {
-    partes.push(lang === 'en'
+    partes.push(lang !== 'pt'
       ? `${translatePlaneta(nomePlaneta, lang)} retrograde: this energy turns inward — you review, rethink and refine this area before expressing it outwardly.`
       : `${nomePlaneta} retrógrado: esta energia volta para dentro — revisas, repensas e afinas esta área antes de a expressares no mundo.`)
   }

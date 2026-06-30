@@ -24,7 +24,7 @@ const vidro = {
 }
 
 function formatarHoje(lang) {
-  const loc = lang === 'en' ? 'en-GB' : 'pt-PT'
+  const loc = lang !== 'pt' ? 'en-GB' : 'pt-PT'
   return new Date().toLocaleDateString(loc, { day: 'numeric', month: 'long', year: 'numeric' })
 }
 
@@ -62,7 +62,7 @@ export function ConteudoDinamicoSidus({ mapaNatal, aspetos = [], isPremium, onUp
     return () => { cancelled = true }
   }, [fasePt.nome, faseEn.nome, transitSummary, lang])
 
-  const signList = lang === 'en' ? SIGNOS_EN : SIGNOS_PT
+  const signList = lang !== 'pt' ? SIGNOS_EN : SIGNOS_PT
   const horoMap = pack?.horoscopes?.[lang] || {}
   const userKey = signoHoroscopeKey(mapaNatal?.solar?.nome, lang)
   const userHoro = userKey ? horoMap[userKey] : null

@@ -1913,7 +1913,7 @@ function CartaDoDia() {
   const idx = (ano * 1000 + (mes - 1) * 31 + dia) % 22
   const cartaBase = ARCANOS_NOMES[idx]
   const carta = localizeArcano(cartaBase, lang)
-  const locale = lang === 'pt' ? 'pt-PT' : lang === 'es' ? 'es-ES' : lang === 'it' ? 'it-IT' : lang === 'de' ? 'de-DE' : 'en-GB'
+  const locale = lang !== 'pt' ? 'pt-PT' : lang === 'es' ? 'es-ES' : lang === 'it' ? 'it-IT' : lang === 'de' ? 'de-DE' : 'en-GB'
   const dataFormatada = new Date(Date.UTC(ano, mes - 1, dia)).toLocaleDateString(locale)
 
   if (!carta?.nome) return null
@@ -2759,7 +2759,7 @@ function Chat({ mapaNatal, isPremium, userId, oracleRemotas, onOracleUsada, onUp
       if (resultado?.auth) {
         resposta = t('oracle.sessionError')
       } else if (resultado?.servidor) {
-        resposta = lang === 'en'
+        resposta = lang !== 'pt'
           ? '✦ The oracle is temporarily unavailable. Try again in a moment.'
           : '✦ O oráculo está temporariamente indisponível. Tenta outra vez dentro de instantes.'
       } else {

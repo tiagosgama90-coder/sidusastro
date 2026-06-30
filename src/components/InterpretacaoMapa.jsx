@@ -30,7 +30,7 @@ export function InterpretacaoMapa({ analise, estilosVidro, lang = 'pt', upgradin
 
 
 
-  const titulo = lang === 'en'
+  const titulo = lang !== 'pt'
 
     ? '✦ Professional Interpretation'
 
@@ -66,7 +66,7 @@ export function InterpretacaoMapa({ analise, estilosVidro, lang = 'pt', upgradin
 
         }}>
 
-          {upgradingLabel || (lang === 'en'
+          {upgradingLabel || (lang !== 'pt'
 
             ? 'Your full reading is being prepared in the background…'
 

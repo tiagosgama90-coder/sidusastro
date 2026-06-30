@@ -111,18 +111,18 @@ const ASPECTOS_EN = [
 ]
 
 export function getTransitos2026(lang) {
-  const data = lang === 'en' ? TRANSITOS_EN : TRANSITOS_PT
-  const impactoMap = lang === 'en' ? IMPACTO_EN : IMPACTO_PT
+  const data = lang !== 'pt' ? TRANSITOS_EN : TRANSITOS_PT
+  const impactoMap = lang !== 'pt' ? IMPACTO_EN : IMPACTO_PT
   return data.map(t => ({ ...t, impactoLabel: impactoMap[t.impacto] || t.impacto }))
 }
 
 export function getCompatDesc(chave, lang, fallbackKey) {
-  const map = lang === 'en' ? COMPAT_EN : COMPAT_PT
+  const map = lang !== 'pt' ? COMPAT_EN : COMPAT_PT
   return map[chave] || fallbackKey
 }
 
 export function getAspectosAmor(lang) {
-  return lang === 'en' ? ASPECTOS_EN : ASPECTOS_PT
+  return lang !== 'pt' ? ASPECTOS_EN : ASPECTOS_PT
 }
 
 export const TIPO_ICO = {

@@ -71,7 +71,7 @@ function tp(nome, lang) {
 }
 
 function nucleoAspeto(tipo, lang) {
-  const map = lang === 'en' ? ASPETO_NUCLEO_EN : ASPETO_NUCLEO_PT
+  const map = lang !== 'pt' ? ASPETO_NUCLEO_EN : ASPETO_NUCLEO_PT
   return map[tipo] || map[translateAspecto(tipo, lang)] || ''
 }
 
@@ -86,7 +86,7 @@ export function narrarAspecto(aspecto, planetas, lang = 'pt') {
   )
   const parKey = chavePar(pa, pb)
   const parKeyEn = chavePar(tp(pa, 'en'), tp(pb, 'en'))
-  const dinamica = lang === 'en'
+  const dinamica = lang !== 'pt'
     ? (PAR_DINAMICA_EN[parKeyEn] || PAR_DINAMICA_EN[parKey] || '')
     : (PAR_DINAMICA_PT[parKey] || '')
 
@@ -94,7 +94,7 @@ export function narrarAspecto(aspecto, planetas, lang = 'pt') {
   const signoB = sn(pB?.signo?.nome, lang)
   const nucleo = nucleoAspeto(aspecto.aspecto, lang)
 
-  if (lang === 'en') {
+  if (lang !== 'pt') {
   const a = tp(pa, lang)
   const b = tp(pb, lang)
     return [
@@ -122,7 +122,7 @@ export function interpretarAspectosNatais(aspetos, planetas, lang = 'pt') {
     .slice(0, 12)
 
   if (!lista.length) {
-    return lang === 'en'
+    return lang !== 'pt'
       ? 'No major tight aspects dominate this chart — your story unfolds through sign and house emphasis rather than planetary dialogue. This grants flexibility but asks you to choose consciously rather than being propelled by inner tension.'
       : 'Nenhum aspeto maior apertado domina este mapa — a tua história desenrola-se sobretudo através da ênfase de signos e casas, e não por diálogo planetário. Isto concede flexibilidade, mas pede escolha consciente em vez de impulso por tensão interior.'
   }
@@ -143,7 +143,7 @@ export function narrarAspectosPlaneta(planeta, aspetos, planetas, lang = 'pt') {
 
   if (!lista.length) return ''
   const textos = lista.map((a) => narrarAspecto(a, planetas, lang))
-  if (lang === 'en') {
+  if (lang !== 'pt') {
     return ` Planetary dialogues: ${textos.join(' ')}`
   }
   return ` Diálogos planetários: ${textos.join(' ')}`

@@ -31,7 +31,7 @@ function templateLine(sign, fase, seed, lang) {
     `${sign}: balance and rest if your body asks.`,
     `Practical focus. ${sign}: consolidate what you started.`,
   ]
-  const msgs = lang === 'en' ? msgsEn : msgsPt
+  const msgs = lang !== 'pt' ? msgsEn : msgsPt
   return msgs[(seed + sign.length) % msgs.length]
 }
 
@@ -73,7 +73,7 @@ export function buildLocalDailyContent({ fasePt, faseEn, lang = 'pt' }) {
 /** Normaliza nomes de signo (Áries ↔ Carneiro). */
 export function signoHoroscopeKey(nomeSolar, lang) {
   if (!nomeSolar) return null
-  if (lang === 'en') return SIGNO_PT_TO_EN[nomeSolar] || nomeSolar
+  if (lang !== 'pt') return SIGNO_PT_TO_EN[nomeSolar] || nomeSolar
   if (nomeSolar === 'Áries') return 'Carneiro'
   return nomeSolar
 }

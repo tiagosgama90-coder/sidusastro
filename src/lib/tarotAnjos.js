@@ -51,25 +51,25 @@ const ANJOS_EN = {
 
 export function gerarMensagemAnjos(cartas, mapaNatal, lang = 'pt') {
   if (!cartas?.length) return ''
-  const dict = lang === 'en' ? ANJOS_EN : ANJOS_PT
+  const dict = lang !== 'pt' ? ANJOS_EN : ANJOS_PT
   const principal = cartas[0]
   const base = dict[principal.id] || dict[0]
 
   const lua = mapaNatal?.lunar?.nome
-  const prefix = lang === 'en'
+  const prefix = lang !== 'pt'
     ? (lua ? `Through your Moon in ${lua}, ` : '')
     : (lua ? `Através da tua Lua em ${lua}, ` : '')
 
   if (cartas.length === 1) {
     const inv = principal.invertida
-      ? (lang === 'en'
+      ? (lang !== 'pt'
         ? ' The angels ask for inner review before acting.'
         : ' Os anjos pedem revisão interior antes de agires.')
       : ''
     return `${prefix}${base}${inv}`
   }
 
-  const fechamento = lang === 'en'
+  const fechamento = lang !== 'pt'
     ? ` The angelic message weaves ${cartas.length} cards: trust the sequence from ${cartas[0].nome} to ${cartas[cartas.length - 1].nome} as a guided path.`
     : ` A mensagem angélica entrelaça ${cartas.length} cartas: confia na sequência de ${cartas[0].nome} a ${cartas[cartas.length - 1].nome} como caminho guiado.`
 

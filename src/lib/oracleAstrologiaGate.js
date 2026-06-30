@@ -81,14 +81,14 @@ const RESPOSTA_FORA_EN = [
 ]
 
 export function mensagemForaEscopo(lang = 'pt') {
-  return lang === 'en'
+  return lang !== 'pt'
     ? '✦ I am Sidus, the Astral Oracle. I only guide astrology, predictions and life read through your natal chart (love, career, purpose, cycles, transits, compatibility). Please rephrase your question in that scope.'
     : '✦ Sou Sidus, Oráculo Astral. Só oriento astrologia, previsões e vida lidas pelo teu mapa natal (amor, carreira, propósito, ciclos, trânsitos, compatibilidade). Reformula a tua pergunta nesse âmbito.'
 }
 
 /** Instrução extra injectada apenas nas chamadas Gemini (Oráculo). */
 export function reforcoInstrucaoGeminiAstrologia(lang = 'pt') {
-  if (lang === 'en') {
+  if (lang !== 'pt') {
     return `
 GEMINI RESTRICTION - MANDATORY:
 You are NOT a general-purpose AI. You ONLY answer: natal chart, transits, predictions, synastry, planetary cycles, and life areas READ THROUGH astrology.
@@ -109,7 +109,7 @@ Nunca actues como chatbot genérico. Apenas astrologia e previsões via mapa.
 export function respostaPareceForaEscopoAstrologia(texto, lang = 'pt') {
   if (!texto?.trim()) return true
   const lower = texto.toLowerCase()
-  const lista = lang === 'en' ? RESPOSTA_FORA_EN : RESPOSTA_FORA_PT
+  const lista = lang !== 'pt' ? RESPOSTA_FORA_EN : RESPOSTA_FORA_PT
   if (lista.some((k) => lower.includes(k))) return true
   const recusa = lower.includes('sidus')
   const recusaEscopo = lower.includes('só oriento') || lower.includes('only guide') || lower.includes('reformula')
@@ -121,9 +121,9 @@ export function perguntaDentroEscopoAstrologia(texto, lang = 'pt') {
   const lower = texto.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
   const raw = texto.toLowerCase()
 
-  const fora = lang === 'en' ? FORA_ESCOPO_EN : FORA_ESCOPO_PT
-  const astro = lang === 'en' ? ASTRO_EN : ASTRO_PT
-  const vida = lang === 'en' ? VIDA_VIA_MAPA_EN : VIDA_VIA_MAPA_PT
+  const fora = lang !== 'pt' ? FORA_ESCOPO_EN : FORA_ESCOPO_PT
+  const astro = lang !== 'pt' ? ASTRO_EN : ASTRO_PT
+  const vida = lang !== 'pt' ? VIDA_VIA_MAPA_EN : VIDA_VIA_MAPA_PT
 
   const temFora = fora.some((k) => {
     const kn = k.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
@@ -143,7 +143,7 @@ export function perguntaDentroEscopoAstrologia(texto, lang = 'pt') {
 
   const pessoalPt = /^(porque|por que|como posso|ajuda|estou|sinto|devo|deveria|nao sei|não sei|quando|onde|o que|que devo|será que|sera que)/i
   const pessoalEn = /^(why |how can i|help |i feel|should i|i am |i'm |when |what |will i )/i
-  const pessoal = lang === 'en' ? pessoalEn.test(texto.trim()) : pessoalPt.test(texto.trim())
+  const pessoal = lang !== 'pt' ? pessoalEn.test(texto.trim()) : pessoalPt.test(texto.trim())
   const palavras = texto.trim().split(/\s+/).length
 
   if (pessoal && palavras >= 4) return true

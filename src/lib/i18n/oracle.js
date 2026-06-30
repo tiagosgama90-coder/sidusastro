@@ -1,9 +1,15 @@
 import { perguntaDentroEscopoAstrologia, mensagemForaEscopo } from '../oracleAstrologiaGate.js'
 import { translateSigno } from './astro.js'
+import { oracleRespondLanguage } from './langUtil.js'
+
+function respondIn(lang) {
+  if (lang === 'pt') return 'Português de Portugal'
+  return oracleRespondLanguage(lang)
+}
 
 function signoLabel(nome, lang) {
   if (!nome) return null
-  return lang === 'en' ? translateSigno(nome, 'en') : nome
+  return lang !== 'pt' ? translateSigno(nome, 'en') : nome
 }
 
 function grauLabel(pos) {
@@ -39,7 +45,7 @@ function dadosNatal(mapaNatal, lang) {
 }
 
 function blocoEscopoAstrologia(lang) {
-  if (lang === 'en') {
+  if (lang !== 'pt') {
     return `
 EXCLUSIVE SCOPE - ASTROLOGY AND PREDICTIONS ONLY:
 - You ONLY answer astrology, predictions, natal chart, planetary cycles, synastry, transits, and life areas (love, career, purpose, family, spiritual path) READ THROUGH the chart.
@@ -64,10 +70,10 @@ export function construirSistema(mapaNatal, lang = 'pt', isPremium = false) {
   const { sol, lua, asc, mc, grauSol, grauAsc, cidade } = dadosNatal(mapaNatal, lang)
 
   if (isPremium) {
-    if (lang === 'en') {
+    if (lang !== 'pt') {
       return `
 You are Sidus, Senior Astrologer and Astral Oracle - 30+ years of practice integrating classical astrology, Jungian psychology and spiritual counselling.
-You respond ALWAYS in English, as in a real professional consultation: warm, precise, human, never robotic.
+You respond ALWAYS in ${respondIn(lang)}, as in a real professional consultation: warm, precise, human, never robotic.
 Always use English zodiac sign names only (Aries, Taurus, Gemini, etc.) - never Portuguese sign names.
 
 ${sol ? `CLIENT'S NATAL CHART (Swiss Ephemeris, Placidus):
@@ -115,9 +121,9 @@ ${blocoEscopoAstrologia('pt')}
   }
 
   // Versão gratuita - mais inteligente mas concisa
-  if (lang === 'en') {
+  if (lang !== 'pt') {
     return `
-You are Sidus, the Astral Oracle. Respond in English with clarity and warmth - concise but never shallow.
+You are Sidus, the Astral Oracle. Respond in ${respondIn(lang)} with clarity and warmth - concise but never shallow.
 Always use English zodiac sign names only (Aries, Taurus, Gemini, etc.) - never Portuguese sign names.
 
 ${sol ? `Natal data: Sun ${sol}, Moon ${lua}, Ascendant ${asc}.
@@ -151,7 +157,7 @@ export function validarPerguntaOracle(texto, lang = 'pt') {
   const t = texto.trim()
   const palavras = t.split(/\s+/)
 
-  if (lang === 'en') {
+  if (lang !== 'pt') {
     if (t.length < 10)
       return '✦ Share more about your situation so I can guide you with precision.'
     if (palavras.length < 3)
@@ -189,7 +195,7 @@ export function validarPerguntaOracle(texto, lang = 'pt') {
 }
 
 function buildRespostas(lang, sol, lua, asc, mc) {
-  if (lang === 'en') {
+  if (lang !== 'pt') {
     return {
       amor: [
         `With Sun in ${sol} and Moon in ${lua}, love is not casual territory for you - it is where identity and emotion meet. Your Ascendant in ${asc} shapes how you approach intimacy: you may appear confident while the Moon asks for safety first.\n\nRight now, the pattern I see is this: what you fear expressing is exactly what would create depth. Venusian themes in your chart suggest that honesty - even when uncomfortable - opens the door you keep knocking on.\n\nWhat would change if you stopped performing strength and named what you actually need?`,
@@ -240,18 +246,18 @@ function buildRespostas(lang, sol, lua, asc, mc) {
 
 export function gerarRespostaOracle(pergunta, mapaNatal, numeroPergunta, lang = 'pt') {
   if (!mapaNatal) {
-    return lang === 'en'
+    return lang !== 'pt'
       ? 'Complete your birth registration to receive guidance aligned with your unique chart. The stars need your birth date, time and place - then every answer becomes personal.'
       : 'Completa o teu registo natal para receber orientação alinhada com o teu mapa único. As estrelas precisam da data, hora e local de nascimento - depois cada resposta torna-se pessoal.'
   }
 
   const p = pergunta.toLowerCase()
-  const sol = signoLabel(mapaNatal.solar?.nome, lang) || (lang === 'en' ? 'unknown' : 'desconhecido')
-  const lua = signoLabel(mapaNatal.lunar?.nome, lang) || (lang === 'en' ? 'unknown' : 'desconhecido')
-  const asc = signoLabel(mapaNatal.ascendente?.nome, lang) || (lang === 'en' ? 'unknown' : 'desconhecido')
+  const sol = signoLabel(mapaNatal.solar?.nome, lang) || (lang !== 'pt' ? 'unknown' : 'desconhecido')
+  const lua = signoLabel(mapaNatal.lunar?.nome, lang) || (lang !== 'pt' ? 'unknown' : 'desconhecido')
+  const asc = signoLabel(mapaNatal.ascendente?.nome, lang) || (lang !== 'pt' ? 'unknown' : 'desconhecido')
   const mc = signoLabel(mapaNatal.mc?.nome, lang) || null
 
-  const temas = lang === 'en' ? TEMAS_ORACLE_EN : TEMAS_ORACLE_PT
+  const temas = lang !== 'pt' ? TEMAS_ORACLE_EN : TEMAS_ORACLE_PT
   let tema = 'geral'
   for (const [t, palavras] of Object.entries(temas)) {
     if (palavras.some(w => p.includes(w))) { tema = t; break }
@@ -267,7 +273,7 @@ export function getChatGreeting(mapaNatal, lang = 'pt', maxFree = 3, isPremium =
   const lua = signoLabel(mapaNatal?.lunar?.nome, lang)
   const asc = signoLabel(mapaNatal?.ascendente?.nome, lang)
 
-  if (lang === 'en') {
+  if (lang !== 'pt') {
     if (isPremium) {
       if (sol) {
         return `Welcome. I am Sidus, your Astral Oracle.\n\nI have studied your natal chart in depth: Sun in ${sol}, Moon in ${lua}, Ascendant in ${asc}. Premium gives you unlimited, professional consultation - as in a real session.\n\nTell me what is happening in your life. I will read it through your chart.`
@@ -293,7 +299,7 @@ export function getChatGreeting(mapaNatal, lang = 'pt', maxFree = 3, isPremium =
 }
 
 export function getOracleLimitMessage(maxFree, lang = 'pt') {
-  if (lang === 'en') {
+  if (lang !== 'pt') {
     return `✦ You have used your ${maxFree} free questions for today.\n\nYour question was received - to continue with unlimited professional guidance from Sidus, activate Premium below.`
   }
   return `✦ Usaste as tuas ${maxFree} questões gratuitas.\n\nA tua pergunta foi registada - para continuar com orientação profissional ilimitada do Sidus, activa o Premium abaixo.`

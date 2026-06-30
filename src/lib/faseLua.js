@@ -38,7 +38,7 @@ export function calcularFaseLua(date = new Date(), lang = 'pt') {
     { max: 360,   nome: 'New Moon',        emoji: '🌑', desc: 'Renewal and planting intentions. A time for introspection and quiet new beginnings.' },
   ]
 
-  const lista = lang === 'en' ? FASES_EN : FASES
+  const lista = lang !== 'pt' ? FASES_EN : FASES
   const faseFinal = lista.find(f => angulo < f.max) || lista[lista.length - 1]
 
   return {

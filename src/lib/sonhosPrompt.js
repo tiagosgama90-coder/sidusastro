@@ -1,7 +1,7 @@
 /** Prompt interno - metodologia hermenêutica (nunca citar fontes ao utilizador). */
 
 export function construirSistemaSonhos(lang = 'pt') {
-  if (lang === 'en') {
+  if (lang !== 'pt') {
     return `
 You are the dream interpretation engine of Sidus Astro, decoding reports strictly through Integrative Spiritual Psychology Hermeneutics (biblical-psychological method).
 
@@ -74,7 +74,7 @@ CRÍTICO:
 }
 
 export function construirPedidoSonhos({ texto, lang, feeling, simbolosDetectados, mapaNatal }) {
-  const en = lang === 'en'
+  const en = lang !== 'pt'
   const feelingLabel = feeling || (en ? 'not specified' : 'não indicado')
   const lista = simbolosDetectados?.length
     ? (en
@@ -132,7 +132,7 @@ const SEC_PATTERNS_EN = [
 
 export function parseRespostaSonhos(texto, lang = 'pt') {
   if (!texto?.trim()) return null
-  const patterns = lang === 'en' ? SEC_PATTERNS_EN : SEC_PATTERNS_PT
+  const patterns = lang !== 'pt' ? SEC_PATTERNS_EN : SEC_PATTERNS_PT
   const seccoes = patterns.map((re, i) => {
     const m = texto.match(re)
     return { key: SEC_KEYS[i], texto: m?.[1]?.trim() || '' }
@@ -146,7 +146,7 @@ export function parseRespostaSonhos(texto, lang = 'pt') {
 
 /** Fallback gratuito offline - único por relato (léxico + excerto do texto). */
 export function gerarInterpretacaoLocal(texto, lang, feelingLabel, simbolosDetectados, mapaNatal) {
-  const e = lang === 'en'
+  const e = lang !== 'pt'
   const excerto = texto.trim().slice(0, 120) + (texto.length > 120 ? '…' : '')
   const temas = simbolosDetectados.map((s) => s.tema).join(', ') || (e ? 'inner images' : 'imagens interiores')
   const detalhes = simbolosDetectados.slice(0, 4).map((s) => `${s.tema}: ${s.resumo}`).join(' ')

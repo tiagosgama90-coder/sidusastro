@@ -134,25 +134,25 @@ const LABELS = {
 
 export function getMapaCopy(lang = 'pt') {
   const L = LABELS[lang] || LABELS.pt
-  const temas = lang === 'en' ? TEMAS_CASA_EN : TEMAS_CASA_PT
-  const essencia = lang === 'en' ? ESSENCIA_EN : ESSENCIA_PT
-  const elemento = lang === 'en' ? ELEMENTO_EN : ELEMENTO_PT
-  const modalidade = lang === 'en' ? MODALIDADE_EN : MODALIDADE_PT
+  const temas = lang !== 'pt' ? TEMAS_CASA_EN : TEMAS_CASA_PT
+  const essencia = lang !== 'pt' ? ESSENCIA_EN : ESSENCIA_PT
+  const elemento = lang !== 'pt' ? ELEMENTO_EN : ELEMENTO_PT
+  const modalidade = lang !== 'pt' ? MODALIDADE_EN : MODALIDADE_PT
   const sn = (s) => translateSigno(s, lang)
 
   function casaTxt(casa) {
     if (!casa) return L.casaCalc
     const t = temas[casa]
     return t
-      ? (lang === 'en' ? `House ${casa} (${t.nome}) - ${t.foco}` : `Casa ${casa} (${t.nome}) - ${t.foco}`)
-      : (lang === 'en' ? `House ${casa}` : `Casa ${casa}`)
+      ? (lang !== 'pt' ? `House ${casa} (${t.nome}) - ${t.foco}` : `Casa ${casa} (${t.nome}) - ${t.foco}`)
+      : (lang !== 'pt' ? `House ${casa}` : `Casa ${casa}`)
   }
 
   function paragrafoGeracional(nome, signo, casa) {
     const s = sn(signo)
     const ess = essencia[signo] || ''
     const foco = casa ? temas[casa]?.foco : ''
-    const texts = lang === 'en' ? {
+    const texts = lang !== 'pt' ? {
       Urano: `Uranus in ${s}${casa ? ` in the ${casa}th House` : ''} marks your relationship with freedom, innovation and necessary ruptures. ${ess} ${casa ? `Personal revolutions activate in ${foco}.` : ''} Where you feel suffocated by obsolete routines, Uranus demands radical authenticity.`,
       Neptuno: `Neptune in ${s}${casa ? ` in the ${casa}th House` : ''} opens doors to the symbolic, spiritual and creative plane. ${ess} ${casa ? `Dissolution of boundaries operates in ${foco}.` : ''} Beware of illusions - Neptune also clouds; intuition needs grounding.`,
       Plutão: `Pluto in ${s}${casa ? ` in the ${casa}th House` : ''} indicates where deep transformation is inevitable. ${ess} ${casa ? `Regenerative crises concentrate in ${foco}.` : ''} What dies here is reborn with more authentic power.`,
@@ -165,13 +165,13 @@ export function getMapaCopy(lang = 'pt') {
       'Nodo Norte': `O Nodo Norte em ${s}${casa ? ` na ${casa}ª Casa` : ''} aponta a direcção evolutiva da tua alma nesta vida: ${ess || 'crescimento kármico'}. ${casa ? `O destino evolutivo liga-se a ${foco}.` : ''} Os hábitos do Nodo Sul (signo oposto) são confortáveis mas já não te servem.`,
       Quíron: `Quíron em ${s}${casa ? ` na ${casa}ª Casa` : ''} revela a ferida-sabedoria - o ponto onde sentes inadequação e onde, precisamente por isso, podes curar outros. ${casa ? `A cura passa por ${foco}.` : ''}`,
     }
-    return texts[nome] || (lang === 'en'
+    return texts[nome] || (lang !== 'pt'
       ? `${nome} in ${s}${casa ? ` in House ${casa}` : ''} colours transpersonal dimensions of your chart.`
       : `${nome} em ${s}${casa ? ` na Casa ${casa}` : ''} colore dimensões transpersonais do teu mapa.`)
   }
 
   function introTecnica(mapaNatal, dados) {
-    if (lang === 'en') {
+    if (lang !== 'pt') {
       return `This natal chart reflects the exact position of the stars at your birth${dados?.cidade ? ` in ${dados.cidade}` : ''}${dados?.data ? `, ${dados.data}` : ''}${dados?.hora ? ` at ${dados.hora}` : ''}. Each planet in a house shows where in life that sign's energy manifests - your unique cosmic signature, read with professional astrological rigour.`
     }
     return `Este mapa natal reflecte a posição exacta dos astros no momento do teu nascimento${dados?.cidade ? ` em ${dados.cidade}` : ''}${dados?.data ? `, ${dados.data}` : ''}${dados?.hora ? ` às ${dados.hora}` : ''}. Cada planeta numa casa indica onde na vida essa energia se manifesta - a tua assinatura cósmica única, lida com rigor astrológico profissional.`
@@ -181,7 +181,7 @@ export function getMapaCopy(lang = 'pt') {
     const sol = mapaNatal?.solar?.nome
     const lua = mapaNatal?.lunar?.nome
     const asc = mapaNatal?.ascendente?.nome
-    if (lang === 'en') {
+    if (lang !== 'pt') {
       return {
         sol: sol ? `Your Sun in ${sn(sol)} defines the core of your identity - but in which *house* do you shine? That changes everything.` : null,
         lua: lua ? `The Moon in ${sn(lua)} regulates your emotional world. The lunar house reveals where you seek security - reserved for the full chart.` : null,
@@ -199,7 +199,7 @@ export function getMapaCopy(lang = 'pt') {
 
   function paragrafoSol(signo, casa) {
     const s = sn(signo)
-    const extra = lang === 'en'
+    const extra = lang !== 'pt'
       ? (signo === 'Escorpião' || signo === 'Capricórnio' || signo === 'Virgem'
         ? ' Your strength lies in depth and persistence - the world recognises your competence when you stop hiding what you know.'
         : signo === 'Leão' || signo === 'Carneiro' || signo === 'Sagitário'
@@ -211,13 +211,13 @@ export function getMapaCopy(lang = 'pt') {
           ? ' Precisas de palco e propósito: sem expressão autêntica, a vitalidade transforma-se em inquietação.'
           : ' A maturidade astrológica passa por honrar este signo nos momentos em que escolhes ser fiel a ti mesmo/a.')
     const casaPart = casa
-      ? (lang === 'en'
+      ? (lang !== 'pt'
         ? `This is the stage where your light must shine: ${temas[casa]?.foco || 'your area of personal fulfilment'}. When you honour this house, you feel vitality; when you ignore it, the soul quietly grows ill.`
         : `Este é o palco onde a tua luz precisa de brilhar: ${temas[casa]?.foco || 'a tua área de realização pessoal'}. Quando honras esta casa, sentes vitalidade; quando a ignoras, a alma adoece silenciosamente.`)
-      : (lang === 'en'
+      : (lang !== 'pt'
         ? 'Your purpose manifests whenever you act with authenticity and courage to be who you truly are.'
         : 'O teu propósito manifesta-se sempre que ages com autenticidade e coragem de ser quem realmente és.')
-    const intro = lang === 'en'
+    const intro = lang !== 'pt'
       ? `With the Sun in ${s}${casa ? ` in the ${casa}th House` : ''}, your conscious identity expresses ${essencia[signo] || 'a unique essence'}. `
       : `Com o Sol em ${s}${casa ? ` na ${casa}ª Casa` : ''}, a tua identidade consciente expressa ${essencia[signo] || 'uma essência única'}. `
     return intro + casaPart + extra
@@ -225,7 +225,7 @@ export function getMapaCopy(lang = 'pt') {
 
   function paragrafoLua(signo, casa) {
     const s = sn(signo)
-    if (lang === 'en') {
+    if (lang !== 'pt') {
       return `The Moon in ${s}${casa ? ` in the ${casa}th House` : ''} describes your emotional world: ${essencia[signo] || 'a particular sensitivity'}. Under stress, you regress to these instinctive patterns. ${casa ? `Emotional security anchors in ${temas[casa]?.foco || 'themes of this house'}. Nurturing this area is caring for your inner foundation.` : 'Your affective needs ask for recognition - they are not weakness, they are compass.'}`
     }
     return `A Lua em ${s}${casa ? ` na ${casa}ª Casa` : ''} descreve o teu mundo emocional: ${essencia[signo] || 'uma sensibilidade particular'}. Sob stress, regresses a estes padrões instintivos. ${casa ? `A segurança emocional ancora-se em ${temas[casa]?.foco || 'temas desta casa'}. Nutrir esta área é cuidar da tua base interior.` : 'As tuas necessidades afectivas pedem reconhecimento - não são fraqueza, são bússola.'}`
@@ -233,7 +233,7 @@ export function getMapaCopy(lang = 'pt') {
 
   function paragrafoAsc(signo) {
     const s = sn(signo)
-    if (lang === 'en') {
+    if (lang !== 'pt') {
       return `The Ascendant in ${s} is the natural mask with which you enter the world: ${essencia[signo] || 'a distinct presence'}. It is the first impression you make and the body-vehicle of your evolutionary journey. By consciously integrating this sign, you stop "acting" the persona and begin to inhabit it with authentic presence.`
     }
     return `O Ascendente em ${s} é a máscara natural com que entras no mundo: ${essencia[signo] || 'uma presença distinta'}. É a primeira impressão que causas e o corpo-veículo da tua jornada evolutiva. Ao integrar conscientemente este signo, deixas de «actuar» a persona e passas a habitá-la com presença autêntica.`
@@ -241,7 +241,7 @@ export function getMapaCopy(lang = 'pt') {
 
   function dinamicaBig3(sol, lua, asc) {
     if (!sol || !lua || !asc) {
-      return lang === 'en'
+      return lang !== 'pt'
         ? 'The interaction between Sun, Moon and Ascendant reveals the choreography between who you are (Sun), what you feel (Moon) and how you present yourself (Ascendant). Integrating these three poles is the first step of astrological maturity.'
         : 'A interacção entre Sol, Lua e Ascendente revela a coreografia entre quem és (Sol), o que sentes (Lua) e como te apresentas (Ascendente). Integrar estes três polos é o primeiro passo da maturidade astrológica.'
     }
@@ -251,7 +251,7 @@ export function getMapaCopy(lang = 'pt') {
     const ss = sn(sol), sl = sn(lua), sa = sn(asc)
 
     if (eSol !== eLua) {
-      const tensao = lang === 'en'
+      const tensao = lang !== 'pt'
         ? ((eSol === 'Fire' && eLua === 'Water') || (eSol === 'Water' && eLua === 'Fire') ? 'between impulsive action and emotional depth'
           : (eSol === 'Air' && eLua === 'Earth') || (eSol === 'Earth' && eLua === 'Air') ? 'between abstract mind and need for concreteness'
           : (eSol === 'Fire' && eLua === 'Earth') || (eSol === 'Earth' && eLua === 'Fire') ? 'between impulse and prudence'
@@ -260,27 +260,27 @@ export function getMapaCopy(lang = 'pt') {
           : (eSol === 'Ar' && eLua === 'Terra') || (eSol === 'Terra' && eLua === 'Ar') ? 'entre a mente abstracta e a necessidade de concretude'
           : (eSol === 'Fogo' && eLua === 'Terra') || (eSol === 'Terra' && eLua === 'Fogo') ? 'entre impulso e prudência'
           : 'entre estilos elementais diferentes que pedem tradução consciente')
-      partes.push(lang === 'en'
+      partes.push(lang !== 'pt'
         ? `Sun (${ss}/${eSol}) and Moon (${sl}/${eLua}) dialogue with tension ${tensao}. They are not internal enemies - they are two languages your psyche speaks.`
         : `Sol (${ss}/${eSol}) e Lua (${sl}/${eLua}) dialogam com tensão ${tensao}. Não se tratam de inimigos internos - são dois idiomas que a tua psique fala.`)
     } else {
-      partes.push(lang === 'en'
+      partes.push(lang !== 'pt'
         ? `Sun and Moon in the same element (${eSol}) confer emotional-identity coherence: you feel and act aligned, though you may lack creative contrast.`
         : `Sol e Lua no mesmo elemento (${eSol}) conferem coerência emocional-identitária: sentes e ages alinhados, embora possas carecer de contraste criativo.`)
     }
 
     if (eAsc !== eSol) {
-      partes.push(lang === 'en'
+      partes.push(lang !== 'pt'
         ? `The Ascendant in ${sa} (${eAsc}) colours how the world reads your Sun in ${ss}: sometimes you are perceived differently from your inner essence - use this as a resource, not a contradiction.`
         : `O Ascendente em ${sa} (${eAsc}) colore a forma como o mundo lê o teu Sol em ${ss}: por vezes és percebido/a de forma diferente da tua essência íntima - usar isso como recurso, não como contradição.`)
     } else {
-      partes.push(lang === 'en'
+      partes.push(lang !== 'pt'
         ? 'Ascendant and Sun share element: your public image reinforces identity - transparency and authenticity are your social superpower.'
         : 'Ascendente e Sol partilham elemento: a tua imagem pública reforça a identidade - transparência e autenticidade são o teu superpoder social.')
     }
 
     if (mSol !== mLua) {
-      partes.push(lang === 'en'
+      partes.push(lang !== 'pt'
         ? `Different modalities (Sun ${mSol}, Moon ${mLua}) indicate different internal rhythms: knowing when to initiate, sustain or adapt is key to your balance.`
         : `Modalidades distintas (Sol ${mSol}, Lua ${mLua}) indicam ritmos internos diferentes: saber quando iniciar, sustentar ou adaptar é chave para o teu equilíbrio.`)
     }
@@ -289,37 +289,37 @@ export function getMapaCopy(lang = 'pt') {
 
   function paragrafoMerc(signo, casa) {
     const s = sn(signo)
-    if (lang === 'en') return `Mercury in ${s}${casa ? ` in the ${casa}th House` : ''} defines how you think, learn and communicate: ${essencia[signo] || 'your own mental style'}. ${casa ? `The mind activates especially in ${temas[casa]?.foco || 'themes of this house'}.` : ''} Write, speak and question from this place - that is where your intelligence flourishes.`
+    if (lang !== 'pt') return `Mercury in ${s}${casa ? ` in the ${casa}th House` : ''} defines how you think, learn and communicate: ${essencia[signo] || 'your own mental style'}. ${casa ? `The mind activates especially in ${temas[casa]?.foco || 'themes of this house'}.` : ''} Write, speak and question from this place - that is where your intelligence flourishes.`
     return `Mercúrio em ${s}${casa ? ` na ${casa}ª Casa` : ''} define como pensas, aprendes e comunicas: ${essencia[signo] || 'um estilo mental próprio'}. ${casa ? `A mente activa-se especialmente em ${temas[casa]?.foco || 'temas desta casa'}.` : ''} Escreve, fala e questiona a partir deste lugar - é aí que a tua inteligência floresce.`
   }
 
   function paragrafoVen(signo, casa) {
     const s = sn(signo)
-    if (lang === 'en') return `Venus in ${s}${casa ? ` in the ${casa}th House` : ''} reveals your love language and what magnetises you: ${essencia[signo] || 'unique relational values'}. ${casa ? `Abundance and pleasure flow when you cultivate ${temas[casa]?.foco || 'this area of life'}.` : ''}`
+    if (lang !== 'pt') return `Venus in ${s}${casa ? ` in the ${casa}th House` : ''} reveals your love language and what magnetises you: ${essencia[signo] || 'unique relational values'}. ${casa ? `Abundance and pleasure flow when you cultivate ${temas[casa]?.foco || 'this area of life'}.` : ''}`
     return `Vénus em ${s}${casa ? ` na ${casa}ª Casa` : ''} revela a tua linguagem de amor e o que magnetiza: ${essencia[signo] || 'valores relacionais únicos'}. ${casa ? `A abundância e o prazer fluem quando cultivas ${temas[casa]?.foco || 'esta área da vida'}.` : ''}`
   }
 
   function paragrafoMar(signo, casa) {
     const s = sn(signo)
-    if (lang === 'en') return `Mars in ${s}${casa ? ` in the ${casa}th House` : ''} indicates how you assert desires, handle anger and initiate: ${essencia[signo] || 'a particular action energy'}. ${casa ? `Vital impulse concentrates in ${temas[casa]?.foco || 'themes of this house'}. Channel this force to avoid explosions or passivity.` : 'The key is using your courage for goals that dignify you.'}`
+    if (lang !== 'pt') return `Mars in ${s}${casa ? ` in the ${casa}th House` : ''} indicates how you assert desires, handle anger and initiate: ${essencia[signo] || 'a particular action energy'}. ${casa ? `Vital impulse concentrates in ${temas[casa]?.foco || 'themes of this house'}. Channel this force to avoid explosions or passivity.` : 'The key is using your courage for goals that dignify you.'}`
     return `Marte em ${s}${casa ? ` na ${casa}ª Casa` : ''} indica como assertas desejos, lidas com a raiva e inicias: ${essencia[signo] || 'uma energia de acção particular'}. ${casa ? `O impulso vital concentra-se em ${temas[casa]?.foco || 'temas desta casa'}. Canalizar esta força evita explosões ou passividade.` : 'A chave é usar a tua coragem a favor de objectivos que te dignifiquem.'}`
   }
 
   function paragrafoJup(signo, casa) {
     const s = sn(signo)
-    if (lang === 'en') return `Jupiter in ${s}${casa ? ` in the ${casa}th House` : ''} points where life expands most easily: ${essencia[signo] || 'optimism and growth'}. ${casa ? `Your philosophical "luck" activates in ${temas[casa]?.foco || 'this sphere'}. Trust, but do not exaggerate - Jupiter also inflates.` : ''}`
+    if (lang !== 'pt') return `Jupiter in ${s}${casa ? ` in the ${casa}th House` : ''} points where life expands most easily: ${essencia[signo] || 'optimism and growth'}. ${casa ? `Your philosophical "luck" activates in ${temas[casa]?.foco || 'this sphere'}. Trust, but do not exaggerate - Jupiter also inflates.` : ''}`
     return `Júpiter em ${s}${casa ? ` na ${casa}ª Casa` : ''} aponta onde a vida te expande com mais facilidade: ${essencia[signo] || 'optimismo e crescimento'}. ${casa ? `A tua «sorte» filosófica activa-se em ${temas[casa]?.foco || 'esta esfera'}. Confia, mas não exageres - Júpiter também inflaciona.` : ''}`
   }
 
   function paragrafoSat(signo, casa) {
     const s = sn(signo)
-    if (lang === 'en') return `Saturn in ${s}${casa ? ` in the ${casa}th House` : ''} is your karmic teacher: ${essencia[signo] || 'lessons of maturity'}. ${casa ? `Here you fear failure until you build solid competence in ${temas[casa]?.foco || 'themes of this house'}. Discipline in this area becomes your throne.` : ''} Saturn does not punish - it teaches through time.`
+    if (lang !== 'pt') return `Saturn in ${s}${casa ? ` in the ${casa}th House` : ''} is your karmic teacher: ${essencia[signo] || 'lessons of maturity'}. ${casa ? `Here you fear failure until you build solid competence in ${temas[casa]?.foco || 'themes of this house'}. Discipline in this area becomes your throne.` : ''} Saturn does not punish - it teaches through time.`
     return `Saturno em ${s}${casa ? ` na ${casa}ª Casa` : ''} é o teu mestre kármico: ${essencia[signo] || 'lições de maturidade'}. ${casa ? `Aqui sentes medo do fracasso até construíres competência sólida em ${temas[casa]?.foco || 'temas desta casa'}. A disciplina nesta área torna-se o teu trono.` : ''} Saturno não pune - ensina através do tempo.`
   }
 
   function paragrafoMC(signo) {
     const s = sn(signo)
-    if (lang === 'en') {
+    if (lang !== 'pt') {
       const tail = signo === 'Capricórnio' || signo === 'Virgem' || signo === 'Touro' ? 'and consistency'
         : signo === 'Leão' || signo === 'Carneiro' || signo === 'Sagitário' ? 'and inspiring leadership' : 'and strategic sensitivity'
       return `The Midheaven in ${s} defines your public vocation and the legacy you seek to leave: ${essencia[signo] || 'a unique professional mission'}. The ideal career is not just a job - it is the visible expression of your inner authority. In ${s}, the world recognises you when you ${temas[10]?.foco || 'take your place on the social stage'} with authenticity ${tail}.`
@@ -331,7 +331,7 @@ export function getMapaCopy(lang = 'pt') {
 
   function sinteseAspectoTenso(asp) {
     if (!asp) {
-      return lang === 'en' ? {
+      return lang !== 'pt' ? {
         titulo: L.harmonia,
         texto: 'There is no dominant square or opposition among major aspects - this does not mean an easy life, but indicates your personal planets dialogue with relative fluidity. Your growth will come from integrating subtle polarities (Sun/Moon/Ascendant) rather than major internal clashes.',
         conselho: 'Deepen self-knowledge in the house areas that move you most emotionally.',
@@ -341,10 +341,10 @@ export function getMapaCopy(lang = 'pt') {
         conselho: 'Aprofunda autoconhecimento nas áreas de casa que mais te movem emocionalmente.',
       }
     }
-    const nomeAsp = asp.aspecto === 'Oposicao' ? (lang === 'en' ? 'Opposition' : 'Oposição') : (lang === 'en' ? translateAspecto(asp.aspecto, 'en') : asp.aspecto)
-    const pA = lang === 'en' ? (asp.planetaA === 'Sol' ? 'Sun' : asp.planetaA) : asp.planetaA
-    const pB = lang === 'en' ? (asp.planetaB === 'Lua' ? 'Moon' : asp.planetaB) : asp.planetaB
-    if (lang === 'en') {
+    const nomeAsp = asp.aspecto === 'Oposicao' ? (lang !== 'pt' ? 'Opposition' : 'Oposição') : (lang !== 'pt' ? translateAspecto(asp.aspecto, 'en') : asp.aspecto)
+    const pA = lang !== 'pt' ? (asp.planetaA === 'Sol' ? 'Sun' : asp.planetaA) : asp.planetaA
+    const pB = lang !== 'pt' ? (asp.planetaB === 'Lua' ? 'Moon' : asp.planetaB) : asp.planetaB
+    if (lang !== 'pt') {
       return {
         titulo: `${nomeAsp} ${pA} · ${pB} (orb ${asp.orbe})`,
         texto: `The most tense aspect in your chart is the ${nomeAsp} between ${pA} and ${pB}. This tension is not a curse - it is evolutionary fuel. Where you feel "pulled in opposite directions", your greatest competence is born when you learn to negotiate internally instead of choosing one pole and rejecting the other.`,
@@ -366,7 +366,7 @@ export function getMapaCopy(lang = 'pt') {
     const casaJup = jup?.casa
     const sol = sn(mapaNatal?.solar?.nome || '-')
     const lua = sn(mapaNatal?.lunar?.nome || '-')
-    if (lang === 'en') {
+    if (lang !== 'pt') {
       return `In the coming months, honour your Sun in ${sol} by acting with courage in ${casaTxt(solP?.casa)}. Care for the Moon in ${lua} by creating emotional security routines. ${casaSat ? `Saturn in the ${casaSat}th House asks for structured patience - build brick by brick.` : ''} ${casaJup ? `Jupiter in the ${casaJup}th House opens doors when you allow yourself to grow beyond known comfort.` : ''} The cosmos does not decide for you: it offers the map. You trace the path.`
     }
     return `Nos próximos meses, honra o teu Sol em ${sol} actuando com coragem na ${casaTxt(solP?.casa)}. Cuida da Lua em ${lua} criando rotinas de segurança emocional. ${casaSat ? `Saturno na ${casaSat}ª Casa pede paciência estruturada - constrói tijolo a tijolo.` : ''} ${casaJup ? `Júpiter na ${casaJup}ª Casa abre portas quando te permites crescer além do conforto conhecido.` : ''} O cosmos não decide por ti: oferece o mapa. Tu traças o caminho.`

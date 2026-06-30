@@ -36,12 +36,12 @@ const EIXOS = {
 export function montarSecoesPremium(resultado, mapaNatal, lang = 'pt') {
   if (!resultado) return null
   const { pilares, porPilar, posA, posB } = resultado
-  const nomeA = posA?.nome || mapaNatal?.nome || (lang === 'en' ? 'You' : 'Tu')
-  const nomeB = posB?.nome || (lang === 'en' ? 'Partner' : 'Parceiro(a)')
+  const nomeA = posA?.nome || mapaNatal?.nome || (lang !== 'pt' ? 'You' : 'Tu')
+  const nomeB = posB?.nome || (lang !== 'pt' ? 'Partner' : 'Parceiro(a)')
 
   return {
     intro: {
-      titulo: lang === 'en' ? 'Your personal synastry' : 'A tua sinastria pessoal',
+      titulo: lang !== 'pt' ? 'Your personal synastry' : 'A tua sinastria pessoal',
       texto: narrativaIntroSinastria(nomeA, nomeB, Math.round(resultado.pontuacao), lang),
     },
     quimica: {
@@ -65,23 +65,23 @@ export function montarSecoesPremium(resultado, mapaNatal, lang = 'pt') {
       texto: narrativaFuturo(posA, posB, porPilar.futuro || [], lang),
     },
     missaoA: {
-      titulo: lang === 'en' ? `${nomeA}'s life mission` : `Missão de vida - ${nomeA}`,
+      titulo: lang !== 'pt' ? `${nomeA}'s life mission` : `Missão de vida - ${nomeA}`,
       texto: narrativaMissaoIndividual(posA, lang),
     },
     missaoB: {
-      titulo: lang === 'en' ? `${nomeB}'s life mission` : `Missão de vida - ${nomeB}`,
+      titulo: lang !== 'pt' ? `${nomeB}'s life mission` : `Missão de vida - ${nomeB}`,
       texto: narrativaMissaoIndividual(posB, lang),
     },
     missaoRelacionamento: {
-      titulo: lang === 'en' ? 'Relationship Mission · Soul Purpose' : 'Missão de Relacionamento · Propósito de Alma',
+      titulo: lang !== 'pt' ? 'Relationship Mission · Soul Purpose' : 'Missão de Relacionamento · Propósito de Alma',
       texto: narrativaMissaoRelacionamento(resultado, lang),
     },
     mapaComposto: {
-      titulo: lang === 'en' ? 'Composite Chart' : 'Mapa Composto',
+      titulo: lang !== 'pt' ? 'Composite Chart' : 'Mapa Composto',
       texto: narrativaMapaComposto(resultado.mapaComposto, nomeA, nomeB, lang),
     },
     nodos: {
-      titulo: lang === 'en' ? 'Lunar Nodes · Soul Contract' : 'Nodos Lunares · Contrato de Alma',
+      titulo: lang !== 'pt' ? 'Lunar Nodes · Soul Contract' : 'Nodos Lunares · Contrato de Alma',
       laçoCarmico: resultado.nodosSinastria?.laçoCarmico,
       activacaoProposito: resultado.nodosSinastria?.activacaoProposito,
       texto: narrativaMissaoRelacionamento(resultado, lang),
@@ -95,9 +95,9 @@ export function montarResumoGratis(resultado, mapaNatal, lang = 'pt') {
   const solA = mapaNatal?.solar?.nome || resultado.posA?.corpos?.sol?.signo
   const solB = resultado.posB?.corpos?.sol?.signo
   const compat = compatibilidadeSolarGratis(solA, solB, lang)
-  const nomeB = resultado.posB?.nome || (lang === 'en' ? 'your partner' : 'o(a) parceiro(a)')
+  const nomeB = resultado.posB?.nome || (lang !== 'pt' ? 'your partner' : 'o(a) parceiro(a)')
 
-  if (lang === 'en') {
+  if (lang !== 'pt') {
     return [
       `**General preview - ${mapaNatal?.nome || 'You'} & ${nomeB}**`,
       '',
@@ -127,7 +127,7 @@ export function montarRelatorioSinastria(resultado, mapaNatal, lang = 'pt') {
   const linhas = []
   const aviso = resultado.posA?.horaDesconhecida || resultado.posB?.horaDesconhecida
   if (aviso) {
-    linhas.push(lang === 'en'
+    linhas.push(lang !== 'pt'
       ? '*Without exact birth time, Moon, Ascendant and Midheaven may be approximate. Sun, Jupiter, Saturn and lunar nodes remain precise.*'
       : '*Sem hora exacta, Lua, Ascendente e Meio-Céu podem ser aproximados. Sol, Júpiter, Saturno e nodos lunares mantêm precisão.*')
     linhas.push('')

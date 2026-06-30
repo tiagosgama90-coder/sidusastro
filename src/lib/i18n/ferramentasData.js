@@ -43,9 +43,9 @@ const BENEFICIOS_VIP_EN = [
 ]
 
 export function getFerramentas(lang) {
-  return lang === 'en' ? FERRAMENTAS_EN : FERRAMENTAS_PT
+  return lang !== 'pt' ? FERRAMENTAS_EN : FERRAMENTAS_PT
 }
 
 export function getBeneficiosVip(lang) {
-  return lang === 'en' ? BENEFICIOS_VIP_EN : BENEFICIOS_VIP_PT
+  return lang !== 'pt' ? BENEFICIOS_VIP_EN : BENEFICIOS_VIP_PT
 }

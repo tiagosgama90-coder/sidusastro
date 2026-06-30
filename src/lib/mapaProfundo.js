@@ -69,19 +69,19 @@ function textoAspectos(planeta, aspetos, planetas, lang) {
   const partes = lista.map((a) => {
     const outro = nomeAspeto(a.planetaA) === planeta ? nomeAspeto(a.planetaB) : nomeAspeto(a.planetaA)
     const pOut = planetaPorNome(planetas, outro)
-    const asp = a.aspecto === 'Conjuncao' ? (lang === 'en' ? 'conjunction' : 'conjunção')
-      : a.aspecto === 'Trigono' ? (lang === 'en' ? 'trine' : 'trígono')
-        : a.aspecto === 'Oposicao' ? (lang === 'en' ? 'opposition' : 'oposição')
-          : a.aspecto === 'Quadratura' ? (lang === 'en' ? 'square' : 'quadratura')
-            : a.aspecto === 'Sextil' ? (lang === 'en' ? 'sextile' : 'sextil') : a.aspecto
+    const asp = a.aspecto === 'Conjuncao' ? (lang !== 'pt' ? 'conjunction' : 'conjunção')
+      : a.aspecto === 'Trigono' ? (lang !== 'pt' ? 'trine' : 'trígono')
+        : a.aspecto === 'Oposicao' ? (lang !== 'pt' ? 'opposition' : 'oposição')
+          : a.aspecto === 'Quadratura' ? (lang !== 'pt' ? 'square' : 'quadratura')
+            : a.aspecto === 'Sextil' ? (lang !== 'pt' ? 'sextile' : 'sextil') : a.aspecto
     const signoOut = sn(pOut?.signo?.nome, lang)
     const casaOut = pOut?.casa
-    if (lang === 'en') {
+    if (lang !== 'pt') {
       return `${asp} with ${outro} in ${signoOut}${casaOut ? ` (House ${casaOut})` : ''} (orb ${a.orbe})`
     }
     return `${asp} com ${outro} em ${signoOut}${casaOut ? ` (Casa ${casaOut})` : ''} (orbe ${a.orbe})`
   })
-  if (lang === 'en') return ` Active aspects: ${partes.join('; ')}.`
+  if (lang !== 'pt') return ` Active aspects: ${partes.join('; ')}.`
   return ` Aspectos activos: ${partes.join('; ')}.`
 }
 
@@ -235,7 +235,7 @@ const NUCLEO_EN = {
 
 function nucleoPlaneta(nome, signo, lang) {
   const chave = normalizarSigno(signo)
-  if (lang === 'en') {
+  if (lang !== 'pt') {
     const enSign = sn(chave, 'en')
     return NUCLEO_EN[nome]?.[enSign] || NUCLEO_PT[nome]?.[chave] || ''
   }
@@ -246,7 +246,7 @@ function blocoCasa(casa, lang) {
   if (!casa) return ''
   const t = TEMAS_CASA[casa]
   if (!t) return ''
-  if (lang === 'en') {
+  if (lang !== 'pt') {
     return ` In House ${casa} (${t.nome}), this energy manifests concretely in ${t.foco}.`
   }
   return ` Na ${casa}ª Casa (${t.nome}), esta energia manifesta-se concretamente em ${t.foco}.`
@@ -256,7 +256,7 @@ function blocoDecan(graus, signo, lang) {
   const d = decan(graus)
   const s = sn(signo, lang)
   const elem = ELEMENTO[normalizarSigno(signo)]
-  if (lang === 'en') {
+  if (lang !== 'pt') {
     if (d === 'inicial') return ` At ${graus}° (${d} ${s}), the ${elem} impulse is raw and initiating.`
     if (d === 'central') return ` At ${graus}° (mid-${s}), the ${elem} theme is fully embodied and tested.`
     return ` At ${graus}° (late ${s}), the ${elem} lesson matures toward integration and release.`
@@ -274,7 +274,7 @@ function blocoBig3(nome, signo, mapaNatal, lang) {
   const elemPlan = ELEMENTO[chave]
   const elemSol = ELEMENTO[sol]
   const elemLua = ELEMENTO[lua]
-  if (lang === 'en') {
+  if (lang !== 'pt') {
     if (elemPlan === elemSol) return ` This ${nome} placement resonates with your Sun in ${sn(sol, lang)} (${elemSol}) - identity and transpersonal theme speak the same elemental language.`
     if (elemPlan === elemLua) return ` This ${nome} echoes your Moon in ${sn(lua, lang)} (${elemLua}) - the emotional body recognises this frequency instinctively.`
     return ` Against your Sun–Moon axis (${sn(sol, lang)}/${sn(lua, lang)}), this ${nome} in ${sn(chave, lang)} asks conscious translation between different inner languages.`
@@ -288,7 +288,7 @@ function blocoNodoSul(signo, lang) {
   const chave = normalizarSigno(signo)
   const sul = OPOSTO[chave]
   if (!sul) return ''
-  if (lang === 'en') return ` South Node in ${sn(sul, lang)}: comfortable patterns to release on this path.`
+  if (lang !== 'pt') return ` South Node in ${sn(sul, lang)}: comfortable patterns to release on this path.`
   return ` Nodo Sul em ${sn(sul, lang)}: padrões confortáveis a largar neste caminho.`
 }
 
@@ -351,14 +351,14 @@ export function gerarSinteseEvolutiva(mapaNatal, planetas, aspetos, lang = 'pt')
     const pB = nomeAspeto(tenso.planetaB)
     const posA = planetaPorNome(planetas, pA)
     const posB = planetaPorNome(planetas, pB)
-    const aspNome = tenso.aspecto === 'Oposicao' ? (lang === 'en' ? 'Opposition' : 'Oposição')
-      : (lang === 'en' ? 'Square' : 'Quadratura')
-    const titulo = lang === 'en'
+    const aspNome = tenso.aspecto === 'Oposicao' ? (lang !== 'pt' ? 'Opposition' : 'Oposição')
+      : (lang !== 'pt' ? 'Square' : 'Quadratura')
+    const titulo = lang !== 'pt'
       ? `${aspNome} ${pA} · ${pB} (orb ${tenso.orbe})`
       : `${aspNome} ${pA} · ${pB} (orbe ${tenso.orbe})`
 
     let texto
-    if (lang === 'en') {
+    if (lang !== 'pt') {
       texto = `Your chart's primary evolutionary tension is the ${aspNome} between ${pA} in ${sn(posA?.signo?.nome, lang)}${posA?.casa ? ` (House ${posA.casa})` : ''} and ${pB} in ${sn(posB?.signo?.nome, lang)}${posB?.casa ? ` (House ${posB.casa})` : ''}. `
       texto += `With Sun in ${sn(sol, lang)}, Moon in ${sn(lua, lang)} and Ascendant in ${sn(asc, lang)}, this aspect colours how you balance ${TEMAS_CASA[posA?.casa]?.foco || 'one life sphere'} with ${TEMAS_CASA[posB?.casa]?.foco || 'another'}. `
       texto += `The friction is fuel: maturity comes from negotiating both poles rather than silencing one.`
@@ -368,7 +368,7 @@ export function gerarSinteseEvolutiva(mapaNatal, planetas, aspetos, lang = 'pt')
       texto += `O atrito é combustível: a maturidade nasce de negociar os dois polos em vez de silenciar um.`
     }
 
-    const conselho = lang === 'en'
+    const conselho = lang !== 'pt'
       ? `When conflict rises between ${pA} and ${pB}, pause: each voice guards a legitimate need. Integrating this ${aspNome} is your chart's master key.`
       : `Quando o conflito surgir entre ${pA} e ${pB}, pausa: cada voz guarda uma necessidade legítima. Integrar esta ${aspNome} é a chave-mestra do teu mapa.`
 
@@ -376,10 +376,10 @@ export function gerarSinteseEvolutiva(mapaNatal, planetas, aspetos, lang = 'pt')
   }
 
   // Sem aspecto tenso dominante - síntese pelo fingerprint do mapa
-  const titulo = lang === 'en' ? 'Evolutionary signature' : 'Assinatura evolutiva'
+  const titulo = lang !== 'pt' ? 'Evolutionary signature' : 'Assinatura evolutiva'
 
   let texto
-  if (lang === 'en') {
+  if (lang !== 'pt') {
     texto = `No dominant square or opposition among major aspects - your growth path is subtler but equally specific. `
     texto += `Dominant element: ${elemDom || 'mixed'} across personal planets. `
     if (harm) {
@@ -404,7 +404,7 @@ export function gerarSinteseEvolutiva(mapaNatal, planetas, aspetos, lang = 'pt')
   }
 
   const pSol = planetaPorNome(planetas, 'Sol')
-  const conselho = lang === 'en'
+  const conselho = lang !== 'pt'
     ? `Practical path: act with ${sn(sol, lang)} courage in ${TEMAS_CASA[pSol?.casa]?.foco || 'your solar house'}. `
       + `${pSat ? `Saturn in ${sn(pSat.signo?.nome, lang)}, House ${pSat.casa}: build patiently here.` : ''} `
       + `${pJup ? ` Jupiter in House ${pJup.casa} opens doors when you stretch beyond comfort.` : ''} `

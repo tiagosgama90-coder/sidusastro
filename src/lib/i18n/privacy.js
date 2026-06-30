@@ -101,11 +101,11 @@ const SECTIONS_EN = [
 ]
 
 export function getPrivacySections(lang) {
-  return lang === 'en' ? SECTIONS_EN : SECTIONS_PT
+  return lang !== 'pt' ? SECTIONS_EN : SECTIONS_PT
 }
 
 export function getPrivacyMeta(lang) {
-  if (lang === 'en') {
+  if (lang !== 'pt') {
     return {
       title: 'Privacy Policy',
       updated: 'Sidus – Last updated: June 2026',

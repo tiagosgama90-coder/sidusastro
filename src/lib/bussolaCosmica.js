@@ -49,7 +49,7 @@ function lonEcliptica(corpo, date) {
 }
 
 function signoDeLongitude(lon, lang) {
-  const lista = lang === 'en' ? SIGNOS_EN : SIGNOS
+  const lista = lang !== 'pt' ? SIGNOS_EN : SIGNOS
   const n = ((Number(lon) % 360) + 360) % 360
   return lista[Math.min(11, Math.floor(n / 30))]
 }
@@ -100,7 +100,7 @@ function impactoDe(transito) {
 }
 
 function descricaoMes(transito, lang, posicoes) {
-  const p = lang === 'en' ? transito.planetaEn : transito.planeta
+  const p = lang !== 'pt' ? transito.planetaEn : transito.planeta
   const s = transito.signo
   const graus = transito.graus
   const retro = transito.retrogrado
@@ -109,10 +109,10 @@ function descricaoMes(transito, lang, posicoes) {
   const outros = posicoes
     .filter((x) => x.nome !== transito.planeta && x.peso >= 2)
     .slice(0, 3)
-    .map((x) => `${lang === 'en' ? x.nomeEn : x.nome} ${lang === 'en' ? 'in' : 'em'} ${x.signo} (${x.graus}°)`)
+    .map((x) => `${lang !== 'pt' ? x.nomeEn : x.nome} ${lang !== 'pt' ? 'in' : 'em'} ${x.signo} (${x.graus}°)`)
     .join(' · ')
 
-  if (lang === 'en') {
+  if (lang !== 'pt') {
     let base = `${p} in ${s} at ${graus}°`
     if (retro) base += ' ℞'
     if (tipo === 'ingresso') base = `${p} enters ${s} this month - a shift in collective tone and personal strategy.`
@@ -134,7 +134,7 @@ function descricaoMes(transito, lang, posicoes) {
 }
 
 function conceitos2026(lang) {
-  if (lang === 'en') {
+  if (lang !== 'pt') {
     return [
       {
         titulo: 'Saturn · Neptune conjunction (Feb 2026)',
@@ -198,8 +198,8 @@ const AFINIDADE = {
 }
 
 export function calcularBussola2026(lang = 'pt') {
-  const meses = lang === 'en' ? MESES_EN : MESES_PT
-  const impactoMap = lang === 'en'
+  const meses = lang !== 'pt' ? MESES_EN : MESES_PT
+  const impactoMap = lang !== 'pt'
     ? { alto: 'high', médio: 'medium', baixo: 'low', atenção: 'caution', intenso: 'intense', transformador: 'transformative', desafio: 'challenge', padrão: 'standard', optimismo: 'optimism' }
     : { alto: 'alto', médio: 'médio', baixo: 'baixo', atenção: 'atenção', intenso: 'intenso', transformador: 'transformador', desafio: 'desafio', padrão: 'padrão', optimismo: 'optimismo' }
 
@@ -327,8 +327,8 @@ function lonSwe(swe, corpoId, date) {
 }
 
 function montarBussola(lang, obterLon, motor) {
-  const meses = lang === 'en' ? MESES_EN : MESES_PT
-  const impactoMap = lang === 'en'
+  const meses = lang !== 'pt' ? MESES_EN : MESES_PT
+  const impactoMap = lang !== 'pt'
     ? { alto: 'high', médio: 'medium', baixo: 'low', atenção: 'caution', intenso: 'intense', transformador: 'transformative', desafio: 'challenge', padrão: 'standard', optimismo: 'optimism' }
     : { alto: 'alto', médio: 'médio', baixo: 'baixo', atenção: 'atenção', intenso: 'intenso', transformador: 'transformador', desafio: 'desafio', padrão: 'padrão', optimismo: 'optimismo' }
 

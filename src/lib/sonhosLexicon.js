@@ -111,7 +111,7 @@ export function extrairSimbolos(texto, chipsExtra = [], lang = 'pt') {
     if (!encontrados.some((e) => e.tema.toLowerCase().includes(cl.slice(0, 4)))) {
       encontrados.push({
         tema: chip,
-        resumo: lang === 'en'
+        resumo: lang !== 'pt'
           ? 'Selected symbol - apply Golden Rule: current conflict, call to change, path of healing.'
           : 'Símbolo seleccionado - aplicar Regra de Ouro: conflito actual, apelo de conversão, remédio de cura.',
         letra: chip[0]?.toUpperCase() || '?',
@@ -119,12 +119,12 @@ export function extrairSimbolos(texto, chipsExtra = [], lang = 'pt') {
     }
   }
 
-  return encontrados.sort((a, b) => a.letra.localeCompare(b.letra, lang === 'en' ? 'en' : 'pt'))
+  return encontrados.sort((a, b) => a.letra.localeCompare(b.letra, lang !== 'pt' ? 'en' : 'pt'))
 }
 
 export function labelSentimento(feelingKey, lang = 'pt') {
-  if (!feelingKey) return lang === 'en' ? 'not specified' : 'não indicado'
-  const map = lang === 'en' ? FEELING_EN : FEELING_PT
+  if (!feelingKey) return lang !== 'pt' ? 'not specified' : 'não indicado'
+  const map = lang !== 'pt' ? FEELING_EN : FEELING_PT
   return map[feelingKey] || feelingKey
 }
 

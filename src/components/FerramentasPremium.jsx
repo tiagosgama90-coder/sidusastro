@@ -54,7 +54,7 @@ export function BussolaCosmica({ mapaNatal, onVoltar }) {
   const [mesAberto, setMesAberto] = useState(null)
   const [dados, setDados] = useState(null)
   const [carregando, setCarregando] = useState(true)
-  const locale = lang === 'en' ? 'en-US' : 'pt-PT'
+  const locale = lang !== 'pt' ? 'en-US' : 'pt-PT'
   const mesAtual = new Date().toLocaleString(locale, { month: 'long' })
 
   useEffect(() => {
@@ -142,7 +142,7 @@ export function BussolaCosmica({ mapaNatal, onVoltar }) {
                     {relevante && <span style={{fontSize:10,color:'#34D399'}}>{relevante}</span>}
                   </div>
                   <div style={{fontSize:12,color:CORES.brancoMuted,marginTop:2}}>
-                    {tp(transito.planeta)} {lang === 'en' ? 'in' : 'em'} {ts(transito.signo)}
+                    {tp(transito.planeta)} {lang !== 'pt' ? 'in' : 'em'} {ts(transito.signo)}
                   </div>
                 </div>
                 <span style={{
@@ -524,7 +524,7 @@ export function Biorritmo({ dados, utilizador, mapaNatal, onVoltar }) {
 
   const estado = (v) => v > 60 ? t('ferramentasPremium.biorritmo.phaseHigh') : v < -60 ? t('ferramentasPremium.biorritmo.phaseCritical') : t('ferramentasPremium.biorritmo.phaseTransition')
 
-  const locale = lang === 'en' ? 'en-US' : 'pt-PT'
+  const locale = lang !== 'pt' ? 'en-US' : 'pt-PT'
 
   return (
     <div style={{ padding: '20px 20px 110px' }}>
@@ -646,7 +646,7 @@ export function DiarioAstral({ mapaNatal }) {
     {id:'transformador',ico:'🌑',label: t('ferramentasPremium.diario.moods.transformador')},
   ]
 
-  const locale = lang === 'en' ? 'en-US' : 'pt-PT'
+  const locale = lang !== 'pt' ? 'en-US' : 'pt-PT'
 
   const guardar = () => {
     if (!nova.trim()) return
@@ -1095,7 +1095,7 @@ export function InterpretacaoSonhos({ mapaNatal, onVoltar }) {
   const [chipsSel, setChipsSel] = useState([])
   const [feeling, setFeeling] = useState(null)
 
-  const chips = lang === 'en' ? CHIPS_SIMBOLOS_EN : CHIPS_SIMBOLOS_PT
+  const chips = lang !== 'pt' ? CHIPS_SIMBOLOS_EN : CHIPS_SIMBOLOS_PT
   const feelings = ['peace', 'fear', 'sadness', 'joy', 'confusion', 'anger']
 
   const toggleChip = (chip) => {
@@ -1109,7 +1109,7 @@ export function InterpretacaoSonhos({ mapaNatal, onVoltar }) {
     const res = await interpretarSonhoRemoto(sonho, mapaNatal, lang, feeling, chipsSel)
     setAInterpretar(false)
     if (!res) {
-      setErro(lang === 'en' ? 'Could not interpret right now. Try again in a moment.' : 'Não foi possível interpretar agora. Tenta outra vez dentro de instantes.')
+      setErro(lang !== 'pt' ? 'Could not interpret right now. Try again in a moment.' : 'Não foi possível interpretar agora. Tenta outra vez dentro de instantes.')
       return
     }
     setResultado(res)
@@ -1190,7 +1190,7 @@ export function InterpretacaoSonhos({ mapaNatal, onVoltar }) {
         borderRadius: 12, color: '#0B071E', fontSize: 15, fontWeight: 700, padding: '14px',
         cursor: pronto ? 'pointer' : 'not-allowed', opacity: pronto ? 1 : 0.5, marginBottom: 12,
       }}>
-        {aInterpretar ? (lang === 'en' ? '✦ Decoding the dream…' : '✦ A decifrar o sonho…') : t('ferramentasPremium.sonhos.interpret')}
+        {aInterpretar ? (lang !== 'pt' ? '✦ Decoding the dream…' : '✦ A decifrar o sonho…') : t('ferramentasPremium.sonhos.interpret')}
       </button>
 
       {erro && (
@@ -1254,7 +1254,7 @@ export function HorasIguais({ onVoltar }) {
     return () => clearInterval(id)
   }, [lang, modoManual])
 
-  const locale = lang === 'en' ? 'en-US' : 'pt-PT'
+  const locale = lang !== 'pt' ? 'en-US' : 'pt-PT'
   const horaActual = agora.toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' })
   const proxima = proximaHoraIgual(agora)
   const horasPopulares = ['11:11', '22:22', '12:12', '01:01', '04:04']

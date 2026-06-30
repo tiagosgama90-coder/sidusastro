@@ -7,7 +7,7 @@ import { formatSkyPosition } from '../lib/i18n/astro.js'
 export function LandingSkyLive() {
   const { lang, t } = useLanguage()
 
-  const hoje = new Date().toLocaleDateString(lang === 'en' ? 'en-GB' : 'pt-PT', {
+  const hoje = new Date().toLocaleDateString(lang !== 'pt' ? 'en-GB' : 'pt-PT', {
     weekday: 'long', day: 'numeric', month: 'long',
   })
 

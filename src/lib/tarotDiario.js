@@ -32,7 +32,7 @@ export function msAteProximaDiaria(userId) {
 export function formatarTempoRestante(ms, lang = 'pt') {
   const h = Math.floor(ms / 3600000)
   const m = Math.floor((ms % 3600000) / 60000)
-  if (lang === 'en') {
+  if (lang !== 'pt') {
     if (h > 0) return `${h}h ${m}m`
     return `${m} min`
   }

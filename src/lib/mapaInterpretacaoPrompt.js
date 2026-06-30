@@ -59,7 +59,7 @@ function labelsFromCopy(lang) {
     nodo: L.nodo,
     quiron: L.quiron,
     orientacao: L.orientacao,
-    mapaNatal: lang === 'en' ? 'Your natal chart' : 'O teu mapa natal',
+    mapaNatal: lang !== 'pt' ? 'Your natal chart' : 'O teu mapa natal',
   }
 }
 
@@ -121,7 +121,7 @@ export function construirPayloadMapa(mapaNatal, planetas, aspetos, dados, lang =
 
   return {
     sistema: 'Tropical · Casas Placidus · Swiss Ephemeris',
-    idioma_saida: lang === 'en' ? 'en-GB' : 'pt-PT',
+    idioma_saida: lang !== 'pt' ? 'en-GB' : 'pt-PT',
     nativo: {
       nome: dados?.nome || null,
       data: dados?.data || null,
@@ -152,7 +152,7 @@ export function construirPayloadMapa(mapaNatal, planetas, aspetos, dados, lang =
 
 export function serializarMapaParaIA(mapaNatal, planetas, aspetos, dados, lang = 'pt') {
   const payload = construirPayloadMapa(mapaNatal, planetas, aspetos, dados, lang)
-  const en = lang === 'en'
+  const en = lang !== 'pt'
   return [
     en ? 'AUTHORITATIVE CHART JSON (Swiss Ephemeris - never invent positions):' : 'JSON AUTORITATIVO DO MAPA (Swiss Ephemeris - nunca inventes posições):',
     JSON.stringify(payload, null, 2),
@@ -191,7 +191,7 @@ export function analiseIaPremiumValida(analise) {
 export function construirSistemaMapa(lang = 'pt') {
   const L = labelsFromCopy(lang)
 
-  if (lang === 'en') {
+  if (lang !== 'pt') {
     return `
 You are Sidus Astro's Senior Psychological and Evolutionary Astrologer. Tropical zodiac, Placidus houses, Swiss Ephemeris precision.
 
@@ -276,7 +276,7 @@ Cada "texto" é prosa contínua em parágrafos. Este relatório é imutável e �
 
 export function construirPedidoMapa({ mapaNatal, planetas, aspetos, dados, lang, retryCurto = false, retryRobotic = false }) {
   const facts = serializarMapaParaIA(mapaNatal, planetas, aspetos, dados, lang)
-  const en = lang === 'en'
+  const en = lang !== 'pt'
 
   let extra = ''
   if (retryCurto) {

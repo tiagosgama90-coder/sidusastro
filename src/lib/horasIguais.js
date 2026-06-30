@@ -239,14 +239,14 @@ export function isHoraEspelho(hora, minuto) {
 }
 
 export function listarHorasIguais(lang = 'pt') {
-  const base = lang === 'en' ? HORAS_EN : HORAS_PT
+  const base = lang !== 'pt' ? HORAS_EN : HORAS_PT
   return Object.keys(base).sort()
 }
 
 export function interpretarHorario(hora, minuto, lang = 'pt') {
   const chave = formatarHora(hora, minuto)
-  const iguais = lang === 'en' ? HORAS_EN : HORAS_PT
-  const espelhos = lang === 'en' ? ESPELHOS_EN : ESPELHOS_PT
+  const iguais = lang !== 'pt' ? HORAS_EN : HORAS_PT
+  const espelhos = lang !== 'pt' ? ESPELHOS_EN : ESPELHOS_PT
 
   if (iguais[chave]) {
     return { tipo: 'igual', chave, ...iguais[chave] }
@@ -262,15 +262,15 @@ export function interpretarHorario(hora, minuto, lang = 'pt') {
   return {
     tipo: 'neutro',
     chave,
-    titulo: lang === 'en' ? 'Present Moment' : 'Momento Presente',
-    anjo: lang === 'en' ? 'Your Angels' : 'Os Teus Anjos',
-    mensagem: lang === 'en'
+    titulo: lang !== 'pt' ? 'Present Moment' : 'Momento Presente',
+    anjo: lang !== 'pt' ? 'Your Angels' : 'Os Teus Anjos',
+    mensagem: lang !== 'pt'
       ? 'Every moment carries angelic guidance. Doreen Virtue taught that repeated numbers are divine nudges - stay attentive to the next synchronicity.'
       : 'Cada momento traz orientação angelical. Doreen Virtue ensinava que números repetidos são toques divinos - mantém-te atento/a à próxima sincronia.',
-    conselho: lang === 'en'
+    conselho: lang !== 'pt'
       ? 'Take three conscious breaths and ask: "Angels, what do you want me to know now?"'
       : 'Respira três vezes conscientemente e pergunta: "Anjos, o que querem que eu saiba agora?"',
-    palavraChave: lang === 'en' ? 'Presence' : 'Presença',
+    palavraChave: lang !== 'pt' ? 'Presence' : 'Presença',
   }
 }
 

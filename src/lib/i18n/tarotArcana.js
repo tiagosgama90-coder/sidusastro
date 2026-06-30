@@ -145,6 +145,24 @@ const PALAVRAS_DE = {
   21: ['Vollendung', 'Integration', 'Ganzheit'],
 }
 
+const NOMES_FR = {
+  0: 'Le Mat', 1: 'Le Bateleur', 2: 'La Papesse', 3: "L'Impératrice", 4: "L'Empereur",
+  5: 'Le Pape', 6: 'Les Amoureux', 7: 'Le Chariot', 8: 'La Force', 9: "L'Ermite",
+  10: 'La Roue de Fortune', 11: 'La Justice', 12: 'Le Pendu', 13: 'La Mort',
+  14: 'Tempérance', 15: 'Le Diable', 16: 'La Tour', 17: "L'Étoile", 18: 'La Lune',
+  19: 'Le Soleil', 20: 'Le Jugement', 21: 'Le Monde',
+}
+const PALAVRAS_FR = {
+  0: ['aventure', 'liberté', 'nouveau départ'], 1: ['pouvoir', 'volonté', 'manifestation'], 2: ['intuition', 'mystère', 'sagesse'],
+  3: ['abondance', 'fertilité', 'amour'], 4: ['autorité', 'structure', 'protection'], 5: ['tradition', 'foi', 'enseignement'],
+  6: ['amour', 'choix', 'harmonie'], 7: ['victoire', 'détermination', 'contrôle'], 8: ['courage', 'compassion', 'maîtrise'],
+  9: ['réflexion', 'solitude', 'guide'], 10: ['destin', 'cycles', 'changement'], 11: ['équilibre', 'vérité', 'karma'],
+  12: ['sacrifice', 'perspective', 'pause'], 13: ['transformation', 'fin', 'renaissance'], 14: ['équilibre', 'patience', 'alchimie'],
+  15: ['attachement', 'illusion', 'libération'], 16: ['rupture', 'révélation', 'reconstruction'], 17: ['espoir', 'guérison', 'inspiration'],
+  18: ['intuition', 'inconscient', 'rêves'], 19: ['joie', 'succès', 'clarté'], 20: ['éveil', 'rédemption', 'appel'],
+  21: ['accomplissement', 'intégration', 'plénitude'],
+}
+
 export function localizeArcano(carta, lang) {
   if (!carta || lang === 'pt') return carta
   const en = ARCANOS_EN[carta.id] || {}
@@ -195,24 +213,6 @@ export function localizeArcano(carta, lang) {
     palavras: palavrasMap[carta.id] || PALAVRAS_EN[carta.id] || carta.palavras,
     invertidaLabel: carta.invertida ? reversed : undefined,
   }
-}
-
-const NOMES_FR = {
-  0: 'Le Mat', 1: 'Le Bateleur', 2: 'La Papesse', 3: "L'Impératrice", 4: "L'Empereur",
-  5: 'Le Pape', 6: 'Les Amoureux', 7: 'Le Chariot', 8: 'La Force', 9: "L'Ermite",
-  10: 'La Roue de Fortune', 11: 'La Justice', 12: 'Le Pendu', 13: 'La Mort',
-  14: 'Tempérance', 15: 'Le Diable', 16: 'La Tour', 17: "L'Étoile", 18: 'La Lune',
-  19: 'Le Soleil', 20: 'Le Jugement', 21: 'Le Monde',
-}
-const PALAVRAS_FR = {
-  0: ['aventure', 'liberté', 'nouveau départ'], 1: ['pouvoir', 'volonté', 'manifestation'], 2: ['intuition', 'mystère', 'sagesse'],
-  3: ['abondance', 'fertilité', 'amour'], 4: ['autorité', 'structure', 'protection'], 5: ['tradition', 'foi', 'enseignement'],
-  6: ['amour', 'choix', 'harmonie'], 7: ['victoire', 'détermination', 'contrôle'], 8: ['courage', 'compassion', 'maîtrise'],
-  9: ['réflexion', 'solitude', 'guide'], 10: ['destin', 'cycles', 'changement'], 11: ['équilibre', 'vérité', 'karma'],
-  12: ['sacrifice', 'perspective', 'pause'], 13: ['transformation', 'fin', 'renaissance'], 14: ['équilibre', 'patience', 'alchimie'],
-  15: ['attachement', 'illusion', 'libération'], 16: ['rupture', 'révélation', 'reconstruction'], 17: ['espoir', 'guérison', 'inspiration'],
-  18: ['intuition', 'inconscient', 'rêves'], 19: ['joie', 'succès', 'clarté'], 20: ['éveil', 'rédemption', 'appel'],
-  21: ['accomplissement', 'intégration', 'plénitude'],
 }
 
 export const TIPOS_FR = {

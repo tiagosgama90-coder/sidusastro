@@ -148,7 +148,7 @@ const INTERPRETACOES_EN = {
 }
 
 function interp(tipo, num, lang) {
-  const map = lang === 'en' ? INTERPRETACOES_EN : INTERPRETACOES_PT
+  const map = lang !== 'pt' ? INTERPRETACOES_EN : INTERPRETACOES_PT
   return map[tipo]?.[num] || map[tipo]?.[reduzirMestre(num)] || null
 }
 
@@ -157,7 +157,7 @@ function reduzirMestre(n) {
 }
 
 function tituloNum(num, lang) {
-  const map = lang === 'en' ? TITULOS_EN : TITULOS_PT
+  const map = lang !== 'pt' ? TITULOS_EN : TITULOS_PT
   return map[num] || map[reduzirMestre(num)] || ''
 }
 
@@ -165,12 +165,12 @@ function ponteAstro(num, mapaNatal, lang) {
   if (!mapaNatal) return null
   const p = PLANETA_NUM[num]
   if (!p) return null
-  const planeta = lang === 'en' ? p.en : p.pt
-  const tema = lang === 'en' ? p.tema.en : p.tema.pt
+  const planeta = lang !== 'pt' ? p.en : p.pt
+  const tema = lang !== 'pt' ? p.tema.en : p.tema.pt
   const sol = mapaNatal.solar?.nome || '-'
   const lua = mapaNatal.lunar?.nome || '-'
   const asc = mapaNatal.ascendente?.nome || '-'
-  if (lang === 'en') {
+  if (lang !== 'pt') {
     return { planeta, tema, sol, lua, asc, texto: `This vibration connects with ${planeta} (${tema}). In your chart: Sun in ${sol}, Moon in ${lua}, Ascendant ${asc}.` }
   }
   return { planeta, tema, sol, lua, asc, texto: `Esta vibração liga-se a ${planeta} (${tema}). No teu mapa: Sol em ${sol}, Lua em ${lua}, Ascendente ${asc}.` }
@@ -189,7 +189,7 @@ function separarLetras(letras) {
 
 function visaoGeral(nome, mapa, lang) {
   const { destino, alma, personalidade } = mapa
-  if (lang === 'en') {
+  if (lang !== 'pt') {
     return `The name «${nome}» carries three layers of meaning. Expression ${destino} is how you act in the world; Soul ${alma} is what you desire deep inside; Personality ${personalidade} is how others first perceive you. Works with any name using letters A–Z (including accented Portuguese characters).`
   }
   return `O nome «${nome}» revela três camadas de significado. A Expressão ${destino} é como ages no mundo; a Alma ${alma} é o que desejas no profundo; a Personalidade ${personalidade} é como os outros te veem à primeira vista. Funciona com qualquer nome em letras A–Z (inclui acentos portugueses).`
@@ -216,21 +216,21 @@ export function enriquecerMapaNumerologia(base, nome, lang = 'pt', mapaNatal = n
 
   const harmonias = []
   if (base.destino === base.alma) {
-    harmonias.push(lang === 'en'
+    harmonias.push(lang !== 'pt'
       ? 'Expression and Soul align - what you show matches what you desire. Authenticity flows naturally.'
       : 'Expressão e Alma alinham-se - o que mostras coincide com o que desejas. A autenticidade flui com naturalidade.')
   } else if (Math.abs(base.destino - base.alma) >= 4) {
-    harmonias.push(lang === 'en'
+    harmonias.push(lang !== 'pt'
       ? 'Expression and Soul differ - inner desire and outer action ask for conscious integration.'
       : 'Expressão e Alma diferem - o desejo interior e a acção exterior pedem integração consciente.')
   }
   if (base.destino !== base.personalidade) {
-    harmonias.push(lang === 'en'
+    harmonias.push(lang !== 'pt'
       ? 'Personality and Expression are distinct - others may see you differently from how you act. This is fertile ground for growth.'
       : 'Personalidade e Expressão são distintas - os outros podem ver-te de forma diferente da tua acção. É terreno fértil para crescimento.')
   }
   if (base.caminhoVida && base.destino && base.caminhoVida === base.destino) {
-    harmonias.push(lang === 'en'
+    harmonias.push(lang !== 'pt'
       ? 'Life Path and Expression share the same number - birth mission and name vibration walk in unison.'
       : 'Caminho de Vida e Expressão partilham o mesmo número - missão de nascimento e vibração do nome caminham em uníssono.')
   }
