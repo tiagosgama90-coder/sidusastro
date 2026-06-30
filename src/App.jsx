@@ -1396,18 +1396,7 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
         {/* Senha */}
         {!emRecuperacao && (
         <div className={`landing-auth-field${tipo === 'register' ? '' : ' landing-auth-field--last'}`} style={{ marginBottom: tipo === 'register' ? 16 : 12 }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, marginBottom: 6 }}>
-            <label style={{ ...estilos.label, marginBottom: 0 }}>{t('auth.password')}</label>
-            {tipo === 'login' && (
-              <button
-                type="button"
-                className="landing-auth-forgot"
-                onClick={() => { setEmRecuperacao(true); setErro(null); setInfo(null) }}
-              >
-                {t('auth.forgotPassword')}
-              </button>
-            )}
-          </div>
+          <label style={estilos.label}>{t('auth.password')}</label>
           <div style={{ position: 'relative' }}>
             <Lock size={15} color={CORES.brancoMuted} style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }} />
             <input
@@ -1426,6 +1415,17 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
               {verSenha ? <EyeOff size={16} /> : <Eye size={16} />}
             </button>
           </div>
+          {tipo === 'login' && (
+            <div className="landing-auth-forgot-wrap">
+              <button
+                type="button"
+                className="landing-auth-forgot"
+                onClick={() => { setEmRecuperacao(true); setErro(null); setInfo(null) }}
+              >
+                {t('auth.forgotPassword')}
+              </button>
+            </div>
+          )}
         </div>
         )}
 

@@ -395,18 +395,22 @@ html.sidus-no-ads .google-auto-placed {
   scroll-margin-top: 24px;
 }
 
+.landing-auth-forgot-wrap {
+  margin-top: 8px;
+  text-align: right;
+}
+
 .landing-auth-forgot {
   background: none;
   border: none;
   color: #DFB76C;
   cursor: pointer;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
   padding: 2px 0;
   text-decoration: underline;
   text-underline-offset: 3px;
   white-space: nowrap;
-  flex-shrink: 0;
   position: relative;
   z-index: 2;
 }
