@@ -4,6 +4,7 @@ import en from './en.js'
 import es from './es.js'
 import it from './it.js'
 import de from './de.js'
+import fr from './fr.js'
 import {
   translateSigno, translatePlaneta, translateElemento,
   translateModalidade, translateAspecto, localizeSignoObj,
@@ -11,8 +12,8 @@ import {
 
 const STORAGE_KEY = 'sidus_lang'
 
-const LOCALES = { pt, en, es, it, de }
-const SUPPORTED_LANGS = new Set(['pt', 'en', 'es', 'it', 'de'])
+const LOCALES = { pt, en, es, it, de, fr }
+const SUPPORTED_LANGS = new Set(['pt', 'en', 'es', 'it', 'de', 'fr'])
 
 const LanguageContext = createContext(null)
 

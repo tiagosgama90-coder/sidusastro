@@ -8,6 +8,7 @@ import GB from 'country-flag-icons/react/3x2/GB'
 import ES from 'country-flag-icons/react/3x2/ES'
 import IT from 'country-flag-icons/react/3x2/IT'
 import DE from 'country-flag-icons/react/3x2/DE'
+import FR from 'country-flag-icons/react/3x2/FR'
 
 const CORES = {
   dourado: '#DFB76C',
@@ -15,15 +16,16 @@ const CORES = {
   vidroBorda: 'rgba(223, 183, 108, 0.22)',
 }
 
-const FLAG_COMPONENTS = { pt: PT, en: GB, es: ES, it: IT, de: DE }
+const FLAG_COMPONENTS = { pt: PT, en: GB, es: ES, it: IT, de: DE, fr: FR }
 const TITLES = {
   pt: 'Português',
   en: 'English',
   es: 'Español',
   it: 'Italiano',
   de: 'Deutsch',
+  fr: 'Français',
 }
-const LANG_ORDER = ['pt', 'en', 'es', 'it', 'de']
+const LANG_ORDER = ['pt', 'en', 'es', 'it', 'de', 'fr']
 
 function FlagIcon({ code, width }) {
   const Flag = FLAG_COMPONENTS[code]

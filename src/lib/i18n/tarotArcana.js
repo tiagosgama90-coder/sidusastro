@@ -159,9 +159,9 @@ export function localizeArcano(carta, lang) {
       invertidaLabel: carta.invertida ? 'REVERSED' : undefined,
     }
   }
-  const nomeMap = lang === 'es' ? NOMES_ES : lang === 'it' ? NOMES_IT : NOMES_DE
-  const palavrasMap = lang === 'es' ? PALAVRAS_ES : lang === 'it' ? PALAVRAS_IT : PALAVRAS_DE
-  const reversed = lang === 'es' ? 'INVERTIDA' : lang === 'it' ? 'ROVESCIO' : 'UMGEKEHRT'
+  const nomeMap = lang === 'es' ? NOMES_ES : lang === 'it' ? NOMES_IT : lang === 'fr' ? NOMES_FR : NOMES_DE
+  const palavrasMap = lang === 'es' ? PALAVRAS_ES : lang === 'it' ? PALAVRAS_IT : lang === 'fr' ? PALAVRAS_FR : PALAVRAS_DE
+  const reversed = lang === 'es' ? 'INVERTIDA' : lang === 'it' ? 'ROVESCIO' : lang === 'fr' ? 'RENVERSEE' : 'UMGEKEHRT'
   const k1 = palavrasMap[carta.id]?.[0] || (PALAVRAS_EN[carta.id]?.[0] || '')
   const k2 = palavrasMap[carta.id]?.[1] || (PALAVRAS_EN[carta.id]?.[1] || '')
   const k3 = palavrasMap[carta.id]?.[2] || (PALAVRAS_EN[carta.id]?.[2] || '')
@@ -169,17 +169,23 @@ export function localizeArcano(carta, lang) {
     ? `Esta carta activa ${k1}, ${k2} y ${k3}. Si avanzas con foco y presencia, el camino se abre.`
     : lang === 'it'
       ? `Questa carta attiva ${k1}, ${k2} e ${k3}. Se avanzi con focus e presenza, la strada si apre.`
-      : `Diese Karte aktiviert ${k1}, ${k2} und ${k3}. Wenn du mit Fokus und Präsenz vorangehst, öffnet sich der Weg.`
+      : lang === 'fr'
+        ? `Cette carte active ${k1}, ${k2} et ${k3}. Si vous avancez avec focus et présence, le chemin s'ouvre.`
+        : `Diese Karte aktiviert ${k1}, ${k2} und ${k3}. Wenn du mit Fokus und Präsenz vorangehst, öffnet sich der Weg.`
   const sombra = lang === 'es'
     ? `En sombra, ${nomeMap[carta.id]} trae exceso, ansiedad o bloqueo. Vuelve al centro antes de decidir.`
     : lang === 'it'
       ? `In ombra, ${nomeMap[carta.id]} porta eccesso, ansia o blocco. Torna al centro prima di decidere.`
-      : `Im Schatten bringt ${nomeMap[carta.id]} Übermaß, Unruhe oder Blockade. Kehre vor Entscheidungen in deine Mitte zurück.`
+      : lang === 'fr'
+        ? `À l'ombre, ${nomeMap[carta.id]} apporte excès, anxiété ou blocage. Revenez au centre avant de décider.`
+        : `Im Schatten bringt ${nomeMap[carta.id]} Übermaß, Unruhe oder Blockade. Kehre vor Entscheidungen in deine Mitte zurück.`
   const conselho = lang === 'es'
     ? `Consejo: transforma ${k1} en acción concreta, cuida ${k2} con equilibrio y usa ${k3} con sabiduría.`
     : lang === 'it'
       ? `Consiglio: trasforma ${k1} in azione concreta, coltiva ${k2} con equilibrio e usa ${k3} con saggezza.`
-      : `Rat: verwandle ${k1} in konkrete Handlung, pflege ${k2} im Gleichgewicht und nutze ${k3} mit Weisheit.`
+      : lang === 'fr'
+        ? `Conseil : transformez ${k1} en action concrète, cultivez ${k2} avec équilibre et utilisez ${k3} avec sagesse.`
+        : `Rat: verwandle ${k1} in konkrete Handlung, pflege ${k2} im Gleichgewicht und nutze ${k3} mit Weisheit.`
   return {
     ...carta,
     nome: nomeMap[carta.id] || en.nome || carta.nome,
@@ -189,6 +195,41 @@ export function localizeArcano(carta, lang) {
     palavras: palavrasMap[carta.id] || PALAVRAS_EN[carta.id] || carta.palavras,
     invertidaLabel: carta.invertida ? reversed : undefined,
   }
+}
+
+const NOMES_FR = {
+  0: 'Le Mat', 1: 'Le Bateleur', 2: 'La Papesse', 3: "L'Impératrice", 4: "L'Empereur",
+  5: 'Le Pape', 6: 'Les Amoureux', 7: 'Le Chariot', 8: 'La Force', 9: "L'Ermite",
+  10: 'La Roue de Fortune', 11: 'La Justice', 12: 'Le Pendu', 13: 'La Mort',
+  14: 'Tempérance', 15: 'Le Diable', 16: 'La Tour', 17: "L'Étoile", 18: 'La Lune',
+  19: 'Le Soleil', 20: 'Le Jugement', 21: 'Le Monde',
+}
+const PALAVRAS_FR = {
+  0: ['aventure', 'liberté', 'nouveau départ'], 1: ['pouvoir', 'volonté', 'manifestation'], 2: ['intuition', 'mystère', 'sagesse'],
+  3: ['abondance', 'fertilité', 'amour'], 4: ['autorité', 'structure', 'protection'], 5: ['tradition', 'foi', 'enseignement'],
+  6: ['amour', 'choix', 'harmonie'], 7: ['victoire', 'détermination', 'contrôle'], 8: ['courage', 'compassion', 'maîtrise'],
+  9: ['réflexion', 'solitude', 'guide'], 10: ['destin', 'cycles', 'changement'], 11: ['équilibre', 'vérité', 'karma'],
+  12: ['sacrifice', 'perspective', 'pause'], 13: ['transformation', 'fin', 'renaissance'], 14: ['équilibre', 'patience', 'alchimie'],
+  15: ['attachement', 'illusion', 'libération'], 16: ['rupture', 'révélation', 'reconstruction'], 17: ['espoir', 'guérison', 'inspiration'],
+  18: ['intuition', 'inconscient', 'rêves'], 19: ['joie', 'succès', 'clarté'], 20: ['éveil', 'rédemption', 'appel'],
+  21: ['accomplissement', 'intégration', 'plénitude'],
+}
+
+export const TIPOS_FR = {
+  diaria: { nome: 'Tirage du jour', desc: 'Une carte pour guider votre journée' },
+  simnao: { nome: 'Tarot Oui ou Non', desc: 'Une réponse directe et claire à votre question' },
+  amor: { nome: "Tarot de l'Amour", desc: 'Vous · Le lien · L\'avenir ensemble' },
+  geral: { nome: 'Tirage général', desc: 'Passé · Présent · Futur' },
+  cigano: { nome: 'Jeu gitane', desc: 'Tirage ancestral gitane à 5 cartes' },
+  oraculo: { nome: 'Tarot Oráculo', desc: 'Consultation profonde de votre destin' },
+}
+export const POSICOES_FR = {
+  diaria: ['Votre carte du jour'],
+  simnao: ['La réponse'],
+  amor: ['Vous', 'Le lien', "L'avenir ensemble"],
+  geral: ['Passé', 'Présent', 'Futur'],
+  cigano: ['Racine', 'Défi', 'Passé', 'Futur', 'Résultat'],
+  oraculo: ['Situation', 'Obstacle', 'Conseil', 'Influence cachée', 'Résultat'],
 }
 
 export const TIPOS_EN = {
@@ -263,6 +304,7 @@ export function getTiposTarot(lang) {
   if (lang === 'es') return TIPOS_ES
   if (lang === 'it') return TIPOS_IT
   if (lang === 'de') return TIPOS_DE
+  if (lang === 'fr') return TIPOS_FR
   if (lang === 'en') return TIPOS_EN
   return null
 }
@@ -271,6 +313,7 @@ export function getPosicoesTarot(lang) {
   if (lang === 'es') return POSICOES_ES
   if (lang === 'it') return POSICOES_IT
   if (lang === 'de') return POSICOES_DE
+  if (lang === 'fr') return POSICOES_FR
   if (lang === 'en') return POSICOES_EN
   return null
 }
