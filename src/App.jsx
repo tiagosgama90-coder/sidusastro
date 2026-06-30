@@ -1253,7 +1253,7 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
 
   useEffect(() => {
     document.title = isLogin ? `Sidus - ${t('auth.login')}` : `Sidus - ${t('auth.register')}`
-    return () => { document.title = 'Sidus - Astrologia' }
+    return () => { document.title = 'Sidusastro - O Seu Guia Cósmico' }
   }, [isLogin, t])
 
   const handleSubmit = async () => {

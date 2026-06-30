@@ -1,6 +1,6 @@
 {
-  "name": "Sidus - Astrologia",
-  "short_name": "Sidus",
+  "name": "Sidusastro - O Seu Guia Cósmico",
+  "short_name": "Sidusastro",
   "description": "Mapa Astral, Tarot, Oráculo IA e ferramentas astrológicas.",
   "start_url": "/",
   "display": "standalone",

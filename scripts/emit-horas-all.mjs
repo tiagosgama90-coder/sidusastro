@@ -29,6 +29,19 @@ const HORAS_EN = extractObject('HORAS_EN')
 const ESPELHOS_EN = extractObject('ESPELHOS_EN')
 const LOCALES = JSON.parse(readFileSync(join(__dirname, 'data/horas-locales.json'), 'utf8'))
 
+function loadLocale(lang) {
+  const extraPath = join(__dirname, `data/horas-${lang}.json`)
+  try {
+    const extra = JSON.parse(readFileSync(extraPath, 'utf8'))
+    return {
+      horas: { ...(LOCALES[lang]?.horas || {}), ...(extra.horas || {}) },
+      espelhos: { ...(LOCALES[lang]?.espelhos || {}), ...(extra.espelhos || {}) },
+    }
+  } catch {
+    return LOCALES[lang] || { horas: {}, espelhos: {} }
+  }
+}
+
 function mergePack(enPack, localePack) {
   const out = {}
   for (const [k, v] of Object.entries(enPack)) {
@@ -40,7 +53,7 @@ function mergePack(enPack, localePack) {
 
 let out = '/** Gerado por scripts/emit-horas-all.mjs */\n'
 for (const lang of ['es', 'it', 'de', 'fr']) {
-  const loc = LOCALES[lang]
+  const loc = loadLocale(lang)
   out += `export const HORAS_${lang.toUpperCase()} = ${JSON.stringify(mergePack(HORAS_EN, loc?.horas), null, 2)}\n\n`
   out += `export const ESPELHOS_${lang.toUpperCase()} = ${JSON.stringify(mergePack(ESPELHOS_EN, loc?.espelhos), null, 2)}\n\n`
 }
