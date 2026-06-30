@@ -1415,10 +1415,14 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
               {verSenha ? <EyeOff size={16} /> : <Eye size={16} />}
             </button>
           </div>
-          <div className="landing-auth-forgot-wrap">
+          <div
+            className="landing-auth-forgot-wrap"
+            style={{ display: 'block', width: '100%', marginTop: 10, marginBottom: 6, textAlign: 'right', clear: 'both' }}
+          >
             <button
               type="button"
               className="landing-auth-forgot"
+              style={{ display: 'inline-block', color: CORES.dourado, fontSize: 13, fontWeight: 600, textDecoration: 'underline', background: 'none', border: 'none', cursor: 'pointer', padding: '4px 0' }}
               onClick={() => {
                 if (tipo === 'register') onMudar('login')
                 setEmRecuperacao(true)

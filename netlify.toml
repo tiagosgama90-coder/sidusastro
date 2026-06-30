@@ -14,6 +14,16 @@
   node_bundler = "esbuild"
 
 [[headers]]
+  for = "/index.html"
+  [headers.values]
+    Cache-Control = "no-cache, no-store, must-revalidate"
+
+[[headers]]
+  for = "/"
+  [headers.values]
+    Cache-Control = "no-cache, no-store, must-revalidate"
+
+[[headers]]
   for = "/ads.txt"
   [headers.values]
     Content-Type = "text/plain; charset=utf-8"
