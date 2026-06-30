@@ -103,6 +103,20 @@ export default {
         "a3": "Ja – Ihre Daten werden verschlüsselt über Firebase verarbeitet.",
         "q4": "Was ist der Unterschied zwischen dem Einmal-Chart und Premium?",
         "a4": "Das einmalige Diagramm ist eine einmalige Zahlung – Sie erhalten den vollständigen PDF-Bericht ohne monatliches Abonnement.Sidus Premium enthält das vollständige Geburtshoroskop sowie KI-Orakel, Tarot, Synastrie und alle Tools.Wenn Sie mehr als das PDF wollen, ist Premium die beste Wahl."
+      },
+      "testimonials": {
+        "ariaLabel": "Sidusastro Nutzerstimmen",
+        "title": "Wer sein Horoskop schon entdeckt hat",
+        "previewCaption": "Professioneller PDF-Bericht · Sonne, Mond, Aszendent und 10 Planeten",
+        "quote1": "Das PDF fühlte sich wie eine persönliche Beratung an. Sonne in Skorpion und Mond in Krebs trafen Dinge, die ich nie erzählt habe.",
+        "author1": "Mariana S.",
+        "meta1": "Lissabon · Einzelhoroskop",
+        "quote2": "Am Anmeldetag Tarot und Orakel genutzt. Am nächsten Tag für die Tageskarte zurückgekommen.",
+        "author2": "Ricardo M.",
+        "meta2": "Porto · Premium",
+        "quote3": "Endlich ein Geburtshoroskop mit echten Placidus-Häusern. Mein Sonnenzeichen mit Freunden geteilt.",
+        "author3": "Inês C.",
+        "meta3": "Coimbra · Horoskop + Tarot"
       }
     },
     "errors": {
@@ -318,6 +332,17 @@ export default {
   },
   "cartaoDia": {
     "title": "✦ Karte des Tages · {date}"
+  },
+  "leituraGratis": {
+    "title": "✦ Kostenlose Lesung heute · {date}",
+    "personal": "Zu deiner Sonne und deinem Mond",
+    "returnTomorrow": "Komm morgen wieder — Karte und Satz ändern sich mit dem Himmel."
+  },
+  "share": {
+    "button": "Mein Zeichen teilen",
+    "copied": "Kopiert!",
+    "title": "Mein Geburtshoroskop — Sidusastro",
+    "text": "☉ {sun} · ☽ {moon} — entdecke dein Horoskop auf {url}"
   },
   "ferramentas": {
     "title": "Versteckte Werkzeuge"

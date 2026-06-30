@@ -51,7 +51,7 @@ export default {
     fillAll: 'Fill in all fields.', confirmRobot: 'Please confirm you are not a robot.',
     passwordsMismatch: 'Passwords do not match.', passwordMin: 'Password must be at least 6 characters.',
     firebaseMissing: 'Firebase not configured. Contact the administrator.',
-    accountCreated: 'Account created! We sent a confirmation email - check your inbox (and spam) before continuing.',
+    accountCreated: 'Account created! We sent a confirmation email and a welcome note — your chart is almost ready. Check your inbox (and spam) before continuing.',
     notRobot: 'I am not a robot', verification: '✓ Verified',
     firebaseNotConfigured: 'Firebase is not configured in this environment. Set the VITE_FIREBASE_* variables in Netlify or in your local .env file.',
     portal: {
@@ -86,6 +86,20 @@ export default {
         a3: 'Yes - your data is processed encrypted through Firebase.',
         q4: 'What is the difference between the one-off chart and Premium?',
         a4: 'The one-off chart is a single payment - you get the full PDF report with no monthly subscription. Sidus Premium includes the full natal chart plus AI oracle, tarot, synastry and all tools. If you want more than the PDF, Premium is the best choice.',
+      },
+      testimonials: {
+        ariaLabel: 'Sidusastro user testimonials',
+        title: 'Those who discovered their chart',
+        previewCaption: 'Professional PDF report · Sun, Moon, Ascendant and 10 planets',
+        quote1: 'The chart PDF felt like an in-person reading. My Scorpio Sun and Cancer Moon interpretation matched things I never told anyone.',
+        author1: 'Mariana S.',
+        meta1: 'Lisbon · one-off chart',
+        quote2: 'I used tarot and the oracle the same day I signed up. I came back the next day for the daily card — there is always something new tied to my sign.',
+        author2: 'Ricardo M.',
+        meta2: 'Porto · Premium',
+        quote3: 'Finally a birth chart in Portuguese with real Placidus houses. I shared my Sun sign with friends and everyone wanted to try it.',
+        author3: 'Inês C.',
+        meta3: 'Coimbra · chart + tarot',
       },
     },
     errors: {
@@ -282,6 +296,17 @@ export default {
   },
   cartaoDia: {
     title: '✦ Card of the Day · {date}',
+  },
+  leituraGratis: {
+    title: '✦ Today\'s free reading · {date}',
+    personal: 'For your Sun and Moon',
+    returnTomorrow: 'Come back tomorrow — the card and phrase change with the sky.',
+  },
+  share: {
+    button: 'Share my sign',
+    copied: 'Copied!',
+    title: 'My birth chart — Sidusastro',
+    text: '☉ {sun} · ☽ {moon} — discover your chart at {url}',
   },
   ferramentas: { title: 'Hidden Tools' },
   vip: {

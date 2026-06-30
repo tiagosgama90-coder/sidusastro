@@ -103,6 +103,20 @@ export default {
         "a3": "Sì, i tuoi dati vengono elaborati crittografati tramite Firebase.",
         "q4": "Qual è la differenza tra il grafico One-off e quello Premium?",
         "a4": "Il grafico una tantum prevede un pagamento unico: riceverai il report PDF completo senza abbonamento mensile.Sidus Premium include la carta natale completa più oracolo AI, tarocchi, sinastria e tutti gli strumenti.Se vuoi qualcosa di più del PDF, Premium è la scelta migliore."
+      },
+      "testimonials": {
+        "ariaLabel": "Testimonianze utenti Sidusastro",
+        "title": "Chi ha già scoperto il proprio tema",
+        "previewCaption": "Report PDF professionale · Sole, Luna, Ascendente e 10 pianeti",
+        "quote1": "Il PDF del tema sembrava una consulenza dal vivo. L'interpretazione del mio Sole in Scorpione e Luna in Cancro ha colpito nel segno.",
+        "author1": "Mariana S.",
+        "meta1": "Lisbona · tema singolo",
+        "quote2": "Ho usato tarocchi e oracolo il giorno dell'iscrizione. Sono tornato il giorno dopo per la carta del giorno.",
+        "author2": "Ricardo M.",
+        "meta2": "Porto · Premium",
+        "quote3": "Finalmente un tema natale con case Placidus vere. Ho condiviso il mio segno solare con gli amici.",
+        "author3": "Inês C.",
+        "meta3": "Coimbra · tema + tarocchi"
       }
     },
     "errors": {
@@ -318,6 +332,17 @@ export default {
   },
   "cartaoDia": {
     "title": "✦ Carta del giorno · {date}"
+  },
+  "leituraGratis": {
+    "title": "✦ Lettura gratuita di oggi · {date}",
+    "personal": "Al tuo Sole e Luna",
+    "returnTomorrow": "Torna domani — la carta e la frase cambiano con il cielo."
+  },
+  "share": {
+    "button": "Condividi il mio segno",
+    "copied": "Copiato!",
+    "title": "Il mio tema natale — Sidusastro",
+    "text": "☉ {sun} · ☽ {moon} — scopri il tuo tema su {url}"
   },
   "ferramentas": {
     "title": "Strumenti nascosti"

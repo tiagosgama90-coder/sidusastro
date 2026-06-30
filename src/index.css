@@ -450,6 +450,107 @@ html.sidus-no-ads .google-auto-placed {
   font-weight: 600;
 }
 
+/* Testemunhos + preview mapa */
+.landing-testimonials {
+  max-width: 1100px;
+  margin: 28px auto 8px;
+  padding: 0 16px 8px;
+}
+.landing-testimonials-title {
+  margin: 0 0 18px;
+  font-size: 18px;
+  font-weight: 700;
+  text-align: center;
+  color: #DFB76C;
+  letter-spacing: 0.04em;
+}
+.landing-testimonials-grid {
+  display: grid;
+  grid-template-columns: minmax(200px, 280px) 1fr;
+  gap: 20px;
+  align-items: start;
+}
+.landing-testimonials-visual {
+  text-align: center;
+}
+.landing-testimonial-preview {
+  border-radius: 14px;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(223, 183, 108, 0.25);
+}
+.landing-testimonial-preview-inner {
+  position: relative;
+}
+.landing-testimonial-wheel {
+  width: 100%;
+  max-width: 220px;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
+.landing-testimonial-pdf-badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  padding: 4px 8px;
+  border-radius: 6px;
+  background: rgba(223, 183, 108, 0.2);
+  color: #DFB76C;
+  border: 1px solid rgba(223, 183, 108, 0.45);
+}
+.landing-testimonials-caption {
+  margin: 10px 0 0;
+  font-size: 11px;
+  line-height: 1.45;
+  color: rgba(255, 255, 255, 0.55);
+}
+.landing-testimonials-quotes {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.landing-testimonial-card {
+  margin: 0;
+  padding: 14px 16px;
+  border-radius: 12px;
+}
+.landing-testimonial-text {
+  margin: 0 0 10px;
+  font-size: 13px;
+  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.88);
+  font-style: italic;
+}
+.landing-testimonial-author {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 12px;
+  align-items: baseline;
+}
+.landing-testimonial-name {
+  font-size: 12px;
+  font-weight: 700;
+  color: #DFB76C;
+}
+.landing-testimonial-meta {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.45);
+}
+@media (max-width: 768px) {
+  .landing-testimonials-grid {
+    grid-template-columns: 1fr;
+  }
+  .landing-testimonials-visual {
+    order: -1;
+    max-width: 260px;
+    margin: 0 auto;
+  }
+}
+
 /* Céu ao vivo - dados reais */
 .landing-portal-sky-live {
   position: relative;

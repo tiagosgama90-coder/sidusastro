@@ -51,7 +51,7 @@ export default {
     fillAll: 'Preenche todos os campos.', confirmRobot: 'Confirma que não és um robot.',
     passwordsMismatch: 'As senhas não coincidem.', passwordMin: 'A senha deve ter pelo menos 6 caracteres.',
     firebaseMissing: 'Firebase não configurado. Contacta o administrador.',
-    accountCreated: 'Conta criada! Enviámos um e-mail de confirmação - verifica a caixa de entrada e a pasta de spam antes de continuar.',
+    accountCreated: 'Conta criada! Enviámos um e-mail de confirmação e outro de boas-vindas — o teu mapa está quase pronto. Verifica a caixa de entrada e a pasta de spam antes de continuar.',
     notRobot: 'Não sou um robot', verification: '✓ Verificação',
     firebaseNotConfigured: 'Firebase não está configurado neste ambiente. Define as variáveis VITE_FIREBASE_* no Netlify ou no ficheiro .env local.',
     portal: {
@@ -86,6 +86,20 @@ export default {
         a3: 'Sim, os dados são processados de forma encriptada através do Firebase.',
         q4: 'Qual a diferença entre o mapa avulso e o Premium?',
         a4: 'O mapa avulso é pagamento único - recebes o relatório completo em PDF sem subscrição mensal. O Sidus Premium inclui o mapa astral completo mais oráculo de IA, tarot, sinastria e todas as ferramentas. Se queres ir além do PDF, o Premium é a melhor escolha.',
+      },
+      testimonials: {
+        ariaLabel: 'Testemunhos de utilizadores Sidusastro',
+        title: 'Quem já descobriu o seu mapa',
+        previewCaption: 'Relatório PDF profissional · Sol, Lua, Ascendente e 10 planetas',
+        quote1: 'O PDF do mapa parecia uma consulta presencial. A interpretação do meu Sol em Escorpião e Lua em Caranguejo bateu certo em coisas que nunca contei a ninguém.',
+        author1: 'Mariana S.',
+        meta1: 'Lisboa · mapa avulso',
+        quote2: 'Usei o tarot e o oráculo no mesmo dia do registo. Voltei no dia seguinte pela carta do dia — há sempre algo novo ligado ao meu signo.',
+        author2: 'Ricardo M.',
+        meta2: 'Porto · Premium',
+        quote3: 'Finalmente um mapa astral em português com casas Placidus de verdade. Partilhei o meu signo solar com amigos e todos quiseram experimentar.',
+        author3: 'Inês C.',
+        meta3: 'Coimbra · mapa + tarot',
       },
     },
     errors: {
@@ -282,6 +296,17 @@ export default {
   },
   cartaoDia: {
     title: '✦ Carta do Dia · {date}',
+  },
+  leituraGratis: {
+    title: '✦ Leitura grátis de hoje · {date}',
+    personal: 'Ao teu Sol e Lua',
+    returnTomorrow: 'Volta amanhã — a carta e a frase mudam com o céu.',
+  },
+  share: {
+    button: 'Partilhar o meu signo',
+    copied: 'Copiado!',
+    title: 'O meu mapa astral — Sidusastro',
+    text: '☉ {sun} · ☽ {moon} — descobre o teu mapa em {url}',
   },
   ferramentas: { title: 'Ferramentas Ocultas' },
   vip: {

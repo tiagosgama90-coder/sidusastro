@@ -103,6 +103,20 @@ export default {
         "a3": "Sí, tus datos se procesan cifrados a través de Firebase.",
         "q4": "¿Cuál es la diferencia entre la carta única y Premium?",
         "a4": "El gráfico único es un pago único: obtiene el informe completo en PDF sin suscripción mensual.Sidus Premium incluye la carta natal completa más oráculo de IA, tarot, sinastría y todas las herramientas.Si quieres algo más que PDF, Premium es la mejor opción."
+      },
+      "testimonials": {
+        "ariaLabel": "Testimonios de usuarios de Sidusastro",
+        "title": "Quienes ya descubrieron su carta",
+        "previewCaption": "Informe PDF profesional · Sol, Luna, Ascendente y 10 planetas",
+        "quote1": "El PDF de la carta parecía una consulta presencial. La interpretación de mi Sol en Escorpio y Luna en Cáncer acertó en cosas que nunca conté.",
+        "author1": "Mariana S.",
+        "meta1": "Lisboa · carta única",
+        "quote2": "Usé el tarot y el oráculo el mismo día del registro. Volví al día siguiente por la carta del día.",
+        "author2": "Ricardo M.",
+        "meta2": "Oporto · Premium",
+        "quote3": "Por fin una carta natal en portugués con casas Placidus de verdad. Compartí mi signo solar con amigos.",
+        "author3": "Inês C.",
+        "meta3": "Coímbra · carta + tarot"
       }
     },
     "errors": {
@@ -318,6 +332,17 @@ export default {
   },
   "cartaoDia": {
     "title": "✦ Tarjeta del día · {date}"
+  },
+  "leituraGratis": {
+    "title": "✦ Lectura gratis de hoy · {date}",
+    "personal": "A tu Sol y Luna",
+    "returnTomorrow": "Vuelve mañana — la carta y la frase cambian con el cielo."
+  },
+  "share": {
+    "button": "Compartir mi signo",
+    "copied": "¡Copiado!",
+    "title": "Mi carta natal — Sidusastro",
+    "text": "☉ {sun} · ☽ {moon} — descubre tu carta en {url}"
   },
   "ferramentas": {
     "title": "Herramientas ocultas"

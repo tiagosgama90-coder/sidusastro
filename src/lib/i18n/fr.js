@@ -103,7 +103,21 @@ export default {
         a3: "Sí, tus datos se procesan cifrados a través de Firebase.",
         q4: "¿Cuál es la diferencia entre la carta única et Premium?",
         a4: "El gráfico único es un pago único: obtiene el informe completo en PDF sin suscripción mensual.Sidus Premium incluye la carta natal completa más oráculo de IA, tarot, sinastría et todas las herramientas.Si quieres algo más que PDF, Premium es la mejor opción."
-      }
+      },
+      testimonials: {
+        ariaLabel: 'Témoignages utilisateurs Sidusastro',
+        title: 'Ceux qui ont découvert leur thème',
+        previewCaption: 'Rapport PDF professionnel · Soleil, Lune, Ascendant et 10 planètes',
+        quote1: 'Le PDF ressemblait à une consultation en personne. Mon Soleil en Scorpion et ma Lune en Cancer ont touché juste.',
+        author1: 'Mariana S.',
+        meta1: 'Lisbonne · thème unique',
+        quote2: 'J\'ai utilisé le tarot et l\'oracle le jour de l\'inscription. Je suis revenu le lendemain pour la carte du jour.',
+        author2: 'Ricardo M.',
+        meta2: 'Porto · Premium',
+        quote3: 'Enfin un thème natal avec de vraies maisons Placidus. J\'ai partagé mon signe solaire avec des amis.',
+        author3: 'Inês C.',
+        meta3: 'Coimbra · thème + tarot',
+      },
     },
     errors: {
       "auth/email-already-in-use": "Este correo electrónico ya tiene una cuenta.",
@@ -318,6 +332,17 @@ export default {
   },
   cartaoDia: {
     title: "✦ Tarjeta del día · {date}"
+  },
+  leituraGratis: {
+    title: "✦ Lecture gratuite du jour · {date}",
+    personal: 'À ton Soleil et ta Lune',
+    returnTomorrow: 'Reviens demain — la carte et la phrase changent avec le ciel.',
+  },
+  share: {
+    button: 'Partager mon signe',
+    copied: 'Copié !',
+    title: 'Mon thème natal — Sidusastro',
+    text: '☉ {sun} · ☽ {moon} — découvre ton thème sur {url}',
   },
   ferramentas: {
     title: "Outils ocultas"

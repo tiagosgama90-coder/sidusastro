@@ -7,6 +7,8 @@ import { useLanguage } from '../lib/i18n/LanguageContext.jsx'
 import { validarOnboarding } from '../lib/i18n/validation.js'
 import { pesquisarCidades, pesquisarFusoHorario } from '../lib/geocoding.js'
 import { readLandingDraft, saveLandingDraft } from '../lib/landingDraft.js'
+import { calcularMapaNatal, calcularSignoSolarPorData } from '../lib/astrologia.js'
+import { LeituraGratisDiaria } from './LeituraGratisDiaria.jsx'
 
 const CORES = {
   dourado: '#DFB76C',
@@ -217,6 +219,16 @@ export function LandingBirthPortal({ isDesktop, onSaved, onScrollToLogin }) {
     }))
   }, [isDesktop, lang, t])
 
+  const previewSignos = useMemo(() => {
+    if (!data) return null
+    const mapa = localizacao && hora
+      ? calcularMapaNatal({ data, hora, localizacao })
+      : null
+    if (mapa?.solar) return { solar: mapa.solar, lunar: mapa.lunar }
+    const sol = calcularSignoSolarPorData(data)
+    return sol ? { solar: sol, lunar: null } : null
+  }, [data, hora, localizacao])
+
   useEffect(() => {
     const draft = readLandingDraft()
     if (!draft) return
@@ -418,6 +430,12 @@ export function LandingBirthPortal({ isDesktop, onSaved, onScrollToLogin }) {
             </>
           )}
         </div>
+
+        {guardado && previewSignos && (
+          <div style={{ marginTop: 16 }}>
+            <LeituraGratisDiaria solar={previewSignos.solar} lunar={previewSignos.lunar} compact />
+          </div>
+        )}
 
         <footer className="landing-portal-tools-footer" aria-label={t('auth.portal.toolsAria')}>
           <div className="landing-portal-tools-ticker-viewport">

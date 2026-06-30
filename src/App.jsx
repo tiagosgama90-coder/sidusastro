@@ -47,10 +47,14 @@ import { LandingBirthPortal } from './components/LandingBirthPortal.jsx'
 import { LandingFaq } from './components/LandingFaq.jsx'
 import { LandingPortalHero } from './components/LandingPortalHero.jsx'
 import { LandingSkyLive } from './components/LandingSkyLive.jsx'
+import { LandingTestimonials } from './components/LandingTestimonials.jsx'
 import { HeroHomeSidus } from './components/HeroHomeSidus.jsx'
+import { LeituraGratisDiaria } from './components/LeituraGratisDiaria.jsx'
+import { ShareSigno } from './components/ShareSigno.jsx'
+import { applyRouteSeo } from './lib/routeSeo.js'
 import { ErrorBoundary } from './components/ErrorBoundary.jsx'
 import { auth, db, firebaseDisponivel } from './lib/firebase'
-import { enviarEmailVerificacao, enviarEmailRecuperacaoSenha, traduzirErroEmail } from './lib/authEmail'
+import { enviarEmailVerificacao, enviarEmailRecuperacaoSenha, enviarEmailBoasVindas, traduzirErroEmail } from './lib/authEmail'
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -82,7 +86,6 @@ import {
   getChatGreeting, getOracleLimitMessage,
 } from './lib/i18n/oracle.js'
 import { consultarOracleServidor, interpretarMapaServidor } from './lib/apiAi.js'
-import { localizeArcano } from './lib/i18n/tarotArcana.js'
 import { formatSkyPosition } from './lib/i18n/astro.js'
 import { normalizarDataISO, criarDataUTCporLocal, localToUTC } from './lib/datetime.js'
 import { readMapaIACache, writeMapaIACache, interpretacaoValidaParaMapa, gerarChaveMapa, analiseMapaValida, contarPalavrasAnalise } from './lib/mapaInterpretacaoCache.js'
@@ -1301,6 +1304,7 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
         } catch (emailErr) {
           console.warn('[Sidus Auth] Email verificação:', emailErr?.code, emailErr?.message)
         }
+        enviarEmailBoasVindas(email, lang).catch(() => {})
         setInfo(t('auth.accountCreated'))
       } else {
         const cred = await signInWithEmailAndPassword(auth, email, senha)
@@ -1558,6 +1562,7 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
           </div>
         </div>
       </div>
+      <LandingTestimonials />
       <LandingFaq />
     </div>
   )
@@ -1803,6 +1808,8 @@ function Dashboard({ nome, mapaNatal, ceuAgora, aspetos, onOraculo, onPrivacidad
 
       <HeroHomeSidus mapaNatal={mapaNatal} onMapa={onMapa} isPremium={isPremium} />
 
+      <LeituraGratisDiaria solar={mapaNatal?.solar} lunar={mapaNatal?.lunar} />
+
       {mapaNatalValido(mapaNatal) && (
         <div style={{ ...estilos.vidro, padding: 20, marginBottom: 18 }}>
           <div style={{ fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.09em', color: CORES.dourado, marginBottom: 12 }}>
@@ -1821,6 +1828,7 @@ function Dashboard({ nome, mapaNatal, ceuAgora, aspetos, onOraculo, onPrivacidad
               <div style={{ fontSize: 11, color: CORES.brancoMuted, marginTop: 2 }}>
                 {mapaNatal.solar.graus}° · {te(mapaNatal.solar.elemento)}
               </div>
+              <ShareSigno mapaNatal={mapaNatal} nome={nome} />
             </div>
 
             <div style={{ flex: 1, background: 'rgba(139,92,246,0.12)', borderRadius: 12, padding: '10px 14px', border: `1px solid rgba(139,92,246,0.3)` }}>
@@ -1897,9 +1905,6 @@ function Dashboard({ nome, mapaNatal, ceuAgora, aspetos, onOraculo, onPrivacidad
 
       <ConteudoDinamicoSidus mapaNatal={mapaNatal} aspetos={aspetos} isPremium={isPremium} onUpgrade={onUpgrade} onOraculo={onOraculo} userEmail={userEmail} />
 
-      {/* Carta do Dia */}
-      <CartaDoDia />
-
       {onTarot && (
         <button type="button" onClick={onTarot} style={{
           ...estilos.vidro, width: '100%', padding: 18, marginBottom: 16, cursor: 'pointer',
@@ -1931,92 +1936,6 @@ function Dashboard({ nome, mapaNatal, ceuAgora, aspetos, onOraculo, onPrivacidad
         </button>
         <span style={{ color: 'rgba(255,255,255,0.15)', margin: '0 6px', fontSize: 10 }}>·</span>
         <span style={{ color: 'rgba(255,255,255,0.2)', fontSize: 10 }}>{t('home.copyright')}</span>
-      </div>
-    </div>
-  )
-}
-
-// ── Carta do Dia (determinada pela data) ──────────────────────────────────────
-const ARCANOS_NOMES = [
-  {id:0,nome:'O Louco',simb:'🃏',palavras:['aventura','liberdade','começo'],luz:'Abertura total ao desconhecido. Um salto de fé abre portas inesperadas.'},
-  {id:1,nome:'O Mago',simb:'🎩',palavras:['poder','vontade','manifestação'],luz:'Tens todos os recursos que precisas. A tua força de vontade transforma pensamentos em realidade.'},
-  {id:2,nome:'A Papisa',simb:'📖',palavras:['intuição','mistério','sabedoria'],luz:'A tua voz interior é precisa. Confia no que sentes antes do que vês.'},
-  {id:3,nome:'A Imperatriz',simb:'👑',palavras:['abundância','amor','fertilidade'],luz:'Ciclo de prosperidade e criatividade. Nutre os teus projectos com amor.'},
-  {id:4,nome:'O Imperador',simb:'⚔️',palavras:['autoridade','estrutura','proteção'],luz:'Momento de assumir as rédeas. A disciplina constrói o teu legado.'},
-  {id:5,nome:'O Hierofante',simb:'✝️',palavras:['tradição','fé','ensinamento'],luz:'Um mentor ou ensinamento surge. Valores profundos guiam as decisões.'},
-  {id:6,nome:'Os Amantes',simb:'💞',palavras:['amor','escolha','harmonia'],luz:'Uma união ou escolha define o teu caminho. O coração sabe o que a mente tarda a aceitar.'},
-  {id:7,nome:'O Carro',simb:'🏆',palavras:['vitória','determinação','controlo'],luz:'A tua vontade supera obstáculos. Foco e velocidade garantem a vitória.'},
-  {id:8,nome:'A Força',simb:'🦁',palavras:['coragem','compaixão','domínio'],luz:'A força verdadeira nasce do amor. Domas os medos com gentileza.'},
-  {id:9,nome:'O Eremita',simb:'🕯️',palavras:['reflexão','solidão','guia'],luz:'Recolhimento frutífero. A tua luz interior ilumina quando tudo parece escuro.'},
-  {id:10,nome:'Roda da Fortuna',simb:'☸️',palavras:['destino','ciclos','mudança'],luz:'O ciclo vira a teu favor. Uma reviravolta traz nova sorte.'},
-  {id:11,nome:'A Justiça',simb:'⚖️',palavras:['equilíbrio','verdade','karma'],luz:'A verdade prevalece. Cada acção tem a sua consequência - colhes o que plantaste.'},
-  {id:12,nome:'O Enforcado',simb:'🔄',palavras:['sacrifício','perspetiva','pausa'],luz:'Uma pausa necessária revela o que estava oculto. O sacrifício abre novas perspetivas.'},
-  {id:13,nome:'A Morte',simb:'🌑',palavras:['transformação','fim','renascimento'],luz:'Uma fase encerra para que algo mais elevado nasça. A transformação é libertadora.'},
-  {id:14,nome:'A Temperança',simb:'🌊',palavras:['equilíbrio','paciência','alquimia'],luz:'A mistura perfeita cria algo extraordinário. Paciência é a tua aliada.'},
-  {id:15,nome:'O Diabo',simb:'⛓️',palavras:['apego','ilusão','libertação'],luz:'Reconhecer o que te prende é o primeiro passo para a liberdade.'},
-  {id:16,nome:'A Torre',simb:'⚡',palavras:['ruptura','revelação','reconstrução'],luz:'O que se destrói era falso. A ruptura abre espaço para a verdade.'},
-  {id:17,nome:'A Estrela',simb:'⭐',palavras:['esperança','cura','inspiração'],luz:'Depois de qualquer tempestade surge a luz. Cura profunda chega agora.'},
-  {id:18,nome:'A Lua',simb:'🌙',palavras:['intuição','inconsciente','sonhos'],luz:'Os teus sonhos e intuições carregam mensagens reais.'},
-  {id:19,nome:'O Sol',simb:'☀️',palavras:['alegria','sucesso','clareza'],luz:'Clareza total. A alegria surge quando ages com plena autenticidade.'},
-  {id:20,nome:'O Julgamento',simb:'📯',palavras:['despertar','redenção','chamado'],luz:'Um despertar espiritual profundo. Estás a ser chamado ao teu propósito maior.'},
-  {id:21,nome:'O Mundo',simb:'🌍',palavras:['conclusão','integração','plenitude'],luz:'Ciclo completado com sucesso. Tens tudo o que precisas para viver plenamente.'},
-]
-
-function CartaDoDia() {
-  const { lang, t } = useLanguage()
-  const [dataHoje, setDataHoje] = useState(() => new Date().toISOString().slice(0, 10))
-
-  useEffect(() => {
-    const verificar = () => {
-      const hoje = new Date().toISOString().slice(0, 10)
-      if (hoje !== dataHoje) setDataHoje(hoje)
-    }
-    verificar()
-    const id = setInterval(verificar, 60000)
-    return () => clearInterval(id)
-  }, [dataHoje])
-
-  const [ano, mes, dia] = dataHoje.split('-').map(Number)
-  const idx = (ano * 1000 + (mes - 1) * 31 + dia) % 22
-  const cartaBase = ARCANOS_NOMES[idx]
-  const carta = localizeArcano(cartaBase, lang)
-  const locale = lang !== 'pt' ? 'pt-PT' : lang === 'es' ? 'es-ES' : lang === 'it' ? 'it-IT' : lang === 'de' ? 'de-DE' : 'en-GB'
-  const dataFormatada = new Date(Date.UTC(ano, mes - 1, dia)).toLocaleDateString(locale)
-
-  if (!carta?.nome) return null
-
-  return (
-    <div style={{
-      ...estilos.vidro, padding:'18px 20px', marginBottom:16,
-      background:'rgba(223,183,108,0.05)', border:`1px solid rgba(223,183,108,0.35)`,
-      borderRadius:16, cursor:'default',
-    }}>
-      <div style={{fontSize:10,color:CORES.dourado,textTransform:'uppercase',letterSpacing:'0.1em',marginBottom:12}}>
-        {t('cartaoDia.title', { date: dataFormatada })}
-      </div>
-      <div style={{display:'flex',alignItems:'center',gap:16}}>
-        {/* Mini card SVG */}
-        <div style={{
-          width:56, height:90, borderRadius:8, flexShrink:0,
-          background:'linear-gradient(160deg,#1a0d3a,#0B071E)',
-          border:`1.5px solid ${CORES.dourado}`,
-          display:'flex', flexDirection:'column', alignItems:'center',
-          justifyContent:'space-between', padding:'8px 4px',
-          boxShadow:'0 0 20px rgba(223,183,108,0.25)',
-        }}>
-          <div style={{fontSize:7,color:CORES.dourado,opacity:0.7,fontFamily:'Georgia,serif'}}>{carta.id===0?'☽':String(carta.id)}</div>
-          <div style={{fontSize:26}}>{carta.simb}</div>
-          <div style={{fontSize:6,color:CORES.dourado,textAlign:'center',lineHeight:1.2}}>{carta.nome.toUpperCase()}</div>
-        </div>
-        <div style={{flex:1}}>
-          <div style={{fontSize:17,fontWeight:700,color:CORES.branco,marginBottom:4}}>{carta.nome}</div>
-          <div style={{display:'flex',gap:5,marginBottom:8,flexWrap:'wrap'}}>
-            {carta.palavras.map(p=>(
-              <span key={p} style={{fontSize:10,padding:'2px 8px',borderRadius:20,background:'rgba(223,183,108,0.1)',color:CORES.dourado,border:`1px solid rgba(223,183,108,0.2)`}}>{p}</span>
-            ))}
-          </div>
-          <p style={{fontSize:12,color:CORES.brancoMuted,lineHeight:1.6,margin:0}}>{carta.luz}</p>
-        </div>
       </div>
     </div>
   )
@@ -3287,6 +3206,12 @@ export default function App() {
 
   const navigate = useNavigate()
   const location = useLocation()
+
+  useEffect(() => {
+    if (authCarregando) return
+    const seoPasso = !utilizador && (passo === 'home' || passo === 'onboarding') ? 'login' : passo
+    applyRouteSeo(seoPasso, lang)
+  }, [passo, lang, utilizador, authCarregando])
 
   useEffect(() => {
     try { setFotoPerfil(localStorage.getItem('sidus_foto') || null) } catch { /* quota */ }
