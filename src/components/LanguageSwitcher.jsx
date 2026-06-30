@@ -3,6 +3,11 @@ import { useState } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { useLanguage } from '../lib/i18n/LanguageContext.jsx'
 import { passoFromPath, pathFromPasso } from '../lib/routes.js'
+import PT from 'country-flag-icons/react/3x2/PT'
+import GB from 'country-flag-icons/react/3x2/GB'
+import ES from 'country-flag-icons/react/3x2/ES'
+import IT from 'country-flag-icons/react/3x2/IT'
+import DE from 'country-flag-icons/react/3x2/DE'
 
 const CORES = {
   dourado: '#DFB76C',
@@ -10,8 +15,7 @@ const CORES = {
   vidroBorda: 'rgba(223, 183, 108, 0.22)',
 }
 
-const FLAGS = { pt: '🇵🇹', en: '🇬🇧', es: '🇪🇸', it: '🇮🇹', de: '🇩🇪' }
-const LABELS = { pt: 'PT', en: 'EN', es: 'ES', it: 'IT', de: 'DE' }
+const FLAG_COMPONENTS = { pt: PT, en: GB, es: ES, it: IT, de: DE }
 const TITLES = {
   pt: 'Português',
   en: 'English',
@@ -21,9 +25,27 @@ const TITLES = {
 }
 const LANG_ORDER = ['pt', 'en', 'es', 'it', 'de']
 
+function FlagIcon({ code, width }) {
+  const Flag = FLAG_COMPONENTS[code]
+  if (!Flag) return null
+  return (
+    <Flag
+      aria-hidden
+      style={{
+        width,
+        height: 'auto',
+        display: 'block',
+        borderRadius: 2,
+        boxShadow: '0 0 0 1px rgba(0,0,0,0.15)',
+      }}
+    />
+  )
+}
+
 function SwitcherButtons({ lang, setLang, size = 'fixed' }) {
   const [open, setOpen] = useState(false)
   const compact = size === 'compact'
+  const flagW = compact ? 18 : 20
   const navigate = useNavigate()
   const location = useLocation()
 
@@ -42,28 +64,23 @@ function SwitcherButtons({ lang, setLang, size = 'fixed' }) {
       <button
         type="button"
         title={TITLES[code]}
+        aria-label={TITLES[code]}
         onClick={() => changeLang(code)}
         style={{
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          gap: 4,
           width: '100%',
-          padding: compact ? '4px 5px' : '5px 6px',
+          padding: compact ? 4 : 5,
           borderRadius: 5,
           border: `1px solid ${active ? CORES.dourado : CORES.vidroBorda}`,
           background: active ? 'rgba(223,183,108,0.18)' : 'rgba(255,255,255,0.04)',
-          color: active ? CORES.dourado : CORES.brancoMuted,
-          fontSize: compact ? 9 : 10,
-          fontWeight: active ? 700 : 600,
           cursor: 'pointer',
           transition: 'all 0.2s ease',
-          lineHeight: 1,
-          letterSpacing: '0.03em',
+          lineHeight: 0,
         }}
       >
-        <span aria-hidden style={{ fontSize: compact ? 12 : 13, lineHeight: 1 }}>{FLAGS[code]}</span>
-        <span>{LABELS[code]}</span>
+        <FlagIcon code={code} width={flagW} />
       </button>
     )
   }
@@ -86,37 +103,33 @@ function SwitcherButtons({ lang, setLang, size = 'fixed' }) {
       <button
         type="button"
         title={TITLES[lang]}
+        aria-label={`${TITLES[lang]} — change language`}
         onClick={() => setOpen((v) => !v)}
         style={{
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
           gap: 3,
-          padding: compact ? '2px 5px' : '3px 6px',
+          padding: compact ? '3px 5px' : '4px 6px',
           borderRadius: compact ? 4 : 5,
           border: `1px solid ${CORES.vidroBorda}`,
           background: 'rgba(255,255,255,0.04)',
           color: CORES.dourado,
-          fontSize: compact ? 9 : 10,
-          fontWeight: 700,
           cursor: 'pointer',
-          lineHeight: 1,
-          letterSpacing: '0.03em',
-          minWidth: compact ? 38 : 44,
+          lineHeight: 0,
         }}
       >
-        <span aria-hidden style={{ fontSize: compact ? 12 : 14, lineHeight: 1 }}>{FLAGS[lang]}</span>
-        <span>{LABELS[lang]}</span>
-        <span style={{ fontSize: compact ? 7 : 8, opacity: 0.75 }}>▾</span>
+        <FlagIcon code={lang} width={flagW} />
+        <span style={{ fontSize: compact ? 7 : 8, opacity: 0.8, lineHeight: 1 }}>▾</span>
       </button>
 
       {open && (
         <div
           style={{
             position: 'absolute',
-            top: compact ? 24 : 28,
+            top: compact ? 28 : 32,
             right: 0,
-            width: compact ? 58 : 64,
+            width: compact ? 34 : 38,
             display: 'flex',
             flexDirection: 'column',
             gap: 3,
