@@ -68,11 +68,44 @@ export const ARCANOS_EN = {
     conselho: 'Celebrate your journey. A new cycle begins the moment you recognise your wholeness.' },
 }
 
+const PALAVRAS_EN = {
+  0: ['adventure', 'freedom', 'new beginning'],
+  1: ['power', 'will', 'manifestation'],
+  2: ['intuition', 'mystery', 'wisdom'],
+  3: ['abundance', 'fertility', 'love'],
+  4: ['authority', 'structure', 'protection'],
+  5: ['tradition', 'faith', 'teaching'],
+  6: ['love', 'choice', 'harmony'],
+  7: ['victory', 'determination', 'control'],
+  8: ['courage', 'compassion', 'mastery'],
+  9: ['reflection', 'solitude', 'guidance'],
+  10: ['destiny', 'cycles', 'change'],
+  11: ['balance', 'truth', 'karma'],
+  12: ['sacrifice', 'perspective', 'pause'],
+  13: ['transformation', 'ending', 'rebirth'],
+  14: ['balance', 'patience', 'alchemy'],
+  15: ['attachment', 'illusion', 'liberation'],
+  16: ['rupture', 'revelation', 'rebuild'],
+  17: ['hope', 'healing', 'inspiration'],
+  18: ['intuition', 'unconscious', 'dreams'],
+  19: ['joy', 'success', 'clarity'],
+  20: ['awakening', 'redemption', 'calling'],
+  21: ['completion', 'integration', 'wholeness'],
+}
+
 export function localizeArcano(carta, lang) {
   if (!carta || lang !== 'en') return carta
   const en = ARCANOS_EN[carta.id]
   if (!en) return carta
-  return { ...carta, nome: en.nome, luz: en.luz, sombra: en.sombra, conselho: en.conselho, invertidaLabel: carta.invertida ? 'REVERSED' : undefined }
+  return {
+    ...carta,
+    nome: en.nome,
+    luz: en.luz,
+    sombra: en.sombra,
+    conselho: en.conselho,
+    palavras: PALAVRAS_EN[carta.id] || carta.palavras,
+    invertidaLabel: carta.invertida ? 'REVERSED' : undefined,
+  }
 }
 
 export const TIPOS_EN = {

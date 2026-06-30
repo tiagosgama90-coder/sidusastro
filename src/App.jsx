@@ -2060,14 +2060,13 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
   }, [mapaNatal, planetasComCasa, aspetosNatais, dados, lang, planetasProntos])
 
   const analiseCompleta = useMemo(() => {
-    if (!analiseLexicon?.seccoes?.length) return null
-    const lexPalavras = contarPalavrasAnalise(analiseLexicon)
+    const lexPalavras = analiseLexicon?.seccoes?.length ? contarPalavrasAnalise(analiseLexicon) : 0
     if (
       mapaCompletoDesbloqueado
       && analiseIA?.seccoes?.length
       && analiseIA.fonte === 'ia'
       && analiseIaPremiumValida(analiseIA)
-      && contarPalavrasAnalise(analiseIA) >= lexPalavras
+      && (lexPalavras === 0 || contarPalavrasAnalise(analiseIA) >= lexPalavras)
     ) {
       return analiseIA
     }
@@ -2079,13 +2078,13 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
     ) {
       return analiseIA
     }
-    return analiseLexicon
+    return analiseLexicon?.seccoes?.length ? analiseLexicon : null
   }, [mapaCompletoDesbloqueado, analiseIA, analiseLexicon, dados, lang])
 
   const analiseParaUi = analiseCompleta || analiseLexicon
 
   useEffect(() => {
-    if (!mapaCompletoDesbloqueado || !mapaNatal || !analiseLexicon) {
+    if (!mapaCompletoDesbloqueado || !mapaNatal) {
       setAnaliseIA(null)
       setAnaliseIAUpgrading(false)
       chaveMapaRef.current = ''
