@@ -1,5 +1,6 @@
 /** Prompt interno - metodologia hermenêutica (nunca citar fontes ao utilizador). */
 import { aiOutputLanguageBlock, oracleRespondLanguage, isPt, contentForLang } from './i18n/langUtil.js'
+import { translateSigno } from './i18n/astro.js'
 
 const SEC_HEADERS = {
   pt: ['1. Análise do Estado da Alma', '2. O Alerta Interno', '3. O Caminho de Cura Espiritual', '4. Pergunta para Meditação'],
@@ -165,8 +166,8 @@ export function gerarInterpretacaoLocal(texto, lang, feelingLabel, simbolosDetec
   })
   const temas = simbolosDetectados.map((s) => s.tema).join(', ') || temasDefault
   const detalhes = simbolosDetectados.slice(0, 4).map((s) => `${s.tema}: ${s.resumo}`).join(' ')
-  const solar = mapaNatal?.solar?.nome
-  const lunar = mapaNatal?.lunar?.nome
+  const solar = mapaNatal?.solar?.nome ? translateSigno(mapaNatal.solar.nome, lang) : null
+  const lunar = mapaNatal?.lunar?.nome ? translateSigno(mapaNatal.lunar.nome, lang) : null
   const astro = solar && lunar
     ? contentForLang(lang, {
       pt: ` Com Sol em ${solar} e Lua em ${lunar}, o tom emocional alinha-se com o teu ritmo natal.`,

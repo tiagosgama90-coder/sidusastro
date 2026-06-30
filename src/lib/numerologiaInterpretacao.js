@@ -1,4 +1,4 @@
-import { contentForLang, resolveLocalePack } from './i18n/langUtil.js'
+import { contentForLang, resolveLocalePack, looksPortuguese } from './i18n/langUtil.js'
 import { translatePlaneta, translateSigno } from './i18n/astro.js'
 import {
   INTERPRETACOES_ES, INTERPRETACOES_IT, INTERPRETACOES_DE, INTERPRETACOES_FR,
@@ -205,14 +205,35 @@ function mapaInterp(lang) {
   return resolveLocalePack(
     lang,
     INTERP_PACKS,
-    (p) => p.destino?.[1]?.espiritual || p.caminhoVida?.[1]?.espiritual,
+    (p) => [
+      p.destino?.[7]?.espiritual,
+      p.destino?.[1]?.espiritual,
+      p.alma?.[7]?.espiritual,
+      p.caminhoVida?.[11]?.espiritual,
+    ].find(Boolean),
     INTERPRETACOES_EN,
   )
 }
 
+function mergeInterpBlock(raw, enBlock, lang) {
+  if (!raw) return null
+  if (lang === 'pt' || !enBlock) return raw
+  const fields = ['resumo', 'espiritual', 'pratica', 'reflexao']
+  const out = { ...raw }
+  for (const f of fields) {
+    if (raw[f] && looksPortuguese(raw[f]) && enBlock[f]) out[f] = enBlock[f]
+  }
+  return out
+}
+
 function interp(tipo, num, lang) {
   const map = mapaInterp(lang)
-  return map[tipo]?.[num] || map[tipo]?.[reduzirMestre(num)] || null
+  const enMap = INTERPRETACOES_EN
+  const n = num
+  const m = reduzirMestre(num)
+  const raw = map[tipo]?.[n] || map[tipo]?.[m] || null
+  const enRaw = enMap[tipo]?.[n] || enMap[tipo]?.[m] || null
+  return mergeInterpBlock(raw, enRaw, lang)
 }
 
 function tituloNum(num, lang) {

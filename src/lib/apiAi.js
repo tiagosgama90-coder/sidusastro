@@ -1,19 +1,28 @@
 /** Chamadas IA via Netlify Functions - chaves secretas só no servidor. */
 
-async function postJson(path, body, idToken = null) {
+async function postJson(path, body, idToken = null, timeoutMs = 60000) {
   const headers = { 'Content-Type': 'application/json' }
   if (idToken) headers.Authorization = `Bearer ${idToken}`
-  const res = await fetch(path, {
-    method: 'POST',
-    headers,
-    body: JSON.stringify({ ...body, idToken }),
-  })
-  if (!res.ok) {
-    const data = await res.json().catch(() => ({}))
-    return { ok: false, status: res.status, ...data }
+  const controller = new AbortController()
+  const timer = setTimeout(() => controller.abort(), timeoutMs)
+  try {
+    const res = await fetch(path, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ ...body, idToken }),
+      signal: controller.signal,
+    })
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}))
+      return { ok: false, status: res.status, ...data }
+    }
+    const data = await res.json()
+    return { ok: true, ...data }
+  } catch {
+    return { ok: false, status: 0 }
+  } finally {
+    clearTimeout(timer)
   }
-  const data = await res.json()
-  return { ok: true, ...data }
 }
 
 export async function consultarOracleServidor(pergunta, mapaNatal, historico, lang, idToken, clientPremium = false) {
@@ -51,7 +60,7 @@ export async function interpretarSonhoServidor(texto, mapaNatal, lang, feeling, 
       lang,
       feeling,
       chips,
-    })
+    }, null, 10000)
     if (!data?.seccoes) return null
     return { seccoes: data.seccoes, simbolos: data.simbolos || [] }
   } catch {

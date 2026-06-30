@@ -1142,25 +1142,31 @@ export function InterpretacaoSonhos({ mapaNatal, onVoltar }) {
     const textoEfetivo = sonho.trim() || chipsSel.join(', ')
     if (!textoEfetivo) return
     const id = ++pedidoRef.current
-    setAInterpretar(true)
     setErro(null)
 
     const local = gerarLocal(textoEfetivo, lang, feeling, chipsSel)
-    if (local) setResultado(local)
-
-    try {
-      const res = await interpretarSonhoRemoto(sonho.trim() || textoEfetivo, mapaNatal, lang, feeling, chipsSel)
-      if (id !== pedidoRef.current) return
-      if (res?.seccoes?.some((s) => s.texto?.length > 20)) {
-        setResultado(res)
-      } else if (!local) {
-        setErro(t('ferramentasPremium.sonhos.error'))
-      }
-    } catch {
-      if (id === pedidoRef.current && !local) setErro(t('ferramentasPremium.sonhos.error'))
-    } finally {
-      if (id === pedidoRef.current) setAInterpretar(false)
+    if (local) {
+      setResultado(local)
+      setAInterpretar(false)
+    } else {
+      setAInterpretar(true)
     }
+
+    interpretarSonhoRemoto(sonho.trim() || textoEfetivo, mapaNatal, lang, feeling, chipsSel)
+      .then((res) => {
+        if (id !== pedidoRef.current) return
+        if (res?.seccoes?.some((s) => s.texto?.length > 20)) {
+          setResultado(res)
+        } else if (!local) {
+          setErro(t('ferramentasPremium.sonhos.error'))
+        }
+      })
+      .catch(() => {
+        if (id === pedidoRef.current && !local) setErro(t('ferramentasPremium.sonhos.error'))
+      })
+      .finally(() => {
+        if (id === pedidoRef.current) setAInterpretar(false)
+      })
   }
 
   const pronto = (sonho.trim().length > 8 || chipsSel.length > 0) && !aInterpretar

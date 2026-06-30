@@ -22,7 +22,18 @@ export function contentForLang(lang, bundle) {
 /** Detecta texto ainda em português (packs auto-gerados corruptos). */
 export function looksPortuguese(str) {
   if (!str || typeof str !== 'string') return false
-  return /\b(teu|tua|tens|estás|não estás|o teu|a tua|no teu|na tua|os teus|consigo|contigo|para ti|português|expressão pede|os anjos pedem-te)\b/i.test(str)
+  if (/[ãõç]/i.test(str)) return true
+  return /\b(não|nao|tens|estás|estas|estou|estamos|consigo|contigo|para ti|o teu|a tua|os teus|as tuas|no teu|na tua|alguém|alguem|partilhas|reflecte|reflete|expressão|expressao|os anjos pedem|sem ecrãs|sem ecras|pronto\/a|percebido\/a|que desejas|por dentro|através|atraves|consciência|consciencia|cármico|carmico|relacionamento|convida a|busca verdades|A Expressão|A Alma|A Personalidade|O teu|O mundo te|Dentro, desejas|Missão mestra|Missao mestra|Canal de intuição|Protejo a|sabedoria visível|humanitarismo|oferece escuta|reserva \d+ minuto|que verdade interior|padrão cármico|padrao carmico|com coragem para|assumir o|no quotidiano|sem me esquecer|faz algo concreto|organiza um espaço|espaço físico)\b/i.test(str)
+}
+
+/** Se texto estiver em PT e lang≠pt, devolve fallbackEn (ou original em PT). */
+export function narrativeForLang(text, lang, fallbackEn) {
+  if (!text) return text
+  if (lang === 'pt') return text
+  if (typeof text === 'string' && looksPortuguese(text)) {
+    return fallbackEn ?? text
+  }
+  return text
 }
 
 /** Pacote por idioma; se amostra estiver em PT e lang≠pt, usa fallbackEn. */
@@ -32,8 +43,11 @@ export function resolveLocalePack(lang, packs, sampleKey, fallbackEn) {
   const pack = packs[lang]
   if (!pack) return fallbackEn
   const sample = typeof sampleKey === 'function' ? sampleKey(pack) : pack?.[sampleKey]
-  const probe = typeof sample === 'string' ? sample : (sample?.mensagem || sample?.espiritual || sample?.resumo || '')
-  return looksPortuguese(probe) ? fallbackEn : pack
+  const probes = (Array.isArray(sample) ? sample : [sample]).map((s) => (
+    typeof s === 'string' ? s : (s?.mensagem || s?.espiritual || s?.resumo || '')
+  ))
+  if (probes.some((p) => looksPortuguese(p))) return fallbackEn
+  return pack
 }
 
 /** «Signo · Casa 10» com etiqueta de casa por idioma. */

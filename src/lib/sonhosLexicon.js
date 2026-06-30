@@ -1,7 +1,7 @@
 /**
  * Léxico A–Z de símbolos oníricos - base hermenêutica para pesquisa por palavras-chave.
  */
-import { contentForLang } from './i18n/langUtil.js'
+import { contentForLang, looksPortuguese } from './i18n/langUtil.js'
 import {
   LEXICON_ES, LEXICON_IT, LEXICON_DE, LEXICON_FR,
   FEELING_PT, FEELING_EN, FEELING_ES, FEELING_IT, FEELING_DE, FEELING_FR,
@@ -86,16 +86,37 @@ export const LEXICON = [
 
 const LEXICON_LOC = { es: LEXICON_ES, it: LEXICON_IT, de: LEXICON_DE, fr: LEXICON_FR }
 
+function resumoSimbolo(ptEntry, locEntry, lang) {
+  const candidates = [locEntry?.resumo, lang === 'pt' ? ptEntry.resumo : null]
+  for (const r of candidates) {
+    if (r && (lang === 'pt' || !looksPortuguese(r))) return r
+  }
+  const tema = locEntry?.tema || ptEntry.tema
+  return contentForLang(lang, {
+    pt: ptEntry.resumo,
+    en: `Archetypal symbol: ${tema}.`,
+    es: `Símbolo arquetípico: ${tema}.`,
+    it: `Simbolo archetipo: ${tema}.`,
+    de: `Archetypisches Symbol: ${tema}.`,
+    fr: `Symbole archétypal : ${tema}.`,
+  })
+}
+
 function lexiconForLang(lang) {
   if (lang === 'pt') return LEXICON
   const loc = LEXICON_LOC[lang]
-  if (!loc) return LEXICON
+  if (!loc) {
+    return LEXICON.map((ptEntry) => ({
+      ...ptEntry,
+      resumo: resumoSimbolo(ptEntry, null, lang),
+    }))
+  }
   return LEXICON.map((ptEntry, i) => {
     const locEntry = loc.find((e) => e.tema === ptEntry.tema) || loc[i] || ptEntry
     return {
       ...ptEntry,
       tema: locEntry.tema || ptEntry.tema,
-      resumo: locEntry.resumo || ptEntry.resumo,
+      resumo: resumoSimbolo(ptEntry, locEntry, lang),
       keys: [...new Set([...(ptEntry.keys || []), ...(locEntry.keys || [])])],
     }
   })
