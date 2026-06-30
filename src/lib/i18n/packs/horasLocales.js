@@ -1,814 +1,817 @@
-/** Gerado por scripts/build-horas-locales.mjs */
-
+/** Gerado por scripts/emit-horas-all.mjs */
 export const HORAS_ES = {
   "00:00": {
     "titulo": "Reinicio Sagrado",
     "anjo": "Los Ángeles de la Guarda",
-    "mensagem": "Eres Um com o Divino. Os ángels pedem-te um momento de silêncio interior para alinhar intenção e espírito. Este é o portal de medíanoche - ideal para meditar e semear desejos com fé pura.",
-    "conselho": "Medita 1 minuto em silêncio. Pede clareza para o novo ciclo que começa.",
+    "mensagem": "Eres Uno con lo Divino. Los ángeles te piden un momento de silencio interior para alinear intención y espíritu. Este es el portal de medianoche, ideal para meditar y sembrar deseos con fe pura.",
+    "conselho": "Medita 1 minuto en silencio. Pide claridad para el nuevo ciclo que comienza.",
     "palavraChave": "Unidad"
   },
   "01:01": {
-    "titulo": "Manifestação de los Pensamentos",
-    "anjo": "Ángel de la Criação",
-    "mensagem": "Os teus pensamentos estão a materializar-se com rapidez. Doreen Virtue ensinava que ver 01:01 é um aviso para manter a mente focada en el positivo - o universo está a ouvir.",
-    "conselho": "Substitui pensamentos de medo por afirmações de confíança durante as próximas horas.",
+    "titulo": "Manifestación de los Pensamientos",
+    "anjo": "Ángel de la Creación",
+    "mensagem": "Tus pensamientos se están materializando con rapidez. Doreen Virtue enseñaba que ver 01:01 es un aviso para mantener la mente enfocada en lo positivo: el universo está escuchando.",
+    "conselho": "Sustituye pensamientos de miedo por afirmaciones de confianza en las próximas horas.",
     "palavraChave": "Enfoque mental"
   },
   "02:02": {
-    "titulo": "Fé e Equilíbrio",
-    "anjo": "Ángel de la Harmonia",
-    "mensagem": "Mantén fé e equilíbrio. Tudo está a alinhar-se en los bastidores, mesmo que todavía não vejas resultados. Os ángels pedem paciência e confíança en el tempo divino.",
-    "conselho": "Confía en el processo. Evita decisões impulsivas - espera por la clareza.",
-    "palavraChave": "Confíança"
+    "titulo": "Fe y Equilibrio",
+    "anjo": "Ángel de la Armonía",
+    "mensagem": "Mantén fe y equilibrio. Todo se está alineando entre bastidores, aunque aún no veas resultados. Los ángeles piden paciencia y confianza en el tiempo divino.",
+    "conselho": "Confía en el proceso. Evita decisiones impulsivas; espera la claridad.",
+    "palavraChave": "Confianza"
   },
   "03:03": {
-    "titulo": "Presença de los Maestros Ascendidos",
+    "titulo": "Presencia de los Maestros Ascendidos",
     "anjo": "Maestros Ascendidos",
-    "mensagem": "Os Maestros Ascendidos estão perto de ti, apoiando o teu crescimento espiritual. É um convite a ouvir a intuição e a seguir o caminho de la alma com coragem.",
-    "conselho": "Pregunta internamente: \"Qual o próximo passo del meu caminho?\" e escuta a resposta suave.",
-    "palavraChave": "Intuição"
+    "mensagem": "Los Maestros Ascendidos están cerca, apoyando tu crecimiento espiritual. Es una invitación a escuchar la intuición y seguir el camino del alma con valentía.",
+    "conselho": "Pregunta internamente: «¿Cuál es el próximo paso de mi camino?» y escucha la respuesta suave.",
+    "palavraChave": "Intuición"
   },
   "04:04": {
-    "titulo": "Ángels al Teu Redor",
+    "titulo": "Ángeles a tu Alrededor",
     "anjo": "Arcángel Gabriel",
-    "mensagem": "Os ángels envolvem-te com proteção e amor. Não estás sozinho/a nesta situação. Doreen Virtue associava 04:04 a la presença angelical tangível - sê grato/a pelo apoio invisível.",
-    "conselho": "Agradece em voz alta por três bendicións del día, por pequenas que sejam.",
-    "palavraChave": "Proteção"
+    "mensagem": "Los ángeles te envuelven con protección y amor. No estás solo/a en esta situación. Doreen Virtue asociaba 04:04 a una presencia angelical tangible: sé agradecido/a por el apoyo invisible.",
+    "conselho": "Agradece en voz alta por tres bendiciones del día, por pequeñas que sean.",
+    "palavraChave": "Protección"
   },
   "05:05": {
-    "titulo": "Mudança Positiva",
-    "anjo": "Ángel de la Transformação",
-    "mensagem": "Grandes mudanças positivas estão a caminho. Abraça a transformação com flexibilidade - o que se afasta faz lugar al que te serve verdadeiramente.",
-    "conselho": "Libera um hábito ou crença que já não ressoa contigo.",
-    "palavraChave": "Transformação"
+    "titulo": "Cambio Positivo",
+    "anjo": "Ángel de la Transformación",
+    "mensagem": "Grandes cambios positivos están en camino. Abraza la transformación con flexibilidad: lo que se aleja hace lugar a lo que verdaderamente te sirve.",
+    "conselho": "Libera un hábito o creencia que ya no resuena contigo.",
+    "palavraChave": "Transformación"
   },
   "06:06": {
-    "titulo": "Equilíbrio Material e Espiritual",
-    "anjo": "Ángel del Equilíbrio",
-    "mensagem": "Os ángels pedem equilíbrio entre o mundo material e o espiritual. Cuida de las tuas necessidades práticas sem negligenciar a alma. Generosidade e responsabilidade caminham juntas.",
-    "conselho": "Faz algo concreto pelo bem-estar del corpo e algo simbólico por la paz interior.",
-    "palavraChave": "Equilíbrio"
+    "titulo": "Equilibrio Material y Espiritual",
+    "anjo": "Ángel del Equilibrio",
+    "mensagem": "Los ángeles piden equilibrio entre el mundo material y el espiritual. Cuida tus necesidades prácticas sin descuidar el alma.",
+    "conselho": "Haz algo concreto por el bienestar del cuerpo y algo simbólico por la paz interior.",
+    "palavraChave": "Equilibrio"
   },
   "07:07": {
-    "titulo": "Sorte Espiritual",
-    "anjo": "Ángel de la Boa Fortuna",
-    "mensagem": "Estás en el caminho certo e a sorte espiritual acompanha-te. Continúa o bom trabalho interior - os frutos aproximam-se. Os ángels celebram o teu progresso.",
-    "conselho": "Continúa o que começaste com disciplina suave. A perseverança é recompensada.",
-    "palavraChave": "Perseverança"
+    "titulo": "Suerte Espiritual",
+    "anjo": "Ángel de la Buena Fortuna",
+    "mensagem": "Estás en el camino correcto y la suerte espiritual te acompaña. Los ángeles celebran tu progreso.",
+    "conselho": "Continúa lo que comenzaste con disciplina suave. La perseverancia es recompensada.",
+    "palavraChave": "Perseverancia"
   },
   "08:08": {
-    "titulo": "Abundância e Fluxo",
-    "anjo": "Ángel de la Prosperidade",
-    "mensagem": "O fluxo de abundância abre-se cuando alinhas intenção, acção e gratidão. Doreen Virtue via em 08:08 um sinal de prosperidade equilibrada - material e emocional.",
-    "conselho": "Organiza uma área de la tua vida (finanças, tempo ou energía) com intenção positiva.",
-    "palavraChave": "Abundância"
+    "titulo": "Abundancia y Flujo",
+    "anjo": "Ángel de la Prosperidad",
+    "mensagem": "El flujo de abundancia se abre cuando alineas intención, acción y gratitud. Doreen Virtue veía en 08:08 prosperidad equilibrada, material y emocional.",
+    "conselho": "Organiza un área de tu vida con intención positiva.",
+    "palavraChave": "Abundancia"
   },
   "09:09": {
-    "titulo": "Missão de Alma",
-    "anjo": "Ángel Humanitário",
-    "mensagem": "Completa o que precisa de fecho e prepara-te para um capítulo alinhado com a tua misión de alma. Servir com amor é o teu maior poder.",
-    "conselho": "Conclui uma tarefa pendente. Oferece ajuda a alguém sem esperar retorno.",
-    "palavraChave": "Serviço"
+    "titulo": "Misión del Alma",
+    "anjo": "Ángel Humanitario",
+    "mensagem": "Completa lo que necesita cierre y prepárate para un capítulo alineado con tu misión de alma. Servir con amor es tu mayor poder.",
+    "conselho": "Concluye una tarea pendiente. Ofrece ayuda sin esperar retorno.",
+    "palavraChave": "Servicio"
   },
   "10:10": {
-    "titulo": "Guia Divino en el Caminho",
-    "anjo": "Ángel de la Orientação",
-    "mensagem": "Confía que estás a ser guiado/a en el rumo certo. Os ángels pedem que mantenhas pensamentos elevados e ações coerentes com o teu propósito superior.",
-    "conselho": "Escribe uma intenção clara para a semana e coloca-a donde a vejas díariamente.",
+    "titulo": "Guía Divina en el Camino",
+    "anjo": "Ángel de la Orientación",
+    "mensagem": "Confía en que estás siendo guiado/a en la dirección correcta. Los ángeles piden pensamientos elevados y acciones coherentes con tu propósito.",
+    "conselho": "Escribe una intención clara para la semana y colócala donde la veas a diario.",
     "palavraChave": "Propósito"
   },
   "11:11": {
-    "titulo": "Portal de Despertar",
-    "anjo": "Ángel de la Iluminação",
-    "mensagem": "O número maestro 11:11 é o portal mais conhecido de Doreen Virtue - sinal de despertar espiritual. Os ángels pedem atenção aos pensamentos: estás a co-criar a tua realidade neste instante.",
-    "conselho": "Pede um sinal claro al universo e observa sincronías nas próximas 24 horas.",
+    "titulo": "Portal del Despertar",
+    "anjo": "Ángel de la Iluminación",
+    "mensagem": "El número maestro 11:11 es el portal más conocido de Doreen Virtue, señal de despertar espiritual. Los ángeles piden atención a tus pensamientos: estás co-creando tu realidad ahora.",
+    "conselho": "Pide una señal clara al universo y observa sincronicidades en las próximas 24 horas.",
     "palavraChave": "Despertar"
   },
   "12:12": {
-    "titulo": "Crescimento Espiritual",
-    "anjo": "Ángel de la Evolução",
-    "mensagem": "Mantén os peres en la terra enquanto expandes a consciência. O crescimento espiritual pede prática diária, não apenas inspiração momentânea.",
-    "conselho": "Dedica 12 minutos hoy a leitura inspiradora, meditação ou journaling.",
-    "palavraChave": "Evolução"
+    "titulo": "Crecimiento Espiritual",
+    "anjo": "Ángel de la Evolución",
+    "mensagem": "Mantén los pies en la tierra mientras expandes la conciencia. El crecimiento espiritual pide práctica diaria.",
+    "conselho": "Dedica 12 minutos hoy a lectura inspiradora, meditación o journaling.",
+    "palavraChave": "Evolución"
   },
   "13:13": {
-    "titulo": "Apoio de los Mestres",
+    "titulo": "Apoyo de los Maestros",
     "anjo": "Maestros Ascendidos",
-    "mensagem": "Os Maestros Ascendidos ajudam-te a transformar obstáculos em sabedoria. O que parece bloqueio pode ser proteção divina a redirecionar-te.",
-    "conselho": "Reformula um problema actual como lição em crescimento.",
-    "palavraChave": "Sabedoria"
+    "mensagem": "Los Maestros Ascendidos te ayudan a transformar obstáculos en sabiduría. Lo que parece bloqueo puede ser protección divina.",
+    "conselho": "Reformula un problema actual como lección de crecimiento.",
+    "palavraChave": "Sabiduría"
   },
   "14:14": {
-    "titulo": "Adaptação Consciente",
-    "anjo": "Ángel de la Flexibilidade",
-    "mensagem": "Os ángels pedem adaptação consciente a las mudanças em curso. Ajusta planos sem perder a visão - flexibilidade é força, não fraqueza.",
-    "conselho": "Revê uma meta e adapta o método, não o sonho.",
-    "palavraChave": "Adaptação"
+    "titulo": "Adaptación Consciente",
+    "anjo": "Ángel de la Flexibilidad",
+    "mensagem": "Los ángeles piden adaptación consciente a los cambios en curso. Ajusta planes sin perder la visión.",
+    "conselho": "Revisa una meta y adapta el método, no el sueño.",
+    "palavraChave": "Adaptación"
   },
   "15:15": {
-    "titulo": "Mudanças Necessárias",
-    "anjo": "Ángel de la Liberação",
-    "mensagem": "É tempo de mudanças positivas que liberam velhos padrões. Os ángels apoiam decisões que elevam a tua verdade interior.",
-    "conselho": "Identifica uma situação que drena energía e define um limite saudável.",
-    "palavraChave": "Liberação"
+    "titulo": "Cambios Necesarios",
+    "anjo": "Ángel de la Liberación",
+    "mensagem": "Es tiempo de cambios positivos que liberan viejos patrones. Los ángeles apoyan decisiones que elevan tu verdad interior.",
+    "conselho": "Identifica una situación que drena energía y define un límite saludable.",
+    "palavraChave": "Liberación"
   },
   "16:16": {
-    "titulo": "Alinhamento de Pensamento",
-    "anjo": "Ángel de la Verdade",
-    "mensagem": "Os teus pensamentos estão a moldar a experiência presente. Doreen Virtue alertava: ver 16:16 pede honestidade interior e alinhamento entre o que pensas e o que fazes.",
-    "conselho": "Pregunta: \"Esta escolha honra quem quero ser?\" e age em conformidade.",
-    "palavraChave": "Alinhamento"
+    "titulo": "Alineación del Pensamiento",
+    "anjo": "Ángel de la Verdad",
+    "mensagem": "Tus pensamientos moldean la experiencia presente. Ver 16:16 pide honestidad interior y coherencia entre pensamiento y acción.",
+    "conselho": "Pregunta: «¿Esta elección honra a quien quiero ser?» y actúa en consecuencia.",
+    "palavraChave": "Alineación"
   },
   "17:17": {
-    "titulo": "Caminho Correcto",
-    "anjo": "Ángel de la Confirmação",
-    "mensagem": "Estás en el caminho certo - os ángels confirmam. Continúa com confíança e gratidão. A dúvida é natural, mas a orientación divina é real.",
-    "conselho": "Regista três sinais positivos que recebeste recentemente.",
-    "palavraChave": "Confirmação"
+    "titulo": "Camino Correcto",
+    "anjo": "Ángel de la Confirmación",
+    "mensagem": "Estás en el camino correcto: los ángeles lo confirman. Continúa con confianza y gratitud.",
+    "conselho": "Registra tres señales positivas que recibiste recientemente.",
+    "palavraChave": "Confirmación"
   },
   "18:18": {
-    "titulo": "Oração Atendida",
-    "anjo": "Ángel de la Resposta",
-    "mensagem": "As tuas orações e intenções estão a ser ouvidas. Mantén fé - a resposta manifesta-se en el tempo perfeito, muitas vezes de formas inesperadas.",
-    "conselho": "Agradece antecipadamente por la bendición que está a caminho.",
-    "palavraChave": "Fé"
+    "titulo": "Oración Respondida",
+    "anjo": "Ángel de la Respuesta",
+    "mensagem": "Tus oraciones e intenciones están siendo escuchadas. Mantén la fe: la respuesta llega en el tiempo perfecto.",
+    "conselho": "Agradece anticipadamente por la bendición que está en camino.",
+    "palavraChave": "Fe"
   },
   "19:19": {
-    "titulo": "Missão de Vida",
+    "titulo": "Misión de Vida",
     "anjo": "Ángel del Propósito",
-    "mensagem": "Avança com coragem en la direcção de la tua misión de vida. Os ángels pedem que deixes o medo del julgamento e expresses o teu dom único.",
-    "conselho": "Dá um pequeno passo concreto hoy em direcção al teu sonho maior.",
-    "palavraChave": "Coragem"
+    "mensagem": "Avanza con valentía hacia tu misión de vida. Los ángeles piden que expreses tu don único sin miedo al juicio.",
+    "conselho": "Da un pequeño paso concreto hoy hacia tu mayor sueño.",
+    "palavraChave": "Valentía"
   },
   "20:20": {
-    "titulo": "Decisão Divina",
-    "anjo": "Ángel de la Clareza",
-    "mensagem": "Confía en la orientación divina nas tuas decisões. Os ángels pedem que escolhas com o corazón alinhado a la verdade, não al medo.",
-    "conselho": "Antes de decidir, respira fundo três vezes e pregunta: \"O que o amor faria?\"",
-    "palavraChave": "Clareza"
+    "titulo": "Decisión Divina",
+    "anjo": "Ángel de la Claridad",
+    "mensagem": "Confía en la orientación divina en tus decisiones. Elige con el corazón alineado a la verdad, no al miedo.",
+    "conselho": "Respira profundo tres veces y pregunta: «¿Qué haría el amor?»",
+    "palavraChave": "Claridad"
   },
   "21:21": {
-    "titulo": "Meditação e Escuta",
+    "titulo": "Meditación y Escucha",
     "anjo": "Ángel de la Paz",
-    "mensagem": "É tempo de meditação e escuta interior. A resposta que procuras está en el silêncio, não en el ruído. Os ángels falam em voz suave.",
-    "conselho": "Desliga notificações por 21 minutos e medita ou caminha em silêncio.",
-    "palavraChave": "Silêncio"
+    "mensagem": "Es tiempo de meditación y escucha interior. La respuesta que buscas está en el silencio.",
+    "conselho": "Desactiva notificaciones 21 minutos y medita o camina en silencio.",
+    "palavraChave": "Silencio"
   },
   "22:22": {
-    "titulo": "Número Mestre de la Manifestação",
-    "anjo": "Ángel de la Co-criação",
-    "mensagem": "O 22:22 é um número maestro de manifestação em grande escala. Doreen Virtue via aqui um convite a sonhar em grande e agir com disciplina amorosa.",
-    "conselho": "Visualiza o teu ideal como já realizado por 2 minutos. Depois age.",
-    "palavraChave": "Manifestação"
+    "titulo": "Número Maestro de la Manifestación",
+    "anjo": "Ángel de la Co-creación",
+    "mensagem": "El 22:22 es un número maestro de manifestación a gran escala. Soñar en grande y actuar con disciplina amorosa.",
+    "conselho": "Visualiza tu ideal como ya realizado durante 2 minutos. Luego actúa.",
+    "palavraChave": "Manifestación"
   },
   "23:23": {
-    "titulo": "Parceria com o Universo",
-    "anjo": "Ángel de la Colaboração Cósmica",
-    "mensagem": "Trabaja em parceria com o universo. Solta o controlo excessivo e permite que a vida te surpreenda. Os ángels fecham o día com uma bendición de confíança.",
-    "conselho": "Antes de dormir, entrega três preocupaciones aos ángels e agradece o día.",
+    "titulo": "Asociación con el Universo",
+    "anjo": "Ángel de la Confianza",
+    "mensagem": "Trabaja en asociación con el universo. Suelta el control excesivo y permite que la vida te sorprenda.",
+    "conselho": "Antes de dormir, entrega tres preocupaciones a los ángeles y agradece el día.",
     "palavraChave": "Entrega"
   }
 }
-export const HORAS_IT = {
-  "00:00": {
-    "titulo": "Riavvio Sacro",
-    "anjo": "Gli Angeli Custodi",
-    "mensagem": "Sei Um com o Divino. Os angelos pedem-ti um momento de silêncio interior para alinhar intenção e espírito. Esti é o portal da meia-noiti - ideal para meditar e semear desejos com fé pura.",
-    "conselho": "Medita 1 minuto em silêncio. Pede clareza para o novo ciclo que começa.",
-    "palavraChave": "Unità"
-  },
-  "01:01": {
-    "titulo": "Manifestação dos Pensamentos",
-    "anjo": "Angelo da Criação",
-    "mensagem": "Os teus pensamentos estão a materializar-se com rapidez. Doreen Virtue ensinava que ver 01:01 é um aviso para manter a menti focada no positivo - o universo está a ouvir.",
-    "conselho": "Substitui pensamentos de medo por afirmações de confiança duranti as próximas horas.",
-    "palavraChave": "Focus mentale"
-  },
-  "02:02": {
-    "titulo": "Fé e Equilíbrio",
-    "anjo": "Angelo da Harmonia",
-    "mensagem": "Mantieni fé e equilíbrio. Tudo está a alinhar-se nos bastidores, mesmo que ainda não vejas resultados. Os angelos pedem paciência e confiança no tempo divino.",
-    "conselho": "Confida no processo. Evita decisões impulsivas - espera pela clareza.",
-    "palavraChave": "Confidança"
-  },
-  "03:03": {
-    "titulo": "Presença dos Maestri Ascesi",
-    "anjo": "Maestri Ascesi",
-    "mensagem": "Os Maestri Ascesi estão perto de ti, apoiando o teu crescimento espiritual. É um conviti a ouvir a intuição e a seguir o caminho da alma com coragem.",
-    "conselho": "Chiedi internamente: \"Qual o próximo passo do meu caminho?\" e escuta a resposta suave.",
-    "palavraChave": "Intuição"
-  },
-  "04:04": {
-    "titulo": "Angelos ao Teu Redor",
-    "anjo": "Arcangelo Gabriel",
-    "mensagem": "Os angelos envolvem-ti com proteção e amor. Não estás sozinho/a nesta situação. Doreen Virtue associava 04:04 à presença angelical tangível - sê grato/a pelo apoio invisível.",
-    "conselho": "Ringrazia em voz alta por três benediziones do giorno, por pequenas que sejam.",
-    "palavraChave": "Proteção"
-  },
-  "05:05": {
-    "titulo": "Mudança Positiva",
-    "anjo": "Angelo da Transformação",
-    "mensagem": "Grandes mudanças positivas estão a caminho. Abraça a transformação com flexibilidade - o que se afasta faz lugar ao que ti serve verdadeiramente.",
-    "conselho": "Lascia andare um hábito ou crença que já não ressoa contigo.",
-    "palavraChave": "Transformação"
-  },
-  "06:06": {
-    "titulo": "Equilíbrio Material e Espiritual",
-    "anjo": "Angelo do Equilíbrio",
-    "mensagem": "Os angelos pedem equilíbrio entre o mundo material e o espiritual. Cuida das tuas necessidades práticas sem negligenciar a alma. Generosidade e responsabilidade caminham juntas.",
-    "conselho": "Faz algo concreto pelo bem-estar do corpo e algo simbólico pela paz interior.",
-    "palavraChave": "Equilíbrio"
-  },
-  "07:07": {
-    "titulo": "Sorti Espiritual",
-    "anjo": "Angelo da Boa Fortuna",
-    "mensagem": "Estás no caminho certo e a sorti espiritual acompanha-te. Continua o bom trabalho interior - os frutos aproximam-se. Os angelos celebram o teu progresso.",
-    "conselho": "Continua o que começasti com disciplina suave. A perseverança é recompensada.",
-    "palavraChave": "Perseverança"
-  },
-  "08:08": {
-    "titulo": "Abundância e Fluxo",
-    "anjo": "Angelo da Prosperidade",
-    "mensagem": "O fluxo de abundância abre-se quando alinhas intenção, acção e gratidão. Doreen Virtue via em 08:08 um sinal de prosperidade equilibrada - material e emocional.",
-    "conselho": "Organiza uma área da tua vida (finanças, tempo ou energia) com intenção positiva.",
-    "palavraChave": "Abundância"
-  },
-  "09:09": {
-    "titulo": "Missão de Alma",
-    "anjo": "Angelo Humanitário",
-    "mensagem": "Completa o que precisa de fecho e prepara-ti para um capítulo alinhado com a tua missione de alma. Servir com amor é o teu maior poder.",
-    "conselho": "Conclui uma tarefa pendente. Oferece ajuda a alguém sem esperar retorno.",
-    "palavraChave": "Serviço"
-  },
-  "10:10": {
-    "titulo": "Guia Divino no Caminho",
-    "anjo": "Angelo da Orientação",
-    "mensagem": "Confida que estás a ser guiado/a no rumo certo. Os angelos pedem que mantenhas pensamentos elevados e ações coerentes com o teu propósito superior.",
-    "conselho": "Scrivi uma intenção clara para a semana e coloca-a dove a vejas giornoriamente.",
-    "palavraChave": "Propósito"
-  },
-  "11:11": {
-    "titulo": "Portal de Despertar",
-    "anjo": "Angelo da Iluminação",
-    "mensagem": "O número mestre 11:11 é o portal mais conhecido de Doreen Virtue - sinal de despertar espiritual. Os angelos pedem atenção aos pensamentos: estás a co-criar a tua realidade nesti instante.",
-    "conselho": "Pede um sinal claro ao universo e observa sincronias nas próximas 24 horas.",
-    "palavraChave": "Despertar"
-  },
-  "12:12": {
-    "titulo": "Crescimento Espiritual",
-    "anjo": "Angelo da Evolução",
-    "mensagem": "Mantieni os psei na terra enquanto expandes a consciência. O crescimento espiritual pede prática diária, não apenas inspiração momentânea.",
-    "conselho": "Dedica 12 minutos oggi a leitura inspiradora, meditação ou journaling.",
-    "palavraChave": "Evolução"
-  },
-  "13:13": {
-    "titulo": "Apoio dos Mestres",
-    "anjo": "Maestri Ascesi",
-    "mensagem": "Os Maestri Ascesi ajudam-ti a transformar obstáculos em sabedoria. O que parece bloqueio pode ser proteção divina a redirecionar-te.",
-    "conselho": "Reformula um problema actual como lição em crescimento.",
-    "palavraChave": "Sabedoria"
-  },
-  "14:14": {
-    "titulo": "Adaptação Consciente",
-    "anjo": "Angelo da Flexibilidade",
-    "mensagem": "Os angelos pedem adaptação conscienti às mudanças em curso. Ajusta planos sem perder a visão - flexibilidade é força, não fraqueza.",
-    "conselho": "Revê uma meta e adapta o método, não o sonho.",
-    "palavraChave": "Adaptação"
-  },
-  "15:15": {
-    "titulo": "Mudanças Necessárias",
-    "anjo": "Angelo da Lascia andareção",
-    "mensagem": "É tempo de mudanças positivas que libertam velhos padrões. Os angelos apoiam decisões que elevam a tua verdade interior.",
-    "conselho": "Identifica uma situação que drena energia e define um limiti saudável.",
-    "palavraChave": "Lascia andareção"
-  },
-  "16:16": {
-    "titulo": "Alinhamento de Pensamento",
-    "anjo": "Angelo da Verdade",
-    "mensagem": "Os teus pensamentos estão a moldar a experiência presente. Doreen Virtue alertava: ver 16:16 pede honestidade interior e alinhamento entre o que pensas e o que fazes.",
-    "conselho": "Chiedi: \"Esta escolha honra quem quero ser?\" e age em conformidade.",
-    "palavraChave": "Alinhamento"
-  },
-  "17:17": {
-    "titulo": "Caminho Correcto",
-    "anjo": "Angelo da Confirmação",
-    "mensagem": "Estás no caminho certo - os angelos confirmam. Continua com confiança e gratidão. A dúvida é natural, mas a guida divina é real.",
-    "conselho": "Regista três sinais positivos que recebesti recentemente.",
-    "palavraChave": "Confirmação"
-  },
-  "18:18": {
-    "titulo": "Oração Atendida",
-    "anjo": "Angelo da Resposta",
-    "mensagem": "As tuas orações e intenções estão a ser ouvidas. Mantieni fé - a resposta manifesta-se no tempo perfeito, muitas vezes de formas inesperadas.",
-    "conselho": "Ringrazia antecipadamenti pela benedizione que está a caminho.",
-    "palavraChave": "Fé"
-  },
-  "19:19": {
-    "titulo": "Missão de Vida",
-    "anjo": "Angelo do Propósito",
-    "mensagem": "Avança com coragem na direcção da tua missione de vida. Os angelos pedem que deixes o medo do julgamento e expresses o teu dom único.",
-    "conselho": "Dá um pequeno passo concreto oggi em direcção ao teu sonho maior.",
-    "palavraChave": "Coragem"
-  },
-  "20:20": {
-    "titulo": "Decisão Divina",
-    "anjo": "Angelo da Clareza",
-    "mensagem": "Confida na guida divina nas tuas decisões. Os angelos pedem que escolhas com o cuore alinhado à verdade, não ao medo.",
-    "conselho": "Antes de decidir, respira fundo três vezes e pergunta: \"O que o amor faria?\"",
-    "palavraChave": "Clareza"
-  },
-  "21:21": {
-    "titulo": "Meditação e Escuta",
-    "anjo": "Angelo da Paz",
-    "mensagem": "É tempo de meditação e escuta interior. A resposta que procuras está no silêncio, não no ruído. Os angelos falam em voz suave.",
-    "conselho": "Desliga notificações por 21 minutos e medita ou caminha em silêncio.",
-    "palavraChave": "Silêncio"
-  },
-  "22:22": {
-    "titulo": "Número Mestre da Manifestação",
-    "anjo": "Angelo da Co-criação",
-    "mensagem": "O 22:22 é um número mestre de manifestação em grande escala. Doreen Virtue via aqui um conviti a sonhar em grande e agir com disciplina amorosa.",
-    "conselho": "Visualiza o teu ideal como já realizado por 2 minutos. Depois age.",
-    "palavraChave": "Manifestação"
-  },
-  "23:23": {
-    "titulo": "Parceria com o Universo",
-    "anjo": "Angelo da Colaboração Cósmica",
-    "mensagem": "Lavora em parceria com o universo. Solta o controlo excessivo e permiti que a vida ti surpreenda. Os angelos fecham o giorno com uma benedizione de confiança.",
-    "conselho": "Antes de dormir, entrega três preocupações aos angelos e agradece o giorno.",
-    "palavraChave": "Entrega"
-  }
-}
-export const HORAS_DE = {
-  "00:00": {
-    "titulo": "Heiliger Neuanfang",
-    "anjo": "Schutzengel",
-    "mensagem": "Du bist Um com o Divino. Os Engels pedem-dich um momento de silêncio interior para alinhar intenção e espírito. Esdich é o portal da meia-noidich - ideal para meditar e semear desejos com fé pura.",
-    "conselho": "Medita 1 minuto em silêncio. Pede clareza para o novo ciclo que começa.",
-    "palavraChave": "Einheit"
-  },
-  "01:01": {
-    "titulo": "Manifestação dos Pensamentos",
-    "anjo": "Engel da Criação",
-    "mensagem": "Os teus pensamentos estão a materializar-se com rapidez. Doreen Virtue ensinava que ver 01:01 é um aviso para manter a mendich focada no positivo - o Universum está a ouvir.",
-    "conselho": "Substitui pensamentos de medo por afirmações de confiança durandich as próximas horas.",
-    "palavraChave": "Mentaler Fokus"
-  },
-  "02:02": {
-    "titulo": "Fé e Equilíbrio",
-    "anjo": "Engel da Harmonia",
-    "mensagem": "Behalte fé e equilíbrio. Tudo está a alinhar-se nos bastidores, mesmo que ainda não vejas resultados. Os Engels pedem paciência e confiança no tempo divino.",
-    "conselho": "Vertraue no processo. Evita decisões impulsivas - espera pela clareza.",
-    "palavraChave": "Vertrauença"
-  },
-  "03:03": {
-    "titulo": "Presença dos Aufgestiegene Meister",
-    "anjo": "Aufgestiegene Meister",
-    "mensagem": "Os Aufgestiegene Meister estão perto de ti, apoiando o teu crescimento espiritual. É um convidich a ouvir a intuição e a seguir o caminho da alma com coragem.",
-    "conselho": "Frage internamente: \"Qual o próximo passo do meu caminho?\" e escuta a resposta suave.",
-    "palavraChave": "Intuição"
-  },
-  "04:04": {
-    "titulo": "Engels ao Teu Redor",
-    "anjo": "ArcEngel Gabriel",
-    "mensagem": "Os Engels envolvem-dich com proteção e amor. Não estás sozinho/a nesta situação. Doreen Virtue associava 04:04 à presença angelical tangível - sê grato/a pelo apoio invisível.",
-    "conselho": "Danke em voz alta por três bênçãos do Tag, por pequenas que sejam.",
-    "palavraChave": "Proteção"
-  },
-  "05:05": {
-    "titulo": "Mudança Positiva",
-    "anjo": "Engel da Transformação",
-    "mensagem": "Grandes mudanças positivas estão a caminho. Abraça a transformação com flexibilidade - o que se afasta faz lugar ao que dich serve verdadeiramente.",
-    "conselho": "Lass los um hábito ou crença que já não ressoa contigo.",
-    "palavraChave": "Transformação"
-  },
-  "06:06": {
-    "titulo": "Equilíbrio Material e Espiritual",
-    "anjo": "Engel do Equilíbrio",
-    "mensagem": "Os Engels pedem equilíbrio entre o mundo material e o espiritual. Cuida das tuas necessidades práticas sem negligenciar a alma. Generosidade e responsabilidade caminham juntas.",
-    "conselho": "Faz algo concreto pelo bem-estar do corpo e algo simbólico pela paz interior.",
-    "palavraChave": "Equilíbrio"
-  },
-  "07:07": {
-    "titulo": "Sordich Espiritual",
-    "anjo": "Engel da Boa Fortuna",
-    "mensagem": "Estás no caminho certo e a sordich espiritual acompanha-te. Continua o bom trabalho interior - os frutos aproximam-se. Os Engels celebram o teu progresso.",
-    "conselho": "Continua o que começasdich com disciplina suave. A perseverança é recompensada.",
-    "palavraChave": "Perseverança"
-  },
-  "08:08": {
-    "titulo": "Abundância e Fluxo",
-    "anjo": "Engel da Prosperidade",
-    "mensagem": "O fluxo de abundância abre-se wenn alinhas intenção, acção e gratidão. Doreen Virtue via em 08:08 um sinal de prosperidade equilibrada - material e emocional.",
-    "conselho": "Organiza uma área da tua vida (finanças, tempo ou Energie) com intenção positiva.",
-    "palavraChave": "Abundância"
-  },
-  "09:09": {
-    "titulo": "Missão de Alma",
-    "anjo": "Engel Humanitário",
-    "mensagem": "Completa o que precisa de fecho e prepara-dich para um capítulo alinhado com a tua Mission de alma. Servir com amor é o teu maior poder.",
-    "conselho": "Conclui uma tarefa pendente. Oferece ajuda a alguém sem esperar retorno.",
-    "palavraChave": "Serviço"
-  },
-  "10:10": {
-    "titulo": "Guia Divino no Caminho",
-    "anjo": "Engel da Orientação",
-    "mensagem": "Vertraue que estás a ser guiado/a no rumo certo. Os Engels pedem que mantenhas pensamentos elevados e ações coerentes com o teu propósito superior.",
-    "conselho": "Schreibe uma intenção clara para a semana e coloca-a wo a vejas Tagriamente.",
-    "palavraChave": "Propósito"
-  },
-  "11:11": {
-    "titulo": "Portal de Despertar",
-    "anjo": "Engel da Iluminação",
-    "mensagem": "O número mestre 11:11 é o portal mais conhecido de Doreen Virtue - sinal de despertar espiritual. Os Engels pedem atenção aos pensamentos: estás a co-criar a tua realidade nesdich instante.",
-    "conselho": "Pede um sinal claro ao Universum e observa sincronias nas próximas 24 horas.",
-    "palavraChave": "Despertar"
-  },
-  "12:12": {
-    "titulo": "Crescimento Espiritual",
-    "anjo": "Engel da Evolução",
-    "mensagem": "Behalte os pés na terra enquanto expandes a consciência. O crescimento espiritual pede prática diária, não apenas inspiração momentânea.",
-    "conselho": "Dedica 12 minutos heute a leitura inspiradora, meditação ou journaling.",
-    "palavraChave": "Evolução"
-  },
-  "13:13": {
-    "titulo": "Apoio dos Mestres",
-    "anjo": "Aufgestiegene Meister",
-    "mensagem": "Os Aufgestiegene Meister ajudam-dich a transformar obstáculos em sabedoria. O que parece bloqueio pode ser proteção divina a redirecionar-te.",
-    "conselho": "Reformula um problema actual como lição em crescimento.",
-    "palavraChave": "Sabedoria"
-  },
-  "14:14": {
-    "titulo": "Adaptação Consciente",
-    "anjo": "Engel da Flexibilidade",
-    "mensagem": "Os Engels pedem adaptação consciendich às mudanças em curso. Ajusta planos sem perder a visão - flexibilidade é força, não fraqueza.",
-    "conselho": "Revê uma meta e adapta o método, não o sonho.",
-    "palavraChave": "Adaptação"
-  },
-  "15:15": {
-    "titulo": "Mudanças Necessárias",
-    "anjo": "Engel da Lass losção",
-    "mensagem": "É tempo de mudanças positivas que libertam velhos padrões. Os Engels apoiam decisões que elevam a tua verdade interior.",
-    "conselho": "Identifica uma situação que drena Energie e define um limidich saudável.",
-    "palavraChave": "Lass losção"
-  },
-  "16:16": {
-    "titulo": "Alinhamento de Pensamento",
-    "anjo": "Engel da Verdade",
-    "mensagem": "Os teus pensamentos estão a moldar a experiência presente. Doreen Virtue alertava: ver 16:16 pede honestidade interior e alinhamento entre o que pensas e o que fazes.",
-    "conselho": "Frage: \"Esta escolha honra quem quero ser?\" e age em conformidade.",
-    "palavraChave": "Alinhamento"
-  },
-  "17:17": {
-    "titulo": "Caminho Correcto",
-    "anjo": "Engel da Confirmação",
-    "mensagem": "Estás no caminho certo - os Engels confirmam. Continua com confiança e gratidão. A dúvida é natural, mas a orientação divina é real.",
-    "conselho": "Regista três sinais positivos que recebesdich recentemente.",
-    "palavraChave": "Confirmação"
-  },
-  "18:18": {
-    "titulo": "Oração Atendida",
-    "anjo": "Engel da Resposta",
-    "mensagem": "As tuas orações e intenções estão a ser ouvidas. Behalte fé - a resposta manifesta-se no tempo perfeito, muitas vezes de formas inesperadas.",
-    "conselho": "Danke antecipadamendich pela bênção que está a caminho.",
-    "palavraChave": "Fé"
-  },
-  "19:19": {
-    "titulo": "Missão de Vida",
-    "anjo": "Engel do Propósito",
-    "mensagem": "Avança com coragem na direcção da tua Mission de vida. Os Engels pedem que deixes o medo do julgamento e expresses o teu dom único.",
-    "conselho": "Dá um pequeno passo concreto heute em direcção ao teu sonho maior.",
-    "palavraChave": "Coragem"
-  },
-  "20:20": {
-    "titulo": "Decisão Divina",
-    "anjo": "Engel da Clareza",
-    "mensagem": "Vertraue na orientação divina nas tuas decisões. Os Engels pedem que escolhas com o Herz alinhado à verdade, não ao medo.",
-    "conselho": "Antes de decidir, respira fundo três vezes e pergunta: \"O que o amor faria?\"",
-    "palavraChave": "Clareza"
-  },
-  "21:21": {
-    "titulo": "Meditação e Escuta",
-    "anjo": "Engel da Paz",
-    "mensagem": "É tempo de meditação e escuta interior. A resposta que procuras está no silêncio, não no ruído. Os Engels falam em voz suave.",
-    "conselho": "Desliga notificações por 21 minutos e medita ou caminha em silêncio.",
-    "palavraChave": "Silêncio"
-  },
-  "22:22": {
-    "titulo": "Número Mestre da Manifestação",
-    "anjo": "Engel da Co-criação",
-    "mensagem": "O 22:22 é um número mestre de manifestação em grande escala. Doreen Virtue via aqui um convidich a sonhar em grande e agir com disciplina amorosa.",
-    "conselho": "Visualiza o teu ideal como já realizado por 2 minutos. Depois age.",
-    "palavraChave": "Manifestação"
-  },
-  "23:23": {
-    "titulo": "Parceria com o Universo",
-    "anjo": "Engel da Colaboração Cósmica",
-    "mensagem": "Trabalha em parceria com o Universum. Solta o controlo excessivo e permidich que a vida dich surpreenda. Os Engels fecham o Tag com uma bênção de confiança.",
-    "conselho": "Antes de dormir, entrega três preocupações aos Engels e agradece o Tag.",
-    "palavraChave": "Entrega"
-  }
-}
-export const HORAS_FR = {
-  "00:00": {
-    "titulo": "Redémarrage Sacré",
-    "anjo": "Les Anges Gardiens",
-    "mensagem": "Tu es Um com o Divino. Os anges pedem-te um momento de silêncio interior para alinhar intenção e espírito. Este é o portal da meia-noite - ideal para meditar e semear desejos com fé pura.",
-    "conselho": "Medita 1 minuto em silêncio. Pede clareza para o novo ciclo que começa.",
-    "palavraChave": "Unité"
-  },
-  "01:01": {
-    "titulo": "Manifestação dos Pensamentos",
-    "anjo": "Ange da Criação",
-    "mensagem": "Os teus pensamentos estão a materializar-se com rapidez. Doreen Virtue ensinava que ver 01:01 é um aviso para manter a mente focada no positivo - o univers está a ouvir.",
-    "conselho": "Substitui pensamentos de medo por afirmações de confiança durante as próximas horas.",
-    "palavraChave": "Focus mental"
-  },
-  "02:02": {
-    "titulo": "Fé e Equilíbrio",
-    "anjo": "Ange da Harmonia",
-    "mensagem": "Garde fé e equilíbrio. Tudo está a alinhar-se nos bastidores, mesmo que ainda não vejas resultados. Os anges pedem paciência e confiança no tempo divino.",
-    "conselho": "Fais confiance no processo. Evita decisões impulsivas - espera pela clareza.",
-    "palavraChave": "Fais confiancença"
-  },
-  "03:03": {
-    "titulo": "Presença dos Maîtres Ascendus",
-    "anjo": "Maîtres Ascendus",
-    "mensagem": "Os Maîtres Ascendus estão perto de ti, apoiando o teu crescimento espiritual. É um convite a ouvir a intuição e a seguir o caminho da alma com coragem.",
-    "conselho": "Demande internamente: \"Qual o próximo passo do meu caminho?\" e escuta a resposta suave.",
-    "palavraChave": "Intuição"
-  },
-  "04:04": {
-    "titulo": "Anges ao Teu Redor",
-    "anjo": "Arcange Gabriel",
-    "mensagem": "Os anges envolvem-te com proteção e amor. Não estás sozinho/a nesta situação. Doreen Virtue associava 04:04 à presença angelical tangível - sê grato/a pelo apoio invisível.",
-    "conselho": "Remercie em voz alta por três bênçãos do jour, por pequenas que sejam.",
-    "palavraChave": "Proteção"
-  },
-  "05:05": {
-    "titulo": "Mudança Positiva",
-    "anjo": "Ange da Transformação",
-    "mensagem": "Grandes mudanças positivas estão a caminho. Abraça a transformação com flexibilidade - o que se afasta faz lugar ao que te serve verdadeiramente.",
-    "conselho": "Libère um hábito ou crença que já não ressoa contigo.",
-    "palavraChave": "Transformação"
-  },
-  "06:06": {
-    "titulo": "Equilíbrio Material e Espiritual",
-    "anjo": "Ange do Equilíbrio",
-    "mensagem": "Os anges pedem equilíbrio entre o mundo material e o espiritual. Cuida das tuas necessidades práticas sem negligenciar a alma. Generosidade e responsabilidade caminham juntas.",
-    "conselho": "Faz algo concreto pelo bem-estar do corpo e algo simbólico pela paz interior.",
-    "palavraChave": "Equilíbrio"
-  },
-  "07:07": {
-    "titulo": "Sorte Espiritual",
-    "anjo": "Ange da Boa Fortuna",
-    "mensagem": "Estás no caminho certo e a sorte espiritual acompanha-te. Continua o bom trabalho interior - os frutos aproximam-se. Os anges celebram o teu progresso.",
-    "conselho": "Continua o que começaste com disciplina suave. A perseverança é recompensada.",
-    "palavraChave": "Perseverança"
-  },
-  "08:08": {
-    "titulo": "Abundância e Fluxo",
-    "anjo": "Ange da Prosperidade",
-    "mensagem": "O fluxo de abundância abre-se quand alinhas intenção, acção e gratidão. Doreen Virtue via em 08:08 um sinal de prosperidade equilibrada - material e emocional.",
-    "conselho": "Organiza uma área da tua vida (finanças, tempo ou énergie) com intenção positiva.",
-    "palavraChave": "Abundância"
-  },
-  "09:09": {
-    "titulo": "Missão de Alma",
-    "anjo": "Ange Humanitário",
-    "mensagem": "Completa o que precisa de fecho e prepara-te para um capítulo alinhado com a tua mission de alma. Servir com amor é o teu maior poder.",
-    "conselho": "Conclui uma tarefa pendente. Oferece ajuda a alguém sem esperar retorno.",
-    "palavraChave": "Serviço"
-  },
-  "10:10": {
-    "titulo": "Guia Divino no Caminho",
-    "anjo": "Ange da Orientação",
-    "mensagem": "Fais confiance que estás a ser guiado/a no rumo certo. Os anges pedem que mantenhas pensamentos elevados e ações coerentes com o teu propósito superior.",
-    "conselho": "Écris uma intenção clara para a semana e coloca-a où a vejas jourriamente.",
-    "palavraChave": "Propósito"
-  },
-  "11:11": {
-    "titulo": "Portal de Despertar",
-    "anjo": "Ange da Iluminação",
-    "mensagem": "O número mestre 11:11 é o portal mais conhecido de Doreen Virtue - sinal de despertar espiritual. Os anges pedem atenção aos pensamentos: estás a co-criar a tua realidade neste instante.",
-    "conselho": "Pede um sinal claro ao univers e observa sincronias nas próximas 24 horas.",
-    "palavraChave": "Despertar"
-  },
-  "12:12": {
-    "titulo": "Crescimento Espiritual",
-    "anjo": "Ange da Evolução",
-    "mensagem": "Garde os pés na terra enquanto expandes a consciência. O crescimento espiritual pede prática diária, não apenas inspiração momentânea.",
-    "conselho": "Dedica 12 minutos aujourd'hui a leitura inspiradora, meditação ou journaling.",
-    "palavraChave": "Evolução"
-  },
-  "13:13": {
-    "titulo": "Apoio dos Mestres",
-    "anjo": "Maîtres Ascendus",
-    "mensagem": "Os Maîtres Ascendus ajudam-te a transformar obstáculos em sabedoria. O que parece bloqueio pode ser proteção divina a redirecionar-te.",
-    "conselho": "Reformula um problema actual como lição em crescimento.",
-    "palavraChave": "Sabedoria"
-  },
-  "14:14": {
-    "titulo": "Adaptação Consciente",
-    "anjo": "Ange da Flexibilidade",
-    "mensagem": "Os anges pedem adaptação consciente às mudanças em curso. Ajusta planos sem perder a visão - flexibilidade é força, não fraqueza.",
-    "conselho": "Revê uma meta e adapta o método, não o sonho.",
-    "palavraChave": "Adaptação"
-  },
-  "15:15": {
-    "titulo": "Mudanças Necessárias",
-    "anjo": "Ange da Libèreção",
-    "mensagem": "É tempo de mudanças positivas que libertam velhos padrões. Os anges apoiam decisões que elevam a tua verdade interior.",
-    "conselho": "Identifica uma situação que drena énergie e define um limite saudável.",
-    "palavraChave": "Libèreção"
-  },
-  "16:16": {
-    "titulo": "Alinhamento de Pensamento",
-    "anjo": "Ange da Verdade",
-    "mensagem": "Os teus pensamentos estão a moldar a experiência presente. Doreen Virtue alertava: ver 16:16 pede honestidade interior e alinhamento entre o que pensas e o que fazes.",
-    "conselho": "Demande: \"Esta escolha honra quem quero ser?\" e age em conformidade.",
-    "palavraChave": "Alinhamento"
-  },
-  "17:17": {
-    "titulo": "Caminho Correcto",
-    "anjo": "Ange da Confirmação",
-    "mensagem": "Estás no caminho certo - os anges confirmam. Continua com confiança e gratidão. A dúvida é natural, mas a orientação divina é real.",
-    "conselho": "Regista três sinais positivos que recebeste recentemente.",
-    "palavraChave": "Confirmação"
-  },
-  "18:18": {
-    "titulo": "Oração Atendida",
-    "anjo": "Ange da Resposta",
-    "mensagem": "As tuas orações e intenções estão a ser ouvidas. Garde fé - a resposta manifesta-se no tempo perfeito, muitas vezes de formas inesperadas.",
-    "conselho": "Remercie antecipadamente pela bênção que está a caminho.",
-    "palavraChave": "Fé"
-  },
-  "19:19": {
-    "titulo": "Missão de Vida",
-    "anjo": "Ange do Propósito",
-    "mensagem": "Avança com coragem na direcção da tua mission de vida. Os anges pedem que deixes o medo do julgamento e expresses o teu dom único.",
-    "conselho": "Dá um pequeno passo concreto aujourd'hui em direcção ao teu sonho maior.",
-    "palavraChave": "Coragem"
-  },
-  "20:20": {
-    "titulo": "Decisão Divina",
-    "anjo": "Ange da Clareza",
-    "mensagem": "Fais confiance na orientação divina nas tuas decisões. Os anges pedem que escolhas com o cœur alinhado à verdade, não ao medo.",
-    "conselho": "Antes de decidir, respira fundo três vezes e pergunta: \"O que o amor faria?\"",
-    "palavraChave": "Clareza"
-  },
-  "21:21": {
-    "titulo": "Meditação e Escuta",
-    "anjo": "Ange da Paz",
-    "mensagem": "É tempo de meditação e escuta interior. A resposta que procuras está no silêncio, não no ruído. Os anges falam em voz suave.",
-    "conselho": "Desliga notificações por 21 minutos e medita ou caminha em silêncio.",
-    "palavraChave": "Silêncio"
-  },
-  "22:22": {
-    "titulo": "Número Mestre da Manifestação",
-    "anjo": "Ange da Co-criação",
-    "mensagem": "O 22:22 é um número mestre de manifestação em grande escala. Doreen Virtue via aqui um convite a sonhar em grande e agir com disciplina amorosa.",
-    "conselho": "Visualiza o teu ideal como já realizado por 2 minutos. Depois age.",
-    "palavraChave": "Manifestação"
-  },
-  "23:23": {
-    "titulo": "Parceria com o Universo",
-    "anjo": "Ange da Colaboração Cósmica",
-    "mensagem": "Trabalha em parceria com o univers. Solta o controlo excessivo e permite que a vida te surpreenda. Os anges fecham o jour com uma bênção de confiança.",
-    "conselho": "Antes de dormir, entrega três preocupações aos anges e agradece o jour.",
-    "palavraChave": "Entrega"
-  }
-}
+
 export const ESPELHOS_ES = {
   "12:21": {
-    "titulo": "Sincronia de Cura",
-    "mensagem": "Os ángels enviam conforto emocional. É tempo de curar relações ou perdoar a ti mesmo/a.",
-    "conselho": "Perdoa uma situação del passado, mesmo que apenas em silêncio."
+    "titulo": "Sincronía de Sanación",
+    "mensagem": "Los ángeles envían consuelo emocional. Es tiempo de sanar relaciones o perdonarte.",
+    "conselho": "Perdona una situación del pasado, aunque sea solo en silencio."
   },
   "13:31": {
-    "titulo": "Criatividade Angelical",
-    "mensagem": "Canal criativo aberto. Expressa arte, escrita ou música - os ángels fluem atraveres de la criação.",
-    "conselho": "Cria algo hoy, por mais simples que seja."
+    "titulo": "Creatividad Angelical",
+    "mensagem": "Canal creativo abierto. Expresa arte, escritura o música.",
+    "conselho": "Crea algo hoy, por más simple que sea."
   },
   "14:41": {
-    "titulo": "Estabilidade Divina",
-    "mensagem": "Constrói alicerces sólidos. Os ángels apoiam projectos de longo prazo com paciência.",
-    "conselho": "Dá um passo prático num projecto importante."
+    "titulo": "Estabilidad Divina",
+    "mensagem": "Construye cimientos sólidos. Los ángeles apoyan proyectos a largo plazo.",
+    "conselho": "Da un paso práctico en un proyecto importante."
   },
   "15:51": {
-    "titulo": "Liberação de Velhos Ciclos",
-    "mensagem": "Soltar o passado abre portas novas. Confía en la renovação.",
-    "conselho": "Desapega de um objecto ou memória que já não serve."
+    "titulo": "Liberación de Viejos Ciclos",
+    "mensagem": "Soltar el pasado abre puertas nuevas. Confía en la renovación.",
+    "conselho": "Desprende un objeto o memoria que ya no te sirve."
   },
-  "16:61": null,
   "21:12": {
-    "titulo": "Reflexão e Renovação",
-    "mensagem": "Espelho de 12:21 - renova compromissos consigo mesmo/a e com o sagrado.",
-    "conselho": "Reafirma uma promessa pessoal importante."
+    "titulo": "Reflexión y Renovación",
+    "mensagem": "Espejo de 12:21: renueva compromisos contigo y con lo sagrado.",
+    "conselho": "Reafirma una promesa personal importante."
   },
   "23:32": {
-    "titulo": "Protecção Noturna",
-    "mensagem": "Antes de dormir, os ángels envolvem-te. Libera preocupaciones del día.",
-    "conselho": "Escribe num papel o que te preocupa e rasga-o simbolicamente."
+    "titulo": "Protección Nocturna",
+    "mensagem": "Antes de dormir, los ángeles te envuelven. Libera las preocupaciones del día.",
+    "conselho": "Escribe tus preocupaciones y rómpelas simbólicamente."
   }
 }
+
+export const HORAS_IT = {
+  "00:00": {
+    "titulo": "Sacred Reset",
+    "anjo": "Guardian Angels",
+    "mensagem": "You are One with the Divine. The angels ask for a moment of inner silence to align intention and spirit. This midnight portal is ideal for meditation and planting wishes with pure faith.",
+    "conselho": "Meditate 1 minute in silence. Ask for clarity for the new cycle beginning.",
+    "palavraChave": "Unity"
+  },
+  "01:01": {
+    "titulo": "Thoughts Manifesting",
+    "anjo": "Angel of Creation",
+    "mensagem": "Your thoughts are materialising quickly. Doreen Virtue taught that 01:01 warns you to keep the mind focused on the positive - the universe is listening.",
+    "conselho": "Replace fearful thoughts with affirmations of trust in the coming hours.",
+    "palavraChave": "Mental focus"
+  },
+  "02:02": {
+    "titulo": "Faith and Balance",
+    "anjo": "Angel of Harmony",
+    "mensagem": "Keep faith and balance. Everything is aligning behind the scenes. The angels ask for patience and trust in divine timing.",
+    "conselho": "Trust the process. Avoid impulsive decisions - wait for clarity.",
+    "palavraChave": "Trust"
+  },
+  "03:03": {
+    "titulo": "Ascended Masters Near",
+    "anjo": "Ascended Masters",
+    "mensagem": "The Ascended Masters are close, supporting your spiritual growth. Listen to intuition and follow the soul path with courage.",
+    "conselho": "Ask inwardly: \"What is my next step?\" and listen for the gentle answer.",
+    "palavraChave": "Intuition"
+  },
+  "04:04": {
+    "titulo": "Angels Surround You",
+    "anjo": "Archangel Gabriel",
+    "mensagem": "Angels surround you with protection and love. You are not alone. Doreen Virtue linked 04:04 to tangible angelic presence - be grateful for invisible support.",
+    "conselho": "Thank aloud for three blessings of the day, however small.",
+    "palavraChave": "Protection"
+  },
+  "05:05": {
+    "titulo": "Positive Change",
+    "anjo": "Angel of Transformation",
+    "mensagem": "Great positive changes are coming. Embrace transformation with flexibility - what leaves makes room for what truly serves you.",
+    "conselho": "Release a habit or belief that no longer resonates.",
+    "palavraChave": "Transformation"
+  },
+  "06:06": {
+    "titulo": "Material and Spiritual Balance",
+    "anjo": "Angel of Balance",
+    "mensagem": "Angels ask for balance between material and spiritual worlds. Care for practical needs without neglecting the soul.",
+    "conselho": "Do something concrete for the body and something symbolic for inner peace.",
+    "palavraChave": "Balance"
+  },
+  "07:07": {
+    "titulo": "Spiritual Luck",
+    "anjo": "Angel of Good Fortune",
+    "mensagem": "You are on the right path and spiritual luck accompanies you. Angels celebrate your progress.",
+    "conselho": "Continue what you started with gentle discipline. Perseverance is rewarded.",
+    "palavraChave": "Perseverance"
+  },
+  "08:08": {
+    "titulo": "Abundance Flow",
+    "anjo": "Angel of Prosperity",
+    "mensagem": "Abundance flows when intention, action and gratitude align. Doreen Virtue saw 08:08 as balanced prosperity - material and emotional.",
+    "conselho": "Organise one area of life (finances, time or energy) with positive intention.",
+    "palavraChave": "Abundance"
+  },
+  "09:09": {
+    "titulo": "Soul Mission",
+    "anjo": "Humanitarian Angel",
+    "mensagem": "Complete what needs closure and prepare for a chapter aligned with your soul mission. Serving with love is your greatest power.",
+    "conselho": "Finish a pending task. Offer help to someone without expecting return.",
+    "palavraChave": "Service"
+  },
+  "10:10": {
+    "titulo": "Divine Guidance",
+    "anjo": "Angel of Direction",
+    "mensagem": "Trust you are being guided on the right path. Angels ask for elevated thoughts and actions coherent with your higher purpose.",
+    "conselho": "Write a clear intention for the week and place it where you see it daily.",
+    "palavraChave": "Purpose"
+  },
+  "11:11": {
+    "titulo": "Awakening Portal",
+    "anjo": "Angel of Illumination",
+    "mensagem": "Master number 11:11 is Doreen Virtue's best-known portal - a sign of spiritual awakening. Angels ask attention to thoughts: you are co-creating reality now.",
+    "conselho": "Ask the universe for a clear sign and watch synchronicities in the next 24 hours.",
+    "palavraChave": "Awakening"
+  },
+  "12:12": {
+    "titulo": "Spiritual Growth",
+    "anjo": "Angel of Evolution",
+    "mensagem": "Keep feet on the ground while expanding consciousness. Spiritual growth needs daily practice, not only momentary inspiration.",
+    "conselho": "Spend 12 minutes today on inspiring reading, meditation or journaling.",
+    "palavraChave": "Evolution"
+  },
+  "13:13": {
+    "titulo": "Masters' Support",
+    "anjo": "Ascended Masters",
+    "mensagem": "Ascended Masters help transform obstacles into wisdom. What seems blockage may be divine protection redirecting you.",
+    "conselho": "Reframe a current problem as a growth lesson.",
+    "palavraChave": "Wisdom"
+  },
+  "14:14": {
+    "titulo": "Conscious Adaptation",
+    "anjo": "Angel of Flexibility",
+    "mensagem": "Angels ask conscious adaptation to changes underway. Adjust plans without losing vision - flexibility is strength.",
+    "conselho": "Review a goal and adapt the method, not the dream.",
+    "palavraChave": "Adaptation"
+  },
+  "15:15": {
+    "titulo": "Needed Changes",
+    "anjo": "Angel of Release",
+    "mensagem": "Time for positive changes that free old patterns. Angels support decisions that elevate your inner truth.",
+    "conselho": "Identify a draining situation and set a healthy boundary.",
+    "palavraChave": "Release"
+  },
+  "16:16": {
+    "titulo": "Thought Alignment",
+    "anjo": "Angel of Truth",
+    "mensagem": "Your thoughts shape the present experience. Doreen Virtue warned: 16:16 asks for inner honesty and alignment between thought and action.",
+    "conselho": "Ask: \"Does this choice honour who I want to be?\" and act accordingly.",
+    "palavraChave": "Alignment"
+  },
+  "17:17": {
+    "titulo": "Right Path",
+    "anjo": "Angel of Confirmation",
+    "mensagem": "You are on the right path - angels confirm. Continue with confidence and gratitude.",
+    "conselho": "Record three positive signs you received recently.",
+    "palavraChave": "Confirmation"
+  },
+  "18:18": {
+    "titulo": "Prayer Answered",
+    "anjo": "Angel of Response",
+    "mensagem": "Your prayers and intentions are heard. Keep faith - the answer manifests in perfect timing, often unexpectedly.",
+    "conselho": "Give thanks in advance for the blessing on its way.",
+    "palavraChave": "Faith"
+  },
+  "19:19": {
+    "titulo": "Life Mission",
+    "anjo": "Angel of Purpose",
+    "mensagem": "Move courageously toward your life mission. Angels ask you to release fear of judgment and express your unique gift.",
+    "conselho": "Take one small concrete step today toward your greatest dream.",
+    "palavraChave": "Courage"
+  },
+  "20:20": {
+    "titulo": "Divine Decision",
+    "anjo": "Angel of Clarity",
+    "mensagem": "Trust divine guidance in your decisions. Angels ask choices aligned with truth, not fear.",
+    "conselho": "Before deciding, breathe deeply three times and ask: \"What would love do?\"",
+    "palavraChave": "Clarity"
+  },
+  "21:21": {
+    "titulo": "Meditation and Listening",
+    "anjo": "Angel of Peace",
+    "mensagem": "Time for meditation and inner listening. The answer you seek is in silence, not noise.",
+    "conselho": "Turn off notifications for 21 minutes and meditate or walk in silence.",
+    "palavraChave": "Silence"
+  },
+  "22:22": {
+    "titulo": "Master Manifestation",
+    "anjo": "Angel of Co-creation",
+    "mensagem": "22:22 is a master number of large-scale manifestation. Doreen Virtue saw an invitation to dream big and act with loving discipline.",
+    "conselho": "Visualise your ideal as already real for 2 minutes. Then act.",
+    "palavraChave": "Manifestation"
+  },
+  "23:23": {
+    "titulo": "Cosmic Partnership",
+    "anjo": "Angel of Trust",
+    "mensagem": "Work in partnership with the universe. Release excessive control and let life surprise you. Angels close the day with a blessing of trust.",
+    "conselho": "Before sleep, hand three worries to the angels and thank the day.",
+    "palavraChave": "Surrender"
+  }
+}
+
 export const ESPELHOS_IT = {
   "12:21": {
-    "titulo": "Sincronia de Cura",
-    "mensagem": "Os angelos enviam conforto emocional. É tempo de curar relações ou perdoar a ti mesmo/a.",
-    "conselho": "Perdoa uma situação do passado, mesmo que apenas em silêncio."
+    "titulo": "Healing Synchronicity",
+    "mensagem": "Angels send emotional comfort. Time to heal relationships or forgive yourself.",
+    "conselho": "Forgive a past situation, even if only in silence."
   },
   "13:31": {
-    "titulo": "Criatividade Angelical",
-    "mensagem": "Canal criativo aberto. Expressa arte, escrita ou música - os angelos fluem atravsei da criação.",
-    "conselho": "Cria algo oggi, por mais simples que seja."
+    "titulo": "Angelic Creativity",
+    "mensagem": "Creative channel open. Express art, writing or music - angels flow through creation.",
+    "conselho": "Create something today, however simple."
   },
   "14:41": {
-    "titulo": "Estabilidade Divina",
-    "mensagem": "Constrói alicerces sólidos. Os angelos apoiam projectos de longo prazo com paciência.",
-    "conselho": "Dá um passo prático num projecto importante."
+    "titulo": "Divine Stability",
+    "mensagem": "Build solid foundations. Angels support long-term projects with patience.",
+    "conselho": "Take a practical step on an important project."
   },
   "15:51": {
-    "titulo": "Lascia andareção de Velhos Ciclos",
-    "mensagem": "Soltar o passado abre portas novas. Confida na renovação.",
-    "conselho": "Desapega de um objecto ou memória que já não serve."
+    "titulo": "Releasing Old Cycles",
+    "mensagem": "Letting go of the past opens new doors. Trust renewal.",
+    "conselho": "Release an object or memory that no longer serves."
   },
-  "16:61": null,
   "21:12": {
-    "titulo": "Reflexão e Renovação",
-    "mensagem": "Espelho de 12:21 - renova compromissos consigo mesmo/a e com o sagrado.",
-    "conselho": "Reafirma uma promessa pessoal importante."
+    "titulo": "Reflection and Renewal",
+    "mensagem": "Mirror of 12:21 - renew commitments to yourself and the sacred.",
+    "conselho": "Reaffirm an important personal promise."
   },
   "23:32": {
-    "titulo": "Protecção Noturna",
-    "mensagem": "Antes de dormir, os angelos envolvem-te. Lascia andare preocupações do giorno.",
-    "conselho": "Scrivi num papel o que ti preocupa e rasga-o simbolicamente."
+    "titulo": "Night Protection",
+    "mensagem": "Before sleep, angels surround you. Release the day's worries.",
+    "conselho": "Write worries on paper and tear it up symbolically."
   }
 }
+
+export const HORAS_DE = {
+  "00:00": {
+    "titulo": "Sacred Reset",
+    "anjo": "Guardian Angels",
+    "mensagem": "You are One with the Divine. The angels ask for a moment of inner silence to align intention and spirit. This midnight portal is ideal for meditation and planting wishes with pure faith.",
+    "conselho": "Meditate 1 minute in silence. Ask for clarity for the new cycle beginning.",
+    "palavraChave": "Unity"
+  },
+  "01:01": {
+    "titulo": "Thoughts Manifesting",
+    "anjo": "Angel of Creation",
+    "mensagem": "Your thoughts are materialising quickly. Doreen Virtue taught that 01:01 warns you to keep the mind focused on the positive - the universe is listening.",
+    "conselho": "Replace fearful thoughts with affirmations of trust in the coming hours.",
+    "palavraChave": "Mental focus"
+  },
+  "02:02": {
+    "titulo": "Faith and Balance",
+    "anjo": "Angel of Harmony",
+    "mensagem": "Keep faith and balance. Everything is aligning behind the scenes. The angels ask for patience and trust in divine timing.",
+    "conselho": "Trust the process. Avoid impulsive decisions - wait for clarity.",
+    "palavraChave": "Trust"
+  },
+  "03:03": {
+    "titulo": "Ascended Masters Near",
+    "anjo": "Ascended Masters",
+    "mensagem": "The Ascended Masters are close, supporting your spiritual growth. Listen to intuition and follow the soul path with courage.",
+    "conselho": "Ask inwardly: \"What is my next step?\" and listen for the gentle answer.",
+    "palavraChave": "Intuition"
+  },
+  "04:04": {
+    "titulo": "Angels Surround You",
+    "anjo": "Archangel Gabriel",
+    "mensagem": "Angels surround you with protection and love. You are not alone. Doreen Virtue linked 04:04 to tangible angelic presence - be grateful for invisible support.",
+    "conselho": "Thank aloud for three blessings of the day, however small.",
+    "palavraChave": "Protection"
+  },
+  "05:05": {
+    "titulo": "Positive Change",
+    "anjo": "Angel of Transformation",
+    "mensagem": "Great positive changes are coming. Embrace transformation with flexibility - what leaves makes room for what truly serves you.",
+    "conselho": "Release a habit or belief that no longer resonates.",
+    "palavraChave": "Transformation"
+  },
+  "06:06": {
+    "titulo": "Material and Spiritual Balance",
+    "anjo": "Angel of Balance",
+    "mensagem": "Angels ask for balance between material and spiritual worlds. Care for practical needs without neglecting the soul.",
+    "conselho": "Do something concrete for the body and something symbolic for inner peace.",
+    "palavraChave": "Balance"
+  },
+  "07:07": {
+    "titulo": "Spiritual Luck",
+    "anjo": "Angel of Good Fortune",
+    "mensagem": "You are on the right path and spiritual luck accompanies you. Angels celebrate your progress.",
+    "conselho": "Continue what you started with gentle discipline. Perseverance is rewarded.",
+    "palavraChave": "Perseverance"
+  },
+  "08:08": {
+    "titulo": "Abundance Flow",
+    "anjo": "Angel of Prosperity",
+    "mensagem": "Abundance flows when intention, action and gratitude align. Doreen Virtue saw 08:08 as balanced prosperity - material and emotional.",
+    "conselho": "Organise one area of life (finances, time or energy) with positive intention.",
+    "palavraChave": "Abundance"
+  },
+  "09:09": {
+    "titulo": "Soul Mission",
+    "anjo": "Humanitarian Angel",
+    "mensagem": "Complete what needs closure and prepare for a chapter aligned with your soul mission. Serving with love is your greatest power.",
+    "conselho": "Finish a pending task. Offer help to someone without expecting return.",
+    "palavraChave": "Service"
+  },
+  "10:10": {
+    "titulo": "Divine Guidance",
+    "anjo": "Angel of Direction",
+    "mensagem": "Trust you are being guided on the right path. Angels ask for elevated thoughts and actions coherent with your higher purpose.",
+    "conselho": "Write a clear intention for the week and place it where you see it daily.",
+    "palavraChave": "Purpose"
+  },
+  "11:11": {
+    "titulo": "Awakening Portal",
+    "anjo": "Angel of Illumination",
+    "mensagem": "Master number 11:11 is Doreen Virtue's best-known portal - a sign of spiritual awakening. Angels ask attention to thoughts: you are co-creating reality now.",
+    "conselho": "Ask the universe for a clear sign and watch synchronicities in the next 24 hours.",
+    "palavraChave": "Awakening"
+  },
+  "12:12": {
+    "titulo": "Spiritual Growth",
+    "anjo": "Angel of Evolution",
+    "mensagem": "Keep feet on the ground while expanding consciousness. Spiritual growth needs daily practice, not only momentary inspiration.",
+    "conselho": "Spend 12 minutes today on inspiring reading, meditation or journaling.",
+    "palavraChave": "Evolution"
+  },
+  "13:13": {
+    "titulo": "Masters' Support",
+    "anjo": "Ascended Masters",
+    "mensagem": "Ascended Masters help transform obstacles into wisdom. What seems blockage may be divine protection redirecting you.",
+    "conselho": "Reframe a current problem as a growth lesson.",
+    "palavraChave": "Wisdom"
+  },
+  "14:14": {
+    "titulo": "Conscious Adaptation",
+    "anjo": "Angel of Flexibility",
+    "mensagem": "Angels ask conscious adaptation to changes underway. Adjust plans without losing vision - flexibility is strength.",
+    "conselho": "Review a goal and adapt the method, not the dream.",
+    "palavraChave": "Adaptation"
+  },
+  "15:15": {
+    "titulo": "Needed Changes",
+    "anjo": "Angel of Release",
+    "mensagem": "Time for positive changes that free old patterns. Angels support decisions that elevate your inner truth.",
+    "conselho": "Identify a draining situation and set a healthy boundary.",
+    "palavraChave": "Release"
+  },
+  "16:16": {
+    "titulo": "Thought Alignment",
+    "anjo": "Angel of Truth",
+    "mensagem": "Your thoughts shape the present experience. Doreen Virtue warned: 16:16 asks for inner honesty and alignment between thought and action.",
+    "conselho": "Ask: \"Does this choice honour who I want to be?\" and act accordingly.",
+    "palavraChave": "Alignment"
+  },
+  "17:17": {
+    "titulo": "Right Path",
+    "anjo": "Angel of Confirmation",
+    "mensagem": "You are on the right path - angels confirm. Continue with confidence and gratitude.",
+    "conselho": "Record three positive signs you received recently.",
+    "palavraChave": "Confirmation"
+  },
+  "18:18": {
+    "titulo": "Prayer Answered",
+    "anjo": "Angel of Response",
+    "mensagem": "Your prayers and intentions are heard. Keep faith - the answer manifests in perfect timing, often unexpectedly.",
+    "conselho": "Give thanks in advance for the blessing on its way.",
+    "palavraChave": "Faith"
+  },
+  "19:19": {
+    "titulo": "Life Mission",
+    "anjo": "Angel of Purpose",
+    "mensagem": "Move courageously toward your life mission. Angels ask you to release fear of judgment and express your unique gift.",
+    "conselho": "Take one small concrete step today toward your greatest dream.",
+    "palavraChave": "Courage"
+  },
+  "20:20": {
+    "titulo": "Divine Decision",
+    "anjo": "Angel of Clarity",
+    "mensagem": "Trust divine guidance in your decisions. Angels ask choices aligned with truth, not fear.",
+    "conselho": "Before deciding, breathe deeply three times and ask: \"What would love do?\"",
+    "palavraChave": "Clarity"
+  },
+  "21:21": {
+    "titulo": "Meditation and Listening",
+    "anjo": "Angel of Peace",
+    "mensagem": "Time for meditation and inner listening. The answer you seek is in silence, not noise.",
+    "conselho": "Turn off notifications for 21 minutes and meditate or walk in silence.",
+    "palavraChave": "Silence"
+  },
+  "22:22": {
+    "titulo": "Master Manifestation",
+    "anjo": "Angel of Co-creation",
+    "mensagem": "22:22 is a master number of large-scale manifestation. Doreen Virtue saw an invitation to dream big and act with loving discipline.",
+    "conselho": "Visualise your ideal as already real for 2 minutes. Then act.",
+    "palavraChave": "Manifestation"
+  },
+  "23:23": {
+    "titulo": "Cosmic Partnership",
+    "anjo": "Angel of Trust",
+    "mensagem": "Work in partnership with the universe. Release excessive control and let life surprise you. Angels close the day with a blessing of trust.",
+    "conselho": "Before sleep, hand three worries to the angels and thank the day.",
+    "palavraChave": "Surrender"
+  }
+}
+
 export const ESPELHOS_DE = {
   "12:21": {
-    "titulo": "Sincronia de Cura",
-    "mensagem": "Os Engels enviam conforto emocional. É tempo de curar relações ou perdoar a ti mesmo/a.",
-    "conselho": "Perdoa uma situação do passado, mesmo que apenas em silêncio."
+    "titulo": "Healing Synchronicity",
+    "mensagem": "Angels send emotional comfort. Time to heal relationships or forgive yourself.",
+    "conselho": "Forgive a past situation, even if only in silence."
   },
   "13:31": {
-    "titulo": "Criatividade Angelical",
-    "mensagem": "Canal criativo aberto. Expressa arte, escrita ou música - os Engels fluem através da criação.",
-    "conselho": "Cria algo heute, por mais simples que seja."
+    "titulo": "Angelic Creativity",
+    "mensagem": "Creative channel open. Express art, writing or music - angels flow through creation.",
+    "conselho": "Create something today, however simple."
   },
   "14:41": {
-    "titulo": "Estabilidade Divina",
-    "mensagem": "Constrói alicerces sólidos. Os Engels apoiam projectos de longo prazo com paciência.",
-    "conselho": "Dá um passo prático num projecto importante."
+    "titulo": "Divine Stability",
+    "mensagem": "Build solid foundations. Angels support long-term projects with patience.",
+    "conselho": "Take a practical step on an important project."
   },
   "15:51": {
-    "titulo": "Lass losção de Velhos Ciclos",
-    "mensagem": "Soltar o passado abre portas novas. Vertraue na renovação.",
-    "conselho": "Desapega de um objecto ou memória que já não serve."
+    "titulo": "Releasing Old Cycles",
+    "mensagem": "Letting go of the past opens new doors. Trust renewal.",
+    "conselho": "Release an object or memory that no longer serves."
   },
-  "16:61": null,
   "21:12": {
-    "titulo": "Reflexão e Renovação",
-    "mensagem": "Espelho de 12:21 - renova compromissos consigo mesmo/a e com o sagrado.",
-    "conselho": "Reafirma uma promessa pessoal importante."
+    "titulo": "Reflection and Renewal",
+    "mensagem": "Mirror of 12:21 - renew commitments to yourself and the sacred.",
+    "conselho": "Reaffirm an important personal promise."
   },
   "23:32": {
-    "titulo": "Protecção Noturna",
-    "mensagem": "Antes de dormir, os Engels envolvem-te. Lass los preocupações do Tag.",
-    "conselho": "Schreibe num papel o que dich preocupa e rasga-o simbolicamente."
+    "titulo": "Night Protection",
+    "mensagem": "Before sleep, angels surround you. Release the day's worries.",
+    "conselho": "Write worries on paper and tear it up symbolically."
   }
 }
+
+export const HORAS_FR = {
+  "00:00": {
+    "titulo": "Sacred Reset",
+    "anjo": "Guardian Angels",
+    "mensagem": "You are One with the Divine. The angels ask for a moment of inner silence to align intention and spirit. This midnight portal is ideal for meditation and planting wishes with pure faith.",
+    "conselho": "Meditate 1 minute in silence. Ask for clarity for the new cycle beginning.",
+    "palavraChave": "Unity"
+  },
+  "01:01": {
+    "titulo": "Thoughts Manifesting",
+    "anjo": "Angel of Creation",
+    "mensagem": "Your thoughts are materialising quickly. Doreen Virtue taught that 01:01 warns you to keep the mind focused on the positive - the universe is listening.",
+    "conselho": "Replace fearful thoughts with affirmations of trust in the coming hours.",
+    "palavraChave": "Mental focus"
+  },
+  "02:02": {
+    "titulo": "Faith and Balance",
+    "anjo": "Angel of Harmony",
+    "mensagem": "Keep faith and balance. Everything is aligning behind the scenes. The angels ask for patience and trust in divine timing.",
+    "conselho": "Trust the process. Avoid impulsive decisions - wait for clarity.",
+    "palavraChave": "Trust"
+  },
+  "03:03": {
+    "titulo": "Ascended Masters Near",
+    "anjo": "Ascended Masters",
+    "mensagem": "The Ascended Masters are close, supporting your spiritual growth. Listen to intuition and follow the soul path with courage.",
+    "conselho": "Ask inwardly: \"What is my next step?\" and listen for the gentle answer.",
+    "palavraChave": "Intuition"
+  },
+  "04:04": {
+    "titulo": "Angels Surround You",
+    "anjo": "Archangel Gabriel",
+    "mensagem": "Angels surround you with protection and love. You are not alone. Doreen Virtue linked 04:04 to tangible angelic presence - be grateful for invisible support.",
+    "conselho": "Thank aloud for three blessings of the day, however small.",
+    "palavraChave": "Protection"
+  },
+  "05:05": {
+    "titulo": "Positive Change",
+    "anjo": "Angel of Transformation",
+    "mensagem": "Great positive changes are coming. Embrace transformation with flexibility - what leaves makes room for what truly serves you.",
+    "conselho": "Release a habit or belief that no longer resonates.",
+    "palavraChave": "Transformation"
+  },
+  "06:06": {
+    "titulo": "Material and Spiritual Balance",
+    "anjo": "Angel of Balance",
+    "mensagem": "Angels ask for balance between material and spiritual worlds. Care for practical needs without neglecting the soul.",
+    "conselho": "Do something concrete for the body and something symbolic for inner peace.",
+    "palavraChave": "Balance"
+  },
+  "07:07": {
+    "titulo": "Spiritual Luck",
+    "anjo": "Angel of Good Fortune",
+    "mensagem": "You are on the right path and spiritual luck accompanies you. Angels celebrate your progress.",
+    "conselho": "Continue what you started with gentle discipline. Perseverance is rewarded.",
+    "palavraChave": "Perseverance"
+  },
+  "08:08": {
+    "titulo": "Abundance Flow",
+    "anjo": "Angel of Prosperity",
+    "mensagem": "Abundance flows when intention, action and gratitude align. Doreen Virtue saw 08:08 as balanced prosperity - material and emotional.",
+    "conselho": "Organise one area of life (finances, time or energy) with positive intention.",
+    "palavraChave": "Abundance"
+  },
+  "09:09": {
+    "titulo": "Soul Mission",
+    "anjo": "Humanitarian Angel",
+    "mensagem": "Complete what needs closure and prepare for a chapter aligned with your soul mission. Serving with love is your greatest power.",
+    "conselho": "Finish a pending task. Offer help to someone without expecting return.",
+    "palavraChave": "Service"
+  },
+  "10:10": {
+    "titulo": "Divine Guidance",
+    "anjo": "Angel of Direction",
+    "mensagem": "Trust you are being guided on the right path. Angels ask for elevated thoughts and actions coherent with your higher purpose.",
+    "conselho": "Write a clear intention for the week and place it where you see it daily.",
+    "palavraChave": "Purpose"
+  },
+  "11:11": {
+    "titulo": "Awakening Portal",
+    "anjo": "Angel of Illumination",
+    "mensagem": "Master number 11:11 is Doreen Virtue's best-known portal - a sign of spiritual awakening. Angels ask attention to thoughts: you are co-creating reality now.",
+    "conselho": "Ask the universe for a clear sign and watch synchronicities in the next 24 hours.",
+    "palavraChave": "Awakening"
+  },
+  "12:12": {
+    "titulo": "Spiritual Growth",
+    "anjo": "Angel of Evolution",
+    "mensagem": "Keep feet on the ground while expanding consciousness. Spiritual growth needs daily practice, not only momentary inspiration.",
+    "conselho": "Spend 12 minutes today on inspiring reading, meditation or journaling.",
+    "palavraChave": "Evolution"
+  },
+  "13:13": {
+    "titulo": "Masters' Support",
+    "anjo": "Ascended Masters",
+    "mensagem": "Ascended Masters help transform obstacles into wisdom. What seems blockage may be divine protection redirecting you.",
+    "conselho": "Reframe a current problem as a growth lesson.",
+    "palavraChave": "Wisdom"
+  },
+  "14:14": {
+    "titulo": "Conscious Adaptation",
+    "anjo": "Angel of Flexibility",
+    "mensagem": "Angels ask conscious adaptation to changes underway. Adjust plans without losing vision - flexibility is strength.",
+    "conselho": "Review a goal and adapt the method, not the dream.",
+    "palavraChave": "Adaptation"
+  },
+  "15:15": {
+    "titulo": "Needed Changes",
+    "anjo": "Angel of Release",
+    "mensagem": "Time for positive changes that free old patterns. Angels support decisions that elevate your inner truth.",
+    "conselho": "Identify a draining situation and set a healthy boundary.",
+    "palavraChave": "Release"
+  },
+  "16:16": {
+    "titulo": "Thought Alignment",
+    "anjo": "Angel of Truth",
+    "mensagem": "Your thoughts shape the present experience. Doreen Virtue warned: 16:16 asks for inner honesty and alignment between thought and action.",
+    "conselho": "Ask: \"Does this choice honour who I want to be?\" and act accordingly.",
+    "palavraChave": "Alignment"
+  },
+  "17:17": {
+    "titulo": "Right Path",
+    "anjo": "Angel of Confirmation",
+    "mensagem": "You are on the right path - angels confirm. Continue with confidence and gratitude.",
+    "conselho": "Record three positive signs you received recently.",
+    "palavraChave": "Confirmation"
+  },
+  "18:18": {
+    "titulo": "Prayer Answered",
+    "anjo": "Angel of Response",
+    "mensagem": "Your prayers and intentions are heard. Keep faith - the answer manifests in perfect timing, often unexpectedly.",
+    "conselho": "Give thanks in advance for the blessing on its way.",
+    "palavraChave": "Faith"
+  },
+  "19:19": {
+    "titulo": "Life Mission",
+    "anjo": "Angel of Purpose",
+    "mensagem": "Move courageously toward your life mission. Angels ask you to release fear of judgment and express your unique gift.",
+    "conselho": "Take one small concrete step today toward your greatest dream.",
+    "palavraChave": "Courage"
+  },
+  "20:20": {
+    "titulo": "Divine Decision",
+    "anjo": "Angel of Clarity",
+    "mensagem": "Trust divine guidance in your decisions. Angels ask choices aligned with truth, not fear.",
+    "conselho": "Before deciding, breathe deeply three times and ask: \"What would love do?\"",
+    "palavraChave": "Clarity"
+  },
+  "21:21": {
+    "titulo": "Meditation and Listening",
+    "anjo": "Angel of Peace",
+    "mensagem": "Time for meditation and inner listening. The answer you seek is in silence, not noise.",
+    "conselho": "Turn off notifications for 21 minutes and meditate or walk in silence.",
+    "palavraChave": "Silence"
+  },
+  "22:22": {
+    "titulo": "Master Manifestation",
+    "anjo": "Angel of Co-creation",
+    "mensagem": "22:22 is a master number of large-scale manifestation. Doreen Virtue saw an invitation to dream big and act with loving discipline.",
+    "conselho": "Visualise your ideal as already real for 2 minutes. Then act.",
+    "palavraChave": "Manifestation"
+  },
+  "23:23": {
+    "titulo": "Cosmic Partnership",
+    "anjo": "Angel of Trust",
+    "mensagem": "Work in partnership with the universe. Release excessive control and let life surprise you. Angels close the day with a blessing of trust.",
+    "conselho": "Before sleep, hand three worries to the angels and thank the day.",
+    "palavraChave": "Surrender"
+  }
+}
+
 export const ESPELHOS_FR = {
   "12:21": {
-    "titulo": "Sincronia de Cura",
-    "mensagem": "Os anges enviam conforto emocional. É tempo de curar relações ou perdoar a ti mesmo/a.",
-    "conselho": "Perdoa uma situação do passado, mesmo que apenas em silêncio."
+    "titulo": "Healing Synchronicity",
+    "mensagem": "Angels send emotional comfort. Time to heal relationships or forgive yourself.",
+    "conselho": "Forgive a past situation, even if only in silence."
   },
   "13:31": {
-    "titulo": "Criatividade Angelical",
-    "mensagem": "Canal criativo aberto. Expressa arte, escrita ou música - os anges fluem através da criação.",
-    "conselho": "Cria algo aujourd'hui, por mais simples que seja."
+    "titulo": "Angelic Creativity",
+    "mensagem": "Creative channel open. Express art, writing or music - angels flow through creation.",
+    "conselho": "Create something today, however simple."
   },
   "14:41": {
-    "titulo": "Estabilidade Divina",
-    "mensagem": "Constrói alicerces sólidos. Os anges apoiam projectos de longo prazo com paciência.",
-    "conselho": "Dá um passo prático num projecto importante."
+    "titulo": "Divine Stability",
+    "mensagem": "Build solid foundations. Angels support long-term projects with patience.",
+    "conselho": "Take a practical step on an important project."
   },
   "15:51": {
-    "titulo": "Libèreção de Velhos Ciclos",
-    "mensagem": "Soltar o passado abre portas novas. Fais confiance na renovação.",
-    "conselho": "Desapega de um objecto ou memória que já não serve."
+    "titulo": "Releasing Old Cycles",
+    "mensagem": "Letting go of the past opens new doors. Trust renewal.",
+    "conselho": "Release an object or memory that no longer serves."
   },
-  "16:61": null,
   "21:12": {
-    "titulo": "Reflexão e Renovação",
-    "mensagem": "Espelho de 12:21 - renova compromissos consigo mesmo/a e com o sagrado.",
-    "conselho": "Reafirma uma promessa pessoal importante."
+    "titulo": "Reflection and Renewal",
+    "mensagem": "Mirror of 12:21 - renew commitments to yourself and the sacred.",
+    "conselho": "Reaffirm an important personal promise."
   },
   "23:32": {
-    "titulo": "Protecção Noturna",
-    "mensagem": "Antes de dormir, os anges envolvem-te. Libère preocupações do jour.",
-    "conselho": "Écris num papel o que te preocupa e rasga-o simbolicamente."
+    "titulo": "Night Protection",
+    "mensagem": "Before sleep, angels surround you. Release the day's worries.",
+    "conselho": "Write worries on paper and tear it up symbolically."
   }
 }
+

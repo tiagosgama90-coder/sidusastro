@@ -1,5 +1,5 @@
 /** Localised data for FerramentasPremium components */
-import { contentForLang } from './langUtil.js'
+import { contentForLang, resolveLocalePack } from './langUtil.js'
 import {
   TRANSITOS_ES, TRANSITOS_IT, TRANSITOS_DE, TRANSITOS_FR,
   IMPACTO_ES, IMPACTO_IT, IMPACTO_DE, IMPACTO_FR,
@@ -118,9 +118,10 @@ const ASPECTOS_EN = [
 ]
 
 export function getTransitos2026(lang) {
-  const data = contentForLang(lang, {
+  const packs = {
     pt: TRANSITOS_PT, en: TRANSITOS_EN, es: TRANSITOS_ES, it: TRANSITOS_IT, de: TRANSITOS_DE, fr: TRANSITOS_FR,
-  }) || TRANSITOS_EN
+  }
+  const data = resolveLocalePack(lang, packs, (p) => p[0]?.desc, TRANSITOS_EN)
   const impactoMap = contentForLang(lang, {
     pt: IMPACTO_PT, en: IMPACTO_EN, es: IMPACTO_ES, it: IMPACTO_IT, de: IMPACTO_DE, fr: IMPACTO_FR,
   }) || IMPACTO_EN
@@ -128,16 +129,18 @@ export function getTransitos2026(lang) {
 }
 
 export function getCompatDesc(chave, lang, fallbackKey) {
-  const map = contentForLang(lang, {
+  const packs = {
     pt: COMPAT_PT, en: COMPAT_EN, es: COMPAT_ES, it: COMPAT_IT, de: COMPAT_DE, fr: COMPAT_FR,
-  }) || COMPAT_EN
+  }
+  const map = resolveLocalePack(lang, packs, (p) => Object.values(p)[0], COMPAT_EN)
   return map[chave] || fallbackKey
 }
 
 export function getAspectosAmor(lang) {
-  return contentForLang(lang, {
+  const packs = {
     pt: ASPECTOS_PT, en: ASPECTOS_EN, es: ASPECTOS_ES, it: ASPECTOS_IT, de: ASPECTOS_DE, fr: ASPECTOS_FR,
-  }) || ASPECTOS_EN
+  }
+  return resolveLocalePack(lang, packs, (p) => p[0]?.desc, ASPECTOS_EN)
 }
 
 export const TIPO_ICO = {

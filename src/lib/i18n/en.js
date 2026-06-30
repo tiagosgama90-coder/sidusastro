@@ -591,6 +591,7 @@ export default {
       attribution: 'Interpretations based on angel numbers and mirror hours, in the spirit of Doreen Virtue\'s teachings on synchronicity and spiritual guidance.',
       popularHours: 'Most sought hours',
       allEqualHours: 'All equal hours (24 per day)',
+      pickHourHint: 'Tap the hour that called to you — the universe clock answers.',
     },
   },
   payment: {

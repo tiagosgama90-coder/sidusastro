@@ -1,93 +1,101 @@
-/** Gerado por scripts/build-mapa-sonhos-locales.mjs */
+/** Gerado por scripts/build-mapa-sonhos-locales.mjs (fonte EN) */
 export const ASPETO_NUCLEO_ES = {
-  "Conjunção": "duas forças fundem-se num só canal — intensificam-se mutumente, para bem ou para tensão concentrada",
-  "Conjuncao": "duas forças fundem-se num só canal — intensificam-se mutumente, para bem ou para tensão concentrada",
-  "Oposição": "polos opostos pedem integração consciente — o outro revela o que negas em ti",
-  "Oposicao": "polos opostos pedem integração consciente — o outro revela o que negas em ti",
-  "Trígono": "fluxo natural e talento espontâneo — o dom precisa de ser usado, no apenas possuído",
-  "Trigono": "fluxo natural e talento espontâneo — o dom precisa de ser usado, no apenas possuído",
-  "Quadratura": "fricção criativa que obriga à acção — o desconforto é motor de crecimiento quando no fujas",
-  "Sextil": "oportunidade gentil que requer iniciativa — a porta abre-se para quem bate"
+  "Conjunction": "two forces merge into one channel — they intensify each other, for better or concentrated tension",
+  "Conjuncao": "two forces merge into one channel — they intensify each other, for better or concentrated tension",
+  "Opposition": "opposite poles ask conscious integration — the other reveals what you deny in yourself",
+  "Oposicao": "opposite poles ask conscious integration — the other reveals what you deny in yourself",
+  "Trine": "natural flow and spontaneous talent — the gift must be used, not merely possessed",
+  "Trigono": "natural flow and spontaneous talent — the gift must be used, not merely possessed",
+  "Square": "creative friction that demands action — discomfort drives growth when you do not flee",
+  "Quadratura": "creative friction that demands action — discomfort drives growth when you do not flee",
+  "Sextile": "gentle opportunity requiring initiative — the door opens for those who knock",
+  "Sextil": "gentle opportunity requiring initiative — the door opens for those who knock"
 }
 
 export const PAR_DINAMICA_ES = {
-  "Sol-Lua": "O eixo identidad–emoción: o que queres ser e o que necesitas de sentir para estar inteiro/a.",
-  "Sol-Saturno": "O encontro entre vontade e limite: autoridade interior versus medo de falhar.",
-  "Sol-Júpiter": "Expansão da identidad: fé em ti mesmo/a e excesso de promessas.",
-  "Lua-Saturno": "Emoção contida: necessidade de segurança versus medo de vulnerabilidade.",
-  "Lua-Vénus": "Afeto e prazer: como amas e como necesitas de ser amado/a.",
-  "Mercúrio-Marte": "Pensamento e acção: palavras como espada ou como ponte.",
-  "Vénus-Marte": "Desejo e atração: magnetismo relacional e tensão criativa.",
-  "Marte-Saturno": "Impulso versus disciplina: onde a raiva encontra o muro ou o mestre.",
-  "Júpiter-Saturno": "Expansão e contracção: saber quando crescer e quando consolidar."
+  "Sun-Moon": "The identity–emotion axis: who you want to be and what you need to feel whole.",
+  "Sun-Saturn": "Will meets limit: inner authority versus fear of failure.",
+  "Sun-Jupiter": "Identity expansion: faith in yourself and excess of promises.",
+  "Moon-Saturn": "Contained emotion: need for security versus fear of vulnerability.",
+  "Moon-Venus": "Affection and pleasure: how you love and need to be loved.",
+  "Mercury-Mars": "Thought and action: words as sword or bridge.",
+  "Venus-Mars": "Desire and attraction: relational magnetism and creative tension.",
+  "Mars-Saturn": "Impulse versus discipline: where anger meets wall or teacher.",
+  "Jupiter-Saturn": "Expansion and contraction: knowing when to grow and when to consolidate."
 }
 
 export const ASPETO_NUCLEO_IT = {
-  "Conjunção": "duas forças fundem-se num só canal — intensificam-se mutuamente, para bem ou para tensão concentrada",
-  "Conjuncao": "duas forças fundem-se num só canal — intensificam-se mutuamente, para bem ou para tensão concentrada",
-  "Oposição": "polos opostos pedem integração consciente — o outro revela o que negas em ti",
-  "Oposicao": "polos opostos pedem integração consciente — o outro revela o que negas em ti",
-  "Trígono": "fluxo natural e talento espontâneo — o dom precisa de ser usado, non apenas possuído",
-  "Trigono": "fluxo natural e talento espontâneo — o dom precisa de ser usado, non apenas possuído",
-  "Quadratura": "fricção criativa que obriga à acção — o desconforto é motor de crescita quando non fujas",
-  "Sextil": "oportunidade gentil que requer iniciativa — a porta abre-se para quem bate"
+  "Conjunction": "two forces merge into one channel — they intensify each other, for better or concentrated tension",
+  "Conjuncao": "two forces merge into one channel — they intensify each other, for better or concentrated tension",
+  "Opposition": "opposite poles ask conscious integration — the other reveals what you deny in yourself",
+  "Oposicao": "opposite poles ask conscious integration — the other reveals what you deny in yourself",
+  "Trine": "natural flow and spontaneous talent — the gift must be used, not merely possessed",
+  "Trigono": "natural flow and spontaneous talent — the gift must be used, not merely possessed",
+  "Square": "creative friction that demands action — discomfort drives growth when you do not flee",
+  "Quadratura": "creative friction that demands action — discomfort drives growth when you do not flee",
+  "Sextile": "gentle opportunity requiring initiative — the door opens for those who knock",
+  "Sextil": "gentle opportunity requiring initiative — the door opens for those who knock"
 }
 
 export const PAR_DINAMICA_IT = {
-  "Sol-Lua": "O eixo identità–emozione: o que queres ser e o que hai bisogno de sentir para estar inteiro/a.",
-  "Sol-Saturno": "O encontro entre vontade e limite: autoridade interior versus medo de falhar.",
-  "Sol-Júpiter": "Expansão da identità: fé em ti mesmo/a e excesso de promessas.",
-  "Lua-Saturno": "Emoção contida: necessidade de segurança versus medo de vulnerabilidade.",
-  "Lua-Vénus": "Afeto e prazer: como amas e como hai bisogno de ser amado/a.",
-  "Mercúrio-Marte": "Pensamento e acção: palavras como espada ou como ponte.",
-  "Vénus-Marte": "Desejo e atração: magnetismo relacional e tensão criativa.",
-  "Marte-Saturno": "Impulso versus disciplina: onde a raiva encontra o muro ou o mestre.",
-  "Júpiter-Saturno": "Expansão e contracção: saber quando crescer e quando consolidar."
+  "Sun-Moon": "The identity–emotion axis: who you want to be and what you need to feel whole.",
+  "Sun-Saturn": "Will meets limit: inner authority versus fear of failure.",
+  "Sun-Jupiter": "Identity expansion: faith in yourself and excess of promises.",
+  "Moon-Saturn": "Contained emotion: need for security versus fear of vulnerability.",
+  "Moon-Venus": "Affection and pleasure: how you love and need to be loved.",
+  "Mercury-Mars": "Thought and action: words as sword or bridge.",
+  "Venus-Mars": "Desire and attraction: relational magnetism and creative tension.",
+  "Mars-Saturn": "Impulse versus discipline: where anger meets wall or teacher.",
+  "Jupiter-Saturn": "Expansion and contraction: knowing when to grow and when to consolidate."
 }
 
 export const ASPETO_NUCLEO_DE = {
-  "Conjunção": "duas forças fundem-se num só canal — intensificam-se mudeinemente, para bem ou para tensão concentrada",
-  "Conjuncao": "duas forças fundem-se num só canal — intensificam-se mudeinemente, para bem ou para tensão concentrada",
-  "Oposição": "polos opostos pedem integração consciente — o outro revela o que negas em ti",
-  "Oposicao": "polos opostos pedem integração consciente — o outro revela o que negas em ti",
-  "Trígono": "fluxo natural e talento espontâneo — o dom precisa de ser usado, nicht apenas possuído",
-  "Trigono": "fluxo natural e talento espontâneo — o dom precisa de ser usado, nicht apenas possuído",
-  "Quadratura": "fricção criativa que obriga à acção — o desconforto é motor de Wachstum quando nicht fujas",
-  "Sextil": "oportunidade gentil que requer iniciativa — a porta abre-se para quem bate"
+  "Conjunction": "two forces merge into one channel — they intensify each other, for better or concentrated tension",
+  "Conjuncao": "two forces merge into one channel — they intensify each other, for better or concentrated tension",
+  "Opposition": "opposite poles ask conscious integration — the other reveals what you deny in yourself",
+  "Oposicao": "opposite poles ask conscious integration — the other reveals what you deny in yourself",
+  "Trine": "natural flow and spontaneous talent — the gift must be used, not merely possessed",
+  "Trigono": "natural flow and spontaneous talent — the gift must be used, not merely possessed",
+  "Square": "creative friction that demands action — discomfort drives growth when you do not flee",
+  "Quadratura": "creative friction that demands action — discomfort drives growth when you do not flee",
+  "Sextile": "gentle opportunity requiring initiative — the door opens for those who knock",
+  "Sextil": "gentle opportunity requiring initiative — the door opens for those who knock"
 }
 
 export const PAR_DINAMICA_DE = {
-  "Sol-Lua": "O eixo Identität–Emotion: o que queres ser e o que brauchst de sentir para estar inteiro/a.",
-  "Sol-Saturno": "O encontro entre vontade e limite: autoridade interior versus medo de falhar.",
-  "Sol-Júpiter": "Expansão da Identität: fé em ti mesmo/a e excesso de promessas.",
-  "Lua-Saturno": "Emoção contida: necessidade de segurança versus medo de vulnerabilidade.",
-  "Lua-Vénus": "Afeto e prazer: como amas e como brauchst de ser amado/a.",
-  "Mercúrio-Marte": "Pensamento e acção: palavras como espada ou como ponte.",
-  "Vénus-Marte": "Desejo e atração: magnetismo relacional e tensão criativa.",
-  "Marte-Saturno": "Impulso versus disciplina: onde a raiva encontra o muro ou o mestre.",
-  "Júpiter-Saturno": "Expansão e contracção: saber quando crescer e quando consolidar."
+  "Sun-Moon": "The identity–emotion axis: who you want to be and what you need to feel whole.",
+  "Sun-Saturn": "Will meets limit: inner authority versus fear of failure.",
+  "Sun-Jupiter": "Identity expansion: faith in yourself and excess of promises.",
+  "Moon-Saturn": "Contained emotion: need for security versus fear of vulnerability.",
+  "Moon-Venus": "Affection and pleasure: how you love and need to be loved.",
+  "Mercury-Mars": "Thought and action: words as sword or bridge.",
+  "Venus-Mars": "Desire and attraction: relational magnetism and creative tension.",
+  "Mars-Saturn": "Impulse versus discipline: where anger meets wall or teacher.",
+  "Jupiter-Saturn": "Expansion and contraction: knowing when to grow and when to consolidate."
 }
 
 export const ASPETO_NUCLEO_FR = {
-  "Conjunção": "duas forças fundem-se num só canal — intensificam-se mutamente, para bem ou para tensão concentrada",
-  "Conjuncao": "duas forças fundem-se num só canal — intensificam-se mutamente, para bem ou para tensão concentrada",
-  "Oposição": "polos opostos pedem integração consciente — o outro revela o que negas em ti",
-  "Oposicao": "polos opostos pedem integração consciente — o outro revela o que negas em ti",
-  "Trígono": "fluxo natural e talento espontâneo — o dom precisa de ser usado, ne pas apenas possuído",
-  "Trigono": "fluxo natural e talento espontâneo — o dom precisa de ser usado, ne pas apenas possuído",
-  "Quadratura": "fricção criativa que obriga à acção — o desconforto é motor de croissance quando ne pas fujas",
-  "Sextil": "oportunidade gentil que requer iniciativa — a porta abre-se para quem bate"
+  "Conjunction": "two forces merge into one channel — they intensify each other, for better or concentrated tension",
+  "Conjuncao": "two forces merge into one channel — they intensify each other, for better or concentrated tension",
+  "Opposition": "opposite poles ask conscious integration — the other reveals what you deny in yourself",
+  "Oposicao": "opposite poles ask conscious integration — the other reveals what you deny in yourself",
+  "Trine": "natural flow and spontaneous talent — the gift must be used, not merely possessed",
+  "Trigono": "natural flow and spontaneous talent — the gift must be used, not merely possessed",
+  "Square": "creative friction that demands action — discomfort drives growth when you do not flee",
+  "Quadratura": "creative friction that demands action — discomfort drives growth when you do not flee",
+  "Sextile": "gentle opportunity requiring initiative — the door opens for those who knock",
+  "Sextil": "gentle opportunity requiring initiative — the door opens for those who knock"
 }
 
 export const PAR_DINAMICA_FR = {
-  "Sol-Lua": "O eixo identité–émotion: o que queres ser e o que as besoin de sentir para estar inteiro/a.",
-  "Sol-Saturno": "O encontro entre vontade e limite: autoridade interior versus medo de falhar.",
-  "Sol-Júpiter": "Expansão da identité: fé em ti mesmo/a e excesso de promessas.",
-  "Lua-Saturno": "Emoção contida: necessidade de segurança versus medo de vulnerabilidade.",
-  "Lua-Vénus": "Afeto e prazer: como amas e como as besoin de ser amado/a.",
-  "Mercúrio-Marte": "Pensamento e acção: palavras como espada ou como ponte.",
-  "Vénus-Marte": "Desejo e atração: magnetismo relacional e tensão criativa.",
-  "Marte-Saturno": "Impulso versus disciplina: onde a raiva encontra o muro ou o mestre.",
-  "Júpiter-Saturno": "Expansão e contracção: saber quando crescer e quando consolidar."
+  "Sun-Moon": "The identity–emotion axis: who you want to be and what you need to feel whole.",
+  "Sun-Saturn": "Will meets limit: inner authority versus fear of failure.",
+  "Sun-Jupiter": "Identity expansion: faith in yourself and excess of promises.",
+  "Moon-Saturn": "Contained emotion: need for security versus fear of vulnerability.",
+  "Moon-Venus": "Affection and pleasure: how you love and need to be loved.",
+  "Mercury-Mars": "Thought and action: words as sword or bridge.",
+  "Venus-Mars": "Desire and attraction: relational magnetism and creative tension.",
+  "Mars-Saturn": "Impulse versus discipline: where anger meets wall or teacher.",
+  "Jupiter-Saturn": "Expansion and contraction: knowing when to grow and when to consolidate."
 }
 

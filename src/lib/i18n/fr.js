@@ -657,7 +657,8 @@ export default {
       typeNeutral: "momento presente",
       attribution: "Interpretaciones basadas en números de ángeles et horas de espejo, en el espíritu de las enseñanzas de Doreen Virtue sobre sincronicidad et guía espiritual.",
       popularHours: "Heures les plus recherchées",
-      allEqualHours: "Toutes les heures miroirs (24 par jour)"
+      allEqualHours: "Toutes les heures miroirs (24 par jour)",
+      pickHourHint: "Touche l'heure qui t'a appelé — l'horloge de l'univers répond."
     }
   },
   payment: {

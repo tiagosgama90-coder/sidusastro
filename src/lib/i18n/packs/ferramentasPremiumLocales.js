@@ -1,62 +1,62 @@
-/** Gerado por scripts/build-ferramentas-premium-locales.mjs */
+/** Gerado por scripts/build-ferramentas-premium-locales.mjs (fonte EN) */
 import { contentForLang } from '../langUtil.js'
 
 export const TRANSITOS_ES = [
   {
     "mes": "Enero",
     "planeta": "Saturno",
-    "signo": "Aireies",
+    "signo": "Aries",
     "tipo": "ingresso",
     "impacto": "alto",
-    "desc": "Saturno inicia um novo ciclo de 2,5 anos em Aireies. Momento de construir estruturas com coragem. Responsabilidade e acção directa são a chave."
+    "desc": "Saturno inicia a new 2.5-year cycle in Aries. Momento de build structures with courage. Responsibility and direct action are key."
   },
   {
     "mes": "Febrero",
     "planeta": "Venus",
     "signo": "Piscis",
-    "tipo": "trânsito",
-    "impacto": "medio",
-    "desc": "Venus em Piscis - período de romantismo, espiritualidade e dissolução de fronteiras emocionais. Ideal para arte, meditação e conexões profundas."
+    "tipo": "tránsito",
+    "impacto": "médio",
+    "desc": "Venus in Piscis - a period of romance, spirituality and dissolving emotional boundaries. Ideal for art, meditation and deep connections."
   },
   {
     "mes": "Marzo",
     "planeta": "Marte",
     "signo": "Cáncer",
-    "tipo": "trânsito",
-    "impacto": "medio",
-    "desc": "Marte no Cáncer activa a protecção do lar e da família. Acção emocional intensa. Cuidado com reactividade - age a partir do coração."
+    "tipo": "tránsito",
+    "impacto": "médio",
+    "desc": "Marte in Cáncer activa protection of home and family. Intense emotional action. Cuidado con reactivity - act from the heart."
   },
   {
     "mes": "Abril",
     "planeta": "Júpiter",
     "signo": "Géminos",
-    "tipo": "trânsito",
+    "tipo": "tránsito",
     "impacto": "alto",
-    "desc": "Júpiter expande tudo em Géminos: comunicação, aprendizagem, viagens curtas. Excelente para estudos, escrita e novos contactos profissionais."
+    "desc": "Júpiter expande everything in Géminos: communication, learning, short trips. Excelente para studies, writing and new professional contacts."
   },
   {
     "mes": "Mayo",
     "planeta": "Sol",
     "signo": "Tauro",
-    "tipo": "sazonalidade",
-    "impacto": "estándar",
-    "desc": "Temporada de Tauro - foco em estabilidade, recursos e prazeres sensoriais. Altura ideal para consolidar projectos e cuidar do corpo."
+    "tipo": "sazonalidad",
+    "impacto": "padrão",
+    "desc": "Tauro temporada - focus on stability, resources and sensory pleasures. Momento ideal to consolidate projects and care for the body."
   },
   {
     "mes": "Junio",
     "planeta": "Mercurio",
     "signo": "Cáncer",
     "tipo": "retrógrado",
-    "impacto": "atención",
-    "desc": "Mercurio Retrógrado em Cáncer (1–25 Jun). Revisão de comunicações emocionais. Evita decisões importantes. Reconcilia-te com o passado."
+    "impacto": "atenção",
+    "desc": "Mercurio Retrógrado in Cáncer (1–25 Jun). Review emotional communications. Avoid major decisions. Reconcile with the past."
   },
   {
     "mes": "Julio",
     "planeta": "Venus",
     "signo": "Leo",
-    "tipo": "trânsito",
+    "tipo": "tránsito",
     "impacto": "alto",
-    "desc": "Venus em Leo: romance dramático e criatividade em ebulição. O amor quer ser celebrado em voz alta. Óptimo para relações, arte e auto-expressão."
+    "desc": "Venus in Leo: dramatic romance and creativity in full bloom. Love wants to be celebrated out loud. Óptimo para relationships, art and self-expression."
   },
   {
     "mes": "Agosto",
@@ -64,7 +64,7 @@ export const TRANSITOS_ES = [
     "signo": "Leo",
     "tipo": "eclipse",
     "impacto": "transformador",
-    "desc": "Eclipse Solar em Leo. Um portal de transformação da identidade. Liberta o que já não representa quem és. Novo capítulo da tua história pessoal."
+    "desc": "Eclipse Solar in Leo. A portal of identity transformation. Libera lo que no longer represents who tú are. A new chapter in tu personal story."
   },
   {
     "mes": "Septiembre",
@@ -72,31 +72,31 @@ export const TRANSITOS_ES = [
     "signo": "Cáncer",
     "tipo": "ingresso",
     "impacto": "alto",
-    "desc": "Júpiter entra em Cáncer: expansão emocional, familiar e espiritual. Fertilidade, cura de raízes e abundância doméstica nos próximos 13 meses."
+    "desc": "Júpiter entra Cáncer: emotional, family and spiritual expansion. Fertility, healing of roots and domestic abundance for the next 13 months."
   },
   {
     "mes": "Octubre",
     "planeta": "Marte",
     "signo": "Escorpio",
-    "tipo": "trânsito",
+    "tipo": "tránsito",
     "impacto": "intenso",
-    "desc": "Marte em Escorpio: determinação inabalável, instinto aguçado e transformação profunda. Poder de investigar, curar e regenerar. Cuidado com obsessões."
+    "desc": "Marte in Escorpio: unshakeable determination, sharp instinct and deep transformation. Power to investigate, heal and regenerate. Cuidado con obsessions."
   },
   {
     "mes": "Noviembre",
     "planeta": "Saturno",
-    "signo": "Aireies",
-    "tipo": "quadratura",
-    "impacto": "desafío",
-    "desc": "Saturno em Aireies em tensão com Capricornio. Questões de identidade vs responsabilidades externas. Os limites são necessários para proteger a tua essência."
+    "signo": "Aries",
+    "tipo": "cuadratura",
+    "impacto": "desafio",
+    "desc": "Saturno in Aries in tension with Capricornio. Identity vs external responsibilities. Boundaries are necessary to protect tu essence."
   },
   {
     "mes": "Diciembre",
     "planeta": "Sol",
     "signo": "Sagitario",
-    "tipo": "sazonalidade",
-    "impacto": "optimismo",
-    "desc": "Temporada de Sagitario: expansão, filosofia e aventura. Termina o ano com visão e esperança. Os sonhos de Diciembre tornam-se os planos de Enero."
+    "tipo": "sazonalidad",
+    "impacto": "optimismoo",
+    "desc": "Sagitario temporada: expansion, philosophy and adventure. Termina el año with vision and hope. Diciembre dreams become Enero plans."
   }
 ]
 
@@ -113,16 +113,16 @@ export const IMPACTO_ES = {
 }
 
 export const COMPAT_ES = {
-  "Fogo-Fogo": "Conexión apaixonada e enérgica. Juntos conquistam o mundo mas precisam de aprender a ceder.",
-  "Fogo-Ar": "Combinación mágica! O Aire alimenta o Fuego. Estímulo intelectual e aventura em conjunto.",
-  "Fogo-Terra": "Tensión criativa. O Fuego inspira, a Tierra estabiliza. Complementaridade se houver paciência.",
-  "Fogo-Água": "Intensa e transformadora. Química irresistível com potencial para grandes paixões e conflitos.",
-  "Terra-Terra": "Solidez e confiança mútua. Constroem algo duradouro juntos. Podem precisar de mais espontaneidade.",
-  "Terra-Água": "Nutrición mútua profunda. A Agua hidrata a Tierra. Relação de cuidado e suporte emocional.",
-  "Terra-Ar": "Diferencias complementares. A Tierra ancora o Aire, o Aire areja a Tierra. Crescimento mútuo.",
-  "Ar-Ar": "Estímulo intelectual constante. Conexión mental forte. Podem precisar de aprofundar a dimensão emocional.",
-  "Ar-Água": "Creatividad e emoção juntas. O Aire inspira, a Agua sente. Relação rica e multidimensional.",
-  "Água-Água": "Profundidad emocional oceânica. Empatia total. Precisam de limites saudáveis para não se perderem."
+  "Fogo-Fogo": "Apasionada, energetic bond. Together tú conquer the world but need to learn to yield.",
+  "Fogo-Ar": "Combinación mágica! Aire feeds Fuego. Intellectual stimulation and adventure together.",
+  "Fogo-Terra": "Tensión creativa. Fuego inspires, Tierra stabilises. Complementary with patience.",
+  "Fogo-Água": "Intense and transformador. Irresistible chemistry with potential for great passions and conflicts.",
+  "Terra-Terra": "Solidez y confianza mutua. Tú build something lasting together. Mayo need more spontaneity.",
+  "Terra-Água": "Nutrición mutua profunda. Agua hydrates Tierra. A relationship of care and emotional support.",
+  "Terra-Ar": "Diferencias complementarias. Tierra anchors Aire, Aire refreshes Tierra. Mutual growth.",
+  "Ar-Ar": "Estímulo intelectual constante. Strong mental connection. Mayo need to deepen the emotional dimension.",
+  "Ar-Água": "Creatividad y emoción juntas. Aire inspires, Agua feels. A rich, multidimensional relationship.",
+  "Água-Água": "Profundidad emocional oceánica. Total empathy. Need healthy boundaries so as not to get lost."
 }
 
 export const ASPECTOS_ES = [
@@ -130,37 +130,37 @@ export const ASPECTOS_ES = [
     "a": "Sol",
     "b": "Sol",
     "tipo": "conjunción",
-    "desc": "Comparten a mesma essência. Reconhecimento imediato e ligação de almas."
+    "desc": "Tú share the same essence. Immediate recognition and soul connection."
   },
   {
     "a": "Sol",
-    "b": "Lua",
+    "b": "Moon",
     "tipo": "conjunción",
-    "desc": "O Sol ilumina o mundo emocional da Lua. Unión entre o consciente e o inconsciente."
+    "desc": "The Sol illuminates the Moon's emotional world. Union of conscious and unconscious."
   },
   {
     "a": "Venus",
     "b": "Marte",
     "tipo": "conjunción",
-    "desc": "Atracción física e emocional intensa. A clássica \"química\" entre dois seres."
+    "desc": "Intense physical and emotional attraction. The classic chemistry between two beings."
   },
   {
     "a": "Sol",
-    "b": "Ascendente",
+    "b": "Ascendant",
     "tipo": "trígono",
-    "desc": "Uma fluidez natural. A personalidade de um suporta e inspira a expressão do outro."
+    "desc": "Natural fbajo. One's personality supports and inspires the other's expression."
   },
   {
-    "a": "Lua",
-    "b": "Lua",
+    "a": "Moon",
+    "b": "Moon",
     "tipo": "sextil",
-    "desc": "Armonía emocional profunda. Entendem-se sem precisar de explicações."
+    "desc": "Deep emotional harmony. Tú understand each other without explanations."
   },
   {
     "a": "Mercurio",
     "b": "Mercurio",
     "tipo": "trígono",
-    "desc": "Comunicación fluida e enriquecedora. Conversas que nunca acabam."
+    "desc": "Fluid, enriching communication. Conversations that never end."
   }
 ]
 
@@ -168,66 +168,66 @@ export const TRANSITOS_IT = [
   {
     "mes": "Gennaio",
     "planeta": "Saturno",
-    "signo": "Áries",
+    "signo": "Ariete",
     "tipo": "ingresso",
     "impacto": "alto",
-    "desc": "Saturno inicia um novo ciclo de 2,5 anos em Áries. Momento de construir estruturas com coragem. Responsabilidade e acção directa são a chave."
+    "desc": "Saturno begins a new 2.5-year cycle in Ariete. Time to build structures with courage. Responsibility and direct action are key."
   },
   {
     "mes": "Febbraio",
     "planeta": "Venere",
     "signo": "Pesci",
-    "tipo": "trânsito",
-    "impacto": "medio",
-    "desc": "Venere em Pesci - período de romantismo, espiritualidade e dissolução de fronteiras emocionais. Ideal para arte, meditação e conexões profundas."
+    "tipo": "transito",
+    "impacto": "médio",
+    "desc": "Venere in Pesci - a period of romance, spirituality and dissolving emotional boundaries. Ideal for art, meditation and deep connections."
   },
   {
     "mes": "Marzo",
     "planeta": "Marte",
     "signo": "Cancro",
-    "tipo": "trânsito",
-    "impacto": "medio",
-    "desc": "Marte no Cancro activa a protecção do lar e da família. Acção emocional intensa. Cuidado com reactividade - age a partir do coração."
+    "tipo": "transito",
+    "impacto": "médio",
+    "desc": "Marte in Cancro activates protection of home and family. Intense emotional action. Watch reactivity - act from the heart."
   },
   {
-    "mes": "Abril",
+    "mes": "Aprile",
     "planeta": "Giove",
     "signo": "Gemelli",
-    "tipo": "trânsito",
+    "tipo": "transito",
     "impacto": "alto",
-    "desc": "Giove expande tudo em Gemelli: comunicação, aprendizagem, viagens curtas. Excelente para estudos, escrita e novos contactos profissionais."
+    "desc": "Giove expands everything in Gemelli: communication, learning, short trips. Excellent for studies, writing and new professional contacts."
   },
   {
     "mes": "Maggio",
-    "planeta": "Sol",
+    "planeta": "Sole",
     "signo": "Toro",
-    "tipo": "sazonalidade",
-    "impacto": "standard",
-    "desc": "Temporada de Toro - foco em estabilidade, recursos e prazeres sensoriais. Altura ideal para consolidar projectos e cuidar do corpo."
+    "tipo": "stagionalità",
+    "impacto": "padrão",
+    "desc": "Toro season - focus on stability, resources and sensory pleasures. Ideal time to consolidate projects and care for the body."
   },
   {
     "mes": "Giugno",
     "planeta": "Mercurio",
     "signo": "Cancro",
-    "tipo": "retrógrado",
-    "impacto": "attenzione",
-    "desc": "Mercurio Retrógrado em Cancro (1–25 Jun). Revisão de comunicações emocionais. Evita decisões importantes. Reconcilia-te com o passado."
+    "tipo": "retrogrado",
+    "impacto": "atenção",
+    "desc": "Mercurio Retrograde in Cancro (1–25 Jun). Review emotional communications. Avoid major decisions. Reconcile with the past."
   },
   {
     "mes": "Luglio",
     "planeta": "Venere",
-    "signo": "Leão",
-    "tipo": "trânsito",
+    "signo": "Leone",
+    "tipo": "transito",
     "impacto": "alto",
-    "desc": "Venere em Leão: romance dramático e criatividade em ebulição. O amor quer ser celebrado em voz alta. Óptimo para relações, arte e auto-expressão."
+    "desc": "Venere in Leone: dramatic romance and creativity in full bloom. Love wants to be celebrated out loud. Great for relationships, art and self-expression."
   },
   {
     "mes": "Agosto",
     "planeta": "Luna Nuova",
-    "signo": "Leão",
-    "tipo": "eclipse",
+    "signo": "Leone",
+    "tipo": "eclissi",
     "impacto": "transformador",
-    "desc": "Eclipse Solar em Leão. Um portal de transformação da identidade. Liberta o que já não representa quem és. Novo capítulo da tua história pessoal."
+    "desc": "Solar Eclipse in Leone. A portal of identity transformation. Release what no longer represents who you are. A new chapter in your personal story."
   },
   {
     "mes": "Settembre",
@@ -235,95 +235,95 @@ export const TRANSITOS_IT = [
     "signo": "Cancro",
     "tipo": "ingresso",
     "impacto": "alto",
-    "desc": "Giove entra em Cancro: expansão emocional, familiar e espiritual. Fertilidade, cura de raízes e abundância doméstica nos próximos 13 meses."
+    "desc": "Giove enters Cancro: emotional, family and spiritual expansion. Fertility, healing of roots and domestic abundance for the next 13 months."
   },
   {
     "mes": "Ottobre",
     "planeta": "Marte",
     "signo": "Scorpione",
-    "tipo": "trânsito",
+    "tipo": "transito",
     "impacto": "intenso",
-    "desc": "Marte em Scorpione: determinação inabalável, instinto aguçado e transformação profunda. Poder de investigar, curar e regenerar. Cuidado com obsessões."
+    "desc": "Marte in Scorpione: unshakeable determination, sharp instinct and deep transformation. Power to investigate, heal and regenerate. Watch obsessions."
   },
   {
     "mes": "Novembre",
     "planeta": "Saturno",
-    "signo": "Áries",
+    "signo": "Ariete",
     "tipo": "quadratura",
     "impacto": "desafio",
-    "desc": "Saturno em Áries em tensão com Capricorno. Questões de identidade vs responsabilidades externas. Os limites são necessários para proteger a tua essência."
+    "desc": "Saturno in Ariete in tension with Capricorno. Identity vs external responsibilities. Boundaries are necessary to protect your essence."
   },
   {
     "mes": "Dicembre",
-    "planeta": "Sol",
+    "planeta": "Sole",
     "signo": "Sagittario",
-    "tipo": "sazonalidade",
-    "impacto": "ottimismo",
-    "desc": "Temporada de Sagittario: expansão, filosofia e aventura. Termina o ano com visão e esperança. Os sonhos de Dicembre tornam-se os planos de Gennaio."
+    "tipo": "stagionalità",
+    "impacto": "ottimismoo",
+    "desc": "Sagittario season: expansion, philosophy and adventure. End the year with vision and hope. Dicembre dreams become Gennaio plans."
   }
 ]
 
 export const IMPACTO_IT = {
   "alto": "alto",
   "médio": "medio",
-  "baixo": "baixo",
+  "baixo": "basso",
   "atenção": "attenzione",
   "intenso": "intenso",
-  "transformador": "transformador",
-  "desafio": "desafio",
+  "transformador": "trasformativo",
+  "desafio": "sfida",
   "padrão": "standard",
   "optimismo": "ottimismo"
 }
 
 export const COMPAT_IT = {
-  "Fogo-Fogo": "Ligação apaixonada e enérgica. Juntos conquistam o mundo mas precisam de aprender a ceder.",
-  "Fogo-Ar": "Combinação mágica! O Aria alimenta o Fuoco. Estímulo intelectual e aventura em conjunto.",
-  "Fogo-Terra": "Tensão criativa. O Fuoco inspira, a Terra estabiliza. Complementaridade se houver paciência.",
-  "Fogo-Água": "Intensa e transformadora. Química irresistível com potencial para grandes paixões e conflitos.",
-  "Terra-Terra": "Solidez e confiança mútua. Constroem algo duradouro juntos. Podem precisar de mais espontaneidade.",
-  "Terra-Água": "Nutrição mútua profunda. A Acqua hidrata a Terra. Relação de cuidado e suporte emocional.",
-  "Terra-Ar": "Diferenças complementares. A Terra ancora o Aria, o Aria areja a Terra. Crescimento mútuo.",
-  "Ar-Ar": "Estímulo intelectual constante. Ligação mental forte. Podem precisar de aprofundar a dimensão emocional.",
-  "Ar-Água": "Criatividade e emoção juntas. O Aria inspira, a Acqua sente. Relação rica e multidimensional.",
-  "Água-Água": "Profundidade emocional oceânica. Empatia total. Precisam de limites saudáveis para não se perderem."
+  "Fogo-Fogo": "Passionate, energetic bond. Together you conquer the world but need to learn to yield.",
+  "Fogo-Ar": "Magical combination! Aria feeds Fuoco. Intellectual stimulation and adventure together.",
+  "Fogo-Terra": "Creative tension. Fuoco inspires, Terra stabilises. Complementary with patience.",
+  "Fogo-Água": "Intense and trasformativo. Irresistible chemistry with potential for great passions and conflicts.",
+  "Terra-Terra": "Solidity and mutual trust. You build something lasting together. Maggio need more spontaneity.",
+  "Terra-Água": "Deep mutual nourishment. Acqua hydrates Terra. A relationship of care and emotional support.",
+  "Terra-Ar": "Complementary differences. Terra anchors Aria, Aria refreshes Terra. Mutual growth.",
+  "Ar-Ar": "Constant intellectual stimulation. Strong mental connection. Maggio need to deepen the emotional dimension.",
+  "Ar-Água": "Creativity and emotion together. Aria inspires, Acqua feels. A rich, multidimensional relationship.",
+  "Água-Água": "Oceanic emotional depth. Total empathy. Need healthy boundaries so as not to get lost."
 }
 
 export const ASPECTOS_IT = [
   {
-    "a": "Sol",
-    "b": "Sol",
+    "a": "Sole",
+    "b": "Sole",
     "tipo": "congiunzione",
-    "desc": "Partilham a mesma essência. Reconhecimento imediato e ligação de almas."
+    "desc": "You share the same essence. Immediate recognition and soul connection."
   },
   {
-    "a": "Sol",
-    "b": "Lua",
+    "a": "Sole",
+    "b": "Moon",
     "tipo": "congiunzione",
-    "desc": "O Sol ilumina o mundo emocional da Lua. União entre o consciente e o inconsciente."
+    "desc": "The Sole illuminates the Moon's emotional world. Union of conscious and unconscious."
   },
   {
     "a": "Venere",
     "b": "Marte",
     "tipo": "congiunzione",
-    "desc": "Atracção física e emocional intensa. A clássica \"química\" entre dois seres."
+    "desc": "Intense physical and emotional attraction. The classic chemistry between two beings."
   },
   {
-    "a": "Sol",
-    "b": "Ascendente",
-    "tipo": "trígono",
-    "desc": "Uma fluidez natural. A personalidade de um suporta e inspira a expressão do outro."
+    "a": "Sole",
+    "b": "Ascendant",
+    "tipo": "trigono",
+    "desc": "Natural fbasso. One's personality supports and inspires the other's expression."
   },
   {
-    "a": "Lua",
-    "b": "Lua",
-    "tipo": "sextil",
-    "desc": "Harmonia emocional profunda. Entendem-se sem precisar de explicações."
+    "a": "Moon",
+    "b": "Moon",
+    "tipo": "sestile",
+    "desc": "Deep emotional harmony. You understand each other without explanations."
   },
   {
     "a": "Mercurio",
     "b": "Mercurio",
-    "tipo": "trígono",
-    "desc": "Comunicação fluida e enriquecedora. Conversas que nunca acabam."
+    "tipo": "trigono",
+    "desc": "Fluid, enriching communication. Conversations that never end."
   }
 ]
 
@@ -332,97 +332,97 @@ export const TRANSITOS_DE = [
     "mes": "Januar",
     "planeta": "Saturn",
     "signo": "Widder",
-    "tipo": "ingresso",
-    "impacto": "hoch",
-    "desc": "Saturn inicia um novo ciclo de 2,5 anos em Widder. Momento de construir estruturas com coragem. Responsabilidade e acção directa são a chave."
+    "tipo": "Ingress",
+    "impacto": "alto",
+    "desc": "Saturn begins a new 2.5-year cycle in Widder. Time to build structures with courage. Responsibility and direct action are key."
   },
   {
     "mes": "Februar",
     "planeta": "Venus",
     "signo": "Fische",
-    "tipo": "trânsito",
-    "impacto": "mittel",
-    "desc": "Venus em Fische - período de romantismo, espiritualidade e dissolução de fronteiras emocionais. Ideal para arte, meditação e conexões profundas."
+    "tipo": "Transit",
+    "impacto": "médio",
+    "desc": "Venus in Fische - a period of romance, spirituality and dissolving emotional boundaries. Ideal for art, meditation and deep connections."
   },
   {
     "mes": "März",
     "planeta": "Mars",
     "signo": "Krebs",
-    "tipo": "trânsito",
-    "impacto": "mittel",
-    "desc": "Mars no Krebs activa a protecção do lar e da família. Acção emocional intensa. Cuidado com reactividade - age a partir do coração."
+    "tipo": "Transit",
+    "impacto": "médio",
+    "desc": "Mars in Krebs activates protection of home and family. Intense emotional action. Watch reactivity - act from the heart."
   },
   {
-    "mes": "Abril",
+    "mes": "April",
     "planeta": "Jupiter",
     "signo": "Zwillinge",
-    "tipo": "trânsito",
-    "impacto": "hoch",
-    "desc": "Jupiter expande tudo em Zwillinge: comunicação, aprendizagem, viagens curtas. Excelente para estudos, escrita e novos contactos profissionais."
+    "tipo": "Transit",
+    "impacto": "alto",
+    "desc": "Jupiter expands everything in Zwillinge: communication, learning, short trips. Excellent for studies, writing and new professional contacts."
   },
   {
     "mes": "Mai",
     "planeta": "Sonne",
     "signo": "Stier",
-    "tipo": "sazonalidade",
-    "impacto": "Standard",
-    "desc": "Temporada de Stier - foco em estabilidade, recursos e prazeres sensoriais. Altura ideal para consolidar projectos e cuidar do corpo."
+    "tipo": "Jahreszeit",
+    "impacto": "padrão",
+    "desc": "Stier season - focus on stability, resources and sensory pleasures. Ideal time to consolidate projects and care for the body."
   },
   {
     "mes": "Juni",
     "planeta": "Merkur",
     "signo": "Krebs",
-    "tipo": "retrógrado",
-    "impacto": "Achtung",
-    "desc": "Merkur Retrógrado em Krebs (1–25 Jun). Revisão de comunicações emocionais. Evita decisões importantes. Reconcilia-te com o passado."
+    "tipo": "rückläufig",
+    "impacto": "atenção",
+    "desc": "Merkur Retrograde in Krebs (1–25 Jun). Review emotional communications. Avoid major decisions. Reconcile with the past."
   },
   {
     "mes": "Juli",
     "planeta": "Venus",
     "signo": "Löwe",
-    "tipo": "trânsito",
-    "impacto": "hoch",
-    "desc": "Venus em Löwe: romance dramático e criatividade em ebulição. O amor quer ser celebrado em voz alta. Óptimo para relações, arte e auto-expressão."
+    "tipo": "Transit",
+    "impacto": "alto",
+    "desc": "Venus in Löwe: dramatic romance and creativity in full bloom. Love wants to be celebrated out loud. Great for relationships, art and self-expression."
   },
   {
     "mes": "August",
     "planeta": "Neumond",
     "signo": "Löwe",
-    "tipo": "eclipse",
-    "impacto": "transformativ",
-    "desc": "Eclipse Sonnear em Löwe. Um portal de transformação da identidade. Liberta o que já não representa quem és. Novo capítulo da tua história pessoal."
+    "tipo": "Finsternis",
+    "impacto": "transformador",
+    "desc": "Solar Eclipse in Löwe. A portal of identity transformation. Release what no longer represents who you are. A new chapter in your personal story."
   },
   {
     "mes": "September",
     "planeta": "Jupiter",
     "signo": "Krebs",
-    "tipo": "ingresso",
-    "impacto": "hoch",
-    "desc": "Jupiter entra em Krebs: expansão emocional, familiar e espiritual. Fertilidade, cura de raízes e abundância doméstica nos próximos 13 meses."
+    "tipo": "Ingress",
+    "impacto": "alto",
+    "desc": "Jupiter enters Krebs: emotional, family and spiritual expansion. Fertility, healing of roots and domestic abundance for the next 13 months."
   },
   {
     "mes": "Oktober",
     "planeta": "Mars",
     "signo": "Skorpion",
-    "tipo": "trânsito",
-    "impacto": "intensiv",
-    "desc": "Mars em Skorpion: determinação inabalável, instinto aguçado e transformação profunda. Poder de investigar, curar e regenerar. Cuidado com obsessões."
+    "tipo": "Transit",
+    "impacto": "intenso",
+    "desc": "Mars in Skorpion: unshakeable determination, sharp instinct and deep transformation. Power to investigate, heal and regenerate. Watch obsessions."
   },
   {
     "mes": "November",
     "planeta": "Saturn",
     "signo": "Widder",
-    "tipo": "quadratura",
-    "impacto": "Herausforderung",
-    "desc": "Saturn em Widder em tensão com Steinbock. Questões de identidade vs responsabilidades externas. Os limites são necessários para proteger a tua essência."
+    "tipo": "Quadrat",
+    "impacto": "desafio",
+    "desc": "Saturn in Widder in tension with Steinbock. Identity vs external responsibilities. Boundaries are necessary to protect your essence."
   },
   {
     "mes": "Dezember",
     "planeta": "Sonne",
     "signo": "Schütze",
-    "tipo": "sazonalidade",
-    "impacto": "Optimismus",
-    "desc": "Temporada de Schütze: expansão, filosofia e aventura. Termina o ano com visão e esperança. Os sonhos de Dezember tornam-se os planos de Januar."
+    "tipo": "Jahreszeit",
+    "impacto": "Optimismuso",
+    "desc": "Schütze season: expansion, philosophy and adventure. End the year with vision and hope. Dezember dreams become Januar plans."
   }
 ]
 
@@ -439,16 +439,16 @@ export const IMPACTO_DE = {
 }
 
 export const COMPAT_DE = {
-  "Fogo-Fogo": "Ligação apaixonada e enérgica. Juntos conquistam o mundo mas precisam de aprender a ceder.",
-  "Fogo-Ar": "Combinação mágica! O Luft alimenta o Feuer. Estímulo intelectual e aventura em conjunto.",
-  "Fogo-Terra": "Tensão criativa. O Feuer inspira, a Erde estabiliza. Complementaridade se houver paciência.",
-  "Fogo-Água": "Intensa e transformativa. Química irresistível com potencial para grandes paixões e conflitos.",
-  "Terra-Terra": "Sonneidez e confiança mútua. Constroem algo duradouro juntos. Podem precisar de mais espontaneidade.",
-  "Terra-Água": "Nutrição mútua profunda. A Wasser hidrata a Erde. Relação de cuidado e suporte emocional.",
-  "Terra-Ar": "Diferenças complementares. A Erde ancora o Luft, o Luft areja a Erde. Crescimento mútuo.",
-  "Ar-Ar": "Estímulo intelectual constante. Ligação mental forte. Podem precisar de aprofundar a dimensão emocional.",
-  "Ar-Água": "Criatividade e emoção juntas. O Luft inspira, a Wasser sente. Relação rica e multidimensional.",
-  "Água-Água": "Profundidade emocional oceânica. Empatia total. Precisam de limites saudáveis para não se perderem."
+  "Fogo-Fogo": "Passionate, energetic bond. Together you conquer the world but need to learn to yield.",
+  "Fogo-Ar": "Magical combination! Luft feeds Feuer. Intellectual stimulation and adventure together.",
+  "Fogo-Terra": "Creative tension. Feuer inspires, Erde stabilises. Complementary with patience.",
+  "Fogo-Água": "Intense and transformativ. Irresistible chemistry with potential for great passions and conflicts.",
+  "Terra-Terra": "Solidity and mutual trust. You build something lasting together. Mai need more spontaneity.",
+  "Terra-Água": "Deep mutual nourishment. Wasser hydrates Erde. A relationship of care and emotional support.",
+  "Terra-Ar": "Complementary differences. Erde anchors Luft, Luft refreshes Erde. Mutual growth.",
+  "Ar-Ar": "Constant intellectual stimulation. Strong mental connection. Mai need to deepen the emotional dimension.",
+  "Ar-Água": "Creativity and emotion together. Luft inspires, Wasser feels. A rich, multidimensional relationship.",
+  "Água-Água": "Oceanic emotional depth. Total empathy. Need healthy boundaries so as not to get lost."
 }
 
 export const ASPECTOS_DE = [
@@ -456,37 +456,37 @@ export const ASPECTOS_DE = [
     "a": "Sonne",
     "b": "Sonne",
     "tipo": "Konjunktion",
-    "desc": "Partilham a mesma essência. Reconhecimento imediato e ligação de almas."
+    "desc": "You share the same essence. Immediate recognition and soul connection."
   },
   {
     "a": "Sonne",
-    "b": "Lua",
+    "b": "Moon",
     "tipo": "Konjunktion",
-    "desc": "O Sonne ilumina o mundo emocional da Lua. União entre o consciente e o inconsciente."
+    "desc": "The Sonne illuminates the Moon's emotional world. Union of conscious and unconscious."
   },
   {
     "a": "Venus",
     "b": "Mars",
     "tipo": "Konjunktion",
-    "desc": "Atracção física e emocional intensa. A clássica \"química\" entre dois seres."
+    "desc": "Intense physical and emotional attraction. The classic chemistry between two beings."
   },
   {
     "a": "Sonne",
-    "b": "Aszendent",
+    "b": "Ascendant",
     "tipo": "Trigon",
-    "desc": "Uma fluidez natural. A personalidade de um suporta e inspira a expressão do outro."
+    "desc": "Natural fniedrig. One's personality supports and inspires the other's expression."
   },
   {
-    "a": "Lua",
-    "b": "Lua",
+    "a": "Moon",
+    "b": "Moon",
     "tipo": "Sextil",
-    "desc": "Harmonia emocional profunda. Entendem-se sem precisar de explicações."
+    "desc": "Deep emotional harmony. You understand each other without explanations."
   },
   {
     "a": "Merkur",
     "b": "Merkur",
     "tipo": "Trigon",
-    "desc": "Comunicação fluida e enriquecedora. Conversas que nunca acabam."
+    "desc": "Fluid, enriching communication. Conversations that never end."
   }
 ]
 
@@ -495,97 +495,97 @@ export const TRANSITOS_FR = [
     "mes": "Janvier",
     "planeta": "Saturne",
     "signo": "Bélier",
-    "tipo": "ingresso",
-    "impacto": "élevé",
-    "desc": "Saturne inicia um novo ciclo de 2,5 anos em Bélier. Momento de construir estruturas com coragem. Responsabilidade e acção directa são a chave."
+    "tipo": "entrée",
+    "impacto": "alto",
+    "desc": "Saturne begins a new 2.5-year cycle in Bélier. Time to build structures with courage. Responsibility and direct action are key."
   },
   {
     "mes": "Février",
     "planeta": "Vénus",
     "signo": "Poissons",
-    "tipo": "trânsito",
-    "impacto": "moyen",
-    "desc": "Vénus em Poissons - período de romantismo, espiritualidade e dissolução de fronteiras emocionais. Ideal para arte, meditação e conexões profundas."
+    "tipo": "transit",
+    "impacto": "médio",
+    "desc": "Vénus in Poissons - a period of romance, spirituality and dissolving emotional boundaries. Ideal for art, meditation and deep connections."
   },
   {
     "mes": "Mars",
     "planeta": "Mars",
     "signo": "Cancer",
-    "tipo": "trânsito",
-    "impacto": "moyen",
-    "desc": "Mars no Cancer activa a protecção do lar e da família. Acção emocional intensa. Cuidado com reactividade - age a partir do coração."
+    "tipo": "transit",
+    "impacto": "médio",
+    "desc": "Mars in Cancer activates protection of home and family. Intense emotional action. Watch reactivity - act from the heart."
   },
   {
-    "mes": "Abril",
+    "mes": "Avril",
     "planeta": "Jupiter",
     "signo": "Gémeaux",
-    "tipo": "trânsito",
-    "impacto": "élevé",
-    "desc": "Jupiter expande tudo em Gémeaux: comunicação, aprendizagem, viagens curtas. Excelente para estudos, escrita e novos contactos profissionais."
+    "tipo": "transit",
+    "impacto": "alto",
+    "desc": "Jupiter expands everything in Gémeaux: communication, learning, short trips. Excellent for studies, writing and new professional contacts."
   },
   {
     "mes": "Mai",
     "planeta": "Soleil",
     "signo": "Taureau",
-    "tipo": "sazonalidade",
-    "impacto": "standard",
-    "desc": "Temporada de Taureau - foco em estabilidade, recursos e prazeres sensoriais. Altura ideal para consolidar projectos e cuidar do corpo."
+    "tipo": "saison",
+    "impacto": "padrão",
+    "desc": "Taureau season - focus on stability, resources and sensory pleasures. Ideal time to consolidate projects and care for the body."
   },
   {
     "mes": "Juin",
     "planeta": "Mercure",
     "signo": "Cancer",
-    "tipo": "retrógrado",
-    "impacto": "attention",
-    "desc": "Mercure Retrógrado em Cancer (1–25 Jun). Revisão de comunicações emocionais. Evita decisões importantes. Reconcilia-te com o passado."
+    "tipo": "rétrograde",
+    "impacto": "atenção",
+    "desc": "Mercure Retrograde in Cancer (1–25 Jun). Review emotional communications. Avoid major decisions. Reconcile with the past."
   },
   {
     "mes": "Juillet",
     "planeta": "Vénus",
     "signo": "Lion",
-    "tipo": "trânsito",
-    "impacto": "élevé",
-    "desc": "Vénus em Lion: romance dramático e criatividade em ebulição. O amor quer ser celebrado em voz alta. Óptimo para relações, arte e auto-expressão."
+    "tipo": "transit",
+    "impacto": "alto",
+    "desc": "Vénus in Lion: dramatic romance and creativity in full bloom. Love wants to be celebrated out loud. Great for relationships, art and self-expression."
   },
   {
     "mes": "Août",
     "planeta": "Nouvelle Lune",
     "signo": "Lion",
-    "tipo": "eclipse",
-    "impacto": "transformateur",
-    "desc": "Eclipse Soleilar em Lion. Um portal de transformação da identidade. Liberta o que já não representa quem és. Novo capítulo da tua história pessoal."
+    "tipo": "éclipse",
+    "impacto": "transformador",
+    "desc": "Solar Eclipse in Lion. A portal of identity transformation. Release what no longer represents who you are. A new chapter in your personal story."
   },
   {
     "mes": "Septembre",
     "planeta": "Jupiter",
     "signo": "Cancer",
-    "tipo": "ingresso",
-    "impacto": "élevé",
-    "desc": "Jupiter entra em Cancer: expansão emocional, familiar e espiritual. Fertilidade, cura de raízes e abundância doméstica nos próximos 13 meses."
+    "tipo": "entrée",
+    "impacto": "alto",
+    "desc": "Jupiter enters Cancer: emotional, family and spiritual expansion. Fertility, healing of roots and domestic abundance for the next 13 months."
   },
   {
     "mes": "Octobre",
     "planeta": "Mars",
     "signo": "Scorpion",
-    "tipo": "trânsito",
-    "impacto": "intense",
-    "desc": "Mars em Scorpion: determinação inabalável, instinto aguçado e transformação profunda. Poder de investigar, curar e regenerar. Cuidado com obsessões."
+    "tipo": "transit",
+    "impacto": "intenso",
+    "desc": "Mars in Scorpion: unshakeable determination, sharp instinct and deep transformation. Power to investigate, heal and regenerate. Watch obsessions."
   },
   {
     "mes": "Novembre",
     "planeta": "Saturne",
     "signo": "Bélier",
-    "tipo": "quadratura",
-    "impacto": "défi",
-    "desc": "Saturne em Bélier em tensão com Capricorne. Questões de identidade vs responsabilidades externas. Os limites são necessários para proteger a tua essência."
+    "tipo": "carré",
+    "impacto": "desafio",
+    "desc": "Saturne in Bélier in tension with Capricorne. Identity vs external responsibilities. Boundaries are necessary to protect your essence."
   },
   {
     "mes": "Décembre",
     "planeta": "Soleil",
     "signo": "Sagittaire",
-    "tipo": "sazonalidade",
-    "impacto": "optimisme",
-    "desc": "Temporada de Sagittaire: expansão, filosofia e aventura. Termina o ano com visão e esperança. Os sonhos de Décembre tornam-se os planos de Janvier."
+    "tipo": "saison",
+    "impacto": "optimismeo",
+    "desc": "Sagittaire season: expansion, philosophy and adventure. End the year with vision and hope. Décembre dreams become Janvier plans."
   }
 ]
 
@@ -602,16 +602,16 @@ export const IMPACTO_FR = {
 }
 
 export const COMPAT_FR = {
-  "Fogo-Fogo": "Ligação apaixonada e enérgica. Juntos conquistam o mundo mas precisam de aprender a ceder.",
-  "Fogo-Ar": "Combinação mágica! O Air alimenta o Feu. Estímulo intelectual e aventura em conjunto.",
-  "Fogo-Terra": "Tensão criativa. O Feu inspira, a Terre estabiliza. Complementaridade se houver paciência.",
-  "Fogo-Água": "Intensa e transformateura. Química irresistível com potencial para grandes paixões e conflitos.",
-  "Terra-Terra": "Soleilidez e confiança mútua. Constroem algo duradouro juntos. Podem precisar de mais espontaneidade.",
-  "Terra-Água": "Nutrição mútua profunda. A Eau hidrata a Terre. Relação de cuidado e suporte emocional.",
-  "Terra-Ar": "Diferenças complementares. A Terre ancora o Air, o Air areja a Terre. Crescimento mútuo.",
-  "Ar-Ar": "Estímulo intelectual constante. Ligação mental forte. Podem precisar de aprofundar a dimensão emocional.",
-  "Ar-Água": "Criatividade e emoção juntas. O Air inspira, a Eau sente. Relação rica e multidimensional.",
-  "Água-Água": "Profundidade emocional oceânica. Empatia total. Precisam de limites saudáveis para não se perderem."
+  "Fogo-Fogo": "Passionate, energetic bond. Together you conquer the world but need to learn to yield.",
+  "Fogo-Ar": "Magical combination! Air feeds Feu. Intellectual stimulation and adventure together.",
+  "Fogo-Terra": "Creative tension. Feu inspires, Terre stabilises. Complementary with patience.",
+  "Fogo-Água": "Intense and transformateur. Irresistible chemistry with potential for great passions and conflicts.",
+  "Terra-Terra": "Solidity and mutual trust. You build something lasting together. Mai need more spontaneity.",
+  "Terra-Água": "Deep mutual nourishment. Eau hydrates Terre. A relationship of care and emotional support.",
+  "Terra-Ar": "Complementary differences. Terre anchors Air, Air refreshes Terre. Mutual growth.",
+  "Ar-Ar": "Constant intellectual stimulation. Strong mental connection. Mai need to deepen the emotional dimension.",
+  "Ar-Água": "Creativity and emotion together. Air inspires, Eau feels. A rich, multidimensional relationship.",
+  "Água-Água": "Oceanic emotional depth. Total empathy. Need healthy boundaries so as not to get lost."
 }
 
 export const ASPECTOS_FR = [
@@ -619,37 +619,37 @@ export const ASPECTOS_FR = [
     "a": "Soleil",
     "b": "Soleil",
     "tipo": "conjonction",
-    "desc": "Partilham a mesma essência. Reconhecimento imediato e ligação de almas."
+    "desc": "You share the same essence. Immediate recognition and soul connection."
   },
   {
     "a": "Soleil",
-    "b": "Lua",
+    "b": "Moon",
     "tipo": "conjonction",
-    "desc": "O Soleil ilumina o mundo emocional da Lua. União entre o consciente e o inconsciente."
+    "desc": "The Soleil illuminates the Moon's emotional world. Union of conscious and unconscious."
   },
   {
     "a": "Vénus",
     "b": "Mars",
     "tipo": "conjonction",
-    "desc": "Atracção física e emocional intensa. A clássica \"química\" entre dois seres."
+    "desc": "Intense physical and emotional attraction. The classic chemistry between two beings."
   },
   {
     "a": "Soleil",
     "b": "Ascendant",
     "tipo": "trigone",
-    "desc": "Uma fluidez natural. A personalidade de um suporta e inspira a expressão do outro."
+    "desc": "Natural ffaible. One's personality supports and inspires the other's expression."
   },
   {
-    "a": "Lua",
-    "b": "Lua",
+    "a": "Moon",
+    "b": "Moon",
     "tipo": "sextile",
-    "desc": "Harmonia emocional profunda. Entendem-se sem precisar de explicações."
+    "desc": "Deep emotional harmony. You understand each other without explanations."
   },
   {
     "a": "Mercure",
     "b": "Mercure",
     "tipo": "trigone",
-    "desc": "Comunicação fluida e enriquecedora. Conversas que nunca acabam."
+    "desc": "Fluid, enriching communication. Conversations that never end."
   }
 ]
 

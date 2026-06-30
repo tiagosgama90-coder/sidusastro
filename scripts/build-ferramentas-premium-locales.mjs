@@ -1,5 +1,5 @@
 /**
- * Gera packs ferramentasPremium ES/IT/DE/FR a partir de PT.
+ * Gera packs ferramentasPremium ES/IT/DE/FR a partir de EN (sem vazamentos PT).
  * Executar: node scripts/build-ferramentas-premium-locales.mjs
  */
 import { writeFileSync, readFileSync } from 'fs'
@@ -41,78 +41,96 @@ function extractObject(name) {
   throw new Error(`Unclosed ${name}`)
 }
 
-const TRANSITOS_PT = extractArray('TRANSITOS_PT')
-const IMPACTO_PT = extractObject('IMPACTO_PT')
-const COMPAT_PT = extractObject('COMPAT_PT')
-const ASPECTOS_PT = extractArray('ASPECTOS_PT')
+const TRANSITOS_EN = extractArray('TRANSITOS_EN')
+const IMPACTO_EN = extractObject('IMPACTO_EN')
+const COMPAT_EN = extractObject('COMPAT_EN')
+const ASPECTOS_EN = extractArray('ASPECTOS_EN')
 
 const REPL = {
   es: [
-    ['Janeiro', 'Enero'], ['Fevereiro', 'Febrero'], ['Março', 'Marzo'], ['Abril', 'Abril'],
-    ['Maio', 'Mayo'], ['Junho', 'Junio'], ['Julho', 'Julio'], ['Agosto', 'Agosto'],
-    ['Setembro', 'Septiembre'], ['Outubro', 'Octubre'], ['Novembro', 'Noviembre'], ['Dezembro', 'Diciembre'],
-    ['Saturno', 'Saturno'], ['Vénus', 'Venus'], ['Marte', 'Marte'], ['Júpiter', 'Júpiter'],
-    ['Mercúrio', 'Mercurio'], ['Sol', 'Sol'], ['Lua Nova', 'Luna Nueva'],
-    ['Caranguejo', 'Cáncer'], ['Gémeos', 'Géminos'], ['Touro', 'Tauro'], ['Leão', 'Leo'],
-    ['Peixes', 'Piscis'], ['Escorpião', 'Escorpio'], ['Sagitário', 'Sagitario'], ['Capricórnio', 'Capricornio'],
-    ['Áries', 'Aries'], ['Carneiro', 'Aries'],
-    ['alto', 'alto'], ['médio', 'medio'], ['baixo', 'bajo'], ['atenção', 'atención'],
-    ['intenso', 'intenso'], ['transformador', 'transformador'], ['desafio', 'desafío'], ['padrão', 'estándar'], ['optimismo', 'optimismo'],
-    ['Fogo', 'Fuego'], ['Terra', 'Tierra'], ['Ar', 'Aire'], ['Água', 'Agua'],
-    ['Ligação', 'Conexión'], ['Combinação', 'Combinación'], ['Tensão', 'Tensión'], ['Intensa', 'Intensa'],
-    ['Solidez', 'Solidez'], ['Nutrição', 'Nutrición'], ['Diferenças', 'Diferencias'], ['Estímulo', 'Estímulo'],
-    ['Criatividade', 'Creatividad'], ['Profundidade', 'Profundidad'],
-    ['Conjuncao', 'conjunción'], ['conjunção', 'conjunción'], ['trígono', 'trígono'], ['sextil', 'sextil'],
-    ['Vénus', 'Venus'], ['Mercúrio', 'Mercurio'], ['Ascendente', 'Ascendente'],
-    ['Partilham', 'Comparten'], ['ilumina', 'ilumina'], ['União', 'Unión'], ['Atracção', 'Atracción'],
-    ['fluidez', 'fluidez'], ['Harmonia', 'Armonía'], ['Comunicação', 'Comunicación'],
-    ['Momento', 'Momento'], ['período', 'período'], ['Temporada', 'Temporada'],
-    ['inicia', 'inicia'], ['expande', 'expande'], ['entra', 'entra'], ['activa', 'activa'],
-    ['retrógrado', 'retrógrado'], ['Retrógrado', 'Retrógrado'], ['Eclipse', 'Eclipse'],
+    ['January', 'Enero'], ['February', 'Febrero'], ['March', 'Marzo'], ['April', 'Abril'],
+    ['May', 'Mayo'], ['June', 'Junio'], ['July', 'Julio'], ['August', 'Agosto'],
+    ['September', 'Septiembre'], ['October', 'Octubre'], ['November', 'Noviembre'], ['December', 'Diciembre'],
+    ['Saturn', 'Saturno'], ['Venus', 'Venus'], ['Mars', 'Marte'], ['Jupiter', 'Júpiter'],
+    ['Mercury', 'Mercurio'], ['Sun', 'Sol'], ['New Moon', 'Luna Nueva'],
+    ['Cancer', 'Cáncer'], ['Gemini', 'Géminos'], ['Taurus', 'Tauro'], ['Leo', 'Leo'],
+    ['Pisces', 'Piscis'], ['Scorpio', 'Escorpio'], ['Sagittarius', 'Sagitario'], ['Capricorn', 'Capricornio'],
+    ['Aries', 'Aries'],
+    ['high', 'alto'], ['medium', 'medio'], ['low', 'bajo'], ['caution', 'atención'],
+    ['intense', 'intenso'], ['transformative', 'transformador'], ['challenge', 'desafío'],
+    ['standard', 'estándar'], ['optimism', 'optimismo'],
+    ['Fire', 'Fuego'], ['Earth', 'Tierra'], ['Air', 'Aire'], ['Water', 'Agua'],
+    ['Passionate', 'Apasionada'], ['Magical combination', 'Combinación mágica'],
+    ['Creative tension', 'Tensión creativa'], ['Intense and transformative', 'Intensa y transformadora'],
+    ['Solidity and mutual trust', 'Solidez y confianza mutua'], ['Deep mutual nourishment', 'Nutrición mutua profunda'],
+    ['Complementary differences', 'Diferencias complementarias'], ['Constant intellectual stimulation', 'Estímulo intelectual constante'],
+    ['Creativity and emotion together', 'Creatividad y emoción juntas'], ['Oceanic emotional depth', 'Profundidad emocional oceánica'],
+    ['conjunction', 'conjunción'], ['trine', 'trígono'], ['sextile', 'sextil'],
+    ['ingresso', 'ingresso'], ['trânsito', 'tránsito'], ['retrógrado', 'retrógrado'],
+    ['sazonalidade', 'sazonalidad'], ['eclipse', 'eclipse'], ['quadratura', 'cuadratura'],
+    ['begins', 'inicia'], ['expands', 'expande'], ['enters', 'entra'], ['activates', 'activa'],
+    ['Retrograde', 'Retrógrado'], ['Solar Eclipse', 'Eclipse Solar'], ['season', 'temporada'],
+    ['your', 'tu'], ['You', 'Tú'], ['you', 'tú'], ['Time to', 'Momento de'], ['Excellent for', 'Excelente para'],
+    ['Ideal time', 'Momento ideal'], ['Great for', 'Óptimo para'], ['Watch', 'Cuidado con'],
+    ['Release what', 'Libera lo que'], ['End the year', 'Termina el año'],
   ],
   it: [
-    ['Janeiro', 'Gennaio'], ['Fevereiro', 'Febbraio'], ['Março', 'Marzo'], ['Maio', 'Maggio'],
-    ['Junho', 'Giugno'], ['Julho', 'Luglio'], ['Agosto', 'Agosto'], ['Setembro', 'Settembre'],
-    ['Outubro', 'Ottobre'], ['Novembro', 'Novembre'], ['Dezembro', 'Dicembre'],
-    ['Vénus', 'Venere'], ['Mercúrio', 'Mercurio'], ['Júpiter', 'Giove'], ['Lua Nova', 'Luna Nuova'],
-    ['Caranguejo', 'Cancro'], ['Gémeos', 'Gemelli'], ['Touro', 'Toro'], ['Peixes', 'Pesci'],
-    ['Escorpião', 'Scorpione'], ['Sagitário', 'Sagittario'], ['Capricórnio', 'Capricorno'],
-    ['médio', 'medio'], ['atenção', 'attenzione'], ['padrão', 'standard'], ['optimismo', 'ottimismo'],
-    ['Fogo', 'Fuoco'], ['Terra', 'Terra'], ['Ar', 'Aria'], ['Água', 'Acqua'],
-    ['Conjuncao', 'congiunzione'], ['conjunção', 'congiunzione'],
+    ['January', 'Gennaio'], ['February', 'Febbraio'], ['March', 'Marzo'], ['April', 'Aprile'],
+    ['May', 'Maggio'], ['June', 'Giugno'], ['July', 'Luglio'], ['August', 'Agosto'],
+    ['September', 'Settembre'], ['October', 'Ottobre'], ['November', 'Novembre'], ['December', 'Dicembre'],
+    ['Saturn', 'Saturno'], ['Venus', 'Venere'], ['Mars', 'Marte'], ['Jupiter', 'Giove'],
+    ['Mercury', 'Mercurio'], ['Sun', 'Sole'], ['New Moon', 'Luna Nuova'],
+    ['Cancer', 'Cancro'], ['Gemini', 'Gemelli'], ['Taurus', 'Toro'], ['Leo', 'Leone'],
+    ['Pisces', 'Pesci'], ['Scorpio', 'Scorpione'], ['Sagittarius', 'Sagittario'], ['Capricorn', 'Capricorno'],
+    ['Aries', 'Ariete'],
+    ['high', 'alto'], ['medium', 'medio'], ['low', 'basso'], ['caution', 'attenzione'],
+    ['intense', 'intenso'], ['transformative', 'trasformativo'], ['challenge', 'sfida'],
+    ['standard', 'standard'], ['optimism', 'ottimismo'],
+    ['Fire', 'Fuoco'], ['Earth', 'Terra'], ['Air', 'Aria'], ['Water', 'Acqua'],
+    ['conjunction', 'congiunzione'], ['trine', 'trigono'], ['sextile', 'sestile'],
+    ['ingresso', 'ingresso'], ['trânsito', 'transito'], ['retrógrado', 'retrogrado'],
+    ['sazonalidade', 'stagionalità'], ['eclipse', 'eclissi'], ['quadratura', 'quadratura'],
   ],
   de: [
-    ['Janeiro', 'Januar'], ['Fevereiro', 'Februar'], ['Março', 'März'], ['Maio', 'Mai'],
-    ['Junho', 'Juni'], ['Julho', 'Juli'], ['Agosto', 'August'], ['Setembro', 'September'],
-    ['Outubro', 'Oktober'], ['Novembro', 'November'], ['Dezembro', 'Dezember'],
-    ['Saturno', 'Saturn'], ['Vénus', 'Venus'], ['Marte', 'Mars'], ['Júpiter', 'Jupiter'],
-    ['Mercúrio', 'Merkur'], ['Sol', 'Sonne'], ['Lua Nova', 'Neumond'],
-    ['Caranguejo', 'Krebs'], ['Gémeos', 'Zwillinge'], ['Touro', 'Stier'], ['Leão', 'Löwe'],
-    ['Peixes', 'Fische'], ['Escorpião', 'Skorpion'], ['Sagitário', 'Schütze'], ['Capricórnio', 'Steinbock'],
-    ['Carneiro', 'Widder'], ['Áries', 'Widder'],
-    ['alto', 'hoch'], ['médio', 'mittel'], ['baixo', 'niedrig'], ['atenção', 'Achtung'],
-    ['intenso', 'intensiv'], ['transformador', 'transformativ'], ['desafio', 'Herausforderung'],
-    ['padrão', 'Standard'], ['optimismo', 'Optimismus'],
-    ['Fogo', 'Feuer'], ['Terra', 'Erde'], ['Ar', 'Luft'], ['Água', 'Wasser'],
-    ['Conjuncao', 'Konjunktion'], ['conjunção', 'Konjunktion'], ['trígono', 'Trigon'], ['sextil', 'Sextil'],
-    ['Vénus', 'Venus'], ['Mercúrio', 'Merkur'], ['Ascendente', 'Aszendent'],
+    ['January', 'Januar'], ['February', 'Februar'], ['March', 'März'], ['April', 'April'],
+    ['May', 'Mai'], ['June', 'Juni'], ['July', 'Juli'], ['August', 'August'],
+    ['September', 'September'], ['October', 'Oktober'], ['November', 'November'], ['December', 'Dezember'],
+    ['Saturn', 'Saturn'], ['Venus', 'Venus'], ['Mars', 'Mars'], ['Jupiter', 'Jupiter'],
+    ['Mercury', 'Merkur'], ['Sun', 'Sonne'], ['New Moon', 'Neumond'],
+    ['Cancer', 'Krebs'], ['Gemini', 'Zwillinge'], ['Taurus', 'Stier'], ['Leo', 'Löwe'],
+    ['Pisces', 'Fische'], ['Scorpio', 'Skorpion'], ['Sagittarius', 'Schütze'], ['Capricorn', 'Steinbock'],
+    ['Aries', 'Widder'],
+    ['high', 'hoch'], ['medium', 'mittel'], ['low', 'niedrig'], ['caution', 'Achtung'],
+    ['intense', 'intensiv'], ['transformative', 'transformativ'], ['challenge', 'Herausforderung'],
+    ['standard', 'Standard'], ['optimism', 'Optimismus'],
+    ['Fire', 'Feuer'], ['Earth', 'Erde'], ['Air', 'Luft'], ['Water', 'Wasser'],
+    ['conjunction', 'Konjunktion'], ['trine', 'Trigon'], ['sextile', 'Sextil'],
+    ['ingresso', 'Ingress'], ['trânsito', 'Transit'], ['retrógrado', 'rückläufig'],
+    ['sazonalidade', 'Jahreszeit'], ['eclipse', 'Finsternis'], ['quadratura', 'Quadrat'],
   ],
   fr: [
-    ['Janeiro', 'Janvier'], ['Fevereiro', 'Février'], ['Março', 'Mars'], ['Maio', 'Mai'],
-    ['Junho', 'Juin'], ['Julho', 'Juillet'], ['Agosto', 'Août'], ['Setembro', 'Septembre'],
-    ['Outubro', 'Octobre'], ['Novembro', 'Novembre'], ['Dezembro', 'Décembre'],
-    ['Saturno', 'Saturne'], ['Vénus', 'Vénus'], ['Marte', 'Mars'], ['Júpiter', 'Jupiter'],
-    ['Mercúrio', 'Mercure'], ['Sol', 'Soleil'], ['Lua Nova', 'Nouvelle Lune'],
-    ['Caranguejo', 'Cancer'], ['Gémeos', 'Gémeaux'], ['Touro', 'Taureau'], ['Leão', 'Lion'],
-    ['Peixes', 'Poissons'], ['Escorpião', 'Scorpion'], ['Sagitário', 'Sagittaire'], ['Capricórnio', 'Capricorne'],
-    ['Carneiro', 'Bélier'], ['Áries', 'Bélier'],
-    ['alto', 'élevé'], ['médio', 'moyen'], ['baixo', 'faible'], ['atenção', 'attention'],
-    ['intenso', 'intense'], ['transformador', 'transformateur'], ['desafio', 'défi'],
-    ['padrão', 'standard'], ['optimismo', 'optimisme'],
-    ['Fogo', 'Feu'], ['Terra', 'Terre'], ['Ar', 'Air'], ['Água', 'Eau'],
-    ['Conjuncao', 'conjonction'], ['conjunção', 'conjonction'], ['trígono', 'trigone'], ['sextil', 'sextile'],
-    ['Ascendente', 'Ascendant'],
+    ['January', 'Janvier'], ['February', 'Février'], ['March', 'Mars'], ['April', 'Avril'],
+    ['May', 'Mai'], ['June', 'Juin'], ['July', 'Juillet'], ['August', 'Août'],
+    ['September', 'Septembre'], ['October', 'Octobre'], ['November', 'Novembre'], ['December', 'Décembre'],
+    ['Saturn', 'Saturne'], ['Venus', 'Vénus'], ['Mars', 'Mars'], ['Jupiter', 'Jupiter'],
+    ['Mercury', 'Mercure'], ['Sun', 'Soleil'], ['New Moon', 'Nouvelle Lune'],
+    ['Cancer', 'Cancer'], ['Gemini', 'Gémeaux'], ['Taurus', 'Taureau'], ['Leo', 'Lion'],
+    ['Pisces', 'Poissons'], ['Scorpio', 'Scorpion'], ['Sagittarius', 'Sagittaire'], ['Capricorn', 'Capricorne'],
+    ['Aries', 'Bélier'],
+    ['high', 'élevé'], ['medium', 'moyen'], ['low', 'faible'], ['caution', 'attention'],
+    ['intense', 'intense'], ['transformative', 'transformateur'], ['challenge', 'défi'],
+    ['standard', 'standard'], ['optimism', 'optimisme'],
+    ['Fire', 'Feu'], ['Earth', 'Terre'], ['Air', 'Air'], ['Water', 'Eau'],
+    ['conjunction', 'conjonction'], ['trine', 'trigone'], ['sextile', 'sextile'],
+    ['ingresso', 'entrée'], ['trânsito', 'transit'], ['retrógrado', 'rétrograde'],
+    ['sazonalidade', 'saison'], ['eclipse', 'éclipse'], ['quadratura', 'carré'],
   ],
+}
+
+function looksPortuguese(str) {
+  if (!str || typeof str !== 'string' || str.length < 8) return false
+  if (/[ãõç]/i.test(str)) return true
+  return /\b(não|nao|tens|estás|o teu|a tua|partilhas|reflecte|consciência|cármico|relacionamento)\b/i.test(str)
 }
 
 function deepTranslate(val, lang) {
@@ -130,13 +148,33 @@ function deepTranslate(val, lang) {
   return val
 }
 
-let out = `/** Gerado por scripts/build-ferramentas-premium-locales.mjs */\nimport { contentForLang } from '../langUtil.js'\n\n`
+function packForLang(lang) {
+  const translated = {
+    transitos: deepTranslate(TRANSITOS_EN, lang),
+    impacto: deepTranslate(IMPACTO_EN, lang),
+    compat: deepTranslate(COMPAT_EN, lang),
+    aspectos: deepTranslate(ASPECTOS_EN, lang),
+  }
+  const sample = translated.transitos[0]?.desc || ''
+  if (looksPortuguese(sample)) {
+    return {
+      transitos: TRANSITOS_EN,
+      impacto: IMPACTO_EN,
+      compat: COMPAT_EN,
+      aspectos: ASPECTOS_EN,
+    }
+  }
+  return translated
+}
+
+let out = `/** Gerado por scripts/build-ferramentas-premium-locales.mjs (fonte EN) */\nimport { contentForLang } from '../langUtil.js'\n\n`
 for (const lang of ['es', 'it', 'de', 'fr']) {
-  out += `export const TRANSITOS_${lang.toUpperCase()} = ${JSON.stringify(deepTranslate(TRANSITOS_PT, lang), null, 2)}\n\n`
-  out += `export const IMPACTO_${lang.toUpperCase()} = ${JSON.stringify(deepTranslate(IMPACTO_PT, lang), null, 2)}\n\n`
-  out += `export const COMPAT_${lang.toUpperCase()} = ${JSON.stringify(deepTranslate(COMPAT_PT, lang), null, 2)}\n\n`
-  out += `export const ASPECTOS_${lang.toUpperCase()} = ${JSON.stringify(deepTranslate(ASPECTOS_PT, lang), null, 2)}\n\n`
+  const p = packForLang(lang)
+  out += `export const TRANSITOS_${lang.toUpperCase()} = ${JSON.stringify(p.transitos, null, 2)}\n\n`
+  out += `export const IMPACTO_${lang.toUpperCase()} = ${JSON.stringify(p.impacto, null, 2)}\n\n`
+  out += `export const COMPAT_${lang.toUpperCase()} = ${JSON.stringify(p.compat, null, 2)}\n\n`
+  out += `export const ASPECTOS_${lang.toUpperCase()} = ${JSON.stringify(p.aspectos, null, 2)}\n\n`
 }
 
 writeFileSync(join(__dirname, '../src/lib/i18n/packs/ferramentasPremiumLocales.js'), out, 'utf8')
-console.log('ferramentasPremiumLocales.js gerado')
+console.log('ferramentasPremiumLocales.js gerado (fonte EN)')

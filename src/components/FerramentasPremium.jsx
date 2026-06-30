@@ -1134,42 +1134,67 @@ export function InterpretacaoSonhos({ mapaNatal, onVoltar }) {
     if (!resultado) return
     const textoEfetivo = sonho.trim() || chipsSel.join(', ')
     if (!textoEfetivo) return
-    const local = gerarLocal(textoEfetivo, lang, feeling, chipsSel)
-    if (local) setResultado(local)
-  }, [lang])
+    const id = ++pedidoRef.current
+    setAInterpretar(true)
+    interpretarSonhoRemoto(textoEfetivo, mapaNatal, lang, feeling, chipsSel)
+      .then((res) => {
+        if (id !== pedidoRef.current) return
+        if (res?.seccoes?.some((s) => s.texto?.length > 15)) {
+          setResultado(res)
+          setErro(null)
+          return
+        }
+        const local = gerarLocal(textoEfetivo, lang, feeling, chipsSel)
+        if (local) {
+          setResultado({ ...local, fonte: 'local' })
+          setErro(null)
+        }
+      })
+      .catch(() => {
+        if (id !== pedidoRef.current) return
+        const local = gerarLocal(textoEfetivo, lang, feeling, chipsSel)
+        if (local) setResultado({ ...local, fonte: 'local' })
+      })
+      .finally(() => {
+        if (id === pedidoRef.current) setAInterpretar(false)
+      })
+  }, [lang, mapaNatal, gerarLocal])
 
   const interpretar = async () => {
     const textoEfetivo = sonho.trim() || chipsSel.join(', ')
     if (!textoEfetivo) return
     const id = ++pedidoRef.current
     setErro(null)
+    setResultado(null)
+    setAInterpretar(true)
 
-    const local = gerarLocal(textoEfetivo, lang, feeling, chipsSel)
-    if (local) {
-      setResultado(local)
-      setAInterpretar(false)
-    } else {
-      setAInterpretar(true)
+    try {
+      const res = await interpretarSonhoRemoto(textoEfetivo, mapaNatal, lang, feeling, chipsSel)
+      if (id !== pedidoRef.current) return
+      if (res?.seccoes?.some((s) => s.texto?.length > 15)) {
+        setResultado(res)
+        return
+      }
+      const local = gerarLocal(textoEfetivo, lang, feeling, chipsSel)
+      if (local) {
+        setResultado({ ...local, fonte: 'local' })
+      } else {
+        setErro(t('ferramentasPremium.sonhos.error'))
+      }
+    } catch {
+      if (id !== pedidoRef.current) return
+      const local = gerarLocal(textoEfetivo, lang, feeling, chipsSel)
+      if (local) {
+        setResultado({ ...local, fonte: 'local' })
+      } else {
+        setErro(t('ferramentasPremium.sonhos.error'))
+      }
+    } finally {
+      if (id === pedidoRef.current) setAInterpretar(false)
     }
-
-    interpretarSonhoRemoto(sonho.trim() || textoEfetivo, mapaNatal, lang, feeling, chipsSel)
-      .then((res) => {
-        if (id !== pedidoRef.current) return
-        if (res?.seccoes?.some((s) => s.texto?.length > 20)) {
-          setResultado(res)
-        } else if (!local) {
-          setErro(t('ferramentasPremium.sonhos.error'))
-        }
-      })
-      .catch(() => {
-        if (id === pedidoRef.current && !local) setErro(t('ferramentasPremium.sonhos.error'))
-      })
-      .finally(() => {
-        if (id === pedidoRef.current) setAInterpretar(false)
-      })
   }
 
-  const pronto = (sonho.trim().length > 8 || chipsSel.length > 0) && !aInterpretar
+  const pronto = (sonho.trim().length > 2 || chipsSel.length > 0) && !aInterpretar
 
   return (
     <div style={{ padding: '20px 20px 110px' }}>
@@ -1257,6 +1282,19 @@ export function InterpretacaoSonhos({ mapaNatal, onVoltar }) {
         <p style={{ fontSize: 13, color: '#F87171', textAlign: 'center', marginBottom: 16 }}>{erro}</p>
       )}
 
+      {aInterpretar && !resultado && (
+        <div style={{
+          textAlign: 'center', padding: '28px 16px', marginBottom: 16,
+          background: 'rgba(109,40,217,0.08)', borderRadius: 16,
+          border: '1px solid rgba(139,92,246,0.25)',
+        }}>
+          <div style={{ fontSize: 28, marginBottom: 10, animation: 'pulse 2s ease-in-out infinite' }}>✦</div>
+          <p style={{ fontSize: 13, color: '#C4B5FD', margin: 0, lineHeight: 1.6 }}>
+            {t('ferramentasPremium.sonhos.decoding')}
+          </p>
+        </div>
+      )}
+
       {resultado && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginBottom: 24 }}>
           {resultado.simbolos.length > 0 && (
@@ -1299,7 +1337,6 @@ export function InterpretacaoSonhos({ mapaNatal, onVoltar }) {
 export function HorasIguais({ onVoltar }) {
   const { lang, t } = useLanguage()
   const [agora, setAgora] = useState(() => new Date())
-  const [horaManual, setHoraManual] = useState('')
   const [modoManual, setModoManual] = useState(false)
   const [chaveManual, setChaveManual] = useState(null)
   const [interpretacao, setInterpretacao] = useState(() => interpretarAgora(lang))
@@ -1325,21 +1362,8 @@ export function HorasIguais({ onVoltar }) {
   const locale = dateLocale(lang)
   const horaActual = agora.toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' })
   const proxima = proximaHoraIgual(agora)
-  const horasPopulares = ['11:11', '22:22', '12:12', '01:01', '04:04']
-
-  const consultarManual = () => {
-    const m = horaManual.trim().match(/^(\d{1,2}):(\d{2})$/)
-    if (!m) return
-    const h = Math.min(23, Math.max(0, +m[1]))
-    const min = Math.min(59, Math.max(0, +m[2]))
-    const chave = `${String(h).padStart(2, '0')}:${String(min).padStart(2, '0')}`
-    setModoManual(true)
-    setChaveManual(chave)
-    setInterpretacao(interpretarHorario(h, min, lang))
-  }
 
   const seleccionarHora = (chave) => {
-    setHoraManual(chave)
     setModoManual(true)
     setChaveManual(chave)
     const [h, min] = chave.split(':').map(Number)
@@ -1349,7 +1373,6 @@ export function HorasIguais({ onVoltar }) {
   const voltarAoAgora = () => {
     setModoManual(false)
     setChaveManual(null)
-    setHoraManual('')
     const d = new Date()
     setInterpretacao(interpretarHorario(d.getHours(), d.getMinutes(), lang))
   }
@@ -1370,15 +1393,25 @@ export function HorasIguais({ onVoltar }) {
         {t('ferramentasPremium.horasIguais.subtitle')}
       </p>
 
+      {/* Relógio vivo — portal do momento */}
       <div style={{
-        background: 'linear-gradient(135deg, rgba(139,92,246,0.18), rgba(223,183,108,0.1))',
-        border: `1px solid rgba(223,183,108,0.35)`,
-        borderRadius: 16, padding: 20, marginBottom: 16, textAlign: 'center',
+        background: 'linear-gradient(160deg, rgba(109,40,217,0.22), rgba(223,183,108,0.12), rgba(11,7,30,0.85))',
+        border: `1px solid rgba(223,183,108,0.4)`,
+        borderRadius: 20, padding: '24px 20px', marginBottom: 20, textAlign: 'center',
+        boxShadow: '0 0 48px rgba(139,92,246,0.15), inset 0 1px 0 rgba(255,255,255,0.06)',
+        position: 'relative', overflow: 'hidden',
       }}>
-        <div style={{ fontSize: 11, color: CORES.dourado, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 8 }}>
-          {modoManual ? interpretacao.chave : t('ferramentasPremium.horasIguais.now')}
+        <div style={{
+          position: 'absolute', inset: 0, pointerEvents: 'none',
+          background: 'radial-gradient(circle at 50% 0%, rgba(223,183,108,0.12), transparent 60%)',
+        }} />
+        <div style={{ fontSize: 10, color: CORES.dourado, textTransform: 'uppercase', letterSpacing: '0.14em', marginBottom: 10 }}>
+          {modoManual ? '✧ ' + interpretacao.chave : '◎ ' + t('ferramentasPremium.horasIguais.now')}
         </div>
-        <div style={{ fontSize: 42, fontWeight: 700, color: CORES.branco, letterSpacing: '0.06em', marginBottom: 6 }}>
+        <div style={{
+          fontSize: 48, fontWeight: 700, color: CORES.branco, letterSpacing: '0.08em', marginBottom: 8,
+          textShadow: '0 0 24px rgba(223,183,108,0.35)',
+        }}>
           {modoManual ? interpretacao.chave : horaActual}
         </div>
         <div style={{ fontSize: 12, color: CORES.brancoMuted }}>
@@ -1386,72 +1419,23 @@ export function HorasIguais({ onVoltar }) {
         </div>
         {modoManual && (
           <button type="button" onClick={voltarAoAgora} style={{
-            marginTop: 12, background: 'none', border: `1px solid ${CORES.vidroBorda}`,
-            borderRadius: 8, color: CORES.dourado, fontSize: 11, padding: '6px 12px', cursor: 'pointer',
+            marginTop: 14, background: 'rgba(223,183,108,0.12)', border: `1px solid rgba(223,183,108,0.45)`,
+            borderRadius: 20, color: CORES.dourado, fontSize: 11, padding: '8px 16px', cursor: 'pointer',
           }}>
             ↻ {t('ferramentasPremium.horasIguais.now')}
           </button>
         )}
       </div>
 
-      <div style={{ background: 'rgba(255,255,255,0.04)', border: `1px solid ${CORES.vidroBorda}`, borderRadius: 14, padding: 18, marginBottom: 16 }}>
-        <div style={{ display: 'flex', gap: 8, marginBottom: 10 }}>
-          <input
-            type="text"
-            inputMode="numeric"
-            value={horaManual}
-            onChange={(e) => setHoraManual(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') {
-                e.preventDefault()
-                consultarManual()
-              }
-            }}
-            placeholder={t('ferramentasPremium.horasIguais.timePlaceholder')}
-            style={{
-              flex: 1, background: 'rgba(255,255,255,0.06)', border: `1px solid ${CORES.vidroBorda}`,
-              borderRadius: 10, color: CORES.branco, padding: '10px 12px', fontSize: 14,
-            }}
-          />
-          <button type="button" onClick={consultarManual} style={{
-            background: `linear-gradient(135deg,#DFB76C,#B8944F)`, border: 'none',
-            borderRadius: 10, color: '#0B071E', fontSize: 13, fontWeight: 700, padding: '10px 14px', cursor: 'pointer',
-          }}>
-            {t('ferramentasPremium.horasIguais.consult')}
-          </button>
-        </div>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 12 }}>
-          {horasPopulares.map((h) => (
-            <button key={h} type="button" onClick={() => seleccionarHora(h)} style={{
-              background: interpretacao.chave === h ? 'rgba(223,183,108,0.2)' : 'rgba(255,255,255,0.04)',
-              border: `1px solid ${interpretacao.chave === h ? CORES.dourado : CORES.vidroBorda}`,
-              borderRadius: 20, color: CORES.brancoSuave, fontSize: 12, padding: '5px 12px', cursor: 'pointer',
-            }}>
-              {h}
-            </button>
-          ))}
-        </div>
-        <div style={{ fontSize: 10, color: CORES.dourado, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 8 }}>
-          {t('ferramentasPremium.horasIguais.allEqualHours')}
-        </div>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, maxHeight: 160, overflowY: 'auto' }}>
-          {todasHoras.map((h) => (
-            <button key={h} type="button" onClick={() => seleccionarHora(h)} style={{
-              background: interpretacao.chave === h ? 'rgba(223,183,108,0.15)' : 'rgba(255,255,255,0.03)',
-              border: `1px solid ${interpretacao.chave === h ? 'rgba(223,183,108,0.5)' : CORES.vidroBorda}`,
-              borderRadius: 16, color: CORES.brancoMuted, fontSize: 11, padding: '4px 10px', cursor: 'pointer',
-            }}>
-              {h}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      <div style={{ background: 'rgba(255,255,255,0.04)', border: `1px solid ${CORES.vidroBorda}`, borderRadius: 14, padding: 18, marginBottom: 14 }}>
+      {/* Mensagem angelical */}
+      <div style={{
+        background: 'rgba(255,255,255,0.04)', border: `1px solid ${CORES.vidroBorda}`,
+        borderRadius: 16, padding: 20, marginBottom: 20,
+      }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
           <div style={{ fontSize: 16, fontWeight: 700, color: CORES.branco }}>{interpretacao.titulo}</div>
           <span style={{
-            fontSize: 10, padding: '3px 8px', borderRadius: 12,
+            fontSize: 10, padding: '4px 10px', borderRadius: 12,
             background: 'rgba(139,92,246,0.15)', color: '#C4B5FD', border: '1px solid rgba(139,92,246,0.3)',
           }}>
             {tipoLabel}
@@ -1463,8 +1447,12 @@ export function HorasIguais({ onVoltar }) {
         <p style={{ fontSize: 14, color: CORES.brancoSuave, lineHeight: 1.75, margin: '0 0 14px' }}>
           {interpretacao.mensagem}
         </p>
-        <div style={{ background: 'rgba(223,183,108,0.08)', borderRadius: 10, padding: 12, marginBottom: 10 }}>
-          <div style={{ fontSize: 10, color: CORES.dourado, textTransform: 'uppercase', marginBottom: 6 }}>
+        <div style={{
+          background: 'linear-gradient(135deg, rgba(223,183,108,0.1), rgba(139,92,246,0.08))',
+          borderRadius: 12, padding: 14, marginBottom: 10,
+          border: '1px solid rgba(223,183,108,0.2)',
+        }}>
+          <div style={{ fontSize: 10, color: CORES.dourado, textTransform: 'uppercase', marginBottom: 6, letterSpacing: '0.08em' }}>
             {t('ferramentasPremium.horasIguais.advice')}
           </div>
           <p style={{ fontSize: 13, color: CORES.brancoSuave, lineHeight: 1.65, margin: 0 }}>{interpretacao.conselho}</p>
@@ -1474,7 +1462,46 @@ export function HorasIguais({ onVoltar }) {
         </div>
       </div>
 
-      <p style={{ fontSize: 11, color: CORES.brancoMuted, lineHeight: 1.6, fontStyle: 'italic', margin: 0 }}>
+      {/* Grelha mística — escolher hora */}
+      <div style={{
+        background: 'rgba(0,0,0,0.2)', border: `1px solid rgba(223,183,108,0.2)`,
+        borderRadius: 18, padding: 18,
+      }}>
+        <div style={{
+          fontSize: 11, color: CORES.dourado, textTransform: 'uppercase',
+          letterSpacing: '0.12em', marginBottom: 6, textAlign: 'center',
+        }}>
+          ✧ {t('ferramentasPremium.horasIguais.allEqualHours')} ✧
+        </div>
+        <p style={{ fontSize: 12, color: CORES.brancoMuted, textAlign: 'center', margin: '0 0 16px', lineHeight: 1.5 }}>
+          {t('ferramentasPremium.horasIguais.pickHourHint')}
+        </p>
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fill, minmax(72px, 1fr))',
+          gap: 8,
+        }}>
+          {todasHoras.map((h) => {
+            const sel = interpretacao.chave === h
+            return (
+              <button key={h} type="button" onClick={() => seleccionarHora(h)} style={{
+                background: sel
+                  ? 'linear-gradient(135deg, rgba(223,183,108,0.28), rgba(139,92,246,0.2))'
+                  : 'rgba(255,255,255,0.03)',
+                border: sel ? `1px solid ${CORES.dourado}` : `1px solid rgba(255,255,255,0.08)`,
+                borderRadius: 12, color: sel ? CORES.dourado : CORES.brancoMuted,
+                fontSize: 13, fontWeight: sel ? 700 : 500, padding: '10px 6px', cursor: 'pointer',
+                boxShadow: sel ? '0 0 16px rgba(223,183,108,0.25)' : 'none',
+                transition: 'all 0.2s ease',
+              }}>
+                {h}
+              </button>
+            )
+          })}
+        </div>
+      </div>
+
+      <p style={{ fontSize: 11, color: CORES.brancoMuted, lineHeight: 1.6, fontStyle: 'italic', margin: '16px 0 0' }}>
         {t('ferramentasPremium.horasIguais.attribution')}
       </p>
     </div>

@@ -12,11 +12,10 @@ async function postJson(path, body, idToken = null, timeoutMs = 60000) {
       body: JSON.stringify({ ...body, idToken }),
       signal: controller.signal,
     })
+    const data = await res.json().catch(() => ({}))
     if (!res.ok) {
-      const data = await res.json().catch(() => ({}))
       return { ok: false, status: res.status, ...data }
     }
-    const data = await res.json()
     return { ok: true, ...data }
   } catch {
     return { ok: false, status: 0 }
@@ -60,9 +59,15 @@ export async function interpretarSonhoServidor(texto, mapaNatal, lang, feeling, 
       lang,
       feeling,
       chips,
-    }, null, 10000)
-    if (!data?.seccoes) return null
-    return { seccoes: data.seccoes, simbolos: data.simbolos || [] }
+    }, null, 45000)
+    if (!data?.ok && data?.status && data.status !== 200) return null
+    if (!data?.seccoes?.length) return null
+    if (!data.seccoes.some((s) => s?.texto?.length > 15)) return null
+    return {
+      seccoes: data.seccoes,
+      simbolos: data.simbolos || [],
+      fonte: data.fonte || 'ia',
+    }
   } catch {
     return null
   }

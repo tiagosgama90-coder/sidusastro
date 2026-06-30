@@ -25,7 +25,7 @@ export default async (req) => {
     const body = await req.json()
     const { texto, lang = 'pt', feeling = null, chips = [], mapaNatal = null } = body
 
-    const hasText = texto?.trim().length >= 8
+    const hasText = texto?.trim().length >= 3
     const hasChips = Array.isArray(chips) && chips.length > 0
     if (!hasText && !hasChips) {
       return new Response(JSON.stringify({ error: 'Relato demasiado curto' }), { status: 400, headers: corsHeaders })
@@ -47,8 +47,8 @@ export default async (req) => {
     const raw = await chatCompletion({
       system,
       messages: [{ role: 'user', content: userPrompt }],
-      maxTokens: 520,
-      temperature: 0.85,
+      maxTokens: 720,
+      temperature: 0.82,
       tier: 'free',
       escopo: 'sonhos',
       lang,
@@ -56,12 +56,14 @@ export default async (req) => {
 
     const simbolos = simbolosDetectados.map((s) => ({ tema: s.tema, resumo: s.resumo }))
     let seccoes = raw ? parseRespostaSonhos(raw, lang) : null
+    let fonte = 'ia'
 
     if (!seccoes?.some((s) => s.texto?.length > 20)) {
       seccoes = gerarInterpretacaoLocal(textoEfetivo, lang, feelingLabel, simbolosDetectados, mapaNatal)
+      fonte = 'lexicon'
     }
 
-    return new Response(JSON.stringify({ seccoes, simbolos, fonte: raw ? 'ia' : 'lexicon' }), {
+    return new Response(JSON.stringify({ ok: true, seccoes, simbolos, fonte }), {
       status: 200,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     })

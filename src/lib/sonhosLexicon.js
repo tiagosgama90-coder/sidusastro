@@ -113,10 +113,14 @@ function lexiconForLang(lang) {
   }
   return LEXICON.map((ptEntry, i) => {
     const locEntry = loc.find((e) => e.tema === ptEntry.tema) || loc[i] || ptEntry
+    const resumoLoc = locEntry.resumo || ''
+    const resumo = looksPortuguese(resumoLoc)
+      ? resumoSimbolo(ptEntry, null, lang)
+      : (resumoLoc || resumoSimbolo(ptEntry, locEntry, lang))
     return {
       ...ptEntry,
-      tema: locEntry.tema || ptEntry.tema,
-      resumo: resumoSimbolo(ptEntry, locEntry, lang),
+      tema: looksPortuguese(locEntry.tema) ? ptEntry.tema : (locEntry.tema || ptEntry.tema),
+      resumo,
       keys: [...new Set([...(ptEntry.keys || []), ...(locEntry.keys || [])])],
     }
   })

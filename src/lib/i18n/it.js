@@ -657,7 +657,8 @@ export default {
       "typeNeutral": "Momento presente",
       "attribution": "Interpretazioni basate sui numeri angelici e sulle ore speculari, nello spirito degli insegnamenti di Doreen Virtue sulla sincronicità e sulla guida spirituale.",
       "popularHours": "Ore più ricercate",
-      "allEqualHours": "Tutte le ore specchio (24 al giorno)"
+      "allEqualHours": "Tutte le ore specchio (24 al giorno)",
+      "pickHourHint": "Tocca l'ora che ti ha chiamato — l'orologio dell'universo risponde."
     }
   },
   "payment": {

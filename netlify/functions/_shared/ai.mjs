@@ -53,7 +53,7 @@ export async function chatCompletion({
   const groq = await callGroq(msgs, { maxTokens, temperature, tier })
   if (groq) return groq
 
-  if (escopo === 'astrologia') {
+  if (escopo === 'astrologia' || escopo === 'sonhos') {
     const gemSystem = `${system}\n\n${reforcoInstrucaoGeminiAstrologia(lang)}`
     const gem = await callGemini(gemSystem, messages, { maxTokens, temperature })
     if (gem) return gem

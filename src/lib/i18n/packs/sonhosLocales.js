@@ -1,4 +1,4 @@
-/** Gerado por scripts/build-mapa-sonhos-locales.mjs */
+/** Gerado por scripts/build-mapa-sonhos-locales.mjs (fonte EN) */
 export const LEXICON_ES = [
   {
     "letra": "A",
@@ -10,7 +10,7 @@ export const LEXICON_ES = [
       "penhasco",
       "despenhar"
     ],
-    "resumo": "Confronto com o vazio interior ou medo de perder controlo; convite à humildade e ao chão da realidade."
+    "resumo": "Símbolo onírico arquetípico (Abismo): material interior que pide integración; aplica la Regla de Oro de conflicto, conversión y cura."
   },
   {
     "letra": "A",
@@ -30,7 +30,7 @@ export const LEXICON_ES = [
       "inundacao",
       "ondas"
     ],
-    "resumo": "Vida emocional e inconsciente; calma = purificação; tempestade = caos psíquico ou pressão externa."
+    "resumo": "Símbolo onírico arquetípico (Água): material interior que pide integración; aplica la Regla de Oro de conflicto, conversión y cura."
   },
   {
     "letra": "A",
@@ -42,7 +42,7 @@ export const LEXICON_ES = [
       "aterrizar",
       "ateragem"
     ],
-    "resumo": "Transição de vida ou desejo de elevação; aterragem forçada = retorno às responsabilidades terrenas."
+    "resumo": "Símbolo onírico arquetípico (Avião): material interior que pide integración; aplica la Regla de Oro de conflicto, conversión y cura."
   },
   {
     "letra": "A",
@@ -56,7 +56,7 @@ export const LEXICON_ES = [
       "paixão",
       "paixao"
     ],
-    "resumo": "Integração de aspectos afetivos; distância ou rejeição = partes do eu a acolher."
+    "resumo": "Símbolo onírico arquetípico (Amor): material interior que pide integración; aplica la Regla de Oro de conflicto, conversión y cura."
   },
   {
     "letra": "A",
@@ -65,7 +65,7 @@ export const LEXICON_ES = [
       "aranha",
       "teia"
     ],
-    "resumo": "Situção emocional enredada ou criatividade paciente; medo = sensação de estar preso."
+    "resumo": "Símbolo onírico arquetípico (Aranha): material interior que pide integración; aplica la Regla de Oro de conflicto, conversión y cura."
   },
   {
     "letra": "A",
@@ -79,7 +79,7 @@ export const LEXICON_ES = [
       "disparo",
       "sangue"
     ],
-    "resumo": "Agressividade reprimida ou ferida no expressa; pede canalização consciente, no negação."
+    "resumo": "Símbolo onírico arquetípico (Arma): material interior que pide integración; aplica la Regla de Oro de conflicto, conversión y cura."
   },
   {
     "letra": "A",
@@ -90,7 +90,7 @@ export const LEXICON_ES = [
       "degrau",
       "ascender"
     ],
-    "resumo": "Evolução interior ou esforço disciplinado; escada quebrada = cansaço no caminho espiritul."
+    "resumo": "Símbolo onírico arquetípico (Ascensão): material interior que pide integración; aplica la Regla de Oro de conflicto, conversión y cura."
   },
   {
     "letra": "A",
@@ -104,7 +104,7 @@ export const LEXICON_ES = [
       "acidente de carro",
       "estacionar"
     ],
-    "resumo": "Grau de autonomia na vida; perder controlo do volante = sensação de impotência face ao destino."
+    "resumo": "Símbolo onírico arquetípico (Automóvel): material interior que pide integración; aplica la Regla de Oro de conflicto, conversión y cura."
   },
   {
     "letra": "A",
@@ -117,7 +117,7 @@ export const LEXICON_ES = [
       "bisavó",
       "bisavo"
     ],
-    "resumo": "Raízes familiares e sabedoria herdada; mensagem do inconsciente colectivo familiar."
+    "resumo": "Símbolo onírico arquetípico (Avó): material interior que pide integración; aplica la Regla de Oro de conflicto, conversión y cura."
   },
   {
     "letra": "B",
@@ -130,7 +130,7 @@ export const LEXICON_ES = [
       "berço",
       "berco"
     ],
-    "resumo": "Potencial novo na alma; vulnerabilidade sagrada que pede protecção interior."
+    "resumo": "Símbolo onírico arquetípico (Bebé): material interior que pide integración; aplica la Regla de Oro de conflicto, conversión y cura."
   },
   {
     "letra": "B",
@@ -143,7 +143,7 @@ export const LEXICON_ES = [
       "naufragio",
       "porto"
     ],
-    "resumo": "Travessia emocional ou espiritul; naufrágio = medo de ser submergido pelas emociones."
+    "resumo": "Símbolo onírico arquetípico (Barco): material interior que pide integración; aplica la Regla de Oro de conflicto, conversión y cura."
   },
   {
     "letra": "B",
@@ -156,7 +156,7 @@ export const LEXICON_ES = [
       "página",
       "pagina"
     ],
-    "resumo": "Busca de sentido e revelação interior; livro fechado = sabedoria ainda no acedida."
+    "resumo": "Símbolo onírico arquetípico (Biblioteca): material interior que pide integración; aplica la Regla de Oro de conflicto, conversión y cura."
   },
   {
     "letra": "B",
@@ -169,7 +169,7 @@ export const LEXICON_ES = [
       "gritar",
       "insulto"
     ],
-    "resumo": "Conflito interior projectado; pede reconciliação de partes opostas da personalidade."
+    "resumo": "Símbolo onírico arquetípico (Brigar): material interior que pide integración; aplica la Regla de Oro de conflicto, conversión y cura."
   },
   {
     "letra": "B",
@@ -180,7 +180,7 @@ export const LEXICON_ES = [
       "poco",
       "cova"
     ],
-    "resumo": "Descida ao inconsciente; medo do poço = resistência a olhar para a sombra."
+    "resumo": "Símbolo onírico arquetípico (Buraco): material interior que pide integración; aplica la Regla de Oro de conflicto, conversión y cura."
   },
   {
     "letra": "C",
@@ -192,7 +192,7 @@ export const LEXICON_ES = [
       "apartamento",
       "quinta"
     ],
-    "resumo": "Estrutura da alma; estado da casa reflecte ordem ou caos interior."
+    "resumo": "Símbolo onírico arquetípico (Casa): material interior que pide integración; aplica la Regla de Oro de conflicto, conversión y cura."
   },
   {
     "letra": "C",
@@ -202,7 +202,7 @@ export const LEXICON_ES = [
       "cao",
       "cadela"
     ],
-    "resumo": "Lealdade, instinto protector ou companheirismo; cão agressivo = instinto mal integrado."
+    "resumo": "Símbolo onírico arquetípico (Cão): material interior que pide integración; aplica la Regla de Oro de conflicto, conversión y cura."
   },
   {
     "letra": "C",
@@ -217,7 +217,7 @@ export const LEXICON_ES = [
       "miúdo",
       "miudo"
     ],
-    "resumo": "Pureza e potencial; criança ferida = ferida de infância a curar com compasión."
+    "resumo": "Símbolo onírico arquetípico (Criança): material interior que pide integración; aplica la Regla de Oro de conflicto, conversión y cura."
   },
   {
     "letra": "C",
@@ -228,7 +228,7 @@ export const LEXICON_ES = [
       "porao",
       "subsolo"
     ],
-    "resumo": "Sombra e memórias reprimidas; descer à cave = coraje de enfrentar o passado."
+    "resumo": "Símbolo onírico arquetípico (Cave): material interior que pide integración; aplica la Regla de Oro de conflicto, conversión y cura."
   },
   {
     "letra": "C",
@@ -238,7 +238,7 @@ export const LEXICON_ES = [
       "cemiterio",
       "campo santo"
     ],
-    "resumo": "Processo de luto ou deixar ir; no previsão de morte física."
+    "resumo": "Símbolo onírico arquetípico (Cemitério): material interior que pide integración; aplica la Regla de Oro de conflicto, conversión y cura."
   },
   {
     "letra": "C",
@@ -251,7 +251,7 @@ export const LEXICON_ES = [
       "perseguição",
       "perseguicao"
     ],
-    "resumo": "Evitar confronto interior; o que persegue é parte rejeitada do eu."
+    "resumo": "Símbolo onírico arquetípico (Correr): material interior que pide integración; aplica la Regla de Oro de conflicto, conversión y cura."
   },
   {
     "letra": "C",
@@ -264,7 +264,7 @@ export const LEXICON_ES = [
       "principe",
       "princesa"
     ],
-    "resumo": "Autoridade interior ou orgulho espiritul; coroa pesada = fardo de expectativas."
+    "resumo": "Símbolo onírico arquetípico (Coroa): material interior que pide integración; aplica la Regla de Oro de conflicto, conversión y cura."
   },
   {
     "letra": "C",
@@ -277,7 +277,7 @@ export const LEXICON_ES = [
       "fome",
       "saciar"
     ],
-    "resumo": "Nutrição espiritul ou emocional; fome = carência a reconhecer."
+    "resumo": "Símbolo onírico arquetípico (Comida): material interior que pide integración; aplica la Regla de Oro de conflicto, conversión y cura."
   },
   {
     "letra": "D",
@@ -287,7 +287,7 @@ export const LEXICON_ES = [
       "dentes",
       "perder dentes"
     ],
-    "resumo": "Ansiedade sobre imagem ou perda de poder de expressão; pede honestidade na comunicação."
+    "resumo": "Símbolo onírico arquetípico (Dente): material interior que pide integración; aplica la Regla de Oro de conflicto, conversión y cura."
   },
   {
     "letra": "D",
@@ -298,7 +298,7 @@ export const LEXICON_ES = [
       "seca",
       "sedento"
     ],
-    "resumo": "Noite escura da alma; tempo de silêncio antes do renovamento."
+    "resumo": "Símbolo onírico arquetípico (Deserto): material interior que pide integración; aplica la Regla de Oro de conflicto, conversión y cura."
   },
   {
     "letra": "D",
@@ -313,7 +313,7 @@ export const LEXICON_ES = [
       "dívida",
       "divida"
     ],
-    "resumo": "Valor interior e autoestima; perder dinheiro = medo de no ser suficiente."
+    "resumo": "Símbolo onírico arquetípico (Dinheiro): material interior que pide integración; aplica la Regla de Oro de conflicto, conversión y cura."
   },
   {
     "letra": "D",
@@ -327,7 +327,7 @@ export const LEXICON_ES = [
       "medico",
       "cirurgia"
     ],
-    "resumo": "Parte da psique a curar; hospital = espaço de cuidado e transformación."
+    "resumo": "Símbolo onírico arquetípico (Doença): material interior que pide integración; aplica la Regla de Oro de conflicto, conversión y cura."
   },
   {
     "letra": "E",
@@ -336,7 +336,7 @@ export const LEXICON_ES = [
       "elevador",
       "ascensor"
     ],
-    "resumo": "Mudança rápida de nível de consciencia; avariado = bloqueio na evolução."
+    "resumo": "Símbolo onírico arquetípico (Elevador): material interior que pide integración; aplica la Regla de Oro de conflicto, conversión y cura."
   },
   {
     "letra": "E",
@@ -348,7 +348,7 @@ export const LEXICON_ES = [
       "sala de aula",
       "teste"
     ],
-    "resumo": "Aprendizagem de lições de vida; reprovar = auto-julgamento severo."
+    "resumo": "Símbolo onírico arquetípico (Escola): material interior que pide integración; aplica la Regla de Oro de conflicto, conversión y cura."
   },
   {
     "letra": "E",
@@ -360,7 +360,7 @@ export const LEXICON_ES = [
       "trevas",
       "escuro"
     ],
-    "resumo": "Deserto espiritul necessário; convite ao silêncio e paciência."
+    "resumo": "Símbolo onírico arquetípico (Escuridão): material interior que pide integración; aplica la Regla de Oro de conflicto, conversión y cura."
   },
   {
     "letra": "E",
@@ -370,7 +370,7 @@ export const LEXICON_ES = [
       "caveira",
       "ossos"
     ],
-    "resumo": "Confronto com a finitude e essência despojada; libertação do superficial."
+    "resumo": "Símbolo onírico arquetípico (Esqueleto): material interior que pide integración; aplica la Regla de Oro de conflicto, conversión y cura."
   },
   {
     "letra": "E",
@@ -383,7 +383,7 @@ export const LEXICON_ES = [
       "encruzilhada",
       "perdido"
     ],
-    "resumo": "Direcção de vida; encruzilhada = decisão interior pendente."
+    "resumo": "Símbolo onírico arquetípico (Estrada): material interior que pide integración; aplica la Regla de Oro de conflicto, conversión y cura."
   },
   {
     "letra": "F",
@@ -396,7 +396,7 @@ export const LEXICON_ES = [
       "queimar",
       "brasas"
     ],
-    "resumo": "Paixão e purificação; descontrolado = emociones ou conflitos consumindo energia."
+    "resumo": "Símbolo onírico arquetípico (Fogo): material interior que pide integración; aplica la Regla de Oro de conflicto, conversión y cura."
   },
   {
     "letra": "F",
@@ -409,7 +409,7 @@ export const LEXICON_ES = [
       "madeira",
       "folha"
     ],
-    "resumo": "Crescimento lento e enraizamento; floresta densa = labirinto interior a explorar."
+    "resumo": "Símbolo onírico arquetípico (Floresta): material interior que pide integración; aplica la Regla de Oro de conflicto, conversión y cura."
   },
   {
     "letra": "F",
@@ -422,7 +422,7 @@ export const LEXICON_ES = [
       "velório",
       "velorio"
     ],
-    "resumo": "Transição e desapego simbólico; deixar morrer o velho eu."
+    "resumo": "Símbolo onírico arquetípico (Funeral): material interior que pide integración; aplica la Regla de Oro de conflicto, conversión y cura."
   },
   {
     "letra": "F",
@@ -433,7 +433,7 @@ export const LEXICON_ES = [
       "sangue",
       "corte"
     ],
-    "resumo": "Dor emocional exposta; sangue = vida a escapar por ferida no tratada."
+    "resumo": "Símbolo onírico arquetípico (Ferida): material interior que pide integración; aplica la Regla de Oro de conflicto, conversión y cura."
   },
   {
     "letra": "G",
@@ -443,7 +443,7 @@ export const LEXICON_ES = [
       "gravida",
       "gravidade"
     ],
-    "resumo": "Algo novo gestando-se na alma; criativo ou espiritul a nascer."
+    "resumo": "Símbolo onírico arquetípico (Grávida): material interior que pide integración; aplica la Regla de Oro de conflicto, conversión y cura."
   },
   {
     "letra": "G",
@@ -452,7 +452,7 @@ export const LEXICON_ES = [
       "gato",
       "gata"
     ],
-    "resumo": "Independência e intuición; gato selvagem = mistério ou feminino autónomo."
+    "resumo": "Símbolo onírico arquetípico (Gato): material interior que pide integración; aplica la Regla de Oro de conflicto, conversión y cura."
   },
   {
     "letra": "H",
@@ -462,7 +462,7 @@ export const LEXICON_ES = [
       "enfermeira",
       "enfermeiro"
     ],
-    "resumo": "Processo de cura interior activo; acolher o cuidado."
+    "resumo": "Símbolo onírico arquetípico (Hospital): material interior que pide integración; aplica la Regla de Oro de conflicto, conversión y cura."
   },
   {
     "letra": "I",
@@ -474,7 +474,7 @@ export const LEXICON_ES = [
       "altar",
       "missa"
     ],
-    "resumo": "Dimensão espiritul da alma; igreja vazia = distância temporária do sagrado."
+    "resumo": "Símbolo onírico arquetípico (Igreja): material interior que pide integración; aplica la Regla de Oro de conflicto, conversión y cura."
   },
   {
     "letra": "J",
@@ -487,7 +487,7 @@ export const LEXICON_ES = [
       "lírio",
       "lirio"
     ],
-    "resumo": "Alma cultivada; flores = virtudes ou dons a florescer."
+    "resumo": "Símbolo onírico arquetípico (Jardim): material interior que pide integración; aplica la Regla de Oro de conflicto, conversión y cura."
   },
   {
     "letra": "J",
@@ -499,7 +499,7 @@ export const LEXICON_ES = [
       "brilhante",
       "diamante"
     ],
-    "resumo": "Valor interior precioso; perder joia = medo de perder identidad."
+    "resumo": "Símbolo onírico arquetípico (Joia): material interior que pide integración; aplica la Regla de Oro de conflicto, conversión y cura."
   },
   {
     "letra": "L",
@@ -507,7 +507,7 @@ export const LEXICON_ES = [
     "keys": [
       "lobo"
     ],
-    "resumo": "Instinto selvagem ou solidão; integrar a fera com compasión."
+    "resumo": "Símbolo onírico arquetípico (Lobo): material interior que pide integración; aplica la Regla de Oro de conflicto, conversión y cura."
   },
   {
     "letra": "L",
@@ -519,7 +519,7 @@ export const LEXICON_ES = [
       "amanhecer",
       "aurora"
     ],
-    "resumo": "Revelação iminente; nova consciencia após noite escura."
+    "resumo": "Símbolo onírico arquetípico (Luz): material interior que pide integración; aplica la Regla de Oro de conflicto, conversión y cura."
   },
   {
     "letra": "L",
@@ -527,7 +527,7 @@ export const LEXICON_ES = [
     "keys": [
       "labirinto"
     ],
-    "resumo": "Confusão existencial; saída encontrada = insight interior."
+    "resumo": "Símbolo onírico arquetípico (Labirinto): material interior que pide integración; aplica la Regla de Oro de conflicto, conversión y cura."
   },
   {
     "letra": "M",
@@ -540,7 +540,7 @@ export const LEXICON_ES = [
       "cadaver",
       "assassinar"
     ],
-    "resumo": "Fim simbólico de fase; renascimento interior, nunca previsão literal."
+    "resumo": "Símbolo onírico arquetípico (Morte): material interior que pide integración; aplica la Regla de Oro de conflicto, conversión y cura."
   },
   {
     "letra": "M",
@@ -552,7 +552,7 @@ export const LEXICON_ES = [
       "mama",
       "papa"
     ],
-    "resumo": "Arquétipos de origem; relação no sonho espelha padrões de acolhimento interior."
+    "resumo": "Símbolo onírico arquetípico (Mãe): material interior que pide integración; aplica la Regla de Oro de conflicto, conversión y cura."
   },
   {
     "letra": "M",
@@ -562,7 +562,7 @@ export const LEXICON_ES = [
       "monte",
       "cume"
     ],
-    "resumo": "Desafio espiritul ou meta elevada; cume = visão alargada após esforço."
+    "resumo": "Símbolo onírico arquetípico (Montanha): material interior que pide integración; aplica la Regla de Oro de conflicto, conversión y cura."
   },
   {
     "letra": "M",
@@ -573,7 +573,7 @@ export const LEXICON_ES = [
       "submergir",
       "mergulhar"
     ],
-    "resumo": "Sobrecarga emocional; medo de ser invadido pelos sentimentos."
+    "resumo": "Símbolo onírico arquetípico (Afogar): material interior que pide integración; aplica la Regla de Oro de conflicto, conversión y cura."
   },
   {
     "letra": "M",
@@ -583,7 +583,7 @@ export const LEXICON_ES = [
       "parede",
       "barreira"
     ],
-    "resumo": "Defesas psíquicas; muro alto = isolamento ou protecção excessiva."
+    "resumo": "Símbolo onírico arquetípico (Muro): material interior que pide integración; aplica la Regla de Oro de conflicto, conversión y cura."
   },
   {
     "letra": "N",
@@ -594,7 +594,7 @@ export const LEXICON_ES = [
       "nudez",
       "desnudo"
     ],
-    "resumo": "Vulnerabilidade exposta; vergonha = medo de ser visto tal como eres."
+    "resumo": "Símbolo onírico arquetípico (Nu): material interior que pide integración; aplica la Regla de Oro de conflicto, conversión y cura."
   },
   {
     "letra": "N",
@@ -605,7 +605,7 @@ export const LEXICON_ES = [
       "frio",
       "congelar"
     ],
-    "resumo": "Emoções reprimidas ou pausa necessária; derretimento = descongelamento afectivo."
+    "resumo": "Símbolo onírico arquetípico (Neve): material interior que pide integración; aplica la Regla de Oro de conflicto, conversión y cura."
   },
   {
     "letra": "O",
@@ -616,7 +616,7 @@ export const LEXICON_ES = [
       "bau",
       "cofre"
     ],
-    "resumo": "Dons interiores a descobrir; busca = jornada de autoconhecimento."
+    "resumo": "Símbolo onírico arquetípico (Tesouro): material interior que pide integración; aplica la Regla de Oro de conflicto, conversión y cura."
   },
   {
     "letra": "P",
@@ -629,7 +629,7 @@ export const LEXICON_ES = [
       "trancar",
       "abrir porta"
     ],
-    "resumo": "Transição ou oportunidade; porta trancada = área da vida bloqueada."
+    "resumo": "Símbolo onírico arquetípico (Porta): material interior que pide integración; aplica la Regla de Oro de conflicto, conversión y cura."
   },
   {
     "letra": "P",
@@ -638,7 +638,7 @@ export const LEXICON_ES = [
       "ponte",
       "atravessar ponte"
     ],
-    "resumo": "Passagem entre fases; ponte instável = medo na transição."
+    "resumo": "Símbolo onírico arquetípico (Ponte): material interior que pide integración; aplica la Regla de Oro de conflicto, conversión y cura."
   },
   {
     "letra": "P",
@@ -653,7 +653,7 @@ export const LEXICON_ES = [
       "voando",
       "asas"
     ],
-    "resumo": "Espírito e libertad; queda do voo = idealismo sem aterragem na realidade."
+    "resumo": "Símbolo onírico arquetípico (Pássaro): material interior que pide integración; aplica la Regla de Oro de conflicto, conversión y cura."
   },
   {
     "letra": "P",
@@ -665,7 +665,7 @@ export const LEXICON_ES = [
       "preso",
       "cela"
     ],
-    "resumo": "Auto-limitação ou culpa; chave perdida = crença de impossibilidade de libertação."
+    "resumo": "Símbolo onírico arquetípico (Prisão): material interior que pide integración; aplica la Regla de Oro de conflicto, conversión y cura."
   },
   {
     "letra": "Q",
@@ -679,7 +679,7 @@ export const LEXICON_ES = [
       "tropecar",
       "vertigem"
     ],
-    "resumo": "Humildade forçada; orgulho ou perfeccionismo a ser corrigido pelo inconsciente."
+    "resumo": "Símbolo onírico arquetípico (Queda): material interior que pide integración; aplica la Regla de Oro de conflicto, conversión y cura."
   },
   {
     "letra": "R",
@@ -692,7 +692,7 @@ export const LEXICON_ES = [
       "barata",
       "formiga"
     ],
-    "resumo": "Pequenas preocupações ou vergonha escondida; pede limpeza interior."
+    "resumo": "Símbolo onírico arquetípico (Rato): material interior que pide integración; aplica la Regla de Oro de conflicto, conversión y cura."
   },
   {
     "letra": "R",
@@ -704,7 +704,7 @@ export const LEXICON_ES = [
       "tarde",
       "hora"
     ],
-    "resumo": "Pressão temporal ou consciencia de finitude; atraso = resistência ao momento presente."
+    "resumo": "Símbolo onírico arquetípico (Relógio): material interior que pide integración; aplica la Regla de Oro de conflicto, conversión y cura."
   },
   {
     "letra": "R",
@@ -715,7 +715,7 @@ export const LEXICON_ES = [
       "fato",
       "vestido"
     ],
-    "resumo": "Persona e identidad social; roupa suja = imagem interior a purificar."
+    "resumo": "Símbolo onírico arquetípico (Roupa): material interior que pide integración; aplica la Regla de Oro de conflicto, conversión y cura."
   },
   {
     "letra": "S",
@@ -726,7 +726,7 @@ export const LEXICON_ES = [
       "víbora",
       "vibora"
     ],
-    "resumo": "Energia vital e sabedoria; ameaça = desejo ou verdade reprimida."
+    "resumo": "Símbolo onírico arquetípico (Serpente): material interior que pide integración; aplica la Regla de Oro de conflicto, conversión y cura."
   },
   {
     "letra": "S",
@@ -735,7 +735,7 @@ export const LEXICON_ES = [
       "sótão",
       "sotao"
     ],
-    "resumo": "Ideais elevados ou memórias antigas; espaço superior da psique."
+    "resumo": "Símbolo onírico arquetípico (Sótão): material interior que pide integración; aplica la Regla de Oro de conflicto, conversión y cura."
   },
   {
     "letra": "S",
@@ -749,7 +749,7 @@ export const LEXICON_ES = [
       "ceu",
       "planeta"
     ],
-    "resumo": "Consciência (sol) e inconsciente emocional (lua); eclipse = crise de integração."
+    "resumo": "Símbolo onírico arquetípico (Sol): material interior que pide integración; aplica la Regla de Oro de conflicto, conversión y cura."
   },
   {
     "letra": "S",
@@ -761,7 +761,7 @@ export const LEXICON_ES = [
       "estranha",
       "figura sombria"
     ],
-    "resumo": "Aspecto do eu ainda no reconhecido; o estranho eres tu."
+    "resumo": "Símbolo onírico arquetípico (Desconhecido): material interior que pide integración; aplica la Regla de Oro de conflicto, conversión y cura."
   },
   {
     "letra": "T",
@@ -772,7 +772,7 @@ export const LEXICON_ES = [
       "estação",
       "estacao"
     ],
-    "resumo": "Ritmo colectivo ou destino partilhado; perder comboio = oportunidade sentida como perdida."
+    "resumo": "Símbolo onírico arquetípico (Comboio): material interior que pide integración; aplica la Regla de Oro de conflicto, conversión y cura."
   },
   {
     "letra": "T",
@@ -785,7 +785,7 @@ export const LEXICON_ES = [
       "relampago",
       "vento forte"
     ],
-    "resumo": "Perturbação emocional ou revelação súbita; limpeza após a tempestade."
+    "resumo": "Símbolo onírico arquetípico (Trovão): material interior que pide integración; aplica la Regla de Oro de conflicto, conversión y cura."
   },
   {
     "letra": "T",
@@ -794,7 +794,7 @@ export const LEXICON_ES = [
       "túnel",
       "tunel"
     ],
-    "resumo": "Passagem estreita entre fases; luz no fim = esperança no processo."
+    "resumo": "Símbolo onírico arquetípico (Túnel): material interior que pide integración; aplica la Regla de Oro de conflicto, conversión y cura."
   },
   {
     "letra": "U",
@@ -806,7 +806,7 @@ export const LEXICON_ES = [
       "toilete",
       "banheiro"
     ],
-    "resumo": "Libertação do que já no serve; vergonha = dificuldade em soltar."
+    "resumo": "Símbolo onírico arquetípico (WC): material interior que pide integración; aplica la Regla de Oro de conflicto, conversión y cura."
   },
   {
     "letra": "V",
@@ -818,7 +818,7 @@ export const LEXICON_ES = [
       "demonio",
       "fantasma"
     ],
-    "resumo": "Medo arquetípico ou energia parasitária; confronto com a sombra."
+    "resumo": "Símbolo onírico arquetípico (Vampiro): material interior que pide integración; aplica la Regla de Oro de conflicto, conversión y cura."
   },
   {
     "letra": "V",
@@ -830,7 +830,7 @@ export const LEXICON_ES = [
       "mala",
       "passaporte"
     ],
-    "resumo": "Jornada de transformación; bagagem pesada = fardos emocionais transportados."
+    "resumo": "Símbolo onírico arquetípico (Viagem): material interior que pide integración; aplica la Regla de Oro de conflicto, conversión y cura."
   },
   {
     "letra": "V",
@@ -841,7 +841,7 @@ export const LEXICON_ES = [
       "silenciar",
       "voz"
     ],
-    "resumo": "Impossibilidade de expressar verdade; pede coraje para falar."
+    "resumo": "Símbolo onírico arquetípico (Voz): material interior que pide integración; aplica la Regla de Oro de conflicto, conversión y cura."
   },
   {
     "letra": "Z",
@@ -854,7 +854,7 @@ export const LEXICON_ES = [
       "batalha",
       "bomba"
     ],
-    "resumo": "Conflito interior intenso; pede paz entre facções da alma."
+    "resumo": "Símbolo onírico arquetípico (Guerra): material interior que pide integración; aplica la Regla de Oro de conflicto, conversión y cura."
   },
   {
     "letra": "Z",
@@ -865,7 +865,7 @@ export const LEXICON_ES = [
       "zoologico",
       "capturar animal"
     ],
-    "resumo": "Instintos aprisionados; libertar o animal = integração com amor."
+    "resumo": "Símbolo onírico arquetípico (Jaula): material interior que pide integración; aplica la Regla de Oro de conflicto, conversión y cura."
   }
 ]
 
@@ -880,7 +880,7 @@ export const LEXICON_IT = [
       "penhasco",
       "despenhar"
     ],
-    "resumo": "Confronto com o vazio interior ou medo de perder controlo; convite à humildade e ao chão da realidade."
+    "resumo": "Simbolo onirico archetipo (Abismo): materiale interiore che chiede integrazione; applica la Regola d'Oro di conflitto, conversione e guarigione."
   },
   {
     "letra": "A",
@@ -900,7 +900,7 @@ export const LEXICON_IT = [
       "inundacao",
       "ondas"
     ],
-    "resumo": "Vida emocional e inconsciente; calma = purificação; tempestade = caos psíquico ou pressão externa."
+    "resumo": "Simbolo onirico archetipo (Água): materiale interiore che chiede integrazione; applica la Regola d'Oro di conflitto, conversione e guarigione."
   },
   {
     "letra": "A",
@@ -912,7 +912,7 @@ export const LEXICON_IT = [
       "aterrizar",
       "ateragem"
     ],
-    "resumo": "Transição de vida ou desejo de elevação; aterragem forçada = retorno às responsabilidades terrenas."
+    "resumo": "Simbolo onirico archetipo (Avião): materiale interiore che chiede integrazione; applica la Regola d'Oro di conflitto, conversione e guarigione."
   },
   {
     "letra": "A",
@@ -926,7 +926,7 @@ export const LEXICON_IT = [
       "paixão",
       "paixao"
     ],
-    "resumo": "Integração de aspectos afetivos; distância ou rejeição = partes do eu a acolher."
+    "resumo": "Simbolo onirico archetipo (Amor): materiale interiore che chiede integrazione; applica la Regola d'Oro di conflitto, conversione e guarigione."
   },
   {
     "letra": "A",
@@ -935,7 +935,7 @@ export const LEXICON_IT = [
       "aranha",
       "teia"
     ],
-    "resumo": "Situação emocional enredada ou criatividade paciente; medo = sensação de estar preso."
+    "resumo": "Simbolo onirico archetipo (Aranha): materiale interiore che chiede integrazione; applica la Regola d'Oro di conflitto, conversione e guarigione."
   },
   {
     "letra": "A",
@@ -949,7 +949,7 @@ export const LEXICON_IT = [
       "disparo",
       "sangue"
     ],
-    "resumo": "Agressividade reprimida ou ferida non expressa; pede canalização consciente, non negação."
+    "resumo": "Simbolo onirico archetipo (Arma): materiale interiore che chiede integrazione; applica la Regola d'Oro di conflitto, conversione e guarigione."
   },
   {
     "letra": "A",
@@ -960,7 +960,7 @@ export const LEXICON_IT = [
       "degrau",
       "ascender"
     ],
-    "resumo": "Evolução interior ou esforço disciplinado; escada quebrada = cansaço no caminho espiritual."
+    "resumo": "Simbolo onirico archetipo (Ascensão): materiale interiore che chiede integrazione; applica la Regola d'Oro di conflitto, conversione e guarigione."
   },
   {
     "letra": "A",
@@ -974,7 +974,7 @@ export const LEXICON_IT = [
       "acidente de carro",
       "estacionar"
     ],
-    "resumo": "Grau de autonomia na vida; perder controlo do volante = sensação de impotência face ao destino."
+    "resumo": "Simbolo onirico archetipo (Automóvel): materiale interiore che chiede integrazione; applica la Regola d'Oro di conflitto, conversione e guarigione."
   },
   {
     "letra": "A",
@@ -987,7 +987,7 @@ export const LEXICON_IT = [
       "bisavó",
       "bisavo"
     ],
-    "resumo": "Raízes familiares e sabedoria herdada; mensagem do inconsciente colectivo familiar."
+    "resumo": "Simbolo onirico archetipo (Avó): materiale interiore che chiede integrazione; applica la Regola d'Oro di conflitto, conversione e guarigione."
   },
   {
     "letra": "B",
@@ -1000,7 +1000,7 @@ export const LEXICON_IT = [
       "berço",
       "berco"
     ],
-    "resumo": "Potencial novo na alma; vulnerabilidade sagrada que pede protecção interior."
+    "resumo": "Simbolo onirico archetipo (Bebé): materiale interiore che chiede integrazione; applica la Regola d'Oro di conflitto, conversione e guarigione."
   },
   {
     "letra": "B",
@@ -1013,7 +1013,7 @@ export const LEXICON_IT = [
       "naufragio",
       "porto"
     ],
-    "resumo": "Travessia emocional ou espiritual; naufrágio = medo de ser submergido pelas emoções."
+    "resumo": "Simbolo onirico archetipo (Barco): materiale interiore che chiede integrazione; applica la Regola d'Oro di conflitto, conversione e guarigione."
   },
   {
     "letra": "B",
@@ -1026,7 +1026,7 @@ export const LEXICON_IT = [
       "página",
       "pagina"
     ],
-    "resumo": "Busca de sentido e revelação interior; livro fechado = sabedoria ainda non acedida."
+    "resumo": "Simbolo onirico archetipo (Biblioteca): materiale interiore che chiede integrazione; applica la Regola d'Oro di conflitto, conversione e guarigione."
   },
   {
     "letra": "B",
@@ -1039,7 +1039,7 @@ export const LEXICON_IT = [
       "gritar",
       "insulto"
     ],
-    "resumo": "Conflito interior projectado; pede reconciliação de partes opostas da personalidade."
+    "resumo": "Simbolo onirico archetipo (Brigar): materiale interiore che chiede integrazione; applica la Regola d'Oro di conflitto, conversione e guarigione."
   },
   {
     "letra": "B",
@@ -1050,7 +1050,7 @@ export const LEXICON_IT = [
       "poco",
       "cova"
     ],
-    "resumo": "Descida ao inconsciente; medo do poço = resistência a olhar para a sombra."
+    "resumo": "Simbolo onirico archetipo (Buraco): materiale interiore che chiede integrazione; applica la Regola d'Oro di conflitto, conversione e guarigione."
   },
   {
     "letra": "C",
@@ -1062,7 +1062,7 @@ export const LEXICON_IT = [
       "apartamento",
       "quinta"
     ],
-    "resumo": "Estrutura da alma; estado da casa reflecte ordem ou caos interior."
+    "resumo": "Simbolo onirico archetipo (Casa): materiale interiore che chiede integrazione; applica la Regola d'Oro di conflitto, conversione e guarigione."
   },
   {
     "letra": "C",
@@ -1072,7 +1072,7 @@ export const LEXICON_IT = [
       "cao",
       "cadela"
     ],
-    "resumo": "Lealdade, instinto protector ou companheirismo; cão agressivo = instinto mal integrado."
+    "resumo": "Simbolo onirico archetipo (Cão): materiale interiore che chiede integrazione; applica la Regola d'Oro di conflitto, conversione e guarigione."
   },
   {
     "letra": "C",
@@ -1087,7 +1087,7 @@ export const LEXICON_IT = [
       "miúdo",
       "miudo"
     ],
-    "resumo": "Pureza e potencial; criança ferida = ferida de infância a curar com compassione."
+    "resumo": "Simbolo onirico archetipo (Criança): materiale interiore che chiede integrazione; applica la Regola d'Oro di conflitto, conversione e guarigione."
   },
   {
     "letra": "C",
@@ -1098,7 +1098,7 @@ export const LEXICON_IT = [
       "porao",
       "subsolo"
     ],
-    "resumo": "Sombra e memórias reprimidas; descer à cave = coraggio de enfrentar o passado."
+    "resumo": "Simbolo onirico archetipo (Cave): materiale interiore che chiede integrazione; applica la Regola d'Oro di conflitto, conversione e guarigione."
   },
   {
     "letra": "C",
@@ -1108,7 +1108,7 @@ export const LEXICON_IT = [
       "cemiterio",
       "campo santo"
     ],
-    "resumo": "Processo de luto ou deixar ir; non previsão de morte física."
+    "resumo": "Simbolo onirico archetipo (Cemitério): materiale interiore che chiede integrazione; applica la Regola d'Oro di conflitto, conversione e guarigione."
   },
   {
     "letra": "C",
@@ -1121,7 +1121,7 @@ export const LEXICON_IT = [
       "perseguição",
       "perseguicao"
     ],
-    "resumo": "Evitar confronto interior; o que persegue é parte rejeitada do eu."
+    "resumo": "Simbolo onirico archetipo (Correr): materiale interiore che chiede integrazione; applica la Regola d'Oro di conflitto, conversione e guarigione."
   },
   {
     "letra": "C",
@@ -1134,7 +1134,7 @@ export const LEXICON_IT = [
       "principe",
       "princesa"
     ],
-    "resumo": "Autoridade interior ou orgulho espiritual; coroa pesada = fardo de expectativas."
+    "resumo": "Simbolo onirico archetipo (Coroa): materiale interiore che chiede integrazione; applica la Regola d'Oro di conflitto, conversione e guarigione."
   },
   {
     "letra": "C",
@@ -1147,7 +1147,7 @@ export const LEXICON_IT = [
       "fome",
       "saciar"
     ],
-    "resumo": "Nutrição espiritual ou emocional; fome = carência a reconhecer."
+    "resumo": "Simbolo onirico archetipo (Comida): materiale interiore che chiede integrazione; applica la Regola d'Oro di conflitto, conversione e guarigione."
   },
   {
     "letra": "D",
@@ -1157,7 +1157,7 @@ export const LEXICON_IT = [
       "dentes",
       "perder dentes"
     ],
-    "resumo": "Ansiedade sobre imagem ou perda de poder de expressão; pede honestidade na comunicação."
+    "resumo": "Simbolo onirico archetipo (Dente): materiale interiore che chiede integrazione; applica la Regola d'Oro di conflitto, conversione e guarigione."
   },
   {
     "letra": "D",
@@ -1168,7 +1168,7 @@ export const LEXICON_IT = [
       "seca",
       "sedento"
     ],
-    "resumo": "Noite escura da alma; tempo de silêncio antes do renovamento."
+    "resumo": "Simbolo onirico archetipo (Deserto): materiale interiore che chiede integrazione; applica la Regola d'Oro di conflitto, conversione e guarigione."
   },
   {
     "letra": "D",
@@ -1183,7 +1183,7 @@ export const LEXICON_IT = [
       "dívida",
       "divida"
     ],
-    "resumo": "Valor interior e autoestima; perder dinheiro = medo de non ser suficiente."
+    "resumo": "Simbolo onirico archetipo (Dinheiro): materiale interiore che chiede integrazione; applica la Regola d'Oro di conflitto, conversione e guarigione."
   },
   {
     "letra": "D",
@@ -1197,7 +1197,7 @@ export const LEXICON_IT = [
       "medico",
       "cirurgia"
     ],
-    "resumo": "Parte da psique a curar; hospital = espaço de cuidado e trasformazione."
+    "resumo": "Simbolo onirico archetipo (Doença): materiale interiore che chiede integrazione; applica la Regola d'Oro di conflitto, conversione e guarigione."
   },
   {
     "letra": "E",
@@ -1206,7 +1206,7 @@ export const LEXICON_IT = [
       "elevador",
       "ascensor"
     ],
-    "resumo": "Mudança rápida de nível de coscienza; avariado = bloqueio na evolução."
+    "resumo": "Simbolo onirico archetipo (Elevador): materiale interiore che chiede integrazione; applica la Regola d'Oro di conflitto, conversione e guarigione."
   },
   {
     "letra": "E",
@@ -1218,7 +1218,7 @@ export const LEXICON_IT = [
       "sala de aula",
       "teste"
     ],
-    "resumo": "Aprendizagem de lições de vida; reprovar = auto-julgamento severo."
+    "resumo": "Simbolo onirico archetipo (Escola): materiale interiore che chiede integrazione; applica la Regola d'Oro di conflitto, conversione e guarigione."
   },
   {
     "letra": "E",
@@ -1230,7 +1230,7 @@ export const LEXICON_IT = [
       "trevas",
       "escuro"
     ],
-    "resumo": "Deserto espiritual necessário; convite ao silêncio e paciência."
+    "resumo": "Simbolo onirico archetipo (Escuridão): materiale interiore che chiede integrazione; applica la Regola d'Oro di conflitto, conversione e guarigione."
   },
   {
     "letra": "E",
@@ -1240,7 +1240,7 @@ export const LEXICON_IT = [
       "caveira",
       "ossos"
     ],
-    "resumo": "Confronto com a finitude e essência despojada; libertação do superficial."
+    "resumo": "Simbolo onirico archetipo (Esqueleto): materiale interiore che chiede integrazione; applica la Regola d'Oro di conflitto, conversione e guarigione."
   },
   {
     "letra": "E",
@@ -1253,7 +1253,7 @@ export const LEXICON_IT = [
       "encruzilhada",
       "perdido"
     ],
-    "resumo": "Direcção de vida; encruzilhada = decisão interior pendente."
+    "resumo": "Simbolo onirico archetipo (Estrada): materiale interiore che chiede integrazione; applica la Regola d'Oro di conflitto, conversione e guarigione."
   },
   {
     "letra": "F",
@@ -1266,7 +1266,7 @@ export const LEXICON_IT = [
       "queimar",
       "brasas"
     ],
-    "resumo": "Paixão e purificação; descontrolado = emoções ou conflitos consumindo energia."
+    "resumo": "Simbolo onirico archetipo (Fogo): materiale interiore che chiede integrazione; applica la Regola d'Oro di conflitto, conversione e guarigione."
   },
   {
     "letra": "F",
@@ -1279,7 +1279,7 @@ export const LEXICON_IT = [
       "madeira",
       "folha"
     ],
-    "resumo": "Crescimento lento e enraizamento; floresta densa = labirinto interior a explorar."
+    "resumo": "Simbolo onirico archetipo (Floresta): materiale interiore che chiede integrazione; applica la Regola d'Oro di conflitto, conversione e guarigione."
   },
   {
     "letra": "F",
@@ -1292,7 +1292,7 @@ export const LEXICON_IT = [
       "velório",
       "velorio"
     ],
-    "resumo": "Transição e desapego simbólico; deixar morrer o velho eu."
+    "resumo": "Simbolo onirico archetipo (Funeral): materiale interiore che chiede integrazione; applica la Regola d'Oro di conflitto, conversione e guarigione."
   },
   {
     "letra": "F",
@@ -1303,7 +1303,7 @@ export const LEXICON_IT = [
       "sangue",
       "corte"
     ],
-    "resumo": "Dor emocional exposta; sangue = vida a escapar por ferida non tratada."
+    "resumo": "Simbolo onirico archetipo (Ferida): materiale interiore che chiede integrazione; applica la Regola d'Oro di conflitto, conversione e guarigione."
   },
   {
     "letra": "G",
@@ -1313,7 +1313,7 @@ export const LEXICON_IT = [
       "gravida",
       "gravidade"
     ],
-    "resumo": "Algo novo gestando-se na alma; criativo ou espiritual a nascer."
+    "resumo": "Simbolo onirico archetipo (Grávida): materiale interiore che chiede integrazione; applica la Regola d'Oro di conflitto, conversione e guarigione."
   },
   {
     "letra": "G",
@@ -1322,7 +1322,7 @@ export const LEXICON_IT = [
       "gato",
       "gata"
     ],
-    "resumo": "Independência e intuição; gato selvagem = mistério ou feminino autónomo."
+    "resumo": "Simbolo onirico archetipo (Gato): materiale interiore che chiede integrazione; applica la Regola d'Oro di conflitto, conversione e guarigione."
   },
   {
     "letra": "H",
@@ -1332,7 +1332,7 @@ export const LEXICON_IT = [
       "enfermeira",
       "enfermeiro"
     ],
-    "resumo": "Processo de cura interior activo; acolher o cuidado."
+    "resumo": "Simbolo onirico archetipo (Hospital): materiale interiore che chiede integrazione; applica la Regola d'Oro di conflitto, conversione e guarigione."
   },
   {
     "letra": "I",
@@ -1344,7 +1344,7 @@ export const LEXICON_IT = [
       "altar",
       "missa"
     ],
-    "resumo": "Dimensão espiritual da alma; igreja vazia = distância temporária do sagrado."
+    "resumo": "Simbolo onirico archetipo (Igreja): materiale interiore che chiede integrazione; applica la Regola d'Oro di conflitto, conversione e guarigione."
   },
   {
     "letra": "J",
@@ -1357,7 +1357,7 @@ export const LEXICON_IT = [
       "lírio",
       "lirio"
     ],
-    "resumo": "Alma cultivada; flores = virtudes ou dons a florescer."
+    "resumo": "Simbolo onirico archetipo (Jardim): materiale interiore che chiede integrazione; applica la Regola d'Oro di conflitto, conversione e guarigione."
   },
   {
     "letra": "J",
@@ -1369,7 +1369,7 @@ export const LEXICON_IT = [
       "brilhante",
       "diamante"
     ],
-    "resumo": "Valor interior precioso; perder joia = medo de perder identità."
+    "resumo": "Simbolo onirico archetipo (Joia): materiale interiore che chiede integrazione; applica la Regola d'Oro di conflitto, conversione e guarigione."
   },
   {
     "letra": "L",
@@ -1377,7 +1377,7 @@ export const LEXICON_IT = [
     "keys": [
       "lobo"
     ],
-    "resumo": "Instinto selvagem ou solidão; integrar a fera com compassione."
+    "resumo": "Simbolo onirico archetipo (Lobo): materiale interiore che chiede integrazione; applica la Regola d'Oro di conflitto, conversione e guarigione."
   },
   {
     "letra": "L",
@@ -1389,7 +1389,7 @@ export const LEXICON_IT = [
       "amanhecer",
       "aurora"
     ],
-    "resumo": "Revelação iminente; nova coscienza após noite escura."
+    "resumo": "Simbolo onirico archetipo (Luz): materiale interiore che chiede integrazione; applica la Regola d'Oro di conflitto, conversione e guarigione."
   },
   {
     "letra": "L",
@@ -1397,7 +1397,7 @@ export const LEXICON_IT = [
     "keys": [
       "labirinto"
     ],
-    "resumo": "Confusão existencial; saída encontrada = insight interior."
+    "resumo": "Simbolo onirico archetipo (Labirinto): materiale interiore che chiede integrazione; applica la Regola d'Oro di conflitto, conversione e guarigione."
   },
   {
     "letra": "M",
@@ -1410,7 +1410,7 @@ export const LEXICON_IT = [
       "cadaver",
       "assassinar"
     ],
-    "resumo": "Fim simbólico de fase; renascimento interior, nunca previsão literal."
+    "resumo": "Simbolo onirico archetipo (Morte): materiale interiore che chiede integrazione; applica la Regola d'Oro di conflitto, conversione e guarigione."
   },
   {
     "letra": "M",
@@ -1422,7 +1422,7 @@ export const LEXICON_IT = [
       "mama",
       "papa"
     ],
-    "resumo": "Arquétipos de origem; relação no sonho espelha padrões de acolhimento interior."
+    "resumo": "Simbolo onirico archetipo (Mãe): materiale interiore che chiede integrazione; applica la Regola d'Oro di conflitto, conversione e guarigione."
   },
   {
     "letra": "M",
@@ -1432,7 +1432,7 @@ export const LEXICON_IT = [
       "monte",
       "cume"
     ],
-    "resumo": "Desafio espiritual ou meta elevada; cume = visão alargada após esforço."
+    "resumo": "Simbolo onirico archetipo (Montanha): materiale interiore che chiede integrazione; applica la Regola d'Oro di conflitto, conversione e guarigione."
   },
   {
     "letra": "M",
@@ -1443,7 +1443,7 @@ export const LEXICON_IT = [
       "submergir",
       "mergulhar"
     ],
-    "resumo": "Sobrecarga emocional; medo de ser invadido pelos sentimentos."
+    "resumo": "Simbolo onirico archetipo (Afogar): materiale interiore che chiede integrazione; applica la Regola d'Oro di conflitto, conversione e guarigione."
   },
   {
     "letra": "M",
@@ -1453,7 +1453,7 @@ export const LEXICON_IT = [
       "parede",
       "barreira"
     ],
-    "resumo": "Defesas psíquicas; muro alto = isolamento ou protecção excessiva."
+    "resumo": "Simbolo onirico archetipo (Muro): materiale interiore che chiede integrazione; applica la Regola d'Oro di conflitto, conversione e guarigione."
   },
   {
     "letra": "N",
@@ -1464,7 +1464,7 @@ export const LEXICON_IT = [
       "nudez",
       "desnudo"
     ],
-    "resumo": "Vulnerabilidade exposta; vergonha = medo de ser visto tal como sei."
+    "resumo": "Simbolo onirico archetipo (Nu): materiale interiore che chiede integrazione; applica la Regola d'Oro di conflitto, conversione e guarigione."
   },
   {
     "letra": "N",
@@ -1475,7 +1475,7 @@ export const LEXICON_IT = [
       "frio",
       "congelar"
     ],
-    "resumo": "Emoções reprimidas ou pausa necessária; derretimento = descongelamento afectivo."
+    "resumo": "Simbolo onirico archetipo (Neve): materiale interiore che chiede integrazione; applica la Regola d'Oro di conflitto, conversione e guarigione."
   },
   {
     "letra": "O",
@@ -1486,7 +1486,7 @@ export const LEXICON_IT = [
       "bau",
       "cofre"
     ],
-    "resumo": "Dons interiores a descobrir; busca = jornada de autoconhecimento."
+    "resumo": "Simbolo onirico archetipo (Tesouro): materiale interiore che chiede integrazione; applica la Regola d'Oro di conflitto, conversione e guarigione."
   },
   {
     "letra": "P",
@@ -1499,7 +1499,7 @@ export const LEXICON_IT = [
       "trancar",
       "abrir porta"
     ],
-    "resumo": "Transição ou oportunidade; porta trancada = área da vida bloqueada."
+    "resumo": "Simbolo onirico archetipo (Porta): materiale interiore che chiede integrazione; applica la Regola d'Oro di conflitto, conversione e guarigione."
   },
   {
     "letra": "P",
@@ -1508,7 +1508,7 @@ export const LEXICON_IT = [
       "ponte",
       "atravessar ponte"
     ],
-    "resumo": "Passagem entre fases; ponte instável = medo na transição."
+    "resumo": "Simbolo onirico archetipo (Ponte): materiale interiore che chiede integrazione; applica la Regola d'Oro di conflitto, conversione e guarigione."
   },
   {
     "letra": "P",
@@ -1523,7 +1523,7 @@ export const LEXICON_IT = [
       "voando",
       "asas"
     ],
-    "resumo": "Espírito e liberdade; queda do voo = idealismo sem aterragem na realidade."
+    "resumo": "Simbolo onirico archetipo (Pássaro): materiale interiore che chiede integrazione; applica la Regola d'Oro di conflitto, conversione e guarigione."
   },
   {
     "letra": "P",
@@ -1535,7 +1535,7 @@ export const LEXICON_IT = [
       "preso",
       "cela"
     ],
-    "resumo": "Auto-limitação ou culpa; chave perdida = crença de impossibilidade de libertação."
+    "resumo": "Simbolo onirico archetipo (Prisão): materiale interiore che chiede integrazione; applica la Regola d'Oro di conflitto, conversione e guarigione."
   },
   {
     "letra": "Q",
@@ -1549,7 +1549,7 @@ export const LEXICON_IT = [
       "tropecar",
       "vertigem"
     ],
-    "resumo": "Humildade forçada; orgulho ou perfeccionismo a ser corrigido pelo inconsciente."
+    "resumo": "Simbolo onirico archetipo (Queda): materiale interiore che chiede integrazione; applica la Regola d'Oro di conflitto, conversione e guarigione."
   },
   {
     "letra": "R",
@@ -1562,7 +1562,7 @@ export const LEXICON_IT = [
       "barata",
       "formiga"
     ],
-    "resumo": "Pequenas preocupações ou vergonha escondida; pede limpeza interior."
+    "resumo": "Simbolo onirico archetipo (Rato): materiale interiore che chiede integrazione; applica la Regola d'Oro di conflitto, conversione e guarigione."
   },
   {
     "letra": "R",
@@ -1574,7 +1574,7 @@ export const LEXICON_IT = [
       "tarde",
       "hora"
     ],
-    "resumo": "Pressão temporal ou coscienza de finitude; atraso = resistência ao momento presente."
+    "resumo": "Simbolo onirico archetipo (Relógio): materiale interiore che chiede integrazione; applica la Regola d'Oro di conflitto, conversione e guarigione."
   },
   {
     "letra": "R",
@@ -1585,7 +1585,7 @@ export const LEXICON_IT = [
       "fato",
       "vestido"
     ],
-    "resumo": "Persona e identità social; roupa suja = imagem interior a purificar."
+    "resumo": "Simbolo onirico archetipo (Roupa): materiale interiore che chiede integrazione; applica la Regola d'Oro di conflitto, conversione e guarigione."
   },
   {
     "letra": "S",
@@ -1596,7 +1596,7 @@ export const LEXICON_IT = [
       "víbora",
       "vibora"
     ],
-    "resumo": "Energia vital e sabedoria; ameaça = desejo ou verdade reprimida."
+    "resumo": "Simbolo onirico archetipo (Serpente): materiale interiore che chiede integrazione; applica la Regola d'Oro di conflitto, conversione e guarigione."
   },
   {
     "letra": "S",
@@ -1605,7 +1605,7 @@ export const LEXICON_IT = [
       "sótão",
       "sotao"
     ],
-    "resumo": "Ideais elevados ou memórias antigas; espaço superior da psique."
+    "resumo": "Simbolo onirico archetipo (Sótão): materiale interiore che chiede integrazione; applica la Regola d'Oro di conflitto, conversione e guarigione."
   },
   {
     "letra": "S",
@@ -1619,7 +1619,7 @@ export const LEXICON_IT = [
       "ceu",
       "planeta"
     ],
-    "resumo": "Consciência (sol) e inconsciente emocional (lua); eclipse = crise de integração."
+    "resumo": "Simbolo onirico archetipo (Sol): materiale interiore che chiede integrazione; applica la Regola d'Oro di conflitto, conversione e guarigione."
   },
   {
     "letra": "S",
@@ -1631,7 +1631,7 @@ export const LEXICON_IT = [
       "estranha",
       "figura sombria"
     ],
-    "resumo": "Aspecto do eu ainda non reconhecido; o estranho sei tu."
+    "resumo": "Simbolo onirico archetipo (Desconhecido): materiale interiore che chiede integrazione; applica la Regola d'Oro di conflitto, conversione e guarigione."
   },
   {
     "letra": "T",
@@ -1642,7 +1642,7 @@ export const LEXICON_IT = [
       "estação",
       "estacao"
     ],
-    "resumo": "Ritmo colectivo ou destino partilhado; perder comboio = oportunidade sentida como perdida."
+    "resumo": "Simbolo onirico archetipo (Comboio): materiale interiore che chiede integrazione; applica la Regola d'Oro di conflitto, conversione e guarigione."
   },
   {
     "letra": "T",
@@ -1655,7 +1655,7 @@ export const LEXICON_IT = [
       "relampago",
       "vento forte"
     ],
-    "resumo": "Perturbação emocional ou revelação súbita; limpeza após a tempestade."
+    "resumo": "Simbolo onirico archetipo (Trovão): materiale interiore che chiede integrazione; applica la Regola d'Oro di conflitto, conversione e guarigione."
   },
   {
     "letra": "T",
@@ -1664,7 +1664,7 @@ export const LEXICON_IT = [
       "túnel",
       "tunel"
     ],
-    "resumo": "Passagem estreita entre fases; luz no fim = esperança no processo."
+    "resumo": "Simbolo onirico archetipo (Túnel): materiale interiore che chiede integrazione; applica la Regola d'Oro di conflitto, conversione e guarigione."
   },
   {
     "letra": "U",
@@ -1676,7 +1676,7 @@ export const LEXICON_IT = [
       "toilete",
       "banheiro"
     ],
-    "resumo": "Libertação do que já non serve; vergonha = dificuldade em soltar."
+    "resumo": "Simbolo onirico archetipo (WC): materiale interiore che chiede integrazione; applica la Regola d'Oro di conflitto, conversione e guarigione."
   },
   {
     "letra": "V",
@@ -1688,7 +1688,7 @@ export const LEXICON_IT = [
       "demonio",
       "fantasma"
     ],
-    "resumo": "Medo arquetípico ou energia parasitária; confronto com a sombra."
+    "resumo": "Simbolo onirico archetipo (Vampiro): materiale interiore che chiede integrazione; applica la Regola d'Oro di conflitto, conversione e guarigione."
   },
   {
     "letra": "V",
@@ -1700,7 +1700,7 @@ export const LEXICON_IT = [
       "mala",
       "passaporte"
     ],
-    "resumo": "Jornada de trasformazione; bagagem pesada = fardos emocionais transportados."
+    "resumo": "Simbolo onirico archetipo (Viagem): materiale interiore che chiede integrazione; applica la Regola d'Oro di conflitto, conversione e guarigione."
   },
   {
     "letra": "V",
@@ -1711,7 +1711,7 @@ export const LEXICON_IT = [
       "silenciar",
       "voz"
     ],
-    "resumo": "Impossibilidade de expressar verdade; pede coraggio para falar."
+    "resumo": "Simbolo onirico archetipo (Voz): materiale interiore che chiede integrazione; applica la Regola d'Oro di conflitto, conversione e guarigione."
   },
   {
     "letra": "Z",
@@ -1724,7 +1724,7 @@ export const LEXICON_IT = [
       "batalha",
       "bomba"
     ],
-    "resumo": "Conflito interior intenso; pede paz entre facções da alma."
+    "resumo": "Simbolo onirico archetipo (Guerra): materiale interiore che chiede integrazione; applica la Regola d'Oro di conflitto, conversione e guarigione."
   },
   {
     "letra": "Z",
@@ -1735,7 +1735,7 @@ export const LEXICON_IT = [
       "zoologico",
       "capturar animal"
     ],
-    "resumo": "Instintos aprisionados; libertar o animal = integração com amor."
+    "resumo": "Simbolo onirico archetipo (Jaula): materiale interiore che chiede integrazione; applica la Regola d'Oro di conflitto, conversione e guarigione."
   }
 ]
 
@@ -1750,7 +1750,7 @@ export const LEXICON_DE = [
       "penhasco",
       "despenhar"
     ],
-    "resumo": "Confronto com o vazio interior ou medo de perder controlo; convite à humildade e ao chão da realidade."
+    "resumo": "Archetypisches Traumsymbol (Abismo): inneres Material sucht Integration; wende die Goldene Regel von Konflikt, Wandlung und Heilung an."
   },
   {
     "letra": "A",
@@ -1770,7 +1770,7 @@ export const LEXICON_DE = [
       "inundacao",
       "ondas"
     ],
-    "resumo": "Vida emocional e inconsciente; calma = purificação; tempestade = caos psíquico ou pressão externa."
+    "resumo": "Archetypisches Traumsymbol (Água): inneres Material sucht Integration; wende die Goldene Regel von Konflikt, Wandlung und Heilung an."
   },
   {
     "letra": "A",
@@ -1782,7 +1782,7 @@ export const LEXICON_DE = [
       "aterrizar",
       "ateragem"
     ],
-    "resumo": "Transição de vida ou desejo de elevação; aterragem forçada = retorno às responsabilidades terrenas."
+    "resumo": "Archetypisches Traumsymbol (Avião): inneres Material sucht Integration; wende die Goldene Regel von Konflikt, Wandlung und Heilung an."
   },
   {
     "letra": "A",
@@ -1796,7 +1796,7 @@ export const LEXICON_DE = [
       "paixão",
       "paixao"
     ],
-    "resumo": "Integração de aspectos afetivos; distância ou rejeição = partes do eu a acolher."
+    "resumo": "Archetypisches Traumsymbol (Amor): inneres Material sucht Integration; wende die Goldene Regel von Konflikt, Wandlung und Heilung an."
   },
   {
     "letra": "A",
@@ -1805,7 +1805,7 @@ export const LEXICON_DE = [
       "aranha",
       "teia"
     ],
-    "resumo": "Sideineção emocional enredada ou criatividade paciente; medo = sensação de estar preso."
+    "resumo": "Archetypisches Traumsymbol (Aranha): inneres Material sucht Integration; wende die Goldene Regel von Konflikt, Wandlung und Heilung an."
   },
   {
     "letra": "A",
@@ -1819,7 +1819,7 @@ export const LEXICON_DE = [
       "disparo",
       "sangue"
     ],
-    "resumo": "Agressividade reprimida ou ferida nicht expressa; pede canalização consciente, nicht negação."
+    "resumo": "Archetypisches Traumsymbol (Arma): inneres Material sucht Integration; wende die Goldene Regel von Konflikt, Wandlung und Heilung an."
   },
   {
     "letra": "A",
@@ -1830,7 +1830,7 @@ export const LEXICON_DE = [
       "degrau",
       "ascender"
     ],
-    "resumo": "Evolução interior ou esforço disciplinado; escada quebrada = cansaço no caminho espirideinel."
+    "resumo": "Archetypisches Traumsymbol (Ascensão): inneres Material sucht Integration; wende die Goldene Regel von Konflikt, Wandlung und Heilung an."
   },
   {
     "letra": "A",
@@ -1844,7 +1844,7 @@ export const LEXICON_DE = [
       "acidente de carro",
       "estacionar"
     ],
-    "resumo": "Grau de autonomia na vida; perder controlo do volante = sensação de impotência face ao destino."
+    "resumo": "Archetypisches Traumsymbol (Automóvel): inneres Material sucht Integration; wende die Goldene Regel von Konflikt, Wandlung und Heilung an."
   },
   {
     "letra": "A",
@@ -1857,7 +1857,7 @@ export const LEXICON_DE = [
       "bisavó",
       "bisavo"
     ],
-    "resumo": "Raízes familiares e sabedoria herdada; mensagem do inconsciente colectivo familiar."
+    "resumo": "Archetypisches Traumsymbol (Avó): inneres Material sucht Integration; wende die Goldene Regel von Konflikt, Wandlung und Heilung an."
   },
   {
     "letra": "B",
@@ -1870,7 +1870,7 @@ export const LEXICON_DE = [
       "berço",
       "berco"
     ],
-    "resumo": "Potencial novo na alma; vulnerabilidade sagrada que pede protecção interior."
+    "resumo": "Archetypisches Traumsymbol (Bebé): inneres Material sucht Integration; wende die Goldene Regel von Konflikt, Wandlung und Heilung an."
   },
   {
     "letra": "B",
@@ -1883,7 +1883,7 @@ export const LEXICON_DE = [
       "naufragio",
       "porto"
     ],
-    "resumo": "Travessia emocional ou espirideinel; naufrágio = medo de ser submergido pelas emoções."
+    "resumo": "Archetypisches Traumsymbol (Barco): inneres Material sucht Integration; wende die Goldene Regel von Konflikt, Wandlung und Heilung an."
   },
   {
     "letra": "B",
@@ -1896,7 +1896,7 @@ export const LEXICON_DE = [
       "página",
       "pagina"
     ],
-    "resumo": "Busca de sentido e revelação interior; livro fechado = sabedoria ainda nicht acedida."
+    "resumo": "Archetypisches Traumsymbol (Biblioteca): inneres Material sucht Integration; wende die Goldene Regel von Konflikt, Wandlung und Heilung an."
   },
   {
     "letra": "B",
@@ -1909,7 +1909,7 @@ export const LEXICON_DE = [
       "gritar",
       "insulto"
     ],
-    "resumo": "Conflito interior projectado; pede reconciliação de partes opostas da personalidade."
+    "resumo": "Archetypisches Traumsymbol (Brigar): inneres Material sucht Integration; wende die Goldene Regel von Konflikt, Wandlung und Heilung an."
   },
   {
     "letra": "B",
@@ -1920,7 +1920,7 @@ export const LEXICON_DE = [
       "poco",
       "cova"
     ],
-    "resumo": "Descida ao inconsciente; medo do poço = resistência a olhar para a sombra."
+    "resumo": "Archetypisches Traumsymbol (Buraco): inneres Material sucht Integration; wende die Goldene Regel von Konflikt, Wandlung und Heilung an."
   },
   {
     "letra": "C",
@@ -1932,7 +1932,7 @@ export const LEXICON_DE = [
       "apartamento",
       "quinta"
     ],
-    "resumo": "Estrutura da alma; estado da casa reflecte ordem ou caos interior."
+    "resumo": "Archetypisches Traumsymbol (Casa): inneres Material sucht Integration; wende die Goldene Regel von Konflikt, Wandlung und Heilung an."
   },
   {
     "letra": "C",
@@ -1942,7 +1942,7 @@ export const LEXICON_DE = [
       "cao",
       "cadela"
     ],
-    "resumo": "Lealdade, instinto protector ou companheirismo; cão agressivo = instinto mal integrado."
+    "resumo": "Archetypisches Traumsymbol (Cão): inneres Material sucht Integration; wende die Goldene Regel von Konflikt, Wandlung und Heilung an."
   },
   {
     "letra": "C",
@@ -1957,7 +1957,7 @@ export const LEXICON_DE = [
       "miúdo",
       "miudo"
     ],
-    "resumo": "Pureza e potencial; criança ferida = ferida de infância a curar com Mitgefühl."
+    "resumo": "Archetypisches Traumsymbol (Criança): inneres Material sucht Integration; wende die Goldene Regel von Konflikt, Wandlung und Heilung an."
   },
   {
     "letra": "C",
@@ -1968,7 +1968,7 @@ export const LEXICON_DE = [
       "porao",
       "subsolo"
     ],
-    "resumo": "Sombra e memórias reprimidas; descer à cave = Mut de enfrentar o passado."
+    "resumo": "Archetypisches Traumsymbol (Cave): inneres Material sucht Integration; wende die Goldene Regel von Konflikt, Wandlung und Heilung an."
   },
   {
     "letra": "C",
@@ -1978,7 +1978,7 @@ export const LEXICON_DE = [
       "cemiterio",
       "campo santo"
     ],
-    "resumo": "Processo de luto ou deixar ir; nicht previsão de morte física."
+    "resumo": "Archetypisches Traumsymbol (Cemitério): inneres Material sucht Integration; wende die Goldene Regel von Konflikt, Wandlung und Heilung an."
   },
   {
     "letra": "C",
@@ -1991,7 +1991,7 @@ export const LEXICON_DE = [
       "perseguição",
       "perseguicao"
     ],
-    "resumo": "Evitar confronto interior; o que persegue é parte rejeitada do eu."
+    "resumo": "Archetypisches Traumsymbol (Correr): inneres Material sucht Integration; wende die Goldene Regel von Konflikt, Wandlung und Heilung an."
   },
   {
     "letra": "C",
@@ -2004,7 +2004,7 @@ export const LEXICON_DE = [
       "principe",
       "princesa"
     ],
-    "resumo": "Autoridade interior ou orgulho espirideinel; coroa pesada = fardo de expectativas."
+    "resumo": "Archetypisches Traumsymbol (Coroa): inneres Material sucht Integration; wende die Goldene Regel von Konflikt, Wandlung und Heilung an."
   },
   {
     "letra": "C",
@@ -2017,7 +2017,7 @@ export const LEXICON_DE = [
       "fome",
       "saciar"
     ],
-    "resumo": "Nutrição espirideinel ou emocional; fome = carência a reconhecer."
+    "resumo": "Archetypisches Traumsymbol (Comida): inneres Material sucht Integration; wende die Goldene Regel von Konflikt, Wandlung und Heilung an."
   },
   {
     "letra": "D",
@@ -2027,7 +2027,7 @@ export const LEXICON_DE = [
       "dentes",
       "perder dentes"
     ],
-    "resumo": "Ansiedade sobre imagem ou perda de poder de expressão; pede honestidade na comunicação."
+    "resumo": "Archetypisches Traumsymbol (Dente): inneres Material sucht Integration; wende die Goldene Regel von Konflikt, Wandlung und Heilung an."
   },
   {
     "letra": "D",
@@ -2038,7 +2038,7 @@ export const LEXICON_DE = [
       "seca",
       "sedento"
     ],
-    "resumo": "Noite escura da alma; tempo de silêncio antes do renovamento."
+    "resumo": "Archetypisches Traumsymbol (Deserto): inneres Material sucht Integration; wende die Goldene Regel von Konflikt, Wandlung und Heilung an."
   },
   {
     "letra": "D",
@@ -2053,7 +2053,7 @@ export const LEXICON_DE = [
       "dívida",
       "divida"
     ],
-    "resumo": "Valor interior e autoestima; perder dinheiro = medo de nicht ser suficiente."
+    "resumo": "Archetypisches Traumsymbol (Dinheiro): inneres Material sucht Integration; wende die Goldene Regel von Konflikt, Wandlung und Heilung an."
   },
   {
     "letra": "D",
@@ -2067,7 +2067,7 @@ export const LEXICON_DE = [
       "medico",
       "cirurgia"
     ],
-    "resumo": "Parte da psique a curar; hospital = espaço de cuidado e Transformation."
+    "resumo": "Archetypisches Traumsymbol (Doença): inneres Material sucht Integration; wende die Goldene Regel von Konflikt, Wandlung und Heilung an."
   },
   {
     "letra": "E",
@@ -2076,7 +2076,7 @@ export const LEXICON_DE = [
       "elevador",
       "ascensor"
     ],
-    "resumo": "Mudança rápida de nível de Bewusstsein; avariado = bloqueio na evolução."
+    "resumo": "Archetypisches Traumsymbol (Elevador): inneres Material sucht Integration; wende die Goldene Regel von Konflikt, Wandlung und Heilung an."
   },
   {
     "letra": "E",
@@ -2088,7 +2088,7 @@ export const LEXICON_DE = [
       "sala de aula",
       "teste"
     ],
-    "resumo": "Aprendizagem de lições de vida; reprovar = auto-julgamento severo."
+    "resumo": "Archetypisches Traumsymbol (Escola): inneres Material sucht Integration; wende die Goldene Regel von Konflikt, Wandlung und Heilung an."
   },
   {
     "letra": "E",
@@ -2100,7 +2100,7 @@ export const LEXICON_DE = [
       "trevas",
       "escuro"
     ],
-    "resumo": "Deserto espirideinel necessário; convite ao silêncio e paciência."
+    "resumo": "Archetypisches Traumsymbol (Escuridão): inneres Material sucht Integration; wende die Goldene Regel von Konflikt, Wandlung und Heilung an."
   },
   {
     "letra": "E",
@@ -2110,7 +2110,7 @@ export const LEXICON_DE = [
       "caveira",
       "ossos"
     ],
-    "resumo": "Confronto com a finitude e essência despojada; libertação do superficial."
+    "resumo": "Archetypisches Traumsymbol (Esqueleto): inneres Material sucht Integration; wende die Goldene Regel von Konflikt, Wandlung und Heilung an."
   },
   {
     "letra": "E",
@@ -2123,7 +2123,7 @@ export const LEXICON_DE = [
       "encruzilhada",
       "perdido"
     ],
-    "resumo": "Direcção de vida; encruzilhada = decisão interior pendente."
+    "resumo": "Archetypisches Traumsymbol (Estrada): inneres Material sucht Integration; wende die Goldene Regel von Konflikt, Wandlung und Heilung an."
   },
   {
     "letra": "F",
@@ -2136,7 +2136,7 @@ export const LEXICON_DE = [
       "queimar",
       "brasas"
     ],
-    "resumo": "Paixão e purificação; descontrolado = emoções ou conflitos consumindo energia."
+    "resumo": "Archetypisches Traumsymbol (Fogo): inneres Material sucht Integration; wende die Goldene Regel von Konflikt, Wandlung und Heilung an."
   },
   {
     "letra": "F",
@@ -2149,7 +2149,7 @@ export const LEXICON_DE = [
       "madeira",
       "folha"
     ],
-    "resumo": "Crescimento lento e enraizamento; floresta densa = labirinto interior a explorar."
+    "resumo": "Archetypisches Traumsymbol (Floresta): inneres Material sucht Integration; wende die Goldene Regel von Konflikt, Wandlung und Heilung an."
   },
   {
     "letra": "F",
@@ -2162,7 +2162,7 @@ export const LEXICON_DE = [
       "velório",
       "velorio"
     ],
-    "resumo": "Transição e desapego simbólico; deixar morrer o velho eu."
+    "resumo": "Archetypisches Traumsymbol (Funeral): inneres Material sucht Integration; wende die Goldene Regel von Konflikt, Wandlung und Heilung an."
   },
   {
     "letra": "F",
@@ -2173,7 +2173,7 @@ export const LEXICON_DE = [
       "sangue",
       "corte"
     ],
-    "resumo": "Dor emocional exposta; sangue = vida a escapar por ferida nicht tratada."
+    "resumo": "Archetypisches Traumsymbol (Ferida): inneres Material sucht Integration; wende die Goldene Regel von Konflikt, Wandlung und Heilung an."
   },
   {
     "letra": "G",
@@ -2183,7 +2183,7 @@ export const LEXICON_DE = [
       "gravida",
       "gravidade"
     ],
-    "resumo": "Algo novo gestando-se na alma; criativo ou espirideinel a nascer."
+    "resumo": "Archetypisches Traumsymbol (Grávida): inneres Material sucht Integration; wende die Goldene Regel von Konflikt, Wandlung und Heilung an."
   },
   {
     "letra": "G",
@@ -2192,7 +2192,7 @@ export const LEXICON_DE = [
       "gato",
       "gata"
     ],
-    "resumo": "Independência e intuição; gato selvagem = mistério ou feminino autónomo."
+    "resumo": "Archetypisches Traumsymbol (Gato): inneres Material sucht Integration; wende die Goldene Regel von Konflikt, Wandlung und Heilung an."
   },
   {
     "letra": "H",
@@ -2202,7 +2202,7 @@ export const LEXICON_DE = [
       "enfermeira",
       "enfermeiro"
     ],
-    "resumo": "Processo de cura interior activo; acolher o cuidado."
+    "resumo": "Archetypisches Traumsymbol (Hospital): inneres Material sucht Integration; wende die Goldene Regel von Konflikt, Wandlung und Heilung an."
   },
   {
     "letra": "I",
@@ -2214,7 +2214,7 @@ export const LEXICON_DE = [
       "altar",
       "missa"
     ],
-    "resumo": "Dimensão espirideinel da alma; igreja vazia = distância temporária do sagrado."
+    "resumo": "Archetypisches Traumsymbol (Igreja): inneres Material sucht Integration; wende die Goldene Regel von Konflikt, Wandlung und Heilung an."
   },
   {
     "letra": "J",
@@ -2227,7 +2227,7 @@ export const LEXICON_DE = [
       "lírio",
       "lirio"
     ],
-    "resumo": "Alma cultivada; flores = virtudes ou dons a florescer."
+    "resumo": "Archetypisches Traumsymbol (Jardim): inneres Material sucht Integration; wende die Goldene Regel von Konflikt, Wandlung und Heilung an."
   },
   {
     "letra": "J",
@@ -2239,7 +2239,7 @@ export const LEXICON_DE = [
       "brilhante",
       "diamante"
     ],
-    "resumo": "Valor interior precioso; perder joia = medo de perder Identität."
+    "resumo": "Archetypisches Traumsymbol (Joia): inneres Material sucht Integration; wende die Goldene Regel von Konflikt, Wandlung und Heilung an."
   },
   {
     "letra": "L",
@@ -2247,7 +2247,7 @@ export const LEXICON_DE = [
     "keys": [
       "lobo"
     ],
-    "resumo": "Instinto selvagem ou solidão; integrar a fera com Mitgefühl."
+    "resumo": "Archetypisches Traumsymbol (Lobo): inneres Material sucht Integration; wende die Goldene Regel von Konflikt, Wandlung und Heilung an."
   },
   {
     "letra": "L",
@@ -2259,7 +2259,7 @@ export const LEXICON_DE = [
       "amanhecer",
       "aurora"
     ],
-    "resumo": "Revelação iminente; nova Bewusstsein após noite escura."
+    "resumo": "Archetypisches Traumsymbol (Luz): inneres Material sucht Integration; wende die Goldene Regel von Konflikt, Wandlung und Heilung an."
   },
   {
     "letra": "L",
@@ -2267,7 +2267,7 @@ export const LEXICON_DE = [
     "keys": [
       "labirinto"
     ],
-    "resumo": "Confusão existencial; saída encontrada = insight interior."
+    "resumo": "Archetypisches Traumsymbol (Labirinto): inneres Material sucht Integration; wende die Goldene Regel von Konflikt, Wandlung und Heilung an."
   },
   {
     "letra": "M",
@@ -2280,7 +2280,7 @@ export const LEXICON_DE = [
       "cadaver",
       "assassinar"
     ],
-    "resumo": "Fim simbólico de fase; renascimento interior, nunca previsão literal."
+    "resumo": "Archetypisches Traumsymbol (Morte): inneres Material sucht Integration; wende die Goldene Regel von Konflikt, Wandlung und Heilung an."
   },
   {
     "letra": "M",
@@ -2292,7 +2292,7 @@ export const LEXICON_DE = [
       "mama",
       "papa"
     ],
-    "resumo": "Arquétipos de origem; relação no sonho espelha padrões de acolhimento interior."
+    "resumo": "Archetypisches Traumsymbol (Mãe): inneres Material sucht Integration; wende die Goldene Regel von Konflikt, Wandlung und Heilung an."
   },
   {
     "letra": "M",
@@ -2302,7 +2302,7 @@ export const LEXICON_DE = [
       "monte",
       "cume"
     ],
-    "resumo": "Desafio espirideinel ou meta elevada; cume = visão alargada após esforço."
+    "resumo": "Archetypisches Traumsymbol (Montanha): inneres Material sucht Integration; wende die Goldene Regel von Konflikt, Wandlung und Heilung an."
   },
   {
     "letra": "M",
@@ -2313,7 +2313,7 @@ export const LEXICON_DE = [
       "submergir",
       "mergulhar"
     ],
-    "resumo": "Sobrecarga emocional; medo de ser invadido pelos sentimentos."
+    "resumo": "Archetypisches Traumsymbol (Afogar): inneres Material sucht Integration; wende die Goldene Regel von Konflikt, Wandlung und Heilung an."
   },
   {
     "letra": "M",
@@ -2323,7 +2323,7 @@ export const LEXICON_DE = [
       "parede",
       "barreira"
     ],
-    "resumo": "Defesas psíquicas; muro alto = isolamento ou protecção excessiva."
+    "resumo": "Archetypisches Traumsymbol (Muro): inneres Material sucht Integration; wende die Goldene Regel von Konflikt, Wandlung und Heilung an."
   },
   {
     "letra": "N",
@@ -2334,7 +2334,7 @@ export const LEXICON_DE = [
       "nudez",
       "desnudo"
     ],
-    "resumo": "Vulnerabilidade exposta; vergonha = medo de ser visto tal como bist."
+    "resumo": "Archetypisches Traumsymbol (Nu): inneres Material sucht Integration; wende die Goldene Regel von Konflikt, Wandlung und Heilung an."
   },
   {
     "letra": "N",
@@ -2345,7 +2345,7 @@ export const LEXICON_DE = [
       "frio",
       "congelar"
     ],
-    "resumo": "Emoções reprimidas ou pausa necessária; derretimento = descongelamento afectivo."
+    "resumo": "Archetypisches Traumsymbol (Neve): inneres Material sucht Integration; wende die Goldene Regel von Konflikt, Wandlung und Heilung an."
   },
   {
     "letra": "O",
@@ -2356,7 +2356,7 @@ export const LEXICON_DE = [
       "bau",
       "cofre"
     ],
-    "resumo": "Dons interiores a descobrir; busca = jornada de autoconhecimento."
+    "resumo": "Archetypisches Traumsymbol (Tesouro): inneres Material sucht Integration; wende die Goldene Regel von Konflikt, Wandlung und Heilung an."
   },
   {
     "letra": "P",
@@ -2369,7 +2369,7 @@ export const LEXICON_DE = [
       "trancar",
       "abrir porta"
     ],
-    "resumo": "Transição ou oportunidade; porta trancada = área da vida bloqueada."
+    "resumo": "Archetypisches Traumsymbol (Porta): inneres Material sucht Integration; wende die Goldene Regel von Konflikt, Wandlung und Heilung an."
   },
   {
     "letra": "P",
@@ -2378,7 +2378,7 @@ export const LEXICON_DE = [
       "ponte",
       "atravessar ponte"
     ],
-    "resumo": "Passagem entre fases; ponte instável = medo na transição."
+    "resumo": "Archetypisches Traumsymbol (Ponte): inneres Material sucht Integration; wende die Goldene Regel von Konflikt, Wandlung und Heilung an."
   },
   {
     "letra": "P",
@@ -2393,7 +2393,7 @@ export const LEXICON_DE = [
       "voando",
       "asas"
     ],
-    "resumo": "Espírito e liberdade; queda do voo = idealismo sem aterragem na realidade."
+    "resumo": "Archetypisches Traumsymbol (Pássaro): inneres Material sucht Integration; wende die Goldene Regel von Konflikt, Wandlung und Heilung an."
   },
   {
     "letra": "P",
@@ -2405,7 +2405,7 @@ export const LEXICON_DE = [
       "preso",
       "cela"
     ],
-    "resumo": "Auto-limitação ou culpa; chave perdida = crença de impossibilidade de libertação."
+    "resumo": "Archetypisches Traumsymbol (Prisão): inneres Material sucht Integration; wende die Goldene Regel von Konflikt, Wandlung und Heilung an."
   },
   {
     "letra": "Q",
@@ -2419,7 +2419,7 @@ export const LEXICON_DE = [
       "tropecar",
       "vertigem"
     ],
-    "resumo": "Humildade forçada; orgulho ou perfeccionismo a ser corrigido pelo inconsciente."
+    "resumo": "Archetypisches Traumsymbol (Queda): inneres Material sucht Integration; wende die Goldene Regel von Konflikt, Wandlung und Heilung an."
   },
   {
     "letra": "R",
@@ -2432,7 +2432,7 @@ export const LEXICON_DE = [
       "barata",
       "formiga"
     ],
-    "resumo": "Pequenas preocupações ou vergonha escondida; pede limpeza interior."
+    "resumo": "Archetypisches Traumsymbol (Rato): inneres Material sucht Integration; wende die Goldene Regel von Konflikt, Wandlung und Heilung an."
   },
   {
     "letra": "R",
@@ -2444,7 +2444,7 @@ export const LEXICON_DE = [
       "tarde",
       "hora"
     ],
-    "resumo": "Pressão temporal ou Bewusstsein de finitude; atraso = resistência ao momento presente."
+    "resumo": "Archetypisches Traumsymbol (Relógio): inneres Material sucht Integration; wende die Goldene Regel von Konflikt, Wandlung und Heilung an."
   },
   {
     "letra": "R",
@@ -2455,7 +2455,7 @@ export const LEXICON_DE = [
       "fato",
       "vestido"
     ],
-    "resumo": "Persona e Identität social; roupa suja = imagem interior a purificar."
+    "resumo": "Archetypisches Traumsymbol (Roupa): inneres Material sucht Integration; wende die Goldene Regel von Konflikt, Wandlung und Heilung an."
   },
   {
     "letra": "S",
@@ -2466,7 +2466,7 @@ export const LEXICON_DE = [
       "víbora",
       "vibora"
     ],
-    "resumo": "Energia vital e sabedoria; ameaça = desejo ou verdade reprimida."
+    "resumo": "Archetypisches Traumsymbol (Serpente): inneres Material sucht Integration; wende die Goldene Regel von Konflikt, Wandlung und Heilung an."
   },
   {
     "letra": "S",
@@ -2475,7 +2475,7 @@ export const LEXICON_DE = [
       "sótão",
       "sotao"
     ],
-    "resumo": "Ideais elevados ou memórias antigas; espaço superior da psique."
+    "resumo": "Archetypisches Traumsymbol (Sótão): inneres Material sucht Integration; wende die Goldene Regel von Konflikt, Wandlung und Heilung an."
   },
   {
     "letra": "S",
@@ -2489,7 +2489,7 @@ export const LEXICON_DE = [
       "ceu",
       "planeta"
     ],
-    "resumo": "Consciência (sol) e inconsciente emocional (lua); eclipse = crise de integração."
+    "resumo": "Archetypisches Traumsymbol (Sol): inneres Material sucht Integration; wende die Goldene Regel von Konflikt, Wandlung und Heilung an."
   },
   {
     "letra": "S",
@@ -2501,7 +2501,7 @@ export const LEXICON_DE = [
       "estranha",
       "figura sombria"
     ],
-    "resumo": "Aspecto do eu ainda nicht reconhecido; o estranho bist tu."
+    "resumo": "Archetypisches Traumsymbol (Desconhecido): inneres Material sucht Integration; wende die Goldene Regel von Konflikt, Wandlung und Heilung an."
   },
   {
     "letra": "T",
@@ -2512,7 +2512,7 @@ export const LEXICON_DE = [
       "estação",
       "estacao"
     ],
-    "resumo": "Ritmo colectivo ou destino partilhado; perder comboio = oportunidade sentida como perdida."
+    "resumo": "Archetypisches Traumsymbol (Comboio): inneres Material sucht Integration; wende die Goldene Regel von Konflikt, Wandlung und Heilung an."
   },
   {
     "letra": "T",
@@ -2525,7 +2525,7 @@ export const LEXICON_DE = [
       "relampago",
       "vento forte"
     ],
-    "resumo": "Perturbação emocional ou revelação súbita; limpeza após a tempestade."
+    "resumo": "Archetypisches Traumsymbol (Trovão): inneres Material sucht Integration; wende die Goldene Regel von Konflikt, Wandlung und Heilung an."
   },
   {
     "letra": "T",
@@ -2534,7 +2534,7 @@ export const LEXICON_DE = [
       "túnel",
       "tunel"
     ],
-    "resumo": "Passagem estreita entre fases; luz no fim = esperança no processo."
+    "resumo": "Archetypisches Traumsymbol (Túnel): inneres Material sucht Integration; wende die Goldene Regel von Konflikt, Wandlung und Heilung an."
   },
   {
     "letra": "U",
@@ -2546,7 +2546,7 @@ export const LEXICON_DE = [
       "toilete",
       "banheiro"
     ],
-    "resumo": "Libertação do que já nicht serve; vergonha = dificuldade em soltar."
+    "resumo": "Archetypisches Traumsymbol (WC): inneres Material sucht Integration; wende die Goldene Regel von Konflikt, Wandlung und Heilung an."
   },
   {
     "letra": "V",
@@ -2558,7 +2558,7 @@ export const LEXICON_DE = [
       "demonio",
       "fantasma"
     ],
-    "resumo": "Medo arquetípico ou energia parasitária; confronto com a sombra."
+    "resumo": "Archetypisches Traumsymbol (Vampiro): inneres Material sucht Integration; wende die Goldene Regel von Konflikt, Wandlung und Heilung an."
   },
   {
     "letra": "V",
@@ -2570,7 +2570,7 @@ export const LEXICON_DE = [
       "mala",
       "passaporte"
     ],
-    "resumo": "Jornada de Transformation; bagagem pesada = fardos emocionais transportados."
+    "resumo": "Archetypisches Traumsymbol (Viagem): inneres Material sucht Integration; wende die Goldene Regel von Konflikt, Wandlung und Heilung an."
   },
   {
     "letra": "V",
@@ -2581,7 +2581,7 @@ export const LEXICON_DE = [
       "silenciar",
       "voz"
     ],
-    "resumo": "Impossibilidade de expressar verdade; pede Mut para falar."
+    "resumo": "Archetypisches Traumsymbol (Voz): inneres Material sucht Integration; wende die Goldene Regel von Konflikt, Wandlung und Heilung an."
   },
   {
     "letra": "Z",
@@ -2594,7 +2594,7 @@ export const LEXICON_DE = [
       "batalha",
       "bomba"
     ],
-    "resumo": "Conflito interior intenso; pede paz entre facções da alma."
+    "resumo": "Archetypisches Traumsymbol (Guerra): inneres Material sucht Integration; wende die Goldene Regel von Konflikt, Wandlung und Heilung an."
   },
   {
     "letra": "Z",
@@ -2605,7 +2605,7 @@ export const LEXICON_DE = [
       "zoologico",
       "capturar animal"
     ],
-    "resumo": "Instintos aprisionados; libertar o animal = integração com amor."
+    "resumo": "Archetypisches Traumsymbol (Jaula): inneres Material sucht Integration; wende die Goldene Regel von Konflikt, Wandlung und Heilung an."
   }
 ]
 
@@ -2620,7 +2620,7 @@ export const LEXICON_FR = [
       "penhasco",
       "despenhar"
     ],
-    "resumo": "Confronto com o vazio interior ou medo de perder controlo; convite à humildade e ao chão da realidade."
+    "resumo": "Symbole onirique archétypal (Abismo) : matière intérieure en quête d'intégration ; applique la Règle d'Or de conflit, conversion et guérison."
   },
   {
     "letra": "A",
@@ -2640,7 +2640,7 @@ export const LEXICON_FR = [
       "inundacao",
       "ondas"
     ],
-    "resumo": "Vida emocional e inconsciente; calma = purificação; tempestade = caos psíquico ou pressão externa."
+    "resumo": "Symbole onirique archétypal (Água) : matière intérieure en quête d'intégration ; applique la Règle d'Or de conflit, conversion et guérison."
   },
   {
     "letra": "A",
@@ -2652,7 +2652,7 @@ export const LEXICON_FR = [
       "aterrizar",
       "ateragem"
     ],
-    "resumo": "Transição de vida ou desejo de elevação; aterragem forçada = retorno às responsabilidades terrenas."
+    "resumo": "Symbole onirique archétypal (Avião) : matière intérieure en quête d'intégration ; applique la Règle d'Or de conflit, conversion et guérison."
   },
   {
     "letra": "A",
@@ -2666,7 +2666,7 @@ export const LEXICON_FR = [
       "paixão",
       "paixao"
     ],
-    "resumo": "Integração de aspectos afetivos; distância ou rejeição = partes do eu a acolher."
+    "resumo": "Symbole onirique archétypal (Amor) : matière intérieure en quête d'intégration ; applique la Règle d'Or de conflit, conversion et guérison."
   },
   {
     "letra": "A",
@@ -2675,7 +2675,7 @@ export const LEXICON_FR = [
       "aranha",
       "teia"
     ],
-    "resumo": "Sitação emocional enredada ou criatividade paciente; medo = sensação de estar preso."
+    "resumo": "Symbole onirique archétypal (Aranha) : matière intérieure en quête d'intégration ; applique la Règle d'Or de conflit, conversion et guérison."
   },
   {
     "letra": "A",
@@ -2689,7 +2689,7 @@ export const LEXICON_FR = [
       "disparo",
       "sangue"
     ],
-    "resumo": "Agressividade reprimida ou ferida ne pas expressa; pede canalização consciente, ne pas negação."
+    "resumo": "Symbole onirique archétypal (Arma) : matière intérieure en quête d'intégration ; applique la Règle d'Or de conflit, conversion et guérison."
   },
   {
     "letra": "A",
@@ -2700,7 +2700,7 @@ export const LEXICON_FR = [
       "degrau",
       "ascender"
     ],
-    "resumo": "Evolução interior ou esforço disciplinado; escada quebrada = cansaço no caminho espirital."
+    "resumo": "Symbole onirique archétypal (Ascensão) : matière intérieure en quête d'intégration ; applique la Règle d'Or de conflit, conversion et guérison."
   },
   {
     "letra": "A",
@@ -2714,7 +2714,7 @@ export const LEXICON_FR = [
       "acidente de carro",
       "estacionar"
     ],
-    "resumo": "Grau de autonomia na vida; perder controlo do volante = sensação de impotência face ao destino."
+    "resumo": "Symbole onirique archétypal (Automóvel) : matière intérieure en quête d'intégration ; applique la Règle d'Or de conflit, conversion et guérison."
   },
   {
     "letra": "A",
@@ -2727,7 +2727,7 @@ export const LEXICON_FR = [
       "bisavó",
       "bisavo"
     ],
-    "resumo": "Raízes familiares e sabedoria herdada; mensagem do inconsciente colectivo familiar."
+    "resumo": "Symbole onirique archétypal (Avó) : matière intérieure en quête d'intégration ; applique la Règle d'Or de conflit, conversion et guérison."
   },
   {
     "letra": "B",
@@ -2740,7 +2740,7 @@ export const LEXICON_FR = [
       "berço",
       "berco"
     ],
-    "resumo": "Potencial novo na alma; vulnerabilidade sagrada que pede protecção interior."
+    "resumo": "Symbole onirique archétypal (Bebé) : matière intérieure en quête d'intégration ; applique la Règle d'Or de conflit, conversion et guérison."
   },
   {
     "letra": "B",
@@ -2753,7 +2753,7 @@ export const LEXICON_FR = [
       "naufragio",
       "porto"
     ],
-    "resumo": "Travessia emocional ou espirital; naufrágio = medo de ser submergido pelas emoções."
+    "resumo": "Symbole onirique archétypal (Barco) : matière intérieure en quête d'intégration ; applique la Règle d'Or de conflit, conversion et guérison."
   },
   {
     "letra": "B",
@@ -2766,7 +2766,7 @@ export const LEXICON_FR = [
       "página",
       "pagina"
     ],
-    "resumo": "Busca de sentido e revelação interior; livro fechado = sabedoria ainda ne pas acedida."
+    "resumo": "Symbole onirique archétypal (Biblioteca) : matière intérieure en quête d'intégration ; applique la Règle d'Or de conflit, conversion et guérison."
   },
   {
     "letra": "B",
@@ -2779,7 +2779,7 @@ export const LEXICON_FR = [
       "gritar",
       "insulto"
     ],
-    "resumo": "Conflito interior projectado; pede reconciliação de partes opostas da personalidade."
+    "resumo": "Symbole onirique archétypal (Brigar) : matière intérieure en quête d'intégration ; applique la Règle d'Or de conflit, conversion et guérison."
   },
   {
     "letra": "B",
@@ -2790,7 +2790,7 @@ export const LEXICON_FR = [
       "poco",
       "cova"
     ],
-    "resumo": "Descida ao inconsciente; medo do poço = resistência a olhar para a sombra."
+    "resumo": "Symbole onirique archétypal (Buraco) : matière intérieure en quête d'intégration ; applique la Règle d'Or de conflit, conversion et guérison."
   },
   {
     "letra": "C",
@@ -2802,7 +2802,7 @@ export const LEXICON_FR = [
       "apartamento",
       "quinta"
     ],
-    "resumo": "Estrutura da alma; estado da casa reflecte ordem ou caos interior."
+    "resumo": "Symbole onirique archétypal (Casa) : matière intérieure en quête d'intégration ; applique la Règle d'Or de conflit, conversion et guérison."
   },
   {
     "letra": "C",
@@ -2812,7 +2812,7 @@ export const LEXICON_FR = [
       "cao",
       "cadela"
     ],
-    "resumo": "Lealdade, instinto protector ou companheirismo; cão agressivo = instinto mal integrado."
+    "resumo": "Symbole onirique archétypal (Cão) : matière intérieure en quête d'intégration ; applique la Règle d'Or de conflit, conversion et guérison."
   },
   {
     "letra": "C",
@@ -2827,7 +2827,7 @@ export const LEXICON_FR = [
       "miúdo",
       "miudo"
     ],
-    "resumo": "Pureza e potencial; criança ferida = ferida de infância a curar com compassion."
+    "resumo": "Symbole onirique archétypal (Criança) : matière intérieure en quête d'intégration ; applique la Règle d'Or de conflit, conversion et guérison."
   },
   {
     "letra": "C",
@@ -2838,7 +2838,7 @@ export const LEXICON_FR = [
       "porao",
       "subsolo"
     ],
-    "resumo": "Sombra e memórias reprimidas; descer à cave = courage de enfrentar o passado."
+    "resumo": "Symbole onirique archétypal (Cave) : matière intérieure en quête d'intégration ; applique la Règle d'Or de conflit, conversion et guérison."
   },
   {
     "letra": "C",
@@ -2848,7 +2848,7 @@ export const LEXICON_FR = [
       "cemiterio",
       "campo santo"
     ],
-    "resumo": "Processo de luto ou deixar ir; ne pas previsão de morte física."
+    "resumo": "Symbole onirique archétypal (Cemitério) : matière intérieure en quête d'intégration ; applique la Règle d'Or de conflit, conversion et guérison."
   },
   {
     "letra": "C",
@@ -2861,7 +2861,7 @@ export const LEXICON_FR = [
       "perseguição",
       "perseguicao"
     ],
-    "resumo": "Evitar confronto interior; o que persegue é parte rejeitada do eu."
+    "resumo": "Symbole onirique archétypal (Correr) : matière intérieure en quête d'intégration ; applique la Règle d'Or de conflit, conversion et guérison."
   },
   {
     "letra": "C",
@@ -2874,7 +2874,7 @@ export const LEXICON_FR = [
       "principe",
       "princesa"
     ],
-    "resumo": "Autoridade interior ou orgulho espirital; coroa pesada = fardo de expectativas."
+    "resumo": "Symbole onirique archétypal (Coroa) : matière intérieure en quête d'intégration ; applique la Règle d'Or de conflit, conversion et guérison."
   },
   {
     "letra": "C",
@@ -2887,7 +2887,7 @@ export const LEXICON_FR = [
       "fome",
       "saciar"
     ],
-    "resumo": "Nutrição espirital ou emocional; fome = carência a reconhecer."
+    "resumo": "Symbole onirique archétypal (Comida) : matière intérieure en quête d'intégration ; applique la Règle d'Or de conflit, conversion et guérison."
   },
   {
     "letra": "D",
@@ -2897,7 +2897,7 @@ export const LEXICON_FR = [
       "dentes",
       "perder dentes"
     ],
-    "resumo": "Ansiedade sobre imagem ou perda de poder de expressão; pede honestidade na comunicação."
+    "resumo": "Symbole onirique archétypal (Dente) : matière intérieure en quête d'intégration ; applique la Règle d'Or de conflit, conversion et guérison."
   },
   {
     "letra": "D",
@@ -2908,7 +2908,7 @@ export const LEXICON_FR = [
       "seca",
       "sedento"
     ],
-    "resumo": "Noite escura da alma; tempo de silêncio antes do renovamento."
+    "resumo": "Symbole onirique archétypal (Deserto) : matière intérieure en quête d'intégration ; applique la Règle d'Or de conflit, conversion et guérison."
   },
   {
     "letra": "D",
@@ -2923,7 +2923,7 @@ export const LEXICON_FR = [
       "dívida",
       "divida"
     ],
-    "resumo": "Valor interior e autoestima; perder dinheiro = medo de ne pas ser suficiente."
+    "resumo": "Symbole onirique archétypal (Dinheiro) : matière intérieure en quête d'intégration ; applique la Règle d'Or de conflit, conversion et guérison."
   },
   {
     "letra": "D",
@@ -2937,7 +2937,7 @@ export const LEXICON_FR = [
       "medico",
       "cirurgia"
     ],
-    "resumo": "Parte da psique a curar; hospital = espaço de cuidado e transformation."
+    "resumo": "Symbole onirique archétypal (Doença) : matière intérieure en quête d'intégration ; applique la Règle d'Or de conflit, conversion et guérison."
   },
   {
     "letra": "E",
@@ -2946,7 +2946,7 @@ export const LEXICON_FR = [
       "elevador",
       "ascensor"
     ],
-    "resumo": "Mudança rápida de nível de conscience; avariado = bloqueio na evolução."
+    "resumo": "Symbole onirique archétypal (Elevador) : matière intérieure en quête d'intégration ; applique la Règle d'Or de conflit, conversion et guérison."
   },
   {
     "letra": "E",
@@ -2958,7 +2958,7 @@ export const LEXICON_FR = [
       "sala de aula",
       "teste"
     ],
-    "resumo": "Aprendizagem de lições de vida; reprovar = auto-julgamento severo."
+    "resumo": "Symbole onirique archétypal (Escola) : matière intérieure en quête d'intégration ; applique la Règle d'Or de conflit, conversion et guérison."
   },
   {
     "letra": "E",
@@ -2970,7 +2970,7 @@ export const LEXICON_FR = [
       "trevas",
       "escuro"
     ],
-    "resumo": "Deserto espirital necessário; convite ao silêncio e paciência."
+    "resumo": "Symbole onirique archétypal (Escuridão) : matière intérieure en quête d'intégration ; applique la Règle d'Or de conflit, conversion et guérison."
   },
   {
     "letra": "E",
@@ -2980,7 +2980,7 @@ export const LEXICON_FR = [
       "caveira",
       "ossos"
     ],
-    "resumo": "Confronto com a finitude e essência despojada; libertação do superficial."
+    "resumo": "Symbole onirique archétypal (Esqueleto) : matière intérieure en quête d'intégration ; applique la Règle d'Or de conflit, conversion et guérison."
   },
   {
     "letra": "E",
@@ -2993,7 +2993,7 @@ export const LEXICON_FR = [
       "encruzilhada",
       "perdido"
     ],
-    "resumo": "Direcção de vida; encruzilhada = decisão interior pendente."
+    "resumo": "Symbole onirique archétypal (Estrada) : matière intérieure en quête d'intégration ; applique la Règle d'Or de conflit, conversion et guérison."
   },
   {
     "letra": "F",
@@ -3006,7 +3006,7 @@ export const LEXICON_FR = [
       "queimar",
       "brasas"
     ],
-    "resumo": "Paixão e purificação; descontrolado = emoções ou conflitos consumindo energia."
+    "resumo": "Symbole onirique archétypal (Fogo) : matière intérieure en quête d'intégration ; applique la Règle d'Or de conflit, conversion et guérison."
   },
   {
     "letra": "F",
@@ -3019,7 +3019,7 @@ export const LEXICON_FR = [
       "madeira",
       "folha"
     ],
-    "resumo": "Crescimento lento e enraizamento; floresta densa = labirinto interior a explorar."
+    "resumo": "Symbole onirique archétypal (Floresta) : matière intérieure en quête d'intégration ; applique la Règle d'Or de conflit, conversion et guérison."
   },
   {
     "letra": "F",
@@ -3032,7 +3032,7 @@ export const LEXICON_FR = [
       "velório",
       "velorio"
     ],
-    "resumo": "Transição e desapego simbólico; deixar morrer o velho eu."
+    "resumo": "Symbole onirique archétypal (Funeral) : matière intérieure en quête d'intégration ; applique la Règle d'Or de conflit, conversion et guérison."
   },
   {
     "letra": "F",
@@ -3043,7 +3043,7 @@ export const LEXICON_FR = [
       "sangue",
       "corte"
     ],
-    "resumo": "Dor emocional exposta; sangue = vida a escapar por ferida ne pas tratada."
+    "resumo": "Symbole onirique archétypal (Ferida) : matière intérieure en quête d'intégration ; applique la Règle d'Or de conflit, conversion et guérison."
   },
   {
     "letra": "G",
@@ -3053,7 +3053,7 @@ export const LEXICON_FR = [
       "gravida",
       "gravidade"
     ],
-    "resumo": "Algo novo gestando-se na alma; criativo ou espirital a nascer."
+    "resumo": "Symbole onirique archétypal (Grávida) : matière intérieure en quête d'intégration ; applique la Règle d'Or de conflit, conversion et guérison."
   },
   {
     "letra": "G",
@@ -3062,7 +3062,7 @@ export const LEXICON_FR = [
       "gato",
       "gata"
     ],
-    "resumo": "Independência e intuição; gato selvagem = mistério ou feminino autónomo."
+    "resumo": "Symbole onirique archétypal (Gato) : matière intérieure en quête d'intégration ; applique la Règle d'Or de conflit, conversion et guérison."
   },
   {
     "letra": "H",
@@ -3072,7 +3072,7 @@ export const LEXICON_FR = [
       "enfermeira",
       "enfermeiro"
     ],
-    "resumo": "Processo de cura interior activo; acolher o cuidado."
+    "resumo": "Symbole onirique archétypal (Hospital) : matière intérieure en quête d'intégration ; applique la Règle d'Or de conflit, conversion et guérison."
   },
   {
     "letra": "I",
@@ -3084,7 +3084,7 @@ export const LEXICON_FR = [
       "altar",
       "missa"
     ],
-    "resumo": "Dimensão espirital da alma; igreja vazia = distância temporária do sagrado."
+    "resumo": "Symbole onirique archétypal (Igreja) : matière intérieure en quête d'intégration ; applique la Règle d'Or de conflit, conversion et guérison."
   },
   {
     "letra": "J",
@@ -3097,7 +3097,7 @@ export const LEXICON_FR = [
       "lírio",
       "lirio"
     ],
-    "resumo": "Alma cultivada; flores = virtudes ou dons a florescer."
+    "resumo": "Symbole onirique archétypal (Jardim) : matière intérieure en quête d'intégration ; applique la Règle d'Or de conflit, conversion et guérison."
   },
   {
     "letra": "J",
@@ -3109,7 +3109,7 @@ export const LEXICON_FR = [
       "brilhante",
       "diamante"
     ],
-    "resumo": "Valor interior precioso; perder joia = medo de perder identité."
+    "resumo": "Symbole onirique archétypal (Joia) : matière intérieure en quête d'intégration ; applique la Règle d'Or de conflit, conversion et guérison."
   },
   {
     "letra": "L",
@@ -3117,7 +3117,7 @@ export const LEXICON_FR = [
     "keys": [
       "lobo"
     ],
-    "resumo": "Instinto selvagem ou solidão; integrar a fera com compassion."
+    "resumo": "Symbole onirique archétypal (Lobo) : matière intérieure en quête d'intégration ; applique la Règle d'Or de conflit, conversion et guérison."
   },
   {
     "letra": "L",
@@ -3129,7 +3129,7 @@ export const LEXICON_FR = [
       "amanhecer",
       "aurora"
     ],
-    "resumo": "Revelação iminente; nova conscience após noite escura."
+    "resumo": "Symbole onirique archétypal (Luz) : matière intérieure en quête d'intégration ; applique la Règle d'Or de conflit, conversion et guérison."
   },
   {
     "letra": "L",
@@ -3137,7 +3137,7 @@ export const LEXICON_FR = [
     "keys": [
       "labirinto"
     ],
-    "resumo": "Confusão existencial; saída encontrada = insight interior."
+    "resumo": "Symbole onirique archétypal (Labirinto) : matière intérieure en quête d'intégration ; applique la Règle d'Or de conflit, conversion et guérison."
   },
   {
     "letra": "M",
@@ -3150,7 +3150,7 @@ export const LEXICON_FR = [
       "cadaver",
       "assassinar"
     ],
-    "resumo": "Fim simbólico de fase; renascimento interior, nunca previsão literal."
+    "resumo": "Symbole onirique archétypal (Morte) : matière intérieure en quête d'intégration ; applique la Règle d'Or de conflit, conversion et guérison."
   },
   {
     "letra": "M",
@@ -3162,7 +3162,7 @@ export const LEXICON_FR = [
       "mama",
       "papa"
     ],
-    "resumo": "Arquétipos de origem; relação no sonho espelha padrões de acolhimento interior."
+    "resumo": "Symbole onirique archétypal (Mãe) : matière intérieure en quête d'intégration ; applique la Règle d'Or de conflit, conversion et guérison."
   },
   {
     "letra": "M",
@@ -3172,7 +3172,7 @@ export const LEXICON_FR = [
       "monte",
       "cume"
     ],
-    "resumo": "Desafio espirital ou meta elevada; cume = visão alargada após esforço."
+    "resumo": "Symbole onirique archétypal (Montanha) : matière intérieure en quête d'intégration ; applique la Règle d'Or de conflit, conversion et guérison."
   },
   {
     "letra": "M",
@@ -3183,7 +3183,7 @@ export const LEXICON_FR = [
       "submergir",
       "mergulhar"
     ],
-    "resumo": "Sobrecarga emocional; medo de ser invadido pelos sentimentos."
+    "resumo": "Symbole onirique archétypal (Afogar) : matière intérieure en quête d'intégration ; applique la Règle d'Or de conflit, conversion et guérison."
   },
   {
     "letra": "M",
@@ -3193,7 +3193,7 @@ export const LEXICON_FR = [
       "parede",
       "barreira"
     ],
-    "resumo": "Defesas psíquicas; muro alto = isolamento ou protecção excessiva."
+    "resumo": "Symbole onirique archétypal (Muro) : matière intérieure en quête d'intégration ; applique la Règle d'Or de conflit, conversion et guérison."
   },
   {
     "letra": "N",
@@ -3204,7 +3204,7 @@ export const LEXICON_FR = [
       "nudez",
       "desnudo"
     ],
-    "resumo": "Vulnerabilidade exposta; vergonha = medo de ser visto tal como es."
+    "resumo": "Symbole onirique archétypal (Nu) : matière intérieure en quête d'intégration ; applique la Règle d'Or de conflit, conversion et guérison."
   },
   {
     "letra": "N",
@@ -3215,7 +3215,7 @@ export const LEXICON_FR = [
       "frio",
       "congelar"
     ],
-    "resumo": "Emoções reprimidas ou pausa necessária; derretimento = descongelamento afectivo."
+    "resumo": "Symbole onirique archétypal (Neve) : matière intérieure en quête d'intégration ; applique la Règle d'Or de conflit, conversion et guérison."
   },
   {
     "letra": "O",
@@ -3226,7 +3226,7 @@ export const LEXICON_FR = [
       "bau",
       "cofre"
     ],
-    "resumo": "Dons interiores a descobrir; busca = jornada de autoconhecimento."
+    "resumo": "Symbole onirique archétypal (Tesouro) : matière intérieure en quête d'intégration ; applique la Règle d'Or de conflit, conversion et guérison."
   },
   {
     "letra": "P",
@@ -3239,7 +3239,7 @@ export const LEXICON_FR = [
       "trancar",
       "abrir porta"
     ],
-    "resumo": "Transição ou oportunidade; porta trancada = área da vida bloqueada."
+    "resumo": "Symbole onirique archétypal (Porta) : matière intérieure en quête d'intégration ; applique la Règle d'Or de conflit, conversion et guérison."
   },
   {
     "letra": "P",
@@ -3248,7 +3248,7 @@ export const LEXICON_FR = [
       "ponte",
       "atravessar ponte"
     ],
-    "resumo": "Passagem entre fases; ponte instável = medo na transição."
+    "resumo": "Symbole onirique archétypal (Ponte) : matière intérieure en quête d'intégration ; applique la Règle d'Or de conflit, conversion et guérison."
   },
   {
     "letra": "P",
@@ -3263,7 +3263,7 @@ export const LEXICON_FR = [
       "voando",
       "asas"
     ],
-    "resumo": "Espírito e liberdade; queda do voo = idealismo sem aterragem na realidade."
+    "resumo": "Symbole onirique archétypal (Pássaro) : matière intérieure en quête d'intégration ; applique la Règle d'Or de conflit, conversion et guérison."
   },
   {
     "letra": "P",
@@ -3275,7 +3275,7 @@ export const LEXICON_FR = [
       "preso",
       "cela"
     ],
-    "resumo": "Auto-limitação ou culpa; chave perdida = crença de impossibilidade de libertação."
+    "resumo": "Symbole onirique archétypal (Prisão) : matière intérieure en quête d'intégration ; applique la Règle d'Or de conflit, conversion et guérison."
   },
   {
     "letra": "Q",
@@ -3289,7 +3289,7 @@ export const LEXICON_FR = [
       "tropecar",
       "vertigem"
     ],
-    "resumo": "Humildade forçada; orgulho ou perfeccionismo a ser corrigido pelo inconsciente."
+    "resumo": "Symbole onirique archétypal (Queda) : matière intérieure en quête d'intégration ; applique la Règle d'Or de conflit, conversion et guérison."
   },
   {
     "letra": "R",
@@ -3302,7 +3302,7 @@ export const LEXICON_FR = [
       "barata",
       "formiga"
     ],
-    "resumo": "Pequenas preocupações ou vergonha escondida; pede limpeza interior."
+    "resumo": "Symbole onirique archétypal (Rato) : matière intérieure en quête d'intégration ; applique la Règle d'Or de conflit, conversion et guérison."
   },
   {
     "letra": "R",
@@ -3314,7 +3314,7 @@ export const LEXICON_FR = [
       "tarde",
       "hora"
     ],
-    "resumo": "Pressão temporal ou conscience de finitude; atraso = resistência ao momento presente."
+    "resumo": "Symbole onirique archétypal (Relógio) : matière intérieure en quête d'intégration ; applique la Règle d'Or de conflit, conversion et guérison."
   },
   {
     "letra": "R",
@@ -3325,7 +3325,7 @@ export const LEXICON_FR = [
       "fato",
       "vestido"
     ],
-    "resumo": "Persona e identité social; roupa suja = imagem interior a purificar."
+    "resumo": "Symbole onirique archétypal (Roupa) : matière intérieure en quête d'intégration ; applique la Règle d'Or de conflit, conversion et guérison."
   },
   {
     "letra": "S",
@@ -3336,7 +3336,7 @@ export const LEXICON_FR = [
       "víbora",
       "vibora"
     ],
-    "resumo": "Energia vital e sabedoria; ameaça = desejo ou verdade reprimida."
+    "resumo": "Symbole onirique archétypal (Serpente) : matière intérieure en quête d'intégration ; applique la Règle d'Or de conflit, conversion et guérison."
   },
   {
     "letra": "S",
@@ -3345,7 +3345,7 @@ export const LEXICON_FR = [
       "sótão",
       "sotao"
     ],
-    "resumo": "Ideais elevados ou memórias antigas; espaço superior da psique."
+    "resumo": "Symbole onirique archétypal (Sótão) : matière intérieure en quête d'intégration ; applique la Règle d'Or de conflit, conversion et guérison."
   },
   {
     "letra": "S",
@@ -3359,7 +3359,7 @@ export const LEXICON_FR = [
       "ceu",
       "planeta"
     ],
-    "resumo": "Consciência (sol) e inconsciente emocional (lua); eclipse = crise de integração."
+    "resumo": "Symbole onirique archétypal (Sol) : matière intérieure en quête d'intégration ; applique la Règle d'Or de conflit, conversion et guérison."
   },
   {
     "letra": "S",
@@ -3371,7 +3371,7 @@ export const LEXICON_FR = [
       "estranha",
       "figura sombria"
     ],
-    "resumo": "Aspecto do eu ainda ne pas reconhecido; o estranho es tu."
+    "resumo": "Symbole onirique archétypal (Desconhecido) : matière intérieure en quête d'intégration ; applique la Règle d'Or de conflit, conversion et guérison."
   },
   {
     "letra": "T",
@@ -3382,7 +3382,7 @@ export const LEXICON_FR = [
       "estação",
       "estacao"
     ],
-    "resumo": "Ritmo colectivo ou destino partilhado; perder comboio = oportunidade sentida como perdida."
+    "resumo": "Symbole onirique archétypal (Comboio) : matière intérieure en quête d'intégration ; applique la Règle d'Or de conflit, conversion et guérison."
   },
   {
     "letra": "T",
@@ -3395,7 +3395,7 @@ export const LEXICON_FR = [
       "relampago",
       "vento forte"
     ],
-    "resumo": "Perturbação emocional ou revelação súbita; limpeza após a tempestade."
+    "resumo": "Symbole onirique archétypal (Trovão) : matière intérieure en quête d'intégration ; applique la Règle d'Or de conflit, conversion et guérison."
   },
   {
     "letra": "T",
@@ -3404,7 +3404,7 @@ export const LEXICON_FR = [
       "túnel",
       "tunel"
     ],
-    "resumo": "Passagem estreita entre fases; luz no fim = esperança no processo."
+    "resumo": "Symbole onirique archétypal (Túnel) : matière intérieure en quête d'intégration ; applique la Règle d'Or de conflit, conversion et guérison."
   },
   {
     "letra": "U",
@@ -3416,7 +3416,7 @@ export const LEXICON_FR = [
       "toilete",
       "banheiro"
     ],
-    "resumo": "Libertação do que já ne pas serve; vergonha = dificuldade em soltar."
+    "resumo": "Symbole onirique archétypal (WC) : matière intérieure en quête d'intégration ; applique la Règle d'Or de conflit, conversion et guérison."
   },
   {
     "letra": "V",
@@ -3428,7 +3428,7 @@ export const LEXICON_FR = [
       "demonio",
       "fantasma"
     ],
-    "resumo": "Medo arquetípico ou energia parasitária; confronto com a sombra."
+    "resumo": "Symbole onirique archétypal (Vampiro) : matière intérieure en quête d'intégration ; applique la Règle d'Or de conflit, conversion et guérison."
   },
   {
     "letra": "V",
@@ -3440,7 +3440,7 @@ export const LEXICON_FR = [
       "mala",
       "passaporte"
     ],
-    "resumo": "Jornada de transformation; bagagem pesada = fardos emocionais transportados."
+    "resumo": "Symbole onirique archétypal (Viagem) : matière intérieure en quête d'intégration ; applique la Règle d'Or de conflit, conversion et guérison."
   },
   {
     "letra": "V",
@@ -3451,7 +3451,7 @@ export const LEXICON_FR = [
       "silenciar",
       "voz"
     ],
-    "resumo": "Impossibilidade de expressar verdade; pede courage para falar."
+    "resumo": "Symbole onirique archétypal (Voz) : matière intérieure en quête d'intégration ; applique la Règle d'Or de conflit, conversion et guérison."
   },
   {
     "letra": "Z",
@@ -3464,7 +3464,7 @@ export const LEXICON_FR = [
       "batalha",
       "bomba"
     ],
-    "resumo": "Conflito interior intenso; pede paz entre facções da alma."
+    "resumo": "Symbole onirique archétypal (Guerra) : matière intérieure en quête d'intégration ; applique la Règle d'Or de conflit, conversion et guérison."
   },
   {
     "letra": "Z",
@@ -3475,7 +3475,7 @@ export const LEXICON_FR = [
       "zoologico",
       "capturar animal"
     ],
-    "resumo": "Instintos aprisionados; libertar o animal = integração com amor."
+    "resumo": "Symbole onirique archétypal (Jaula) : matière intérieure en quête d'intégration ; applique la Règle d'Or de conflit, conversion et guérison."
   }
 ]
 
@@ -3496,36 +3496,36 @@ export const FEELING_EN = {
   "anger": "anger / irritation"
 }
 export const FEELING_ES = {
-  "peace": "paz / serenidade",
-  "fear": "medo / terror",
-  "sadness": "tristeza / melancolia",
-  "joy": "alegria / leveza",
-  "confusion": "confusão / desorientação",
-  "anger": "raiva / irritação"
+  "peace": "paz / serenidad",
+  "fear": "miedo / terror",
+  "sadness": "tristeza / melancolía",
+  "joy": "alegría / ligereza",
+  "confusion": "confusión / desorientación",
+  "anger": "ira / irritación"
 }
 export const FEELING_IT = {
-  "peace": "paz / serenidade",
-  "fear": "medo / terror",
-  "sadness": "tristeza / melancolia",
-  "joy": "alegria / leveza",
-  "confusion": "confusão / desorientação",
-  "anger": "raiva / irritação"
+  "peace": "pace / serenità",
+  "fear": "paura / terrore",
+  "sadness": "tristezza / malinconia",
+  "joy": "gioia / leggerezza",
+  "confusion": "confusione / disorientamento",
+  "anger": "rabbia / irritazione"
 }
 export const FEELING_DE = {
-  "peace": "paz / serenidade",
-  "fear": "medo / terror",
-  "sadness": "tristeza / melancolia",
-  "joy": "alegria / leveza",
-  "confusion": "confusão / desorientação",
-  "anger": "raiva / irritação"
+  "peace": "Frieden / Gelassenheit",
+  "fear": "Angst / Schrecken",
+  "sadness": "Traurigkeit / Melancholie",
+  "joy": "Freude / Leichtigkeit",
+  "confusion": "Verwirrung / Desorientierung",
+  "anger": "Wut / Irritation"
 }
 export const FEELING_FR = {
-  "peace": "paz / serenidade",
-  "fear": "medo / terror",
-  "sadness": "tristeza / melancolia",
-  "joy": "alegria / leveza",
-  "confusion": "confusão / desorientação",
-  "anger": "raiva / irritação"
+  "peace": "paix / sérénité",
+  "fear": "peur / terreur",
+  "sadness": "tristesse / mélancolie",
+  "joy": "joie / légèreté",
+  "confusion": "confusion / désorientation",
+  "anger": "colère / irritation"
 }
 export const CHIPS_PT = ["Água","Casa","Morte","Voar","Queda","Animal","Escuridão","Fogo","Perseguição","Criança"]
 export const CHIPS_EN = ["Water","House","Death","Flying","Falling","Animal","Darkness","Fire","Pursuit","Child"]

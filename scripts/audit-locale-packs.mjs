@@ -41,19 +41,21 @@ function auditFile(path) {
 
 function extractExportedData(text) {
   const out = []
-  const exportRe = /export const \w+ = (\{[\s\S]*?\n\})\n/g
+  const exportRe = /export const (\w+) = (\{[\s\S]*?\n\})\n/g
   let m
   while ((m = exportRe.exec(text)) !== null) {
+    if (/_PT$/.test(m[1]) || m[1] === 'CHIPS_PT' || m[1] === 'FEELING_PT') continue
     try {
-      out.push(Function(`"use strict"; return (${m[1]})`)())
+      out.push(Function(`"use strict"; return (${m[2]})`)())
     } catch {
       // arrays / large blobs — skip parse errors
     }
   }
   if (!out.length) {
-    const arrRe = /export const \w+ = (\[[\s\S]*?\])\n/g
+    const arrRe = /export const (\w+) = (\[[\s\S]*?\])\n/g
     while ((m = arrRe.exec(text)) !== null) {
-      try { out.push(Function(`"use strict"; return (${m[1]})`)()) } catch { /* */ }
+      if (/_PT$/.test(m[1]) || m[1] === 'CHIPS_PT') continue
+      try { out.push(Function(`"use strict"; return (${m[2]})`)()) } catch { /* */ }
     }
   }
   return out
