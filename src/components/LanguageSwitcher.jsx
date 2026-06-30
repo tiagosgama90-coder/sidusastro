@@ -1,7 +1,6 @@
 import { createPortal } from 'react-dom'
 import { useState } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
-import { Languages } from 'lucide-react'
 import { useLanguage } from '../lib/i18n/LanguageContext.jsx'
 import { passoFromPath, pathFromPasso } from '../lib/routes.js'
 
@@ -11,20 +10,20 @@ const CORES = {
   vidroBorda: 'rgba(223, 183, 108, 0.22)',
 }
 
+const FLAGS = { pt: '🇵🇹', en: '🇬🇧', es: '🇪🇸', it: '🇮🇹', de: '🇩🇪' }
 const LABELS = { pt: 'PT', en: 'EN', es: 'ES', it: 'IT', de: 'DE' }
 const TITLES = {
-  pt: '🇵🇹 Português',
-  en: '🇬🇧 English',
-  es: '🇪🇸 Español',
-  it: '🇮🇹 Italiano',
-  de: '🇩🇪 Deutsch',
+  pt: 'Português',
+  en: 'English',
+  es: 'Español',
+  it: 'Italiano',
+  de: 'Deutsch',
 }
 const LANG_ORDER = ['pt', 'en', 'es', 'it', 'de']
 
 function SwitcherButtons({ lang, setLang, size = 'fixed' }) {
   const [open, setOpen] = useState(false)
   const compact = size === 'compact'
-  const inline = size === 'inline'
   const navigate = useNavigate()
   const location = useLocation()
 
@@ -37,33 +36,33 @@ function SwitcherButtons({ lang, setLang, size = 'fixed' }) {
     setOpen(false)
   }
 
-  const item = (code, title) => {
+  const item = (code) => {
     const active = lang === code
     return (
       <button
         type="button"
-        title={title}
+        title={TITLES[code]}
         onClick={() => changeLang(code)}
         style={{
           display: 'flex',
           alignItems: 'center',
-          justifyContent: 'space-between',
+          justifyContent: 'center',
+          gap: 4,
           width: '100%',
-          padding: '6px 8px',
-          borderRadius: 6,
+          padding: compact ? '4px 5px' : '5px 6px',
+          borderRadius: 5,
           border: `1px solid ${active ? CORES.dourado : CORES.vidroBorda}`,
           background: active ? 'rgba(223,183,108,0.18)' : 'rgba(255,255,255,0.04)',
           color: active ? CORES.dourado : CORES.brancoMuted,
-          fontSize: 11,
-          fontWeight: active ? 700 : 500,
+          fontSize: compact ? 9 : 10,
+          fontWeight: active ? 700 : 600,
           cursor: 'pointer',
           transition: 'all 0.2s ease',
           lineHeight: 1,
-          letterSpacing: '0.04em',
-          gap: 8,
+          letterSpacing: '0.03em',
         }}
       >
-        <span>{title}</span>
+        <span aria-hidden style={{ fontSize: compact ? 12 : 13, lineHeight: 1 }}>{FLAGS[code]}</span>
         <span>{LABELS[code]}</span>
       </button>
     )
@@ -71,66 +70,65 @@ function SwitcherButtons({ lang, setLang, size = 'fixed' }) {
 
   return (
     <div
-      className={undefined}
       style={{
         display: 'flex',
-        gap: compact ? 2 : 4,
-        padding: compact ? 2 : 3,
-        borderRadius: compact ? 6 : 8,
+        padding: compact ? 0 : 2,
+        borderRadius: compact ? 5 : 6,
         background: compact ? 'transparent' : 'rgba(11,7,30,0.94)',
         backdropFilter: compact ? 'none' : 'blur(8px)',
         WebkitBackdropFilter: compact ? 'none' : 'blur(8px)',
         border: compact ? 'none' : `1px solid ${CORES.vidroBorda}`,
-        boxShadow: compact ? 'none' : '0 2px 12px rgba(0,0,0,0.45)',
+        boxShadow: compact ? 'none' : '0 2px 10px rgba(0,0,0,0.4)',
         flexShrink: 0,
         position: 'relative',
       }}
     >
       <button
         type="button"
-        title="Change language"
+        title={TITLES[lang]}
         onClick={() => setOpen((v) => !v)}
         style={{
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          gap: compact ? 2 : 5,
-          padding: compact ? '2px 6px' : inline ? '3px 8px' : '3px 8px',
-          borderRadius: compact ? 4 : 6,
+          gap: 3,
+          padding: compact ? '2px 5px' : '3px 6px',
+          borderRadius: compact ? 4 : 5,
           border: `1px solid ${CORES.vidroBorda}`,
           background: 'rgba(255,255,255,0.04)',
           color: CORES.dourado,
-          fontSize: compact ? 8 : 10,
+          fontSize: compact ? 9 : 10,
           fontWeight: 700,
           cursor: 'pointer',
           lineHeight: 1,
-          letterSpacing: '0.04em',
-          minWidth: compact ? 42 : 52,
+          letterSpacing: '0.03em',
+          minWidth: compact ? 38 : 44,
         }}
       >
-        <Languages size={compact ? 12 : 13} />
-        {!compact && <span>{lang.toUpperCase()} ▾</span>}
+        <span aria-hidden style={{ fontSize: compact ? 12 : 14, lineHeight: 1 }}>{FLAGS[lang]}</span>
+        <span>{LABELS[lang]}</span>
+        <span style={{ fontSize: compact ? 7 : 8, opacity: 0.75 }}>▾</span>
       </button>
 
       {open && (
         <div
           style={{
             position: 'absolute',
-            top: compact ? 28 : 34,
+            top: compact ? 24 : 28,
             right: 0,
-            width: 140,
+            width: compact ? 58 : 64,
             display: 'flex',
             flexDirection: 'column',
-            gap: 5,
-            padding: 6,
-            borderRadius: 8,
+            gap: 3,
+            padding: 4,
+            borderRadius: 6,
             background: 'rgba(11,7,30,0.98)',
             border: `1px solid ${CORES.vidroBorda}`,
-            boxShadow: '0 10px 28px rgba(0,0,0,0.45)',
+            boxShadow: '0 8px 22px rgba(0,0,0,0.45)',
             zIndex: 180,
           }}
         >
-          {LANG_ORDER.map((code) => item(code, TITLES[code]))}
+          {LANG_ORDER.map((code) => item(code))}
         </div>
       )}
     </div>
