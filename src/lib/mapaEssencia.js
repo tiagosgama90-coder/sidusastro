@@ -4,6 +4,14 @@
  */
 import { planetaPorNome, getTemaCasa } from './casasPlacidus.js'
 import { translateSigno, translatePlaneta, translateAspecto } from './i18n/astro.js'
+import { contentForLang } from './i18n/langUtil.js'
+import { getMapaStatic } from './i18n/packs/mapaStatic.js'
+import {
+  SOL_ES, SOL_IT, SOL_DE, SOL_FR,
+  LUA_ES, LUA_IT, LUA_DE, LUA_FR,
+  ASC_ES, ASC_IT, ASC_DE, ASC_FR,
+} from './i18n/packs/mapaEssenciaLocales.js'
+import { glueBlocoCasa, glueBlocoGraus, glueBlocoAspectos, glueFaseLunar } from './i18n/packs/mapaEssenciaGlue.js'
 import { comporInterpretacaoPlaneta } from './lexicon/compositor.js'
 
 const ELEMENTO = {
@@ -22,17 +30,15 @@ const MODALIDADE = {
 const ELEMENTO_EN = { Fogo: 'Fire', Terra: 'Earth', Ar: 'Air', Água: 'Water' }
 
 function elemSigno(signo, lang) {
-  const e = ELEMENTO[normalizarSigno(signo)]
-  return lang !== 'pt' ? (ELEMENTO_EN[e] || e) : e
+  const chave = normalizarSigno(signo)
+  const { elemento } = getMapaStatic(lang)
+  return elemento[chave] || ELEMENTO[chave]
 }
 
 function modSigno(signo, lang) {
-  const m = MODALIDADE[normalizarSigno(signo)]
-  if (lang !== 'pt') {
-    const map = { Cardinal: 'cardinal', Fixo: 'fixed', Mutável: 'mutable' }
-    return map[m] || m
-  }
-  return m
+  const chave = normalizarSigno(signo)
+  const { modalidade } = getMapaStatic(lang)
+  return modalidade[chave] || MODALIDADE[chave]
 }
 
 const REGENTE_ASC = {
@@ -69,24 +75,12 @@ function blocoCasa(casa, lang, prefixo = '') {
   if (!casa) return ''
   const t = getTemaCasa(casa, lang)
   if (!t) return ''
-  if (lang !== 'pt') {
-    return `${prefixo}House ${casa} (${t.nome}) directs this energy toward ${t.foco}. Honouring this life sphere restores vitality; neglecting it drains the soul quietly.`
-  }
-  return `${prefixo}A ${casa}ª Casa (${t.nome}) orienta esta energia para ${t.foco}. Honrar esta esfera da vida devolve vitalidade; negligenciá-la esgota a alma em silêncio.`
+  return glueBlocoCasa(lang, casa, t, prefixo)
 }
 
 function blocoGraus(graus, signo, lang) {
   const g = parseFloat(graus) || 0
-  const s = sn(signo, lang)
-  const elem = elemSigno(signo, lang)
-  if (lang !== 'pt') {
-    if (g < 10) return ` At ${g.toFixed(1)}° (${s}, early decan), the ${elem} impulse is raw, instinctive and pioneering.`
-    if (g < 20) return ` At ${g.toFixed(1)}° (${s}, mid-decan), the ${elem} theme is fully embodied and tested in daily life.`
-    return ` At ${g.toFixed(1)}° (${s}, late decan), the ${elem} lesson matures toward wisdom and conscious release.`
-  }
-  if (g < 10) return ` A ${g.toFixed(1)}° (${s}, decanato inicial), o impulso de ${elem} é cru, instintivo e pioneiro.`
-  if (g < 20) return ` A ${g.toFixed(1)}° (${s}, decanato central), o tema de ${elem} está plenamente corporizado e testado no quotidiano.`
-  return ` A ${g.toFixed(1)}° (${s}, decanato final), a lição de ${elem} amadurece para sabedoria e desapego consciente.`
+  return glueBlocoGraus(lang, g, sn(signo, lang), elemSigno(signo, lang))
 }
 
 function blocoAspectos(planeta, aspetos, planetas, lang) {
@@ -102,55 +96,19 @@ function blocoAspectos(planeta, aspetos, planetas, lang) {
     const signoOut = sn(pOut?.signo?.nome, lang)
     const casaOut = pOut?.casa
     const outroTr = tp(outro, lang)
-    if (lang !== 'pt') {
-      return `${asp} ${outroTr} in ${signoOut}${casaOut ? ` (H${casaOut})` : ''} orb ${a.orbe}`
+    const orbeLbl = lang === 'pt' ? 'orbe' : 'orb'
+    if (lang === 'pt') {
+      return `${asp} ${outro} em ${signoOut}${casaOut ? ` (C${casaOut})` : ''} ${orbeLbl} ${a.orbe}`
     }
-    return `${asp} ${outro} em ${signoOut}${casaOut ? ` (C${casaOut})` : ''} orbe ${a.orbe}`
+    return `${asp} ${outroTr} in ${signoOut}${casaOut ? ` (H${casaOut})` : ''} ${orbeLbl} ${a.orbe}`
   })
-  if (lang !== 'pt') return ` Chart aspects colouring this placement: ${partes.join('; ')}.`
-  return ` Aspectos do mapa que colorem esta posição: ${partes.join('; ')}.`
+  return glueBlocoAspectos(lang, partes)
 }
 
 function faseLunar(lonSol, lonLua, lang) {
   if (lonSol == null || lonLua == null) return ''
   const diff = ((Number(lonLua) - Number(lonSol)) % 360 + 360) % 360
-  let fasePt, faseEn, textoPt, textoEn
-  if (diff < 45) {
-    fasePt = 'Lua Nova'; faseEn = 'New Moon'
-    textoPt = 'Sol e Lua na mesma fase - identidade e emoção nascem juntas; cada ciclo pessoal começa com intensidade interior antes de se mostrar ao mundo.'
-    textoEn = 'Sun and Moon in the same phase - identity and emotion are born together; each personal cycle begins with inner intensity before showing the world.'
-  } else if (diff < 90) {
-    fasePt = 'Lua Crescente'; faseEn = 'Waxing Crescent'
-    textoPt = 'Fase crescente - constróis emoção e identidade em simultâneo; há entusiasmo para crescer, mas ainda precisas de proteger o broto até ganhar raízes.'
-    textoEn = 'Waxing phase - you build emotion and identity together; enthusiasm to grow, yet the sprout still needs protection until rooted.'
-  } else if (diff < 135) {
-    fasePt = 'Quarto Crescente'; faseEn = 'First Quarter'
-    textoPt = 'Quarto crescente - tensão criativa entre vontade consciente e necessidades emocionais; os obstáculos que surgem são treino de carácter.'
-    textoEn = 'First quarter - creative tension between conscious will and emotional needs; obstacles that arise are character training.'
-  } else if (diff < 180) {
-    fasePt = 'Lua Gibosa Crescente'; faseEn = 'Waxing Gibbous'
-    textoPt = 'Gibosa crescente - refinamento antes da plenitude; aperfeiçoas o que nasceu, ajustando ego e coração antes da revelação pública.'
-    textoEn = 'Waxing gibbous - refinement before fullness; you polish what was born, adjusting ego and heart before public revelation.'
-  } else if (diff < 225) {
-    fasePt = 'Lua Cheia'; faseEn = 'Full Moon'
-    textoPt = 'Lua Cheia natal - Sol e Lua em polaridade máxima; vives com consciência ampliada das tuas dualidades internas. Relacionamentos e espelhos externos são centrais na tua biografia emocional.'
-    textoEn = 'Natal Full Moon - Sun and Moon at maximum polarity; you live with heightened awareness of inner dualities. Relationships and external mirrors are central to your emotional biography.'
-  } else if (diff < 270) {
-    fasePt = 'Lua Gibosa Minguante'; faseEn = 'Waning Gibbous'
-    textoPt = 'Gibosa minguante - partilhas sabedoria emocional; ensinas o que aprendeste sentindo, mesmo quando o mundo ainda não pediu.'
-    textoEn = 'Waning gibbous - you share emotional wisdom; teaching what feeling taught you, even when the world has not yet asked.'
-  } else if (diff < 315) {
-    fasePt = 'Quarto Minguante'; faseEn = 'Last Quarter'
-    textoPt = 'Quarto minguante - libertas padrões emocionais obsoletos; crises periódicas limpam identidade para renascer mais leve.'
-    textoEn = 'Last quarter - you release obsolete emotional patterns; periodic crises cleanse identity to reborn lighter.'
-  } else {
-    fasePt = 'Lua Minguante'; faseEn = 'Waning Crescent'
-    textoPt = 'Lua minguante - alma introspectiva que processa em silêncio; retiros emocionais não são fuga - são manutenção da tua psique.'
-    textoEn = 'Waning crescent - introspective soul processing in silence; emotional retreats are not escape - they maintain your psyche.'
-  }
-  return lang !== 'pt'
-    ? ` Natal lunar phase: ${faseEn}. ${textoEn}`
-    : ` Fase lunar natal: ${fasePt}. ${textoPt}`
+  return glueFaseLunar(lang, diff)
 }
 
 const SOL_PT = {
@@ -244,13 +202,17 @@ const ASC_EN = {
   Pisces: 'Pisces Ascendant - soft aura, dreamy gaze, visible empathy. You seem artistic or spiritual. Integration keeps boundaries without losing compassion.',
 }
 
-function textoEssencia(mapaPt, mapaEn, signo, lang) {
+function textoEssencia(mapaPt, mapaEn, mapaLoc, signo, lang) {
   const chave = normalizarSigno(signo)
-  if (lang !== 'pt') {
-    return mapaEn[sn(chave, 'en')] || ''
-  }
-  return mapaPt[chave] || ''
+  if (lang === 'en') return mapaEn[sn(chave, 'en')] || ''
+  if (lang === 'pt') return mapaPt[chave] || ''
+  const loc = contentForLang(lang, mapaLoc)
+  return loc?.[chave] || mapaEn[sn(chave, 'en')] || mapaPt[chave] || ''
 }
+
+const SOL_LOC = { es: SOL_ES, it: SOL_IT, de: SOL_DE, fr: SOL_FR }
+const LUA_LOC = { es: LUA_ES, it: LUA_IT, de: LUA_DE, fr: LUA_FR }
+const ASC_LOC = { es: ASC_ES, it: ASC_IT, de: ASC_DE, fr: ASC_FR }
 
 function blocoRegenteAsc(asc, planetas, lang) {
   const chave = normalizarSigno(asc)
@@ -259,27 +221,36 @@ function blocoRegenteAsc(asc, planetas, lang) {
   const p = planetaPorNome(planetas, reg)
   const regLabel = tp(reg, lang)
   if (!p) {
-    return lang !== 'pt'
-      ? ` Chart ruler: ${regLabel} (classic ruler of ${sn(asc, lang)}). Study this planet in your full chart for life direction.`
-      : ` Regente do mapa: ${reg} (regente clássico de ${sn(asc, lang)}). Estuda este planeta no mapa completo para orientação de vida.`
+    return contentForLang(lang, {
+      pt: ` Regente do mapa: ${reg} (regente clássico de ${sn(asc, lang)}). Estuda este planeta no mapa completo para orientação de vida.`,
+      en: ` Chart ruler: ${regLabel} (classic ruler of ${sn(asc, lang)}). Study this planet in your full chart for life direction.`,
+      es: ` Regente del mapa: ${regLabel} (regente clásico de ${sn(asc, lang)}). Estudia este planeta en la carta completa para orientación de vida.`,
+      it: ` Reggente della carta: ${regLabel} (reggente classico di ${sn(asc, lang)}). Studia questo pianeta nella carta completa per orientamento di vita.`,
+      de: ` Herrscher des Horoskops: ${regLabel} (klassischer Herrscher von ${sn(asc, lang)}). Studiere diesen Planeten im vollen Horoskop für Lebensrichtung.`,
+      fr: ` Maître de la carte : ${regLabel} (maître classique de ${sn(asc, lang)}). Étudie cette planète dans la carte complète pour l'orientation de vie.`,
+    })
   }
-  if (lang !== 'pt') {
-    return ` Chart ruler ${regLabel} in ${sn(p.signo?.nome, lang)}${p.casa ? `, House ${p.casa}` : ''} steers your life path - where ${regLabel} goes, your Ascendant story unfolds.`
-  }
-  return ` Regente do mapa ${reg} em ${sn(p.signo?.nome, lang)}${p.casa ? `, Casa ${p.casa}` : ''} orienta o teu caminho de vida - onde ${reg} vai, a história do Ascendente desenrola-se.`
+  return contentForLang(lang, {
+    pt: ` Regente do mapa ${reg} em ${sn(p.signo?.nome, lang)}${p.casa ? `, Casa ${p.casa}` : ''} orienta o teu caminho de vida - onde ${reg} vai, a história do Ascendente desenrola-se.`,
+    en: ` Chart ruler ${regLabel} in ${sn(p.signo?.nome, lang)}${p.casa ? `, House ${p.casa}` : ''} steers your life path - where ${regLabel} goes, your Ascendant story unfolds.`,
+    es: ` Regente del mapa ${regLabel} en ${sn(p.signo?.nome, lang)}${p.casa ? `, Casa ${p.casa}` : ''} orienta tu camino de vida: donde va ${regLabel}, se despliega la historia del Ascendente.`,
+    it: ` Reggente della carta ${regLabel} in ${sn(p.signo?.nome, lang)}${p.casa ? `, Casa ${p.casa}` : ''} orienta il tuo cammino di vita: dove va ${regLabel}, si dispiega la storia dell'Ascendente.`,
+    de: ` Herrscher ${regLabel} in ${sn(p.signo?.nome, lang)}${p.casa ? `, Haus ${p.casa}` : ''} lenkt deinen Lebensweg – wohin ${regLabel} geht, entfaltet sich die Aszendent-Geschichte.`,
+    fr: ` Maître ${regLabel} en ${sn(p.signo?.nome, lang)}${p.casa ? `, Maison ${p.casa}` : ''} oriente ton chemin de vie : où va ${regLabel}, l'histoire de l'Ascendant se déploie.`,
+  })
 }
 
 export function interpretarSolEssencia(pSol, mapaNatal, aspetos, planetas, lang = 'pt') {
   if (!pSol) return ''
   const signo = pSol.signo?.nome
-  const rico = textoEssencia(SOL_PT, SOL_EN, signo, lang)
+  const rico = textoEssencia(SOL_PT, SOL_EN, SOL_LOC, signo, lang)
   return comporInterpretacaoPlaneta('Sol', pSol, aspetos, planetas, lang, rico)
 }
 
 export function interpretarLuaEssencia(pLua, mapaNatal, aspetos, planetas, lang = 'pt') {
   if (!pLua) return ''
   const signo = pLua.signo?.nome
-  let rico = textoEssencia(LUA_PT, LUA_EN, signo, lang)
+  let rico = textoEssencia(LUA_PT, LUA_EN, LUA_LOC, signo, lang)
   const pSol = planetaPorNome(planetas, 'Sol')
   rico += faseLunar(pSol?.longitude, pLua.longitude, lang)
   return comporInterpretacaoPlaneta('Lua', pLua, aspetos, planetas, lang, rico)
@@ -287,17 +258,27 @@ export function interpretarLuaEssencia(pLua, mapaNatal, aspetos, planetas, lang 
 
 export function interpretarAscEssencia(asc, mapaNatal, aspetos, planetas, lang = 'pt') {
   if (!asc) return ''
-  let rico = textoEssencia(ASC_PT, ASC_EN, asc, lang)
+  let rico = textoEssencia(ASC_PT, ASC_EN, ASC_LOC, asc, lang)
   rico += blocoRegenteAsc(asc, planetas, lang)
   const mc = mapaNatal?.mc?.nome
   if (mc) {
-    rico += lang !== 'pt'
-      ? ` The Ascendant–MC axis: your public path (MC in ${sn(mc, lang)}) filters how your ${sn(asc, lang)} persona serves vocation.`
-      : ` Eixo Ascendente–MC: o caminho público (MC em ${sn(mc, lang)}) filtra como a máscara ${sn(asc, lang)} serve a vocação.`
+    rico += contentForLang(lang, {
+      pt: ` Eixo Ascendente–MC: o caminho público (MC em ${sn(mc, lang)}) filtra como a máscara ${sn(asc, lang)} serve a vocação.`,
+      en: ` The Ascendant–MC axis: your public path (MC in ${sn(mc, lang)}) filters how your ${sn(asc, lang)} persona serves vocation.`,
+      es: ` Eje Ascendente–MC: el camino público (MC en ${sn(mc, lang)}) filtra cómo la máscara ${sn(asc, lang)} sirve a la vocación.`,
+      it: ` Asse Ascendente–MC: il cammino pubblico (MC in ${sn(mc, lang)}) filtra come la maschera ${sn(asc, lang)} serve la vocazione.`,
+      de: ` Aszendent–MC-Achse: dein öffentlicher Weg (MC in ${sn(mc, lang)}) filtert, wie deine ${sn(asc, lang)}-Persona der Berufung dient.`,
+      fr: ` Axe Ascendant–MC : ton chemin public (MC en ${sn(mc, lang)}) filtre comment ton persona ${sn(asc, lang)} sert la vocation.`,
+    })
   }
-  const casaTxt = lang !== 'pt'
-    ? ' The 1st House is your threshold: how you enter rooms, how your body speaks before words, and the instinctive mask you wear when the world first meets you.'
-    : ' A 1.ª Casa é o teu limiar: a forma como entras nas salas, como o corpo fala antes das palavras e a máscara instintiva que usas quando o mundo te encontra pela primeira vez.'
+  const casaTxt = contentForLang(lang, {
+    pt: ' A 1.ª Casa é o teu limiar: a forma como entras nas salas, como o corpo fala antes das palavras e a máscara instintiva que usas quando o mundo te encontra pela primeira vez.',
+    en: ' The 1st House is your threshold: how you enter rooms, how your body speaks before words, and the instinctive mask you wear when the world first meets you.',
+    es: ' La 1.ª Casa es tu umbral: cómo entras en las salas, cómo el cuerpo habla antes que las palabras y la máscara instintiva cuando el mundo te encuentra por primera vez.',
+    it: ' La 1ª Casa è la tua soglia: come entri nelle stanze, come il corpo parla prima delle parole e la maschera istintiva quando il mondo ti incontra per la prima volta.',
+    de: ' Das 1. Haus ist deine Schwelle: wie du Räume betrittst, wie der Körper vor Worten spricht und die instinktive Maske, wenn die Welt dich zum ersten Mal trifft.',
+    fr: ' La 1re Maison est ton seuil : comment tu entres dans les pièces, comment le corps parle avant les mots et le masque instinctif quand le monde te rencontre pour la première fois.',
+  })
   return `${rico}\n\n${casaTxt}`
 }
 
@@ -306,9 +287,14 @@ export function interpretarBig3Essencia(mapaNatal, planetas, aspetos, lang = 'pt
   const lua = mapaNatal?.lunar?.nome
   const asc = mapaNatal?.ascendente?.nome
   if (!sol || !lua || !asc) {
-    return lang !== 'pt'
-      ? 'The Sun–Moon–Ascendant triangle is the master key of your chart. When all three are known, astrological maturity begins with honouring each pole without silencing the others.'
-      : 'O triângulo Sol–Lua–Ascendente é a chave-mestra do teu mapa. Quando os três são conhecidos, a maturidade astrológica começa por honrar cada polo sem silenciar os outros.'
+    return contentForLang(lang, {
+      pt: 'O triângulo Sol–Lua–Ascendente é a chave-mestra do teu mapa. Quando os três são conhecidos, a maturidade astrológica começa por honrar cada polo sem silenciar os outros.',
+      en: 'The Sun–Moon–Ascendant triangle is the master key of your chart. When all three are known, astrological maturity begins with honouring each pole without silencing the others.',
+      es: 'El triángulo Sol–Luna–Ascendente es la clave maestra de tu carta. Cuando los tres son conocidos, la madurez astrológica comienza honrando cada polo sin silenciar los otros.',
+      it: 'Il triangolo Sole–Luna–Ascendente è la chiave maestra della tua carta. Quando i tre sono noti, la maturità astrologica inizia onorando ogni polo senza silenziare gli altri.',
+      de: 'Das Sonne–Mond–Aszendent-Dreieck ist der Hauptschlüssel deines Horoskops. Wenn alle drei bekannt sind, beginnt astrologische Reife damit, jeden Pol zu ehren, ohne die anderen zu verstummen.',
+      fr: 'Le triangle Soleil–Lune–Ascendant est la clé maîtresse de ta carte. Quand les trois sont connus, la maturité astrologique commence par honorer chaque pôle sans en faire taire d\'autres.',
+    })
   }
 
   const eSol = ELEMENTO[normalizarSigno(sol)]
@@ -322,37 +308,61 @@ export function interpretarBig3Essencia(mapaNatal, planetas, aspetos, lang = 'pt
   const eAscL = elemSigno(asc, lang)
   const mSolL = modSigno(sol, lang)
   const mLuaL = modSigno(lua, lang)
+  const mAscL = modSigno(asc, lang)
 
   const partes = []
-  if (lang !== 'pt') {
-    partes.push(`Your psychic signature: Sun in ${ss} (${eSolL}/${mSolL}), Moon in ${sl} (${eLuaL}/${mLuaL}), Ascendant in ${sa} (${eAscL}/${modSigno(asc, lang)}). This combination is statistically rare in its exact form - no generic horoscope captures it.`)
-  } else {
-    partes.push(`A tua assinatura psíquica: Sol em ${ss} (${eSol}/${mSol}), Lua em ${sl} (${eLua}/${mLua}), Ascendente em ${sa} (${eAsc}). Esta combinação é estatisticamente rara na sua forma exacta - nenhum horóscopo genérico a captura.`)
-  }
+  partes.push(contentForLang(lang, {
+    pt: `A tua assinatura psíquica: Sol em ${ss} (${eSolL}/${mSolL}), Lua em ${sl} (${eLuaL}/${mLuaL}), Ascendente em ${sa} (${eAscL}/${mAscL}). Esta combinação é estatisticamente rara na sua forma exacta - nenhum horóscopo genérico a captura.`,
+    en: `Your psychic signature: Sun in ${ss} (${eSolL}/${mSolL}), Moon in ${sl} (${eLuaL}/${mLuaL}), Ascendant in ${sa} (${eAscL}/${mAscL}). This combination is statistically rare in its exact form - no generic horoscope captures it.`,
+    es: `Tu firma psíquica: Sol en ${ss} (${eSolL}/${mSolL}), Luna en ${sl} (${eLuaL}/${mLuaL}), Ascendente en ${sa} (${eAscL}/${mAscL}). Esta combinación es estadísticamente rara en su forma exacta: ningún horóscopo genérico la captura.`,
+    it: `La tua firma psichica: Sole in ${ss} (${eSolL}/${mSolL}), Luna in ${sl} (${eLuaL}/${mLuaL}), Ascendente in ${sa} (${eAscL}/${mAscL}). Questa combinazione è statisticamente rara nella sua forma esatta: nessun oroscopo generico la cattura.`,
+    de: `Deine psychische Signatur: Sonne in ${ss} (${eSolL}/${mSolL}), Mond in ${sl} (${eLuaL}/${mLuaL}), Aszendent in ${sa} (${eAscL}/${mAscL}). Diese Kombination ist in exakter Form statistisch selten – kein generisches Horoskop erfasst sie.`,
+    fr: `Ta signature psychique : Soleil en ${ss} (${eSolL}/${mSolL}), Lune en ${sl} (${eLuaL}/${mLuaL}), Ascendant en ${sa} (${eAscL}/${mAscL}). Cette combinaison est statistiquement rare dans sa forme exacte – aucun horoscope générique ne la capture.`,
+  }))
 
   if (eSol === eLua && eLua === eAsc) {
-    partes.push(lang !== 'pt'
-      ? `Triple ${eSolL} emphasis: identity, emotion and persona speak one elemental language - powerful coherence, but watch for blind spots in other elements.`
-      : `Ênfase tripla em ${eSol}: identidade, emoção e persona falam uma linguagem elemental - coerência poderosa, mas cuidado com pontos cegos nos outros elementos.`)
+    partes.push(contentForLang(lang, {
+      pt: `Ênfase tripla em ${eSolL}: identidade, emoção e persona falam uma linguagem elemental - coerência poderosa, mas cuidado com pontos cegos nos outros elementos.`,
+      en: `Triple ${eSolL} emphasis: identity, emotion and persona speak one elemental language - powerful coherence, but watch for blind spots in other elements.`,
+      es: `Énfasis triple en ${eSolL}: identidad, emoción y persona hablan un lenguaje elemental: coherencia poderosa, pero cuidado con puntos ciegos en otros elementos.`,
+      it: `Enfasi tripla su ${eSolL}: identità, emozione e persona parlano una lingua elementale: coerenza potente, ma attenzione ai punti ciechi negli altri elementi.`,
+      de: `Dreifache ${eSolL}-Betonung: Identität, Emotion und Persona sprechen eine elementare Sprache – mächtige Kohärenz, aber Vorsicht vor blinden Flecken in anderen Elementen.`,
+      fr: `Triple emphase ${eSolL} : identité, émotion et persona parlent une langue élémentaire – cohérence puissante, mais attention aux angles morts dans les autres éléments.`,
+    }))
   } else if (eSol !== eLua) {
     const tensao = (eSol === 'Fogo' && eLua === 'Água') || (eSol === 'Água' && eLua === 'Fogo')
-      ? (lang !== 'pt' ? 'fire vs water - action vs feeling' : 'fogo vs água - acção vs sentimento')
+      ? contentForLang(lang, { pt: 'fogo vs água - acção vs sentimento', en: 'fire vs water - action vs feeling', es: 'fuego vs agua - acción vs sentimiento', it: 'fuoco vs acqua - azione vs sentimento', de: 'Feuer vs Wasser - Handeln vs Fühlen', fr: 'feu vs eau - action vs sentiment' })
       : (eSol === 'Ar' && eLua === 'Terra') || (eSol === 'Terra' && eLua === 'Ar')
-        ? (lang !== 'pt' ? 'air vs earth - ideas vs practicality' : 'ar vs terra - ideias vs concretude')
-        : (lang !== 'pt' ? 'different elemental rhythms' : 'ritmos elementais distintos')
-    partes.push(lang !== 'pt'
-      ? `Sun–Moon tension (${tensao}): inner dialogue between who you want to be and what you need to feel safe. Integration is your life masterpiece.`
-      : `Tensão Sol–Lua (${tensao}): diálogo interno entre quem queres ser e o que precisas para te sentires seguro/a. A integração é a tua obra-prima de vida.`)
+        ? contentForLang(lang, { pt: 'ar vs terra - ideias vs concretude', en: 'air vs earth - ideas vs practicality', es: 'aire vs tierra - ideas vs concreción', it: 'aria vs terra - idee vs concretezza', de: 'Luft vs Erde - Ideen vs Konkretion', fr: 'air vs terre - idées vs concrétion' })
+        : contentForLang(lang, { pt: 'ritmos elementais distintos', en: 'different elemental rhythms', es: 'ritmos elementales distintos', it: 'ritmi elementali distinti', de: 'verschiedene Elementrhythmen', fr: 'rythmes élémentaires distincts' })
+    partes.push(contentForLang(lang, {
+      pt: `Tensão Sol–Lua (${tensao}): diálogo interno entre quem queres ser e o que precisas para te sentires seguro/a. A integração é a tua obra-prima de vida.`,
+      en: `Sun–Moon tension (${tensao}): inner dialogue between who you want to be and what you need to feel safe. Integration is your life masterpiece.`,
+      es: `Tensión Sol–Luna (${tensao}): diálogo interno entre quien quieres ser y lo que necesitas para sentirte seguro/a. La integración es tu obra maestra de vida.`,
+      it: `Tensione Sole–Luna (${tensao}): dialogo interno tra chi vuoi essere e ciò che ti serve per sentirti al sicuro. L'integrazione è il tuo capolavoro di vita.`,
+      de: `Sonne–Mond-Spannung (${tensao}): innerer Dialog zwischen dem, wer du sein willst, und dem, was du brauchst, um dich sicher zu fühlen. Integration ist dein Lebensmeisterwerk.`,
+      fr: `Tension Soleil–Lune (${tensao}) : dialogue intérieur entre qui tu veux être et ce dont tu as besoin pour te sentir en sécurité. L'intégration est ton chef-d'œuvre de vie.`,
+    }))
   } else {
-    partes.push(lang !== 'pt'
-      ? `Sun and Moon share element (${eSolL}): emotional and conscious selves align - authenticity flows more easily.`
-      : `Sol e Lua partilham elemento (${eSol}): eu consciente e emocional alinham-se - a autenticidade flui com mais facilidade.`)
+    partes.push(contentForLang(lang, {
+      pt: `Sol e Lua partilham elemento (${eSolL}): eu consciente e emocional alinham-se - a autenticidade flui com mais facilidade.`,
+      en: `Sun and Moon share element (${eSolL}): emotional and conscious selves align - authenticity flows more easily.`,
+      es: `Sol y Luna comparten elemento (${eSolL}): yo consciente y emocional se alinean: la autenticidad fluye con más facilidad.`,
+      it: `Sole e Luna condividono elemento (${eSolL}): sé conscio ed emotivo si allineano: l'autenticità fluisce più facilmente.`,
+      de: `Sonne und Mond teilen Element (${eSolL}): bewusstes und emotionales Selbst richten sich aus – Authentizität fließt leichter.`,
+      fr: `Soleil et Lune partagent l'élément (${eSolL}) : moi conscient et émotionnel s'alignent – l'authenticité coule plus facilement.`,
+    }))
   }
 
   if (eAsc !== eSol) {
-    partes.push(lang !== 'pt'
-      ? `Ascendant (${eAscL}) filters how the world reads your Sun (${eSolL}): you are often perceived differently from your inner core - use this as strategic depth, not contradiction.`
-      : `Ascendente (${eAsc}) filtra como o mundo lê o teu Sol (${eSol}): és frequentemente percebido/a de forma diferente do núcleo íntimo - usa isto como profundidade estratégica, não contradição.`)
+    partes.push(contentForLang(lang, {
+      pt: `Ascendente (${eAscL}) filtra como o mundo lê o teu Sol (${eSolL}): és frequentemente percebido/a de forma diferente do núcleo íntimo - usa isto como profundidade estratégica, não contradição.`,
+      en: `Ascendant (${eAscL}) filters how the world reads your Sun (${eSolL}): you are often perceived differently from your inner core - use this as strategic depth, not contradiction.`,
+      es: `Ascendente (${eAscL}) filtra cómo el mundo lee tu Sol (${eSolL}): a menudo eres percibido/a de forma distinta al núcleo íntimo: úsalo como profundidad estratégica, no contradicción.`,
+      it: `Ascendente (${eAscL}) filtra come il mondo legge il tuo Sole (${eSolL}): spesso sei percepito/a diversamente dal nucleo intimo: usalo come profondità strategica, non contraddizione.`,
+      de: `Aszendent (${eAscL}) filtert, wie die Welt deine Sonne (${eSolL}) liest: du wirst oft anders wahrgenommen als dein innerer Kern – nutze das als strategische Tiefe, nicht Widerspruch.`,
+      fr: `Ascendant (${eAscL}) filtre comment le monde lit ton Soleil (${eSolL}) : tu es souvent perçu(e) différemment du noyau intime – utilise cela comme profondeur stratégique, pas contradiction.`,
+    }))
   }
 
   const solLuaAsp = (aspetos || []).find((a) => {
@@ -362,23 +372,39 @@ export function interpretarBig3Essencia(mapaNatal, planetas, aspetos, lang = 'pt
   })
   if (solLuaAsp) {
     const aspLabel = translateAspecto(solLuaAsp.aspecto, lang).toLowerCase()
-    partes.push(lang !== 'pt'
-      ? `Direct Sun–Moon aspect (${aspLabel}): your identity and emotional body are wired together - what you feel shapes who you are immediately.`
-      : `Aspecto directo Sol–Lua (${aspLabel}): identidade e corpo emocional estão ligados - o que sentes molda quem és imediatamente.`)
+    partes.push(contentForLang(lang, {
+      pt: `Aspecto directo Sol–Lua (${aspLabel}): identidade e corpo emocional estão ligados - o que sentes molda quem és imediatamente.`,
+      en: `Direct Sun–Moon aspect (${aspLabel}): your identity and emotional body are wired together - what you feel shapes who you are immediately.`,
+      es: `Aspecto directo Sol–Luna (${aspLabel}): identidad y cuerpo emocional están ligados: lo que sientes moldea quién eres inmediatamente.`,
+      it: `Aspetto diretto Sole–Luna (${aspLabel}): identità e corpo emotivo sono collegati: ciò che senti modella subito chi sei.`,
+      de: `Direkter Sonne–Mond-Aspekt (${aspLabel}): Identität und emotioneller Körper sind verbunden – was du fühlst, formt sofort, wer du bist.`,
+      fr: `Aspect direct Soleil–Lune (${aspLabel}) : identité et corps émotionnel sont liés – ce que tu ressens façonne immédiatement qui tu es.`,
+    }))
   }
 
   if (mSol !== mLua) {
-    partes.push(lang !== 'pt'
-      ? `Modal rhythm: Sun ${mSolL}, Moon ${mLuaL} - learn when to initiate, sustain or adapt; your inner calendar has two tempos.`
-      : `Ritmo modal: Sol ${mSol}, Lua ${mLua} - aprende quando iniciar, sustentar ou adaptar; o teu calendário interior tem dois tempos.`)
+    partes.push(contentForLang(lang, {
+      pt: `Ritmo modal: Sol ${mSolL}, Lua ${mLuaL} - aprende quando iniciar, sustentar ou adaptar; o teu calendário interior tem dois tempos.`,
+      en: `Modal rhythm: Sun ${mSolL}, Moon ${mLuaL} - learn when to initiate, sustain or adapt; your inner calendar has two tempos.`,
+      es: `Ritmo modal: Sol ${mSolL}, Luna ${mLuaL}: aprende cuándo iniciar, sostener o adaptar; tu calendario interior tiene dos tempos.`,
+      it: `Ritmo modale: Sole ${mSolL}, Luna ${mLuaL}: impara quando iniziare, sostenere o adattarti; il tuo calendario interiore ha due tempi.`,
+      de: `Modaler Rhythmus: Sonne ${mSolL}, Mond ${mLuaL} – lerne, wann initiieren, halten oder anpassen; dein innerer Kalender hat zwei Tempos.`,
+      fr: `Rythme modal : Soleil ${mSolL}, Lune ${mLuaL} – apprends quand initier, soutenir ou t'adapter ; ton calendrier intérieur a deux tempos.`,
+    }))
   }
 
   const reg = REGENTE_ASC[normalizarSigno(asc)]
   const pReg = planetaPorNome(planetas, reg)
   if (pReg) {
-    partes.push(lang !== 'pt'
-      ? `Life steering planet: ${tp(reg, lang)} in ${sn(pReg.signo?.nome, lang)} (House ${pReg.casa || '-'}) - follow this planet's themes to unlock your chart's full narrative.`
-      : `Planeta-guia da vida: ${reg} em ${sn(pReg.signo?.nome, lang)} (Casa ${pReg.casa || '-'}) - segue os temas deste planeta para desbloquear a narrativa completa do mapa.`)
+    const casaLbl = lang === 'pt' ? `Casa ${pReg.casa || '-'}` : `House ${pReg.casa || '-'}`
+    partes.push(contentForLang(lang, {
+      pt: `Planeta-guia da vida: ${reg} em ${sn(pReg.signo?.nome, lang)} (${casaLbl}) - segue os temas deste planeta para desbloquear a narrativa completa do mapa.`,
+      en: `Life steering planet: ${tp(reg, lang)} in ${sn(pReg.signo?.nome, lang)} (${casaLbl}) - follow this planet's themes to unlock your chart's full narrative.`,
+      es: `Planeta guía de la vida: ${tp(reg, lang)} en ${sn(pReg.signo?.nome, lang)} (${casaLbl}) - sigue los temas de este planeta para desbloquear la narrativa completa de la carta.`,
+      it: `Pianeta guida della vita: ${tp(reg, lang)} in ${sn(pReg.signo?.nome, lang)} (${casaLbl}) - segui i temi di questo pianeta per sbloccare la narrativa completa della carta.`,
+      de: `Lebenslenkplanet: ${tp(reg, lang)} in ${sn(pReg.signo?.nome, lang)} (${casaLbl}) – folge den Themen dieses Planeten, um die volle Horoskop-Erzählung zu entfalten.`,
+      fr: `Planète guide de vie : ${tp(reg, lang)} en ${sn(pReg.signo?.nome, lang)} (${casaLbl}) – suis les thèmes de cette planète pour débloquer le récit complet de la carte.`,
+    }))
   }
 
   return partes.join(' ')
@@ -399,16 +425,47 @@ const ESSENCIA_PLANETA = {
     Jupiter: 'Jupiter expands - faith, meaning, opportunity and growth. It shows where life invites you to trust, dare and see further than fear allows.',
     Saturn: 'Saturn is the strict and loving teacher - limits, time, responsibility and maturity. It marks where you build a throne through effort or where fear paralyses you until you learn.',
   },
+  es: {
+    Mercurio: 'Mercurio gobierna la mente concreta, el habla, la escritura y cómo procesas información. Es el mensajero de la carta: traduce el cielo en palabras que la vida comprende.',
+    Venus: 'Venus describe lo que amas, valoras y cómo atraes y eres atraído/a. Es la gravedad del placer, la belleza y el vínculo afectivo en tu carta.',
+    Marte: 'Marte es el guerrero interior: deseo, coraje, ira e impulso de actuar. Muestra dónde luchas, conquistas y debes canalizar el fuego sin quemarte.',
+    Júpiter: 'Júpiter expande: fe, sentido, oportunidad y crecimiento. Indica dónde la vida te invita a confiar, arriesgar y ver más allá del miedo.',
+    Saturno: 'Saturno es el maestro severo y amoroso: límites, tiempo, responsabilidad y madurez. Marca dónde construyes trono con esfuerzo o dónde el miedo te paraliza hasta aprender.',
+  },
+  it: {
+    Mercurio: 'Mercurio governa la mente concreta, il parlare, la scrittura e come elabori informazioni. È il messaggero della carta: traduce il cielo in parole che la vita comprende.',
+    Venere: 'Venere descrive ciò che ami, valorizzi e come attrai e sei attratto/a. È la gravità del piacere, della bellezza e del legame affettivo nella tua carta.',
+    Marte: 'Marte è il guerriero interiore: desiderio, coraggio, rabbia e impulso ad agire. Mostra dove combatti, conquisti e devi canalizzare il fuoco senza bruciarti.',
+    Giove: 'Giove espande: fede, senso, opportunità e crescita. Indica dove la vita ti invita a fidarti, osare e vedere oltre la paura.',
+    Saturno: 'Saturno è il maestro severo e amorevole: limiti, tempo, responsabilità e maturità. Segna dove costruisci trono con sforzo o dove la paura ti paralizza finché impari.',
+  },
+  de: {
+    Merkur: 'Merkur regiert den konkreten Geist, Sprache, Schreiben und wie du Information verarbeitest. Er ist der Bote des Horoskops – übersetzt den Himmel in Worte, die das Leben versteht.',
+    Venus: 'Venus beschreibt, was du liebst, schätzt und wie du anziehst und angezogen wirst. Sie ist die Schwerkraft von Freude, Schönheit und emotionaler Bindung in deinem Horoskop.',
+    Mars: 'Mars ist der innere Krieger – Wunsch, Mut, Wut und Handlungsdrang. Er zeigt, wo du kämpfst, siegst und Feuer kanalisieren musst, ohne auszubrennen.',
+    Jupiter: 'Jupiter expandiert – Glaube, Sinn, Chance und Wachstum. Er zeigt, wo das Leben dich einlädt zu vertrauen, zu wagen und weiter zu sehen als die Angst erlaubt.',
+    Saturn: 'Saturn ist der strenge und liebende Lehrer – Grenzen, Zeit, Verantwortung und Reife. Er markiert, wo du durch Mühe einen Thron baust oder wo Angst dich lähmt, bis du lernst.',
+  },
+  fr: {
+    Mercure: 'Mercure gouverne l\'esprit concret, la parole, l\'écriture et comment tu traites l\'information. C\'est le messager de la carte – il traduit le ciel en mots que la vie comprend.',
+    Vénus: 'Vénus décrit ce que tu aimes, valorises et comment tu attires et es attiré(e). C\'est la gravité du plaisir, de la beauté et du lien affectif dans ta carte.',
+    Mars: 'Mars est le guerrier intérieur – désir, courage, colère et élan d\'agir. Il montre où tu combats, conquiers et dois canaliser le feu sans te brûler.',
+    Jupiter: 'Jupiter expande – foi, sens, opportunité et croissance. Il indique où la vie t\'invite à faire confiance, oser et voir plus loin que la peur.',
+    Saturne: 'Saturne est le maître strict et aimant – limites, temps, responsabilité et maturité. Il marque où tu construis un trône par l\'effort ou où la peur te paralyse jusqu\'à apprendre.',
+  },
 }
 
 function introPlaneta(nome, lang) {
-  const mapPt = ESSENCIA_PLANETA.pt
-  if (lang !== 'pt') {
-    const enNome = tp(nome, lang)
-    const mapEn = ESSENCIA_PLANETA.en
-    return mapEn[enNome] || `${enNome} colours a vital dimension of your chart.`
-  }
-  return mapPt[nome] || `${nome} colore uma dimensão vital do teu mapa.`
+  const trNome = tp(nome, lang)
+  const map = contentForLang(lang, ESSENCIA_PLANETA) || ESSENCIA_PLANETA.en
+  return map[trNome] || map[nome] || contentForLang(lang, {
+    pt: `${nome} colore uma dimensão vital do teu mapa.`,
+    en: `${trNome} colours a vital dimension of your chart.`,
+    es: `${trNome} colorea una dimensión vital de tu carta.`,
+    it: `${trNome} colora una dimensione vitale della tua carta.`,
+    de: `${trNome} färbt eine vitale Dimension deines Horoskops.`,
+    fr: `${trNome} colore une dimension vitale de ta carte.`,
+  })
 }
 
 export function interpretarPlanetaEssencia(nomePlaneta, p, mapaNatal, aspetos, planetas, lang = 'pt') {

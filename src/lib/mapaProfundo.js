@@ -3,8 +3,11 @@
  * Cada texto é único: signo, casa Placidus, aspectos e Big 3.
  */
 import { comporInterpretacaoPlaneta } from './lexicon/compositor.js'
-import { planetaPorNome, TEMAS_CASA } from './casasPlacidus.js'
-import { translateSigno } from './i18n/astro.js'
+import { planetaPorNome, getTemaCasa } from './casasPlacidus.js'
+import { translateSigno, translatePlaneta, translateAspecto } from './i18n/astro.js'
+import { contentForLang } from './i18n/langUtil.js'
+import { getMapaStatic } from './i18n/packs/mapaStatic.js'
+import { NUCLEO_ES, NUCLEO_IT, NUCLEO_DE, NUCLEO_FR } from './i18n/packs/mapaProfundoLocales.js'
 
 const SIGNOS = [
   'Carneiro', 'Touro', 'Gémeos', 'Caranguejo', 'Leão', 'Virgem',
@@ -69,20 +72,27 @@ function textoAspectos(planeta, aspetos, planetas, lang) {
   const partes = lista.map((a) => {
     const outro = nomeAspeto(a.planetaA) === planeta ? nomeAspeto(a.planetaB) : nomeAspeto(a.planetaA)
     const pOut = planetaPorNome(planetas, outro)
-    const asp = a.aspecto === 'Conjuncao' ? (lang !== 'pt' ? 'conjunction' : 'conjunção')
-      : a.aspecto === 'Trigono' ? (lang !== 'pt' ? 'trine' : 'trígono')
-        : a.aspecto === 'Oposicao' ? (lang !== 'pt' ? 'opposition' : 'oposição')
-          : a.aspecto === 'Quadratura' ? (lang !== 'pt' ? 'square' : 'quadratura')
-            : a.aspecto === 'Sextil' ? (lang !== 'pt' ? 'sextile' : 'sextil') : a.aspecto
+    const asp = translateAspecto(
+      a.aspecto === 'Conjuncao' ? 'Conjunção' : a.aspecto,
+      lang,
+    ).toLowerCase()
     const signoOut = sn(pOut?.signo?.nome, lang)
     const casaOut = pOut?.casa
-    if (lang !== 'pt') {
-      return `${asp} with ${outro} in ${signoOut}${casaOut ? ` (House ${casaOut})` : ''} (orb ${a.orbe})`
+    const outroTr = translatePlaneta(outro, lang)
+    const orbeLbl = lang === 'pt' ? 'orbe' : 'orb'
+    if (lang === 'pt') {
+      return `${asp} com ${outro} em ${signoOut}${casaOut ? ` (Casa ${casaOut})` : ''} (${orbeLbl} ${a.orbe})`
     }
-    return `${asp} com ${outro} em ${signoOut}${casaOut ? ` (Casa ${casaOut})` : ''} (orbe ${a.orbe})`
+    return `${asp} with ${outroTr} in ${signoOut}${casaOut ? ` (House ${casaOut})` : ''} (${orbeLbl} ${a.orbe})`
   })
-  if (lang !== 'pt') return ` Active aspects: ${partes.join('; ')}.`
-  return ` Aspectos activos: ${partes.join('; ')}.`
+  return contentForLang(lang, {
+    pt: ` Aspectos activos: ${partes.join('; ')}.`,
+    en: ` Active aspects: ${partes.join('; ')}.`,
+    es: ` Aspectos activos: ${partes.join('; ')}.`,
+    it: ` Aspetti attivi: ${partes.join('; ')}.`,
+    de: ` Aktive Aspekte: ${partes.join('; ')}.`,
+    fr: ` Aspects actifs : ${partes.join('; ')}.`,
+  })
 }
 
 /** Núcleo único por planeta × signo (PT). */
@@ -233,37 +243,65 @@ const NUCLEO_EN = {
   },
 }
 
+const NUCLEO_LOC = { es: NUCLEO_ES, it: NUCLEO_IT, de: NUCLEO_DE, fr: NUCLEO_FR }
+
 function nucleoPlaneta(nome, signo, lang) {
   const chave = normalizarSigno(signo)
-  if (lang !== 'pt') {
+  if (lang === 'en') {
     const enSign = sn(chave, 'en')
-    return NUCLEO_EN[nome]?.[enSign] || NUCLEO_PT[nome]?.[chave] || ''
+    return NUCLEO_EN[nome]?.[enSign] || ''
   }
-  return NUCLEO_PT[nome]?.[chave] || ''
+  if (lang === 'pt') return NUCLEO_PT[nome]?.[chave] || ''
+  const loc = contentForLang(lang, NUCLEO_LOC)
+  return loc?.[nome]?.[chave] || NUCLEO_EN[nome]?.[sn(chave, 'en')] || NUCLEO_PT[nome]?.[chave] || ''
 }
 
 function blocoCasa(casa, lang) {
   if (!casa) return ''
-  const t = TEMAS_CASA[casa]
+  const t = getTemaCasa(casa, lang)
   if (!t) return ''
-  if (lang !== 'pt') {
-    return ` In House ${casa} (${t.nome}), this energy manifests concretely in ${t.foco}.`
-  }
-  return ` Na ${casa}ª Casa (${t.nome}), esta energia manifesta-se concretamente em ${t.foco}.`
+  return contentForLang(lang, {
+    pt: ` Na ${casa}ª Casa (${t.nome}), esta energia manifesta-se concretamente em ${t.foco}.`,
+    en: ` In House ${casa} (${t.nome}), this energy manifests concretely in ${t.foco}.`,
+    es: ` En la Casa ${casa} (${t.nome}), esta energía se manifiesta concretamente en ${t.foco}.`,
+    it: ` Nella Casa ${casa} (${t.nome}), questa energia si manifesta concretamente in ${t.foco}.`,
+    de: ` Im Haus ${casa} (${t.nome}) manifestiert sich diese Energie konkret in ${t.foco}.`,
+    fr: ` En Maison ${casa} (${t.nome}), cette énergie se manifeste concrètement dans ${t.foco}.`,
+  })
 }
 
 function blocoDecan(graus, signo, lang) {
   const d = decan(graus)
   const s = sn(signo, lang)
-  const elem = ELEMENTO[normalizarSigno(signo)]
-  if (lang !== 'pt') {
-    if (d === 'inicial') return ` At ${graus}° (${d} ${s}), the ${elem} impulse is raw and initiating.`
-    if (d === 'central') return ` At ${graus}° (mid-${s}), the ${elem} theme is fully embodied and tested.`
-    return ` At ${graus}° (late ${s}), the ${elem} lesson matures toward integration and release.`
+  const { elemento } = getMapaStatic(lang)
+  const elem = elemento[normalizarSigno(signo)] || ELEMENTO[normalizarSigno(signo)]
+  const bundles = {
+    inicial: {
+      pt: ` A ${graus}° (decanato inicial de ${s}), o impulso de ${elem} é cru e iniciador.`,
+      en: ` At ${graus}° (${d} ${s}), the ${elem} impulse is raw and initiating.`,
+      es: ` A ${graus}° (decanato inicial de ${s}), el impulso de ${elem} es crudo e iniciador.`,
+      it: ` A ${graus}° (decanato iniziale di ${s}), l'impulso di ${elem} è grezzo e iniziatore.`,
+      de: ` Bei ${graus}° (frühes Dekan von ${s}) ist der ${elem}-Impuls roh und initiierend.`,
+      fr: ` À ${graus}° (décan initial de ${s}), l'élan ${elem} est brut et initiateur.`,
+    },
+    central: {
+      pt: ` A ${graus}° (decanato central de ${s}), o tema de ${elem} está plenamente corporizado e testado.`,
+      en: ` At ${graus}° (mid-${s}), the ${elem} theme is fully embodied and tested.`,
+      es: ` A ${graus}° (decanato central de ${s}), el tema de ${elem} está plenamente encarnado y probado.`,
+      it: ` A ${graus}° (decanato centrale di ${s}), il tema di ${elem} è pienamente incarnato e testato.`,
+      de: ` Bei ${graus}° (mittleres Dekan von ${s}) ist das ${elem}-Thema voll verkörpert und geprüft.`,
+      fr: ` À ${graus}° (décan central de ${s}), le thème ${elem} est pleinement incarné et éprouvé.`,
+    },
+    final: {
+      pt: ` A ${graus}° (decanato final de ${s}), a lição de ${elem} amadurece para integração e desapego.`,
+      en: ` At ${graus}° (late ${s}), the ${elem} lesson matures toward integration and release.`,
+      es: ` A ${graus}° (decanato final de ${s}), la lección de ${elem} madura hacia integración y desapego.`,
+      it: ` A ${graus}° (decanato finale di ${s}), la lezione di ${elem} matura verso integrazione e distacco.`,
+      de: ` Bei ${graus}° (spätes Dekan von ${s}) reift die ${elem}-Lektion zu Integration und Loslassen.`,
+      fr: ` À ${graus}° (décan final de ${s}), la leçon ${elem} mûrit vers intégration et lâcher-prise.`,
+    },
   }
-  if (d === 'inicial') return ` A ${graus}° (decanato inicial de ${s}), o impulso de ${elem} é cru e iniciador.`
-  if (d === 'central') return ` A ${graus}° (decanato central de ${s}), o tema de ${elem} está plenamente corporizado e testado.`
-  return ` A ${graus}° (decanato final de ${s}), a lição de ${elem} amadurece para integração e desapego.`
+  return contentForLang(lang, bundles[d])
 }
 
 function blocoBig3(nome, signo, mapaNatal, lang) {
@@ -274,22 +312,49 @@ function blocoBig3(nome, signo, mapaNatal, lang) {
   const elemPlan = ELEMENTO[chave]
   const elemSol = ELEMENTO[sol]
   const elemLua = ELEMENTO[lua]
-  if (lang !== 'pt') {
-    if (elemPlan === elemSol) return ` This ${nome} placement resonates with your Sun in ${sn(sol, lang)} (${elemSol}) - identity and transpersonal theme speak the same elemental language.`
-    if (elemPlan === elemLua) return ` This ${nome} echoes your Moon in ${sn(lua, lang)} (${elemLua}) - the emotional body recognises this frequency instinctively.`
-    return ` Against your Sun–Moon axis (${sn(sol, lang)}/${sn(lua, lang)}), this ${nome} in ${sn(chave, lang)} asks conscious translation between different inner languages.`
+  const nomeTr = translatePlaneta(nome, lang)
+  if (elemPlan === elemSol) {
+    return contentForLang(lang, {
+      pt: ` Este ${nome} ressoa com o teu Sol em ${sn(sol, lang)} (${elemSol}) - identidade e tema transpessoal falam a mesma linguagem elemental.`,
+      en: ` This ${nomeTr} placement resonates with your Sun in ${sn(sol, lang)} (${elemSol}) - identity and transpersonal theme speak the same elemental language.`,
+      es: ` Este ${nomeTr} resuena con tu Sol en ${sn(sol, lang)} (${elemSol}): identidad y tema transpessoal hablan el mismo lenguaje elemental.`,
+      it: ` Questo ${nomeTr} risuona con il tuo Sole in ${sn(sol, lang)} (${elemSol}): identità e tema transpersonale parlano la stessa lingua elementale.`,
+      de: ` Diese ${nomeTr}-Platzierung resoniert mit deiner Sonne in ${sn(sol, lang)} (${elemSol}) – Identität und transpersonales Thema sprechen dieselbe Elementarsprache.`,
+      fr: ` Ce ${nomeTr} résonne avec ton Soleil en ${sn(sol, lang)} (${elemSol}) : identité et thème transpersonnel parlent la même langue élémentaire.`,
+    })
   }
-  if (elemPlan === elemSol) return ` Este ${nome} ressoa com o teu Sol em ${sn(sol, lang)} (${elemSol}) - identidade e tema transpessoal falam a mesma linguagem elemental.`
-  if (elemPlan === elemLua) return ` Este ${nome} ecoa a tua Lua em ${sn(lua, lang)} (${elemLua}) - o corpo emocional reconhece esta frequência instintivamente.`
-  return ` Frente ao eixo Sol–Lua (${sn(sol, lang)}/${sn(lua, lang)}), este ${nome} em ${sn(chave, lang)} pede tradução consciente entre idiomas internos diferentes.`
+  if (elemPlan === elemLua) {
+    return contentForLang(lang, {
+      pt: ` Este ${nome} ecoa a tua Lua em ${sn(lua, lang)} (${elemLua}) - o corpo emocional reconhece esta frequência instintivamente.`,
+      en: ` This ${nomeTr} echoes your Moon in ${sn(lua, lang)} (${elemLua}) - the emotional body recognises this frequency instinctively.`,
+      es: ` Este ${nomeTr} hace eco a tu Luna en ${sn(lua, lang)} (${elemLua}): el cuerpo emocional reconoce esta frecuencia instintivamente.`,
+      it: ` Questo ${nomeTr} riecheggia la tua Luna in ${sn(lua, lang)} (${elemLua}): il corpo emotivo riconosce questa frequenza istintivamente.`,
+      de: ` Dieser ${nomeTr} hallt deinen Mond in ${sn(lua, lang)} (${elemLua}) nach – der emotionale Körper erkennt diese Frequenz instinktiv.`,
+      fr: ` Ce ${nomeTr} fait écho à ta Lune en ${sn(lua, lang)} (${elemLua}) : le corps émotionnel reconnaît cette fréquence instinctivement.`,
+    })
+  }
+  return contentForLang(lang, {
+    pt: ` Frente ao eixo Sol–Lua (${sn(sol, lang)}/${sn(lua, lang)}), este ${nome} em ${sn(chave, lang)} pede tradução consciente entre idiomas internos diferentes.`,
+    en: ` Against your Sun–Moon axis (${sn(sol, lang)}/${sn(lua, lang)}), this ${nomeTr} in ${sn(chave, lang)} asks conscious translation between different inner languages.`,
+    es: ` Frente al eje Sol–Luna (${sn(sol, lang)}/${sn(lua, lang)}), este ${nomeTr} en ${sn(chave, lang)} pide traducción consciente entre idiomas internos distintos.`,
+    it: ` Rispetto all'asse Sole–Luna (${sn(sol, lang)}/${sn(lua, lang)}), questo ${nomeTr} in ${sn(chave, lang)} chiede traduzione consapevole tra linguaggi interiori diversi.`,
+    de: ` Gegenüber der Sonne–Mond-Achse (${sn(sol, lang)}/${sn(lua, lang)}) verlangt dieser ${nomeTr} in ${sn(chave, lang)} bewusste Übersetzung zwischen verschiedenen inneren Sprachen.`,
+    fr: ` Face à l'axe Soleil–Lune (${sn(sol, lang)}/${sn(lua, lang)}), ce ${nomeTr} en ${sn(chave, lang)} demande une traduction consciente entre langages intérieurs différents.`,
+  })
 }
 
 function blocoNodoSul(signo, lang) {
   const chave = normalizarSigno(signo)
   const sul = OPOSTO[chave]
   if (!sul) return ''
-  if (lang !== 'pt') return ` South Node in ${sn(sul, lang)}: comfortable patterns to release on this path.`
-  return ` Nodo Sul em ${sn(sul, lang)}: padrões confortáveis a largar neste caminho.`
+  return contentForLang(lang, {
+    pt: ` Nodo Sul em ${sn(sul, lang)}: padrões confortáveis a largar neste caminho.`,
+    en: ` South Node in ${sn(sul, lang)}: comfortable patterns to release on this path.`,
+    es: ` Nodo Sur en ${sn(sul, lang)}: patrones cómodos a soltar en este camino.`,
+    it: ` Nodo Sud in ${sn(sul, lang)}: schemi comodi da lasciare su questo cammino.`,
+    de: ` Südknoten in ${sn(sul, lang)}: bequeme Muster, die du auf diesem Weg loslässt.`,
+    fr: ` Nœud Sud en ${sn(sul, lang)} : schémas confortables à lâcher sur ce chemin.`,
+  })
 }
 
 /**
@@ -351,70 +416,106 @@ export function gerarSinteseEvolutiva(mapaNatal, planetas, aspetos, lang = 'pt')
     const pB = nomeAspeto(tenso.planetaB)
     const posA = planetaPorNome(planetas, pA)
     const posB = planetaPorNome(planetas, pB)
-    const aspNome = tenso.aspecto === 'Oposicao' ? (lang !== 'pt' ? 'Opposition' : 'Oposição')
-      : (lang !== 'pt' ? 'Square' : 'Quadratura')
-    const titulo = lang !== 'pt'
-      ? `${aspNome} ${pA} · ${pB} (orb ${tenso.orbe})`
-      : `${aspNome} ${pA} · ${pB} (orbe ${tenso.orbe})`
+    const aspNome = tenso.aspecto === 'Oposicao'
+      ? contentForLang(lang, { pt: 'Oposição', en: 'Opposition', es: 'Oposición', it: 'Opposizione', de: 'Opposition', fr: 'Opposition' })
+      : contentForLang(lang, { pt: 'Quadratura', en: 'Square', es: 'Cuadratura', it: 'Quadratura', de: 'Quadrat', fr: 'Carré' })
+    const orbeLbl = lang === 'pt' ? 'orbe' : 'orb'
+    const titulo = `${aspNome} ${translatePlaneta(pA, lang)} · ${translatePlaneta(pB, lang)} (${orbeLbl} ${tenso.orbe})`
+    const focoA = getTemaCasa(posA?.casa, lang)?.foco || contentForLang(lang, { pt: 'uma esfera da vida', en: 'one life sphere', es: 'una esfera de la vida', it: 'una sfera della vita', de: 'eine Lebenssphäre', fr: 'une sphère de vie' })
+    const focoB = getTemaCasa(posB?.casa, lang)?.foco || contentForLang(lang, { pt: 'outra', en: 'another', es: 'otra', it: 'un\'altra', de: 'eine andere', fr: 'une autre' })
+    const casaA = posA?.casa ? (lang === 'pt' ? ` (Casa ${posA.casa})` : ` (House ${posA.casa})`) : ''
+    const casaB = posB?.casa ? (lang === 'pt' ? ` (Casa ${posB.casa})` : ` (House ${posB.casa})`) : ''
 
-    let texto
-    if (lang !== 'pt') {
-      texto = `Your chart's primary evolutionary tension is the ${aspNome} between ${pA} in ${sn(posA?.signo?.nome, lang)}${posA?.casa ? ` (House ${posA.casa})` : ''} and ${pB} in ${sn(posB?.signo?.nome, lang)}${posB?.casa ? ` (House ${posB.casa})` : ''}. `
-      texto += `With Sun in ${sn(sol, lang)}, Moon in ${sn(lua, lang)} and Ascendant in ${sn(asc, lang)}, this aspect colours how you balance ${TEMAS_CASA[posA?.casa]?.foco || 'one life sphere'} with ${TEMAS_CASA[posB?.casa]?.foco || 'another'}. `
-      texto += `The friction is fuel: maturity comes from negotiating both poles rather than silencing one.`
-    } else {
-      texto = `A tensão evolutiva central do teu mapa é a ${aspNome} entre ${pA} em ${sn(posA?.signo?.nome, lang)}${posA?.casa ? ` (Casa ${posA.casa})` : ''} e ${pB} em ${sn(posB?.signo?.nome, lang)}${posB?.casa ? ` (Casa ${posB.casa})` : ''}. `
-      texto += `Com Sol em ${sn(sol, lang)}, Lua em ${sn(lua, lang)} e Ascendente em ${sn(asc, lang)}, este aspecto colore como equilibras ${TEMAS_CASA[posA?.casa]?.foco || 'uma esfera da vida'} com ${TEMAS_CASA[posB?.casa]?.foco || 'outra'}. `
-      texto += `O atrito é combustível: a maturidade nasce de negociar os dois polos em vez de silenciar um.`
-    }
+    const texto = contentForLang(lang, {
+      pt: `A tensão evolutiva central do teu mapa é a ${aspNome} entre ${pA} em ${sn(posA?.signo?.nome, lang)}${casaA} e ${pB} em ${sn(posB?.signo?.nome, lang)}${casaB}. Com Sol em ${sn(sol, lang)}, Lua em ${sn(lua, lang)} e Ascendente em ${sn(asc, lang)}, este aspecto colore como equilibras ${focoA} com ${focoB}. O atrito é combustível: a maturidade nasce de negociar os dois polos em vez de silenciar um.`,
+      en: `Your chart's primary evolutionary tension is the ${aspNome} between ${translatePlaneta(pA, lang)} in ${sn(posA?.signo?.nome, lang)}${casaA} and ${translatePlaneta(pB, lang)} in ${sn(posB?.signo?.nome, lang)}${casaB}. With Sun in ${sn(sol, lang)}, Moon in ${sn(lua, lang)} and Ascendant in ${sn(asc, lang)}, this aspect colours how you balance ${focoA} with ${focoB}. The friction is fuel: maturity comes from negotiating both poles rather than silencing one.`,
+      es: `La tensión evolutiva central de tu carta es la ${aspNome} entre ${translatePlaneta(pA, lang)} en ${sn(posA?.signo?.nome, lang)}${casaA} y ${translatePlaneta(pB, lang)} en ${sn(posB?.signo?.nome, lang)}${casaB}. Con Sol en ${sn(sol, lang)}, Luna en ${sn(lua, lang)} y Ascendente en ${sn(asc, lang)}, este aspecto colorea cómo equilibras ${focoA} con ${focoB}. El roce es combustible: la madurez nace de negociar ambos polos en vez de silenciar uno.`,
+      it: `La tensione evolutiva centrale della tua carta è la ${aspNome} tra ${translatePlaneta(pA, lang)} in ${sn(posA?.signo?.nome, lang)}${casaA} e ${translatePlaneta(pB, lang)} in ${sn(posB?.signo?.nome, lang)}${casaB}. Con Sole in ${sn(sol, lang)}, Luna in ${sn(lua, lang)} e Ascendente in ${sn(asc, lang)}, questo aspetto colora come equilibri ${focoA} con ${focoB}. L'attrito è combustibile: la maturità nasce dal negoziare entrambi i poli invece di silenziarne uno.`,
+      de: `Die zentrale evolutionäre Spannung deines Horoskops ist das ${aspNome} zwischen ${translatePlaneta(pA, lang)} in ${sn(posA?.signo?.nome, lang)}${casaA} und ${translatePlaneta(pB, lang)} in ${sn(posB?.signo?.nome, lang)}${casaB}. Mit Sonne in ${sn(sol, lang)}, Mond in ${sn(lua, lang)} und Aszendent in ${sn(asc, lang)} färbt dieser Aspekt, wie du ${focoA} mit ${focoB} ausbalancierst. Reibung ist Treibstoff: Reife entsteht, beide Pole zu verhandeln statt einen zu verstummen.`,
+      fr: `La tension évolutive centrale de ta carte est la ${aspNome} entre ${translatePlaneta(pA, lang)} en ${sn(posA?.signo?.nome, lang)}${casaA} et ${translatePlaneta(pB, lang)} en ${sn(posB?.signo?.nome, lang)}${casaB}. Avec Soleil en ${sn(sol, lang)}, Lune en ${sn(lua, lang)} et Ascendant en ${sn(asc, lang)}, cet aspect colore comment tu équilibres ${focoA} avec ${focoB}. La friction est carburant : la maturité naît de négocier les deux pôles plutôt que d'en faire taire un.`,
+    })
 
-    const conselho = lang !== 'pt'
-      ? `When conflict rises between ${pA} and ${pB}, pause: each voice guards a legitimate need. Integrating this ${aspNome} is your chart's master key.`
-      : `Quando o conflito surgir entre ${pA} e ${pB}, pausa: cada voz guarda uma necessidade legítima. Integrar esta ${aspNome} é a chave-mestra do teu mapa.`
+    const conselho = contentForLang(lang, {
+      pt: `Quando o conflito surgir entre ${pA} e ${pB}, pausa: cada voz guarda uma necessidade legítima. Integrar esta ${aspNome} é a chave-mestra do teu mapa.`,
+      en: `When conflict rises between ${translatePlaneta(pA, lang)} and ${translatePlaneta(pB, lang)}, pause: each voice guards a legitimate need. Integrating this ${aspNome} is your chart's master key.`,
+      es: `Cuando surja conflicto entre ${translatePlaneta(pA, lang)} y ${translatePlaneta(pB, lang)}, pausa: cada voz guarda una necesidad legítima. Integrar esta ${aspNome} es la clave maestra de tu carta.`,
+      it: `Quando sorge conflitto tra ${translatePlaneta(pA, lang)} e ${translatePlaneta(pB, lang)}, fermati: ogni voce custodisce un bisogno legittimo. Integrare questa ${aspNome} è la chiave maestra della tua carta.`,
+      de: `Wenn Konflikt zwischen ${translatePlaneta(pA, lang)} und ${translatePlaneta(pB, lang)} aufsteigt, halte inne: jede Stimme bewahrt ein legitimes Bedürfnis. Dieses ${aspNome} zu integrieren ist der Hauptschlüssel deines Horoskops.`,
+      fr: `Quand un conflit surgit entre ${translatePlaneta(pA, lang)} et ${translatePlaneta(pB, lang)}, pause : chaque voix garde un besoin légitime. Intégrer cette ${aspNome} est la clé maîtresse de ta carte.`,
+    })
 
     return { titulo, texto, conselho }
   }
 
-  // Sem aspecto tenso dominante - síntese pelo fingerprint do mapa
-  const titulo = lang !== 'pt' ? 'Evolutionary signature' : 'Assinatura evolutiva'
+  const titulo = contentForLang(lang, {
+    pt: 'Assinatura evolutiva', en: 'Evolutionary signature', es: 'Firma evolutiva',
+    it: 'Firma evolutiva', de: 'Evolutionäre Signatur', fr: 'Signature évolutive',
+  })
+  const { elemento: elemMap } = getMapaStatic(lang)
+  const elemDomTr = elemDom ? (elemMap[Object.keys(ELEMENTO).find((k) => ELEMENTO[k] === elemDom)] || elemDom) : contentForLang(lang, { pt: 'misto', en: 'mixed', es: 'mixto', it: 'misto', de: 'gemischt', fr: 'mixte' })
 
-  let texto
-  if (lang !== 'pt') {
-    texto = `No dominant square or opposition among major aspects - your growth path is subtler but equally specific. `
-    texto += `Dominant element: ${elemDom || 'mixed'} across personal planets. `
-    if (harm) {
-      const hA = nomeAspeto(harm.planetaA)
-      const hB = nomeAspeto(harm.planetaB)
-      texto += `Your greatest natural resource is the ${harm.aspecto} between ${hA} and ${hB} (orb ${harm.orbe}) - lean on this alliance consciously. `
-    }
-    if (hub) texto += `${hub} is the most connected planet in your chart - life lessons orbit this archetype. `
-    if (pNod) texto += `North Node in ${sn(pNod.signo?.nome, lang)}${pNod.casa ? `, House ${pNod.casa}` : ''} points your soul toward ${TEMAS_CASA[pNod.casa]?.foco || 'evolutionary growth'}. `
-    texto += `Sun ${sn(sol, lang)} · Moon ${sn(lua, lang)} · Asc ${sn(asc, lang)} · MC ${sn(mc, lang)} form a unique psychic fingerprint no generic horoscope can replicate.`
-  } else {
-    texto = `Não há quadratura ou oposição dominante nos aspectos maiores - o teu caminho de crescimento é mais subtil mas igualmente específico. `
-    texto += `Elemento dominante: ${elemDom || 'misto'} nos planetas pessoais. `
-    if (harm) {
-      const hA = nomeAspeto(harm.planetaA)
-      const hB = nomeAspeto(harm.planetaB)
-      texto += `O teu maior recurso natural é o ${harm.aspecto} entre ${hA} e ${hB} (orbe ${harm.orbe}) - apoia-te conscientemente nesta aliança. `
-    }
-    if (hub) texto += `${hub} é o planeta mais conectado do mapa - as lições de vida orbitam este arquétipo. `
-    if (pNod) texto += `Nodo Norte em ${sn(pNod.signo?.nome, lang)}${pNod.casa ? `, Casa ${pNod.casa}` : ''} aponta a alma para ${TEMAS_CASA[pNod.casa]?.foco || 'crescimento evolutivo'}. `
-    texto += `Sol ${sn(sol, lang)} · Lua ${sn(lua, lang)} · Asc ${sn(asc, lang)} · MC ${sn(mc, lang)} formam uma assinatura psíquica que nenhum horóscopo genérico replica.`
+  let texto = contentForLang(lang, {
+    pt: `Não há quadratura ou oposição dominante nos aspectos maiores - o teu caminho de crescimento é mais subtil mas igualmente específico. Elemento dominante: ${elemDomTr} nos planetas pessoais. `,
+    en: `No dominant square or opposition among major aspects - your growth path is subtler but equally specific. Dominant element: ${elemDomTr} across personal planets. `,
+    es: `No hay cuadratura u oposición dominante en los aspectos mayores: tu camino de crecimiento es más sutil pero igualmente específico. Elemento dominante: ${elemDomTr} en los planetas personales. `,
+    it: `Non c'è quadratura o opposizione dominante negli aspetti maggiori: il tuo cammino di crescita è più sottile ma ugualmente specifico. Elemento dominante: ${elemDomTr} nei pianeti personali. `,
+    de: `Kein dominantes Quadrat oder Opposition unter den Hauptaspekten – dein Wachstumsweg ist subtiler, aber ebenso spezifisch. Dominantes Element: ${elemDomTr} bei den persönlichen Planeten. `,
+    fr: `Pas de carré ou opposition dominant parmi les aspects majeurs – ton chemin de croissance est plus subtil mais tout aussi spécifique. Élément dominant : ${elemDomTr} chez les planètes personnelles. `,
+  })
+
+  if (harm) {
+    const hA = translatePlaneta(nomeAspeto(harm.planetaA), lang)
+    const hB = translatePlaneta(nomeAspeto(harm.planetaB), lang)
+    texto += contentForLang(lang, {
+      pt: `O teu maior recurso natural é o ${harm.aspecto} entre ${hA} e ${hB} (orbe ${harm.orbe}) - apoia-te conscientemente nesta aliança. `,
+      en: `Your greatest natural resource is the ${harm.aspecto} between ${hA} and ${hB} (orb ${harm.orbe}) - lean on this alliance consciously. `,
+      es: `Tu mayor recurso natural es el ${harm.aspecto} entre ${hA} y ${hB} (orbe ${harm.orbe}): apóyate conscientemente en esta alianza. `,
+      it: `La tua maggiore risorsa naturale è il ${harm.aspecto} tra ${hA} e ${hB} (orbe ${harm.orbe}): appoggiati consapevolmente a questa alleanza. `,
+      de: `Deine größte natürliche Ressource ist das ${harm.aspecto} zwischen ${hA} und ${hB} (Orb ${harm.orbe}) – stütze dich bewusst auf diese Allianz. `,
+      fr: `Ta plus grande ressource naturelle est le ${harm.aspecto} entre ${hA} et ${hB} (orbe ${harm.orbe}) – appuie-toi consciemment sur cette alliance. `,
+    })
   }
+  if (hub) {
+    texto += contentForLang(lang, {
+      pt: `${hub} é o planeta mais conectado do mapa - as lições de vida orbitam este arquétipo. `,
+      en: `${translatePlaneta(hub, lang)} is the most connected planet in your chart - life lessons orbit this archetype. `,
+      es: `${translatePlaneta(hub, lang)} es el planeta más conectado de la carta: las lecciones de vida orbitan este arquetipo. `,
+      it: `${translatePlaneta(hub, lang)} è il pianeta più connesso della carta: le lezioni di vita orbitano questo archetipo. `,
+      de: `${translatePlaneta(hub, lang)} ist der am meisten verbundene Planet im Horoskop – Lebenslektionen kreisen um diesen Archetyp. `,
+      fr: `${translatePlaneta(hub, lang)} est la planète la plus connectée de la carte – les leçons de vie orbitent cet archétype. `,
+    })
+  }
+  if (pNod) {
+    const focoNod = getTemaCasa(pNod.casa, lang)?.foco || contentForLang(lang, { pt: 'crescimento evolutivo', en: 'evolutionary growth', es: 'crecimiento evolutivo', it: 'crescita evolutiva', de: 'evolutionäres Wachstum', fr: 'croissance évolutive' })
+    const casaNod = pNod.casa ? (lang === 'pt' ? `, Casa ${pNod.casa}` : `, House ${pNod.casa}`) : ''
+    texto += contentForLang(lang, {
+      pt: `Nodo Norte em ${sn(pNod.signo?.nome, lang)}${casaNod} aponta a alma para ${focoNod}. `,
+      en: `North Node in ${sn(pNod.signo?.nome, lang)}${casaNod} points your soul toward ${focoNod}. `,
+      es: `Nodo Norte en ${sn(pNod.signo?.nome, lang)}${casaNod} apunta el alma hacia ${focoNod}. `,
+      it: `Nodo Nord in ${sn(pNod.signo?.nome, lang)}${casaNod} indica all'anima ${focoNod}. `,
+      de: `Nordknoten in ${sn(pNod.signo?.nome, lang)}${casaNod} weist die Seele auf ${focoNod}. `,
+      fr: `Nœud Nord en ${sn(pNod.signo?.nome, lang)}${casaNod} oriente l'âme vers ${focoNod}. `,
+    })
+  }
+  texto += contentForLang(lang, {
+    pt: `Sol ${sn(sol, lang)} · Lua ${sn(lua, lang)} · Asc ${sn(asc, lang)} · MC ${sn(mc, lang)} formam uma assinatura psíquica que nenhum horóscopo genérico replica.`,
+    en: `Sun ${sn(sol, lang)} · Moon ${sn(lua, lang)} · Asc ${sn(asc, lang)} · MC ${sn(mc, lang)} form a unique psychic fingerprint no generic horoscope can replicate.`,
+    es: `Sol ${sn(sol, lang)} · Luna ${sn(lua, lang)} · Asc ${sn(asc, lang)} · MC ${sn(mc, lang)} forman una firma psíquica que ningún horóscopo genérico replica.`,
+    it: `Sole ${sn(sol, lang)} · Luna ${sn(lua, lang)} · Asc ${sn(asc, lang)} · MC ${sn(mc, lang)} formano una firma psichica che nessun oroscopo generico replica.`,
+    de: `Sonne ${sn(sol, lang)} · Mond ${sn(lua, lang)} · Asc ${sn(asc, lang)} · MC ${sn(mc, lang)} bilden eine psychische Signatur, die kein generisches Horoskop repliziert.`,
+    fr: `Soleil ${sn(sol, lang)} · Lune ${sn(lua, lang)} · Asc ${sn(asc, lang)} · MC ${sn(mc, lang)} forment une signature psychique qu'aucun horoscope générique ne reproduit.`,
+  })
 
   const pSol = planetaPorNome(planetas, 'Sol')
-  const conselho = lang !== 'pt'
-    ? `Practical path: act with ${sn(sol, lang)} courage in ${TEMAS_CASA[pSol?.casa]?.foco || 'your solar house'}. `
-      + `${pSat ? `Saturn in ${sn(pSat.signo?.nome, lang)}, House ${pSat.casa}: build patiently here.` : ''} `
-      + `${pJup ? ` Jupiter in House ${pJup.casa} opens doors when you stretch beyond comfort.` : ''} `
-      + `${pMar ? ` Mars in ${sn(pMar.signo?.nome, lang)} fuels decisive action in ${TEMAS_CASA[pMar.casa]?.foco || 'its house'}.` : ''} `
-      + `The ephemerides offer the map - your choices trace the path.`
-    : `Caminho prático: age com coragem de ${sn(sol, lang)} em ${TEMAS_CASA[pSol?.casa]?.foco || 'tua casa solar'}. `
-      + `${pSat ? `Saturno em ${sn(pSat.signo?.nome, lang)}, Casa ${pSat.casa}: constrói com paciência aqui.` : ''} `
-      + `${pJup ? ` Júpiter na Casa ${pJup.casa} abre portas quando te esticas além do conforto.` : ''} `
-      + `${pMar ? ` Marte em ${sn(pMar.signo?.nome, lang)} alimenta acção decisiva em ${TEMAS_CASA[pMar.casa]?.foco || 'a sua casa'}.` : ''} `
-      + `As efemérides oferecem o mapa - as tuas escolhas traçam o caminho.`
+  const focoSol = getTemaCasa(pSol?.casa, lang)?.foco || contentForLang(lang, { pt: 'tua casa solar', en: 'your solar house', es: 'tu casa solar', it: 'la tua casa solare', de: 'dein Sonnenhaus', fr: 'ta maison solaire' })
+  const conselho = contentForLang(lang, {
+    pt: `Caminho prático: age com coragem de ${sn(sol, lang)} em ${focoSol}. ${pSat ? `Saturno em ${sn(pSat.signo?.nome, lang)}, Casa ${pSat.casa}: constrói com paciência aqui.` : ''} ${pJup ? ` Júpiter na Casa ${pJup.casa} abre portas quando te esticas além do conforto.` : ''} ${pMar ? ` Marte em ${sn(pMar.signo?.nome, lang)} alimenta acção decisiva em ${getTemaCasa(pMar.casa, lang)?.foco || 'a sua casa'}.` : ''} As efemérides oferecem o mapa - as tuas escolhas traçam o caminho.`,
+    en: `Practical path: act with ${sn(sol, lang)} courage in ${focoSol}. ${pSat ? `Saturn in ${sn(pSat.signo?.nome, lang)}, House ${pSat.casa}: build patiently here.` : ''} ${pJup ? ` Jupiter in House ${pJup.casa} opens doors when you stretch beyond comfort.` : ''} ${pMar ? ` Mars in ${sn(pMar.signo?.nome, lang)} fuels decisive action in ${getTemaCasa(pMar.casa, lang)?.foco || 'its house'}.` : ''} The ephemerides offer the map - your choices trace the path.`,
+    es: `Camino práctico: actúa con coraje de ${sn(sol, lang)} en ${focoSol}. ${pSat ? `Saturno en ${sn(pSat.signo?.nome, lang)}, Casa ${pSat.casa}: construye con paciencia aquí.` : ''} ${pJup ? ` Júpiter en Casa ${pJup.casa} abre puertas cuando te estiras más allá del confort.` : ''} ${pMar ? ` Marte en ${sn(pMar.signo?.nome, lang)} alimenta acción decisiva en ${getTemaCasa(pMar.casa, lang)?.foco || 'su casa'}.` : ''} Las efemérides ofrecen la carta: tus elecciones trazan el camino.`,
+    it: `Percorso pratico: agisci con coraggio di ${sn(sol, lang)} in ${focoSol}. ${pSat ? `Saturno in ${sn(pSat.signo?.nome, lang)}, Casa ${pSat.casa}: costruisci con pazienza qui.` : ''} ${pJup ? ` Giove in Casa ${pJup.casa} apre porte quando ti allontani dal comfort.` : ''} ${pMar ? ` Marte in ${sn(pMar.signo?.nome, lang)} alimenta azione decisiva in ${getTemaCasa(pMar.casa, lang)?.foco || 'la sua casa'}.` : ''} Le effemeridi offrono la carta: le tue scelte tracciano il cammino.`,
+    de: `Praktischer Weg: handle mit ${sn(sol, lang)}-Mut in ${focoSol}. ${pSat ? `Saturn in ${sn(pSat.signo?.nome, lang)}, Haus ${pSat.casa}: baue hier geduldig.` : ''} ${pJup ? ` Jupiter im Haus ${pJup.casa} öffnet Türen, wenn du über Komfort hinauswächst.` : ''} ${pMar ? ` Mars in ${sn(pMar.signo?.nome, lang)} speist entschlossenes Handeln in ${getTemaCasa(pMar.casa, lang)?.foco || 'seinem Haus'}.` : ''} Die Ephemeriden bieten die Karte – deine Wahl zeichnet den Weg.`,
+    fr: `Chemin pratique : agis avec le courage de ${sn(sol, lang)} dans ${focoSol}. ${pSat ? `Saturne en ${sn(pSat.signo?.nome, lang)}, Maison ${pSat.casa} : construis patiemment ici.` : ''} ${pJup ? ` Jupiter en Maison ${pJup.casa} ouvre des portes quand tu t'étires au-delà du confort.` : ''} ${pMar ? ` Mars en ${sn(pMar.signo?.nome, lang)} alimente l'action décisive dans ${getTemaCasa(pMar.casa, lang)?.foco || 'sa maison'}.` : ''} Les éphémérides offrent la carte – tes choix tracent le chemin.`,
+  })
 
   return { titulo, texto, conselho }
 }

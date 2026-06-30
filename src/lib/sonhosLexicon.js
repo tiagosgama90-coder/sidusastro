@@ -1,7 +1,12 @@
 /**
  * Léxico A–Z de símbolos oníricos - base hermenêutica para pesquisa por palavras-chave.
- * Cada entrada alimenta a IA com contexto específico; a resposta final é sempre sintetizada por sonho.
  */
+import { contentForLang } from './i18n/langUtil.js'
+import {
+  LEXICON_ES, LEXICON_IT, LEXICON_DE, LEXICON_FR,
+  FEELING_PT, FEELING_EN, FEELING_ES, FEELING_IT, FEELING_DE, FEELING_FR,
+  CHIPS_PT, CHIPS_EN, CHIPS_ES, CHIPS_IT, CHIPS_DE, CHIPS_FR,
+} from './i18n/packs/sonhosLocales.js'
 
 export const LEXICON = [
   { letra: 'A', tema: 'Abismo / Precipício', keys: ['abismo', 'precipício', 'precipicio', 'penhasco', 'despenhar'], resumo: 'Confronto com o vazio interior ou medo de perder controlo; convite à humildade e ao chão da realidade.' },
@@ -79,14 +84,20 @@ export const LEXICON = [
   { letra: 'Z', tema: 'Jaula / Zoológico', keys: ['jaula', 'zoológico', 'zoologico', 'capturar animal'], resumo: 'Instintos aprisionados; libertar o animal = integração com amor.' },
 ]
 
-const FEELING_PT = {
-  peace: 'paz / serenidade', fear: 'medo / terror', sadness: 'tristeza / melancolia',
-  joy: 'alegria / leveza', confusion: 'confusão / desorientação', anger: 'raiva / irritação',
+const LEXICON_LOC = { es: LEXICON_ES, it: LEXICON_IT, de: LEXICON_DE, fr: LEXICON_FR }
+
+function lexiconForLang(lang) {
+  if (lang === 'pt') return LEXICON
+  const loc = contentForLang(lang, LEXICON_LOC)
+  return loc || LEXICON
 }
 
-const FEELING_EN = {
-  peace: 'peace / serenity', fear: 'fear / terror', sadness: 'sadness / melancholy',
-  joy: 'joy / lightness', confusion: 'confusion / disorientation', anger: 'anger / irritation',
+const FEELING_MAP = {
+  pt: FEELING_PT, en: FEELING_EN, es: FEELING_ES, it: FEELING_IT, de: FEELING_DE, fr: FEELING_FR,
+}
+
+const CHIPS_MAP = {
+  pt: CHIPS_PT, en: CHIPS_EN, es: CHIPS_ES, it: CHIPS_IT, de: CHIPS_DE, fr: CHIPS_FR,
 }
 
 export function extrairSimbolos(texto, chipsExtra = [], lang = 'pt') {
@@ -94,8 +105,9 @@ export function extrairSimbolos(texto, chipsExtra = [], lang = 'pt') {
   const normalizado = lower.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
   const encontrados = []
   const ids = new Set()
+  const lex = lexiconForLang(lang)
 
-  for (const entry of LEXICON) {
+  for (const entry of lex) {
     const hit = entry.keys.some((k) => {
       const kn = k.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
       return lower.includes(k) || normalizado.includes(kn)
@@ -106,27 +118,44 @@ export function extrairSimbolos(texto, chipsExtra = [], lang = 'pt') {
     }
   }
 
+  const chipFallback = contentForLang(lang, {
+    pt: 'Símbolo seleccionado - aplicar Regra de Ouro: conflito actual, apelo de conversão, remédio de cura.',
+    en: 'Selected symbol - apply Golden Rule: current conflict, call to change, path of healing.',
+    es: 'Símbolo seleccionado: aplicar Regla de Oro: conflicto actual, llamado a conversión, remedio de cura.',
+    it: 'Simbolo selezionato: applicare la Regola d\'Oro: conflitto attuale, appello alla conversione, rimedio di guarigione.',
+    de: 'Ausgewähltes Symbol – Goldene Regel anwenden: aktueller Konflikt, Aufruf zur Wandlung, Heilungsweg.',
+    fr: 'Symbole sélectionné – appliquer la Règle d\'Or : conflit actuel, appel à la conversion, remède de guérison.',
+  })
+
   for (const chip of chipsExtra || []) {
     const cl = chip.toLowerCase()
     if (!encontrados.some((e) => e.tema.toLowerCase().includes(cl.slice(0, 4)))) {
       encontrados.push({
         tema: chip,
-        resumo: lang !== 'pt'
-          ? 'Selected symbol - apply Golden Rule: current conflict, call to change, path of healing.'
-          : 'Símbolo seleccionado - aplicar Regra de Ouro: conflito actual, apelo de conversão, remédio de cura.',
+        resumo: chipFallback,
         letra: chip[0]?.toUpperCase() || '?',
       })
     }
   }
 
-  return encontrados.sort((a, b) => a.letra.localeCompare(b.letra, lang !== 'pt' ? 'en' : 'pt'))
+  const sortLocale = lang === 'pt' ? 'pt' : lang === 'en' ? 'en' : lang
+  return encontrados.sort((a, b) => a.letra.localeCompare(b.letra, sortLocale))
 }
 
 export function labelSentimento(feelingKey, lang = 'pt') {
-  if (!feelingKey) return lang !== 'pt' ? 'not specified' : 'não indicado'
-  const map = lang !== 'pt' ? FEELING_EN : FEELING_PT
+  if (!feelingKey) {
+    return contentForLang(lang, {
+      pt: 'não indicado', en: 'not specified', es: 'no indicado',
+      it: 'non indicato', de: 'nicht angegeben', fr: 'non indiqué',
+    })
+  }
+  const map = contentForLang(lang, FEELING_MAP) || FEELING_EN
   return map[feelingKey] || feelingKey
 }
 
-export const CHIPS_SIMBOLOS_PT = ['Água', 'Casa', 'Morte', 'Voar', 'Queda', 'Animal', 'Escuridão', 'Fogo', 'Perseguição', 'Criança']
-export const CHIPS_SIMBOLOS_EN = ['Water', 'House', 'Death', 'Flying', 'Falling', 'Animal', 'Darkness', 'Fire', 'Pursuit', 'Child']
+export const CHIPS_SIMBOLOS_PT = CHIPS_PT
+export const CHIPS_SIMBOLOS_EN = CHIPS_EN
+
+export function chipsSimbolos(lang = 'pt') {
+  return contentForLang(lang, CHIPS_MAP) || CHIPS_EN
+}

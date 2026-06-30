@@ -1,5 +1,5 @@
 /** Prompt interno - metodologia hermenêutica (nunca citar fontes ao utilizador). */
-import { aiOutputLanguageBlock, oracleRespondLanguage, isPt } from './i18n/langUtil.js'
+import { aiOutputLanguageBlock, oracleRespondLanguage, isPt, contentForLang } from './i18n/langUtil.js'
 
 const SEC_HEADERS = {
   pt: ['1. Análise do Estado da Alma', '2. O Alerta Interno', '3. O Caminho de Cura Espiritual', '4. Pergunta para Meditação'],
@@ -151,37 +151,72 @@ export function parseRespostaSonhos(texto, lang = 'pt') {
 
 /** Fallback gratuito offline - único por relato (léxico + excerto do texto). */
 export function gerarInterpretacaoLocal(texto, lang, feelingLabel, simbolosDetectados, mapaNatal) {
-  const e = lang !== 'pt'
   const excerto = texto.trim().slice(0, 120) + (texto.length > 120 ? '…' : '')
-  const temas = simbolosDetectados.map((s) => s.tema).join(', ') || (e ? 'inner images' : 'imagens interiores')
+  const temasDefault = contentForLang(lang, {
+    pt: 'imagens interiores', en: 'inner images', es: 'imágenes interiores',
+    it: 'immagini interiori', de: 'innere Bilder', fr: 'images intérieures',
+  })
+  const temas = simbolosDetectados.map((s) => s.tema).join(', ') || temasDefault
   const detalhes = simbolosDetectados.slice(0, 4).map((s) => `${s.tema}: ${s.resumo}`).join(' ')
   const solar = mapaNatal?.solar?.nome
   const lunar = mapaNatal?.lunar?.nome
   const astro = solar && lunar
-    ? (e ? ` With Sun in ${solar} and Moon in ${lunar}, the emotional tone aligns with your natal rhythm.` : ` Com Sol em ${solar} e Lua em ${lunar}, o tom emocional alinha-se com o teu ritmo natal.`)
+    ? contentForLang(lang, {
+      pt: ` Com Sol em ${solar} e Lua em ${lunar}, o tom emocional alinha-se com o teu ritmo natal.`,
+      en: ` With Sun in ${solar} and Moon in ${lunar}, the emotional tone aligns with your natal rhythm.`,
+      es: ` Con Sol en ${solar} y Luna en ${lunar}, el tono emocional se alinea con tu ritmo natal.`,
+      it: ` Con Sole in ${solar} e Luna in ${lunar}, il tono emotivo si allinea al tuo ritmo natal.`,
+      de: ` Mit Sonne in ${solar} und Mond in ${lunar} stimmt der emotionale Ton mit deinem Geburtsrhythmus überein.`,
+      fr: ` Avec Soleil en ${solar} et Lune en ${lunar}, le ton émotionnel s'aligne sur ton rythme natal.`,
+    })
     : ''
 
-  const medo = /medo|terror|pavor|fear|terror|nightmare|pesadelo/i.test(texto + feelingLabel)
+  const medo = /medo|terror|pavor|fear|terror|nightmare|pesadelo|miedo|paura|angst|peur/i.test(texto + feelingLabel)
 
-  const s1 = e
-    ? `Your dream ("${excerpto}") is not fortune-telling - it mirrors your soul's current processing. Feeling noted: ${feelingLabel}. Symbols emerging: ${temas}. ${detalhes}${astro}`
-    : `O teu sonho ("${excerpto}") não é adivinhação - espelha o processamento actual da alma. Sentimento: ${feelingLabel}. Símbolos emergentes: ${temas}. ${detalhes}${astro}`
+  const s1 = contentForLang(lang, {
+    pt: `O teu sonho ("${excerpto}") não é adivinhação - espelha o processamento actual da alma. Sentimento: ${feelingLabel}. Símbolos emergentes: ${temas}. ${detalhes}${astro}`,
+    en: `Your dream ("${excerpto}") is not fortune-telling - it mirrors your soul's current processing. Feeling noted: ${feelingLabel}. Symbols emerging: ${temas}. ${detalhes}${astro}`,
+    es: `Tu sueño ("${excerpto}") no es adivinación: refleja el procesamiento actual del alma. Sentimiento: ${feelingLabel}. Símbolos emergentes: ${temas}. ${detalhes}${astro}`,
+    it: `Il tuo sogno ("${excerpto}") non è divinazione: rispecchia l'elaborazione attuale dell'anima. Sentimento: ${feelingLabel}. Simboli emergenti: ${temas}. ${detalhes}${astro}`,
+    de: `Dein Traum ("${excerpto}") ist keine Wahrsagerei – er spiegelt die aktuelle Verarbeitung der Seele. Gefühl: ${feelingLabel}. Emergierende Symbole: ${temas}. ${detalhes}${astro}`,
+    fr: `Ton rêve ("${excerpto}") n'est pas de la divination – il reflète le traitement actuel de l'âme. Sentiment : ${feelingLabel}. Symboles émergents : ${temas}. ${detalhes}${astro}`,
+  })
 
   const s2 = medo
-    ? (e
-      ? 'The tension or nightmare quality is a merciful alert - not punishment. Something avoided in waking life returns symbolically so you may face it with honesty rather than control.'
-      : 'A tensão ou qualidade de pesadelo é um alerta misericordioso - não castigo. Algo evitado na vida acordada regressa simbolicamente para o enfrentares com honestidade, não controlo.')
-    : (e
-      ? 'Even calmer dreams invite attention: comfort may hide stagnation. Ask whether this image confirms needed rest or gently warns against postponing a necessary step.'
-      : 'Mesmo sonhos mais calmos pedem atenção: o conforto pode esconder estagnação. Pergunta se esta imagem confirma descanso necessário ou avisa contra adiar um passo necessário.')
+    ? contentForLang(lang, {
+      pt: 'A tensão ou qualidade de pesadelo é um alerta misericordioso - não castigo. Algo evitado na vida acordada regressa simbolicamente para o enfrentares com honestidade, não controlo.',
+      en: 'The tension or nightmare quality is a merciful alert - not punishment. Something avoided in waking life returns symbolically so you may face it with honesty rather than control.',
+      es: 'La tensión o calidad de pesadilla es una alerta misericordiosa, no castigo. Algo evitado en la vida despierta regresa simbólicamente para enfrentarlo con honestidad, no control.',
+      it: 'La tensione o qualità dell\'incubo è un allerta misericordiosa, non punizione. Qualcosa evitato nella vita sveglia ritorna simbolicamente per affrontarlo con onestà, non controllo.',
+      de: 'Die Spannung oder Albtraumqualität ist ein barmherziger Hinweis – keine Strafe. Etwas Vermiedenes im Wachleben kehrt symbolisch zurück, damit du es ehrlich statt kontrollierend begegnest.',
+      fr: 'La tension ou la qualité de cauchemar est une alerte miséricordieuse – pas une punition. Quelque chose évité dans la vie éveillée revient symboliquement pour l\'affronter avec honnêteté, pas contrôle.',
+    })
+    : contentForLang(lang, {
+      pt: 'Mesmo sonhos mais calmos pedem atenção: o conforto pode esconder estagnação. Pergunta se esta imagem confirma descanso necessário ou avisa contra adiar um passo necessário.',
+      en: 'Even calmer dreams invite attention: comfort may hide stagnation. Ask whether this image confirms needed rest or gently warns against postponing a necessary step.',
+      es: 'Incluso sueños más calmados piden atención: el confort puede esconder estancamiento. Pregunta si esta imagen confirma descanso necesario o avisa contra posponer un paso necesario.',
+      it: 'Anche sogni più calmi chiedono attenzione: il comfort può nascondere stagnazione. Chiediti se questa immagine conferma riposo necessario o avvisa contro rimandare un passo necessario.',
+      de: 'Selbst ruhigere Träume verlangen Aufmerksamkeit: Komfort kann Stagnation verbergen. Frage, ob dieses Bild nötige Ruhe bestätigt oder sanft vor dem Aufschieben eines nötigen Schritts warnt.',
+      fr: 'Même les rêves plus calmes demandent attention : le confort peut cacher la stagnation. Demande si cette image confirme le repos nécessaire ou avertit contre reporter un pas nécessaire.',
+    })
 
-  const s3 = e
-    ? 'Practical path: (1) Name honestly what you feel today about this dream. (2) Ten minutes of silence or journaling. (3) One small reconciling gesture - with yourself or someone the dream touched. No lucky numbers; healing comes through attitude and quietude.'
-    : 'Caminho prático: (1) Nomeia honestamente o que sentes hoje sobre este sonho. (2) Dez minutos de silêncio ou escrita. (3) Um pequeno gesto de reconciliação - contigo ou com quem o sonho tocou. Sem números da sorte; a cura vem pela actitude e quietude.'
+  const s3 = contentForLang(lang, {
+    pt: 'Caminho prático: (1) Nomeia honestamente o que sentes hoje sobre este sonho. (2) Dez minutos de silêncio ou escrita. (3) Um pequeno gesto de reconciliação - contigo ou com quem o sonho tocou. Sem números da sorte; a cura vem pela actitude e quietude.',
+    en: 'Practical path: (1) Name honestly what you feel today about this dream. (2) Ten minutes of silence or journaling. (3) One small reconciling gesture - with yourself or someone the dream touched. No lucky numbers; healing comes through attitude and quietude.',
+    es: 'Camino práctico: (1) Nombra honestamente lo que sientes hoy sobre este sueño. (2) Diez minutos de silencio o escritura. (3) Un pequeño gesto de reconciliación, contigo o con quien el sueño tocó. Sin números de la suerte; la cura viene por actitud y quietud.',
+    it: 'Percorso pratico: (1) Nomina onestamente ciò che senti oggi su questo sogno. (2) Dieci minuti di silenzio o scrittura. (3) Un piccolo gesto di riconciliazione, con te o con chi il sogno ha toccato. Niente numeri fortunati; la guarigione viene da atteggiamento e quiete.',
+    de: 'Praktischer Weg: (1) Benenne ehrlich, was du heute über diesen Traum fühlst. (2) Zehn Minuten Stille oder Schreiben. (3) Eine kleine Geste der Versöhnung – mit dir oder wem der Traum berührte. Keine Glückszahlen; Heilung kommt durch Haltung und Stille.',
+    fr: 'Chemin pratique : (1) Nomme honnêtement ce que tu ressens aujourd\'hui sur ce rêve. (2) Dix minutes de silence ou d\'écriture. (3) Un petit geste de réconciliation – avec toi ou quelqu\'un que le rêve a touché. Pas de numéros porte-bonheur ; la guérison vient par l\'attitude et la quiétude.',
+  })
 
-  const s4 = e
-    ? `Which image from "${excerpto}" asks you for a softer gaze upon yourself - not answers, but compassion?`
-    : `Que imagem de "${excerpto}" te pede um olhar mais suave sobre ti - não respostas, mas compaixão?`
+  const s4 = contentForLang(lang, {
+    pt: `Que imagem de "${excerpto}" te pede um olhar mais suave sobre ti - não respostas, mas compaixão?`,
+    en: `Which image from "${excerpto}" asks you for a softer gaze upon yourself - not answers, but compassion?`,
+    es: `¿Qué imagen de "${excerpto}" te pide una mirada más suave sobre ti, no respuestas, sino compasión?`,
+    it: `Quale immagine di "${excerpto}" ti chiede uno sguardo più dolce su te stesso/a, non risposte, ma compassione?`,
+    de: `Welches Bild aus "${excerpto}" bittet dich um einen sanfteren Blick auf dich – nicht Antworten, sondern Mitgefühl?`,
+    fr: `Quelle image de "${excerpto}" te demande un regard plus doux sur toi – pas des réponses, mais de la compassion ?`,
+  })
 
   return [
     { key: 'section1', texto: s1 },

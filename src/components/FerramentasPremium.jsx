@@ -18,7 +18,7 @@ import { CampoCidadeField } from './CampoCidadeField.jsx'
 import { pesquisarFusoHorario } from '../lib/geocoding.js'
 import { diasVidaDesdeNascimento } from '../lib/datetime.js'
 import { calcularMapaNumerologia, GRUPOS_PITAGORICOS } from '../lib/numerologia.js'
-import { CHIPS_SIMBOLOS_PT, CHIPS_SIMBOLOS_EN, interpretarSonhoRemoto } from '../lib/sonhosInterpretacao.js'
+import { chipsSimbolos, interpretarSonhoRemoto } from '../lib/sonhosInterpretacao.js'
 import {
   resolverDadosFerramentas,
   dadosMinimosFerramentas,
@@ -1096,7 +1096,7 @@ export function InterpretacaoSonhos({ mapaNatal, onVoltar }) {
   const [chipsSel, setChipsSel] = useState([])
   const [feeling, setFeeling] = useState(null)
 
-  const chips = lang !== 'pt' ? CHIPS_SIMBOLOS_EN : CHIPS_SIMBOLOS_PT
+  const chips = chipsSimbolos(lang)
   const feelings = ['peace', 'fear', 'sadness', 'joy', 'confusion', 'anger']
 
   const toggleChip = (chip) => {

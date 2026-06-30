@@ -1,0 +1,293 @@
+/** Gerado por scripts/build-mapa-sonhos-locales.mjs */
+export const NUCLEO_ES = {
+  "Urano": {
+    "Carneiro": "Urano aqui electrifica a identidad: necesitas de autonomia radical e de iniciar rupturas que te libertem de papéis herdados.",
+    "Touro": "Urano em Touro revoluciona valores, corpo e segurança material - mudanças lentas mas irreversíveis na forma como te relacionas com o terreno.",
+    "Gémeos": "Urano em Gémeos traz mente relâmpago e ideias disruptivas; a comunicação é o canal dtu revolução pessoal.",
+    "Caranguejo": "Urano no Caranguejo agita raízes, família e memória emocional - o lar pode ser simultaneamente refúgio e campo de libertação.",
+    "Leão": "Urano em Leão reinventa a expressão criativa e o palco pessoal; autenticidade radical substitui a necessidade de aplauso.",
+    "Virgem": "Urano em Virgem reforma hábitos, saúde e métodos de trabalho - inovação atraveres do detalhe e da eficiência consciente.",
+    "Balança": "Urano na Balança transforma contratos, parcerias e noções de justiça - relações no convencionais podem ser tu caminho.",
+    "Escorpião": "Urano em Escorpião desencadeia metamorfoses profundas em intimidade, poder e tabus - crises súbitas abrem portais de libertad.",
+    "Sagitário": "Urano em Sagitário expande horizontes com velocidade: viagens, filosofia e verdades radicais rompem dogmas.",
+    "Capricórnio": "Urano em Capricórnio reestrutura carreira, autoridade e legado - revolução nas instituições que tocas.",
+    "Aquário": "Urano em Aquário amplifica o arquétipo do visionário: colectivos, tecnologia e causas humanitárias são tu fogo.",
+    "Peixes": "Urano em Peixes dissolve fronteiras entre sonho e realidade - intuición súbita e espiritulidade no convencional."
+  },
+  "Neptuno": {
+    "Carneiro": "Neptuno em Carneiro idealiza a coraje e o impulso - cuidado com ilusões sobre quem debes ser; a fé move-te, mas precisa de chão.",
+    "Touro": "Neptuno em Touro espirituliza o prazer e os sentidos - arte, natureza e beleza são portais; vigiar escapismos financeiros.",
+    "Gémeos": "Neptuno em Gémeos nebuliza a mente com imaginación e poesia - inspiras atraveres da palavra, mas clarifica factos de ficção.",
+    "Caranguejo": "Neptuno no Caranguejo aprofunda empatia e memória afectiva - absorves ambientes; limites são tu estudo espiritul.",
+    "Leão": "Neptuno em Leão romantiza a criatividade e o coração - carisma magnético misturado com necessidade de ser visto com alma.",
+    "Virgem": "Neptuno em Virgem santifica o serviço e o corpo - cura atraveres do cotidiano; perfeccionismo pode mascarar confusão.",
+    "Balança": "Neptuno na Balança idealiza o amor e a harmonia - seduzes com graça, mas aprendes a ver o outro sem projetos.",
+    "Escorpião": "Neptuno em Escorpião mergulha no mistério, sexo sagrado e psique - magnetismo oculto e sensibilidade psíquica intensa.",
+    "Sagitário": "Neptuno em Sagitário expande a fé e a visão mística - buscas verdades universais além das religiões convencionais.",
+    "Capricórnio": "Neptuno em Capricórnio dissolve estruturas rígidas - vocación espiritul dentro de instituições ou renúncia a modelos vazios.",
+    "Aquário": "Neptuno em Aquário inspira utopias e compasión colectiva - sonhas futuros onde a humanidade se eleva.",
+    "Peixes": "Neptuno em Peixes é o poeta cósmico em casa - compasión ilimitada, arte e ligação ao invisível como vocación."
+  },
+  "Plutão": {
+    "Carneiro": "Plutão em Carneiro forja identidad atraveres de crises de poder - renasces quando te atreves a liderar sem medo.",
+    "Touro": "Plutão em Touro transforma valores e posse - o que agarras com força é exactamente o que necesitas de regenerar.",
+    "Gémeos": "Plutão em Gémeos escava a mente - palavras têm poder de cura ou destruição; investigas verdades ocultas.",
+    "Caranguejo": "Plutão no Caranguejo intensifica raízes e linhagem - karma familiar e cura ancestral são tu subterrâneo.",
+    "Leão": "Plutão em Leão purifica o ego criativo - o palco exige vulnerabilidade real para ter impacto transformador.",
+    "Virgem": "Plutão em Virgem purga hábitos e corpo - obsessão pelo detalhe pode ser caminho de cura ou de controlo.",
+    "Balança": "Plutão na Balança transforma relações - parcerias são forjas de poder partilhado e verdade nua.",
+    "Escorpião": "Plutão em Escorpião é o xamã em casa - magnetismo, morte simbólica e renascimento são tu idioma nativo.",
+    "Sagitário": "Plutão em Sagitário converte crenças - filosofias morrem e renascem; ensinas o que sobreviveu ao fogo.",
+    "Capricórnio": "Plutão em Capricórnio reestrutura legado e autoridade - poder institucional ou destruição de impérios pessoais.",
+    "Aquário": "Plutão em Aquário transforma colectivos - revoluções sociais e tecnológicas tocam tu alma.",
+    "Peixes": "Plutão em Peixes dissolve o ego no oceano colectivo - compasión radical e sacrifício consciente."
+  },
+  "Nodo Norte": {
+    "Carneiro": "Nodo Norte em Carneiro pede coraje individual - evoluis quando inicias, afirmas desejos e deixas a dependência do Nodo Sul em Balança.",
+    "Touro": "Nodo Norte em Touro pede enraizamento - constróis valor duradouro, deixando o drama escorpiano do passado.",
+    "Gémeos": "Nodo Norte em Gémeos pede curiosidade e diálogo - aprendes perguntando, libertando dogmas sagitarianos.",
+    "Caranguejo": "Nodo Norte no Caranguejo pede intimidade e cuidado - honras emociones, largando a armadura capricorniana.",
+    "Leão": "Nodo Norte em Leão pede expressão criativa e coração - brilhas com autenticidade, no com dispersão aquariana.",
+    "Virgem": "Nodo Norte em Virgem pede serviço e discernimento - refinas o cotidiano, transcendendo nebulosidade pisciana.",
+    "Balança": "Nodo Norte na Balança pede parceria consciente - co-crias, deixando o carneirino solitário.",
+    "Escorpião": "Nodo Norte em Escorpião pede profundidad e entrega - mergulhas na verdade, largando conforto taurino.",
+    "Sagitário": "Nodo Norte em Sagitário pede sentido e expansão - filosofia viva substitui mentalidade gémea dispersa.",
+    "Capricórnio": "Nodo Norte em Capricórnio pede responsabilidade e legado - constróis com disciplina, superando caranguejo retraído.",
+    "Aquário": "Nodo Norte em Aquário pede visão colectiva - serves o futuro, transcendendo ego leonino.",
+    "Peixes": "Nodo Norte em Peixes pede entrega espiritul - compasión e imaginación curam o crítico virgem do passado."
+  },
+  "Quíron": {
+    "Carneiro": "Quíron em Carneiro - ferida na identidad e na coraje; curas outros a iniciar quando aceitas tu vulnerabilidade guerreira.",
+    "Touro": "Quíron em Touro - ferida em valor e corpo; ensinas estabilidade a quem duvida do seu merecimento sensorial.",
+    "Gémeos": "Quíron em Gémeos - ferida na comunicação e na mente; tu voz torna-se medicina para quem no sabe expressar-se.",
+    "Caranguejo": "Quíron no Caranguejo - ferida em pertença e família; acolhes quem no teve lar emocional seguro.",
+    "Leão": "Quíron em Leão - ferida no brilho e na criatividade; libertas outros a brilhar quando deixas de competir por atenção.",
+    "Virgem": "Quíron em Virgem - ferida no perfeccionismo e no corpo; curas atraveres do serviço humilde e imperfeito.",
+    "Balança": "Quíron na Balança - ferida em relações e justiça; tornas-te mediador de corações partidos.",
+    "Escorpião": "Quíron em Escorpião - ferida em intimidade e poder; guias transformações que outros temem enfrentar.",
+    "Sagitário": "Quíron em Sagitário - ferida em fé e sentido; ensinas esperança a quem perdeu a orientação.",
+    "Capricórnio": "Quíron em Capricórnio - ferida em autoridade e sucesso; constróis pontes para quem foi excluído das estruturas.",
+    "Aquário": "Quíron em Aquário - ferida em pertença ao grupo; abraças excluídos e inovadores feridos.",
+    "Peixes": "Quíron em Peixes - ferida na fé e nos limites; curas atraveres da compasión sem te perderes no outro."
+  }
+}
+
+export const NUCLEO_IT = {
+  "Urano": {
+    "Carneiro": "Urano aqui electrifica a identità: hai bisogno de autonomia radical e de iniciar rupturas que te libertem de papéis herdados.",
+    "Touro": "Urano em Touro revoluciona valores, corpo e segurança material - mudanças lentas mas irreversíveis na forma como te relacionas com o terreno.",
+    "Gémeos": "Urano em Gémeos traz mente relâmpago e ideias disruptivas; a comunicação é o canal dla tua revolução pessoal.",
+    "Caranguejo": "Urano no Caranguejo agita raízes, família e memória emocional - o lar pode ser simultaneamente refúgio e campo de libertação.",
+    "Leão": "Urano em Leão reinventa a expressão criativa e o palco pessoal; autenticidade radical substitui a necessidade de aplauso.",
+    "Virgem": "Urano em Virgem reforma hábitos, saúde e métodos de trabalho - inovação atravsei do detalhe e da eficiência consciente.",
+    "Balança": "Urano na Balança transforma contratos, parcerias e noções de justiça - relações non convencionais podem ser il tuo caminho.",
+    "Escorpião": "Urano em Escorpião desencadeia metamorfoses profundas em intimidade, poder e tabus - crises súbitas abrem portais de liberdade.",
+    "Sagitário": "Urano em Sagitário expande horizontes com velocidade: viagens, filosofia e verdades radicais rompem dogmas.",
+    "Capricórnio": "Urano em Capricórnio reestrutura carreira, autoridade e legado - revolução nas instituições que tocas.",
+    "Aquário": "Urano em Aquário amplifica o arquétipo do visionário: colectivos, tecnologia e causas humanitárias são il tuo fogo.",
+    "Peixes": "Urano em Peixes dissolve fronteiras entre sonho e realidade - intuição súbita e espiritualidade non convencional."
+  },
+  "Neptuno": {
+    "Carneiro": "Neptuno em Carneiro idealiza a coraggio e o impulso - cuidado com ilusões sobre quem deves ser; a fé move-te, mas precisa de chão.",
+    "Touro": "Neptuno em Touro espiritualiza o prazer e os sentidos - arte, natureza e beleza são portais; vigiar escapismos financeiros.",
+    "Gémeos": "Neptuno em Gémeos nebuliza a mente com immaginazione e poesia - inspiras atravsei da palavra, mas clarifica factos de ficção.",
+    "Caranguejo": "Neptuno no Caranguejo aprofunda empatia e memória afectiva - absorves ambientes; limites são il tuo estudo espiritual.",
+    "Leão": "Neptuno em Leão romantiza a criatividade e o coração - carisma magnético misturado com necessidade de ser visto com alma.",
+    "Virgem": "Neptuno em Virgem santifica o serviço e o corpo - cura atravsei do quotidiano; perfeccionismo pode mascarar confusão.",
+    "Balança": "Neptuno na Balança idealiza o amor e a harmonia - seduzes com graça, mas aprendes a ver o outro sem projetos.",
+    "Escorpião": "Neptuno em Escorpião mergulha no mistério, sexo sagrado e psique - magnetismo oculto e sensibilidade psíquica intensa.",
+    "Sagitário": "Neptuno em Sagitário expande a fé e a visão mística - buscas verdades universais além das religiões convencionais.",
+    "Capricórnio": "Neptuno em Capricórnio dissolve estruturas rígidas - vocazione espiritual dentro de instituições ou renúncia a modelos vazios.",
+    "Aquário": "Neptuno em Aquário inspira utopias e compassione colectiva - sonhas futuros onde a humanidade se eleva.",
+    "Peixes": "Neptuno em Peixes é o poeta cósmico em casa - compassione ilimitada, arte e ligação ao invisível como vocazione."
+  },
+  "Plutão": {
+    "Carneiro": "Plutão em Carneiro forja identità atravsei de crises de poder - renasces quando te atreves a liderar sem medo.",
+    "Touro": "Plutão em Touro transforma valores e posse - o que agarras com força é exactamente o que hai bisogno de regenerar.",
+    "Gémeos": "Plutão em Gémeos escava a mente - palavras têm poder de cura ou destruição; investigas verdades ocultas.",
+    "Caranguejo": "Plutão no Caranguejo intensifica raízes e linhagem - karma familiar e cura ancestral são il tuo subterrâneo.",
+    "Leão": "Plutão em Leão purifica o ego criativo - o palco exige vulnerabilidade real para ter impacto transformador.",
+    "Virgem": "Plutão em Virgem purga hábitos e corpo - obsessão pelo detalhe pode ser caminho de cura ou de controlo.",
+    "Balança": "Plutão na Balança transforma relações - parcerias são forjas de poder partilhado e verdade nua.",
+    "Escorpião": "Plutão em Escorpião é o xamã em casa - magnetismo, morte simbólica e renascimento são il tuo idioma nativo.",
+    "Sagitário": "Plutão em Sagitário converte crenças - filosofias morrem e renascem; ensinas o que sobreviveu ao fogo.",
+    "Capricórnio": "Plutão em Capricórnio reestrutura legado e autoridade - poder institucional ou destruição de impérios pessoais.",
+    "Aquário": "Plutão em Aquário transforma colectivos - revoluções sociais e tecnológicas tocam la tua alma.",
+    "Peixes": "Plutão em Peixes dissolve o ego no oceano colectivo - compassione radical e sacrifício consciente."
+  },
+  "Nodo Norte": {
+    "Carneiro": "Nodo Norte em Carneiro pede coraggio individual - evoluis quando inicias, afirmas desejos e deixas a dependência do Nodo Sul em Balança.",
+    "Touro": "Nodo Norte em Touro pede enraizamento - constróis valor duradouro, deixando o drama escorpiano do passado.",
+    "Gémeos": "Nodo Norte em Gémeos pede curiosidade e diálogo - aprendes perguntando, libertando dogmas sagitarianos.",
+    "Caranguejo": "Nodo Norte no Caranguejo pede intimidade e cuidado - honras emoções, largando a armadura capricorniana.",
+    "Leão": "Nodo Norte em Leão pede expressão criativa e coração - brilhas com autenticidade, non com dispersão aquariana.",
+    "Virgem": "Nodo Norte em Virgem pede serviço e discernimento - refinas o quotidiano, transcendendo nebulosidade pisciana.",
+    "Balança": "Nodo Norte na Balança pede parceria consciente - co-crias, deixando o carneirino solitário.",
+    "Escorpião": "Nodo Norte em Escorpião pede profondità e entrega - mergulhas na verdade, largando conforto taurino.",
+    "Sagitário": "Nodo Norte em Sagitário pede sentido e expansão - filosofia viva substitui mentalidade gémea dispersa.",
+    "Capricórnio": "Nodo Norte em Capricórnio pede responsabilidade e legado - constróis com disciplina, superando caranguejo retraído.",
+    "Aquário": "Nodo Norte em Aquário pede visão colectiva - serves o futuro, transcendendo ego leonino.",
+    "Peixes": "Nodo Norte em Peixes pede entrega espiritual - compassione e immaginazione curam o crítico virgem do passado."
+  },
+  "Quíron": {
+    "Carneiro": "Quíron em Carneiro - ferida na identità e na coraggio; curas outros a iniciar quando aceitas la tua vulnerabilidade guerreira.",
+    "Touro": "Quíron em Touro - ferida em valor e corpo; ensinas estabilidade a quem duvida do seu merecimento sensorial.",
+    "Gémeos": "Quíron em Gémeos - ferida na comunicação e na mente; la tua voz torna-se medicina para quem non sabe expressar-se.",
+    "Caranguejo": "Quíron no Caranguejo - ferida em pertença e família; acolhes quem non teve lar emocional seguro.",
+    "Leão": "Quíron em Leão - ferida no brilho e na criatividade; libertas outros a brilhar quando deixas de competir por atenção.",
+    "Virgem": "Quíron em Virgem - ferida no perfeccionismo e no corpo; curas atravsei do serviço humilde e imperfeito.",
+    "Balança": "Quíron na Balança - ferida em relações e justiça; tornas-te mediador de corações partidos.",
+    "Escorpião": "Quíron em Escorpião - ferida em intimidade e poder; guias transformações que outros temem enfrentar.",
+    "Sagitário": "Quíron em Sagitário - ferida em fé e sentido; ensinas esperança a quem perdeu a orientação.",
+    "Capricórnio": "Quíron em Capricórnio - ferida em autoridade e sucesso; constróis pontes para quem foi excluído das estruturas.",
+    "Aquário": "Quíron em Aquário - ferida em pertença ao grupo; abraças excluídos e inovadores feridos.",
+    "Peixes": "Quíron em Peixes - ferida na fé e nos limites; curas atravsei da compassione sem te perderes no outro."
+  }
+}
+
+export const NUCLEO_DE = {
+  "Urano": {
+    "Carneiro": "Urano aqui electrifica a Identität: brauchst de autonomia radical e de iniciar rupturas que te libertem de papéis herdados.",
+    "Touro": "Urano em Touro revoluciona valores, corpo e segurança material - mudanças lentas mas irreversíveis na forma como te relacionas com o terreno.",
+    "Gémeos": "Urano em Gémeos traz mente relâmpago e ideias disruptivas; a comunicação é o canal ddeine revolução pessoal.",
+    "Caranguejo": "Urano no Caranguejo agita raízes, família e memória emocional - o lar pode ser simultaneamente refúgio e campo de libertação.",
+    "Leão": "Urano em Leão reinventa a expressão criativa e o palco pessoal; autenticidade radical substitui a necessidade de aplauso.",
+    "Virgem": "Urano em Virgem reforma hábitos, saúde e métodos de trabalho - inovação atravbist do detalhe e da eficiência consciente.",
+    "Balança": "Urano na Balança transforma contratos, parcerias e noções de justiça - relações nicht convencionais podem ser dein caminho.",
+    "Escorpião": "Urano em Escorpião desencadeia metamorfoses profundas em intimidade, poder e tabus - crises súbitas abrem portais de liberdade.",
+    "Sagitário": "Urano em Sagitário expande horizontes com velocidade: viagens, filosofia e verdades radicais rompem dogmas.",
+    "Capricórnio": "Urano em Capricórnio reestrutura carreira, autoridade e legado - revolução nas instituições que tocas.",
+    "Aquário": "Urano em Aquário amplifica o arquétipo do visionário: colectivos, tecnologia e causas humanitárias são dein fogo.",
+    "Peixes": "Urano em Peixes dissolve fronteiras entre sonho e realidade - intuição súbita e espirideinelidade nicht convencional."
+  },
+  "Neptuno": {
+    "Carneiro": "Neptuno em Carneiro idealiza a Mut e o impulso - cuidado com ilusões sobre quem deves ser; a fé move-te, mas precisa de chão.",
+    "Touro": "Neptuno em Touro espirideineliza o prazer e os sentidos - arte, natureza e beleza são portais; vigiar escapismos financeiros.",
+    "Gémeos": "Neptuno em Gémeos nebuliza a mente com Fantasie e poesia - inspiras atravbist da palavra, mas clarifica factos de ficção.",
+    "Caranguejo": "Neptuno no Caranguejo aprofunda empatia e memória afectiva - absorves ambientes; limites são dein estudo espirideinel.",
+    "Leão": "Neptuno em Leão romantiza a criatividade e o coração - carisma magnético misturado com necessidade de ser visto com alma.",
+    "Virgem": "Neptuno em Virgem santifica o serviço e o corpo - cura atravbist do Alltag; perfeccionismo pode mascarar confusão.",
+    "Balança": "Neptuno na Balança idealiza o amor e a harmonia - seduzes com graça, mas aprendes a ver o outro sem projetos.",
+    "Escorpião": "Neptuno em Escorpião mergulha no mistério, sexo sagrado e psique - magnetismo oculto e sensibilidade psíquica intensa.",
+    "Sagitário": "Neptuno em Sagitário expande a fé e a visão mística - buscas verdades universais além das religiões convencionais.",
+    "Capricórnio": "Neptuno em Capricórnio dissolve estruturas rígidas - Berufung espirideinel dentro de instituições ou renúncia a modelos vazios.",
+    "Aquário": "Neptuno em Aquário inspira utopias e Mitgefühl colectiva - sonhas futuros onde a humanidade se eleva.",
+    "Peixes": "Neptuno em Peixes é o poeta cósmico em casa - Mitgefühl ilimitada, arte e ligação ao invisível como Berufung."
+  },
+  "Plutão": {
+    "Carneiro": "Plutão em Carneiro forja Identität atravbist de crises de poder - renasces quando te atreves a liderar sem medo.",
+    "Touro": "Plutão em Touro transforma valores e posse - o que agarras com força é exactamente o que brauchst de regenerar.",
+    "Gémeos": "Plutão em Gémeos escava a mente - palavras têm poder de cura ou destruição; investigas verdades ocultas.",
+    "Caranguejo": "Plutão no Caranguejo intensifica raízes e linhagem - karma familiar e cura ancestral são dein subterrâneo.",
+    "Leão": "Plutão em Leão purifica o ego criativo - o palco exige vulnerabilidade real para ter impacto transformador.",
+    "Virgem": "Plutão em Virgem purga hábitos e corpo - obsessão pelo detalhe pode ser caminho de cura ou de controlo.",
+    "Balança": "Plutão na Balança transforma relações - parcerias são forjas de poder partilhado e verdade nua.",
+    "Escorpião": "Plutão em Escorpião é o xamã em casa - magnetismo, morte simbólica e renascimento são dein idioma nativo.",
+    "Sagitário": "Plutão em Sagitário converte crenças - filosofias morrem e renascem; ensinas o que sobreviveu ao fogo.",
+    "Capricórnio": "Plutão em Capricórnio reestrutura legado e autoridade - poder institucional ou destruição de impérios pessoais.",
+    "Aquário": "Plutão em Aquário transforma colectivos - revoluções sociais e tecnológicas tocam deine alma.",
+    "Peixes": "Plutão em Peixes dissolve o ego no oceano colectivo - Mitgefühl radical e sacrifício consciente."
+  },
+  "Nodo Norte": {
+    "Carneiro": "Nodo Norte em Carneiro pede Mut individual - evoluis quando inicias, afirmas desejos e deixas a dependência do Nodo Sul em Balança.",
+    "Touro": "Nodo Norte em Touro pede enraizamento - constróis valor duradouro, deixando o drama escorpiano do passado.",
+    "Gémeos": "Nodo Norte em Gémeos pede curiosidade e diálogo - aprendes perguntando, libertando dogmas sagitarianos.",
+    "Caranguejo": "Nodo Norte no Caranguejo pede intimidade e cuidado - honras emoções, largando a armadura capricorniana.",
+    "Leão": "Nodo Norte em Leão pede expressão criativa e coração - brilhas com autenticidade, nicht com dispersão aquariana.",
+    "Virgem": "Nodo Norte em Virgem pede serviço e discernimento - refinas o Alltag, transcendendo nebulosidade pisciana.",
+    "Balança": "Nodo Norte na Balança pede parceria consciente - co-crias, deixando o carneirino solitário.",
+    "Escorpião": "Nodo Norte em Escorpião pede Tiefe e entrega - mergulhas na verdade, largando conforto taurino.",
+    "Sagitário": "Nodo Norte em Sagitário pede sentido e expansão - filosofia viva substitui mentalidade gémea dispersa.",
+    "Capricórnio": "Nodo Norte em Capricórnio pede responsabilidade e legado - constróis com disciplina, superando caranguejo retraído.",
+    "Aquário": "Nodo Norte em Aquário pede visão colectiva - serves o futuro, transcendendo ego leonino.",
+    "Peixes": "Nodo Norte em Peixes pede entrega espirideinel - Mitgefühl e Fantasie curam o crítico virgem do passado."
+  },
+  "Quíron": {
+    "Carneiro": "Quíron em Carneiro - ferida na Identität e na Mut; curas outros a iniciar quando aceitas deine vulnerabilidade guerreira.",
+    "Touro": "Quíron em Touro - ferida em valor e corpo; ensinas estabilidade a quem duvida do seu merecimento sensorial.",
+    "Gémeos": "Quíron em Gémeos - ferida na comunicação e na mente; deine voz torna-se medicina para quem nicht sabe expressar-se.",
+    "Caranguejo": "Quíron no Caranguejo - ferida em pertença e família; acolhes quem nicht teve lar emocional seguro.",
+    "Leão": "Quíron em Leão - ferida no brilho e na criatividade; libertas outros a brilhar quando deixas de competir por atenção.",
+    "Virgem": "Quíron em Virgem - ferida no perfeccionismo e no corpo; curas atravbist do serviço humilde e imperfeito.",
+    "Balança": "Quíron na Balança - ferida em relações e justiça; tornas-te mediador de corações partidos.",
+    "Escorpião": "Quíron em Escorpião - ferida em intimidade e poder; guias transformações que outros temem enfrentar.",
+    "Sagitário": "Quíron em Sagitário - ferida em fé e sentido; ensinas esperança a quem perdeu a orientação.",
+    "Capricórnio": "Quíron em Capricórnio - ferida em autoridade e sucesso; constróis pontes para quem foi excluído das estruturas.",
+    "Aquário": "Quíron em Aquário - ferida em pertença ao grupo; abraças excluídos e inovadores feridos.",
+    "Peixes": "Quíron em Peixes - ferida na fé e nos limites; curas atravbist da Mitgefühl sem te perderes no outro."
+  }
+}
+
+export const NUCLEO_FR = {
+  "Urano": {
+    "Carneiro": "Urano aqui electrifica a identité: as besoin de autonomia radical e de iniciar rupturas que te libertem de papéis herdados.",
+    "Touro": "Urano em Touro revoluciona valores, corpo e segurança material - mudanças lentas mas irreversíveis na forma como te relacionas com o terreno.",
+    "Gémeos": "Urano em Gémeos traz mente relâmpago e ideias disruptivas; a comunicação é o canal dta revolução pessoal.",
+    "Caranguejo": "Urano no Caranguejo agita raízes, família e memória emocional - o lar pode ser simultaneamente refúgio e campo de libertação.",
+    "Leão": "Urano em Leão reinventa a expressão criativa e o palco pessoal; autenticidade radical substitui a necessidade de aplauso.",
+    "Virgem": "Urano em Virgem reforma hábitos, saúde e métodos de trabalho - inovação atraves do detalhe e da eficiência consciente.",
+    "Balança": "Urano na Balança transforma contratos, parcerias e noções de justiça - relações ne pas convencionais podem ser ton caminho.",
+    "Escorpião": "Urano em Escorpião desencadeia metamorfoses profundas em intimidade, poder e tabus - crises súbitas abrem portais de liberdade.",
+    "Sagitário": "Urano em Sagitário expande horizontes com velocidade: viagens, filosofia e verdades radicais rompem dogmas.",
+    "Capricórnio": "Urano em Capricórnio reestrutura carreira, autoridade e legado - revolução nas instituições que tocas.",
+    "Aquário": "Urano em Aquário amplifica o arquétipo do visionário: colectivos, tecnologia e causas humanitárias são ton fogo.",
+    "Peixes": "Urano em Peixes dissolve fronteiras entre sonho e realidade - intuição súbita e espiritalidade ne pas convencional."
+  },
+  "Neptuno": {
+    "Carneiro": "Neptuno em Carneiro idealiza a courage e o impulso - cuidado com ilusões sobre quem deves ser; a fé move-te, mas precisa de chão.",
+    "Touro": "Neptuno em Touro espiritaliza o prazer e os sentidos - arte, natureza e beleza são portais; vigiar escapismos financeiros.",
+    "Gémeos": "Neptuno em Gémeos nebuliza a mente com imagination e poesia - inspiras atraves da palavra, mas clarifica factos de ficção.",
+    "Caranguejo": "Neptuno no Caranguejo aprofunda empatia e memória afectiva - absorves ambientes; limites são ton estudo espirital.",
+    "Leão": "Neptuno em Leão romantiza a criatividade e o coração - carisma magnético misturado com necessidade de ser visto com alma.",
+    "Virgem": "Neptuno em Virgem santifica o serviço e o corpo - cura atraves do quotidien; perfeccionismo pode mascarar confusão.",
+    "Balança": "Neptuno na Balança idealiza o amor e a harmonia - seduzes com graça, mas aprendes a ver o outro sem projetos.",
+    "Escorpião": "Neptuno em Escorpião mergulha no mistério, sexo sagrado e psique - magnetismo oculto e sensibilidade psíquica intensa.",
+    "Sagitário": "Neptuno em Sagitário expande a fé e a visão mística - buscas verdades universais além das religiões convencionais.",
+    "Capricórnio": "Neptuno em Capricórnio dissolve estruturas rígidas - vocation espirital dentro de instituições ou renúncia a modelos vazios.",
+    "Aquário": "Neptuno em Aquário inspira utopias e compassion colectiva - sonhas futuros onde a humanidade se eleva.",
+    "Peixes": "Neptuno em Peixes é o poeta cósmico em casa - compassion ilimitada, arte e ligação ao invisível como vocation."
+  },
+  "Plutão": {
+    "Carneiro": "Plutão em Carneiro forja identité atraves de crises de poder - renasces quando te atreves a liderar sem medo.",
+    "Touro": "Plutão em Touro transforma valores e posse - o que agarras com força é exactamente o que as besoin de regenerar.",
+    "Gémeos": "Plutão em Gémeos escava a mente - palavras têm poder de cura ou destruição; investigas verdades ocultas.",
+    "Caranguejo": "Plutão no Caranguejo intensifica raízes e linhagem - karma familiar e cura ancestral são ton subterrâneo.",
+    "Leão": "Plutão em Leão purifica o ego criativo - o palco exige vulnerabilidade real para ter impacto transformador.",
+    "Virgem": "Plutão em Virgem purga hábitos e corpo - obsessão pelo detalhe pode ser caminho de cura ou de controlo.",
+    "Balança": "Plutão na Balança transforma relações - parcerias são forjas de poder partilhado e verdade nua.",
+    "Escorpião": "Plutão em Escorpião é o xamã em casa - magnetismo, morte simbólica e renascimento são ton idioma nativo.",
+    "Sagitário": "Plutão em Sagitário converte crenças - filosofias morrem e renascem; ensinas o que sobreviveu ao fogo.",
+    "Capricórnio": "Plutão em Capricórnio reestrutura legado e autoridade - poder institucional ou destruição de impérios pessoais.",
+    "Aquário": "Plutão em Aquário transforma colectivos - revoluções sociais e tecnológicas tocam ta alma.",
+    "Peixes": "Plutão em Peixes dissolve o ego no oceano colectivo - compassion radical e sacrifício consciente."
+  },
+  "Nodo Norte": {
+    "Carneiro": "Nodo Norte em Carneiro pede courage individual - evoluis quando inicias, afirmas desejos e deixas a dependência do Nodo Sul em Balança.",
+    "Touro": "Nodo Norte em Touro pede enraizamento - constróis valor duradouro, deixando o drama escorpiano do passado.",
+    "Gémeos": "Nodo Norte em Gémeos pede curiosidade e diálogo - aprendes perguntando, libertando dogmas sagitarianos.",
+    "Caranguejo": "Nodo Norte no Caranguejo pede intimidade e cuidado - honras emoções, largando a armadura capricorniana.",
+    "Leão": "Nodo Norte em Leão pede expressão criativa e coração - brilhas com autenticidade, ne pas com dispersão aquariana.",
+    "Virgem": "Nodo Norte em Virgem pede serviço e discernimento - refinas o quotidien, transcendendo nebulosidade pisciana.",
+    "Balança": "Nodo Norte na Balança pede parceria consciente - co-crias, deixando o carneirino solitário.",
+    "Escorpião": "Nodo Norte em Escorpião pede profondeur e entrega - mergulhas na verdade, largando conforto taurino.",
+    "Sagitário": "Nodo Norte em Sagitário pede sentido e expansão - filosofia viva substitui mentalidade gémea dispersa.",
+    "Capricórnio": "Nodo Norte em Capricórnio pede responsabilidade e legado - constróis com disciplina, superando caranguejo retraído.",
+    "Aquário": "Nodo Norte em Aquário pede visão colectiva - serves o futuro, transcendendo ego leonino.",
+    "Peixes": "Nodo Norte em Peixes pede entrega espirital - compassion e imagination curam o crítico virgem do passado."
+  },
+  "Quíron": {
+    "Carneiro": "Quíron em Carneiro - ferida na identité e na courage; curas outros a iniciar quando aceitas ta vulnerabilidade guerreira.",
+    "Touro": "Quíron em Touro - ferida em valor e corpo; ensinas estabilidade a quem duvida do seu merecimento sensorial.",
+    "Gémeos": "Quíron em Gémeos - ferida na comunicação e na mente; ta voz torna-se medicina para quem ne pas sabe expressar-se.",
+    "Caranguejo": "Quíron no Caranguejo - ferida em pertença e família; acolhes quem ne pas teve lar emocional seguro.",
+    "Leão": "Quíron em Leão - ferida no brilho e na criatividade; libertas outros a brilhar quando deixas de competir por atenção.",
+    "Virgem": "Quíron em Virgem - ferida no perfeccionismo e no corpo; curas atraves do serviço humilde e imperfeito.",
+    "Balança": "Quíron na Balança - ferida em relações e justiça; tornas-te mediador de corações partidos.",
+    "Escorpião": "Quíron em Escorpião - ferida em intimidade e poder; guias transformações que outros temem enfrentar.",
+    "Sagitário": "Quíron em Sagitário - ferida em fé e sentido; ensinas esperança a quem perdeu a orientação.",
+    "Capricórnio": "Quíron em Capricórnio - ferida em autoridade e sucesso; constróis pontes para quem foi excluído das estruturas.",
+    "Aquário": "Quíron em Aquário - ferida em pertença ao grupo; abraças excluídos e inovadores feridos.",
+    "Peixes": "Quíron em Peixes - ferida na fé e nos limites; curas atraves da compassion sem te perderes no outro."
+  }
+}
+
