@@ -104,74 +104,117 @@ function descricaoMes(transito, lang, posicoes) {
     .map((x) => `${translatePlaneta(x.nome, lang)} ${prep} ${x.signo} (${x.graus}°)`)
     .join(' · ')
 
-  if (!isPt(lang)) {
-    let base = `${p} ${prep} ${s} at ${graus}°`
-    if (retro) base += ' ℞'
-    if (tipo === 'ingresso') base = `${p} enters ${s} this month - a shift in collective tone and personal strategy.`
-    else if (tipo === 'retrógrado') base = `${p} retrograde in ${s}: review, revise and deepen; avoid rushing new starts in this area.`
-    else base += `. Monthly sky emphasis invites conscious alignment with this archetype.`
-    if (outros) base += ` Also active: ${outros}.`
-    base += ' Calculated with tropical zodiac · professional ephemerides.'
-    return base
+  const ALSO = { pt: 'Também activos:', en: 'Also active:', es: 'También activos:', it: 'Anche attivi:', de: 'Ebenfalls aktiv:', fr: 'Également actifs :' }
+  const FOOTER = {
+    pt: 'Cálculo: zodíaco tropical · efemérides profissionais.',
+    en: 'Calculated with tropical zodiac · professional ephemerides.',
+    es: 'Cálculo: zodíaco tropical · efemérides profesionales.',
+    it: 'Calcolo: zodiaco tropicale · effemeridi professionali.',
+    de: 'Berechnung: tropischer Zodiak · professionelle Ephemeriden.',
+    fr: 'Calcul : zodiaque tropical · éphémérides professionnelles.',
   }
 
-  let base = `${p} em ${s} a ${graus}°`
-  if (retro) base += ' ℞'
-  if (tipo === 'ingresso') base = `${p} ingressa em ${s} este mês - mudança de tom colectivo e de estratégia pessoal.`
-  else if (tipo === 'retrógrado') base = `${p} retrógrado em ${s}: rever, revisar e aprofundar; evita arrancadas precipitadas nesta área.`
-  else base += `. O céu do mês pede alinhamento consciente com este arquétipo.`
-  if (outros) base += ` Também activos: ${outros}.`
-  base += ' Cálculo: zodíaco tropical · efemérides profissionais.'
-  return base
+  const build = {
+    pt: () => {
+      let base = `${p} em ${s} a ${graus}°`
+      if (retro) base += ' ℞'
+      if (tipo === 'ingresso') base = `${p} ingressa em ${s} este mês - mudança de tom colectivo e de estratégia pessoal.`
+      else if (tipo === 'retrógrado') base = `${p} retrógrado em ${s}: rever, revisar e aprofundar; evita arrancadas precipitadas nesta área.`
+      else base += `. O céu do mês pede alinhamento consciente com este arquétipo.`
+      if (outros) base += ` ${ALSO.pt} ${outros}.`
+      return base + ' ' + FOOTER.pt
+    },
+    en: () => {
+      let base = `${p} ${prep} ${s} at ${graus}°`
+      if (retro) base += ' ℞'
+      if (tipo === 'ingresso') base = `${p} enters ${s} this month - a shift in collective tone and personal strategy.`
+      else if (tipo === 'retrógrado') base = `${p} retrograde in ${s}: review, revise and deepen; avoid rushing new starts in this area.`
+      else base += `. Monthly sky emphasis invites conscious alignment with this archetype.`
+      if (outros) base += ` ${ALSO.en} ${outros}.`
+      return base + ' ' + FOOTER.en
+    },
+    es: () => {
+      let base = `${p} en ${s} a ${graus}°`
+      if (retro) base += ' ℞'
+      if (tipo === 'ingresso') base = `${p} entra en ${s} este mes: cambio de tono colectivo y de estrategia personal.`
+      else if (tipo === 'retrógrado') base = `${p} retrógrado en ${s}: revisar, profundizar; evita arrancadas precipitadas en esta área.`
+      else base += `. El cielo del mes pide alineación consciente con este arquetipo.`
+      if (outros) base += ` ${ALSO.es} ${outros}.`
+      return base + ' ' + FOOTER.es
+    },
+    it: () => {
+      let base = `${p} in ${s} a ${graus}°`
+      if (retro) base += ' ℞'
+      if (tipo === 'ingresso') base = `${p} entra in ${s} questo mese: cambio di tono collettivo e di strategia personale.`
+      else if (tipo === 'retrógrado') base = `${p} retrogrado in ${s}: rivedi, approfondisci; evita partenze affrettate in quest'area.`
+      else base += `. Il cielo del mese chiede allineamento consapevole con questo archetipo.`
+      if (outros) base += ` ${ALSO.it} ${outros}.`
+      return base + ' ' + FOOTER.it
+    },
+    de: () => {
+      let base = `${p} in ${s} bei ${graus}°`
+      if (retro) base += ' ℞'
+      if (tipo === 'ingresso') base = `${p} tritt diesen Monat in ${s} ein – Wandel im kollektiven Ton und in der persönlichen Strategie.`
+      else if (tipo === 'retrógrado') base = `${p} rückläufig in ${s}: überprüfen, vertiefen; vermeide übereilte Neuanfänge in diesem Bereich.`
+      else base += `. Der Monatshimmel lädt zur bewussten Ausrichtung an diesem Archetyp ein.`
+      if (outros) base += ` ${ALSO.de} ${outros}.`
+      return base + ' ' + FOOTER.de
+    },
+    fr: () => {
+      let base = `${p} en ${s} à ${graus}°`
+      if (retro) base += ' ℞'
+      if (tipo === 'ingresso') base = `${p} entre en ${s} ce mois-ci : changement de ton collectif et de stratégie personnelle.`
+      else if (tipo === 'retrógrado') base = `${p} rétrograde en ${s} : réviser, approfondir ; évite les départs précipités dans ce domaine.`
+      else base += `. Le ciel du mois invite à un alignement conscient avec cet archétype.`
+      if (outros) base += ` ${ALSO.fr} ${outros}.`
+      return base + ' ' + FOOTER.fr
+    },
+  }
+
+  return (build[lang] || build.en)()
+}
+
+const CONCEITOS_2026 = {
+  pt: [
+    { titulo: 'Conjunção Saturno · Neptuno (Fev 2026)', texto: 'Fusão rara de estrutura e sonho. As fronteiras dissolvem-se onde a disciplina encontra a imaginação - ideal para maturidade espiritual, não fuga.', icon: '☌' },
+    { titulo: 'Júpiter em Caranguejo (a partir de meados de 2026)', texto: 'Expansão através das raízes, família e segurança emocional. Tempo fértil para o lar, cura ancestral e nutrir o que alimenta a alma.', icon: '♃' },
+    { titulo: 'Ciclos de Mercúrio retrógrado', texto: 'Rever comunicações e contratos. Em 2026 destaca-se processamento emocional (signos de Água) e acordos afectivos (Balança).', icon: '℞' },
+    { titulo: 'Portais de eclipse', texto: 'Eclipses solares e lunares marcam capítulos acelerados. Observa que casa natal tocam - os acontecimentos desenrolam-se em 6–18 meses.', icon: '🌑' },
+  ],
+  en: [
+    { titulo: 'Saturn · Neptune conjunction (Feb 2026)', texto: 'A rare fusion of structure and dream. Boundaries dissolve where discipline meets imagination - ideal for spiritual maturity, not escapism.', icon: '☌' },
+    { titulo: 'Jupiter in Cancer (from mid-2026)', texto: 'Expansion through roots, family and emotional security. Fertile time for home, ancestry healing and nurturing what truly feeds the soul.', icon: '♃' },
+    { titulo: 'Mercury retrograde cycles', texto: 'Review communications and contracts. 2026 highlights: emotional processing (Water signs) and relationship agreements (Libra).', icon: '℞' },
+    { titulo: 'Eclipse portals', texto: 'Solar and lunar eclipses mark accelerated chapters. Track which natal house they touch - events unfold over 6–18 months.', icon: '🌑' },
+  ],
+  es: [
+    { titulo: 'Conjunción Saturno · Neptuno (Feb 2026)', texto: 'Fusión rara de estructura y sueño. Las fronteras se disuelven donde la disciplina encuentra la imaginación: ideal para madurez espiritual, no evasión.', icon: '☌' },
+    { titulo: 'Júpiter en Cáncer (desde mediados de 2026)', texto: 'Expansión a través de las raíces, la familia y la seguridad emocional. Tiempo fértil para el hogar, sanar ancestros y nutrir lo que alimenta el alma.', icon: '♃' },
+    { titulo: 'Ciclos de Mercurio retrógrado', texto: 'Revisar comunicaciones y contratos. En 2026 destacan el procesamiento emocional (signos de Agua) y los acuerdos afectivos (Libra).', icon: '℞' },
+    { titulo: 'Portales de eclipse', texto: 'Los eclipses solares y lunares marcan capítulos acelerados. Observa qué casa natal tocan: los acontecimientos se despliegan en 6–18 meses.', icon: '🌑' },
+  ],
+  it: [
+    { titulo: 'Congiunzione Saturno · Nettuno (Feb 2026)', texto: 'Rara fusione di struttura e sogno. I confini si dissolvono dove la disciplina incontra l\'immaginazione: ideale per maturità spirituale, non evasione.', icon: '☌' },
+    { titulo: 'Giove in Cancro (da metà 2026)', texto: 'Espansione attraverso radici, famiglia e sicurezza emotiva. Tempo fertile per la casa, guarigione ancestrale e nutrire ciò che alimenta l\'anima.', icon: '♃' },
+    { titulo: 'Cicli di Mercurio retrogrado', texto: 'Rivedere comunicazioni e contratti. Nel 2026 spiccano elaborazione emotiva (segni d\'Acqua) e accordi relazionali (Bilancia).', icon: '℞' },
+    { titulo: 'Portali dell\'eclissi', texto: 'Eclissi solari e lunari segnano capitoli accelerati. Osserva quale casa natale toccano: gli eventi si sviluppano in 6–18 mesi.', icon: '🌑' },
+  ],
+  de: [
+    { titulo: 'Saturn · Neptun Konjunktion (Feb 2026)', texto: 'Seltene Verschmelzung von Struktur und Traum. Grenzen lösen sich, wo Disziplin auf Fantasie trifft – ideal für spirituelle Reife, nicht Flucht.', icon: '☌' },
+    { titulo: 'Jupiter im Krebs (ab Mitte 2026)', texto: 'Expansion durch Wurzeln, Familie und emotionale Sicherheit. Fruchtbare Zeit für Zuhause, Ahnenheilung und das Nähren der Seele.', icon: '♃' },
+    { titulo: 'Merkur-Rückläufigkeitszyklen', texto: 'Kommunikation und Verträge überprüfen. 2026 betont emotionale Verarbeitung (Wasserzeichen) und Beziehungsabkommen (Waage).', icon: '℞' },
+    { titulo: 'Finsternis-Portale', texto: 'Sonnen- und Mondfinsternisse markieren beschleunigte Kapitel. Beobachte, welches Geburtshaus sie berühren – Ereignisse entfalten sich über 6–18 Monate.', icon: '🌑' },
+  ],
+  fr: [
+    { titulo: 'Conjonction Saturne · Neptune (fév. 2026)', texto: 'Fusion rare de structure et de rêve. Les frontières se dissolvent où la discipline rencontre l\'imagination – idéal pour la maturité spirituelle, pas l\'évasion.', icon: '☌' },
+    { titulo: 'Jupiter en Cancer (à partir de mi-2026)', texto: 'Expansion par les racines, la famille et la sécurité émotionnelle. Temps fertile pour le foyer, la guérison ancestrale et nourrir ce qui alimente l\'âme.', icon: '♃' },
+    { titulo: 'Cycles de Mercure rétrograde', texto: 'Réviser communications et contrats. En 2026 : traitement émotionnel (signes d\'Eau) et accords relationnels (Balance).', icon: '℞' },
+    { titulo: 'Portails d\'éclipse', texto: 'Éclipses solaires et lunaires marquent des chapitres accélérés. Observe quelle maison natale ils touchent – les événements se déploient sur 6–18 mois.', icon: '🌑' },
+  ],
 }
 
 function conceitos2026(lang) {
-  if (lang !== 'pt') {
-    return [
-      {
-        titulo: 'Saturn · Neptune conjunction (Feb 2026)',
-        texto: 'A rare fusion of structure and dream. Boundaries dissolve where discipline meets imagination - ideal for spiritual maturity, not escapism.',
-        icon: '☌',
-      },
-      {
-        titulo: 'Jupiter in Cancer (from mid-2026)',
-        texto: 'Expansion through roots, family and emotional security. Fertile time for home, ancestry healing and nurturing what truly feeds the soul.',
-        icon: '♃',
-      },
-      {
-        titulo: 'Mercury retrograde cycles',
-        texto: 'Review communications and contracts. 2026 highlights: emotional processing (Water signs) and relationship agreements (Libra).',
-        icon: '℞',
-      },
-      {
-        titulo: 'Eclipse portals',
-        texto: 'Solar and lunar eclipses mark accelerated chapters. Track which natal house they touch - events unfold over 6–18 months.',
-        icon: '🌑',
-      },
-    ]
-  }
-  return [
-    {
-      titulo: 'Conjunção Saturno · Neptuno (Fev 2026)',
-      texto: 'Fusão rara de estrutura e sonho. As fronteiras dissolvem-se onde a disciplina encontra a imaginação - ideal para maturidade espiritual, não fuga.',
-      icon: '☌',
-    },
-    {
-      titulo: 'Júpiter em Caranguejo (a partir de meados de 2026)',
-      texto: 'Expansão através das raízes, família e segurança emocional. Tempo fértil para o lar, cura ancestral e nutrir o que alimenta a alma.',
-      icon: '♃',
-    },
-    {
-      titulo: 'Ciclos de Mercúrio retrógrado',
-      texto: 'Rever comunicações e contratos. Em 2026 destaca-se processamento emocional (signos de Água) e acordos afectivos (Balança).',
-      icon: '℞',
-    },
-    {
-      titulo: 'Portais de eclipse',
-      texto: 'Eclipses solares e lunares marcam capítulos acelerados. Observa que casa natal tocam - os acontecimentos desenrolam-se em 6–18 meses.',
-      icon: '🌑',
-    },
-  ]
+  return contentForLang(lang, CONCEITOS_2026) || CONCEITOS_2026.en
 }
 
 const AFINIDADE = {

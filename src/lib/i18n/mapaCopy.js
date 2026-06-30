@@ -1,7 +1,9 @@
 /**
- * Textos de interpretação do mapa natal - PT e EN.
+ * Textos de interpretação do mapa natal — 6 idiomas.
  */
 import { translateSigno, translateAspecto } from './astro.js'
+import { getMapaStatic } from './packs/mapaStatic.js'
+import { contentForLang } from './langUtil.js'
 
 const TEMAS_CASA_PT = {
   1:  { nome: 'Identidade e Aparência',       foco: 'quem és, o corpo, a primeira impressão e a forma como inicias a vida' },
@@ -212,20 +214,28 @@ const LABELS = {
   },
 }
 
+const INTRO_TECNICA = {
+  pt: (d) => `Este mapa natal reflecte a posição exacta dos astros no momento do teu nascimento${d.cidade ? ` em ${d.cidade}` : ''}${d.data ? `, ${d.data}` : ''}${d.hora ? ` às ${d.hora}` : ''}. Cada planeta numa casa indica onde na vida essa energia se manifesta - a tua assinatura cósmica única, lida com rigor astrológico profissional.`,
+  en: (d) => `This natal chart reflects the exact position of the stars at your birth${d.cidade ? ` in ${d.cidade}` : ''}${d.data ? `, ${d.data}` : ''}${d.hora ? ` at ${d.hora}` : ''}. Each planet in a house shows where in life that sign's energy manifests - your unique cosmic signature, read with professional astrological rigour.`,
+  es: (d) => `Esta carta natal refleja la posición exacta de los astros en el momento de tu nacimiento${d.cidade ? ` en ${d.cidade}` : ''}${d.data ? `, ${d.data}` : ''}${d.hora ? ` a las ${d.hora}` : ''}. Cada planeta en una casa indica dónde en la vida se manifiesta esa energía: tu firma cósmica única, leída con rigor astrológico profesional.`,
+  it: (d) => `Questa carta natale riflette la posizione esatta degli astri al momento della tua nascita${d.cidade ? ` a ${d.cidade}` : ''}${d.data ? `, ${d.data}` : ''}${d.hora ? ` alle ${d.hora}` : ''}. Ogni pianeta in una casa indica dove nella vita si manifesta quell'energia: la tua firma cosmica unica, letta con rigore astrologico professionale.`,
+  de: (d) => `Dieses Geburtshoroskop spiegelt die exakte Position der Sterne zu deiner Geburt${d.cidade ? ` in ${d.cidade}` : ''}${d.data ? `, ${d.data}` : ''}${d.hora ? ` um ${d.hora}` : ''}. Jeder Planet in einem Haus zeigt, wo im Leben sich diese Energie manifestiert – deine einzigartige kosmische Signatur, gelesen mit professioneller astrologischer Strenge.`,
+  fr: (d) => `Cette carte natale reflète la position exacte des astres au moment de ta naissance${d.cidade ? ` à ${d.cidade}` : ''}${d.data ? `, ${d.data}` : ''}${d.hora ? ` à ${d.hora}` : ''}. Chaque planète en maison indique où dans la vie cette énergie se manifeste – ta signature cosmique unique, lue avec rigueur astrologique professionnelle.`,
+}
+
 export function getMapaCopy(lang = 'pt') {
   const L = LABELS[lang] || LABELS.en || LABELS.pt
-  const temas = lang === 'pt' ? TEMAS_CASA_PT : TEMAS_CASA_EN
-  const essencia = lang === 'pt' ? ESSENCIA_PT : ESSENCIA_EN
-  const elemento = lang === 'pt' ? ELEMENTO_PT : ELEMENTO_EN
-  const modalidade = lang === 'pt' ? MODALIDADE_PT : MODALIDADE_EN
+  const { temas, essencia, elemento, modalidade, casaLabel, casaShort } = getMapaStatic(lang)
   const sn = (s) => translateSigno(s, lang)
+  const tx = (bundle, ...args) => {
+    const fn = contentForLang(lang, bundle) || bundle.en
+    return typeof fn === 'function' ? fn(...args) : fn
+  }
 
   function casaTxt(casa) {
     if (!casa) return L.casaCalc
     const t = temas[casa]
-    return t
-      ? (lang !== 'pt' ? `House ${casa} (${t.nome}) - ${t.foco}` : `Casa ${casa} (${t.nome}) - ${t.foco}`)
-      : (lang !== 'pt' ? `House ${casa}` : `Casa ${casa}`)
+    return t ? casaLabel(casa, t.nome, t.foco) : casaShort(casa)
   }
 
   function paragrafoGeracional(nome, signo, casa) {
@@ -251,10 +261,8 @@ export function getMapaCopy(lang = 'pt') {
   }
 
   function introTecnica(mapaNatal, dados) {
-    if (lang !== 'pt') {
-      return `This natal chart reflects the exact position of the stars at your birth${dados?.cidade ? ` in ${dados.cidade}` : ''}${dados?.data ? `, ${dados.data}` : ''}${dados?.hora ? ` at ${dados.hora}` : ''}. Each planet in a house shows where in life that sign's energy manifests - your unique cosmic signature, read with professional astrological rigour.`
-    }
-    return `Este mapa natal reflecte a posição exacta dos astros no momento do teu nascimento${dados?.cidade ? ` em ${dados.cidade}` : ''}${dados?.data ? `, ${dados.data}` : ''}${dados?.hora ? ` às ${dados.hora}` : ''}. Cada planeta numa casa indica onde na vida essa energia se manifesta - a tua assinatura cósmica única, lida com rigor astrológico profissional.`
+    const d = { cidade: dados?.cidade, data: dados?.data, hora: dados?.hora }
+    return tx(INTRO_TECNICA, d)
   }
 
   function gerarResumoGratuito(mapaNatal) {

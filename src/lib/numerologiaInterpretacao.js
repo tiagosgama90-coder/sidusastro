@@ -1,19 +1,40 @@
 import { contentForLang, isPt } from './i18n/langUtil.js'
 import { translatePlaneta, translateSigno } from './i18n/astro.js'
+import {
+  INTERPRETACOES_ES, INTERPRETACOES_IT, INTERPRETACOES_DE, INTERPRETACOES_FR,
+} from './i18n/packs/numerologiaLocales.js'
 
-const PLANETA_NUM = {
-  1: { pt: 'Sol', en: 'Sun', tema: { pt: 'identidade e vontade', en: 'identity and will' } },
-  2: { pt: 'Lua', en: 'Moon', tema: { pt: 'emoção e acolhimento', en: 'emotion and nurturing' } },
-  3: { pt: 'Júpiter', en: 'Jupiter', tema: { pt: 'expansão e expressão', en: 'expansion and expression' } },
-  4: { pt: 'Urano', en: 'Uranus', tema: { pt: 'estrutura e transformação', en: 'structure and transformation' } },
-  5: { pt: 'Mercúrio', en: 'Mercury', tema: { pt: 'mente e movimento', en: 'mind and movement' } },
-  6: { pt: 'Vénus', en: 'Venus', tema: { pt: 'amor e serviço', en: 'love and service' } },
-  7: { pt: 'Neptuno', en: 'Neptune', tema: { pt: 'intuição e silêncio', en: 'intuition and silence' } },
-  8: { pt: 'Saturno', en: 'Saturn', tema: { pt: 'realização e responsabilidade', en: 'achievement and responsibility' } },
-  9: { pt: 'Marte', en: 'Mars', tema: { pt: 'coragem e conclusão', en: 'courage and completion' } },
-  11: { pt: 'Intuição elevada', en: 'Elevated intuition', tema: { pt: 'inspiração profunda', en: 'deep inspiration' } },
-  22: { pt: 'Grande obra', en: 'Great work', tema: { pt: 'construção colectiva', en: 'collective building' } },
-  33: { pt: 'Compaixão mestra', en: 'Master compassion', tema: { pt: 'cura e ensino', en: 'healing and teaching' } },
+const PLANETA_NUM_TEMA = {
+  pt: {
+    1: 'identidade e vontade', 2: 'emoção e acolhimento', 3: 'expansão e expressão', 4: 'estrutura e transformação',
+    5: 'mente e movimento', 6: 'amor e serviço', 7: 'intuição e silêncio', 8: 'realização e responsabilidade',
+    9: 'coragem e conclusão', 11: 'inspiração profunda', 22: 'construção colectiva', 33: 'cura e ensino',
+  },
+  en: {
+    1: 'identity and will', 2: 'emotion and nurturing', 3: 'expansion and expression', 4: 'structure and transformation',
+    5: 'mind and movement', 6: 'love and service', 7: 'intuition and silence', 8: 'achievement and responsibility',
+    9: 'courage and completion', 11: 'deep inspiration', 22: 'collective building', 33: 'healing and teaching',
+  },
+  es: {
+    1: 'identidad y voluntad', 2: 'emoción y acogida', 3: 'expansión y expresión', 4: 'estructura y transformación',
+    5: 'mente y movimiento', 6: 'amor y servicio', 7: 'intuición y silencio', 8: 'realización y responsabilidad',
+    9: 'coraje y conclusión', 11: 'inspiración profunda', 22: 'construcción colectiva', 33: 'cura y enseñanza',
+  },
+  it: {
+    1: 'identità e volontà', 2: 'emozione e accoglienza', 3: 'espansione e espressione', 4: 'struttura e trasformazione',
+    5: 'mente e movimento', 6: 'amore e servizio', 7: 'intuizione e silenzio', 8: 'realizzazione e responsabilità',
+    9: 'coraggio e conclusione', 11: 'ispirazione profonda', 22: 'costruzione collettiva', 33: 'guarigione e insegnamento',
+  },
+  de: {
+    1: 'Identität und Wille', 2: 'Emotion und Fürsorge', 3: 'Expansion und Ausdruck', 4: 'Struktur und Transformation',
+    5: 'Geist und Bewegung', 6: 'Liebe und Dienst', 7: 'Intuition und Stille', 8: 'Erreichung und Verantwortung',
+    9: 'Mut und Abschluss', 11: 'tiefe Inspiration', 22: 'kollektiver Aufbau', 33: 'Heilung und Lehre',
+  },
+  fr: {
+    1: 'identité et volonté', 2: 'émotion et accueil', 3: 'expansion et expression', 4: 'structure et transformation',
+    5: 'esprit et mouvement', 6: 'amour et service', 7: 'intuition et silence', 8: 'réalisation et responsabilité',
+    9: 'courage et achèvement', 11: 'inspiration profonde', 22: 'construction collective', 33: 'guérison et enseignement',
+  },
 }
 
 const TITULOS_PT = {
@@ -166,7 +187,10 @@ function reduzirMestre(n) {
 }
 
 function interp(tipo, num, lang) {
-  const map = isPt(lang) ? INTERPRETACOES_PT : INTERPRETACOES_EN
+  const map = contentForLang(lang, {
+    pt: INTERPRETACOES_PT, en: INTERPRETACOES_EN, es: INTERPRETACOES_ES,
+    it: INTERPRETACOES_IT, de: INTERPRETACOES_DE, fr: INTERPRETACOES_FR,
+  }) || INTERPRETACOES_EN
   return map[tipo]?.[num] || map[tipo]?.[reduzirMestre(num)] || null
 }
 
@@ -175,19 +199,41 @@ function tituloNum(num, lang) {
   return map[num] || map[reduzirMestre(num)] || ''
 }
 
+const PLANETA_NUM_ID = {
+  1: 'Sol', 2: 'Lua', 3: 'Júpiter', 4: 'Urano', 5: 'Mercúrio', 6: 'Vénus', 7: 'Neptuno', 8: 'Saturno', 9: 'Marte',
+}
+
+const PLANETA_NUM_LABEL = {
+  pt: { 11: 'Intuição elevada', 22: 'Grande obra', 33: 'Compaixão mestra' },
+  en: { 11: 'Elevated intuition', 22: 'Great work', 33: 'Master compassion' },
+  es: { 11: 'Intuición elevada', 22: 'Gran obra', 33: 'Compasión maestra' },
+  it: { 11: 'Intuizione elevata', 22: 'Grande opera', 33: 'Compassione maestra' },
+  de: { 11: 'Erhabene Intuition', 22: 'Großes Werk', 33: 'Meister-Mitgefühl' },
+  fr: { 11: 'Intuition élevée', 22: 'Grande œuvre', 33: 'Compassion maîtresse' },
+}
+
+const PONTE_TEXTO = {
+  pt: (planeta, tema, sol, lua, asc) => `Esta vibração liga-se a ${planeta} (${tema}). No teu mapa: Sol em ${sol}, Lua em ${lua}, Ascendente ${asc}.`,
+  en: (planeta, tema, sol, lua, asc) => `This vibration connects with ${planeta} (${tema}). In your chart: Sun in ${sol}, Moon in ${lua}, Ascendant ${asc}.`,
+  es: (planeta, tema, sol, lua, asc) => `Esta vibración se conecta con ${planeta} (${tema}). En tu carta: Sol en ${sol}, Luna en ${lua}, Ascendente ${asc}.`,
+  it: (planeta, tema, sol, lua, asc) => `Questa vibrazione si collega a ${planeta} (${tema}). Nella tua carta: Sole in ${sol}, Luna in ${lua}, Ascendente ${asc}.`,
+  de: (planeta, tema, sol, lua, asc) => `Diese Schwingung verbindet sich mit ${planeta} (${tema}). In deiner Karte: Sonne in ${sol}, Mond in ${lua}, Aszendent ${asc}.`,
+  fr: (planeta, tema, sol, lua, asc) => `Cette vibration se relie à ${planeta} (${tema}). Dans ta carte : Soleil en ${sol}, Lune en ${lua}, Ascendant ${asc}.`,
+}
+
 function ponteAstro(num, mapaNatal, lang) {
   if (!mapaNatal) return null
-  const p = PLANETA_NUM[num]
-  if (!p) return null
-  const planeta = isPt(lang) ? p.pt : translatePlaneta(p.pt, lang)
-  const tema = isPt(lang) ? p.tema.pt : p.tema.en
+  const temaMap = contentForLang(lang, PLANETA_NUM_TEMA) || PLANETA_NUM_TEMA.en
+  const tema = temaMap[num] || temaMap[reduzirMestre(num)]
+  if (!tema) return null
+  const pid = PLANETA_NUM_ID[num]
+  const labels = contentForLang(lang, PLANETA_NUM_LABEL) || PLANETA_NUM_LABEL.en
+  const planeta = pid ? translatePlaneta(pid, lang) : (labels[num] || '-')
   const sol = translateSigno(mapaNatal.solar?.nome, lang) || '-'
   const lua = translateSigno(mapaNatal.lunar?.nome, lang) || '-'
   const asc = translateSigno(mapaNatal.ascendente?.nome, lang) || '-'
-  if (!isPt(lang)) {
-    return { planeta, tema, sol, lua, asc, texto: `This vibration connects with ${planeta} (${tema}). In your chart: Sun in ${sol}, Moon in ${lua}, Ascendant ${asc}.` }
-  }
-  return { planeta, tema, sol, lua, asc, texto: `Esta vibração liga-se a ${planeta} (${tema}). No teu mapa: Sol em ${sol}, Lua em ${lua}, Ascendente ${asc}.` }
+  const fn = PONTE_TEXTO[lang] || PONTE_TEXTO.en
+  return { planeta, tema, sol, lua, asc, texto: fn(planeta, tema, sol, lua, asc) }
 }
 
 function separarLetras(letras) {
@@ -201,12 +247,19 @@ function separarLetras(letras) {
   return { vogais: v, consoantes: c }
 }
 
+const VISAO_GERAL = {
+  pt: (nome, destino, alma, personalidade) => `O nome «${nome}» revela três camadas de significado. A Expressão ${destino} é como ages no mundo; a Alma ${alma} é o que desejas no profundo; a Personalidade ${personalidade} é como os outros te veem à primeira vista. Funciona com qualquer nome em letras A–Z (inclui acentos portugueses).`,
+  en: (nome, destino, alma, personalidade) => `The name «${nome}» carries three layers of meaning. Expression ${destino} is how you act in the world; Soul ${alma} is what you desire deep inside; Personality ${personalidade} is how others first perceive you. Works with any name using letters A–Z (including accented Portuguese characters).`,
+  es: (nome, destino, alma, personalidade) => `El nombre «${nome}» revela tres capas de significado. La Expresión ${destino} es cómo actúas en el mundo; el Alma ${alma} es lo que deseas en lo profundo; la Personalidad ${personalidade} es cómo te ven los demás a primera vista. Funciona con cualquier nombre en letras A–Z.`,
+  it: (nome, destino, alma, personalidade) => `Il nome «${nome}» rivela tre strati di significato. L'Espressione ${destino} è come agisci nel mondo; l'Anima ${alma} è ciò che desideri nel profondo; la Personalità ${personalidade} è come gli altri ti vedono a prima vista. Funziona con qualsiasi nome in lettere A–Z.`,
+  de: (nome, destino, alma, personalidade) => `Der Name «${nome}» offenbart drei Bedeutungsebenen. Ausdruck ${destino} ist, wie du in der Welt handelst; Seele ${alma} ist, was du tief wünschst; Persönlichkeit ${personalidade} ist, wie andere dich zuerst wahrnehmen. Funktioniert mit jedem Namen in Buchstaben A–Z.`,
+  fr: (nome, destino, alma, personalidade) => `Le nom «${nome}» révèle trois couches de sens. L'Expression ${destino} est comment tu agis dans le monde ; l'Âme ${alma} est ce que tu désires au fond ; la Personnalité ${personalidade} est comment les autres te perçoivent au premier regard. Fonctionne avec tout nom en lettres A–Z.`,
+}
+
 function visaoGeral(nome, mapa, lang) {
   const { destino, alma, personalidade } = mapa
-  if (lang !== 'pt') {
-    return `The name «${nome}» carries three layers of meaning. Expression ${destino} is how you act in the world; Soul ${alma} is what you desire deep inside; Personality ${personalidade} is how others first perceive you. Works with any name using letters A–Z (including accented Portuguese characters).`
-  }
-  return `O nome «${nome}» revela três camadas de significado. A Expressão ${destino} é como ages no mundo; a Alma ${alma} é o que desejas no profundo; a Personalidade ${personalidade} é como os outros te veem à primeira vista. Funciona com qualquer nome em letras A–Z (inclui acentos portugueses).`
+  const fn = VISAO_GERAL[lang] || VISAO_GERAL.en
+  return fn(nome, destino, alma, personalidade)
 }
 
 export function enriquecerMapaNumerologia(base, nome, lang = 'pt', mapaNatal = null) {
@@ -228,25 +281,52 @@ export function enriquecerMapaNumerologia(base, nome, lang = 'pt', mapaNatal = n
   const caminhoBloco = interp('caminhoVida', base.caminhoVida, lang)
   const caminhoAstro = ponteAstro(base.caminhoVida, mapaNatal, lang)
 
+  const HARMONIAS = {
+    alinhados: {
+      pt: 'Expressão e Alma alinham-se - o que mostras coincide com o que desejas. A autenticidade flui com naturalidade.',
+      en: 'Expression and Soul align - what you show matches what you desire. Authenticity flows naturally.',
+      es: 'Expresión y Alma se alinean: lo que muestras coincide con lo que deseas. La autenticidad fluye con naturalidad.',
+      it: 'Espressione e Anima si allineano: ciò che mostri coincide con ciò che desideri. L\'autenticità fluisce naturalmente.',
+      de: 'Ausdruck und Seele sind im Einklang – was du zeigst, entspricht dem, was du wünschst. Authentizität fließt natürlich.',
+      fr: 'Expression et Âme s\'alignent : ce que tu montres coïncide avec ce que tu désires. L\'authenticité coule naturellement.',
+    },
+    diferem: {
+      pt: 'Expressão e Alma diferem - o desejo interior e a acção exterior pedem integração consciente.',
+      en: 'Expression and Soul differ - inner desire and outer action ask for conscious integration.',
+      es: 'Expresión y Alma difieren: el deseo interior y la acción exterior piden integración consciente.',
+      it: 'Espressione e Anima differiscono: il desiderio interiore e l\'azione esteriore chiedono integrazione consapevole.',
+      de: 'Ausdruck und Seele unterscheiden sich – inneres Verlangen und äußeres Handeln verlangen bewusste Integration.',
+      fr: 'Expression et Âme diffèrent : le désir intérieur et l\'action extérieure demandent une intégration consciente.',
+    },
+    persDist: {
+      pt: 'Personalidade e Expressão são distintas - os outros podem ver-te de forma diferente da tua acção. É terreno fértil para crescimento.',
+      en: 'Personality and Expression are distinct - others may see you differently from how you act. This is fertile ground for growth.',
+      es: 'Personalidad y Expresión son distintas: los demás pueden verte de forma diferente a tu acción. Es terreno fértil para crecer.',
+      it: 'Personalità ed Espressione sono distinte: gli altri possono vederti diversamente dalla tua azione. È terreno fertile per crescere.',
+      de: 'Persönlichkeit und Ausdruck sind unterschiedlich – andere sehen dich vielleicht anders als du handelst. Fruchtbarer Boden für Wachstum.',
+      fr: 'Personnalité et Expression sont distinctes : les autres peuvent te voir différemment de ton action. Terrain fertile pour grandir.',
+    },
+    caminhoUnido: {
+      pt: 'Caminho de Vida e Expressão partilham o mesmo número - missão de nascimento e vibração do nome caminham em uníssono.',
+      en: 'Life Path and Expression share the same number - birth mission and name vibration walk in unison.',
+      es: 'Camino de Vida y Expresión comparten el mismo número: misión de nacimiento y vibración del nombre caminan al unísono.',
+      it: 'Cammino di Vita ed Espressione condividono lo stesso numero: missione di nascita e vibrazione del nome camminano all\'unisono.',
+      de: 'Lebensweg und Ausdruck teilen dieselbe Zahl – Geburtsmission und Namensschwingung gehen im Einklang.',
+      fr: 'Chemin de Vie et Expression partagent le même nombre : mission de naissance et vibration du nom marchent à l\'unisson.',
+    },
+  }
+
   const harmonias = []
   if (base.destino === base.alma) {
-    harmonias.push(lang !== 'pt'
-      ? 'Expression and Soul align - what you show matches what you desire. Authenticity flows naturally.'
-      : 'Expressão e Alma alinham-se - o que mostras coincide com o que desejas. A autenticidade flui com naturalidade.')
+    harmonias.push(contentForLang(lang, HARMONIAS.alinhados) || HARMONIAS.alinhados.en)
   } else if (Math.abs(base.destino - base.alma) >= 4) {
-    harmonias.push(lang !== 'pt'
-      ? 'Expression and Soul differ - inner desire and outer action ask for conscious integration.'
-      : 'Expressão e Alma diferem - o desejo interior e a acção exterior pedem integração consciente.')
+    harmonias.push(contentForLang(lang, HARMONIAS.diferem) || HARMONIAS.diferem.en)
   }
   if (base.destino !== base.personalidade) {
-    harmonias.push(lang !== 'pt'
-      ? 'Personality and Expression are distinct - others may see you differently from how you act. This is fertile ground for growth.'
-      : 'Personalidade e Expressão são distintas - os outros podem ver-te de forma diferente da tua acção. É terreno fértil para crescimento.')
+    harmonias.push(contentForLang(lang, HARMONIAS.persDist) || HARMONIAS.persDist.en)
   }
   if (base.caminhoVida && base.destino && base.caminhoVida === base.destino) {
-    harmonias.push(lang !== 'pt'
-      ? 'Life Path and Expression share the same number - birth mission and name vibration walk in unison.'
-      : 'Caminho de Vida e Expressão partilham o mesmo número - missão de nascimento e vibração do nome caminham em uníssono.')
+    harmonias.push(contentForLang(lang, HARMONIAS.caminhoUnido) || HARMONIAS.caminhoUnido.en)
   }
 
   const letrasSeparadas = separarLetras(base.letras)

@@ -1,4 +1,11 @@
 /** Localised data for FerramentasPremium components */
+import { contentForLang } from './langUtil.js'
+import {
+  TRANSITOS_ES, TRANSITOS_IT, TRANSITOS_DE, TRANSITOS_FR,
+  IMPACTO_ES, IMPACTO_IT, IMPACTO_DE, IMPACTO_FR,
+  COMPAT_ES, COMPAT_IT, COMPAT_DE, COMPAT_FR,
+  ASPECTOS_ES, ASPECTOS_IT, ASPECTOS_DE, ASPECTOS_FR,
+} from './packs/ferramentasPremiumLocales.js'
 
 const IMPACTO_PT = {
   alto: 'alto', médio: 'médio', baixo: 'baixo', atenção: 'atenção',
@@ -111,18 +118,26 @@ const ASPECTOS_EN = [
 ]
 
 export function getTransitos2026(lang) {
-  const data = lang !== 'pt' ? TRANSITOS_EN : TRANSITOS_PT
-  const impactoMap = lang !== 'pt' ? IMPACTO_EN : IMPACTO_PT
+  const data = contentForLang(lang, {
+    pt: TRANSITOS_PT, en: TRANSITOS_EN, es: TRANSITOS_ES, it: TRANSITOS_IT, de: TRANSITOS_DE, fr: TRANSITOS_FR,
+  }) || TRANSITOS_EN
+  const impactoMap = contentForLang(lang, {
+    pt: IMPACTO_PT, en: IMPACTO_EN, es: IMPACTO_ES, it: IMPACTO_IT, de: IMPACTO_DE, fr: IMPACTO_FR,
+  }) || IMPACTO_EN
   return data.map(t => ({ ...t, impactoLabel: impactoMap[t.impacto] || t.impacto }))
 }
 
 export function getCompatDesc(chave, lang, fallbackKey) {
-  const map = lang !== 'pt' ? COMPAT_EN : COMPAT_PT
+  const map = contentForLang(lang, {
+    pt: COMPAT_PT, en: COMPAT_EN, es: COMPAT_ES, it: COMPAT_IT, de: COMPAT_DE, fr: COMPAT_FR,
+  }) || COMPAT_EN
   return map[chave] || fallbackKey
 }
 
 export function getAspectosAmor(lang) {
-  return lang !== 'pt' ? ASPECTOS_EN : ASPECTOS_PT
+  return contentForLang(lang, {
+    pt: ASPECTOS_PT, en: ASPECTOS_EN, es: ASPECTOS_ES, it: ASPECTOS_IT, de: ASPECTOS_DE, fr: ASPECTOS_FR,
+  }) || ASPECTOS_EN
 }
 
 export const TIPO_ICO = {

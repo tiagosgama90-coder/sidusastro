@@ -33,9 +33,11 @@ export const TEMAS_CASA_EN = {
   12: { nome: 'Unconscious & Spirituality',  foco: 'dreams, retreat, karma, compassion and what works behind the scenes' },
 }
 
+import { getMapaStatic } from './i18n/packs/mapaStatic.js'
+
 export function getTemaCasa(casa, lang = 'pt') {
-  const map = lang !== 'pt' ? TEMAS_CASA_EN : TEMAS_CASA
-  return map[casa] || null
+  const { temas } = getMapaStatic(lang)
+  return temas[casa] || null
 }
 
 /** Normaliza cúspides vindas do Swiss Ephemeris (12 valores, casa 1 = índice 0). */

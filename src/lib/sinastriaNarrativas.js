@@ -1,6 +1,18 @@
 /**
  * Narrativas personalizadas de sinastria - textos íntimos por utilizador.
  */
+import { pickNarr } from './i18n/narrativePick.js'
+import * as SinLoc from './i18n/packs/sinastriaLocales.js'
+
+function enrichDict(dict, baseName) {
+  for (const lang of ['es', 'it', 'de', 'fr']) {
+    const pack = SinLoc[`${baseName}_${lang.toUpperCase()}`]
+    if (!pack) continue
+    for (const [sign, entry] of Object.entries(pack)) {
+      if (dict[sign] && entry[lang]) dict[sign][lang] = entry[lang]
+    }
+  }
+}
 
 const SIGNO_PT = {
   Carneiro: 'Carneiro', Touro: 'Touro', Gémeos: 'Gémeos', Caranguejo: 'Caranguejo',
@@ -149,6 +161,13 @@ const NODO_SUL = {
   Peixes: { pt: 'zona de conforto: ilusão, escapismo, sacrifício martírio', en: 'comfort zone: illusion, escapism, martyrdom sacrifice' },
 }
 
+enrichDict(VENUS_REL, 'VENUS_REL')
+enrichDict(MARTE_REL, 'MARTE_REL')
+enrichDict(LUA_EMOC, 'LUA_EMOC')
+enrichDict(MERCURIO_COM, 'MERCURIO_COM')
+enrichDict(NODO_NORTE, 'NODO_NORTE')
+enrichDict(NODO_SUL, 'NODO_SUL')
+
 function aberturaProfessor(nomeA, nomeB, tema, lang) {
   if (lang !== 'pt') {
     return `${nomeA}, the stars speak directly to you about **${tema}** with ${nomeB}. This is your personal synastry - woven from your exact birth chart crossed with theirs. No generic text: every sentence reflects your sky.\n\n`
@@ -209,17 +228,17 @@ export function narrativaQuimica(posA, posB, aspectos, lang = 'pt') {
   linhas.push(aberturaProfessor(nomeA, nomeB, tema, lang).trim())
 
   if (lang !== 'pt') {
-    if (venA) linhas.push(`Your Venus in ${venA} tells how **you** love: ${VENUS_REL[venA]?.en || 'in a unique way'}. This is what opens your heart, what you find beautiful, and how you need affection to reach you.`)
-    if (marA) linhas.push(`Your Mars in ${marA} is **your** desire - how fire moves in your body: ${MARTE_REL[marA]?.en || 'with personal rhythm'}. When honoured, it becomes vitality; when repressed, impatience or frustration.`)
+    if (venA) linhas.push(`Your Venus in ${venA} tells how **you** love: ${pickNarr(VENUS_REL[venA], lang) || 'in a unique way'}. This is what opens your heart, what you find beautiful, and how you need affection to reach you.`)
+    if (marA) linhas.push(`Your Mars in ${marA} is **your** desire - how fire moves in your body: ${pickNarr(MARTE_REL[marA], lang) || 'with personal rhythm'}. When honoured, it becomes vitality; when repressed, impatience or frustration.`)
     linhas.push('')
-    if (venB) linhas.push(`${nomeB}'s Venus in ${venB} is the language you must learn to speak: ${VENUS_REL[venB]?.en || 'their own love dialect'}. Seducing them means honouring *their* Venus, not your fantasy of love.`)
-    if (marB) linhas.push(`${nomeB}'s Mars in ${marB} shows how they pursue and defend desire: ${MARTE_REL[marB]?.en || 'in their style'}. Your chemistry lives in the dance between your Venus and their Mars - and vice versa.`)
+    if (venB) linhas.push(`${nomeB}'s Venus in ${venB} is the language you must learn to speak: ${pickNarr(VENUS_REL[venB], lang) || 'their own love dialect'}. Seducing them means honouring *their* Venus, not your fantasy of love.`)
+    if (marB) linhas.push(`${nomeB}'s Mars in ${marB} shows how they pursue and defend desire: ${pickNarr(MARTE_REL[marB], lang) || 'in their style'}. Your chemistry lives in the dance between your Venus and their Mars - and vice versa.`)
   } else {
-    if (venA) linhas.push(`A tua Vénus em ${venA} diz como **tu** amas: ${VENUS_REL[venA]?.pt || 'de forma única'}. É isto que abre o teu coração, o que achas belo e como precisas que o afecto te chegue.`)
-    if (marA) linhas.push(`O teu Marte em ${marA} é **o teu** desejo - como o fogo se move no teu corpo: ${MARTE_REL[marA]?.pt || 'com ritmo pessoal'}. Quando honrado, torna-se vitalidade; quando reprimido, impaciência ou frustração.`)
+    if (venA) linhas.push(`A tua Vénus em ${venA} diz como **tu** amas: ${pickNarr(VENUS_REL[venA], lang) || 'de forma única'}. É isto que abre o teu coração, o que achas belo e como precisas que o afecto te chegue.`)
+    if (marA) linhas.push(`O teu Marte em ${marA} é **o teu** desejo - como o fogo se move no teu corpo: ${pickNarr(MARTE_REL[marA], lang) || 'com ritmo pessoal'}. Quando honrado, torna-se vitalidade; quando reprimido, impaciência ou frustração.`)
     linhas.push('')
-    if (venB) linhas.push(`A Vénus de ${nomeB} em ${venB} é a linguagem que precisas de aprender: ${VENUS_REL[venB]?.pt || 'dialecto amoroso próprio'}. Seduzir passa por honrar *a* Vénus dele/a, não a tua fantasia de amor.`)
-    if (marB) linhas.push(`O Marte de ${nomeB} em ${marB} mostra como conquista e defende o desejo: ${MARTE_REL[marB]?.pt || 'ao seu estilo'}. A vossa química vive na dança entre a tua Vénus e o Marte dele/a - e vice-versa.`)
+    if (venB) linhas.push(`A Vénus de ${nomeB} em ${venB} é a linguagem que precisas de aprender: ${pickNarr(VENUS_REL[venB], lang) || 'dialecto amoroso próprio'}. Seduzir passa por honrar *a* Vénus dele/a, não a tua fantasia de amor.`)
+    if (marB) linhas.push(`O Marte de ${nomeB} em ${marB} mostra como conquista e defende o desejo: ${pickNarr(MARTE_REL[marB], lang) || 'ao seu estilo'}. A vossa química vive na dança entre a tua Vénus e o Marte dele/a - e vice-versa.`)
   }
 
   const top = aspectos.filter((a) => ['venus', 'marte'].includes(a.keyA) || ['venus', 'marte'].includes(a.keyB)).slice(0, 3)
@@ -249,16 +268,16 @@ export function narrativaEmocao(posA, posB, aspectos, lang = 'pt') {
 
   if (lang !== 'pt') {
     if (solA) linhas.push(`Your Sun in ${solA} is how **you** shine - your conscious identity. In love, you need ${nomeB} to see this light, not only your moods.`)
-    if (luaA) linhas.push(`Your Moon in ${luaA} is your private heart: ${LUA_EMOC[luaA]?.en || 'unique emotional needs'}. When ${nomeB} ignores this Moon, you close off - not from malice, from self-protection.`)
+    if (luaA) linhas.push(`Your Moon in ${luaA} is your private heart: ${pickNarr(LUA_EMOC[luaA], lang) || 'unique emotional needs'}. When ${nomeB} ignores this Moon, you close off - not from malice, from self-protection.`)
     linhas.push('')
     if (solB) linhas.push(`${nomeB}'s Sun in ${solB} is the identity they defend - respect it even when it clashes with yours.`)
-    if (luaB) linhas.push(`${nomeB}'s Moon in ${luaB} is where they feel safe: ${LUA_EMOC[luaB]?.en || 'their rhythm'}. To love them is to speak to this Moon in its own language.`)
+    if (luaB) linhas.push(`${nomeB}'s Moon in ${luaB} is where they feel safe: ${pickNarr(LUA_EMOC[luaB], lang) || 'their rhythm'}. To love them is to speak to this Moon in its own language.`)
   } else {
     if (solA) linhas.push(`O teu Sol em ${solA} é como **tu** brilhas - a tua identidade consciente. No amor, precisas que ${nomeB} veja esta luz, não só os teus humores.`)
-    if (luaA) linhas.push(`A tua Lua em ${luaA} é o teu coração privado: ${LUA_EMOC[luaA]?.pt || 'necessidades emocionais únicas'}. Quando ${nomeB} ignora esta Lua, fechas-te - não por maldade, por autoprotecção.`)
+    if (luaA) linhas.push(`A tua Lua em ${luaA} é o teu coração privado: ${pickNarr(LUA_EMOC[luaA], lang) || 'necessidades emocionais únicas'}. Quando ${nomeB} ignora esta Lua, fechas-te - não por maldade, por autoprotecção.`)
     linhas.push('')
     if (solB) linhas.push(`O Sol de ${nomeB} em ${solB} é a identidade que defende - respeita-a mesmo quando choca com a tua.`)
-    if (luaB) linhas.push(`A Lua de ${nomeB} em ${luaB} é onde se sente seguro(a): ${LUA_EMOC[luaB]?.pt || 'ritmo próprio'}. Amar é falar a esta Lua na língua dela.`)
+    if (luaB) linhas.push(`A Lua de ${nomeB} em ${luaB} é onde se sente seguro(a): ${pickNarr(LUA_EMOC[luaB], lang) || 'ritmo próprio'}. Amar é falar a esta Lua na língua dela.`)
   }
 
   const solLua = aspectos.filter((a) => (a.keyA === 'sol' && a.keyB === 'lua') || (a.keyA === 'lua' && a.keyB === 'sol')).slice(0, 2)
@@ -291,12 +310,12 @@ export function narrativaComunicacao(posA, posB, aspectos, lang = 'pt') {
   linhas.push(aberturaProfessor(nomeA, nomeB, tema, lang).trim())
 
   if (lang !== 'pt') {
-    if (merA) linhas.push(`Your Mercury in ${merA} is **your** mind in conversation: ${MERCURIO_COM[merA]?.en || 'personal style'}. Under stress you revert here - for better or sharper.`)
-    if (merB) linhas.push(`${nomeB}'s Mercury in ${merB}: ${MERCURIO_COM[merB]?.en || 'their mental rhythm'}. You will clash when you assume they think at your speed.`)
+    if (merA) linhas.push(`Your Mercury in ${merA} is **your** mind in conversation: ${pickNarr(MERCURIO_COM[merA], lang) || 'personal style'}. Under stress you revert here - for better or sharper.`)
+    if (merB) linhas.push(`${nomeB}'s Mercury in ${merB}: ${pickNarr(MERCURIO_COM[merB], lang) || 'their mental rhythm'}. You will clash when you assume they think at your speed.`)
     linhas.push(`\n${nomeA}, repair after conflict depends on this axis. When Mercury flows, forgiveness is easy; when it blocks, every silence becomes a wound.`)
   } else {
-    if (merA) linhas.push(`O teu Mercúrio em ${merA} é **a tua** mente em conversa: ${MERCURIO_COM[merA]?.pt || 'estilo pessoal'}. Sob stress regresses aqui - para melhor ou mais cortante.`)
-    if (merB) linhas.push(`Mercúrio de ${nomeB} em ${merB}: ${MERCURIO_COM[merB]?.pt || 'ritmo mental dele/a'}. Haverá choque quando assumires que pensa ao teu ritmo.`)
+    if (merA) linhas.push(`O teu Mercúrio em ${merA} é **a tua** mente em conversa: ${pickNarr(MERCURIO_COM[merA], lang) || 'estilo pessoal'}. Sob stress regresses aqui - para melhor ou mais cortante.`)
+    if (merB) linhas.push(`Mercúrio de ${nomeB} em ${merB}: ${pickNarr(MERCURIO_COM[merB], lang) || 'ritmo mental dele/a'}. Haverá choque quando assumires que pensa ao teu ritmo.`)
     linhas.push(`\n${nomeA}, a reparação após conflito depende deste eixo. Quando Mercúrio flui, o perdão é fácil; quando bloqueia, cada silêncio torna-se ferida.`)
   }
 
@@ -348,7 +367,7 @@ export function narrativaMissaoIndividual(pos, lang = 'pt') {
   const nome = pos.nome || (lang !== 'pt' ? 'This person' : 'Esta pessoa')
   const signo = pos.corpos.sol.signo
   const fn = MISSAO_SOL_LONGA[signo]
-  const linhas = [fn ? fn[lang !== 'pt' ? 'en' : 'pt'](nome) : '']
+  const linhas = [fn ? pickNarr(fn, lang, nome) : '']
 
   const mc = pos.corpos.mc
   const nn = pos.corpos.nodo_norte
@@ -359,8 +378,8 @@ export function narrativaMissaoIndividual(pos, lang = 'pt') {
   }
   if (nn) {
     linhas.push(lang !== 'pt'
-      ? `North Node in ${nn.signo}: this lifetime invites ${NODO_NORTE[nn.signo]?.en || 'evolution'}.`
-      : `Nodo Norte em ${nn.signo}: esta vida convida a ${NODO_NORTE[nn.signo]?.pt || 'evoluir'}.`)
+      ? `North Node in ${nn.signo}: this lifetime invites ${pickNarr(NODO_NORTE[nn.signo], lang) || 'evolution'}.`
+      : `Nodo Norte em ${nn.signo}: esta vida convida a ${pickNarr(NODO_NORTE[nn.signo], lang) || 'evoluir'}.`)
   }
   return linhas.join('')
 }
@@ -384,8 +403,8 @@ export function narrativaMissaoRelacionamento(resultado, lang = 'pt') {
     linhas.push(lang !== 'pt' ? '**Purpose Activation - North Node**' : '**Activação do Propósito de Vida - Nodo Norte**')
     for (const act of nodosSinastria.activacoesNorte.slice(0, 4)) {
       linhas.push(lang !== 'pt'
-        ? `${nomeA}, ${act.planeta} from ${act.deQuem} touches ${act.donoNodo}'s North Node in ${act.signoNodo}. This person came to push you toward ${NODO_NORTE[act.signoNodo]?.en || 'evolution'} - classic *Life Purpose Activation*.`
-        : `${nomeA}, ${act.planeta} de ${act.deQuem} toca o Nodo Norte de ${act.donoNodo} em ${act.signoNodo}. Esta pessoa veio empurrar-te para ${NODO_NORTE[act.signoNodo]?.pt || 'evoluir'} - *Activação do Propósito de Vida* clássica.`)
+        ? `${nomeA}, ${act.planeta} from ${act.deQuem} touches ${act.donoNodo}'s North Node in ${act.signoNodo}. This person came to push you toward ${pickNarr(NODO_NORTE[act.signoNodo], lang) || 'evolution'} - classic *Life Purpose Activation*.`
+        : `${nomeA}, ${act.planeta} de ${act.deQuem} toca o Nodo Norte de ${act.donoNodo} em ${act.signoNodo}. Esta pessoa veio empurrar-te para ${pickNarr(NODO_NORTE[act.signoNodo], lang) || 'evoluir'} - *Activação do Propósito de Vida* clássica.`)
     }
   }
 
@@ -398,8 +417,8 @@ export function narrativaMissaoRelacionamento(resultado, lang = 'pt') {
       : `${nomeA}, ${n} contacto(s) ao Nodo Sul sugerem território familiar - padrões passados, zonas de conforto ou repetição cármica com ${nomeB}. A missão não é ficar aí, mas reconhecer o que já foi aprendido e escolher evolução consciente.`)
     for (const act of nodosSinastria.activacoesSul.slice(0, 3)) {
       linhas.push(lang !== 'pt'
-        ? `• ${act.planeta} (${act.deQuem}) - ${NODO_SUL[act.signoNodo]?.en || 'karmic pattern to release'}`
-        : `• ${act.planeta} (${act.deQuem}) - ${NODO_SUL[act.signoNodo]?.pt || 'padrão cármico a largar'}`)
+        ? `• ${act.planeta} (${act.deQuem}) - ${pickNarr(NODO_SUL[act.signoNodo], lang) || 'karmic pattern to release'}`
+        : `• ${act.planeta} (${act.deQuem}) - ${pickNarr(NODO_SUL[act.signoNodo], lang) || 'padrão cármico a largar'}`)
     }
   }
 
@@ -477,10 +496,15 @@ export function narrativaMapaComposto(mapaComposto, nomeA, nomeB, lang = 'pt') {
 }
 
 export function narrativaIntroSinastria(nomeA, nomeB, pontuacao, lang = 'pt') {
-  if (lang !== 'pt') {
-    return `${nomeA}, welcome to your personal synastry with ${nomeB}. Every paragraph below was written for **you** - from the exact degrees of your birth sky crossed with theirs. Read as an astrology teacher speaking privately to you: the stars are not judging; they are narrating the story you are living together.\n\nOverall bond tone: **${pontuacao}%** compatibility across chemistry, emotion, communication and future.`
+  const INTRO = {
+    pt: `${nomeA}, bem-vindo(a) à tua sinastria pessoal com ${nomeB}. Cada parágrafo abaixo foi escrito para **ti** - a partir dos graus exactos do teu céu de nascimento cruzado com o dele/a. Lê como um professor de astrologia a falar contigo em privado: os astros não julgam; narram a história que estás a viver a dois.\n\nTom geral do vínculo: **${pontuacao}%** de compatibilidade nos eixos química, emoção, comunicação e futuro.`,
+    en: `${nomeA}, welcome to your personal synastry with ${nomeB}. Every paragraph below was written for **you** - from the exact degrees of your birth sky crossed with theirs. Read as an astrology teacher speaking privately to you: the stars are not judging; they are narrating the story you are living together.\n\nOverall bond tone: **${pontuacao}%** compatibility across chemistry, emotion, communication and future.`,
+    es: `${nomeA}, bienvenido/a a tu sinastría personal con ${nomeB}. Cada párrafo fue escrito para **ti** a partir de los grados exactos de tu cielo de nacimiento cruzado con el suyo. Lee como un profesor de astrología hablándote en privado: los astros no juzgan; narran la historia que vives en pareja.\n\nTono general del vínculo: **${pontuacao}%** de compatibilidad en química, emoción, comunicación y futuro.`,
+    it: `${nomeA}, benvenuto/a alla tua sinastria personale con ${nomeB}. Ogni paragrafo è stato scritto per **te** dai gradi esatti del tuo cielo natale incrociato con il suo. Leggi come un insegnante di astrologia che ti parla in privato: le stelle non giudicano; narrano la storia che vivi in coppia.\n\nTono generale del legame: **${pontuacao}%** di compatibilità su chimica, emozione, comunicazione e futuro.`,
+    de: `${nomeA}, willkommen zu deiner persönlichen Synastrie mit ${nomeB}. Jeder Absatz wurde für **dich** geschrieben – aus den exakten Graden deines Geburtshimmels gekreuzt mit dem ihrem/seinem. Lies es wie ein Astrologielehrer, der privat mit dir spricht: Die Sterne urteilen nicht; sie erzählen die Geschichte, die ihr gemeinsam lebt.\n\nGesamtton der Verbindung: **${pontuacao}%** Kompatibilität in Chemie, Emotion, Kommunikation und Zukunft.`,
+    fr: `${nomeA}, bienvenue dans ta synastrie personnelle avec ${nomeB}. Chaque paragraphe a été écrit pour **toi** à partir des degrés exacts de ton ciel de naissance croisé avec le sien. Lis comme un professeur d'astrologie qui te parle en privé : les astres ne jugent pas ; ils racontent l'histoire que tu vis à deux.\n\nTon général du lien : **${pontuacao}%** de compatibilité en chimie, émotion, communication et avenir.`,
   }
-  return `${nomeA}, bem-vindo(a) à tua sinastria pessoal com ${nomeB}. Cada parágrafo abaixo foi escrito para **ti** - a partir dos graus exactos do teu céu de nascimento cruzado com o dele/a. Lê como um professor de astrologia a falar contigo em privado: os astros não julgam; narram a história que estás a viver a dois.\n\nTom geral do vínculo: **${pontuacao}%** de compatibilidade nos eixos química, emoção, comunicação e futuro.`
+  return INTRO[lang] || INTRO.en
 }
 
 export { SIGNO_PT }

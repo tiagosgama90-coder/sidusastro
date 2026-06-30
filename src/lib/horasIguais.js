@@ -1,4 +1,5 @@
 import { contentForLang } from './i18n/langUtil.js'
+import { HORAS_ES, HORAS_IT, HORAS_DE, HORAS_FR, ESPELHOS_ES, ESPELHOS_IT, ESPELHOS_DE, ESPELHOS_FR } from './i18n/packs/horasLocales.js'
 
 /**
  * Horas Iguais - interpretação inspirada nos ensinamentos de Doreen Virtue
@@ -248,8 +249,8 @@ const NEUTRO = {
   fr: { titulo: 'Moment Présent', anjo: 'Tes Anges', palavraChave: 'Présence', mensagem: 'Chaque moment apporte une guidance angélique. Les nombres répétés sont des signes divins.', conselho: 'Respire trois fois et demande : "Anges, que voulez-vous que je sache maintenant ?"' },
 }
 
-const HORAS_PACKS = { pt: () => HORAS_PT, en: () => HORAS_EN, es: () => HORAS_EN, it: () => HORAS_EN, de: () => HORAS_EN, fr: () => HORAS_EN }
-const ESPELHOS_PACKS = { pt: () => ESPELHOS_PT, en: () => ESPELHOS_EN, es: () => ESPELHOS_EN, it: () => ESPELHOS_EN, de: () => ESPELHOS_EN, fr: () => ESPELHOS_EN }
+const HORAS_PACKS = { pt: () => HORAS_PT, en: () => HORAS_EN, es: () => HORAS_ES, it: () => HORAS_IT, de: () => HORAS_DE, fr: () => HORAS_FR }
+const ESPELHOS_PACKS = { pt: () => ESPELHOS_PT, en: () => ESPELHOS_EN, es: () => ESPELHOS_ES, it: () => ESPELHOS_IT, de: () => ESPELHOS_DE, fr: () => ESPELHOS_FR }
 
 function packHoras(lang) {
   return (HORAS_PACKS[lang] || HORAS_PACKS.en)()
