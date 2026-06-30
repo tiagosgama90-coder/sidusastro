@@ -1,6 +1,5 @@
 import { cert, getApps, initializeApp } from 'firebase-admin/app'
 import { FieldValue, getFirestore as getAdminFirestore } from 'firebase-admin/firestore'
-import { getAuth } from 'firebase-admin/auth'
 import { env } from './env.mjs'
 
 let initialized = false
@@ -151,12 +150,7 @@ async function verifyIdTokenViaRest(idToken) {
 }
 
 export async function verifyIdToken(idToken) {
-  if (!idToken) return null
-  if (ensureInit()) {
-    try {
-      return await getAuth().verifyIdToken(idToken)
-    } catch { /* fallback REST */ }
-  }
+  // REST only — evita firebase-admin/auth (jose/jwks-rsa ESM crash no Netlify)
   return verifyIdTokenViaRest(idToken)
 }
 
