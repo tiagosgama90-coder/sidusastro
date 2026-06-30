@@ -582,6 +582,8 @@ export default {
       "subtitle": "Cuente su sueño: cada imagen y emoción se lee de forma única y adaptada a su cuenta.",
       "placeholder": "Comienza a contar tu sueño...",
       "interpret": "✦ Revelar significado",
+      "decoding": "✦ Descifrando el sueño…",
+      "error": "No fue posible interpretar ahora. Inténtalo de nuevo en un momento.",
       "symbolsHint": "Símbolos comunes",
       "feelingLabel": "Sentimiento dominante en el sueño.",
       "feelings": {

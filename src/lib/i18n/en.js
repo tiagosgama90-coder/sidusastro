@@ -526,6 +526,8 @@ export default {
       subtitle: 'Tell your dream - each image and emotion is read uniquely, tailored to your account.',
       placeholder: 'Begin telling your dream…',
       interpret: '✦ Reveal meaning',
+      decoding: '✦ Decoding the dream…',
+      error: 'Could not interpret right now. Try again in a moment.',
       symbolsHint: 'Common symbols',
       feelingLabel: 'Dominant feeling in the dream',
       feelings: { peace: 'Peace', fear: 'Fear', sadness: 'Sadness', joy: 'Joy', confusion: 'Confusion', anger: 'Anger' },

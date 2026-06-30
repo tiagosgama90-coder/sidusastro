@@ -1,4 +1,7 @@
 /** Redução numerológica (mantém 11, 22, 33 como mestres). */
+import { contentForLang } from './i18n/langUtil.js'
+import { enriquecerMapaNumerologia } from './numerologiaInterpretacao.js'
+
 export function reduzir(n) {
   let v = Math.abs(Math.floor(n))
   while (v > 9 && v !== 11 && v !== 22 && v !== 33) {
@@ -195,10 +198,71 @@ const SIGNIFICADOS_EN = {
   33: 'Master of compassion and teaching. Loving service as the highest path expression.',
 }
 
-import { enriquecerMapaNumerologia } from './numerologiaInterpretacao.js'
+const SIGNIFICADOS_ES = {
+  1: 'Liderazgo, independencia e iniciativa. El camino pide coraje para abrir nuevos ciclos.',
+  2: 'Cooperación, sensibilidad y diplomacia. La armonía en las relaciones impulsa el crecimiento.',
+  3: 'Expresión, creatividad y comunicación. La alegría compartida amplifica el propósito.',
+  4: 'Estructura, disciplina y trabajo constante. Los cimientos sólidos sostienen el destino.',
+  5: 'Libertad, cambio y adaptación. La vida pide flexibilidad y experiencias variadas.',
+  6: 'Responsabilidad, familia y servicio. Nutrir y cuidar revela la vocación más auténtica.',
+  7: 'Introspección, estudio y espiritualidad. El silencio y el análisis profundizan la sabiduría.',
+  8: 'Realización material, poder y justicia. Equilibrar ambición con ética es el desafío central.',
+  9: 'Humanitarismo, conclusión y compasión. Cerrar ciclos con generosidad abre nuevas puertas.',
+  11: 'Intuición elevada e inspiración. Misión de elevar conciencias: canal de visión espiritual.',
+  22: 'Constructor de grandes obras. Capacidad de materializar ideales en beneficio colectivo.',
+  33: 'Maestro de la compasión y la enseñanza. Servicio amoroso como expresión máxima del camino.',
+}
+
+const SIGNIFICADOS_IT = {
+  1: 'Leadership, indipendenza e iniziativa. Il cammino chiede coraggio per aprire nuovi cicli.',
+  2: 'Cooperazione, sensibilità e diplomazia. L\'armonia nelle relazioni guida la crescita.',
+  3: 'Espressione, creatività e comunicazione. La gioia condivisa amplifica lo scopo.',
+  4: 'Struttura, disciplina e lavoro costante. Le fondamenta solide sostengono il destino.',
+  5: 'Libertà, cambiamento e adattamento. La vita chiede flessibilità ed esperienze varie.',
+  6: 'Responsabilità, famiglia e servizio. Nutrire rivela la vocazione più autentica.',
+  7: 'Introspezione, studio e spiritualità. Il silenzio e l\'analisi approfondiscono la saggezza.',
+  8: 'Realizzazione materiale, potere e giustizia. Bilanciare ambizione ed etica è la sfida centrale.',
+  9: 'Umanitarismo, conclusione e compassione. Chiudere cicli con generosità apre nuove porte.',
+  11: 'Intuizione elevata e ispirazione. Missione di elevare le coscienze: canale di visione spirituale.',
+  22: 'Costruttore di grandi opere. Capacità di materializzare ideali per il bene collettivo.',
+  33: 'Maestro della compassione e dell\'insegnamento. Servizio amorevole come espressione massima del cammino.',
+}
+
+const SIGNIFICADOS_DE = {
+  1: 'Führung, Unabhängigkeit und Initiative. Der Weg verlangt Mut, neue Zyklen zu eröffnen.',
+  2: 'Kooperation, Sensibilität und Diplomatie. Harmonie in Beziehungen treibt Wachstum.',
+  3: 'Ausdruck, Kreativität und Kommunikation. Geteilte Freude verstärkt den Sinn.',
+  4: 'Struktur, Disziplin und beständige Arbeit. Solide Fundamente tragen das Schicksal.',
+  5: 'Freiheit, Wandel und Anpassung. Das Leben verlangt Flexibilität und vielfältige Erfahrung.',
+  6: 'Verantwortung, Familie und Dienst. Fürsorge offenbart die authentischste Berufung.',
+  7: 'Introspektion, Studium und Spiritualität. Stille und Analyse vertiefen Weisheit.',
+  8: 'Materielle Verwirklichung, Macht und Gerechtigkeit. Ehrgeiz und Ethik auszubalancieren ist zentral.',
+  9: 'Humanitarismus, Abschluss und Mitgefühl. Zyklen großzügig zu schließen öffnet neue Türen.',
+  11: 'Erhabene Intuition und Inspiration. Mission, Bewusstsein zu erheben – Kanal spiritueller Vision.',
+  22: 'Baumeister großer Werke. Fähigkeit, Ideale zum kollektiven Nutzen zu materialisieren.',
+  33: 'Meister der Mitgefühl und Lehre. Liebender Dienst als höchster Ausdruck des Weges.',
+}
+
+const SIGNIFICADOS_FR = {
+  1: 'Leadership, indépendance et initiative. Le chemin demande le courage d\'ouvrir de nouveaux cycles.',
+  2: 'Coopération, sensibilité et diplomatie. L\'harmonie dans les relations nourrit la croissance.',
+  3: 'Expression, créativité et communication. La joie partagée amplifie le sens.',
+  4: 'Structure, discipline et travail constant. Des fondations solides soutiennent le destin.',
+  5: 'Liberté, changement et adaptation. La vie demande flexibilité et expériences variées.',
+  6: 'Responsabilité, famille et service. Nourrir révèle la vocation la plus authentique.',
+  7: 'Introspection, étude et spiritualité. Le silence et l\'analyse approfondissent la sagesse.',
+  8: 'Réalisation matérielle, pouvoir et justice. Équilibrer ambition et éthique est le défi central.',
+  9: 'Humanitarisme, achèvement et compassion. Clore les cycles avec générosité ouvre de nouvelles portes.',
+  11: 'Intuition élevée et inspiration. Mission d\'élever les consciences – canal de vision spirituelle.',
+  22: 'Bâtisseur de grandes œuvres. Capacité de matérialiser des idéaux au bénéfice collectif.',
+  33: 'Maître de la compassion et de l\'enseignement. Service aimant comme expression maximale du chemin.',
+}
 
 export function calcularMapaNumerologia(nome, dataISO, lang = 'pt', mapaNatal = null) {
-  const sig = lang !== 'pt' ? SIGNIFICADOS_EN : SIGNIFICADOS_PT
+  const sig = contentForLang(lang, {
+    pt: SIGNIFICADOS_PT, en: SIGNIFICADOS_EN, es: SIGNIFICADOS_ES,
+    it: SIGNIFICADOS_IT, de: SIGNIFICADOS_DE, fr: SIGNIFICADOS_FR,
+  }) || SIGNIFICADOS_EN
   const nomeData = analisarNome(nome)
   const caminho = caminhoVida(dataISO)
   const ano = anoPessoal(dataISO)

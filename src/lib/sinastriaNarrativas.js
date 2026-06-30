@@ -2,7 +2,19 @@
  * Narrativas personalizadas de sinastria - textos íntimos por utilizador.
  */
 import { pickNarr } from './i18n/narrativePick.js'
+import { contentForLang } from './i18n/langUtil.js'
+import { translateSigno, translateAspecto } from './i18n/astro.js'
+import {
+  sx, aberturaProfessor as aberturaSx,
+  NOME_PADRAO_A, NOME_PADRAO_B, NOME_PESSOA,
+  TEMA_QUIMICA, TEMA_EMOCAO, TEMA_COMUNICACAO, TEMA_FUTURO,
+  textoAspectoNarrativa, textoAspectoComposto,
+} from './i18n/sinastriaStrings.js'
 import * as SinLoc from './i18n/packs/sinastriaLocales.js'
+
+function tsSign(signo, lang) {
+  return signo ? translateSigno(signo, lang) : signo
+}
 
 function enrichDict(dict, baseName) {
   for (const lang of ['es', 'it', 'de', 'fr']) {
@@ -169,46 +181,20 @@ enrichDict(NODO_NORTE, 'NODO_NORTE')
 enrichDict(NODO_SUL, 'NODO_SUL')
 
 function aberturaProfessor(nomeA, nomeB, tema, lang) {
-  if (lang !== 'pt') {
-    return `${nomeA}, the stars speak directly to you about **${tema}** with ${nomeB}. This is your personal synastry - woven from your exact birth chart crossed with theirs. No generic text: every sentence reflects your sky.\n\n`
-  }
-  return `${nomeA}, os astros falam contigo directamente sobre **${tema}** com ${nomeB}. Esta é a tua sinastria pessoal - tecida a partir do teu mapa exacto cruzado com o dele/a. Nada de texto genérico: cada frase reflecte o teu céu.\n\n`
+  return aberturaSx(lang, nomeA, nomeB, tema)
 }
 
 function narrativaAspectoComposto(a, lang) {
   if (!a) return ''
-  if (a.harmonico) {
-    if (lang !== 'pt') {
-      return `• **${a.corpoA} ${a.nome.toLowerCase()} ${a.corpoB}** (${a.signoA} · ${a.signoB}): a natural gift in your relationship - energy flows here with ease, without you having to force it.`
-    }
-    return `• **${a.corpoA} ${a.nome.toLowerCase()} ${a.corpoB}** (${a.signoA} · ${a.signoB}): dom natural do vosso relacionamento - a energia flui aqui com facilidade, sem precisarem forçar.`
-  }
-  if (a.tenso) {
-    if (lang !== 'pt') {
-      return `• **${a.corpoA} ${a.nome.toLowerCase()} ${a.corpoB}** (${a.signoA} · ${a.signoB}): a recurring trigger - the arena where arguments or crises return until you both learn the lesson together. Not a curse: a growth edge.`
-    }
-    return `• **${a.corpoA} ${a.nome.toLowerCase()} ${a.corpoB}** (${a.signoA} · ${a.signoB}): gatilho recorrente - a arena onde brigas ou crises voltam até aprenderem juntos a lição. Não é maldição: é fronteira de crescimento.`
-  }
-  if (lang !== 'pt') {
-    return `• **${a.corpoA} ${a.nome.toLowerCase()} ${a.corpoB}** (${a.signoA} · ${a.signoB}): intense fusion - you become one voice in this area, for better or for deeper merging.`
-  }
-  return `• **${a.corpoA} ${a.nome.toLowerCase()} ${a.corpoB}** (${a.signoA} · ${a.signoB}): fusão intensa - tornam-se uma só voz nesta área, para melhor ou para fundir mais profundamente.`
+  const signA = tsSign(a.signoA, lang)
+  const signB = tsSign(a.signoB, lang)
+  const local = { ...a, signoA: signA, signoB: signB }
+  return textoAspectoComposto(lang, local, (n) => translateAspecto(n, lang))
 }
 
 function aspectoNarrativa(a, lang, nomeA, nomeB) {
   if (!a) return ''
-  const tom = {
-    Trígono: lang !== 'pt' ? 'flows naturally' : 'flui com naturalidade',
-    Sextil: lang !== 'pt' ? 'opens cooperative doors' : 'abre portas cooperativas',
-    Conjunção: lang !== 'pt' ? 'merges intensely' : 'fundem-se intensamente',
-    Quadratura: lang !== 'pt' ? 'creates friction that demands growth' : 'cria atrito que exige crescimento',
-    Oposição: lang !== 'pt' ? 'polarizes and mirrors what each lacks' : 'polariza e espelha o que falta a cada um',
-  }
-  const t = tom[a.nome] || (lang !== 'pt' ? 'connects' : 'conectam')
-  if (lang !== 'pt') {
-    return `${nomeA}, when your sky meets ${nomeB}'s, ${a.pessoaA} and ${a.pessoaB} ${t} in a ${a.nome.toLowerCase()} (${a.signoA} · ${a.signoB}). The cosmos is pointing at this thread in your bond - pay attention.`
-  }
-  return `${nomeA}, quando o teu céu encontra o de ${nomeB}, ${a.pessoaA} e ${a.pessoaB} ${t} numa ${a.nome.toLowerCase()} (${a.signoA} · ${a.signoB}). O cosmos aponta para este fio na vossa ligação - presta atenção.`
+  return textoAspectoNarrativa(lang, nomeA, nomeB, a, (n) => translateAspecto(n, lang), (s) => tsSign(s, lang), (s) => tsSign(s, lang))
 }
 
 function pickSigno(corpos, key) {
@@ -216,108 +202,216 @@ function pickSigno(corpos, key) {
 }
 
 export function narrativaQuimica(posA, posB, aspectos, lang = 'pt') {
-  const nomeA = posA?.nome || (lang !== 'pt' ? 'You' : 'Tu')
-  const nomeB = posB?.nome || (lang !== 'pt' ? 'your partner' : 'o(a) parceiro(a)')
+  const nomeA = posA?.nome || contentForLang(lang, NOME_PADRAO_A)
+  const nomeB = posB?.nome || contentForLang(lang, NOME_PADRAO_B)
   const venA = pickSigno(posA?.corpos, 'venus')
   const marA = pickSigno(posA?.corpos, 'marte')
   const venB = pickSigno(posB?.corpos, 'venus')
   const marB = pickSigno(posB?.corpos, 'marte')
   const linhas = []
 
-  const tema = lang !== 'pt' ? 'sexual attraction and chemistry' : 'atração sexual e química'
+  const tema = contentForLang(lang, TEMA_QUIMICA)
   linhas.push(aberturaProfessor(nomeA, nomeB, tema, lang).trim())
 
-  if (lang !== 'pt') {
-    if (venA) linhas.push(`Your Venus in ${venA} tells how **you** love: ${pickNarr(VENUS_REL[venA], lang) || 'in a unique way'}. This is what opens your heart, what you find beautiful, and how you need affection to reach you.`)
-    if (marA) linhas.push(`Your Mars in ${marA} is **your** desire - how fire moves in your body: ${pickNarr(MARTE_REL[marA], lang) || 'with personal rhythm'}. When honoured, it becomes vitality; when repressed, impatience or frustration.`)
-    linhas.push('')
-    if (venB) linhas.push(`${nomeB}'s Venus in ${venB} is the language you must learn to speak: ${pickNarr(VENUS_REL[venB], lang) || 'their own love dialect'}. Seducing them means honouring *their* Venus, not your fantasy of love.`)
-    if (marB) linhas.push(`${nomeB}'s Mars in ${marB} shows how they pursue and defend desire: ${pickNarr(MARTE_REL[marB], lang) || 'in their style'}. Your chemistry lives in the dance between your Venus and their Mars - and vice versa.`)
-  } else {
-    if (venA) linhas.push(`A tua Vénus em ${venA} diz como **tu** amas: ${pickNarr(VENUS_REL[venA], lang) || 'de forma única'}. É isto que abre o teu coração, o que achas belo e como precisas que o afecto te chegue.`)
-    if (marA) linhas.push(`O teu Marte em ${marA} é **o teu** desejo - como o fogo se move no teu corpo: ${pickNarr(MARTE_REL[marA], lang) || 'com ritmo pessoal'}. Quando honrado, torna-se vitalidade; quando reprimido, impaciência ou frustração.`)
-    linhas.push('')
-    if (venB) linhas.push(`A Vénus de ${nomeB} em ${venB} é a linguagem que precisas de aprender: ${pickNarr(VENUS_REL[venB], lang) || 'dialecto amoroso próprio'}. Seduzir passa por honrar *a* Vénus dele/a, não a tua fantasia de amor.`)
-    if (marB) linhas.push(`O Marte de ${nomeB} em ${marB} mostra como conquista e defende o desejo: ${pickNarr(MARTE_REL[marB], lang) || 'ao seu estilo'}. A vossa química vive na dança entre a tua Vénus e o Marte dele/a - e vice-versa.`)
+  if (venA) {
+    linhas.push(sx(lang, {
+      pt: (na, s, d) => `A tua Vénus em ${s} diz como **tu** amas: ${d}. É isto que abre o teu coração, o que achas belo e como precisas que o afecto te chegue.`,
+      en: (na, s, d) => `Your Venus in ${s} tells how **you** love: ${d}. This is what opens your heart, what you find beautiful, and how you need affection to reach you.`,
+      es: (na, s, d) => `Tu Venus en ${s} dice cómo **tú** amas: ${d}. Esto abre tu corazón, lo que encuentras bello y cómo necesitas que te llegue el afecto.`,
+      it: (na, s, d) => `La tua Venere in ${s} dice come **tu** ami: ${d}. È ciò che apre il tuo cuore, ciò che trovi bello e come hai bisogno che l'affetto ti raggiunga.`,
+      de: (na, s, d) => `Deine Venus in ${s} zeigt, wie **du** liebst: ${d}. Das öffnet dein Herz, was du schön findest und wie Zuneigung dich erreichen soll.`,
+      fr: (na, s, d) => `Ta Vénus en ${s} dit comment **tu** aimes : ${d}. C'est ce qui ouvre ton cœur, ce que tu trouves beau et comment tu as besoin que l'affection t'atteigne.`,
+    }, nomeA, tsSign(venA, lang), pickNarr(VENUS_REL[venA], lang) || sx(lang, { pt: 'de forma única', en: 'in a unique way', es: 'de forma única', it: 'in modo unico', de: 'auf einzigartige Weise', fr: 'de façon unique' })))
+  }
+  if (marA) {
+    linhas.push(sx(lang, {
+      pt: (na, s, d) => `O teu Marte em ${s} é **o teu** desejo - como o fogo se move no teu corpo: ${d}. Quando honrado, torna-se vitalidade; quando reprimido, impaciência ou frustração.`,
+      en: (na, s, d) => `Your Mars in ${s} is **your** desire - how fire moves in your body: ${d}. When honoured, it becomes vitality; when repressed, impatience or frustration.`,
+      es: (na, s, d) => `Tu Marte en ${s} es **tu** deseo: cómo se mueve el fuego en tu cuerpo: ${d}. Cuando se honra, se vuelve vitalidad; cuando se reprime, impaciencia o frustración.`,
+      it: (na, s, d) => `Il tuo Marte in ${s} è **il tuo** desiderio: come il fuoco si muove nel tuo corpo: ${d}. Quando onorato, diventa vitalità; quando represso, impazienza o frustrazione.`,
+      de: (na, s, d) => `Dein Mars in ${s} ist **dein** Verlangen – wie Feuer sich in deinem Körper bewegt: ${d}. Wenn geehrt, wird es Vitalität; wenn unterdrückt, Ungeduld oder Frustration.`,
+      fr: (na, s, d) => `Ton Mars en ${s} est **ton** désir – comment le feu se déplace dans ton corps : ${d}. Honoré, il devient vitalité ; réprimé, impatience ou frustration.`,
+    }, nomeA, tsSign(marA, lang), pickNarr(MARTE_REL[marA], lang) || sx(lang, { pt: 'com ritmo pessoal', en: 'with personal rhythm', es: 'con ritmo personal', it: 'con ritmo personale', de: 'mit persönlichem Rhythmus', fr: 'avec un rythme personnel' })))
+  }
+  linhas.push('')
+  if (venB) {
+    linhas.push(sx(lang, {
+      pt: (nb, s, d) => `A Vénus de ${nb} em ${s} é a linguagem que precisas de aprender: ${d}. Seduzir passa por honrar *a* Vénus dele/a, não a tua fantasia de amor.`,
+      en: (nb, s, d) => `${nb}'s Venus in ${s} is the language you must learn to speak: ${d}. Seducing them means honouring *their* Venus, not your fantasy of love.`,
+      es: (nb, s, d) => `La Venus de ${nb} en ${s} es el idioma que debes aprender: ${d}. Seducir pasa por honrar *su* Venus, no tu fantasía de amor.`,
+      it: (nb, s, d) => `La Venere di ${nb} in ${s} è la lingua che devi imparare: ${d}. Sedurre significa onorare *la* Venere sua, non la tua fantasia d'amore.`,
+      de: (nb, s, d) => `${nb}s Venus in ${s} ist die Sprache, die du lernen musst: ${d}. Verführen heißt *ihre/seine* Venus ehren, nicht deine Liebesfantasie.`,
+      fr: (nb, s, d) => `La Vénus de ${nb} en ${s} est la langue à apprendre : ${d}. Séduire, c'est honorer *sa* Vénus, pas ton fantasme d'amour.`,
+    }, nomeB, tsSign(venB, lang), pickNarr(VENUS_REL[venB], lang) || sx(lang, { pt: 'dialecto amoroso próprio', en: 'their own love dialect', es: 'su propio dialecto amoroso', it: 'il proprio dialetto amoroso', de: 'ihren eigenen Liebesdialekt', fr: 'son propre dialecte amoureux' })))
+  }
+  if (marB) {
+    linhas.push(sx(lang, {
+      pt: (nb, s, d) => `O Marte de ${nb} em ${s} mostra como conquista e defende o desejo: ${d}. A vossa química vive na dança entre a tua Vénus e o Marte dele/a - e vice-versa.`,
+      en: (nb, s, d) => `${nb}'s Mars in ${s} shows how they pursue and defend desire: ${d}. Your chemistry lives in the dance between your Venus and their Mars - and vice versa.`,
+      es: (nb, s, d) => `El Marte de ${nb} en ${s} muestra cómo conquista y defiende el deseo: ${d}. Vuestra química vive en la danza entre tu Venus y su Marte, y viceversa.`,
+      it: (nb, s, d) => `Il Marte di ${nb} in ${s} mostra come conquista e difende il desiderio: ${d}. La vostra chimica vive nella danza tra la tua Venere e il suo Marte, e viceversa.`,
+      de: (nb, s, d) => `${nb}s Mars in ${s} zeigt, wie Verlangen verfolgt und verteidigt wird: ${d}. Eure Chemie lebt im Tanz zwischen deiner Venus und ihrem/seinem Mars – und umgekehrt.`,
+      fr: (nb, s, d) => `Le Mars de ${nb} en ${s} montre comment il/elle poursuit et défend le désir : ${d}. Votre alchimie vit dans la danse entre ta Vénus et son Mars – et inversement.`,
+    }, nomeB, tsSign(marB, lang), pickNarr(MARTE_REL[marB], lang) || sx(lang, { pt: 'ao seu estilo', en: 'in their style', es: 'a su estilo', it: 'al suo stile', de: 'in ihrem/seinem Stil', fr: 'à sa manière' })))
   }
 
   const top = aspectos.filter((a) => ['venus', 'marte'].includes(a.keyA) || ['venus', 'marte'].includes(a.keyB)).slice(0, 3)
   if (top.length) {
     linhas.push('')
-    linhas.push(lang !== 'pt' ? '*What your crossed charts whisper about desire:*' : '*O que os vossos mapas cruzados sussurram sobre o desejo:*')
+    linhas.push(sx(lang, {
+      pt: '*O que os vossos mapas cruzados sussurram sobre o desejo:*',
+      en: '*What your crossed charts whisper about desire:*',
+      es: '*Lo que vuestros mapas cruzados susurran sobre el deseo:*',
+      it: '*Cosa sussurrano i vostri temi incrociati sul desiderio:*',
+      de: '*Was eure gekreuzten Horoskope über Verlangen flüstern:*',
+      fr: '*Ce que vos cartes croisées murmurent sur le désir :*',
+    }))
     for (const a of top) linhas.push(aspectoNarrativa(a, lang, nomeA, nomeB))
   } else {
-    linhas.push(lang !== 'pt'
-      ? '\n\nWithout strong Venus–Mars cross-aspects, your chemistry is built through trust and repeated choice - conscious desire rather than automatic magnetism.'
-      : '\n\nSem aspectos fortes Vénus–Marte cruzados, a vossa química constrói-se pela confiança e escolha repetida - desejo consciente, não magnetismo automático.')
+    linhas.push(sx(lang, {
+      pt: '\n\nSem aspectos fortes Vénus–Marte cruzados, a vossa química constrói-se pela confiança e escolha repetida - desejo consciente, não magnetismo automático.',
+      en: '\n\nWithout strong Venus–Mars cross-aspects, your chemistry is built through trust and repeated choice - conscious desire rather than automatic magnetism.',
+      es: '\n\nSin aspectos fuertes Venus–Marte cruzados, vuestra química se construye con confianza y elección repetida: deseo consciente, no magnetismo automático.',
+      it: '\n\nSenza forti aspetti incrociati Venere–Marte, la vostra chimica si costruisce con fiducia e scelta ripetuta: desiderio consapevole, non magnetismo automatico.',
+      de: '\n\nOhne starke Venus–Mars-Kreuzaspekte baut sich eure Chemie durch Vertrauen und wiederholte Wahl auf – bewusstes Verlangen statt automatischem Magnetismus.',
+      fr: '\n\nSans aspects croisés Venus–Mars forts, votre alchimie se construit par la confiance et le choix répété – désir conscient plutôt que magnétisme automatique.',
+    }))
   }
   return linhas.filter(Boolean).join('\n')
 }
 
 export function narrativaEmocao(posA, posB, aspectos, lang = 'pt') {
-  const nomeA = posA?.nome || (lang !== 'pt' ? 'You' : 'Tu')
-  const nomeB = posB?.nome || (lang !== 'pt' ? 'your partner' : 'o(a) parceiro(a)')
+  const nomeA = posA?.nome || contentForLang(lang, NOME_PADRAO_A)
+  const nomeB = posB?.nome || contentForLang(lang, NOME_PADRAO_B)
   const solA = pickSigno(posA?.corpos, 'sol')
   const luaA = pickSigno(posA?.corpos, 'lua')
   const solB = pickSigno(posB?.corpos, 'sol')
   const luaB = pickSigno(posB?.corpos, 'lua')
   const linhas = []
 
-  const tema = lang !== 'pt' ? 'emotional harmony' : 'sintonia emocional'
+  const tema = contentForLang(lang, TEMA_EMOCAO)
   linhas.push(aberturaProfessor(nomeA, nomeB, tema, lang).trim())
 
-  if (lang !== 'pt') {
-    if (solA) linhas.push(`Your Sun in ${solA} is how **you** shine - your conscious identity. In love, you need ${nomeB} to see this light, not only your moods.`)
-    if (luaA) linhas.push(`Your Moon in ${luaA} is your private heart: ${pickNarr(LUA_EMOC[luaA], lang) || 'unique emotional needs'}. When ${nomeB} ignores this Moon, you close off - not from malice, from self-protection.`)
-    linhas.push('')
-    if (solB) linhas.push(`${nomeB}'s Sun in ${solB} is the identity they defend - respect it even when it clashes with yours.`)
-    if (luaB) linhas.push(`${nomeB}'s Moon in ${luaB} is where they feel safe: ${pickNarr(LUA_EMOC[luaB], lang) || 'their rhythm'}. To love them is to speak to this Moon in its own language.`)
-  } else {
-    if (solA) linhas.push(`O teu Sol em ${solA} é como **tu** brilhas - a tua identidade consciente. No amor, precisas que ${nomeB} veja esta luz, não só os teus humores.`)
-    if (luaA) linhas.push(`A tua Lua em ${luaA} é o teu coração privado: ${pickNarr(LUA_EMOC[luaA], lang) || 'necessidades emocionais únicas'}. Quando ${nomeB} ignora esta Lua, fechas-te - não por maldade, por autoprotecção.`)
-    linhas.push('')
-    if (solB) linhas.push(`O Sol de ${nomeB} em ${solB} é a identidade que defende - respeita-a mesmo quando choca com a tua.`)
-    if (luaB) linhas.push(`A Lua de ${nomeB} em ${luaB} é onde se sente seguro(a): ${pickNarr(LUA_EMOC[luaB], lang) || 'ritmo próprio'}. Amar é falar a esta Lua na língua dela.`)
+  if (solA) {
+    linhas.push(sx(lang, {
+      pt: (na, nb, s) => `O teu Sol em ${s} é como **tu** brilhas - a tua identidade consciente. No amor, precisas que ${nb} veja esta luz, não só os teus humores.`,
+      en: (na, nb, s) => `Your Sun in ${s} is how **you** shine - your conscious identity. In love, you need ${nb} to see this light, not only your moods.`,
+      es: (na, nb, s) => `Tu Sol en ${s} es cómo **tú** brillas: tu identidad consciente. En el amor, necesitas que ${nb} vea esta luz, no solo tus humores.`,
+      it: (na, nb, s) => `Il tuo Sole in ${s} è come **tu** brilli: la tua identità conscia. In amore, hai bisogno che ${nb} veda questa luce, non solo i tuoi umori.`,
+      de: (na, nb, s) => `Deine Sonne in ${s} ist, wie **du** strahlst – deine bewusste Identität. In der Liebe brauchst du, dass ${nb} dieses Licht sieht, nicht nur deine Stimmungen.`,
+      fr: (na, nb, s) => `Ton Soleil en ${s} est comment **tu** brilles – ton identité consciente. En amour, tu as besoin que ${nb} voie cette lumière, pas seulement tes humeurs.`,
+    }, nomeA, nomeB, tsSign(solA, lang)))
+  }
+  if (luaA) {
+    const luaTxt = pickNarr(LUA_EMOC[luaA], lang) || sx(lang, { pt: 'necessidades emocionais únicas', en: 'unique emotional needs', es: 'necesidades emocionales únicas', it: 'bisogni emotivi unici', de: 'einzigartige emotionale Bedürfnisse', fr: 'besoins émotionnels uniques' })
+    linhas.push(sx(lang, {
+      pt: (na, nb, s, d) => `A tua Lua em ${s} é o teu coração privado: ${d}. Quando ${nb} ignora esta Lua, fechas-te - não por maldade, por autoprotecção.`,
+      en: (na, nb, s, d) => `Your Moon in ${s} is your private heart: ${d}. When ${nb} ignores this Moon, you close off - not from malice, from self-protection.`,
+      es: (na, nb, s, d) => `Tu Luna en ${s} es tu corazón privado: ${d}. Cuando ${nb} ignora esta Luna, te cierras, no por maldad, sino por autoprotección.`,
+      it: (na, nb, s, d) => `La tua Luna in ${s} è il tuo cuore privato: ${d}. Quando ${nb} ignora questa Luna, ti chiudi, non per malizia, ma per autoprotezione.`,
+      de: (na, nb, s, d) => `Dein Mond in ${s} ist dein privates Herz: ${d}. Wenn ${nb} diesen Mond ignoriert, schließt du dich – nicht aus Bosheit, sondern aus Selbstschutz.`,
+      fr: (na, nb, s, d) => `Ta Lune en ${s} est ton cœur privé : ${d}. Quand ${nb} ignore cette Lune, tu te fermes – non par méchanceté, mais par autoprotección.`,
+    }, nomeA, nomeB, tsSign(luaA, lang), luaTxt))
+  }
+  linhas.push('')
+  if (solB) {
+    linhas.push(sx(lang, {
+      pt: (nb, s) => `O Sol de ${nb} em ${s} é a identidade que defende - respeita-a mesmo quando choca com a tua.`,
+      en: (nb, s) => `${nb}'s Sun in ${s} is the identity they defend - respect it even when it clashes with yours.`,
+      es: (nb, s) => `El Sol de ${nb} en ${s} es la identidad que defiende: respétala aunque choque con la tuya.`,
+      it: (nb, s) => `Il Sole di ${nb} in ${s} è l'identità che difende: rispettala anche quando scontrata con la tua.`,
+      de: (nb, s) => `${nb}s Sonne in ${s} ist die Identität, die sie/er verteidigt – respektiere sie, auch wenn sie mit deiner kollidiert.`,
+      fr: (nb, s) => `Le Soleil de ${nb} en ${s} est l'identité qu'il/elle défend – respecte-la même quand elle heurte la tienne.`,
+    }, nomeB, tsSign(solB, lang)))
+  }
+  if (luaB) {
+    const luaTxt = pickNarr(LUA_EMOC[luaB], lang) || sx(lang, { pt: 'ritmo próprio', en: 'their rhythm', es: 'su ritmo', it: 'il suo ritmo', de: 'ihren/seinen Rhythmus', fr: 'son rythme' })
+    linhas.push(sx(lang, {
+      pt: (nb, s, d) => `A Lua de ${nb} em ${s} é onde se sente seguro(a): ${d}. Amar é falar a esta Lua na língua dela.`,
+      en: (nb, s, d) => `${nb}'s Moon in ${s} is where they feel safe: ${d}. To love them is to speak to this Moon in its own language.`,
+      es: (nb, s, d) => `La Luna de ${nb} en ${s} es donde se siente seguro/a: ${d}. Amar es hablar a esta Luna en su idioma.`,
+      it: (nb, s, d) => `La Luna di ${nb} in ${s} è dove si sente al sicuro: ${d}. Amare è parlare a questa Luna nella sua lingua.`,
+      de: (nb, s, d) => `${nb}s Mond in ${s} ist, wo sie/er sich sicher fühlt: ${d}. Lieben heißt, zu diesem Mond in seiner Sprache zu sprechen.`,
+      fr: (nb, s, d) => `La Lune de ${nb} en ${s} est où il/elle se sent en sécurité : ${d}. Aimer, c'est parler à cette Lune dans sa langue.`,
+    }, nomeB, tsSign(luaB, lang), luaTxt))
   }
 
   const solLua = aspectos.filter((a) => (a.keyA === 'sol' && a.keyB === 'lua') || (a.keyA === 'lua' && a.keyB === 'sol')).slice(0, 2)
   const luaLua = aspectos.find((a) => a.keyA === 'lua' && a.keyB === 'lua')
   if (solLua.length || luaLua) {
     linhas.push('')
-    linhas.push(lang !== 'pt' ? '*What the Moon and Sun reveal between you:*' : '*O que Sol e Lua revelam entre vocês:*')
+    linhas.push(sx(lang, {
+      pt: '*O que Sol e Lua revelam entre vocês:*',
+      en: '*What the Moon and Sun reveal between you:*',
+      es: '*Lo que Sol y Luna revelan entre vosotros:*',
+      it: '*Cosa rivelano Sole e Luna tra voi:*',
+      de: '*Was Sonne und Mond zwischen euch offenbaren:*',
+      fr: '*Ce que Soleil et Lune révèlent entre vous :*',
+    }))
     for (const a of solLua) linhas.push(aspectoNarrativa(a, lang, nomeA, nomeB))
     if (luaLua) {
-      linhas.push(lang !== 'pt'
-        ? `${nomeA}, your Moon meets ${nomeB}'s in ${luaLua.nome.toLowerCase()} - your emotional worlds ${luaLua.nome === 'Trígono' || luaLua.nome === 'Sextil' ? 'recognize each other in silence' : 'must slowly learn each other\'s language'}.`
-        : `${nomeA}, a tua Lua encontra a de ${nomeB} em ${luaLua.nome.toLowerCase()} - os vossos mundos emocionais ${luaLua.nome === 'Trígono' || luaLua.nome === 'Sextil' ? 'reconhecem-se em silêncio' : 'precisam de aprender devagar a linguagem um do outro'}.`)
+      const harm = luaLua.nome === 'Trígono' || luaLua.nome === 'Sextil'
+      const asp = translateAspecto(luaLua.nome, lang).toLowerCase()
+      linhas.push(sx(lang, {
+        pt: (na, nb, a, h) => `${na}, a tua Lua encontra a de ${nb} em ${a} - os vossos mundos emocionais ${h ? 'reconhecem-se em silêncio' : 'precisam de aprender devagar a linguagem um do outro'}.`,
+        en: (na, nb, a, h) => `${na}, your Moon meets ${nb}'s in ${a} - your emotional worlds ${h ? 'recognize each other in silence' : 'must slowly learn each other\'s language'}.`,
+        es: (na, nb, a, h) => `${na}, tu Luna encuentra la de ${nb} en ${a}: vuestros mundos emocionales ${h ? 'se reconocen en silencio' : 'deben aprender despacio el idioma del otro'}.`,
+        it: (na, nb, a, h) => `${na}, la tua Luna incontra quella di ${nb} in ${a}: i vostri mondi emotivi ${h ? 'si riconoscono in silenzio' : 'devono imparare lentamente la lingua l\'uno dell\'altro'}.`,
+        de: (na, nb, a, h) => `${na}, dein Mond trifft auf den von ${nb} im ${a} – eure emotionalen Welten ${h ? 'erkennen sich im Stillen' : 'müssen langsam die Sprache des anderen lernen'}.`,
+        fr: (na, nb, a, h) => `${na}, ta Lune rencontre celle de ${nb} en ${a} : vos mondes émotionnels ${h ? 'se reconnaissent en silence' : 'doivent apprendre lentement la langue de l\'autre'}.`,
+      }, nomeA, nomeB, asp, harm))
     }
   }
 
-  linhas.push(lang !== 'pt'
-    ? `\n\n${nomeA}, remember: in crisis, the Moon speaks first. What you need emotionally is rarely what your Sun shows the world - and the same is true for ${nomeB}.`
-    : `\n\n${nomeA}, lembra-te: em crise, fala primeiro a Lua. O que precisas emocionalmente raramente é o que o teu Sol mostra ao mundo - e o mesmo vale para ${nomeB}.`)
+  linhas.push(sx(lang, {
+    pt: (na, nb) => `\n\n${na}, lembra-te: em crise, fala primeiro a Lua. O que precisas emocionalmente raramente é o que o teu Sol mostra ao mundo - e o mesmo vale para ${nb}.`,
+    en: (na, nb) => `\n\n${na}, remember: in crisis, the Moon speaks first. What you need emotionally is rarely what your Sun shows the world - and the same is true for ${nb}.`,
+    es: (na, nb) => `\n\n${na}, recuerda: en crisis, habla primero la Luna. Lo que necesitas emocionalmente rara vez es lo que tu Sol muestra al mundo, y lo mismo vale para ${nb}.`,
+    it: (na, nb) => `\n\n${na}, ricorda: in crisi parla per prima la Luna. Ciò che ti serve emotivamente raramente è ciò che il tuo Sole mostra al mondo – e lo stesso vale per ${nb}.`,
+    de: (na, nb) => `\n\n${na}, denk daran: in der Krise spricht zuerst der Mond. Was du emotional brauchst, ist selten das, was deine Sonne der Welt zeigt – und dasselbe gilt für ${nb}.`,
+    fr: (na, nb) => `\n\n${na}, rappelle-toi : en crise, la Lune parle la première. Ce dont tu as besoin émotionnellement est rarement ce que ton Soleil montre au monde – et il en va de même pour ${nb}.`,
+  }, nomeA, nomeB))
   return linhas.join('\n')
 }
 
 export function narrativaComunicacao(posA, posB, aspectos, lang = 'pt') {
-  const nomeA = posA?.nome || (lang !== 'pt' ? 'You' : 'Tu')
-  const nomeB = posB?.nome || (lang !== 'pt' ? 'your partner' : 'o(a) parceiro(a)')
+  const nomeA = posA?.nome || contentForLang(lang, NOME_PADRAO_A)
+  const nomeB = posB?.nome || contentForLang(lang, NOME_PADRAO_B)
   const merA = pickSigno(posA?.corpos, 'mercurio')
   const merB = pickSigno(posB?.corpos, 'mercurio')
   const linhas = []
 
-  const tema = lang !== 'pt' ? 'communication and dialogue' : 'comunicação e diálogo'
+  const tema = contentForLang(lang, TEMA_COMUNICACAO)
   linhas.push(aberturaProfessor(nomeA, nomeB, tema, lang).trim())
 
-  if (lang !== 'pt') {
-    if (merA) linhas.push(`Your Mercury in ${merA} is **your** mind in conversation: ${pickNarr(MERCURIO_COM[merA], lang) || 'personal style'}. Under stress you revert here - for better or sharper.`)
-    if (merB) linhas.push(`${nomeB}'s Mercury in ${merB}: ${pickNarr(MERCURIO_COM[merB], lang) || 'their mental rhythm'}. You will clash when you assume they think at your speed.`)
-    linhas.push(`\n${nomeA}, repair after conflict depends on this axis. When Mercury flows, forgiveness is easy; when it blocks, every silence becomes a wound.`)
-  } else {
-    if (merA) linhas.push(`O teu Mercúrio em ${merA} é **a tua** mente em conversa: ${pickNarr(MERCURIO_COM[merA], lang) || 'estilo pessoal'}. Sob stress regresses aqui - para melhor ou mais cortante.`)
-    if (merB) linhas.push(`Mercúrio de ${nomeB} em ${merB}: ${pickNarr(MERCURIO_COM[merB], lang) || 'ritmo mental dele/a'}. Haverá choque quando assumires que pensa ao teu ritmo.`)
-    linhas.push(`\n${nomeA}, a reparação após conflito depende deste eixo. Quando Mercúrio flui, o perdão é fácil; quando bloqueia, cada silêncio torna-se ferida.`)
+  if (merA) {
+    linhas.push(sx(lang, {
+      pt: (na, s, d) => `O teu Mercúrio em ${s} é **a tua** mente em conversa: ${d}. Sob stress regresses aqui - para melhor ou mais cortante.`,
+      en: (na, s, d) => `Your Mercury in ${s} is **your** mind in conversation: ${d}. Under stress you revert here - for better or sharper.`,
+      es: (na, s, d) => `Tu Mercurio en ${s} es **tu** mente en conversación: ${d}. Bajo estrés regresas aquí, para mejor o más cortante.`,
+      it: (na, s, d) => `Il tuo Mercurio in ${s} è **la tua** mente in conversazione: ${d}. Sotto stress vi torni, per il meglio o più tagliente.`,
+      de: (na, s, d) => `Dein Merkur in ${s} ist **dein** Geist im Gespräch: ${d}. Unter Stress kehrst du hierher zurück – zum Besseren oder Schärferen.`,
+      fr: (na, s, d) => `Ton Mercure en ${s} est **ton** esprit en conversation : ${d}. Sous stress tu y reviens – pour le mieux ou plus tranchant.`,
+    }, nomeA, tsSign(merA, lang), pickNarr(MERCURIO_COM[merA], lang) || sx(lang, { pt: 'estilo pessoal', en: 'personal style', es: 'estilo personal', it: 'stile personale', de: 'persönlicher Stil', fr: 'style personnel' })))
   }
+  if (merB) {
+    linhas.push(sx(lang, {
+      pt: (nb, s, d) => `Mercúrio de ${nb} em ${s}: ${d}. Haverá choque quando assumires que pensa ao teu ritmo.`,
+      en: (nb, s, d) => `${nb}'s Mercury in ${s}: ${d}. You will clash when you assume they think at your speed.`,
+      es: (nb, s, d) => `Mercurio de ${nb} en ${s}: ${d}. Habrá choque cuando asumas que piensa a tu ritmo.`,
+      it: (nb, s, d) => `Mercurio di ${nb} in ${s}: ${d}. Ci sarà scontro quando assumi che pensi al tuo ritmo.`,
+      de: (nb, s, d) => `${nb}s Merkur in ${s}: ${d}. Es gibt Reibung, wenn du annimmst, sie/er denke in deinem Tempo.`,
+      fr: (nb, s, d) => `Mercure de ${nb} en ${s} : ${d}. Il y aura friction si tu supposes qu'il/elle pense à ton rythme.`,
+    }, nomeB, tsSign(merB, lang), pickNarr(MERCURIO_COM[merB], lang) || sx(lang, { pt: 'ritmo mental dele/a', en: 'their mental rhythm', es: 'su ritmo mental', it: 'il suo ritmo mentale', de: 'ihren/seinen mentalen Rhythmus', fr: 'son rythme mental' })))
+  }
+  linhas.push(sx(lang, {
+    pt: (na) => `\n${na}, a reparação após conflito depende deste eixo. Quando Mercúrio flui, o perdão é fácil; quando bloqueia, cada silêncio torna-se ferida.`,
+    en: (na) => `\n${na}, repair after conflict depends on this axis. When Mercury flows, forgiveness is easy; when it blocks, every silence becomes a wound.`,
+    es: (na) => `\n${na}, la reparación tras el conflicto depende de este eje. Cuando Mercurio fluye, el perdón es fácil; cuando bloquea, cada silencio se vuelve herida.`,
+    it: (na) => `\n${na}, la riparazione dopo il conflitto dipende da questo asse. Quando Mercurio fluisce, il perdono è facile; quando si blocca, ogni silenzio diventa ferita.`,
+    de: (na) => `\n${na}, die Reparatur nach Konflikten hängt von dieser Achse ab. Wenn Merkur fließt, ist Vergebung leicht; wenn er blockiert, wird jedes Schweigen zur Wunde.`,
+    fr: (na) => `\n${na}, la réparation après conflit dépend de cet axe. Quand Mercure coule, le pardon est facile ; quand il bloque, chaque silence devient une blessure.`,
+  }, nomeA))
 
   const merMer = aspectos.filter((a) => a.keyA === 'mercurio' && a.keyB === 'mercurio').slice(0, 2)
   if (merMer.length) {
@@ -328,35 +422,70 @@ export function narrativaComunicacao(posA, posB, aspectos, lang = 'pt') {
 }
 
 export function narrativaFuturo(posA, posB, aspectos, lang = 'pt') {
-  const nomeA = posA?.nome || (lang !== 'pt' ? 'You' : 'Tu')
-  const nomeB = posB?.nome || (lang !== 'pt' ? 'your partner' : 'o(a) parceiro(a)')
+  const nomeA = posA?.nome || contentForLang(lang, NOME_PADRAO_A)
+  const nomeB = posB?.nome || contentForLang(lang, NOME_PADRAO_B)
   const jupA = pickSigno(posA?.corpos, 'jupiter')
   const satA = pickSigno(posA?.corpos, 'saturno')
   const jupB = pickSigno(posB?.corpos, 'jupiter')
   const satB = pickSigno(posB?.corpos, 'saturno')
   const linhas = []
 
-  const tema = lang !== 'pt' ? 'projects and future' : 'projectos e futuro'
+  const tema = contentForLang(lang, TEMA_FUTURO)
   linhas.push(aberturaProfessor(nomeA, nomeB, tema, lang).trim())
 
-  if (lang !== 'pt') {
-    if (jupA) linhas.push(`Your Jupiter in ${jupA} shows where **you** expand and believe. Shared dreams work when ${nomeB} feeds this faith, not shrinks it.`)
-    if (satA) linhas.push(`Your Saturn in ${satA} is where you commit slowly - your walls and non-negotiables in long love.`)
-    linhas.push('')
-    if (jupB) linhas.push(`${nomeB}'s Jupiter in ${jupB} reveals their philosophy of life. You grow together when both Jupiters breathe the same hope.`)
-    if (satB) linhas.push(`${nomeB}'s Saturn in ${satB} shows duty and fear. The question: do you build a structure together, or does one carry the weight alone?`)
-  } else {
-    if (jupA) linhas.push(`O teu Júpiter em ${jupA} mostra onde **tu** expandes e acreditas. Sonhos partilhados funcionam quando ${nomeB} alimenta esta fé, não a encolhe.`)
-    if (satA) linhas.push(`O teu Saturno em ${satA} é onde te comprometes devagar - os teus muros e non-negotiables no amor longo.`)
-    linhas.push('')
-    if (jupB) linhas.push(`Júpiter de ${nomeB} em ${jupB} revela a filosofia de vida dele/a. Crescem juntos quando ambos os Júpiters respiram a mesma esperança.`)
-    if (satB) linhas.push(`Saturno de ${nomeB} em ${satB} mostra dever e medo. A questão: constroem estrutura juntos, ou um leva o peso sozinho?`)
+  if (jupA) {
+    linhas.push(sx(lang, {
+      pt: (na, nb, s) => `O teu Júpiter em ${s} mostra onde **tu** expandes e acreditas. Sonhos partilhados funcionam quando ${nb} alimenta esta fé, não a encolhe.`,
+      en: (na, nb, s) => `Your Jupiter in ${s} shows where **you** expand and believe. Shared dreams work when ${nb} feeds this faith, not shrinks it.`,
+      es: (na, nb, s) => `Tu Júpiter en ${s} muestra dónde **tú** expandes y crees. Los sueños compartidos funcionan cuando ${nb} alimenta esta fe, no la encoge.`,
+      it: (na, nb, s) => `Il tuo Giove in ${s} mostra dove **tu** espandi e credi. I sogni condivisi funzionano quando ${nb} nutre questa fede, non la restringe.`,
+      de: (na, nb, s) => `Dein Jupiter in ${s} zeigt, wo **du** expandierst und glaubst. Gemeinsame Träume funktionieren, wenn ${nb} diesen Glauben nährt, nicht schrumpft.`,
+      fr: (na, nb, s) => `Ton Jupiter en ${s} montre où **tu** t'élargis et crois. Les rêves partagés fonctionnent quand ${nb} nourrit cette foi, ne la rétrécit pas.`,
+    }, nomeA, nomeB, tsSign(jupA, lang)))
+  }
+  if (satA) {
+    linhas.push(sx(lang, {
+      pt: (na, s) => `O teu Saturno em ${s} é onde te comprometes devagar - os teus muros e non-negotiables no amor longo.`,
+      en: (na, s) => `Your Saturn in ${s} is where you commit slowly - your walls and non-negotiables in long love.`,
+      es: (na, s) => `Tu Saturno en ${s} es donde te comprometes despacio: tus muros y límites en el amor largo.`,
+      it: (na, s) => `Il tuo Saturno in ${s} è dove ti impegni lentamente: i tuoi muri e i tuoi limiti nell'amore lungo.`,
+      de: (na, s) => `Dein Saturn in ${s} ist, wo du dich langsam verpflichtest – deine Mauern und Non-Negotiables in langer Liebe.`,
+      fr: (na, s) => `Ton Saturne en ${s} est où tu t'engages lentement – tes murs et tes non-négociables dans l'amour long.`,
+    }, nomeA, tsSign(satA, lang)))
+  }
+  linhas.push('')
+  if (jupB) {
+    linhas.push(sx(lang, {
+      pt: (nb, s) => `Júpiter de ${nb} em ${s} revela a filosofia de vida dele/a. Crescem juntos quando ambos os Júpiters respiram a mesma esperança.`,
+      en: (nb, s) => `${nb}'s Jupiter in ${s} reveals their philosophy of life. You grow together when both Jupiters breathe the same hope.`,
+      es: (nb, s) => `Júpiter de ${nb} en ${s} revela su filosofía de vida. Crecen juntos cuando ambos Júpiter respiran la misma esperanza.`,
+      it: (nb, s) => `Giove di ${nb} in ${s} rivela la sua filosofia di vita. Crescete insieme quando entrambi i Giove respirano la stessa speranza.`,
+      de: (nb, s) => `${nb}s Jupiter in ${s} offenbart ihre/seine Lebensphilosophie. Ihr wachst zusammen, wenn beide Jupiters dieselbe Hoffnung atmen.`,
+      fr: (nb, s) => `Jupiter de ${nb} en ${s} révèle sa philosophie de vie. Vous grandissez ensemble quand les deux Jupiter respirent la même espérance.`,
+    }, nomeB, tsSign(jupB, lang)))
+  }
+  if (satB) {
+    linhas.push(sx(lang, {
+      pt: (nb, s) => `Saturno de ${nb} em ${s} mostra dever e medo. A questão: constroem estrutura juntos, ou um leva o peso sozinho?`,
+      en: (nb, s) => `${nb}'s Saturn in ${s} shows duty and fear. The question: do you build a structure together, or does one carry the weight alone?`,
+      es: (nb, s) => `Saturno de ${nb} en ${s} muestra deber y miedo. La pregunta: ¿construyen estructura juntos o uno lleva el peso solo?`,
+      it: (nb, s) => `Saturno di ${nb} in ${s} mostra dovere e paura. La domanda: costruite struttura insieme o uno porta il peso da solo?`,
+      de: (nb, s) => `${nb}s Saturn in ${s} zeigt Pflicht und Angst. Die Frage: Baut ihr gemeinsam Struktur, oder trägt einer das Gewicht allein?`,
+      fr: (nb, s) => `Saturne de ${nb} en ${s} montre devoir et peur. La question : construisez-vous une structure ensemble, ou l'un porte-t-il le poids seul ?`,
+    }, nomeB, tsSign(satB, lang)))
   }
 
   const jupSat = aspectos.filter((a) => ['jupiter', 'saturno'].includes(a.keyA) && ['jupiter', 'saturno'].includes(a.keyB)).slice(0, 3)
   if (jupSat.length) {
     linhas.push('')
-    linhas.push(lang !== 'pt' ? '*What Jupiter and Saturn weave for your future:*' : '*O que Júpiter e Saturno tecem para o vosso futuro:*')
+    linhas.push(sx(lang, {
+      pt: '*O que Júpiter e Saturno tecem para o vosso futuro:*',
+      en: '*What Jupiter and Saturn weave for your future:*',
+      es: '*Lo que Júpiter y Saturno tejen para vuestro futuro:*',
+      it: '*Cosa tessono Giove e Saturno per il vostro futuro:*',
+      de: '*Was Jupiter und Saturn für eure Zukunft weben:*',
+      fr: '*Ce que Jupiter et Saturne tissent pour votre avenir :*',
+    }))
     for (const a of jupSat) linhas.push(aspectoNarrativa(a, lang, nomeA, nomeB))
   }
   return linhas.join('\n')
@@ -364,7 +493,7 @@ export function narrativaFuturo(posA, posB, aspectos, lang = 'pt') {
 
 export function narrativaMissaoIndividual(pos, lang = 'pt') {
   if (!pos?.corpos?.sol) return ''
-  const nome = pos.nome || (lang !== 'pt' ? 'This person' : 'Esta pessoa')
+  const nome = pos.nome || contentForLang(lang, NOME_PESSOA)
   const signo = pos.corpos.sol.signo
   const fn = MISSAO_SOL_LONGA[signo]
   const linhas = [fn ? pickNarr(fn, lang, nome) : '']
@@ -386,8 +515,8 @@ export function narrativaMissaoIndividual(pos, lang = 'pt') {
 
 export function narrativaMissaoRelacionamento(resultado, lang = 'pt') {
   const { posA, posB, nodosSinastria } = resultado
-  const nomeA = posA?.nome || (lang !== 'pt' ? 'You' : 'Tu')
-  const nomeB = posB?.nome || (lang !== 'pt' ? 'your partner' : 'o(a) parceiro(a)')
+  const nomeA = posA?.nome || contentForLang(lang, NOME_PADRAO_A)
+  const nomeB = posB?.nome || contentForLang(lang, NOME_PADRAO_B)
   const linhas = []
 
   if (lang !== 'pt') {

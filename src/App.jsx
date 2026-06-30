@@ -83,6 +83,7 @@ import {
 } from './lib/i18n/oracle.js'
 import { consultarOracleServidor, interpretarMapaServidor } from './lib/apiAi.js'
 import { localizeArcano } from './lib/i18n/tarotArcana.js'
+import { formatSkyPosition } from './lib/i18n/astro.js'
 import { normalizarDataISO, criarDataUTCporLocal, localToUTC } from './lib/datetime.js'
 import { readMapaIACache, writeMapaIACache, interpretacaoValidaParaMapa, gerarChaveMapa, analiseMapaValida, contarPalavrasAnalise } from './lib/mapaInterpretacaoCache.js'
 import { calcularAngulosCasas } from './lib/natalHouses.js'
@@ -1802,7 +1803,7 @@ function Dashboard({ nome, mapaNatal, ceuAgora, aspetos, onOraculo, onPrivacidad
 
         {(ceuAgora || []).map((p) => (
           <div key={p.key} style={{ fontSize: 14, color: CORES.brancoSuave, padding: '7px 0', borderBottom: `1px solid ${CORES.vidroBorda}` }}>
-            {p.simbolo} {p.texto}
+            {formatSkyPosition(p, lang)}
           </div>
         ))}
       </div>

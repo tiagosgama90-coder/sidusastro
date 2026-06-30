@@ -137,7 +137,14 @@ const SEC_PATTERNS_EN = [
 
 export function parseRespostaSonhos(texto, lang = 'pt') {
   if (!texto?.trim()) return null
-  const patterns = isPt(lang) ? SEC_PATTERNS_PT : SEC_PATTERNS_EN
+  const headers = SEC_HEADERS[lang] || SEC_HEADERS.en
+  const patterns = headers.map((header, i) => {
+    const esc = header.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+    const nextHeader = headers[i + 1]
+    const nextEsc = nextHeader ? nextHeader.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') : null
+    const lookahead = nextEsc ? `(?=\\d\\.?\\s*${nextEsc}|$)` : '$'
+    return new RegExp(`${esc}\\s*[:\\n]+([\\s\\S]*?)${lookahead}`, 'i')
+  })
   const seccoes = patterns.map((re, i) => {
     const m = texto.match(re)
     return { key: SEC_KEYS[i], texto: m?.[1]?.trim() || '' }

@@ -88,8 +88,17 @@ const LEXICON_LOC = { es: LEXICON_ES, it: LEXICON_IT, de: LEXICON_DE, fr: LEXICO
 
 function lexiconForLang(lang) {
   if (lang === 'pt') return LEXICON
-  const loc = contentForLang(lang, LEXICON_LOC)
-  return loc || LEXICON
+  const loc = LEXICON_LOC[lang]
+  if (!loc) return LEXICON
+  return LEXICON.map((ptEntry, i) => {
+    const locEntry = loc.find((e) => e.tema === ptEntry.tema) || loc[i] || ptEntry
+    return {
+      ...ptEntry,
+      tema: locEntry.tema || ptEntry.tema,
+      resumo: locEntry.resumo || ptEntry.resumo,
+      keys: [...new Set([...(ptEntry.keys || []), ...(locEntry.keys || [])])],
+    }
+  })
 }
 
 const FEELING_MAP = {

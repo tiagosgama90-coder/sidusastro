@@ -25,15 +25,19 @@ export default async (req) => {
     const body = await req.json()
     const { texto, lang = 'pt', feeling = null, chips = [], mapaNatal = null } = body
 
-    if (!texto?.trim() || texto.trim().length < 8) {
+    const hasText = texto?.trim().length >= 8
+    const hasChips = Array.isArray(chips) && chips.length > 0
+    if (!hasText && !hasChips) {
       return new Response(JSON.stringify({ error: 'Relato demasiado curto' }), { status: 400, headers: corsHeaders })
     }
 
+    const textoEfetivo = hasText ? texto.trim() : chips.join(', ')
+
     const feelingLabel = labelSentimento(feeling, lang)
-    const simbolosDetectados = extrairSimbolos(texto, chips, lang)
+    const simbolosDetectados = extrairSimbolos(textoEfetivo, chips, lang)
     const system = construirSistemaSonhos(lang)
     const userPrompt = construirPedidoSonhos({
-      texto: texto.trim(),
+      texto: textoEfetivo,
       lang,
       feeling: feelingLabel,
       simbolosDetectados,
@@ -54,7 +58,7 @@ export default async (req) => {
     let seccoes = raw ? parseRespostaSonhos(raw, lang) : null
 
     if (!seccoes?.some((s) => s.texto?.length > 20)) {
-      seccoes = gerarInterpretacaoLocal(texto.trim(), lang, feelingLabel, simbolosDetectados, mapaNatal)
+      seccoes = gerarInterpretacaoLocal(textoEfetivo, lang, feelingLabel, simbolosDetectados, mapaNatal)
     }
 
     return new Response(JSON.stringify({ seccoes, simbolos, fonte: raw ? 'ia' : 'lexicon' }), {

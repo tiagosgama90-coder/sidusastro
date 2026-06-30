@@ -581,7 +581,9 @@ export default {
       title: "Interpretación de los sueños",
       subtitle: "Cuente su sueño: cada imagen et emoción se lee de forma única et adaptada a su cuenta.",
       placeholder: "Comienza a contar tu sueño...",
-      interpret: "✦ Revelar significado",
+      interpret: "✦ Révéler le sens",
+      decoding: "✦ Déchiffrement du rêve…",
+      error: "Impossible d'interpréter pour l'instant. Réessaie dans un instant.",
       symbolsHint: "Símbolos comunes",
       feelingLabel: "Sentimiento dominante en el sueño.",
       feelings: {

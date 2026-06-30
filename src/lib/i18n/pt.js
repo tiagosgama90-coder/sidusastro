@@ -526,6 +526,8 @@ export default {
       subtitle: 'Relata o teu sonho - cada imagem e emoção será lida de forma única, à medida do teu relato.',
       placeholder: 'Começa a relatar o sonho…',
       interpret: '✦ Revelar significado',
+      decoding: '✦ A decifrar o sonho…',
+      error: 'Não foi possível interpretar agora. Tenta outra vez dentro de instantes.',
       symbolsHint: 'Símbolos frequentes',
       feelingLabel: 'Sentimento dominante no sonho',
       feelings: { peace: 'Paz', fear: 'Medo', sadness: 'Tristeza', joy: 'Alegria', confusion: 'Confusão', anger: 'Raiva' },

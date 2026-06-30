@@ -18,7 +18,9 @@ import { CampoCidadeField } from './CampoCidadeField.jsx'
 import { pesquisarFusoHorario } from '../lib/geocoding.js'
 import { diasVidaDesdeNascimento } from '../lib/datetime.js'
 import { calcularMapaNumerologia, GRUPOS_PITAGORICOS } from '../lib/numerologia.js'
-import { chipsSimbolos, interpretarSonhoRemoto } from '../lib/sonhosInterpretacao.js'
+import { chipsSimbolos, interpretarSonhoRemoto, extrairSimbolos } from '../lib/sonhosInterpretacao.js'
+import { gerarInterpretacaoLocal } from '../lib/sonhosPrompt.js'
+import { labelSentimento } from '../lib/sonhosLexicon.js'
 import {
   resolverDadosFerramentas,
   dadosMinimosFerramentas,
@@ -1107,10 +1109,26 @@ export function InterpretacaoSonhos({ mapaNatal, onVoltar }) {
     setAInterpretar(true)
     setErro(null)
     setResultado(null)
-    const res = await interpretarSonhoRemoto(sonho, mapaNatal, lang, feeling, chipsSel)
+    const textoEfetivo = sonho.trim() || chipsSel.join(', ')
+    const res = await interpretarSonhoRemoto(sonho.trim() || textoEfetivo, mapaNatal, lang, feeling, chipsSel)
     setAInterpretar(false)
     if (!res) {
-      setErro(lang !== 'pt' ? 'Could not interpret right now. Try again in a moment.' : 'Não foi possível interpretar agora. Tenta outra vez dentro de instantes.')
+      const simbolos = extrairSimbolos(textoEfetivo, chipsSel, lang)
+      const seccoes = gerarInterpretacaoLocal(
+        textoEfetivo,
+        lang,
+        labelSentimento(feeling, lang),
+        simbolos,
+        mapaNatal,
+      )
+      if (seccoes?.some((s) => s.texto?.length > 10)) {
+        setResultado({
+          seccoes,
+          simbolos: simbolos.map((s) => ({ tema: s.tema, resumo: s.resumo })),
+        })
+        return
+      }
+      setErro(t('ferramentasPremium.sonhos.error'))
       return
     }
     setResultado(res)
@@ -1175,6 +1193,12 @@ export function InterpretacaoSonhos({ mapaNatal, onVoltar }) {
           <textarea
             value={sonho}
             onChange={(e) => setSonho(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' && !e.shiftKey && pronto) {
+                e.preventDefault()
+                interpretar()
+              }
+            }}
             placeholder={t('ferramentasPremium.sonhos.placeholder')}
             rows={2}
             style={{
@@ -1191,7 +1215,7 @@ export function InterpretacaoSonhos({ mapaNatal, onVoltar }) {
         borderRadius: 12, color: '#0B071E', fontSize: 15, fontWeight: 700, padding: '14px',
         cursor: pronto ? 'pointer' : 'not-allowed', opacity: pronto ? 1 : 0.5, marginBottom: 12,
       }}>
-        {aInterpretar ? (lang !== 'pt' ? '✦ Decoding the dream…' : '✦ A decifrar o sonho…') : t('ferramentasPremium.sonhos.interpret')}
+        {aInterpretar ? t('ferramentasPremium.sonhos.decoding') : t('ferramentasPremium.sonhos.interpret')}
       </button>
 
       {erro && (

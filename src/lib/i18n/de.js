@@ -582,6 +582,8 @@ export default {
       "subtitle": "Erzählen Sie Ihren Traum – jedes Bild und jede Emotion wird individuell und auf Ihr Konto zugeschnitten gelesen.",
       "placeholder": "Fangen Sie an, Ihren Traum zu erzählen ...",
       "interpret": "✦ Bedeutung offenbaren",
+      "decoding": "✦ Traum wird entschlüsselt…",
+      "error": "Interpretation gerade nicht möglich. Versuche es gleich noch einmal.",
       "symbolsHint": "Gemeinsame Symbole",
       "feelingLabel": "Dominantes Gefühl im Traum",
       "feelings": {

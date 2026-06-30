@@ -582,6 +582,8 @@ export default {
       "subtitle": "Racconta il tuo sogno: ogni immagine ed emozione viene letta in modo unico, su misura per il tuo account.",
       "placeholder": "Inizia a raccontare il tuo sogno...",
       "interpret": "✦ Rivelare il significato",
+      "decoding": "✦ Decifro il sogno…",
+      "error": "Impossibile interpretare ora. Riprova tra un momento.",
       "symbolsHint": "Simboli comuni",
       "feelingLabel": "Sensazione dominante nel sogno",
       "feelings": {
