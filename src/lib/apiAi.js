@@ -1,4 +1,13 @@
 /** Chamadas IA via Netlify Functions - chaves secretas só no servidor. */
+import { looksPortuguese } from './i18n/langUtil.js'
+
+function sonhosRespostaValida(data, lang) {
+  if (!data?.seccoes?.length) return false
+  if (!data.seccoes.some((s) => s?.texto?.length > 15)) return false
+  const texto = data.seccoes.map((s) => s.texto).join(' ')
+  if (lang !== 'pt' && looksPortuguese(texto)) return false
+  return true
+}
 
 async function postJson(path, body, idToken = null, timeoutMs = 60000) {
   const headers = { 'Content-Type': 'application/json' }
@@ -61,8 +70,7 @@ export async function interpretarSonhoServidor(texto, mapaNatal, lang, feeling, 
       chips,
     }, null, 45000)
     if (!data?.ok && data?.status && data.status !== 200) return null
-    if (!data?.seccoes?.length) return null
-    if (!data.seccoes.some((s) => s?.texto?.length > 15)) return null
+    if (!sonhosRespostaValida(data, lang)) return null
     return {
       seccoes: data.seccoes,
       simbolos: data.simbolos || [],

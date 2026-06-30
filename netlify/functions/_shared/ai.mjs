@@ -1,5 +1,6 @@
 import { env } from './env.mjs'
 import { reforcoInstrucaoGeminiAstrologia } from '../../../src/lib/oracleAstrologiaGate.js'
+import { reforcoInstrucaoSonhosIA } from '../../../src/lib/sonhosPrompt.js'
 
 /**
  * Motor IA 100% gratuito por defeito.
@@ -48,14 +49,21 @@ export async function chatCompletion({
   escopo = null,
   lang = 'pt',
 }) {
-  const msgs = [{ role: 'system', content: system }, ...messages]
+  const langReforco = escopo === 'sonhos' ? reforcoInstrucaoSonhosIA(lang) : ''
+  const systemFull = langReforco ? `${system}\n\n${langReforco}` : system
+  const msgs = [{ role: 'system', content: systemFull }, ...messages]
 
   const groq = await callGroq(msgs, { maxTokens, temperature, tier })
   if (groq) return groq
 
-  if (escopo === 'astrologia' || escopo === 'sonhos') {
-    const gemSystem = `${system}\n\n${reforcoInstrucaoGeminiAstrologia(lang)}`
+  if (escopo === 'astrologia') {
+    const gemSystem = `${systemFull}\n\n${reforcoInstrucaoGeminiAstrologia(lang)}`
     const gem = await callGemini(gemSystem, messages, { maxTokens, temperature })
+    if (gem) return gem
+  }
+
+  if (escopo === 'sonhos') {
+    const gem = await callGemini(systemFull, messages, { maxTokens, temperature })
     if (gem) return gem
   }
 

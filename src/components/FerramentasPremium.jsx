@@ -19,7 +19,7 @@ import { pesquisarFusoHorario } from '../lib/geocoding.js'
 import { diasVidaDesdeNascimento } from '../lib/datetime.js'
 import { calcularMapaNumerologia, GRUPOS_PITAGORICOS } from '../lib/numerologia.js'
 import { chipsSimbolos, interpretarSonhoRemoto, extrairSimbolos } from '../lib/sonhosInterpretacao.js'
-import { gerarInterpretacaoLocal } from '../lib/sonhosPrompt.js'
+import { gerarInterpretacaoLocal, respostaSonhosNoIdioma } from '../lib/sonhosPrompt.js'
 import { labelSentimento } from '../lib/sonhosLexicon.js'
 import {
   resolverDadosFerramentas,
@@ -1139,7 +1139,7 @@ export function InterpretacaoSonhos({ mapaNatal, onVoltar }) {
     interpretarSonhoRemoto(textoEfetivo, mapaNatal, lang, feeling, chipsSel)
       .then((res) => {
         if (id !== pedidoRef.current) return
-        if (res?.seccoes?.some((s) => s.texto?.length > 15)) {
+        if (res?.seccoes?.some((s) => s.texto?.length > 15) && respostaSonhosNoIdioma(res.seccoes.map((s) => s.texto).join('\n'), lang)) {
           setResultado(res)
           setErro(null)
           return
@@ -1171,7 +1171,7 @@ export function InterpretacaoSonhos({ mapaNatal, onVoltar }) {
     try {
       const res = await interpretarSonhoRemoto(textoEfetivo, mapaNatal, lang, feeling, chipsSel)
       if (id !== pedidoRef.current) return
-      if (res?.seccoes?.some((s) => s.texto?.length > 15)) {
+      if (res?.seccoes?.some((s) => s.texto?.length > 15) && respostaSonhosNoIdioma(res.seccoes.map((s) => s.texto).join('\n'), lang)) {
         setResultado(res)
         return
       }

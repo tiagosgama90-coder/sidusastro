@@ -119,7 +119,9 @@ function lexiconForLang(lang) {
       : (resumoLoc || resumoSimbolo(ptEntry, locEntry, lang))
     return {
       ...ptEntry,
-      tema: looksPortuguese(locEntry.tema) ? ptEntry.tema : (locEntry.tema || ptEntry.tema),
+      tema: (lang === 'pt' || (locEntry?.tema && !looksPortuguese(locEntry.tema)))
+        ? (locEntry?.tema || ptEntry.tema)
+        : (locEntry?.tema || ptEntry.tema.split('/')[0].trim()),
       resumo,
       keys: [...new Set([...(ptEntry.keys || []), ...(locEntry.keys || [])])],
     }

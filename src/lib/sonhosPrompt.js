@@ -1,6 +1,19 @@
 /** Prompt interno - metodologia hermenêutica (nunca citar fontes ao utilizador). */
-import { aiOutputLanguageBlock, oracleRespondLanguage, isPt, contentForLang } from './i18n/langUtil.js'
+import { aiOutputLanguageBlock, oracleRespondLanguage, isPt, contentForLang, looksPortuguese } from './i18n/langUtil.js'
 import { translateSigno } from './i18n/astro.js'
+
+export function reforcoInstrucaoSonhosIA(lang = 'pt', retry = false) {
+  const label = oracleRespondLanguage(lang)
+  if (isPt(lang)) {
+    return retry
+      ? 'CRÍTICO: Responde de novo, 100% em Português de Portugal, quatro secções completas.'
+      : 'Responde sempre em Português de Portugal.'
+  }
+  const prefix = retry
+    ? `CRITICAL RETRY — your previous answer was in the WRONG language. `
+    : 'CRITICAL — '
+  return `${prefix}${aiOutputLanguageBlock(lang)} The dream report may be in any language; you MUST write the ENTIRE interpretation only in ${label}. Never use Portuguese. Section headers must also be in ${label}.`
+}
 
 const SEC_HEADERS = {
   pt: ['1. Análise do Estado da Alma', '2. O Alerta Interno', '3. O Caminho de Cura Espiritual', '4. Pergunta para Meditação'],
@@ -53,8 +66,12 @@ CRÍTICO:
   }
 
   const h = dreamHeaders(lang)
+  const label = oracleRespondLanguage(lang)
   return `
 You are the dream interpretation engine of Sidus Astro, decoding reports through Integrative Spiritual Psychology Hermeneutics.
+
+${aiOutputLanguageBlock(lang)}
+The user's dream text may be written in Portuguese or any language — you MUST still write your FULL interpretation only in ${label}. Never answer in Portuguese unless ${label} is Portuguese.
 
 ABSOLUTE RULES:
 1. Dreams are NOT fortune-telling - no lucky numbers, no future predictions.
@@ -90,7 +107,7 @@ export function construirPedidoSonhos({ texto, lang, feeling, simbolosDetectados
   const astro = mapaNatal?.solar?.nome
     ? (pt
       ? `\nContexto natal (secundário): Sol ${mapaNatal.solar.nome}, Lua ${mapaNatal.lunar?.nome || '-'}, Asc ${mapaNatal.ascendente?.nome || '-'}. Integra levemente se relevante.`
-      : `\nNatal context (secondary): Sun ${mapaNatal.solar.nome}, Moon ${mapaNatal.lunar?.nome || '-'}, Asc ${mapaNatal.ascendente?.nome || '-'}. Weave lightly if relevant.`)
+      : `\nNatal context (secondary): Sun ${translateSigno(mapaNatal.solar.nome, lang)}, Moon ${translateSigno(mapaNatal.lunar?.nome, lang) || '-'}, Asc ${translateSigno(mapaNatal.ascendente?.nome, lang) || '-'}. Weave lightly if relevant.`)
     : ''
 
   if (pt) {
@@ -136,9 +153,8 @@ const SEC_PATTERNS_EN = [
   /4\.?\s*Question for Meditation\s*[:\n]+([\s\S]*?)$/i,
 ]
 
-export function parseRespostaSonhos(texto, lang = 'pt') {
-  if (!texto?.trim()) return null
-  const headers = SEC_HEADERS[lang] || SEC_HEADERS.en
+function parseWithHeaders(texto, headerLang) {
+  const headers = SEC_HEADERS[headerLang] || SEC_HEADERS.en
   const patterns = headers.map((header, i) => {
     const esc = header.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
     const nextHeader = headers[i + 1]
@@ -146,15 +162,29 @@ export function parseRespostaSonhos(texto, lang = 'pt') {
     const lookahead = nextEsc ? `(?=\\d\\.?\\s*${nextEsc}|$)` : '$'
     return new RegExp(`${esc}\\s*[:\\n]+([\\s\\S]*?)${lookahead}`, 'i')
   })
-  const seccoes = patterns.map((re, i) => {
+  return patterns.map((re, i) => {
     const m = texto.match(re)
     return { key: SEC_KEYS[i], texto: m?.[1]?.trim() || '' }
   })
-  if (seccoes.every((s) => !s.texto)) {
-    const blocos = texto.split(/\n{2,}/).filter(Boolean)
+}
+
+export function parseRespostaSonhos(texto, lang = 'pt') {
+  if (!texto?.trim()) return null
+  const tryLangs = [...new Set([lang, 'en', 'pt'])]
+  for (const headerLang of tryLangs) {
+    const seccoes = parseWithHeaders(texto, headerLang)
+    if (seccoes.some((s) => s.texto?.length > 20)) return seccoes
+  }
+  const blocos = texto.split(/\n{2,}/).filter(Boolean)
+  if (blocos.length >= 2) {
     return SEC_KEYS.map((key, i) => ({ key, texto: blocos[i]?.trim() || '' }))
   }
-  return seccoes
+  return parseWithHeaders(texto, lang)
+}
+
+export function respostaSonhosNoIdioma(texto, lang = 'pt') {
+  if (!texto?.trim() || isPt(lang)) return true
+  return !looksPortuguese(texto)
 }
 
 /** Fallback gratuito offline - único por relato (léxico + excerto do texto). */
@@ -165,7 +195,12 @@ export function gerarInterpretacaoLocal(texto, lang, feelingLabel, simbolosDetec
     it: 'immagini interiori', de: 'innere Bilder', fr: 'images intérieures',
   })
   const temas = simbolosDetectados.map((s) => s.tema).join(', ') || temasDefault
-  const detalhes = simbolosDetectados.slice(0, 4).map((s) => `${s.tema}: ${s.resumo}`).join(' ')
+  const detalhes = simbolosDetectados.slice(0, 4)
+    .map((s) => {
+      if (isPt(lang) || !looksPortuguese(s.resumo)) return `${s.tema}: ${s.resumo}`
+      return s.tema
+    })
+    .join(' ')
   const solar = mapaNatal?.solar?.nome ? translateSigno(mapaNatal.solar.nome, lang) : null
   const lunar = mapaNatal?.lunar?.nome ? translateSigno(mapaNatal.lunar.nome, lang) : null
   const astro = solar && lunar

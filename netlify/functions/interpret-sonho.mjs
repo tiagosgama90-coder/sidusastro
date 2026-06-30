@@ -5,6 +5,8 @@ import {
   construirPedidoSonhos,
   parseRespostaSonhos,
   gerarInterpretacaoLocal,
+  reforcoInstrucaoSonhosIA,
+  respostaSonhosNoIdioma,
 } from '../../src/lib/sonhosPrompt.js'
 
 const corsHeaders = {
@@ -44,21 +46,38 @@ export default async (req) => {
       mapaNatal,
     })
 
-    const raw = await chatCompletion({
-      system,
+    const system = construirSistemaSonhos(lang)
+    const userPrompt = construirPedidoSonhos({
+      texto: textoEfetivo,
+      lang,
+      feeling: feelingLabel,
+      simbolosDetectados,
+      mapaNatal,
+    })
+
+    const callIa = (retry = false) => chatCompletion({
+      system: retry ? `${system}\n\n${reforcoInstrucaoSonhosIA(lang, true)}` : system,
       messages: [{ role: 'user', content: userPrompt }],
       maxTokens: 720,
-      temperature: 0.82,
+      temperature: retry ? 0.65 : 0.82,
       tier: 'free',
       escopo: 'sonhos',
       lang,
     })
 
+    let raw = await callIa(false)
+    if (raw && !respostaSonhosNoIdioma(raw, lang)) {
+      raw = await callIa(true)
+    }
+
     const simbolos = simbolosDetectados.map((s) => ({ tema: s.tema, resumo: s.resumo }))
     let seccoes = raw ? parseRespostaSonhos(raw, lang) : null
     let fonte = 'ia'
 
-    if (!seccoes?.some((s) => s.texto?.length > 20)) {
+    const seccoesValidas = seccoes?.some((s) => s.texto?.length > 20)
+    const idiomaOk = raw ? respostaSonhosNoIdioma(raw, lang) : false
+
+    if (!seccoesValidas || !idiomaOk) {
       seccoes = gerarInterpretacaoLocal(textoEfetivo, lang, feelingLabel, simbolosDetectados, mapaNatal)
       fonte = 'lexicon'
     }
