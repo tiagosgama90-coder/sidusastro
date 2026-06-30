@@ -656,7 +656,8 @@ export default {
       "typeMirror": "Spiegelstunde",
       "typeNeutral": "Gegenwärtiger Moment",
       "attribution": "Interpretationen basierend auf Engelszahlen und Spiegelstunden, im Geiste der Lehren von Doreen Virtue über Synchronizität und spirituelle Führung.",
-      "popularHours": "Meistgesuchte Stunden"
+      "popularHours": "Meistgesuchte Stunden",
+      "allEqualHours": "Alle Spiegelstunden (24 pro Tag)"
     }
   },
   "payment": {

@@ -3,11 +3,12 @@
  */
 import { pickNarr } from './i18n/narrativePick.js'
 import { contentForLang } from './i18n/langUtil.js'
-import { translateSigno, translateAspecto } from './i18n/astro.js'
+import { translateSigno, translateAspecto, translateElemento, translatePlaneta } from './i18n/astro.js'
 import {
   sx, aberturaProfessor as aberturaSx,
   NOME_PADRAO_A, NOME_PADRAO_B, NOME_PESSOA,
   TEMA_QUIMICA, TEMA_EMOCAO, TEMA_COMUNICACAO, TEMA_FUTURO,
+  TEMA_MISSAO_REL, TEMA_COMPOSITO,
   textoAspectoNarrativa, textoAspectoComposto,
 } from './i18n/sinastriaStrings.js'
 import * as SinLoc from './i18n/packs/sinastriaLocales.js'
@@ -501,14 +502,29 @@ export function narrativaMissaoIndividual(pos, lang = 'pt') {
   const mc = pos.corpos.mc
   const nn = pos.corpos.nodo_norte
   if (mc) {
-    linhas.push(lang !== 'pt'
-      ? `\nIn public life, Midheaven in ${mc.signo} (${mc.graus?.toFixed?.(1) ?? ''}°) directs vocation toward building a reputation aligned with ${mc.elemento} - concrete expression of soul mission in the world.`
-      : `\nNa vida pública, o Meio-Céu em ${mc.signo} (${mc.graus?.toFixed?.(1) ?? ''}°) direcciona a vocação para construir reputação alinhada com ${mc.elemento} - expressão concreta da missão de alma no mundo.`)
+    const s = tsSign(mc.signo, lang)
+    const el = translateElemento(mc.elemento, lang)
+    const graus = mc.graus?.toFixed?.(1) ?? ''
+    linhas.push(sx(lang, {
+      pt: () => `\nNa vida pública, o Meio-Céu em ${s} (${graus}°) direcciona a vocação para construir reputação alinhada com ${el} - expressão concreta da missão de alma no mundo.`,
+      en: () => `\nIn public life, Midheaven in ${s} (${graus}°) directs vocation toward building a reputation aligned with ${el} - concrete expression of soul mission in the world.`,
+      es: () => `\nEn la vida pública, el Medio Cielo en ${s} (${graus}°) dirige la vocación hacia una reputación alineada con ${el} - expresión concreta de la misión del alma en el mundo.`,
+      it: () => `\nNella vita pubblica, il Medio Cielo in ${s} (${graus}°) dirige la vocazione verso una reputazione allineata con ${el} - espressione concreta della missione dell'anima nel mondo.`,
+      de: () => `\nIm öffentlichen Leben richtet das Medium Coeli in ${s} (${graus}°) die Berufung auf einen Ruf aus, der mit ${el} im Einklang steht - konkreter Ausdruck der Seelenmission in der Welt.`,
+      fr: () => `\nDans la vie publique, le Milieu du Ciel en ${s} (${graus}°) oriente la vocation vers une réputation alignée avec ${el} - expression concrète de la mission de l'âme dans le monde.`,
+    }))
   }
   if (nn) {
-    linhas.push(lang !== 'pt'
-      ? `North Node in ${nn.signo}: this lifetime invites ${pickNarr(NODO_NORTE[nn.signo], lang) || 'evolution'}.`
-      : `Nodo Norte em ${nn.signo}: esta vida convida a ${pickNarr(NODO_NORTE[nn.signo], lang) || 'evoluir'}.`)
+    const s = tsSign(nn.signo, lang)
+    const evol = pickNarr(NODO_NORTE[nn.signo], lang) || sx(lang, { pt: 'evoluir', en: 'evolution', es: 'evolucionar', it: 'evolvere', de: 'weiterentwickeln', fr: 'évoluer' })
+    linhas.push(sx(lang, {
+      pt: () => `Nodo Norte em ${s}: esta vida convida a ${evol}.`,
+      en: () => `North Node in ${s}: this lifetime invites ${evol}.`,
+      es: () => `Nodo Norte en ${s}: esta vida invita a ${evol}.`,
+      it: () => `Nodo Nord in ${s}: questa vita invita a ${evol}.`,
+      de: () => `Mondknoten Nord in ${s}: dieses Leben lädt ein zu ${evol}.`,
+      fr: () => `Nœud Nord en ${s} : cette vie invite à ${evol}.`,
+    }))
   }
   return linhas.join('')
 }
@@ -518,36 +534,63 @@ export function narrativaMissaoRelacionamento(resultado, lang = 'pt') {
   const nomeA = posA?.nome || contentForLang(lang, NOME_PADRAO_A)
   const nomeB = posB?.nome || contentForLang(lang, NOME_PADRAO_B)
   const linhas = []
+  const tema = contentForLang(lang, TEMA_MISSAO_REL)
 
-  if (lang !== 'pt') {
-    linhas.push(aberturaProfessor(nomeA, nomeB, 'relationship mission and soul purpose', lang).trim())
-    linhas.push(`Beyond your individual charts, ${nomeA}, you and ${nomeB} form a third being: the relationship itself. The lunar nodes reveal the soul contract - why you met, what you came to learn together, and what must be released.`)
-  } else {
-    linhas.push(aberturaProfessor(nomeA, nomeB, 'missão de relacionamento e propósito de alma', lang).trim())
-    linhas.push(`Para além dos mapas individuais, ${nomeA}, tu e ${nomeB} formam um terceiro ser: a relação em si. Os nodos lunares revelam o contrato de alma - porque se encontraram, o que vieram aprender juntos e o que precisam largar.`)
-  }
+  linhas.push(aberturaProfessor(nomeA, nomeB, tema, lang).trim())
+  linhas.push(sx(lang, {
+    pt: () => `Para além dos mapas individuais, ${nomeA}, tu e ${nomeB} formam um terceiro ser: a relação em si. Os nodos lunares revelam o contrato de alma - porque se encontraram, o que vieram aprender juntos e o que precisam largar.`,
+    en: () => `Beyond your individual charts, ${nomeA}, you and ${nomeB} form a third being: the relationship itself. The lunar nodes reveal the soul contract - why you met, what you came to learn together, and what must be released.`,
+    es: () => `Más allá de las cartas individuales, ${nomeA}, tú y ${nomeB} formáis un tercer ser: la relación en sí. Los nodos lunares revelan el contrato del alma: por qué os encontrasteis, qué vinisteis a aprender juntos y qué debéis soltar.`,
+    it: () => `Oltre ai temi individuali, ${nomeA}, tu e ${nomeB} formate un terzo essere: la relazione stessa. I nodi lunari rivelano il contratto dell'anima: perché vi siete incontrati, cosa siete venuti a imparare insieme e cosa dovete lasciare.`,
+    de: () => `Jenseits der Einzelhoroskope, ${nomeA}, bilden du und ${nomeB} ein drittes Wesen: die Beziehung selbst. Die Mondknoten offenbaren den Seelenvertrag – warum ihr euch trafet, was ihr gemeinsam lernen sollt und was losgelassen werden muss.`,
+    fr: () => `Au-delà des thèmes individuels, ${nomeA}, toi et ${nomeB} formez un troisième être : la relation elle-même. Les nœuds lunaires révèlent le contrat d'âme : pourquoi vous vous êtes rencontrés, ce que vous êtes venus apprendre ensemble et ce qu'il faut lâcher.`,
+  }))
 
   if (nodosSinastria?.activacoesNorte?.length) {
     linhas.push('')
-    linhas.push(lang !== 'pt' ? '**Purpose Activation - North Node**' : '**Activação do Propósito de Vida - Nodo Norte**')
+    linhas.push(sx(lang, {
+      pt: '**Activação do Propósito de Vida - Nodo Norte**',
+      en: '**Purpose Activation - North Node**',
+      es: '**Activación del Propósito - Nodo Norte**',
+      it: '**Attivazione dello Scopo - Nodo Nord**',
+      de: '**Aktivierung des Lebenszwecks - Mondknoten Nord**',
+      fr: '**Activation du But de Vie - Nœud Nord**',
+    }))
     for (const act of nodosSinastria.activacoesNorte.slice(0, 4)) {
-      linhas.push(lang !== 'pt'
-        ? `${nomeA}, ${act.planeta} from ${act.deQuem} touches ${act.donoNodo}'s North Node in ${act.signoNodo}. This person came to push you toward ${pickNarr(NODO_NORTE[act.signoNodo], lang) || 'evolution'} - classic *Life Purpose Activation*.`
-        : `${nomeA}, ${act.planeta} de ${act.deQuem} toca o Nodo Norte de ${act.donoNodo} em ${act.signoNodo}. Esta pessoa veio empurrar-te para ${pickNarr(NODO_NORTE[act.signoNodo], lang) || 'evoluir'} - *Activação do Propósito de Vida* clássica.`)
+      const evol = pickNarr(NODO_NORTE[act.signoNodo], lang) || sx(lang, { pt: 'evoluir', en: 'evolution', es: 'evolucionar', it: 'evolvere', de: 'weiterentwickeln', fr: 'évoluer' })
+      linhas.push(sx(lang, {
+        pt: () => `${nomeA}, ${act.planeta} de ${act.deQuem} toca o Nodo Norte de ${act.donoNodo} em ${tsSign(act.signoNodo, lang)}. Esta pessoa veio empurrar-te para ${evol} - *Activação do Propósito de Vida* clássica.`,
+        en: () => `${nomeA}, ${act.planeta} from ${act.deQuem} touches ${act.donoNodo}'s North Node in ${tsSign(act.signoNodo, lang)}. This person came to push you toward ${evol} - classic *Life Purpose Activation*.`,
+        es: () => `${nomeA}, ${act.planeta} de ${act.deQuem} toca el Nodo Norte de ${act.donoNodo} en ${tsSign(act.signoNodo, lang)}. Esta persona vino a impulsarte hacia ${evol} - *Activación del Propósito de Vida* clásica.`,
+        it: () => `${nomeA}, ${act.planeta} di ${act.deQuem} tocca il Nodo Nord di ${act.donoNodo} in ${tsSign(act.signoNodo, lang)}. Questa persona è venuta a spingerti verso ${evol} - classica *Attivazione dello Scopo di Vita*.`,
+        de: () => `${nomeA}, ${act.planeta} von ${act.deQuem} berührt ${act.donoNodo}s Mondknoten Nord in ${tsSign(act.signoNodo, lang)}. Diese Person kam, dich zu ${evol} anzustoßen - klassische *Lebenszweck-Aktivierung*.`,
+        fr: () => `${nomeA}, ${act.planeta} de ${act.deQuem} touche le Nœud Nord de ${act.donoNodo} en ${tsSign(act.signoNodo, lang)}. Cette personne est venue te pousser vers ${evol} - *Activation du But de Vie* classique.`,
+      }))
     }
   }
 
   if (nodosSinastria?.activacoesSul?.length) {
     linhas.push('')
-    linhas.push(lang !== 'pt' ? '**Karmic Bond - South Node**' : '**Laço Cármico - Nodo Sul**')
+    linhas.push(sx(lang, {
+      pt: '**Laço Cármico - Nodo Sul**',
+      en: '**Karmic Bond - South Node**',
+      es: '**Lazo Kármico - Nodo Sur**',
+      it: '**Legame Karmico - Nodo Sud**',
+      de: '**Karmische Bindung - Mondknoten Süd**',
+      fr: '**Lien Karmique - Nœud Sud**',
+    }))
     const n = nodosSinastria.activacoesSul.length
-    linhas.push(lang !== 'pt'
-      ? `${nomeA}, ${n} contact(s) to the South Node suggest familiar territory - past patterns, comfort zones or karmic repetition with ${nomeB}. The mission is not to stay there, but to recognize what was already learned and choose conscious evolution.`
-      : `${nomeA}, ${n} contacto(s) ao Nodo Sul sugerem território familiar - padrões passados, zonas de conforto ou repetição cármica com ${nomeB}. A missão não é ficar aí, mas reconhecer o que já foi aprendido e escolher evolução consciente.`)
+    linhas.push(sx(lang, {
+      pt: () => `${nomeA}, ${n} contacto(s) ao Nodo Sul sugerem território familiar - padrões passados, zonas de conforto ou repetição cármica com ${nomeB}. A missão não é ficar aí, mas reconhecer o que já foi aprendido e escolher evolução consciente.`,
+      en: () => `${nomeA}, ${n} contact(s) to the South Node suggest familiar territory - past patterns, comfort zones or karmic repetition with ${nomeB}. The mission is not to stay there, but to recognize what was already learned and choose conscious evolution.`,
+      es: () => `${nomeA}, ${n} contacto(s) con el Nodo Sur sugieren territorio familiar: patrones pasados, zonas de confort o repetición kármica con ${nomeB}. La misión no es quedarse ahí, sino reconocer lo ya aprendido y elegir evolución consciente.`,
+      it: () => `${nomeA}, ${n} contatto/i al Nodo Sud suggeriscono territorio familiare: schemi passati, zone di comfort o ripetizione karmica con ${nomeB}. La missione non è restare lì, ma riconoscere ciò che è già stato imparato e scegliere evoluzione consapevole.`,
+      de: () => `${nomeA}, ${n} Kontakt(e) zum Mondknoten Süd deuten auf vertrautes Terrain hin – vergangene Muster, Komfortzonen oder karmische Wiederholung mit ${nomeB}. Die Mission ist nicht zu verweilen, sondern Gelerntes anzuerkennen und bewusste Evolution zu wählen.`,
+      fr: () => `${nomeA}, ${n} contact(s) au Nœud Sud suggèrent un territoire familier : schémas passés, zones de confort ou répétition karmique avec ${nomeB}. La mission n'est pas d'y rester, mais de reconnaître ce qui a déjà été appris et choisir une évolution consciente.`,
+    }))
     for (const act of nodosSinastria.activacoesSul.slice(0, 3)) {
-      linhas.push(lang !== 'pt'
-        ? `• ${act.planeta} (${act.deQuem}) - ${pickNarr(NODO_SUL[act.signoNodo], lang) || 'karmic pattern to release'}`
-        : `• ${act.planeta} (${act.deQuem}) - ${pickNarr(NODO_SUL[act.signoNodo], lang) || 'padrão cármico a largar'}`)
+      const padrao = pickNarr(NODO_SUL[act.signoNodo], lang) || sx(lang, { pt: 'padrão cármico a largar', en: 'karmic pattern to release', es: 'patrón kármico a soltar', it: 'schema karmico da lasciare', de: 'karmisches Muster loszulassen', fr: 'schéma karmique à lâcher' })
+      linhas.push(`• ${act.planeta} (${act.deQuem}) - ${padrao}`)
     }
   }
 
@@ -561,66 +604,122 @@ export function narrativaMapaComposto(mapaComposto, nomeA, nomeB, lang = 'pt') {
   const aspectos = mapaComposto.aspectosInternos || []
   const harmonicos = aspectos.filter((a) => a.harmonico)
   const tensos = aspectos.filter((a) => a.tenso)
+  const tema = contentForLang(lang, TEMA_COMPOSITO)
 
-  if (lang !== 'pt') {
-    linhas.push(aberturaProfessor(nomeA, nomeB, 'the Composite Chart - your relationship as one entity', lang).trim())
-    linhas.push(`\n${nomeA}, the Composite Chart does not describe you or ${nomeB} separately. It creates a **new map** born from the exact midpoint between each of your planets. It reveals the **vibration of the relationship as a whole** - the third soul you form together.`)
-    linhas.push('\n**The soul signature of your bond**')
-    for (const k of corpos) {
-      const p = mapaComposto.corpos[k]
-      if (p) linhas.push(`When you are together, your composite ${p.nome} lives in ${p.signo} - this colours how the relationship expresses ${k === 'sol' ? 'identity and purpose' : k === 'lua' ? 'emotional safety' : k === 'venus' ? 'love and pleasure' : k === 'marte' ? 'desire and conflict' : 'this dimension of the bond'}.`)
-    }
-    linhas.push('\n**The flow of energy between you**')
-    linhas.push('Inside the composite chart, aspects between composite planets show how energy circulates when you are together - not as two individuals, but as one relational field.')
-    if (harmonicos.length) {
-      linhas.push('\n*Natural gifts (harmonious aspects - trines and sextiles):*')
-      linhas.push('These are areas where the relationship flows without effort - talents you share as a couple:')
-      for (const a of harmonicos.slice(0, 5)) linhas.push(narrativaAspectoComposto(a, lang))
-    }
-    if (tensos.length) {
-      linhas.push('\n*Recurring triggers (tense aspects - squares and oppositions):*')
-      linhas.push('These reveal where arguments or crises return until you both learn the lesson together. They are not punishment - they are the relationship\'s curriculum:')
-      for (const a of tensos.slice(0, 5)) linhas.push(narrativaAspectoComposto(a, lang))
-    }
-    if (!harmonicos.length && !tensos.length) {
-      linhas.push('\nNo major internal aspects detected - your bond builds its rhythm through daily choice rather than automatic ease or friction.')
-    }
-    linhas.push(`\n${nomeA}, read this chart as the living portrait of you and ${nomeB} together: where you naturally thrive, where you must grow, and what legacy this love can leave.`)
-  } else {
-    linhas.push(aberturaProfessor(nomeA, nomeB, 'o Mapa Composto - a vossa relação como entidade', lang).trim())
-    linhas.push(`\n${nomeA}, o Mapa Composto não descreve a ti nem a ${nomeB} em separado. Cria um **mapa novo**, nascido do ponto médio exacto entre cada planeta vosso. Revela a **vibração do relacionamento como um todo** - a terceira alma que formam juntos.`)
-    linhas.push('\n**A assinatura de alma do vosso vínculo**')
-    for (const k of corpos) {
-      const p = mapaComposto.corpos[k]
-      if (!p) continue
-      const papel = {
-        sol: 'identidade e propósito do casal',
-        lua: 'segurança emocional a dois',
-        mercurio: 'como pensam e falam juntos',
-        venus: 'amor e prazer partilhados',
-        marte: 'desejo e forma de lutar',
-        jupiter: 'fé e expansão conjunta',
-        saturno: 'compromisso e estrutura a longo prazo',
-      }[k] || 'esta dimensão do vínculo'
-      linhas.push(`Quando estão juntos, o ${p.nome} composto vive em ${p.signo} - isto colore ${papel}.`)
-    }
-    linhas.push('\n**O fluxo de energia entre vocês**')
-    linhas.push('Dentro do mapa composto, os aspectos entre planetas compostos mostram como a energia circula quando estão juntos - não como dois indivíduos, mas como um campo relacional único.')
-    if (harmonicos.length) {
-      linhas.push('\n*Dons naturais (aspectos harmónicos - trígonos e sextis):*')
-      linhas.push('São áreas onde a relação flui sem esforço - talentos que partilham como casal:')
-      for (const a of harmonicos.slice(0, 5)) linhas.push(narrativaAspectoComposto(a, lang))
-    }
-    if (tensos.length) {
-      linhas.push('\n*Gatilhos recorrentes (aspectos tensos - quadraturas e oposições):*')
-      linhas.push('Revelam onde brigas ou crises voltam até aprenderem juntos a lição. Não são castigo - são o currículo da relação:')
-      for (const a of tensos.slice(0, 5)) linhas.push(narrativaAspectoComposto(a, lang))
-    }
-    if (!harmonicos.length && !tensos.length) {
-      linhas.push('\nSem aspectos internos majores detectados - o vosso ritmo constrói-se pela escolha quotidiana, não por facilidade ou atrito automáticos.')
-    }
-    linhas.push(`\n${nomeA}, lê este mapa como o retrato vivo de ti e ${nomeB} juntos: onde prosperam naturalmente, onde precisam crescer e que legado este amor pode deixar.`)
+  const PAPEL = {
+    sol: { pt: 'identidade e propósito do casal', en: 'identity and purpose', es: 'identidad y propósito', it: 'identità e scopo', de: 'Identität und Zweck', fr: 'identité et but' },
+    lua: { pt: 'segurança emocional a dois', en: 'emotional safety', es: 'seguridad emocional', it: 'sicurezza emotiva', de: 'emotionale Sicherheit', fr: 'sécurité émotionnelle' },
+    mercurio: { pt: 'como pensam e falam juntos', en: 'how you think and speak together', es: 'cómo piensan y hablan juntos', it: 'come pensate e parlate insieme', de: 'wie ihr zusammen denkt und sprecht', fr: 'comment vous pensez et parlez ensemble' },
+    venus: { pt: 'amor e prazer partilhados', en: 'love and pleasure', es: 'amor y placer compartidos', it: 'amore e piacere condivisi', de: 'geteilte Liebe und Freude', fr: 'amour et plaisir partagés' },
+    marte: { pt: 'desejo e forma de lutar', en: 'desire and conflict', es: 'deseo y conflicto', it: 'desiderio e conflitto', de: 'Verlangen und Konflikt', fr: 'désir et conflit' },
+    jupiter: { pt: 'fé e expansão conjunta', en: 'faith and shared expansion', es: 'fe y expansión conjunta', it: 'fede ed espansione condivisa', de: 'Glaube und gemeinsame Expansion', fr: 'foi et expansion commune' },
+    saturno: { pt: 'compromisso e estrutura a longo prazo', en: 'commitment and long-term structure', es: 'compromiso y estructura a largo plazo', it: 'impegno e struttura a lungo termine', de: 'Bindung und langfristige Struktur', fr: 'engagement et structure à long terme' },
   }
+
+  linhas.push(aberturaProfessor(nomeA, nomeB, tema, lang).trim())
+  linhas.push(sx(lang, {
+    pt: () => `\n${nomeA}, o Mapa Composto não descreve a ti nem a ${nomeB} em separado. Cria um **mapa novo**, nascido do ponto médio exacto entre cada planeta vosso. Revela a **vibração do relacionamento como um todo** - a terceira alma que formam juntos.`,
+    en: () => `\n${nomeA}, the Composite Chart does not describe you or ${nomeB} separately. It creates a **new map** born from the exact midpoint between each of your planets. It reveals the **vibration of the relationship as a whole** - the third soul you form together.`,
+    es: () => `\n${nomeA}, la Carta Compuesta no te describe a ti ni a ${nomeB} por separado. Crea un **mapa nuevo** nacido del punto medio exacto entre cada planeta. Revela la **vibración de la relación como un todo** - el tercer alma que formáis juntos.`,
+    it: () => `\n${nomeA}, il Tema Composito non descrive te o ${nomeB} separatamente. Crea una **nuova mappa** nata dal punto medio esatto tra ogni pianeta. Rivela la **vibrazione della relazione nel suo insieme** - la terza anima che formate insieme.`,
+    de: () => `\n${nomeA}, das Komposit-Horoskop beschreibt dich und ${nomeB} nicht getrennt. Es schafft eine **neue Karte** aus dem exakten Mittelpunkt jedes Planeten. Es offenbart die **Schwingung der Beziehung als Ganzes** - die dritte Seele, die ihr gemeinsam bildet.`,
+    fr: () => `\n${nomeA}, le thème composite ne te décrit pas toi ni ${nomeB} séparément. Il crée une **nouvelle carte** née du point médian exact de chaque planète. Il révèle la **vibration de la relation dans son ensemble** - la troisième âme que vous formez ensemble.`,
+  }))
+  linhas.push(sx(lang, {
+    pt: '\n**A assinatura de alma do vosso vínculo**',
+    en: '\n**The soul signature of your bond**',
+    es: '\n**La firma del alma de vuestro vínculo**',
+    it: '\n**La firma dell\'anima del vostro legame**',
+    de: '\n**Die Seelen-Signatur eurer Verbindung**',
+    fr: '\n**La signature d\'âme de votre lien**',
+  }))
+  for (const k of corpos) {
+    const p = mapaComposto.corpos[k]
+    if (!p) continue
+    const papel = contentForLang(lang, PAPEL[k]) || contentForLang(lang, { pt: 'esta dimensão do vínculo', en: 'this dimension of the bond', es: 'esta dimensión del vínculo', it: 'questa dimensione del legame', de: 'diese Dimension der Verbindung', fr: 'cette dimension du lien' })
+    const planeta = translatePlaneta(p.nome, lang)
+    const signo = tsSign(p.signo, lang)
+    linhas.push(sx(lang, {
+      pt: () => `Quando estão juntos, o ${planeta} composto vive em ${signo} - isto colore ${papel}.`,
+      en: () => `When you are together, your composite ${planeta} lives in ${signo} - this colours ${papel}.`,
+      es: () => `Cuando estáis juntos, vuestro ${planeta} compuesto vive en ${signo} - esto colorea ${papel}.`,
+      it: () => `Quando siete insieme, il ${planeta} composito vive in ${signo} - questo colora ${papel}.`,
+      de: () => `Wenn ihr zusammen seid, lebt euer Komposit-${planeta} in ${signo} - das färbt ${papel}.`,
+      fr: () => `Quand vous êtes ensemble, votre ${planeta} composite vit en ${signo} - cela colore ${papel}.`,
+    }))
+  }
+  linhas.push(sx(lang, {
+    pt: '\n**O fluxo de energia entre vocês**',
+    en: '\n**The flow of energy between you**',
+    es: '\n**El flujo de energía entre vosotros**',
+    it: '\n**Il flusso di energia tra voi**',
+    de: '\n**Der Energiefluss zwischen euch**',
+    fr: '\n**Le flux d\'énergie entre vous**',
+  }))
+  linhas.push(sx(lang, {
+    pt: 'Dentro do mapa composto, os aspectos entre planetas compostos mostram como a energia circula quando estão juntos - não como dois indivíduos, mas como um campo relacional único.',
+    en: 'Inside the composite chart, aspects between composite planets show how energy circulates when you are together - not as two individuals, but as one relational field.',
+    es: 'Dentro de la carta compuesta, los aspectos entre planetas compuestos muestran cómo circula la energía cuando estáis juntos - no como dos individuos, sino como un campo relacional único.',
+    it: 'Nel tema composito, gli aspetti tra pianeti compositi mostrano come l\'energia circola quando siete insieme - non come due individui, ma come un campo relazionale unico.',
+    de: 'Im Komposit-Horoskop zeigen Aspekte zwischen Komposit-Planeten, wie Energie zirkuliert, wenn ihr zusammen seid - nicht als zwei Individuen, sondern als ein relationales Feld.',
+    fr: 'Dans le thème composite, les aspects entre planètes composites montrent comment l\'énergie circule quand vous êtes ensemble - non pas comme deux individus, mais comme un champ relationnel unique.',
+  }))
+  if (harmonicos.length) {
+    linhas.push(sx(lang, {
+      pt: '\n*Dons naturais (aspectos harmónicos - trígonos e sextis):*',
+      en: '\n*Natural gifts (harmonious aspects - trines and sextiles):*',
+      es: '\n*Dones naturales (aspectos armónicos - trígonos y sextiles):*',
+      it: '\n*Doni naturali (aspetti armonici - trigoni e sestili):*',
+      de: '\n*Natürliche Gaben (harmonische Aspekte - Trigone und Sextile):*',
+      fr: '\n*Dons naturels (aspects harmonieux - trigones et sextiles):*',
+    }))
+    linhas.push(sx(lang, {
+      pt: 'São áreas onde a relação flui sem esforço - talentos que partilham como casal:',
+      en: 'These are areas where the relationship flows without effort - talents you share as a couple:',
+      es: 'Son áreas donde la relación fluye sin esfuerzo - talentos que compartís como pareja:',
+      it: 'Sono aree dove la relazione scorre senza sforzo - talenti che condividete come coppia:',
+      de: 'Das sind Bereiche, in denen die Beziehung mühelos fließt - Talente, die ihr als Paar teilt:',
+      fr: 'Ce sont des domaines où la relation coule sans effort - des talents que vous partagez en couple :',
+    }))
+    for (const a of harmonicos.slice(0, 5)) linhas.push(narrativaAspectoComposto(a, lang))
+  }
+  if (tensos.length) {
+    linhas.push(sx(lang, {
+      pt: '\n*Gatilhos recorrentes (aspectos tensos - quadraturas e oposições):*',
+      en: '\n*Recurring triggers (tense aspects - squares and oppositions):*',
+      es: '\n*Disparadores recurrentes (aspectos tensos - cuadraturas y oposiciones):*',
+      it: '\n*Trigger ricorrenti (aspetti tesi - quadrature e opposizioni):*',
+      de: '\n*Wiederkehrende Auslöser (spannungsreiche Aspekte - Quadrate und Oppositionen):*',
+      fr: '\n*Déclencheurs récurrents (aspects tendus - carrés et oppositions):*',
+    }))
+    linhas.push(sx(lang, {
+      pt: 'Revelam onde brigas ou crises voltam até aprenderem juntos a lição. Não são castigo - são o currículo da relação:',
+      en: 'These reveal where arguments or crises return until you both learn the lesson together. They are not punishment - they are the relationship\'s curriculum:',
+      es: 'Revelan dónde las peleas o crisis vuelven hasta que aprendáis juntos la lección. No son castigo - son el currículo de la relación:',
+      it: 'Rivelano dove litigi o crisi tornano finché non imparate insieme la lezione. Non sono punizione - sono il curriculum della relazione:',
+      de: 'Sie zeigen, wo Streit oder Krisen zurückkehren, bis ihr gemeinsam die Lektion lernt. Keine Strafe - das Curriculum der Beziehung:',
+      fr: 'Ils révèlent où disputes ou crises reviennent jusqu\'à ce que vous appreniez la leçon ensemble. Ce n\'est pas une punition - c\'est le curriculum de la relation :',
+    }))
+    for (const a of tensos.slice(0, 5)) linhas.push(narrativaAspectoComposto(a, lang))
+  }
+  if (!harmonicos.length && !tensos.length) {
+    linhas.push(sx(lang, {
+      pt: '\nSem aspectos internos majores detectados - o vosso ritmo constrói-se pela escolha quotidiana, não por facilidade ou atrito automáticos.',
+      en: '\nNo major internal aspects detected - your bond builds its rhythm through daily choice rather than automatic ease or friction.',
+      es: '\nSin aspectos internos mayores detectados - vuestro ritmo se construye con la elección diaria, no con facilidad o fricción automáticas.',
+      it: '\nNessun aspetto interno maggiore rilevato - il vostro ritmo si costruisce con la scelta quotidiana, non con facilità o attrito automatici.',
+      de: '\nKeine großen internen Aspekte erkannt - euer Rhythmus entsteht durch tägliche Wahl, nicht durch automatische Leichtigkeit oder Reibung.',
+      fr: '\nAucun aspect interne majeur détecté - votre rythme se construit par le choix quotidien, pas par une facilité ou friction automatiques.',
+    }))
+  }
+  linhas.push(sx(lang, {
+    pt: () => `\n${nomeA}, lê este mapa como o retrato vivo de ti e ${nomeB} juntos: onde prosperam naturalmente, onde precisam crescer e que legado este amor pode deixar.`,
+    en: () => `\n${nomeA}, read this chart as the living portrait of you and ${nomeB} together: where you naturally thrive, where you must grow, and what legacy this love can leave.`,
+    es: () => `\n${nomeA}, lee esta carta como el retrato vivo de ti y ${nomeB} juntos: dónde prosperáis naturalmente, dónde debéis crecer y qué legado puede dejar este amor.`,
+    it: () => `\n${nomeA}, leggi questa carta come il ritratto vivo di te e ${nomeB} insieme: dove prosperate naturalmente, dove dovete crescere e quale eredità può lasciare questo amore.`,
+    de: () => `\n${nomeA}, lies diese Karte als lebendiges Porträt von dir und ${nomeB} zusammen: wo ihr natürlich gedeiht, wo ihr wachsen müsst und welches Erbe diese Liebe hinterlassen kann.`,
+    fr: () => `\n${nomeA}, lis cette carte comme le portrait vivant de toi et ${nomeB} ensemble : où vous prospérez naturellement, où vous devez grandir et quel héritage cet amour peut laisser.`,
+  }))
   return linhas.join('\n')
 }
 
@@ -633,7 +732,7 @@ export function narrativaIntroSinastria(nomeA, nomeB, pontuacao, lang = 'pt') {
     de: `${nomeA}, willkommen zu deiner persönlichen Synastrie mit ${nomeB}. Jeder Absatz wurde für **dich** geschrieben – aus den exakten Graden deines Geburtshimmels gekreuzt mit dem ihrem/seinem. Lies es wie ein Astrologielehrer, der privat mit dir spricht: Die Sterne urteilen nicht; sie erzählen die Geschichte, die ihr gemeinsam lebt.\n\nGesamtton der Verbindung: **${pontuacao}%** Kompatibilität in Chemie, Emotion, Kommunikation und Zukunft.`,
     fr: `${nomeA}, bienvenue dans ta synastrie personnelle avec ${nomeB}. Chaque paragraphe a été écrit pour **toi** à partir des degrés exacts de ton ciel de naissance croisé avec le sien. Lis comme un professeur d'astrologie qui te parle en privé : les astres ne jugent pas ; ils racontent l'histoire que tu vis à deux.\n\nTon général du lien : **${pontuacao}%** de compatibilité en chimie, émotion, communication et avenir.`,
   }
-  return INTRO[lang] || INTRO.en
+  return contentForLang(lang, INTRO) || INTRO.en
 }
 
 export { SIGNO_PT }

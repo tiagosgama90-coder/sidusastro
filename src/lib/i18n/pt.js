@@ -590,6 +590,7 @@ export default {
       typeNeutral: 'Momento presente',
       attribution: 'Interpretações baseadas na tradição dos números angélicos e horas espelhadas, à luz dos ensinamentos de Doreen Virtue sobre sincronia e orientação espiritual.',
       popularHours: 'Horas mais procuradas',
+      allEqualHours: 'Todas as horas iguais (24 por dia)',
     },
   },
   payment: {

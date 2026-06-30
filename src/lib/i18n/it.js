@@ -656,7 +656,8 @@ export default {
       "typeMirror": "Ora dello specchio",
       "typeNeutral": "Momento presente",
       "attribution": "Interpretazioni basate sui numeri angelici e sulle ore speculari, nello spirito degli insegnamenti di Doreen Virtue sulla sincronicità e sulla guida spirituale.",
-      "popularHours": "Ore più ricercate"
+      "popularHours": "Ore più ricercate",
+      "allEqualHours": "Tutte le ore specchio (24 al giorno)"
     }
   },
   "payment": {

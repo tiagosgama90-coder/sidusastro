@@ -1,4 +1,4 @@
-import { contentForLang } from './i18n/langUtil.js'
+import { contentForLang, resolveLocalePack } from './i18n/langUtil.js'
 import { HORAS_ES, HORAS_IT, HORAS_DE, HORAS_FR, ESPELHOS_ES, ESPELHOS_IT, ESPELHOS_DE, ESPELHOS_FR } from './i18n/packs/horasLocales.js'
 
 /**
@@ -249,15 +249,15 @@ const NEUTRO = {
   fr: { titulo: 'Moment Présent', anjo: 'Tes Anges', palavraChave: 'Présence', mensagem: 'Chaque moment apporte une guidance angélique. Les nombres répétés sont des signes divins.', conselho: 'Respire trois fois et demande : "Anges, que voulez-vous que je sache maintenant ?"' },
 }
 
-const HORAS_PACKS = { pt: () => HORAS_PT, en: () => HORAS_EN, es: () => HORAS_ES, it: () => HORAS_IT, de: () => HORAS_DE, fr: () => HORAS_FR }
-const ESPELHOS_PACKS = { pt: () => ESPELHOS_PT, en: () => ESPELHOS_EN, es: () => ESPELHOS_ES, it: () => ESPELHOS_IT, de: () => ESPELHOS_DE, fr: () => ESPELHOS_FR }
+const HORAS_PACKS = { pt: HORAS_PT, en: HORAS_EN, es: HORAS_ES, it: HORAS_IT, de: HORAS_DE, fr: HORAS_FR }
+const ESPELHOS_PACKS = { pt: ESPELHOS_PT, en: ESPELHOS_EN, es: ESPELHOS_ES, it: ESPELHOS_IT, de: ESPELHOS_DE, fr: ESPELHOS_FR }
 
 function packHoras(lang) {
-  return (HORAS_PACKS[lang] || HORAS_PACKS.en)()
+  return resolveLocalePack(lang, HORAS_PACKS, (p) => p['11:11']?.mensagem, HORAS_EN)
 }
 
 function packEspelhos(lang) {
-  return (ESPELHOS_PACKS[lang] || ESPELHOS_PACKS.en)()
+  return resolveLocalePack(lang, ESPELHOS_PACKS, (p) => p['12:21']?.mensagem, ESPELHOS_EN)
 }
 
 export function listarHorasIguais(lang = 'pt') {
@@ -276,7 +276,7 @@ export function interpretarHorario(hora, minuto, lang = 'pt') {
     return { tipo: 'espelho', chave, ...espelhos[chave] }
   }
   if (isHoraIgual(hora, minuto)) {
-    const reduzida = formatarHora(hora % 24, minuto % 60)
+    const reduzida = formatarHora(hora, minuto)
     if (iguais[reduzida]) return { tipo: 'igual', chave: reduzida, ...iguais[reduzida] }
   }
 

@@ -19,6 +19,23 @@ export function contentForLang(lang, bundle) {
   return bundle.pt ?? null
 }
 
+/** Detecta texto ainda em português (packs auto-gerados corruptos). */
+export function looksPortuguese(str) {
+  if (!str || typeof str !== 'string') return false
+  return /\b(teu|tua|tens|estás|não estás|o teu|a tua|no teu|na tua|os teus|consigo|contigo|para ti|português|expressão pede|os anjos pedem-te)\b/i.test(str)
+}
+
+/** Pacote por idioma; se amostra estiver em PT e lang≠pt, usa fallbackEn. */
+export function resolveLocalePack(lang, packs, sampleKey, fallbackEn) {
+  if (lang === 'pt') return packs.pt ?? fallbackEn
+  if (lang === 'en') return packs.en ?? fallbackEn
+  const pack = packs[lang]
+  if (!pack) return fallbackEn
+  const sample = typeof sampleKey === 'function' ? sampleKey(pack) : pack?.[sampleKey]
+  const probe = typeof sample === 'string' ? sample : (sample?.mensagem || sample?.espiritual || sample?.resumo || '')
+  return looksPortuguese(probe) ? fallbackEn : pack
+}
+
 /** «Signo · Casa 10» com etiqueta de casa por idioma. */
 export function formatCasaMeta(lang, signo, casa) {
   if (!signo) return '-'

@@ -1,4 +1,4 @@
-import { contentForLang, isPt } from './i18n/langUtil.js'
+import { contentForLang, resolveLocalePack } from './i18n/langUtil.js'
 import { translatePlaneta, translateSigno } from './i18n/astro.js'
 import {
   INTERPRETACOES_ES, INTERPRETACOES_IT, INTERPRETACOES_DE, INTERPRETACOES_FR,
@@ -192,11 +192,26 @@ function reduzirMestre(n) {
   return n
 }
 
+const INTERP_PACKS = {
+  pt: INTERPRETACOES_PT,
+  en: INTERPRETACOES_EN,
+  es: INTERPRETACOES_ES,
+  it: INTERPRETACOES_IT,
+  de: INTERPRETACOES_DE,
+  fr: INTERPRETACOES_FR,
+}
+
+function mapaInterp(lang) {
+  return resolveLocalePack(
+    lang,
+    INTERP_PACKS,
+    (p) => p.destino?.[1]?.espiritual || p.caminhoVida?.[1]?.espiritual,
+    INTERPRETACOES_EN,
+  )
+}
+
 function interp(tipo, num, lang) {
-  const map = contentForLang(lang, {
-    pt: INTERPRETACOES_PT, en: INTERPRETACOES_EN, es: INTERPRETACOES_ES,
-    it: INTERPRETACOES_IT, de: INTERPRETACOES_DE, fr: INTERPRETACOES_FR,
-  }) || INTERPRETACOES_EN
+  const map = mapaInterp(lang)
   return map[tipo]?.[num] || map[tipo]?.[reduzirMestre(num)] || null
 }
 

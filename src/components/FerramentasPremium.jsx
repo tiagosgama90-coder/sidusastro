@@ -5,7 +5,7 @@
  * ─ Biorritmo (ciclos físico/emocional/intelectual)
  * ─ Diário Astral (registo pessoal)
  */
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo, useCallback, useRef } from 'react'
 import { useLanguage } from '../lib/i18n/LanguageContext.jsx'
 import { dateLocale, isPt } from '../lib/i18n/langUtil.js'
 import {
@@ -32,6 +32,7 @@ import {
   interpretarAgora,
   interpretarHorario,
   proximaHoraIgual,
+  listarHorasIguais,
 } from '../lib/horasIguais.js'
 
 function BotaoVoltar({ onVoltar, t }) {
@@ -238,9 +239,27 @@ export function Sinastria({ mapaNatal, dadosUtilizador, isPremium = false, onUpg
     nome: '', data: '', hora: '12:00', horaDesconhecida: false,
     cidade: '', localizacao: null, fuso: null,
   })
-  const [analise, setAnalise] = useState(null)
+  const [motorResult, setMotorResult] = useState(null)
   const [calculando, setCalculando] = useState(false)
   const [erro, setErro] = useState(null)
+
+  const analise = useMemo(() => {
+    if (!motorResult) return null
+    return {
+      pontuacao: motorResult.pontuacao,
+      pilares: motorResult.pilares,
+      aspectos: motorResult.aspectos,
+      secoes: montarSecoesPremium(motorResult, mapaNatal, lang),
+      relatorio: isPremium
+        ? montarRelatorioSinastria(motorResult, mapaNatal, lang)
+        : montarResumoGratis(motorResult, mapaNatal, lang),
+      motor: motorResult.posA?.motor,
+      parceiroSol: motorResult.posB?.corpos?.sol?.signo,
+      parceiroLua: motorResult.posB?.corpos?.lua?.signo,
+      parceiroAsc: motorResult.posB?.corpos?.ascendente?.signo,
+      laçoCarmico: motorResult.nodosSinastria?.laçoCarmico,
+    }
+  }, [motorResult, mapaNatal, lang, isPremium])
 
   const userHoraDesconhecida = !String(dadosUtilizador?.hora || '').trim()
 
@@ -254,7 +273,7 @@ export function Sinastria({ mapaNatal, dadosUtilizador, isPremium = false, onUpg
     if (!dadosProntos(parceiro) || !dadosUtilizador?.data) return
     setCalculando(true)
     setErro(null)
-    setAnalise(null)
+    setMotorResult(null)
     try {
       let fuso = parceiro.fuso
       if (fuso == null && parceiro.localizacao) {
@@ -285,20 +304,7 @@ export function Sinastria({ mapaNatal, dadosUtilizador, isPremium = false, onUpg
         return
       }
 
-      setAnalise({
-        pontuacao: resultado.pontuacao,
-        pilares: resultado.pilares,
-        aspectos: resultado.aspectos,
-        secoes: montarSecoesPremium(resultado, mapaNatal, lang),
-        relatorio: isPremium
-          ? montarRelatorioSinastria(resultado, mapaNatal, lang)
-          : montarResumoGratis(resultado, mapaNatal, lang),
-        motor: resultado.posA?.motor,
-        parceiroSol: resultado.posB?.corpos?.sol?.signo,
-        parceiroLua: resultado.posB?.corpos?.lua?.signo,
-        parceiroAsc: resultado.posB?.corpos?.ascendente?.signo,
-        laçoCarmico: resultado.nodosSinastria?.laçoCarmico,
-      })
+      setMotorResult(resultado)
     } catch (e) {
       console.error('[Sinastria]', e)
       setErro(t('ferramentasPremium.sinastria.errorCalc'))
@@ -775,9 +781,11 @@ export function Numerologia({ dados, utilizador, mapaNatal, onVoltar }) {
   const { lang, t } = useLanguage()
   const [manual, setManual] = useState(null)
   const resolvido = manual || resolverDadosFerramentas(dados, utilizador, mapaNatal)
-  const mapa = dadosNumerologiaProntos(resolvido)
-    ? calcularMapaNumerologia(resolvido.nome, resolvido.data, lang, mapaNatal)
-    : null
+  const mapa = useMemo(() => (
+    dadosNumerologiaProntos(resolvido)
+      ? calcularMapaNumerologia(resolvido.nome, resolvido.data, lang, mapaNatal)
+      : null
+  ), [resolvido, lang, mapaNatal])
 
   if (!mapa) return (
     <div style={{ padding: 24 }}>
@@ -1097,6 +1105,7 @@ export function InterpretacaoSonhos({ mapaNatal, onVoltar }) {
   const [erro, setErro] = useState(null)
   const [chipsSel, setChipsSel] = useState([])
   const [feeling, setFeeling] = useState(null)
+  const pedidoRef = useRef(0)
 
   const chips = chipsSimbolos(lang)
   const feelings = ['peace', 'fear', 'sadness', 'joy', 'confusion', 'anger']
@@ -1105,33 +1114,53 @@ export function InterpretacaoSonhos({ mapaNatal, onVoltar }) {
     setChipsSel((prev) => prev.includes(chip) ? prev.filter((c) => c !== chip) : [...prev, chip])
   }
 
+  const gerarLocal = useCallback((textoEfetivo, langAtual, feelingAtual, chipsAtual) => {
+    const simbolos = extrairSimbolos(textoEfetivo, chipsAtual, langAtual)
+    const seccoes = gerarInterpretacaoLocal(
+      textoEfetivo,
+      langAtual,
+      labelSentimento(feelingAtual, langAtual),
+      simbolos,
+      mapaNatal,
+    )
+    if (!seccoes?.some((s) => s.texto?.length > 10)) return null
+    return {
+      seccoes,
+      simbolos: simbolos.map((s) => ({ tema: s.tema, resumo: s.resumo })),
+    }
+  }, [mapaNatal])
+
+  useEffect(() => {
+    if (!resultado) return
+    const textoEfetivo = sonho.trim() || chipsSel.join(', ')
+    if (!textoEfetivo) return
+    const local = gerarLocal(textoEfetivo, lang, feeling, chipsSel)
+    if (local) setResultado(local)
+  }, [lang])
+
   const interpretar = async () => {
+    const textoEfetivo = sonho.trim() || chipsSel.join(', ')
+    if (!textoEfetivo) return
+    const id = ++pedidoRef.current
     setAInterpretar(true)
     setErro(null)
-    setResultado(null)
-    const textoEfetivo = sonho.trim() || chipsSel.join(', ')
-    const res = await interpretarSonhoRemoto(sonho.trim() || textoEfetivo, mapaNatal, lang, feeling, chipsSel)
-    setAInterpretar(false)
-    if (!res) {
-      const simbolos = extrairSimbolos(textoEfetivo, chipsSel, lang)
-      const seccoes = gerarInterpretacaoLocal(
-        textoEfetivo,
-        lang,
-        labelSentimento(feeling, lang),
-        simbolos,
-        mapaNatal,
-      )
-      if (seccoes?.some((s) => s.texto?.length > 10)) {
-        setResultado({
-          seccoes,
-          simbolos: simbolos.map((s) => ({ tema: s.tema, resumo: s.resumo })),
-        })
-        return
+
+    const local = gerarLocal(textoEfetivo, lang, feeling, chipsSel)
+    if (local) setResultado(local)
+
+    try {
+      const res = await interpretarSonhoRemoto(sonho.trim() || textoEfetivo, mapaNatal, lang, feeling, chipsSel)
+      if (id !== pedidoRef.current) return
+      if (res?.seccoes?.some((s) => s.texto?.length > 20)) {
+        setResultado(res)
+      } else if (!local) {
+        setErro(t('ferramentasPremium.sonhos.error'))
       }
-      setErro(t('ferramentasPremium.sonhos.error'))
-      return
+    } catch {
+      if (id === pedidoRef.current && !local) setErro(t('ferramentasPremium.sonhos.error'))
+    } finally {
+      if (id === pedidoRef.current) setAInterpretar(false)
     }
-    setResultado(res)
   }
 
   const pronto = (sonho.trim().length > 8 || chipsSel.length > 0) && !aInterpretar
@@ -1266,9 +1295,17 @@ export function HorasIguais({ onVoltar }) {
   const [agora, setAgora] = useState(() => new Date())
   const [horaManual, setHoraManual] = useState('')
   const [modoManual, setModoManual] = useState(false)
+  const [chaveManual, setChaveManual] = useState(null)
   const [interpretacao, setInterpretacao] = useState(() => interpretarAgora(lang))
 
+  const todasHoras = useMemo(() => listarHorasIguais(lang), [lang])
+
   useEffect(() => {
+    if (modoManual && chaveManual) {
+      const [h, min] = chaveManual.split(':').map(Number)
+      setInterpretacao(interpretarHorario(h, min, lang))
+      return
+    }
     const tick = () => {
       const d = new Date()
       setAgora(d)
@@ -1277,7 +1314,7 @@ export function HorasIguais({ onVoltar }) {
     tick()
     const id = setInterval(tick, 15000)
     return () => clearInterval(id)
-  }, [lang, modoManual])
+  }, [lang, modoManual, chaveManual])
 
   const locale = dateLocale(lang)
   const horaActual = agora.toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' })
@@ -1289,19 +1326,23 @@ export function HorasIguais({ onVoltar }) {
     if (!m) return
     const h = Math.min(23, Math.max(0, +m[1]))
     const min = Math.min(59, Math.max(0, +m[2]))
+    const chave = `${String(h).padStart(2, '0')}:${String(min).padStart(2, '0')}`
     setModoManual(true)
+    setChaveManual(chave)
     setInterpretacao(interpretarHorario(h, min, lang))
   }
 
   const seleccionarHora = (chave) => {
     setHoraManual(chave)
     setModoManual(true)
+    setChaveManual(chave)
     const [h, min] = chave.split(':').map(Number)
     setInterpretacao(interpretarHorario(h, min, lang))
   }
 
   const voltarAoAgora = () => {
     setModoManual(false)
+    setChaveManual(null)
     setHoraManual('')
     const d = new Date()
     setInterpretacao(interpretarHorario(d.getHours(), d.getMinutes(), lang))
@@ -1354,6 +1395,12 @@ export function HorasIguais({ onVoltar }) {
             inputMode="numeric"
             value={horaManual}
             onChange={(e) => setHoraManual(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                e.preventDefault()
+                consultarManual()
+              }
+            }}
             placeholder={t('ferramentasPremium.horasIguais.timePlaceholder')}
             style={{
               flex: 1, background: 'rgba(255,255,255,0.06)', border: `1px solid ${CORES.vidroBorda}`,
@@ -1367,12 +1414,26 @@ export function HorasIguais({ onVoltar }) {
             {t('ferramentasPremium.horasIguais.consult')}
           </button>
         </div>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 12 }}>
           {horasPopulares.map((h) => (
             <button key={h} type="button" onClick={() => seleccionarHora(h)} style={{
               background: interpretacao.chave === h ? 'rgba(223,183,108,0.2)' : 'rgba(255,255,255,0.04)',
               border: `1px solid ${interpretacao.chave === h ? CORES.dourado : CORES.vidroBorda}`,
               borderRadius: 20, color: CORES.brancoSuave, fontSize: 12, padding: '5px 12px', cursor: 'pointer',
+            }}>
+              {h}
+            </button>
+          ))}
+        </div>
+        <div style={{ fontSize: 10, color: CORES.dourado, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 8 }}>
+          {t('ferramentasPremium.horasIguais.allEqualHours')}
+        </div>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, maxHeight: 160, overflowY: 'auto' }}>
+          {todasHoras.map((h) => (
+            <button key={h} type="button" onClick={() => seleccionarHora(h)} style={{
+              background: interpretacao.chave === h ? 'rgba(223,183,108,0.15)' : 'rgba(255,255,255,0.03)',
+              border: `1px solid ${interpretacao.chave === h ? 'rgba(223,183,108,0.5)' : CORES.vidroBorda}`,
+              borderRadius: 16, color: CORES.brancoMuted, fontSize: 11, padding: '4px 10px', cursor: 'pointer',
             }}>
               {h}
             </button>

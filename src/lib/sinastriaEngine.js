@@ -6,6 +6,8 @@ import { Body, Ecliptic, GeoVector, MakeTime } from 'astronomy-engine'
 import { longitudeParaSigno } from './astrologia.js'
 import { criarDataUTCporLocal } from './datetime.js'
 import { calcularAngulosCasas } from './natalHouses.js'
+import { contentForLang } from './i18n/langUtil.js'
+import { translateSigno, translateElemento } from './i18n/astro.js'
 
 const ORBE = 6
 
@@ -530,19 +532,35 @@ export function compatibilidadeSolarGratis(solA, solB, lang = 'pt') {
   const chave = eA && eB ? `${eA}-${eB}` : null
   const score = chave ? (compat[chave] ?? 62) : 62
   const nivel = score >= 72 ? 'alto' : score >= 55 ? 'medio' : 'desafio'
+  const sA = translateSigno(solA, lang)
+  const sB = translateSigno(solB, lang)
+  const elA = eA ? translateElemento(eA, lang) : ''
+  const elB = eB ? translateElemento(eB, lang) : ''
 
   const textos = {
     alto: {
-      pt: `Os Sols em ${solA} e ${solB} partilham uma linguagem elemental compatível (${eA} · ${eB}). Há base natural para reconhecimento mútuo - aprofundar requer o mapa completo.`,
-      en: `Suns in ${solA} and ${solB} share compatible elemental language (${eA} · ${eB}). There is a natural basis for mutual recognition - depth requires the full chart.`,
+      pt: `Os Sols em ${sA} e ${sB} partilham uma linguagem elemental compatível (${elA} · ${elB}). Há base natural para reconhecimento mútuo - aprofundar requer o mapa completo.`,
+      en: `Suns in ${sA} and ${sB} share compatible elemental language (${elA} · ${elB}). There is a natural basis for mutual recognition - depth requires the full chart.`,
+      es: `Los Soles en ${sA} y ${sB} comparten un lenguaje elemental compatible (${elA} · ${elB}). Hay una base natural de reconocimiento mutuo; profundizar requiere la carta completa.`,
+      it: `I Soli in ${sA} e ${sB} condividono un linguaggio elementale compatibile (${elA} · ${elB}). C'è una base naturale di riconoscimento reciproco; approfondire richiede il tema completo.`,
+      de: `Sonne in ${sA} und ${sB} teilen eine verträgliche Elementarsprache (${elA} · ${elB}). Es gibt eine natürliche Basis gegenseitiger Anerkennung – Tiefe erfordert das volle Horoskop.`,
+      fr: `Les Soleils en ${sA} et ${sB} partagent un langage élémentaire compatible (${elA} · ${elB}). Il y a une base naturelle de reconnaissance mutuelle ; approfondir exige le thème complet.`,
     },
     medio: {
-      pt: `Entre ${solA} e ${solB} há complementaridade moderada (${eA} · ${eB}). A relação cresce com consciência dos ritmos diferentes de cada um.`,
-      en: `Between ${solA} and ${solB} there is moderate complementarity (${eA} · ${eB}). The bond grows through awareness of each other's different rhythms.`,
+      pt: `Entre ${sA} e ${sB} há complementaridade moderada (${elA} · ${elB}). A relação cresce com consciência dos ritmos diferentes de cada um.`,
+      en: `Between ${sA} and ${sB} there is moderate complementarity (${elA} · ${elB}). The bond grows through awareness of each other's different rhythms.`,
+      es: `Entre ${sA} y ${sB} hay complementariedad moderada (${elA} · ${elB}). El vínculo crece con conciencia de los ritmos distintos de cada uno.`,
+      it: `Tra ${sA} e ${sB} c'è complementarità moderata (${elA} · ${elB}). Il legame cresce con consapevolezza dei ritmi diversi di ciascuno.`,
+      de: `Zwischen ${sA} und ${sB} besteht moderate Ergänzung (${elA} · ${elB}). Die Beziehung wächst durch Bewusstsein für unterschiedliche Rhythmen.`,
+      fr: `Entre ${sA} et ${sB}, complémentarité modérée (${elA} · ${elB}). Le lien grandit en prenant conscience des rythmes différents de chacun.`,
     },
     desafio: {
-      pt: `Os Sols em ${solA} e ${solB} activam elementos distintos (${eA} · ${eB}). O atrito pode ser motor de crescimento se houver diálogo honesto.`,
-      en: `Suns in ${solA} and ${solB} activate different elements (${eA} · ${eB}). Friction can fuel growth with honest dialogue.`,
+      pt: `Os Sols em ${sA} e ${sB} activam elementos distintos (${elA} · ${elB}). O atrito pode ser motor de crescimento se houver diálogo honesto.`,
+      en: `Suns in ${sA} and ${sB} activate different elements (${elA} · ${elB}). Friction can fuel growth with honest dialogue.`,
+      es: `Los Soles en ${sA} y ${sB} activan elementos distintos (${elA} · ${elB}). La fricción puede impulsar el crecimiento con diálogo honesto.`,
+      it: `I Soli in ${sA} e ${sB} attivano elementi distinti (${elA} · ${elB}). L'attrito può alimentare la crescita con dialogo onesto.`,
+      de: `Sonne in ${sA} und ${sB} aktivieren verschiedene Elemente (${elA} · ${elB}). Reibung kann Wachstum mit ehrlichem Dialog befeuern.`,
+      fr: `Les Soleils en ${sA} et ${sB} activent des éléments distincts (${elA} · ${elB}). La friction peut nourrir la croissance avec un dialogue honnête.`,
     },
   }
 
@@ -551,6 +569,6 @@ export function compatibilidadeSolarGratis(solA, solB, lang = 'pt') {
     score,
     elementoA: eA,
     elementoB: eB,
-    texto: textos[nivel][lang] || textos[nivel].pt,
+    texto: contentForLang(lang, textos[nivel]) || textos[nivel].en,
   }
 }

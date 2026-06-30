@@ -75,6 +75,24 @@ export const TEMA_FUTURO = {
   fr: 'projets et avenir',
 }
 
+export const TEMA_MISSAO_REL = {
+  pt: 'missão de relacionamento e propósito de alma',
+  en: 'relationship mission and soul purpose',
+  es: 'misión de relación y propósito del alma',
+  it: 'missione di relazione e scopo dell\'anima',
+  de: 'Beziehungsmission und Seelenauftrag',
+  fr: 'mission relationnelle et but de l\'âme',
+}
+
+export const TEMA_COMPOSITO = {
+  pt: 'o Mapa Composto - a vossa relação como entidade',
+  en: 'the Composite Chart - your relationship as one entity',
+  es: 'la Carta Compuesta - vuestra relación como entidad',
+  it: 'il Tema Composito - la vostra relazione come entità',
+  de: 'das Komposit-Horoskop - eure Beziehung als Einheit',
+  fr: 'le thème composite - votre relation comme entité',
+}
+
 export const TOM_ASPECTO = {
   Trígono: {
     pt: 'flui com naturalidade', en: 'flows naturally', es: 'fluye con naturalidad',
