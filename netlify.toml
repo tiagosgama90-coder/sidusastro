@@ -13,7 +13,7 @@
   directory = "netlify/functions"
   node_bundler = "esbuild"
   # firebase-admin usa ficheiros dinâmicos — não pode ser inlined pelo esbuild
-  external_node_modules = ["firebase-admin"]
+  external_node_modules = ["firebase-admin", "@google-cloud/firestore", "google-auth-library"]
 
 [[headers]]
   for = "/index.html"

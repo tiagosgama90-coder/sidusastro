@@ -1,4 +1,6 @@
-import admin from 'firebase-admin'
+import { cert, getApps, initializeApp } from 'firebase-admin/app'
+import { FieldValue, getFirestore as getAdminFirestore } from 'firebase-admin/firestore'
+import { getAuth } from 'firebase-admin/auth'
 import { env } from './env.mjs'
 
 let initialized = false
@@ -9,7 +11,6 @@ function normalizePrivateKey(key) {
   let k = key.trim()
   if (k.includes('\\n')) k = k.replace(/\\n/g, '\n')
   k = k.replace(/\r\n/g, '\n').replace(/\r/g, '\n')
-  // PEM colado numa linha só (sem \n entre BEGIN e o corpo)
   if (!k.includes('\n') && k.includes('-----BEGIN')) {
     k = k
       .replace(/-----BEGIN PRIVATE KEY-----/g, '-----BEGIN PRIVATE KEY-----\n')
@@ -57,7 +58,6 @@ function parseServiceAccount(raw) {
     () => JSON.parse(text),
     () => JSON.parse(text.replace(/\\n/g, '\n').replace(/\\"/g, '"')),
     () => {
-      // JSON colado com quebras de linha reais no private_key
       const fixed = text.replace(
         /("private_key"\s*:\s*")([^"]*(?:\n[^"]*)*)(")/,
         (_, a, key, c) => `${a}${key.replace(/\r?\n/g, '\\n')}${c}`,
@@ -95,7 +95,10 @@ export function firebaseAdminStatus() {
 }
 
 function ensureInit() {
-  if (initialized) return true
+  if (initialized || getApps().length > 0) {
+    initialized = true
+    return true
+  }
   lastInitError = null
   const serviceAccount = prepareServiceAccount(env('FIREBASE_SERVICE_ACCOUNT'))
   if (!serviceAccount) {
@@ -103,12 +106,8 @@ function ensureInit() {
     return false
   }
   try {
-    if (admin.apps?.length) {
-      initialized = true
-      return true
-    }
-    admin.initializeApp({
-      credential: admin.credential.cert({
+    initializeApp({
+      credential: cert({
         projectId: serviceAccount.project_id,
         clientEmail: serviceAccount.client_email,
         privateKey: serviceAccount.private_key,
@@ -126,7 +125,7 @@ function ensureInit() {
 
 export function getFirestore() {
   if (!ensureInit()) return null
-  return admin.firestore()
+  return getAdminFirestore()
 }
 
 async function verifyIdTokenViaRest(idToken) {
@@ -155,21 +154,10 @@ export async function verifyIdToken(idToken) {
   if (!idToken) return null
   if (ensureInit()) {
     try {
-      return await admin.auth().verifyIdToken(idToken)
+      return await getAuth().verifyIdToken(idToken)
     } catch { /* fallback REST */ }
   }
   return verifyIdTokenViaRest(idToken)
-}
-
-function premiumUntilFromExisting(existingUntil, dias = 30) {
-  let base = new Date()
-  if (existingUntil) {
-    const ex = existingUntil.toDate ? existingUntil.toDate() : new Date(existingUntil)
-    if (ex > base) base = ex
-  }
-  const until = new Date(base)
-  until.setDate(until.getDate() + dias)
-  return admin.firestore.Timestamp.fromDate(until)
 }
 
 export async function activarPremium(userId, extra = {}) {
@@ -182,7 +170,7 @@ export async function activarPremium(userId, extra = {}) {
   const updates = {
     isPremium: true,
     mapaCompleto: true,
-    premiumAt: admin.firestore.FieldValue.serverTimestamp(),
+    premiumAt: FieldValue.serverTimestamp(),
   }
 
   if (extra.stripeSubscriptionId) {
@@ -191,8 +179,8 @@ export async function activarPremium(userId, extra = {}) {
     updates.premiumBilling = 'recurring'
   } else {
     updates.premiumBilling = 'lifetime'
-    updates.premiumUntil = admin.firestore.FieldValue.delete()
-    updates.stripeSubscriptionId = admin.firestore.FieldValue.delete()
+    updates.premiumUntil = FieldValue.delete()
+    updates.stripeSubscriptionId = FieldValue.delete()
     if (extra.stripeCustomerId) updates.stripeCustomerId = extra.stripeCustomerId
   }
 
@@ -216,8 +204,8 @@ export async function activarMapaCompleto(userId) {
     return false
   }
   await db.collection('users').doc(userId).set(
-    { mapaCompleto: true, mapaCompletoAt: admin.firestore.FieldValue.serverTimestamp() },
-    { merge: true }
+    { mapaCompleto: true, mapaCompletoAt: FieldValue.serverTimestamp() },
+    { merge: true },
   )
   return true
 }
@@ -228,3 +216,5 @@ export async function desactivarPremium(userId) {
   await db.collection('users').doc(userId).set({ isPremium: false }, { merge: true })
   return true
 }
+
+export { FieldValue }

@@ -1,5 +1,4 @@
-import admin from 'firebase-admin'
-import { getFirestore, verifyIdToken } from './firebase-admin.mjs'
+import { FieldValue, getFirestore, verifyIdToken } from './firebase-admin.mjs'
 import { utilizadorTemPremium } from '../../../src/lib/premiumAccess.js'
 
 export const MAX_ORACLE_GRATIS = 3
@@ -26,7 +25,7 @@ export async function incrementarOraclePergunta(uid) {
   const db = getFirestore()
   if (!db || !uid) return
   await db.collection('users').doc(uid).set(
-    { oraclePerguntasUsadas: admin.firestore.FieldValue.increment(1) },
+    { oraclePerguntasUsadas: FieldValue.increment(1) },
     { merge: true },
   )
 }
