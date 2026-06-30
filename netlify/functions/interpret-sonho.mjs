@@ -46,15 +46,6 @@ export default async (req) => {
       mapaNatal,
     })
 
-    const system = construirSistemaSonhos(lang)
-    const userPrompt = construirPedidoSonhos({
-      texto: textoEfetivo,
-      lang,
-      feeling: feelingLabel,
-      simbolosDetectados,
-      mapaNatal,
-    })
-
     const callIa = (retry = false) => chatCompletion({
       system: retry ? `${system}\n\n${reforcoInstrucaoSonhosIA(lang, true)}` : system,
       messages: [{ role: 'user', content: userPrompt }],
