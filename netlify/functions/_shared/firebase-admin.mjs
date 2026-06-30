@@ -21,7 +21,7 @@ function normalizePrivateKey(key) {
 
 function prepareServiceAccount(raw) {
   const parsed = parseServiceAccount(raw)
-  if (!parsed) return null
+  if (!parsed?.client_email) return null
   const private_key = normalizePrivateKey(parsed.private_key)
   if (!private_key?.includes('BEGIN PRIVATE KEY')) return null
   return { ...parsed, private_key }
@@ -33,13 +33,22 @@ function classifyInitError(msg) {
   if (m.includes('pem') || m.includes('decoder') || m.includes('private key') || m.includes('secretorkey')) {
     return 'invalid_private_key'
   }
+  if (m.includes('cannot find module') || m.includes('protos.json') || m.includes('dynamic')) {
+    return 'bundler_module_error'
+  }
+  if (m.includes('client_email')) return 'missing_client_email'
   if (m.includes('already exists')) return 'duplicate_app'
   return 'init_error'
 }
 
+export function sanitizeInitError(msg) {
+  if (!msg) return null
+  return String(msg).slice(0, 180).replace(/@[\w.-]+/g, '@…')
+}
+
 function parseServiceAccount(raw) {
   if (!raw) return null
-  let text = String(raw).trim()
+  let text = String(raw).trim().replace(/^\uFEFF/, '')
   if ((text.startsWith("'") && text.endsWith("'")) || (text.startsWith('"') && text.endsWith('"'))) {
     text = text.slice(1, -1).trim()
   }
@@ -79,6 +88,7 @@ export function firebaseAdminStatus() {
       reason: 'init_failed',
       projectId: serviceAccount.project_id,
       hint: classifyInitError(lastInitError),
+      detail: sanitizeInitError(lastInitError),
     }
   }
   return { ok: true, projectId: serviceAccount.project_id }
@@ -98,7 +108,11 @@ function ensureInit() {
       return true
     }
     admin.initializeApp({
-      credential: admin.credential.cert(serviceAccount),
+      credential: admin.credential.cert({
+        projectId: serviceAccount.project_id,
+        clientEmail: serviceAccount.client_email,
+        privateKey: serviceAccount.private_key,
+      }),
       projectId: serviceAccount.project_id,
     })
     initialized = true
