@@ -119,6 +119,8 @@ export default {
       'auth/internal-error': 'Firebase internal error.',
       'auth/missing-email': 'Enter an email.',
       'auth/missing-password': 'Enter a password.',
+      'auth/api-key-not-valid.-please-pass-a-valid-api-key.': 'Invalid Firebase key on the server. Check VITE_FIREBASE_API_KEY in Netlify (no quotes), use the Browser key, and redeploy.',
+      apiKeyInvalid: 'Invalid Firebase key. In Netlify use the Browser key (AIzaSy...) without quotes or commas, confirm Email/Password is enabled in Firebase, then Clear cache and deploy.',
       unknown: 'Unknown error',
     },
     feature: {

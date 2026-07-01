@@ -15,7 +15,11 @@ function t(lang, key) {
 }
 
 export function traduzirErroAuth(code, lang = 'pt') {
-  const key = `auth.errors.${code}`
+  const c = String(code || '')
+  if (/api-key-not-valid|invalid-api-key/i.test(c)) {
+    return t(lang, 'auth.errors.apiKeyInvalid')
+  }
+  const key = `auth.errors.${c}`
   const translated = t(lang, key)
   if (translated !== key) return translated
   return t(lang, 'auth.errors.unknown')

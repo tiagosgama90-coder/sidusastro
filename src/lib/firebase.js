@@ -1,8 +1,13 @@
 import { initializeApp } from 'firebase/app'
-import { getAuth } from 'firebase/auth'
+import { getAuth, initializeRecaptchaConfig } from 'firebase/auth'
 import { getFirestore } from 'firebase/firestore'
 
-const apiKey = import.meta.env.VITE_FIREBASE_API_KEY
+function limparEnv(val) {
+  if (val == null || typeof val !== 'string') return val
+  return val.trim().replace(/^["']+|["']+$/g, '').replace(/,$/, '')
+}
+
+const apiKey = limparEnv(import.meta.env.VITE_FIREBASE_API_KEY)
 
 // Se as credenciais não estiverem configuradas, exporta null.
 // A app funciona em modo offline/local sem Firebase.
@@ -18,13 +23,16 @@ if (apiKey) {
   try {
     const app = initializeApp({
       apiKey,
-      authDomain:        import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-      projectId:         import.meta.env.VITE_FIREBASE_PROJECT_ID,
-      storageBucket:     import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
-      messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-      appId:             import.meta.env.VITE_FIREBASE_APP_ID,
+      authDomain:        limparEnv(import.meta.env.VITE_FIREBASE_AUTH_DOMAIN),
+      projectId:         limparEnv(import.meta.env.VITE_FIREBASE_PROJECT_ID),
+      storageBucket:     limparEnv(import.meta.env.VITE_FIREBASE_STORAGE_BUCKET),
+      messagingSenderId: limparEnv(import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID),
+      appId:             limparEnv(import.meta.env.VITE_FIREBASE_APP_ID),
     })
     auth = getAuth(app)
+    initializeRecaptchaConfig(auth).catch((e) => {
+      console.warn('[Sidus] reCAPTCHA Enterprise config:', e?.code || e?.message)
+    })
     db   = getFirestore(app)
     firebaseDisponivel = true
   } catch (e) {

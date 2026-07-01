@@ -119,6 +119,8 @@ export default {
       'auth/internal-error': 'Erro interno do Firebase.',
       'auth/missing-email': 'Introduz um e-mail.',
       'auth/missing-password': 'Introduz uma senha.',
+      'auth/api-key-not-valid.-please-pass-a-valid-api-key.': 'Chave Firebase inválida no servidor. Verifica VITE_FIREBASE_API_KEY no Netlify (sem aspas), usa a Browser key, e faz redeploy.',
+      apiKeyInvalid: 'Chave Firebase inválida. No Netlify usa a Browser key (AIzaSy...) sem aspas nem vírgulas, confirma Email/Password activo no Firebase, e faz Clear cache and deploy.',
       unknown: 'Erro desconhecido',
     },
     feature: {
