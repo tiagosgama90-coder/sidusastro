@@ -1,4 +1,4 @@
-﻿import { useState, useEffect, useRef, useCallback, useMemo } from 'react'
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react'
 import {
   Sparkles,
   Moon,
@@ -3446,7 +3446,7 @@ export default function App() {
     initAdSense()
   }, [isPremium, cookieConsent])
 
-  // Firebase email verification (?mode=verifyEmail&oobCode=...) — link abre na app
+  // Firebase email verification (?mode=verifyEmail&oobCode=...) - link abre na app
   useEffect(() => {
     if (!auth || !firebaseDisponivel || oobCodeTratado.current) return
     const params = new URLSearchParams(location.search)

@@ -1,5 +1,5 @@
 /**
- * Textos de interpretação do mapa natal — 6 idiomas.
+ * Textos de interpretação do mapa natal - 6 idiomas.
  */
 import { translateSigno } from './astro.js'
 import { getMapaStatic } from './packs/mapaStatic.js'

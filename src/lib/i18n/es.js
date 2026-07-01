@@ -336,13 +336,13 @@ export default {
   "leituraGratis": {
     "title": "✦ Lectura gratis de hoy · {date}",
     "personal": "A tu Sol y Luna",
-    "returnTomorrow": "Vuelve mañana — la carta y la frase cambian con el cielo."
+    "returnTomorrow": "Vuelve mañana - la carta y la frase cambian con el cielo."
   },
   "share": {
     "button": "Compartir mi signo",
     "copied": "¡Copiado!",
-    "title": "Mi carta natal — Sidusastro",
-    "text": "☉ {sun} · ☽ {moon} — descubre tu carta en {url}"
+    "title": "Mi carta natal - Sidusastro",
+    "text": "☉ {sun} · ☽ {moon} - descubre tu carta en {url}"
   },
   "ferramentas": {
     "title": "Herramientas ocultas"
@@ -696,7 +696,7 @@ export default {
       "attribution": "Interpretaciones basadas en números de ángeles y horas de espejo, en el espíritu de las enseñanzas de Doreen Virtue sobre sincronicidad y guía espiritual.",
       "popularHours": "Horas más buscadas",
       "allEqualHours": "Todas las horas iguales (24 al día)",
-      "pickHourHint": "Toca la hora que te llamó — el reloj del universo responde."
+      "pickHourHint": "Toca la hora que te llamó - el reloj del universo responde."
     }
   },
   "payment": {

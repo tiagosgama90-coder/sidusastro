@@ -25,14 +25,14 @@ function sinteseElementos(contagem, lang) {
   if (!dominante || dominante[1] === 0) return ''
   const map = {
     pt: {
-      major: 'Os Arcanos Maiores dominam esta tiragem — o destino fala alto. Presta atenção a ciclos de vida e transformações profundas.',
+      major: 'Os Arcanos Maiores dominam esta tiragem - o destino fala alto. Presta atenção a ciclos de vida e transformações profundas.',
       paus: 'O elemento Fogo (Paus) predomina: ação, coragem e criatividade pedem passo à frente. O momento é de iniciar, não de esperar.',
       copas: 'O elemento Água (Copas) predomina: emoções, relações e intuição são o fio condutor. Escuta o coração com honestidade.',
       espadas: 'O elemento Ar (Espadas) predomina: mente, verdade e decisões claras. Nomeia o que sentes e escolhe com lucidez.',
       ouros: 'O elemento Terra (Ouros) predomina: matéria, trabalho e estabilidade. Foca no concreto, no corpo e nos recursos.',
     },
     en: {
-      major: 'Major Arcana dominate this spread — destiny speaks loudly. Pay attention to life cycles and deep transformation.',
+      major: 'Major Arcana dominate this spread - destiny speaks loudly. Pay attention to life cycles and deep transformation.',
       paus: 'Fire (Wands) predominates: action, courage and creativity ask for a step forward. This is a time to begin, not wait.',
       copas: 'Water (Cups) predominates: emotions, relationships and intuition lead the reading. Listen to your heart honestly.',
       espadas: 'Air (Swords) predominates: mind, truth and clear decisions. Name what you feel and choose with clarity.',
@@ -46,17 +46,17 @@ function sinteseElementos(contagem, lang) {
 function aberturaPergunta(pergunta, lang) {
   if (!pergunta?.trim()) return ''
   const p = pergunta.trim()
-  if (lang === 'en') return `Regarding your question — *"${p}"* — the cards reveal:\n\n`
-  return `Em resposta à tua pergunta — *"${p}"* — as cartas revelam:\n\n`
+  if (lang === 'en') return `Regarding your question - *"${p}"* - the cards reveal:\n\n`
+  return `Em resposta à tua pergunta - *"${p}"* - as cartas revelam:\n\n`
 }
 
 function analiseCombinacoes(cartas, lang) {
   const majors = cartas.filter((c) => c.tipo === 'major' || c.id <= 21)
   if (majors.length >= 2 && lang === 'pt') {
-    return `\n\n**Síntese arquetípica:** ${majors.map((c) => c.nome).join(' e ')} dialogam nesta tiragem — observa como estas energias se reforçam ou tensionam entre si.`
+    return `\n\n**Síntese arquetípica:** ${majors.map((c) => c.nome).join(' e ')} dialogam nesta tiragem - observa como estas energias se reforçam ou tensionam entre si.`
   }
   if (majors.length >= 2) {
-    return `\n\n**Archetypal synthesis:** ${majors.map((c) => c.nome).join(' and ')} dialogue in this spread — notice how these energies reinforce or tension each other.`
+    return `\n\n**Archetypal synthesis:** ${majors.map((c) => c.nome).join(' and ')} dialogue in this spread - notice how these energies reinforce or tension each other.`
   }
   return ''
 }
@@ -75,7 +75,7 @@ export function interpretarLeitura(cartas, tipoId, pergunta, mapaNatal, lang = '
     const c = cartasLocalizadas[0]
     const positiva = cartaPositivaSimNao(c)
     const nuance = c.invertida
-      ? (lang === 'en' ? 'The reversed position suggests caution — the answer leans negative or "not yet".' : 'A posição invertida sugere cautela — a resposta inclina para negativo ou "ainda não".')
+      ? (lang === 'en' ? 'The reversed position suggests caution - the answer leans negative or "not yet".' : 'A posição invertida sugere cautela - a resposta inclina para negativo ou "ainda não".')
       : (lang === 'en' ? 'In upright position, the energy supports affirmation.' : 'Em posição direita, a energia favorece a afirmação.')
     return {
       resposta: positiva ? tr('tarot.yes') : tr('tarot.no'),
@@ -91,8 +91,8 @@ export function interpretarLeitura(cartas, tipoId, pergunta, mapaNatal, lang = '
     const revLabel = tr('tarot.reversedLabel')
     const txt = c.invertida ? c.sombra : c.luz
     const orient = c.invertida
-      ? (lang === 'en' ? 'Reversed — shadow aspect' : 'Invertida — aspecto sombra')
-      : (lang === 'en' ? 'Upright — light aspect' : 'Direita — aspecto luz')
+      ? (lang === 'en' ? 'Reversed - shadow aspect' : 'Invertida - aspecto sombra')
+      : (lang === 'en' ? 'Upright - light aspect' : 'Direita - aspecto luz')
     return `**${pos}** · ${c.nome} (${orient}${c.invertida ? ` ${revLabel}` : ''})\n${txt}`
   })
 

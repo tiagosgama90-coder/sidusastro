@@ -1,4 +1,4 @@
-/** Strings de colagem para mapaEssencia — 6 idiomas. */
+/** Strings de colagem para mapaEssencia - 6 idiomas. */
 import { contentForLang } from '../langUtil.js'
 
 export function glueBlocoCasa(lang, casa, t, prefixo = '') {

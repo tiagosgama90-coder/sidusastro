@@ -120,9 +120,9 @@ function CartaFallbackSVG({ carta, size }) {
 }
 
 /**
- * Carta de tarot profissional — ilustração Mystic com fallback SVG ornamentado.
+ * Carta de tarot profissional - ilustração Mystic com fallback SVG ornamentado.
  */
-export function CartaTarot({ carta, size = 90, virada = false, className, style }) {
+export function CartaTarot({ carta, size = 105, virada = false, className, style }) {
   const [imgOk, setImgOk] = useState(true)
   if (!carta) return null
 

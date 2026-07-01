@@ -1,4 +1,4 @@
-/** 56 Arcanos Menores — interpretações profissionais por naipe e valor. */
+/** 56 Arcanos Menores - interpretações profissionais por naipe e valor. */
 
 const NAIPES = [
   { key: 'paus', nome: 'Paus', elemento: 'Fogo', tema: 'ação, criatividade, paixão e expansão', simb: '🪄', cor: '#D97706' },
@@ -26,7 +26,7 @@ const RANKS = [
 
 const LUZ = {
   as: {
-    paus: 'Chispa criativa e novo impulso vital. O Ás de Paus inaugura um ciclo de coragem, projetos e entusiasmo genuíno — a semente já contém a chama.',
+    paus: 'Chispa criativa e novo impulso vital. O Ás de Paus inaugura um ciclo de coragem, projetos e entusiasmo genuíno - a semente já contém a chama.',
     copas: 'Abertura emocional profunda. O Ás de Copas anuncia novo amor, cura do coração ou reconciliação consigo mesmo/a.',
     espadas: 'Clareza mental cortante como lâmina de luz. O Ás de Espadas traz verdade, insight decisivo e coragem para nomear o oculto.',
     ouros: 'Oportunidade material concreta. O Ás de Ouros sinaliza prosperidade nascente, investimento sólido ou talento pronto para gerar frutos.',
@@ -34,38 +34,38 @@ const LUZ = {
   '02': {
     paus: 'Parceria dinâmica e visão partilhada. O Dois de Paus convida-te a planear o horizonte com confiança e ambição equilibrada.',
     copas: 'União harmoniosa e reciprocidade emocional. O Dois de Copas fala de ligação autêntica, amizade profunda ou reconciliação.',
-    espadas: 'Escolha difícil mas necessária. O Dois de Espadas pede que enfrentes a indecisão com honestidade — a clareza liberta.',
+    espadas: 'Escolha difícil mas necessária. O Dois de Espadas pede que enfrentes a indecisão com honestidade - a clareza liberta.',
     ouros: 'Equilíbrio entre dar e receber no plano material. O Dois de Ouros ensina flexibilidade e gestão inteligente dos recursos.',
   },
   '03': {
     paus: 'Expansão e colaboração frutífera. O Três de Paus anuncia progresso visível, oportunidades além-fronteiras e visão estratégica.',
     copas: 'Celebração, amizade e alegria partilhada. O Três de Copas traz encontros felizes, comunidade e gratidão pelo que já tens.',
-    espadas: 'Cura através da verdade. O Três de Espadas liberta dor antiga — o reconhecimento da ferida é o primeiro passo para a cura.',
+    espadas: 'Cura através da verdade. O Três de Espadas liberta dor antiga - o reconhecimento da ferida é o primeiro passo para a cura.',
     ouros: 'Reconhecimento pelo trabalho bem feito. O Três de Ouros valoriza mestria, colaboração profissional e qualidade duradoura.',
   },
   '04': {
     paus: 'Celebração estável e fundações sólidas. O Quatro de Paus marca marcos, lar, compromisso e alegria com raízes.',
-    copas: 'Contemplação e reavaliação emocional. O Quatro de Copas convida à introspeção — nem toda oferta exterior alimenta a alma.',
+    copas: 'Contemplação e reavaliação emocional. O Quatro de Copas convida à introspeção - nem toda oferta exterior alimenta a alma.',
     espadas: 'Recolhimento estratégico. O Quatro de Espadas pede descanso mental, pausa e recuperação antes da próxima batalha.',
     ouros: 'Segurança material e conservação sábia. O Quatro de Ouros protege o que construíste sem fechar o coração ao futuro.',
   },
   '05': {
-    paus: 'Competição saudável e desafio que fortalece. O Cinco de Paus testa a tua resiliência — o conflito pode ser motor de crescimento.',
+    paus: 'Competição saudável e desafio que fortalece. O Cinco de Paus testa a tua resiliência - o conflito pode ser motor de crescimento.',
     copas: 'Luto emocional ou nostalgia. O Cinco de Copas pede que honres a perda mas não ignores as copas ainda cheias à tua frente.',
-    espadas: 'Derrota temporária ou conflito amargo. O Cinco de Espadas alerta para vitórias vazias — escolhe a paz em vez da razão a todo o custo.',
+    espadas: 'Derrota temporária ou conflito amargo. O Cinco de Espadas alerta para vitórias vazias - escolhe a paz em vez da razão a todo o custo.',
     ouros: 'Dificuldade financeira ou isolamento material. O Cinco de Ouros lembra que pedir ajuda é coragem, não fraqueza.',
   },
   '06': {
     paus: 'Vitória reconhecida e progresso merecido. O Seis de Paus traz liderança natural, sucesso público e confiança renovada.',
     copas: 'Memórias doces e reconciliação. O Seis de Copas evoca inocência, cura do passado e gestos simples que tocam o coração.',
-    espadas: 'Transição para calmaria. O Seis de Espadas indica viagem — literal ou interior — para longe da turbulência.',
+    espadas: 'Transição para calmaria. O Seis de Espadas indica viagem - literal ou interior - para longe da turbulência.',
     ouros: 'Generosidade e partilha equilibrada. O Seis de Ouros fala de dar e receber com justiça, caridade e reciprocidade.',
   },
   '07': {
-    paus: 'Defesa da tua posição com convicção. O Sete de Paus pede perseverança — estás mais perto da vitória do que imaginas.',
-    copas: 'Múltiplas opções emocionais ou sonhos sedutores. O Sete de Copas convida à discriminação — nem toda fantasia é destino.',
-    espadas: 'Estratégia e astúcia mental. O Sete de Espadas alerta para dissimulação — a tua ou dos outros — e pede vigilância.',
-    ouros: 'Paciência com resultados lentos. O Sete de Ouros ensina que o investimento de hoje colhe frutos amanhã — não abandones cedo.',
+    paus: 'Defesa da tua posição com convicção. O Sete de Paus pede perseverança - estás mais perto da vitória do que imaginas.',
+    copas: 'Múltiplas opções emocionais ou sonhos sedutores. O Sete de Copas convida à discriminação - nem toda fantasia é destino.',
+    espadas: 'Estratégia e astúcia mental. O Sete de Espadas alerta para dissimulação - a tua ou dos outros - e pede vigilância.',
+    ouros: 'Paciência com resultados lentos. O Sete de Ouros ensina que o investimento de hoje colhe frutos amanhã - não abandones cedo.',
   },
   '08': {
     paus: 'Movimento rápido e notícias chegando. O Oito de Paus acelera projetos, comunicações e mudanças súbitas mas favoráveis.',
@@ -74,15 +74,15 @@ const LUZ = {
     ouros: 'Dedicação ao ofício e aprendizagem. O Oito de Ouros valoriza prática, disciplina e excelência construída tijolo a tijolo.',
   },
   '09': {
-    paus: 'Resistência e preparação final. O Nove de Paus guarda forças para o último esforço — a perseverança vence.',
-    copas: 'Satisfação emocional plena. O Nove de Copas é o desejo realizado no plano do coração — gratidão e contentamento.',
-    espadas: 'Ansiedade noturna e preocupação mental. O Nove de Espadas pede que confrontes os medos — a maioria é ilusão.',
+    paus: 'Resistência e preparação final. O Nove de Paus guarda forças para o último esforço - a perseverança vence.',
+    copas: 'Satisfação emocional plena. O Nove de Copas é o desejo realizado no plano do coração - gratidão e contentamento.',
+    espadas: 'Ansiedade noturna e preocupação mental. O Nove de Espadas pede que confrontes os medos - a maioria é ilusão.',
     ouros: 'Autossuficiência e conforto material. O Nove de Ouros celebra independência, refinamento e frutos do teu trabalho.',
   },
   '10': {
-    paus: 'Carga pesada mas temporária. O Dez de Paus alerta para excesso de responsabilidades — delega antes de te esgotares.',
+    paus: 'Carga pesada mas temporária. O Dez de Paus alerta para excesso de responsabilidades - delega antes de te esgotares.',
     copas: 'Plenitude familiar e felicidade emocional. O Dez de Copas é harmonia no lar, amor duradouro e ciclo emocional completo.',
-    espadas: 'Fim doloroso mas libertador. O Dez de Espadas marca o fundo do poço — só a partir daqui se sobe, renascido/a.',
+    espadas: 'Fim doloroso mas libertador. O Dez de Espadas marca o fundo do poço - só a partir daqui se sobe, renascido/a.',
     ouros: 'Legado material e estabilidade geracional. O Dez de Ouros fala de riqueza partilhada, tradição e segurança a longo prazo.',
   },
   valete: {
@@ -92,9 +92,9 @@ const LUZ = {
     ouros: 'Estudante dedicado e oportunidade prática. O Valete de Ouros anuncia aprendizagem, trabalho novo ou investimento sensato.',
   },
   cavaleiro: {
-    paus: 'Ação impulsiva e energia ardente. O Cavaleiro de Paus avança com paixão — canaliza o fogo sem queimar pontes.',
+    paus: 'Ação impulsiva e energia ardente. O Cavaleiro de Paus avança com paixão - canaliza o fogo sem queimar pontes.',
     copas: 'Romance, charme e proposta emocional. O Cavaleiro de Copas segue o coração com idealismo e gestos poéticos.',
-    espadas: 'Mente afiada e confronto directo. O Cavaleiro de Espadas corta a confusão — a verdade chega depressa.',
+    espadas: 'Mente afiada e confronto directo. O Cavaleiro de Espadas corta a confusão - a verdade chega depressa.',
     ouros: 'Trabalho metódico e progresso constante. O Cavaleiro de Ouros constrói com paciência, fiabilidade e sentido prático.',
   },
   rainha: {
@@ -121,7 +121,7 @@ const SOMBRA = {
   '02': {
     paus: 'Medo de sair da zona de conforto. Planos ambiciosos adiados por insegurança ou falta de parceria.',
     copas: 'Desequilíbrio na relação ou dependência emocional. Amor que pede mais do que devolve.',
-    espadas: 'Indecisão paralisante ou negação da verdade. Evitar a escolha é também uma escolha — e a pior.',
+    espadas: 'Indecisão paralisante ou negação da verdade. Evitar a escolha é também uma escolha - e a pior.',
     ouros: 'Desequilíbrio financeiro ou multitasking excessivo. Perder o foco por tentar controlar tudo ao mesmo tempo.',
   },
   '03': {
@@ -200,14 +200,14 @@ const SOMBRA = {
 
 const CONSELHO = {
   as: {
-    paus: 'Acende a chama com uma acção concreta hoje — o Universo responde a quem começa.',
+    paus: 'Acende a chama com uma acção concreta hoje - o Universo responde a quem começa.',
     copas: 'Abre o coração com honestidade. A vulnerabilidade é portal, não fraqueza.',
     espadas: 'Nomeia a verdade com coragem. A clareza mental é o teu maior aliado agora.',
     ouros: 'Investe em algo tangível e duradouro. A terra recompensa quem planta com intenção.',
   },
   '02': {
     paus: 'Expande horizontes com um plano realista. A visão precisa de parceiros e de passos.',
-    copas: 'Cultiva reciprocidade. Relações verdadeiras são espelhos — olha com amor.',
+    copas: 'Cultiva reciprocidade. Relações verdadeiras são espelhos - olha com amor.',
     espadas: 'Remove a venda dos olhos. A decisão adiada custa mais do que a escolha difícil.',
     ouros: 'Equilibra contas e prioridades. Flexibilidade inteligente vence rigidez.',
   },
@@ -231,12 +231,12 @@ const CONSELHO = {
   },
   '06': {
     paus: 'Recebe o reconhecimento com humildade e partilha o crédito.',
-    copas: 'Curande o passado com ternura — a criança interior merece ser abraçada.',
+    copas: 'Curande o passado com ternura - a criança interior merece ser abraçada.',
     espadas: 'Muda de ambiente se necessário. Às vezes a cura exige distância física.',
     ouros: 'Dá e recebe com equidade. A abundância circula quando flui.',
   },
   '07': {
-    paus: 'Mantém a posição com fé — o último esforço decide o resultado.',
+    paus: 'Mantém a posição com fé - o último esforço decide o resultado.',
     copas: 'Discerne entre sonho e desejo real. Escolhe o que nutre, não o que seduz.',
     espadas: 'Vigia sem paranoia. Integridade é escudo contra enganos.',
     ouros: 'Confia no processo. Colheitas maduras exigem tempo e cuidado.',
@@ -244,7 +244,7 @@ const CONSELHO = {
   '08': {
     paus: 'Canaliza a velocidade com foco. Menos dispersão, mais impacto.',
     copas: 'Tem coragem de partir do que já não serve. O próximo capítulo espera.',
-    espadas: 'Questiona as crenças limitantes. A prisão é mental — a chave está contigo.',
+    espadas: 'Questiona as crenças limitantes. A prisão é mental - a chave está contigo.',
     ouros: 'Aperfeiçoa com prática diária. O mestre é o principiante que nunca desistiu.',
   },
   '09': {

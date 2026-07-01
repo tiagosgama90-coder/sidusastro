@@ -1,15 +1,15 @@
 /** Gerado por scripts/build-mapa-sonhos-locales.mjs (fonte EN) */
 export const ASPETO_NUCLEO_ES = {
-  "Conjunction": "two forces merge into one channel — they intensify each other, for better or concentrated tension",
-  "Conjuncao": "two forces merge into one channel — they intensify each other, for better or concentrated tension",
-  "Opposition": "opposite poles ask conscious integration — the other reveals what you deny in yourself",
-  "Oposicao": "opposite poles ask conscious integration — the other reveals what you deny in yourself",
-  "Trine": "natural flow and spontaneous talent — the gift must be used, not merely possessed",
-  "Trigono": "natural flow and spontaneous talent — the gift must be used, not merely possessed",
-  "Square": "creative friction that demands action — discomfort drives growth when you do not flee",
-  "Quadratura": "creative friction that demands action — discomfort drives growth when you do not flee",
-  "Sextile": "gentle opportunity requiring initiative — the door opens for those who knock",
-  "Sextil": "gentle opportunity requiring initiative — the door opens for those who knock"
+  "Conjunction": "two forces merge into one channel - they intensify each other, for better or concentrated tension",
+  "Conjuncao": "two forces merge into one channel - they intensify each other, for better or concentrated tension",
+  "Opposition": "opposite poles ask conscious integration - the other reveals what you deny in yourself",
+  "Oposicao": "opposite poles ask conscious integration - the other reveals what you deny in yourself",
+  "Trine": "natural flow and spontaneous talent - the gift must be used, not merely possessed",
+  "Trigono": "natural flow and spontaneous talent - the gift must be used, not merely possessed",
+  "Square": "creative friction that demands action - discomfort drives growth when you do not flee",
+  "Quadratura": "creative friction that demands action - discomfort drives growth when you do not flee",
+  "Sextile": "gentle opportunity requiring initiative - the door opens for those who knock",
+  "Sextil": "gentle opportunity requiring initiative - the door opens for those who knock"
 }
 
 export const PAR_DINAMICA_ES = {
@@ -25,16 +25,16 @@ export const PAR_DINAMICA_ES = {
 }
 
 export const ASPETO_NUCLEO_IT = {
-  "Conjunction": "two forces merge into one channel — they intensify each other, for better or concentrated tension",
-  "Conjuncao": "two forces merge into one channel — they intensify each other, for better or concentrated tension",
-  "Opposition": "opposite poles ask conscious integration — the other reveals what you deny in yourself",
-  "Oposicao": "opposite poles ask conscious integration — the other reveals what you deny in yourself",
-  "Trine": "natural flow and spontaneous talent — the gift must be used, not merely possessed",
-  "Trigono": "natural flow and spontaneous talent — the gift must be used, not merely possessed",
-  "Square": "creative friction that demands action — discomfort drives growth when you do not flee",
-  "Quadratura": "creative friction that demands action — discomfort drives growth when you do not flee",
-  "Sextile": "gentle opportunity requiring initiative — the door opens for those who knock",
-  "Sextil": "gentle opportunity requiring initiative — the door opens for those who knock"
+  "Conjunction": "two forces merge into one channel - they intensify each other, for better or concentrated tension",
+  "Conjuncao": "two forces merge into one channel - they intensify each other, for better or concentrated tension",
+  "Opposition": "opposite poles ask conscious integration - the other reveals what you deny in yourself",
+  "Oposicao": "opposite poles ask conscious integration - the other reveals what you deny in yourself",
+  "Trine": "natural flow and spontaneous talent - the gift must be used, not merely possessed",
+  "Trigono": "natural flow and spontaneous talent - the gift must be used, not merely possessed",
+  "Square": "creative friction that demands action - discomfort drives growth when you do not flee",
+  "Quadratura": "creative friction that demands action - discomfort drives growth when you do not flee",
+  "Sextile": "gentle opportunity requiring initiative - the door opens for those who knock",
+  "Sextil": "gentle opportunity requiring initiative - the door opens for those who knock"
 }
 
 export const PAR_DINAMICA_IT = {
@@ -50,16 +50,16 @@ export const PAR_DINAMICA_IT = {
 }
 
 export const ASPETO_NUCLEO_DE = {
-  "Conjunction": "two forces merge into one channel — they intensify each other, for better or concentrated tension",
-  "Conjuncao": "two forces merge into one channel — they intensify each other, for better or concentrated tension",
-  "Opposition": "opposite poles ask conscious integration — the other reveals what you deny in yourself",
-  "Oposicao": "opposite poles ask conscious integration — the other reveals what you deny in yourself",
-  "Trine": "natural flow and spontaneous talent — the gift must be used, not merely possessed",
-  "Trigono": "natural flow and spontaneous talent — the gift must be used, not merely possessed",
-  "Square": "creative friction that demands action — discomfort drives growth when you do not flee",
-  "Quadratura": "creative friction that demands action — discomfort drives growth when you do not flee",
-  "Sextile": "gentle opportunity requiring initiative — the door opens for those who knock",
-  "Sextil": "gentle opportunity requiring initiative — the door opens for those who knock"
+  "Conjunction": "two forces merge into one channel - they intensify each other, for better or concentrated tension",
+  "Conjuncao": "two forces merge into one channel - they intensify each other, for better or concentrated tension",
+  "Opposition": "opposite poles ask conscious integration - the other reveals what you deny in yourself",
+  "Oposicao": "opposite poles ask conscious integration - the other reveals what you deny in yourself",
+  "Trine": "natural flow and spontaneous talent - the gift must be used, not merely possessed",
+  "Trigono": "natural flow and spontaneous talent - the gift must be used, not merely possessed",
+  "Square": "creative friction that demands action - discomfort drives growth when you do not flee",
+  "Quadratura": "creative friction that demands action - discomfort drives growth when you do not flee",
+  "Sextile": "gentle opportunity requiring initiative - the door opens for those who knock",
+  "Sextil": "gentle opportunity requiring initiative - the door opens for those who knock"
 }
 
 export const PAR_DINAMICA_DE = {
@@ -75,16 +75,16 @@ export const PAR_DINAMICA_DE = {
 }
 
 export const ASPETO_NUCLEO_FR = {
-  "Conjunction": "two forces merge into one channel — they intensify each other, for better or concentrated tension",
-  "Conjuncao": "two forces merge into one channel — they intensify each other, for better or concentrated tension",
-  "Opposition": "opposite poles ask conscious integration — the other reveals what you deny in yourself",
-  "Oposicao": "opposite poles ask conscious integration — the other reveals what you deny in yourself",
-  "Trine": "natural flow and spontaneous talent — the gift must be used, not merely possessed",
-  "Trigono": "natural flow and spontaneous talent — the gift must be used, not merely possessed",
-  "Square": "creative friction that demands action — discomfort drives growth when you do not flee",
-  "Quadratura": "creative friction that demands action — discomfort drives growth when you do not flee",
-  "Sextile": "gentle opportunity requiring initiative — the door opens for those who knock",
-  "Sextil": "gentle opportunity requiring initiative — the door opens for those who knock"
+  "Conjunction": "two forces merge into one channel - they intensify each other, for better or concentrated tension",
+  "Conjuncao": "two forces merge into one channel - they intensify each other, for better or concentrated tension",
+  "Opposition": "opposite poles ask conscious integration - the other reveals what you deny in yourself",
+  "Oposicao": "opposite poles ask conscious integration - the other reveals what you deny in yourself",
+  "Trine": "natural flow and spontaneous talent - the gift must be used, not merely possessed",
+  "Trigono": "natural flow and spontaneous talent - the gift must be used, not merely possessed",
+  "Square": "creative friction that demands action - discomfort drives growth when you do not flee",
+  "Quadratura": "creative friction that demands action - discomfort drives growth when you do not flee",
+  "Sextile": "gentle opportunity requiring initiative - the door opens for those who knock",
+  "Sextil": "gentle opportunity requiring initiative - the door opens for those who knock"
 }
 
 export const PAR_DINAMICA_FR = {

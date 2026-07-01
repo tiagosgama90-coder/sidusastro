@@ -1,4 +1,4 @@
-/** Temas de casas, essência de signos, elementos e modalidades — 6 idiomas. */
+/** Temas de casas, essência de signos, elementos e modalidades - 6 idiomas. */
 import { contentForLang } from '../langUtil.js'
 
 export const TEMAS_CASA = {

@@ -1,5 +1,5 @@
 /**
- * Narrativas de aspetos planetários — estilo interpretativo profissional.
+ * Narrativas de aspetos planetários - estilo interpretativo profissional.
  * Sem orbes, graus ou jargão matemático.
  */
 import { translatePlaneta, translateSigno, translateAspecto } from '../i18n/astro.js'
@@ -7,27 +7,27 @@ import { contentForLang, casaParentese } from '../i18n/langUtil.js'
 import { planetaPorNome } from '../casasPlacidus.js'
 
 const ASPETO_NUCLEO_PT = {
-  Conjunção: 'duas forças fundem-se num só canal — intensificam-se mutuamente, para bem ou para tensão concentrada',
-  Conjuncao: 'duas forças fundem-se num só canal — intensificam-se mutuamente, para bem ou para tensão concentrada',
-  Oposição: 'polos opostos pedem integração consciente — o outro revela o que negas em ti',
-  Oposicao: 'polos opostos pedem integração consciente — o outro revela o que negas em ti',
-  Trígono: 'fluxo natural e talento espontâneo — o dom precisa de ser usado, não apenas possuído',
-  Trigono: 'fluxo natural e talento espontâneo — o dom precisa de ser usado, não apenas possuído',
-  Quadratura: 'fricção criativa que obriga à acção — o desconforto é motor de crescimento quando não fujas',
-  Sextil: 'oportunidade gentil que requer iniciativa — a porta abre-se para quem bate',
+  Conjunção: 'duas forças fundem-se num só canal - intensificam-se mutuamente, para bem ou para tensão concentrada',
+  Conjuncao: 'duas forças fundem-se num só canal - intensificam-se mutuamente, para bem ou para tensão concentrada',
+  Oposição: 'polos opostos pedem integração consciente - o outro revela o que negas em ti',
+  Oposicao: 'polos opostos pedem integração consciente - o outro revela o que negas em ti',
+  Trígono: 'fluxo natural e talento espontâneo - o dom precisa de ser usado, não apenas possuído',
+  Trigono: 'fluxo natural e talento espontâneo - o dom precisa de ser usado, não apenas possuído',
+  Quadratura: 'fricção criativa que obriga à acção - o desconforto é motor de crescimento quando não fujas',
+  Sextil: 'oportunidade gentil que requer iniciativa - a porta abre-se para quem bate',
 }
 
 const ASPETO_NUCLEO_EN = {
-  Conjunction: 'two forces merge into one channel — they intensify each other, for better or concentrated tension',
-  Conjuncao: 'two forces merge into one channel — they intensify each other, for better or concentrated tension',
-  Opposition: 'opposite poles ask conscious integration — the other reveals what you deny in yourself',
-  Oposicao: 'opposite poles ask conscious integration — the other reveals what you deny in yourself',
-  Trine: 'natural flow and spontaneous talent — the gift must be used, not merely possessed',
-  Trigono: 'natural flow and spontaneous talent — the gift must be used, not merely possessed',
-  Square: 'creative friction that demands action — discomfort drives growth when you do not flee',
-  Quadratura: 'creative friction that demands action — discomfort drives growth when you do not flee',
-  Sextile: 'gentle opportunity requiring initiative — the door opens for those who knock',
-  Sextil: 'gentle opportunity requiring initiative — the door opens for those who knock',
+  Conjunction: 'two forces merge into one channel - they intensify each other, for better or concentrated tension',
+  Conjuncao: 'two forces merge into one channel - they intensify each other, for better or concentrated tension',
+  Opposition: 'opposite poles ask conscious integration - the other reveals what you deny in yourself',
+  Oposicao: 'opposite poles ask conscious integration - the other reveals what you deny in yourself',
+  Trine: 'natural flow and spontaneous talent - the gift must be used, not merely possessed',
+  Trigono: 'natural flow and spontaneous talent - the gift must be used, not merely possessed',
+  Square: 'creative friction that demands action - discomfort drives growth when you do not flee',
+  Quadratura: 'creative friction that demands action - discomfort drives growth when you do not flee',
+  Sextile: 'gentle opportunity requiring initiative - the door opens for those who knock',
+  Sextil: 'gentle opportunity requiring initiative - the door opens for those who knock',
 }
 
 const PAR_DINAMICA_PT = {
@@ -55,14 +55,14 @@ const PAR_DINAMICA_EN = {
 }
 
 const ASPETO_NUCLEO_ES = {
-  Conjunção: 'dos fuerzas se funden en un solo canal — se intensifican mutuamente, para bien o para tensión concentrada',
-  Conjuncao: 'dos fuerzas se funden en un solo canal — se intensifican mutuamente, para bien o para tensión concentrada',
-  Oposição: 'polos opuestos piden integración consciente — el otro revela lo que niegas en ti',
-  Oposicao: 'polos opuestos piden integración consciente — el otro revela lo que niegas en ti',
-  Trígono: 'flujo natural y talento espontáneo — el don debe usarse, no solo poseerse',
-  Trigono: 'flujo natural y talento espontáneo — el don debe usarse, no solo poseerse',
-  Quadratura: 'fricción creativa que exige acción — la incomodidad impulsa el crecimiento cuando no huyes',
-  Sextil: 'oportunidad amable que requiere iniciativa — la puerta se abre a quien llama',
+  Conjunção: 'dos fuerzas se funden en un solo canal - se intensifican mutuamente, para bien o para tensión concentrada',
+  Conjuncao: 'dos fuerzas se funden en un solo canal - se intensifican mutuamente, para bien o para tensión concentrada',
+  Oposição: 'polos opuestos piden integración consciente - el otro revela lo que niegas en ti',
+  Oposicao: 'polos opuestos piden integración consciente - el otro revela lo que niegas en ti',
+  Trígono: 'flujo natural y talento espontáneo - el don debe usarse, no solo poseerse',
+  Trigono: 'flujo natural y talento espontáneo - el don debe usarse, no solo poseerse',
+  Quadratura: 'fricción creativa que exige acción - la incomodidad impulsa el crecimiento cuando no huyes',
+  Sextil: 'oportunidad amable que requiere iniciativa - la puerta se abre a quien llama',
 }
 
 const PAR_DINAMICA_ES = {
@@ -78,14 +78,14 @@ const PAR_DINAMICA_ES = {
 }
 
 const ASPETO_NUCLEO_IT = {
-  Conjunção: 'due forze si fondono in un solo canale — si intensificano a vicenda, per il meglio o per tensione concentrata',
-  Conjuncao: 'due forze si fondono in un solo canale — si intensificano a vicenda, per il meglio o per tensione concentrata',
-  Oposição: 'poli opposti chiedono integrazione consapevole — l\'altro rivela ciò che neghi in te',
-  Oposicao: 'poli opposti chiedono integrazione consapevole — l\'altro rivela ciò che neghi in te',
-  Trígono: 'flusso naturale e talento spontaneo — il dono va usato, non solo posseduto',
-  Trigono: 'flusso naturale e talento spontaneo — il dono va usato, non solo posseduto',
-  Quadratura: 'attrito creativo che esige azione — il disagio è motore di crescita quando non fuggi',
-  Sextil: 'opportunità gentile che richiede iniziativa — la porta si apre a chi bussa',
+  Conjunção: 'due forze si fondono in un solo canale - si intensificano a vicenda, per il meglio o per tensione concentrata',
+  Conjuncao: 'due forze si fondono in un solo canale - si intensificano a vicenda, per il meglio o per tensione concentrata',
+  Oposição: 'poli opposti chiedono integrazione consapevole - l\'altro rivela ciò che neghi in te',
+  Oposicao: 'poli opposti chiedono integrazione consapevole - l\'altro rivela ciò che neghi in te',
+  Trígono: 'flusso naturale e talento spontaneo - il dono va usato, non solo posseduto',
+  Trigono: 'flusso naturale e talento spontaneo - il dono va usato, non solo posseduto',
+  Quadratura: 'attrito creativo che esige azione - il disagio è motore di crescita quando non fuggi',
+  Sextil: 'opportunità gentile che richiede iniziativa - la porta si apre a chi bussa',
 }
 
 const PAR_DINAMICA_IT = {
@@ -101,14 +101,14 @@ const PAR_DINAMICA_IT = {
 }
 
 const ASPETO_NUCLEO_DE = {
-  Conjunção: 'zwei Kräfte verschmelzen zu einem Kanal — sie verstärken sich gegenseitig, zum Guten oder als konzentrierte Spannung',
-  Conjuncao: 'zwei Kräfte verschmelzen zu einem Kanal — sie verstärken sich gegenseitig, zum Guten oder als konzentrierte Spannung',
-  Oposição: 'gegensätzliche Pole verlangen bewusste Integration — der andere zeigt, was du in dir verleugnest',
-  Oposicao: 'gegensätzliche Pole verlangen bewusste Integration — der andere zeigt, was du in dir verleugnest',
-  Trígono: 'natürlicher Fluss und spontanes Talent — die Gabe muss genutzt werden, nicht nur besessen',
-  Trigono: 'natürlicher Fluss und spontanes Talent — die Gabe muss genutzt werden, nicht nur besessen',
-  Quadratura: 'kreative Reibung, die Handlung verlangt — Unbehagen treibt Wachstum, wenn du nicht fliehst',
-  Sextil: 'sanfte Gelegenheit, die Initiative erfordert — die Tür öffnet sich für die, die klopfen',
+  Conjunção: 'zwei Kräfte verschmelzen zu einem Kanal - sie verstärken sich gegenseitig, zum Guten oder als konzentrierte Spannung',
+  Conjuncao: 'zwei Kräfte verschmelzen zu einem Kanal - sie verstärken sich gegenseitig, zum Guten oder als konzentrierte Spannung',
+  Oposição: 'gegensätzliche Pole verlangen bewusste Integration - der andere zeigt, was du in dir verleugnest',
+  Oposicao: 'gegensätzliche Pole verlangen bewusste Integration - der andere zeigt, was du in dir verleugnest',
+  Trígono: 'natürlicher Fluss und spontanes Talent - die Gabe muss genutzt werden, nicht nur besessen',
+  Trigono: 'natürlicher Fluss und spontanes Talent - die Gabe muss genutzt werden, nicht nur besessen',
+  Quadratura: 'kreative Reibung, die Handlung verlangt - Unbehagen treibt Wachstum, wenn du nicht fliehst',
+  Sextil: 'sanfte Gelegenheit, die Initiative erfordert - die Tür öffnet sich für die, die klopfen',
 }
 
 const PAR_DINAMICA_DE = {
@@ -124,14 +124,14 @@ const PAR_DINAMICA_DE = {
 }
 
 const ASPETO_NUCLEO_FR = {
-  Conjunção: 'deux forces fusionnent en un seul canal — elles s\'intensifient mutuellement, pour le meilleur ou une tension concentrée',
-  Conjuncao: 'deux forces fusionnent en un seul canal — elles s\'intensifient mutuellement, pour le meilleur ou une tension concentrée',
-  Oposição: 'des pôles opposés demandent une intégration consciente — l\'autre révèle ce que tu nies en toi',
-  Oposicao: 'des pôles opposés demandent une intégration consciente — l\'autre révèle ce que tu nies en toi',
-  Trígono: 'flux naturel et talent spontané — le don doit être utilisé, pas seulement possédé',
-  Trigono: 'flux naturel et talent spontané — le don doit être utilisé, pas seulement possédé',
-  Quadratura: 'friction créative qui exige l\'action — l\'inconfort est moteur de croissance quand tu ne fuis pas',
-  Sextil: 'opportunité douce qui demande de l\'initiative — la porte s\'ouvre à celui qui frappe',
+  Conjunção: 'deux forces fusionnent en un seul canal - elles s\'intensifient mutuellement, pour le meilleur ou une tension concentrée',
+  Conjuncao: 'deux forces fusionnent en un seul canal - elles s\'intensifient mutuellement, pour le meilleur ou une tension concentrée',
+  Oposição: 'des pôles opposés demandent une intégration consciente - l\'autre révèle ce que tu nies en toi',
+  Oposicao: 'des pôles opposés demandent une intégration consciente - l\'autre révèle ce que tu nies en toi',
+  Trígono: 'flux naturel et talent spontané - le don doit être utilisé, pas seulement possédé',
+  Trigono: 'flux naturel et talent spontané - le don doit être utilisé, pas seulement possédé',
+  Quadratura: 'friction créative qui exige l\'action - l\'inconfort est moteur de croissance quand tu ne fuis pas',
+  Sextil: 'opportunité douce qui demande de l\'initiative - la porte s\'ouvre à celui qui frappe',
 }
 
 const PAR_DINAMICA_FR = {
@@ -249,12 +249,12 @@ export function interpretarAspectosNatais(aspetos, planetas, lang = 'pt') {
 
   if (!lista.length) {
     return contentForLang(lang, {
-      pt: 'Nenhum aspeto maior apertado domina este mapa — a tua história desenrola-se sobretudo através da ênfase de signos e casas, e não por diálogo planetário. Isto concede flexibilidade, mas pede escolha consciente em vez de impulso por tensão interior.',
-      en: 'No major tight aspects dominate this chart — your story unfolds through sign and house emphasis rather than planetary dialogue. This grants flexibility but asks you to choose consciously rather than being propelled by inner tension.',
+      pt: 'Nenhum aspeto maior apertado domina este mapa - a tua história desenrola-se sobretudo através da ênfase de signos e casas, e não por diálogo planetário. Isto concede flexibilidade, mas pede escolha consciente em vez de impulso por tensão interior.',
+      en: 'No major tight aspects dominate this chart - your story unfolds through sign and house emphasis rather than planetary dialogue. This grants flexibility but asks you to choose consciously rather than being propelled by inner tension.',
       es: 'Ningún aspecto mayor ajustado domina esta carta: tu historia se despliega sobre todo por énfasis de signos y casas, no por diálogo planetario. Esto concede flexibilidad pero pide elección consciente en vez de impulso por tensión interior.',
       it: 'Nessun aspetto maggiore stretto domina questa carta: la tua storia si dispiega soprattutto per enfasi di segni e case, non per dialogo planetario. Questo concede flessibilità ma chiede scelta consapevole invece di spinta da tensione interiore.',
       de: 'Kein enger Hauptaspekt dominiert dieses Horoskop – deine Geschichte entfaltet sich vor allem durch Zeichen- und Hausbetonung, nicht planetaren Dialog. Das gibt Flexibilität, verlangt aber bewusste Wahl statt innerer Spannungsantrieb.',
-      fr: 'Aucun aspect majeur serré ne domine cette carte — ton histoire se déploie surtout par l\'emphase des signes et maisons, pas par dialogue planétaire. Cela accorde de la flexibilité mais demande un choix conscient plutôt qu\'une poussée de tension intérieure.',
+      fr: 'Aucun aspect majeur serré ne domine cette carte - ton histoire se déploie surtout par l\'emphase des signes et maisons, pas par dialogue planétaire. Cela accorde de la flexibilité mais demande un choix conscient plutôt qu\'une poussée de tension intérieure.',
     })
   }
 

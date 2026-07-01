@@ -36,7 +36,7 @@ export default {
     tagline: "Là où la carte du ciel rencontre la sagesse des cartes pour guider vos pas.",
     liveNow: "En direct · Ciel actualisé",
     heroTitle: "Votre carte natale complète. Votre destin, décodé.",
-    heroSubtitle: "Swiss Ephemeris · maisons Placidus · Oráculo IA · Tarot · Numérologie — tout personnalisé avec votre Soleil, Lune et Ascendant.",
+    heroSubtitle: "Swiss Ephemeris · maisons Placidus · Oráculo IA · Tarot · Numérologie - tout personnalisé avec votre Soleil, Lune et Ascendant.",
     login: "Connexion",
     register: "Créer un compte",
     email: "E-mail",
@@ -90,7 +90,7 @@ export default {
       cta: "Enregistrer et révéler mon destin",
       ctaLoading: "Lecture des étoiles…",
       savedTitle: "✦ Données enregistrées dans le cosmos",
-      savedHint: "Créez un compte ou connectez-vous ci-dessous — votre formulaire de carte sera prérempli automatiquement.",
+      savedHint: "Créez un compte ou connectez-vous ci-dessous - votre formulaire de carte sera prérempli automatiquement.",
       authDivider: "Continuer pour se connecter",
       faq: {
         ariaLabel: "Questions fréquentes sur Sidus Astro",
@@ -288,14 +288,14 @@ export default {
     angularAxes: '✦ Axes angulaires du thème',
     fourPillars: '✦ Quatre piliers fondamentaux',
     elementBalance: '✦ Équilibre des éléments',
-    fire: '🔥 Feu — Action, enthousiasme, créativité',
-    earth: '🌍 Terre — Stabilité, praticité, persévérance',
-    air: '💨 Air — Intellect, communication, adaptation',
-    water: '💧 Eau — Émotion, intuition, profondeur',
+    fire: '🔥 Feu - Action, enthousiasme, créativité',
+    earth: '🌍 Terre - Stabilité, praticité, persévérance',
+    air: '💨 Air - Intellect, communication, adaptation',
+    water: '💧 Eau - Émotion, intuition, profondeur',
     modalities: '✦ Modalités',
-    cardinal: '⚡ Cardinal — Initiative, leadership',
-    fixed: '🏔 Fixe — Détermination, résilience',
-    mutable: '🌊 Mutable — Flexibilité, adaptation',
+    cardinal: '⚡ Cardinal - Initiative, leadership',
+    fixed: '🏔 Fixe - Détermination, résilience',
+    mutable: '🌊 Mutable - Flexibilité, adaptation',
     positions: '✦ Positions planétaires · Maisons Placidus',
     house: 'Maison',
     ecliptic: 'écliptique tropicale',
@@ -315,7 +315,7 @@ export default {
     buyOnce: '💳 Acheter la carte complète · 10 €',
     buyOnceNote: 'Paiement unique · sans abonnement',
     premiumOption: '✦ Sidus Premium 9,99 €/mois · Tout inclus',
-    premiumRecommended: 'Recommandé — carte complète + tous les outils inclus',
+    premiumRecommended: 'Recommandé - carte complète + tous les outils inclus',
     pricingHint: 'Premium débloque la carte complète et tout le cosmos pour moins que deux achats de cartes à l\'unité.',
     activate: 'Activer pour 9,99 € / mois',
     interpTitle: '✦ Interprétation professionnelle',
@@ -327,7 +327,7 @@ export default {
     proTagline: 'Lecture astrologique professionnelle · Signature cosmique unique',
     aiUpgrading: 'Préparation de ta lecture complète en arrière-plan…',
     aiFallbackNote: 'Interprétation professionnelle (mode classique)',
-    freeTasteHint: 'Tu vois un échantillon gratuit. Le reste de la carte — interprétation complète, positions, aspects et PDF — est réservé au Premium.',
+    freeTasteHint: 'Tu vois un échantillon gratuit. Le reste de la carte - interprétation complète, positions, aspects et PDF - est réservé au Premium.',
     freeBlurTeaser: 'Interprétation professionnelle, sphères de vie, export PDF et bien plus…',
   },
   cartaoDia: {
@@ -336,13 +336,13 @@ export default {
   leituraGratis: {
     title: "✦ Lecture gratuite du jour · {date}",
     personal: 'À ton Soleil et ta Lune',
-    returnTomorrow: 'Reviens demain — la carte et la phrase changent avec le ciel.',
+    returnTomorrow: 'Reviens demain - la carte et la phrase changent avec le ciel.',
   },
   share: {
     button: 'Partager mon signe',
     copied: 'Copié !',
-    title: 'Mon thème natal — Sidusastro',
-    text: '☉ {sun} · ☽ {moon} — découvre ton thème sur {url}',
+    title: 'Mon thème natal - Sidusastro',
+    text: '☉ {sun} · ☽ {moon} - découvre ton thème sur {url}',
   },
   ferramentas: {
     title: "Outils ocultas"
@@ -696,7 +696,7 @@ export default {
       attribution: "Interpretaciones basadas en números de ángeles et horas de espejo, en el espíritu de las enseñanzas de Doreen Virtue sobre sincronicidad et guía espiritual.",
       popularHours: "Heures les plus recherchées",
       allEqualHours: "Toutes les heures miroirs (24 par jour)",
-      pickHourHint: "Touche l'heure qui t'a appelé — l'horloge de l'univers répond."
+      pickHourHint: "Touche l'heure qui t'a appelé - l'horloge de l'univers répond."
     }
   },
   payment: {

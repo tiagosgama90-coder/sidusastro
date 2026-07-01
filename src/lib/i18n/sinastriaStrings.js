@@ -1,4 +1,4 @@
-/** Textos de envolvimento da sinastria — 6 idiomas. */
+/** Textos de envolvimento da sinastria - 6 idiomas. */
 import { contentForLang } from './langUtil.js'
 
 export function sx(lang, bundle, ...args) {

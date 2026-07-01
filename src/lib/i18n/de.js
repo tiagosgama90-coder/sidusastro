@@ -336,13 +336,13 @@ export default {
   "leituraGratis": {
     "title": "✦ Kostenlose Lesung heute · {date}",
     "personal": "Zu deiner Sonne und deinem Mond",
-    "returnTomorrow": "Komm morgen wieder — Karte und Satz ändern sich mit dem Himmel."
+    "returnTomorrow": "Komm morgen wieder - Karte und Satz ändern sich mit dem Himmel."
   },
   "share": {
     "button": "Mein Zeichen teilen",
     "copied": "Kopiert!",
-    "title": "Mein Geburtshoroskop — Sidusastro",
-    "text": "☉ {sun} · ☽ {moon} — entdecke dein Horoskop auf {url}"
+    "title": "Mein Geburtshoroskop - Sidusastro",
+    "text": "☉ {sun} · ☽ {moon} - entdecke dein Horoskop auf {url}"
   },
   "ferramentas": {
     "title": "Versteckte Werkzeuge"
@@ -696,7 +696,7 @@ export default {
       "attribution": "Interpretationen basierend auf Engelszahlen und Spiegelstunden, im Geiste der Lehren von Doreen Virtue über Synchronizität und spirituelle Führung.",
       "popularHours": "Meistgesuchte Stunden",
       "allEqualHours": "Alle Spiegelstunden (24 pro Tag)",
-      "pickHourHint": "Berühre die Stunde, die dich gerufen hat — die Uhr des Universums antwortet."
+      "pickHourHint": "Berühre die Stunde, die dich gerufen hat - die Uhr des Universums antwortet."
     }
   },
   "payment": {

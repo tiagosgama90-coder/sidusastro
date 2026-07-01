@@ -1,5 +1,5 @@
 /**
- * Templates de parágrafos do mapa natal — 6 idiomas.
+ * Templates de parágrafos do mapa natal - 6 idiomas.
  */
 import { contentForLang } from '../langUtil.js'
 import { translateAspecto, translatePlaneta } from '../astro.js'

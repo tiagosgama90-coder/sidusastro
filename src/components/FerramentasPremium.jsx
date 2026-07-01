@@ -1393,7 +1393,7 @@ export function HorasIguais({ onVoltar }) {
         {t('ferramentasPremium.horasIguais.subtitle')}
       </p>
 
-      {/* Relógio vivo — portal do momento */}
+      {/* Relógio vivo - portal do momento */}
       <div style={{
         background: 'linear-gradient(160deg, rgba(109,40,217,0.22), rgba(223,183,108,0.12), rgba(11,7,30,0.85))',
         border: `1px solid rgba(223,183,108,0.4)`,
@@ -1462,7 +1462,7 @@ export function HorasIguais({ onVoltar }) {
         </div>
       </div>
 
-      {/* Grelha mística — escolher hora */}
+      {/* Grelha mística - escolher hora */}
       <div style={{
         background: 'rgba(0,0,0,0.2)', border: `1px solid rgba(223,183,108,0.2)`,
         borderRadius: 18, padding: 18,

@@ -36,7 +36,7 @@ export async function enviarEmailRecuperacaoSenha(email) {
   return addr
 }
 
-/** E-mail de verificação — só Firebase (cliente). */
+/** E-mail de verificação - só Firebase (cliente). */
 export async function enviarEmailVerificacao(user, _lang = 'pt') {
   if (!auth) throw new Error('Firebase não configurado')
 

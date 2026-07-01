@@ -105,7 +105,7 @@ function SwitcherButtons({ lang, setLang, size = 'fixed' }) {
       <button
         type="button"
         title={TITLES[lang]}
-        aria-label={`${TITLES[lang]} — change language`}
+        aria-label={`${TITLES[lang]} - change language`}
         onClick={() => setOpen((v) => !v)}
         style={{
           display: 'flex',

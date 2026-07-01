@@ -45,9 +45,9 @@ function criarCanvasPartilha({ signoSol, signoLua, nome, lang }) {
 
   ctx.font = '16px system-ui, sans-serif'
   ctx.fillStyle = '#FCD34D'
-  ctx.fillText(`☉ ${signoSol || '—'}`, W / 2 - 60, 120)
+  ctx.fillText(`☉ ${signoSol || '-'}`, W / 2 - 60, 120)
   ctx.fillStyle = '#C4B5FD'
-  ctx.fillText(`☽ ${signoLua || '—'}`, W / 2 + 60, 120)
+  ctx.fillText(`☽ ${signoLua || '-'}`, W / 2 + 60, 120)
 
   ctx.fillStyle = 'rgba(255,255,255,0.7)'
   ctx.font = '13px system-ui, sans-serif'
@@ -124,7 +124,7 @@ export function ShareSigno({ mapaNatal, nome }) {
       const siteUrl = typeof window !== 'undefined' ? window.location.origin : 'https://sidusastro.com'
       const texto = t('share.text', {
         sun: signoSol,
-        moon: signoLua || '—',
+        moon: signoLua || '-',
         url: siteUrl,
       })
       const canvas = criarCanvasPartilha({

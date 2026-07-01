@@ -202,7 +202,7 @@ function localizeMinor(carta, lang) {
       nome,
       luz: `The ${nome} brings ${k1}, ${k2} and ${k3} into focus. In upright position, this card supports growth, clarity and aligned action in your reading.`,
       sombra: `Reversed, the ${nome} signals blocked ${k1}, excess or distortion in ${k2}. Pause and recenter before you decide.`,
-      conselho: `Let ${k1} guide your next step — with wisdom, patience and respect for your own limits.`,
+      conselho: `Let ${k1} guide your next step - with wisdom, patience and respect for your own limits.`,
       invertidaLabel: carta.invertida ? reversed : undefined,
     }
   }

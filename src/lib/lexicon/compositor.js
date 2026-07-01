@@ -1,5 +1,5 @@
 /**
- * Compositor profissional de interpretações — estilo Cafe Astrology.
+ * Compositor profissional de interpretações - estilo Cafe Astrology.
  */
 import { PLANET_SIGN_PT } from './dados/planetSign.pt.js'
 import { PLANET_SIGN_EN } from './dados/planetSign.en.js'
@@ -52,12 +52,12 @@ function textoPlanetHouse(planeta, casa, lang) {
 }
 
 const RETRO_MSG = {
-  pt: (p) => `${p} retrógrado: esta energia volta para dentro — revisas, repensas e afinas esta área antes de a expressares no mundo.`,
-  en: (p) => `${p} retrograde: this energy turns inward — you review, rethink and refine this area before expressing it outwardly.`,
-  es: (p) => `${p} retrógrado: esta energía vuelve hacia dentro — revisas, repiensas y afinas esta área antes de expresarla al mundo.`,
-  it: (p) => `${p} retrogrado: questa energia torna verso l'interno — rivedi, ripensi e affini quest'area prima di esprimerla nel mondo.`,
-  de: (p) => `${p} rückläufig: diese Energie wendet sich nach innen — du überprüfst, denkst neu und verfeinerst diesen Bereich, bevor du ihn nach außen ausdrückst.`,
-  fr: (p) => `${p} rétrograde : cette énergie se tourne vers l'intérieur — tu révises, repenses et affines ce domaine avant de l'exprimer au monde.`,
+  pt: (p) => `${p} retrógrado: esta energia volta para dentro - revisas, repensas e afinas esta área antes de a expressares no mundo.`,
+  en: (p) => `${p} retrograde: this energy turns inward - you review, rethink and refine this area before expressing it outwardly.`,
+  es: (p) => `${p} retrógrado: esta energía vuelve hacia dentro - revisas, repiensas y afinas esta área antes de expresarla al mundo.`,
+  it: (p) => `${p} retrogrado: questa energia torna verso l'interno - rivedi, ripensi e affini quest'area prima di esprimerla nel mondo.`,
+  de: (p) => `${p} rückläufig: diese Energie wendet sich nach innen - du überprüfst, denkst neu und verfeinerst diesen Bereich, bevor du ihn nach außen ausdrückst.`,
+  fr: (p) => `${p} rétrograde : cette énergie se tourne vers l'intérieur - tu révises, repenses et affines ce domaine avant de l'exprimer au monde.`,
 }
 
 const MISSING_PLANET = {

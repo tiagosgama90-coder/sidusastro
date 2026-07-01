@@ -336,13 +336,13 @@ export default {
   "leituraGratis": {
     "title": "✦ Lettura gratuita di oggi · {date}",
     "personal": "Al tuo Sole e Luna",
-    "returnTomorrow": "Torna domani — la carta e la frase cambiano con il cielo."
+    "returnTomorrow": "Torna domani - la carta e la frase cambiano con il cielo."
   },
   "share": {
     "button": "Condividi il mio segno",
     "copied": "Copiato!",
-    "title": "Il mio tema natale — Sidusastro",
-    "text": "☉ {sun} · ☽ {moon} — scopri il tuo tema su {url}"
+    "title": "Il mio tema natale - Sidusastro",
+    "text": "☉ {sun} · ☽ {moon} - scopri il tuo tema su {url}"
   },
   "ferramentas": {
     "title": "Strumenti nascosti"
@@ -696,7 +696,7 @@ export default {
       "attribution": "Interpretazioni basate sui numeri angelici e sulle ore speculari, nello spirito degli insegnamenti di Doreen Virtue sulla sincronicità e sulla guida spirituale.",
       "popularHours": "Ore più ricercate",
       "allEqualHours": "Tutte le ore specchio (24 al giorno)",
-      "pickHourHint": "Tocca l'ora che ti ha chiamato — l'orologio dell'universo risponde."
+      "pickHourHint": "Tocca l'ora che ti ha chiamato - l'orologio dell'universo risponde."
     }
   },
   "payment": {

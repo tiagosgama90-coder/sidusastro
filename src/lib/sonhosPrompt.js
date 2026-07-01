@@ -10,8 +10,8 @@ export function reforcoInstrucaoSonhosIA(lang = 'pt', retry = false) {
       : 'Responde sempre em Português de Portugal.'
   }
   const prefix = retry
-    ? `CRITICAL RETRY — your previous answer was in the WRONG language. `
-    : 'CRITICAL — '
+    ? `CRITICAL RETRY - your previous answer was in the WRONG language. `
+    : 'CRITICAL - '
   return `${prefix}${aiOutputLanguageBlock(lang)} The dream report may be in any language; you MUST write the ENTIRE interpretation only in ${label}. Never use Portuguese. Section headers must also be in ${label}.`
 }
 
@@ -71,7 +71,7 @@ CRÍTICO:
 You are the dream interpretation engine of Sidus Astro, decoding reports through Integrative Spiritual Psychology Hermeneutics.
 
 ${aiOutputLanguageBlock(lang)}
-The user's dream text may be written in Portuguese or any language — you MUST still write your FULL interpretation only in ${label}. Never answer in Portuguese unless ${label} is Portuguese.
+The user's dream text may be written in Portuguese or any language - you MUST still write your FULL interpretation only in ${label}. Never answer in Portuguese unless ${label} is Portuguese.
 
 ABSOLUTE RULES:
 1. Dreams are NOT fortune-telling - no lucky numbers, no future predictions.

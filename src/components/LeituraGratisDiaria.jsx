@@ -69,7 +69,7 @@ export function LeituraGratisDiaria({ solar, lunar, compact = false }) {
       </div>
 
       <div style={{ display: 'flex', alignItems: compact ? 'flex-start' : 'center', gap: compact ? 12 : 16, flexWrap: 'wrap' }}>
-        <CartaTarot carta={carta} size={compact ? 48 : 56} />
+        <CartaTarot carta={carta} size={compact ? 56 : 66} />
 
         <div style={{ flex: 1, minWidth: 180 }}>
           <div style={{ fontSize: compact ? 15 : 17, fontWeight: 700, color: CORES.branco, marginBottom: 4 }}>{carta.nome}</div>
@@ -91,12 +91,12 @@ export function LeituraGratisDiaria({ solar, lunar, compact = false }) {
           </div>
           {fraseSol && (
             <p style={{ fontSize: 12, color: CORES.brancoSuave, lineHeight: 1.55, margin: '0 0 6px' }}>
-              <span style={{ color: '#FCD34D' }}>☉ {ts(solar.nome)}</span> — {fraseSol}
+              <span style={{ color: '#FCD34D' }}>☉ {ts(solar.nome)}</span> - {fraseSol}
             </p>
           )}
           {fraseLua && (
             <p style={{ fontSize: 12, color: CORES.brancoSuave, lineHeight: 1.55, margin: 0 }}>
-              <span style={{ color: '#C4B5FD' }}>☽ {ts(lunar.nome)}</span> — {fraseLua}
+              <span style={{ color: '#C4B5FD' }}>☽ {ts(lunar.nome)}</span> - {fraseLua}
             </p>
           )}
           <p style={{ fontSize: 10, color: CORES.brancoMuted, marginTop: 8, marginBottom: 0, fontStyle: 'italic' }}>
