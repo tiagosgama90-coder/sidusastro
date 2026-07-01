@@ -119,6 +119,8 @@ export default {
       'auth/internal-error': 'Erro interno do Firebase.',
       'auth/missing-email': 'Introduz um e-mail.',
       'auth/missing-password': 'Introduz uma senha.',
+      'auth/api-key-not-valid.-please-pass-a-valid-api-key.': 'Chave Firebase inválida no servidor. Verifica VITE_FIREBASE_API_KEY no Netlify (sem aspas), usa a Browser key, e faz redeploy.',
+      apiKeyInvalid: 'Chave Firebase inválida. No Netlify usa a Browser key (AIzaSy...) sem aspas nem vírgulas, confirma Email/Password activo no Firebase, e faz Clear cache and deploy.',
       unknown: 'Erro desconhecido',
     },
     feature: {
@@ -167,6 +169,7 @@ export default {
     sentManual: 'E-mail de confirmação enviado para {email}. Verifica a caixa de entrada e o spam.',
     checkSpam: 'Conta criada! Enviámos um e-mail de confirmação para {email}. Abre a caixa de entrada e verifica também a pasta de spam ou lixo eletrónico antes de continuar.',
     spamReminder: '📬 Verifica a caixa de entrada e a pasta de spam ou lixo eletrónico. O e-mail de confirmação pode demorar alguns minutos a chegar.',
+    draftSaved: '✓ Os teus dados de nascimento estão guardados — após confirmar o e-mail, o formulário do mapa virá pré-preenchido.',
     confirmedAuto: '✦ E-mail confirmado! A tua conta está activa.',
     confirmedLogin: 'E-mail confirmado. Entra com o teu email e senha para continuar.',
     confirmBtn: 'Já confirmei - continuar',

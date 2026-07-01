@@ -6,7 +6,7 @@ import {
 import { useLanguage } from '../lib/i18n/LanguageContext.jsx'
 import { validarOnboarding } from '../lib/i18n/validation.js'
 import { pesquisarCidades, pesquisarFusoHorario } from '../lib/geocoding.js'
-import { readLandingDraft, saveLandingDraft } from '../lib/landingDraft.js'
+import { readLandingDraft, saveLandingDraft, stageLandingDraft, flushLandingDraft } from '../lib/landingDraft.js'
 import { calcularMapaNatal, calcularSignoSolarPorData } from '../lib/astrologia.js'
 import { LeituraGratisDiaria } from './LeituraGratisDiaria.jsx'
 
@@ -239,7 +239,32 @@ export function LandingBirthPortal({ isDesktop, onSaved, onScrollToLogin }) {
     if (draft.localizacao) setLocalizacao(draft.localizacao)
     if (draft.fuso != null) setFuso(draft.fuso)
     if (typeof draft.fuso === 'number') setFusoManual(draft.fuso)
-  }, [])
+    const errosDraft = validarOnboarding(draft, lang)
+    if (Object.keys(errosDraft).length === 0) setGuardado(true)
+  }, [lang])
+
+  // Mantém rascunho em memória + localStorage enquanto o utilizador preenche
+  useEffect(() => {
+    stageLandingDraft({
+      nome: nome.trim(),
+      data,
+      hora,
+      cidade: cidade.trim(),
+      localizacao,
+      fuso,
+    })
+    const timer = setTimeout(() => {
+      saveLandingDraft({
+        nome: nome.trim(),
+        data,
+        hora,
+        cidade: cidade.trim(),
+        localizacao,
+        fuso,
+      })
+    }, 300)
+    return () => clearTimeout(timer)
+  }, [nome, data, hora, cidade, localizacao, fuso])
 
   const handleSelectCidade = async (loc) => {
     const cidadeCurta = loc.nome?.split(',')[0]?.trim() || loc.nome
@@ -284,6 +309,7 @@ export function LandingBirthPortal({ isDesktop, onSaved, onScrollToLogin }) {
 
     setAGuardar(true)
     try {
+      flushLandingDraft()
       saveLandingDraft(payload)
       setGuardado(true)
       onSaved?.()
