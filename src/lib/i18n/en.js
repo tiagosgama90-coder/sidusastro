@@ -169,6 +169,7 @@ export default {
     sentManual: 'Confirmation email sent to {email}. Check your inbox and spam folder.',
     checkSpam: 'Account created! We sent a confirmation email to {email}. Check your inbox and also your spam or junk folder before continuing.',
     spamReminder: '📬 Check your inbox and spam or junk folder. The confirmation email may take a few minutes to arrive.',
+    draftSaved: '✓ Your birth details are saved — after you confirm your email, the chart form will be pre-filled.',
     confirmedAuto: '✦ Email confirmed! Your account is active.',
     confirmedLogin: 'Email confirmed. Sign in with your email and password to continue.',
     confirmBtn: 'I confirmed - continue',

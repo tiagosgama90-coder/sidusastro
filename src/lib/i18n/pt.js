@@ -169,6 +169,7 @@ export default {
     sentManual: 'E-mail de confirmação enviado para {email}. Verifica a caixa de entrada e o spam.',
     checkSpam: 'Conta criada! Enviámos um e-mail de confirmação para {email}. Abre a caixa de entrada e verifica também a pasta de spam ou lixo eletrónico antes de continuar.',
     spamReminder: '📬 Verifica a caixa de entrada e a pasta de spam ou lixo eletrónico. O e-mail de confirmação pode demorar alguns minutos a chegar.',
+    draftSaved: '✓ Os teus dados de nascimento estão guardados — após confirmar o e-mail, o formulário do mapa virá pré-preenchido.',
     confirmedAuto: '✦ E-mail confirmado! A tua conta está activa.',
     confirmedLogin: 'E-mail confirmado. Entra com o teu email e senha para continuar.',
     confirmBtn: 'Já confirmei - continuar',

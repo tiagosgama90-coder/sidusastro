@@ -78,7 +78,7 @@ import { CookieConsent } from './components/CookieConsent.jsx'
 import { allowsAds, applyAdConsentToGoogle, getCookieConsent } from './lib/cookieConsent.js'
 import { LanguageSwitcher } from './components/LanguageSwitcher.jsx'
 import { useLanguage } from './lib/i18n/LanguageContext.jsx'
-import { readLandingDraft, clearLandingDraft } from './lib/landingDraft.js'
+import { readLandingDraft, clearLandingDraft, mergeLandingDraft, hasLandingDraft, flushLandingDraft } from './lib/landingDraft.js'
 import { getFerramentas, getBeneficiosVip } from './lib/i18n/ferramentasData.js'
 import { validarOnboarding } from './lib/i18n/validation.js'
 import { traduzirErroAuth } from './lib/i18n/authErrors.js'
@@ -1211,6 +1211,11 @@ function EcraVerificarEmail({ utilizador, isDesktop, onLogout, onVerificado }) {
         <p style={{ fontSize: 12, color: CORES.dourado, maxWidth: 360, margin: '14px auto 0', lineHeight: 1.55, padding: '10px 14px', background: 'rgba(223,183,108,0.08)', borderRadius: 10, border: `1px solid rgba(223,183,108,0.25)` }}>
           {t('emailVerify.spamReminder')}
         </p>
+        {hasLandingDraft() && (
+          <p style={{ fontSize: 12, color: '#34D399', maxWidth: 360, margin: '12px auto 0', lineHeight: 1.55 }}>
+            {t('emailVerify.draftSaved')}
+          </p>
+        )}
       </div>
       <div style={{ ...estilos.vidro, padding: 24 }}>
         {info && (
@@ -1311,6 +1316,7 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
     if (tipo === 'register' && senha !== confirmar) { setErro(t('auth.passwordsMismatch')); return }
     if (tipo === 'register' && senha.length < 6) { setErro(t('auth.passwordMin')); return }
     if (!auth) { setErro(t('auth.firebaseMissing')); return }
+    flushLandingDraft()
     setCarregando(true)
     try {
       if (tipo === 'register') {
@@ -1528,6 +1534,7 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
           onClick={async () => {
             if (!auth) { setErro(t('auth.firebaseMissing')); return }
             if (precisaRecaptcha && !recaptchaOk) { setErro(t('auth.confirmRobot')); return }
+            flushLandingDraft()
             setErro(null)
             setInfo(null)
             setCarregando(true)
@@ -1612,7 +1619,10 @@ const FUSOS_FALLBACK = [
 
 function Onboarding({ dados: dadosProp, setDados, onSubmit, isDesktop }) {
   const { lang, t } = useLanguage()
-  const dados = normalizarDadosPerfil({ ...DADOS_VAZIO, ...(dadosProp && typeof dadosProp === 'object' ? dadosProp : {}) }) || DADOS_VAZIO
+  const dados = useMemo(
+    () => dadosComRascunhoLanding({ ...DADOS_VAZIO, ...(dadosProp && typeof dadosProp === 'object' ? dadosProp : {}) }),
+    [dadosProp],
+  )
   const [tocado, setTocado] = useState({})
   const [fusoCarregando, setFusoCarregando] = useState(false)
   const [fusoErro, setFusoErro] = useState(null)
@@ -1624,21 +1634,10 @@ function Onboarding({ dados: dadosProp, setDados, onSubmit, isDesktop }) {
 
     setDados((prev) => {
       const base = prev && typeof prev === 'object' ? prev : DADOS_VAZIO
-      return normalizarDadosPerfil({
-        ...DADOS_VAZIO,
-        ...base,
-        ...(draft.nome ? { nome: draft.nome } : {}),
-        ...(draft.data ? { data: draft.data } : {}),
-        ...(draft.hora ? { hora: draft.hora } : {}),
-        ...(draft.cidade ? { cidade: draft.cidade } : {}),
-        ...(draft.localizacao ? { localizacao: draft.localizacao } : {}),
-        ...(draft.fuso != null ? { fuso: draft.fuso } : {}),
-      }) || DADOS_VAZIO
+      return normalizarDadosPerfil(mergeLandingDraft(base)) || DADOS_VAZIO
     })
 
     if (typeof draft.fuso === 'number') setFusoManual(draft.fuso)
-
-    clearLandingDraft()
 
     const loc = draft.localizacao
     if (loc?.lat != null && loc?.lon != null && draft.fuso == null) {
@@ -3219,6 +3218,10 @@ function Navbar({ passo, setPasso, isDesktop, dados, fotoPerfil }) {
 
 const DADOS_VAZIO = { nome: '', data: '', hora: '', cidade: '', localizacao: null, fuso: null }
 
+function dadosComRascunhoLanding(dados) {
+  return normalizarDadosPerfil(mergeLandingDraft(dados)) || DADOS_VAZIO
+}
+
 export default function App() {
   const isDesktop = useIsDesktop()
   const { t, lang, setLang } = useLanguage()
@@ -3454,10 +3457,12 @@ export default function App() {
     oobCodeTratado.current = true
 
     const irParaOnboarding = async () => {
+      flushLandingDraft()
       if (auth.currentUser) {
         await reload(auth.currentUser)
         await auth.currentUser.getIdToken(true)
         setUtilizador(auth.currentUser)
+        setDados((prev) => dadosComRascunhoLanding(prev))
         setPagamentoMsg({ tipo: 'sucesso', texto: t('emailVerify.confirmedAuto') })
         navigate({ pathname: '/comecar', search: '' }, { replace: true })
         setPasso('onboarding')
@@ -3534,6 +3539,13 @@ export default function App() {
       setPasso('home')
     }
   }, [authCarregando, perfilCarregando, utilizador, location.pathname, navigate, contaConfigurada])
+
+  // Rascunho da landing → dados do perfil assim que há sessão (sobrevive à verificação de e-mail)
+  useEffect(() => {
+    if (!utilizador || contaConfigurada) return
+    flushLandingDraft()
+    setDados((prev) => dadosComRascunhoLanding(prev))
+  }, [utilizador, contaConfigurada])
 
   // Idioma na URL (/pt/... /en/...)
   useEffect(() => {
@@ -3781,19 +3793,23 @@ export default function App() {
 
   // ── Acções ─────────────────────────────────────────────────────────────────
   const handleOnboarding = async () => {
-    if (mapaGerado && dadosNataisCompletos(dados) && mapaNatal) {
+    const dadosActuais = dadosComRascunhoLanding(dados)
+    setDados(dadosActuais)
+
+    if (mapaGerado && dadosNataisCompletos(dadosActuais) && mapaNatal) {
       irPara('perfil', { replace: true })
       return
     }
-    const erros = validarOnboarding(dados)
+    const erros = validarOnboarding(dadosActuais, lang)
     if (Object.keys(erros).length > 0) return
 
-    const prontos = dadosProntosParaMapa(dados)
+    const prontos = dadosProntosParaMapa(dadosActuais)
     if (!prontos) return
 
     const mapa = calcularMapaNatalMotor(prontos, sweRef.current)
     if (mapaNatalValido(mapa)) setMapaNatal(mapa)
-    const guardado = await guardarPerfil(dados)
+    const guardado = await guardarPerfil(dadosActuais)
+    clearLandingDraft()
     setMapaGerado(true)
     irPara('mapa', { replace: !guardado })
   }
@@ -3911,8 +3927,10 @@ export default function App() {
           isDesktop={isDesktop}
           onLogout={handleLogout}
           onVerificado={() => {
+            flushLandingDraft()
             reload(auth.currentUser).then(() => {
               setUtilizador(auth.currentUser)
+              setDados((prev) => dadosComRascunhoLanding(prev))
               navigate('/comecar', { replace: true })
               setPasso('onboarding')
             }).catch(() => {})
@@ -3924,7 +3942,7 @@ export default function App() {
     if (passo === 'onboarding') {
       return (
         <Onboarding
-          dados={normalizarDadosPerfil(dados) || DADOS_VAZIO}
+          dados={dadosComRascunhoLanding(dados)}
           setDados={setDados}
           onSubmit={handleOnboarding}
           isDesktop={isDesktop}
@@ -3934,7 +3952,7 @@ export default function App() {
     if (!contaConfigurada) {
       return (
         <Onboarding
-          dados={normalizarDadosPerfil(dados) || DADOS_VAZIO}
+          dados={dadosComRascunhoLanding(dados)}
           setDados={setDados}
           onSubmit={handleOnboarding}
           isDesktop={isDesktop}
