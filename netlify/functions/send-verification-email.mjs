@@ -132,14 +132,14 @@ export default async (req) => {
       })
     }
 
-    const continueUrl = `${SITE_ORIGIN().replace(/\/$/, '')}/home`
+    const continueUrl = `${SITE_ORIGIN().replace(/\/$/, '')}/login?emailVerified=1`
     const adminAuth = getAdminAuth()
 
     if (adminAuth && env('RESEND_API_KEY')) {
       try {
         const link = await adminAuth.generateEmailVerificationLink(email, {
           url: continueUrl,
-          handleCodeInApp: true,
+          handleCodeInApp: false,
         })
         const sent = await sendViaResend(email, link, lang)
         if (sent.ok) {

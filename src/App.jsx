@@ -3411,7 +3411,7 @@ export default function App() {
     initAdSense()
   }, [isPremium, cookieConsent])
 
-  // Firebase email verification link
+  // Firebase email verification link (?mode=verifyEmail&oobCode=...)
   useEffect(() => {
     if (!auth || !firebaseDisponivel || oobCodeTratado.current) return
     const params = new URLSearchParams(location.search)
@@ -3421,29 +3421,55 @@ export default function App() {
 
     oobCodeTratado.current = true
 
+    const limparIr = (destino, passoDestino) => {
+      navigate({ pathname: destino, search: '' }, { replace: true })
+      setPasso(passoDestino)
+    }
+
+    const concluirVerificacao = async () => {
+      if (auth.currentUser) {
+        await reload(auth.currentUser)
+        await auth.currentUser.getIdToken(true)
+        setUtilizador(auth.currentUser)
+      }
+      setPagamentoMsg({ tipo: 'sucesso', texto: t('emailVerify.confirmedAuto') })
+      const destino = contaConfigurada ? '/home' : '/comecar'
+      limparIr(destino, contaConfigurada ? 'home' : 'onboarding')
+    }
+
     ;(async () => {
       try {
         await applyActionCode(auth, oobCode)
-        if (auth.currentUser) {
-          await reload(auth.currentUser)
-          await auth.currentUser.getIdToken(true)
-          setUtilizador(auth.currentUser)
-        }
-        setPagamentoMsg({ tipo: 'sucesso', texto: t('emailVerify.confirmedAuto') })
-        const destino = contaConfigurada ? '/home' : '/comecar'
-        navigate(destino, { replace: true })
-        setPasso(contaConfigurada ? 'home' : 'onboarding')
+        await concluirVerificacao()
       } catch (e) {
-        console.error('[Sidus] verifyEmail:', e?.message)
-        oobCodeTratado.current = false
-        setPagamentoMsg({ tipo: 'info', texto: t('emailVerify.confirmedLogin') })
-        if (!auth.currentUser) {
-          setTipoAuth('login')
-          navigate('/login', { replace: true })
+        console.warn('[Sidus] verifyEmail:', e?.code, e?.message)
+        if (auth.currentUser) {
+          try {
+            await reload(auth.currentUser)
+            await auth.currentUser.getIdToken(true)
+            if (auth.currentUser.emailVerified) {
+              await concluirVerificacao()
+              return
+            }
+            setUtilizador(auth.currentUser)
+          } catch { /* ignore */ }
         }
+        oobCodeTratado.current = false
+        setPagamentoMsg({ tipo: 'sucesso', texto: t('emailVerify.confirmedLogin') })
+        setTipoAuth('login')
+        limparIr('/login', 'login')
       }
     })()
   }, [location.search, navigate, t, contaConfigurada])
+
+  // Retorno após verificação no ecrã Firebase (handleCodeInApp: false)
+  useEffect(() => {
+    const params = new URLSearchParams(location.search)
+    if (params.get('emailVerified') !== '1') return
+    setPagamentoMsg({ tipo: 'sucesso', texto: t('emailVerify.confirmedLogin') })
+    setTipoAuth('login')
+    navigate({ pathname: '/login', search: '' }, { replace: true })
+  }, [location.search, navigate, t])
 
   const rotasPublicasSemAuth = new Set(['/login', '/privacidade'])
 

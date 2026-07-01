@@ -2,13 +2,17 @@ import { sendEmailVerification, sendPasswordResetEmail } from 'firebase/auth'
 import { auth } from './firebase'
 import { traduzirErroEmail as traduzirErroEmailFromAuth } from './i18n/authErrors.js'
 /** URL de retorno após clicar no link do e-mail (domínio tem de estar autorizado no Firebase). */
+export function emailVerificationContinueUrl(origin = 'https://sidusastro.com') {
+  return `${origin.replace(/\/$/, '')}/login?emailVerified=1`
+}
+
 export function emailActionSettings() {
   const origin = typeof window !== 'undefined'
     ? window.location.origin
     : 'https://sidusastro.com'
   return {
-    url: `${origin}/home`,
-    handleCodeInApp: true,
+    url: emailVerificationContinueUrl(origin),
+    handleCodeInApp: false,
   }
 }
 
