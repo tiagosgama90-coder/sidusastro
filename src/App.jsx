@@ -1615,7 +1615,7 @@ const FUSOS_FALLBACK = [
 
 function Onboarding({ dados: dadosProp, setDados, onSubmit, isDesktop }) {
   const { lang, t } = useLanguage()
-  const dados = { ...DADOS_VAZIO, ...(dadosProp && typeof dadosProp === 'object' ? dadosProp : {}) }
+  const dados = normalizarDadosPerfil({ ...DADOS_VAZIO, ...(dadosProp && typeof dadosProp === 'object' ? dadosProp : {}) }) || DADOS_VAZIO
   const [tocado, setTocado] = useState({})
   const [fusoCarregando, setFusoCarregando] = useState(false)
   const [fusoErro, setFusoErro] = useState(null)
@@ -1915,11 +1915,11 @@ function Dashboard({ nome, mapaNatal, ceuAgora, aspetos, onOraculo, onPrivacidad
             {t('home.activeAspects')}
           </span>
         </div>
-        {aspetos.length === 0 ? (
+        {((aspetos || []).length) === 0 ? (
           <p style={{ fontSize: 13, color: CORES.brancoMuted }}>{t('home.noAspects', { orbe: ORBE_ASPECTO })}</p>
         ) : (
-          aspetos.slice(0, 8).map((a, i) => (
-            <div key={`${a.planetaA}-${a.planetaB}-${i}`} style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 0', borderBottom: i < aspetos.length - 1 ? `1px solid ${CORES.vidroBorda}` : 'none' }}>
+          (aspetos || []).slice(0, 8).map((a, i) => (
+            <div key={`${a.planetaA}-${a.planetaB}-${i}`} style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 0', borderBottom: i < (aspetos || []).length - 1 ? `1px solid ${CORES.vidroBorda}` : 'none' }}>
               <div style={{ fontSize: 14, color: CORES.branco }}>
                 {tp(a.planetaA)} <span style={{ color: CORES.dourado }}>{ta(a.aspecto)}</span> {tp(a.planetaB)}
               </div>
@@ -3245,7 +3245,7 @@ export default function App() {
 
   const mapaDesbloqueado = isPremium || mapaCompleto
   const acessoVip = mapaDesbloqueado
-  const contaConfigurada = mapaGerado || dadosNataisCompletos(dados) || acessoVip
+  const contaConfigurada = mapaGerado || acessoVip
 
   const irPara = useCallback((novoPasso, { replace = false } = {}) => {
     setFerramentaAberta(null)
@@ -3509,6 +3509,7 @@ export default function App() {
 
     const path = (location.pathname || '/').replace(/\/$/, '') || '/'
     if (path === '/login') {
+      setPagamentoMsg(null)
       navigate(contaConfigurada ? '/home' : '/comecar', { replace: true })
       if (!contaConfigurada) setPasso('onboarding')
       return
@@ -3539,19 +3540,20 @@ export default function App() {
   // URL ↔ passo (voltar atrás no browser, links directos)
   useEffect(() => {
     if (authCarregando) return
+    const path = stripLangPrefix(location.pathname)
     const fromUrl = passoFromPath(location.pathname)
-    if (fromUrl !== passo) setPasso(fromUrl)
-  }, [location.pathname, authCarregando, passo])
 
-  // Utilizador autenticado com conta configurada - nunca voltar a /comecar
-  useEffect(() => {
-    if (authCarregando || perfilCarregando || !utilizador || !contaConfigurada) return
-    const path = (location.pathname || '/').replace(/\/$/, '') || '/'
-    if (path === '/comecar' || passo === 'onboarding') {
-      navigate('/home', { replace: true })
-      setPasso('home')
+    // Conta já configurada: nunca ficar preso em /comecar (evita loop URL↔redirect)
+    if (utilizador && contaConfigurada && (path === '/comecar' || fromUrl === 'onboarding')) {
+      if (path !== '/home' || passo !== 'home') {
+        setPasso('home')
+        navigate('/home', { replace: true })
+      }
+      return
     }
-  }, [authCarregando, perfilCarregando, utilizador, contaConfigurada, location.pathname, passo, navigate])
+
+    if (fromUrl !== passo) setPasso(fromUrl)
+  }, [location.pathname, authCarregando, passo, utilizador, contaConfigurada, navigate])
 
   // ── Retorno Stripe Checkout (?payment=success&session_id=...) ─────────────
   useEffect(() => {
@@ -3763,13 +3765,14 @@ export default function App() {
 
   // ── Planetas de nascimento ──────────────────────────────────────────────────
   useEffect(() => {
+    if (passo === 'onboarding') return
     const prontos = dadosProntosParaMapa(dados)
     if (!prontos) { setPlanetasNascimento([]); return }
     const dataUTC = criarDataUTCporLocal(prontos.data, prontos.hora, prontos.fuso ?? 0)
     setPlanetasNascimento(sweRef.current
       ? calcularPlanetasComSwe(sweRef.current, dataUTC, PLANETAS_NATAL)
       : calcularPlanetasNatalParaData(dataUTC))
-  }, [dados, sweReady])
+  }, [dados, sweReady, passo])
 
   // ── Acções ─────────────────────────────────────────────────────────────────
   const handleOnboarding = async () => {
