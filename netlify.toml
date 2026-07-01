@@ -1,8 +1,9 @@
 [build]
   command = "npm run build"
   publish = "dist"
-  # ca-pub-... é público (index.html + AdSense) - não falhar scan de "secrets"
-  environment = { SECRETS_SCAN_OMIT_KEYS = "VITE_ADSENSE_CLIENT" }
+  # Firebase Web API key é pública no cliente (restrita por domínio no Google Cloud).
+  # Sem isto o Netlify substitui a chave por asteriscos e o Auth falha.
+  environment = { SECRETS_SCAN_OMIT_KEYS = "VITE_ADSENSE_CLIENT,VITE_FIREBASE_API_KEY" }
 
 [context.production.environment]
   VITE_GA_MEASUREMENT_ID = "G-18FPC8HYE8"
