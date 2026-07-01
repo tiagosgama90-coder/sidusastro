@@ -31,18 +31,20 @@ function validarHora24(hora) {
 
 export function validarOnboarding(dados, lang = 'pt') {
   const erros = {}
+  const nome = (dados?.nome ?? '').trim()
+  const cidade = (dados?.cidade ?? '').trim()
 
-  if (!dados.nome.trim()) erros.nome = t(lang, 'onboarding.errors.nomeRequired')
-  else if (nomePareceFalso(dados.nome)) erros.nome = t(lang, 'onboarding.errors.nomeInvalid')
+  if (!nome) erros.nome = t(lang, 'onboarding.errors.nomeRequired')
+  else if (nomePareceFalso(nome)) erros.nome = t(lang, 'onboarding.errors.nomeInvalid')
 
-  if (!dados.data) erros.data = t(lang, 'onboarding.errors.dataRequired')
+  if (!dados?.data) erros.data = t(lang, 'onboarding.errors.dataRequired')
   else if (!validarDataNascimento(dados.data)) erros.data = t(lang, 'onboarding.errors.dataInvalid')
 
-  if (!dados.hora) erros.hora = t(lang, 'onboarding.errors.horaRequired')
+  if (!dados?.hora) erros.hora = t(lang, 'onboarding.errors.horaRequired')
   else if (!validarHora24(dados.hora)) erros.hora = t(lang, 'onboarding.errors.horaInvalid')
 
-  if (!dados.cidade.trim()) erros.cidade = t(lang, 'onboarding.errors.cidadeRequired')
-  else if (!dados.localizacao) erros.cidade = t(lang, 'onboarding.errors.cidadeSelect')
+  if (!cidade) erros.cidade = t(lang, 'onboarding.errors.cidadeRequired')
+  else if (!dados?.localizacao) erros.cidade = t(lang, 'onboarding.errors.cidadeSelect')
   else if (dados.fuso == null) erros.cidade = t(lang, 'onboarding.errors.fusoPending')
 
   return erros

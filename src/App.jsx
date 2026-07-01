@@ -768,7 +768,15 @@ function dadosNataisMinimos(dados) {
 
 function normalizarDadosPerfil(dados) {
   if (!dados) return null
-  const d = { ...dados }
+  const d = {
+    nome: '',
+    data: '',
+    hora: '',
+    cidade: '',
+    localizacao: null,
+    fuso: null,
+    ...dados,
+  }
   const dataNorm = normalizarDataISO(d.data)
   if (dataNorm) d.data = dataNorm
   if (d.hora && typeof d.hora === 'string') {
@@ -1607,6 +1615,7 @@ function Onboarding({ dados, setDados, onSubmit, isDesktop }) {
     if (!draft) return
 
     setDados((prev) => ({
+      ...DADOS_VAZIO,
       ...prev,
       ...(draft.nome ? { nome: draft.nome } : {}),
       ...(draft.data ? { data: draft.data } : {}),
@@ -3344,19 +3353,12 @@ export default function App() {
                     }
                   }
                 }
-                if (dadosPerfil && !emOnboarding) setDados(dadosPerfil)
+                if (dadosPerfil && !emOnboarding) {
+                  setDados((prev) => ({ ...DADOS_VAZIO, ...prev, ...dadosPerfil }))
+                }
 
                 if (perfil.mapaGerado === true || perfil.dadosTravados === true) {
                   setMapaGerado(true)
-                } else if (dadosNataisCompletos(dadosPerfil)) {
-                  setMapaGerado(true)
-                  if (!perfil.dadosTravados || !perfil.mapaGerado) {
-                    await setDoc(doc(db, 'users', user.uid), {
-                      dados: dadosPerfil,
-                      dadosTravados: true,
-                      mapaGerado: true,
-                    }, { merge: true })
-                  }
                 }
               } catch (e) {
                 console.warn('[Sidus] Firestore indisponível, operando offline:', e?.message)
@@ -3432,9 +3434,10 @@ export default function App() {
         await auth.currentUser.getIdToken(true)
         setUtilizador(auth.currentUser)
       }
-      setPagamentoMsg({ tipo: 'sucesso', texto: t('emailVerify.confirmedAuto') })
-      const destino = contaConfigurada ? '/home' : '/comecar'
-      limparIr(destino, contaConfigurada ? 'home' : 'onboarding')
+      setPagamentoMsg({ tipo: 'sucesso', texto: t('emailVerify.confirmedLogin') })
+      setTipoAuth('login')
+      setPasso('login')
+      navigate({ pathname: '/login', search: '?emailVerified=1' }, { replace: true })
     }
 
     ;(async () => {
@@ -3460,7 +3463,7 @@ export default function App() {
         limparIr('/login', 'login')
       }
     })()
-  }, [location.search, navigate, t, contaConfigurada])
+  }, [location.search, navigate, t])
 
   // Retorno após verificação no ecrã Firebase (handleCodeInApp: false)
   useEffect(() => {
