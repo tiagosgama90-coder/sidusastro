@@ -1118,7 +1118,7 @@ function EcraVerificarEmail({ utilizador, isDesktop, onLogout, onVerificado }) {
     setErro(null)
     setInfo(null)
     try {
-      const email = await enviarEmailVerificacao(utilizador)
+      const email = await enviarEmailVerificacao(utilizador, lang)
       setInfo(t('emailVerify.sentManual', { email }))
     } catch (e) {
       console.error('[Sidus Email]', e?.code, e?.message)
@@ -1136,7 +1136,7 @@ function EcraVerificarEmail({ utilizador, isDesktop, onLogout, onVerificado }) {
   useEffect(() => {
     if (enviadoRef.current || !auth?.currentUser || auth.currentUser.emailVerified) return
     enviadoRef.current = true
-    enviarEmailVerificacao(auth.currentUser)
+    enviarEmailVerificacao(auth.currentUser, lang)
       .then((email) => {
         setInfo(t('emailVerify.sentAuto', { email }))
       })
@@ -1300,7 +1300,7 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
       if (tipo === 'register') {
         const cred = await createUserWithEmailAndPassword(auth, email, senha)
         try {
-          await enviarEmailVerificacao(cred.user)
+          await enviarEmailVerificacao(cred.user, lang)
         } catch (emailErr) {
           console.warn('[Sidus Auth] Email verificação:', emailErr?.code, emailErr?.message)
         }

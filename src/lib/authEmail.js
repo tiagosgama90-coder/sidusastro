@@ -37,12 +37,12 @@ export async function enviarEmailRecuperacaoSenha(email) {
   return addr
 }
 
-async function enviarViaServidor(user) {
+async function enviarViaServidor(user, lang = 'pt') {
   const idToken = await user.getIdToken(true)
   const res = await fetch('/api/send-verification-email', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ idToken }),
+    body: JSON.stringify({ idToken, lang }),
   })
   const data = await res.json()
   if (!res.ok) {
@@ -57,7 +57,7 @@ async function enviarViaServidor(user) {
  * Envia e-mail de verificação Firebase.
  * Usa sempre auth.currentUser (sessão activa) - o objeto user em props pode ficar desactualizado.
  */
-export async function enviarEmailVerificacao(user) {
+export async function enviarEmailVerificacao(user, lang = 'pt') {
   if (!auth) throw new Error('Firebase não configurado')
 
   const activo = auth.currentUser || user
@@ -65,14 +65,14 @@ export async function enviarEmailVerificacao(user) {
   if (activo.emailVerified) throw new Error('Este e-mail já está confirmado.')
 
   try {
-    await sendEmailVerification(activo, emailActionSettings())
-    return activo.email
-  } catch (clientErr) {
-    console.warn('[Sidus Email] Cliente falhou, a tentar servidor:', clientErr?.code, clientErr?.message)
+    return await enviarViaServidor(activo, lang)
+  } catch (serverErr) {
+    console.warn('[Sidus Email] Servidor falhou, a tentar cliente:', serverErr?.message)
     try {
-      return await enviarViaServidor(activo)
-    } catch (serverErr) {
-      console.error('[Sidus Email] Servidor falhou:', serverErr?.message)
+      await sendEmailVerification(activo, emailActionSettings())
+      return activo.email
+    } catch (clientErr) {
+      console.error('[Sidus Email] Cliente falhou:', clientErr?.code, clientErr?.message)
       throw serverErr?.message ? serverErr : clientErr
     }
   }

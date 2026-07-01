@@ -127,6 +127,11 @@ export function getFirestore() {
   return getAdminFirestore()
 }
 
+export function getAdminAuth() {
+  if (!ensureInit()) return null
+  return admin.auth()
+}
+
 async function verifyIdTokenViaRest(idToken) {
   const apiKey = env('VITE_FIREBASE_API_KEY') || env('FIREBASE_API_KEY')
   if (!apiKey || !idToken) return null
