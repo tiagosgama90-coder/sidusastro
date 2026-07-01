@@ -3425,7 +3425,7 @@ export default function App() {
     initAdSense()
   }, [isPremium, cookieConsent])
 
-  // Firebase email verification link (?mode=verifyEmail&oobCode=...)
+  // Firebase email verification (?mode=verifyEmail&oobCode=...) — link abre na app
   useEffect(() => {
     if (!auth || !firebaseDisponivel || oobCodeTratado.current) return
     const params = new URLSearchParams(location.search)
@@ -3435,55 +3435,42 @@ export default function App() {
 
     oobCodeTratado.current = true
 
-    const limparIr = (destino, passoDestino) => {
-      navigate({ pathname: destino, search: '' }, { replace: true })
-      setPasso(passoDestino)
-    }
-
-    const concluirVerificacao = async () => {
+    const irParaOnboarding = async () => {
       if (auth.currentUser) {
         await reload(auth.currentUser)
         await auth.currentUser.getIdToken(true)
         setUtilizador(auth.currentUser)
+        setPagamentoMsg({ tipo: 'sucesso', texto: t('emailVerify.confirmedAuto') })
+        navigate({ pathname: '/comecar', search: '' }, { replace: true })
+        setPasso('onboarding')
+        return
       }
       setPagamentoMsg({ tipo: 'sucesso', texto: t('emailVerify.confirmedLogin') })
       setTipoAuth('login')
       setPasso('login')
-      navigate({ pathname: '/login', search: '?emailVerified=1' }, { replace: true })
+      navigate({ pathname: '/login', search: '' }, { replace: true })
     }
 
     ;(async () => {
       try {
         await applyActionCode(auth, oobCode)
-        await concluirVerificacao()
+        await irParaOnboarding()
       } catch (e) {
         console.warn('[Sidus] verifyEmail:', e?.code, e?.message)
-        if (auth.currentUser) {
-          try {
+        try {
+          if (auth.currentUser) {
             await reload(auth.currentUser)
             await auth.currentUser.getIdToken(true)
-            if (auth.currentUser.emailVerified) {
-              await concluirVerificacao()
-              return
-            }
-            setUtilizador(auth.currentUser)
-          } catch { /* ignore */ }
-        }
+          }
+          if (auth.currentUser?.emailVerified) {
+            await irParaOnboarding()
+            return
+          }
+        } catch { /* ignore */ }
         oobCodeTratado.current = false
-        setPagamentoMsg({ tipo: 'sucesso', texto: t('emailVerify.confirmedLogin') })
-        setTipoAuth('login')
-        limparIr('/login', 'login')
+        setPagamentoMsg({ tipo: 'info', texto: t('emailVerify.verifyFailed') })
       }
     })()
-  }, [location.search, navigate, t])
-
-  // Retorno após verificação no ecrã Firebase (handleCodeInApp: false)
-  useEffect(() => {
-    const params = new URLSearchParams(location.search)
-    if (params.get('emailVerified') !== '1') return
-    setPagamentoMsg({ tipo: 'sucesso', texto: t('emailVerify.confirmedLogin') })
-    setTipoAuth('login')
-    navigate({ pathname: '/login', search: '' }, { replace: true })
   }, [location.search, navigate, t])
 
   const rotasPublicasSemAuth = new Set(['/login', '/privacidade'])
@@ -3900,19 +3887,35 @@ export default function App() {
           isDesktop={isDesktop}
           onLogout={handleLogout}
           onVerificado={() => {
-          reload(auth.currentUser).then(() => {
-            setUtilizador(auth.currentUser)
-          }).catch(() => {})
-        }}
+            reload(auth.currentUser).then(() => {
+              setUtilizador(auth.currentUser)
+              navigate('/comecar', { replace: true })
+              setPasso('onboarding')
+            }).catch(() => {})
+          }}
         />
       )
     }
     // /comecar - só contas novas sem mapa (utilizadores com sessão activa redireccionados)
     if (passo === 'onboarding') {
-      return <Onboarding dados={dados} setDados={setDados} onSubmit={handleOnboarding} isDesktop={isDesktop} />
+      return (
+        <Onboarding
+          dados={normalizarDadosPerfil(dados) || DADOS_VAZIO}
+          setDados={setDados}
+          onSubmit={handleOnboarding}
+          isDesktop={isDesktop}
+        />
+      )
     }
     if (!contaConfigurada) {
-      return <Onboarding dados={dados} setDados={setDados} onSubmit={handleOnboarding} isDesktop={isDesktop} />
+      return (
+        <Onboarding
+          dados={normalizarDadosPerfil(dados) || DADOS_VAZIO}
+          setDados={setDados}
+          onSubmit={handleOnboarding}
+          isDesktop={isDesktop}
+        />
+      )
     }
     // Autenticado com mapa → navegação normal
     switch (passo) {
