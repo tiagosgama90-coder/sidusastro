@@ -64,12 +64,18 @@ export function readLandingDraft() {
   return normalizeDraft({ nome, data, hora, cidade, localizacao, fuso })
 }
 
+function asStr(val) {
+  if (typeof val === 'string') return val
+  if (val == null) return ''
+  return String(val)
+}
+
 function normalizeDraft(parsed) {
   const draft = {
-    nome: typeof parsed.nome === 'string' ? parsed.nome.trim() : '',
-    data: typeof parsed.data === 'string' ? parsed.data.trim() : '',
-    hora: typeof parsed.hora === 'string' ? parsed.hora.trim() : '',
-    cidade: typeof parsed.cidade === 'string' ? parsed.cidade.trim() : '',
+    nome: asStr(parsed.nome).trim(),
+    data: asStr(parsed.data).trim(),
+    hora: asStr(parsed.hora).trim(),
+    cidade: asStr(parsed.cidade).trim(),
     localizacao: parseLocalizacao(parsed.localizacao),
     fuso: parseFuso(parsed.fuso),
   }

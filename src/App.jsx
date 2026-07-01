@@ -70,7 +70,7 @@ import { atribuirCasasPlanetas } from './lib/casasPlacidus.js'
 import { gerarAnaliseCompleta, gerarResumoGratuito, mapaPlanetasProntos } from './lib/mapaInterpretacao.js'
 import { calcularFaseLua } from './lib/faseLua.js'
 import { useNavigate, useLocation } from 'react-router-dom'
-import { passoFromPath, pathFromPasso, langFromPath } from './lib/routes.js'
+import { passoFromPath, pathFromPasso, langFromPath, stripLangPrefix } from './lib/routes.js'
 import { initAdSense } from './lib/adsense.js'
 import { initGoogleAnalytics } from './lib/googleAnalytics.js'
 import { AdSenseBanner } from './components/AdSenseBanner.jsx'
@@ -766,8 +766,14 @@ function dadosNataisMinimos(dados) {
   )
 }
 
+function asStrDados(val) {
+  if (typeof val === 'string') return val
+  if (val == null) return ''
+  return String(val)
+}
+
 function normalizarDadosPerfil(dados) {
-  if (!dados) return null
+  if (!dados || typeof dados !== 'object' || Array.isArray(dados)) return null
   const d = {
     nome: '',
     data: '',
@@ -777,6 +783,10 @@ function normalizarDadosPerfil(dados) {
     fuso: null,
     ...dados,
   }
+  d.nome = asStrDados(d.nome)
+  d.data = asStrDados(d.data)
+  d.hora = asStrDados(d.hora)
+  d.cidade = asStrDados(d.cidade)
   const dataNorm = normalizarDataISO(d.data)
   if (dataNorm) d.data = dataNorm
   if (d.hora && typeof d.hora === 'string') {
@@ -1603,8 +1613,9 @@ const FUSOS_FALLBACK = [
   { label: 'UTC+11', value: 11 }, { label: 'UTC+12', value: 12 },
 ]
 
-function Onboarding({ dados, setDados, onSubmit, isDesktop }) {
+function Onboarding({ dados: dadosProp, setDados, onSubmit, isDesktop }) {
   const { lang, t } = useLanguage()
+  const dados = { ...DADOS_VAZIO, ...(dadosProp && typeof dadosProp === 'object' ? dadosProp : {}) }
   const [tocado, setTocado] = useState({})
   const [fusoCarregando, setFusoCarregando] = useState(false)
   const [fusoErro, setFusoErro] = useState(null)
@@ -3334,7 +3345,8 @@ export default function App() {
                 }
 
                 let dadosPerfil = perfil.dados ? normalizarDadosPerfil(perfil.dados) : null
-                const emOnboarding = passoRef.current === 'onboarding'
+                const pathAtual = stripLangPrefix(typeof window !== 'undefined' ? window.location.pathname : '/')
+                const emOnboarding = pathAtual === '/comecar' || passoRef.current === 'onboarding'
                 const cache = restaurarCachePerfil(user.uid)
 
                 if (!emOnboarding && mapaNatalValido(cache.mapa)) {
@@ -3354,7 +3366,7 @@ export default function App() {
                   }
                 }
                 if (dadosPerfil && !emOnboarding) {
-                  setDados((prev) => ({ ...DADOS_VAZIO, ...prev, ...dadosPerfil }))
+                  setDados((prev) => normalizarDadosPerfil({ ...DADOS_VAZIO, ...prev, ...dadosPerfil }) || DADOS_VAZIO)
                 }
 
                 if (perfil.mapaGerado === true || perfil.dadosTravados === true) {
@@ -3493,10 +3505,12 @@ export default function App() {
     const hadUser = prevUserRef.current
     prevUserRef.current = utilizador
     if (!utilizador) return
+    if (precisaVerificarEmail(utilizador)) return
 
     const path = (location.pathname || '/').replace(/\/$/, '') || '/'
     if (path === '/login') {
       navigate(contaConfigurada ? '/home' : '/comecar', { replace: true })
+      if (!contaConfigurada) setPasso('onboarding')
       return
     }
 
@@ -3728,8 +3742,8 @@ export default function App() {
       try {
         const reparado = await repararDadosPerfil(dados)
         if (cancelled || !reparado) return
-        if (JSON.stringify(reparado) !== JSON.stringify(dados)) {
-          setDados(reparado)
+        if (reparado && typeof reparado === 'object' && JSON.stringify(reparado) !== JSON.stringify(dados)) {
+          setDados(normalizarDadosPerfil(reparado) || DADOS_VAZIO)
           if (firebaseDisponivel && db && dadosProntosParaMapa(reparado)) {
             await setDoc(doc(db, 'users', utilizador.uid), { dados: reparado }, { merge: true })
           }
