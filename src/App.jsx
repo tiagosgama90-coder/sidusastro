@@ -54,7 +54,7 @@ import { ShareSigno } from './components/ShareSigno.jsx'
 import { applyRouteSeo } from './lib/routeSeo.js'
 import { ErrorBoundary } from './components/ErrorBoundary.jsx'
 import { auth, db, firebaseDisponivel } from './lib/firebase'
-import { enviarEmailVerificacao, enviarEmailRecuperacaoSenha, enviarEmailBoasVindas, traduzirErroEmail } from './lib/authEmail'
+import { enviarEmailVerificacao, enviarEmailRecuperacaoSenha, traduzirErroEmail } from './lib/authEmail'
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -1319,7 +1319,6 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
         } catch (emailErr) {
           console.warn('[Sidus Auth] Email verificação:', emailErr?.code, emailErr?.message)
         }
-        enviarEmailBoasVindas(email, lang).catch(() => {})
         setInfo(t('auth.accountCreated'))
       } else {
         const cred = await signInWithEmailAndPassword(auth, email, senha)

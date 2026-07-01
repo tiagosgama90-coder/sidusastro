@@ -51,25 +51,3 @@ export async function enviarEmailVerificacao(user, _lang = 'pt') {
 export function traduzirErroEmail(code, message, lang = 'pt') {
   return traduzirErroEmailFromAuth(code, message, lang)
 }
-
-/** Boas-vindas via Resend (opcional; não bloqueia registo). */
-export async function enviarEmailBoasVindas(email, lang = 'pt') {
-  const addr = email?.trim()
-  if (!addr) return { skipped: true }
-  try {
-    const res = await fetch('/api/send-welcome-email', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email: addr, lang }),
-    })
-    const data = await res.json().catch(() => ({}))
-    if (!res.ok) {
-      console.warn('[Sidus Email] Boas-vindas:', data.error)
-      return { ok: false }
-    }
-    return data
-  } catch (e) {
-    console.warn('[Sidus Email] Boas-vindas falhou:', e?.message)
-    return { ok: false }
-  }
-}
