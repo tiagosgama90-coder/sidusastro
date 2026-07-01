@@ -929,12 +929,9 @@ function CampoData({ valor, onChange, onBlur, erro }) {
     setDia(d || '')
   }, [valor])
 
-  // Sincroniza para o pai sempre que os três segmentos mudarem
   useEffect(() => {
     if (dia.length === 2 && mes.length === 2 && ano.length === 4) {
       onChange(`${ano}-${mes}-${dia}`)
-    } else {
-      onChange('')
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dia, mes, ano])
@@ -1625,16 +1622,19 @@ function Onboarding({ dados: dadosProp, setDados, onSubmit, isDesktop }) {
     const draft = readLandingDraft()
     if (!draft) return
 
-    setDados((prev) => ({
-      ...DADOS_VAZIO,
-      ...prev,
-      ...(draft.nome ? { nome: draft.nome } : {}),
-      ...(draft.data ? { data: draft.data } : {}),
-      ...(draft.hora ? { hora: draft.hora } : {}),
-      ...(draft.cidade ? { cidade: draft.cidade } : {}),
-      ...(draft.localizacao ? { localizacao: draft.localizacao } : {}),
-      ...(draft.fuso != null ? { fuso: draft.fuso } : {}),
-    }))
+    setDados((prev) => {
+      const base = prev && typeof prev === 'object' ? prev : DADOS_VAZIO
+      return normalizarDadosPerfil({
+        ...DADOS_VAZIO,
+        ...base,
+        ...(draft.nome ? { nome: draft.nome } : {}),
+        ...(draft.data ? { data: draft.data } : {}),
+        ...(draft.hora ? { hora: draft.hora } : {}),
+        ...(draft.cidade ? { cidade: draft.cidade } : {}),
+        ...(draft.localizacao ? { localizacao: draft.localizacao } : {}),
+        ...(draft.fuso != null ? { fuso: draft.fuso } : {}),
+      }) || DADOS_VAZIO
+    })
 
     if (typeof draft.fuso === 'number') setFusoManual(draft.fuso)
 
@@ -1663,7 +1663,14 @@ function Onboarding({ dados: dadosProp, setDados, onSubmit, isDesktop }) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const erros = validarOnboarding(dados, lang)
+  const erros = (() => {
+    try {
+      return validarOnboarding(dados, lang)
+    } catch (e) {
+      console.warn('[Sidus] validarOnboarding:', e?.message)
+      return {}
+    }
+  })()
   const valido = Object.keys(erros).length === 0
 
   const tocar = (campo) => () => setTocado((p) => ({ ...p, [campo]: true }))
@@ -1716,23 +1723,34 @@ function Onboarding({ dados: dadosProp, setDados, onSubmit, isDesktop }) {
       <div style={{ ...estilos.vidro, padding: 24 }}>
         <Campo
           label={t('onboarding.name')}
-          valor={dados.nome}
-          onChange={(v) => setDados((p) => ({ ...p, nome: v }))}
+          valor={dados.nome ?? ''}
+          onChange={(v) => setDados((p) => ({ ...(p || DADOS_VAZIO), nome: v }))}
           onBlur={tocar('nome')}
           erro={tocado.nome ? erros.nome : null}
           placeholder={t('onboarding.namePlaceholder')}
         />
-        <CampoData
-          valor={dados.data}
-          onChange={(v) => setDados((p) => ({ ...p, data: v }))}
-          onBlur={tocar('data')}
-          erro={tocado.data ? erros.data : null}
-        />
+        <div style={{ marginBottom: 20 }}>
+          <label style={estilos.label}>{t('onboarding.birthDate')}</label>
+          <input
+            type="date"
+            value={dados.data || ''}
+            max={new Date().toISOString().slice(0, 10)}
+            onChange={(e) => setDados((p) => ({ ...(p || DADOS_VAZIO), data: e.target.value }))}
+            onBlur={tocar('data')}
+            style={{
+              ...estilos.input,
+              borderColor: tocado.data && erros.data ? 'rgba(248,113,113,0.7)' : CORES.vidroBorda,
+            }}
+          />
+          {tocado.data && erros.data && (
+            <p style={{ margin: '6px 0 0', fontSize: 12, color: '#F87171' }}>{erros.data}</p>
+          )}
+        </div>
         <Campo
           label={t('onboarding.birthTime')}
           tipo="time"
-          valor={dados.hora}
-          onChange={(v) => setDados((p) => ({ ...p, hora: v }))}
+          valor={dados.hora ?? ''}
+          onChange={(v) => setDados((p) => ({ ...(p || DADOS_VAZIO), hora: v }))}
           onBlur={tocar('hora')}
           erro={tocado.hora ? erros.hora : null}
         />
@@ -3855,14 +3873,20 @@ export default function App() {
   const mostrarAdsGratis = !isPremium && allowsAds() && cookieConsent
 
   const chatFullScreen = passo === 'chat'
+  const linkEmailPendente = (() => {
+    const p = new URLSearchParams(location.search)
+    return p.get('mode') === 'verifyEmail' && Boolean(p.get('oobCode'))
+  })()
 
-  // Ecrã de carregamento (auth ou perfil Firestore)
-  if (authCarregando || (utilizador && perfilCarregando)) {
+  // Ecrã de carregamento (auth, perfil Firestore, ou link de verificação a processar)
+  if (authCarregando || linkEmailPendente || (utilizador && perfilCarregando)) {
     return (
       <div style={{ ...estilos.app, display: 'flex', flexDirection: 'column', minHeight: '100svh' }}>
         <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '24px 20px' }}>
           <Loader2 size={36} color={CORES.dourado} strokeWidth={1.5} style={{ animation: 'spin 1s linear infinite' }} />
-          <p style={{ color: CORES.brancoMuted, marginTop: 16, fontSize: 14, textAlign: 'center' }}>{t('common.loading')}</p>
+          <p style={{ color: CORES.brancoMuted, marginTop: 16, fontSize: 14, textAlign: 'center' }}>
+            {linkEmailPendente ? t('common.verifying') : t('common.loading')}
+          </p>
         </div>
         <RodapeSidus isDesktop={isDesktop} mostrarNavbar={false} />
       </div>

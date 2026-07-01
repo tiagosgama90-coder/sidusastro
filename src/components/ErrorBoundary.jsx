@@ -69,6 +69,14 @@ export class ErrorBoundary extends Component {
           <p style={{ margin: '0 0 20px', fontSize: 14, lineHeight: 1.6, color: CORES.brancoMuted }}>
             A interface encontrou um erro inesperado. Podes tentar de novo ou recarregar a página.
           </p>
+          {this.state.error?.message && (
+            <p style={{
+              margin: '0 0 20px', fontSize: 11, lineHeight: 1.5, color: 'rgba(248,113,113,0.9)',
+              wordBreak: 'break-word', fontFamily: 'monospace', textAlign: 'left',
+            }}>
+              {this.state.error.message}
+            </p>
+          )}
           <div style={{ display: 'flex', gap: 10, justifyContent: 'center', flexWrap: 'wrap' }}>
             <button
               type="button"
