@@ -163,8 +163,76 @@ const PALAVRAS_FR = {
   21: ['accomplissement', 'intégration', 'plénitude'],
 }
 
+const SUIT_EN = { paus: 'Wands', copas: 'Cups', espadas: 'Swords', ouros: 'Pentacles' }
+const RANK_EN = {
+  as: 'Ace', '02': 'Two', '03': 'Three', '04': 'Four', '05': 'Five',
+  '06': 'Six', '07': 'Seven', '08': 'Eight', '09': 'Nine', '10': 'Ten',
+  valete: 'Page', cavaleiro: 'Knight', rainha: 'Queen', rei: 'King',
+}
+const SUIT_ES = { paus: 'Bastos', copas: 'Copas', espadas: 'Espadas', ouros: 'Oros' }
+const SUIT_IT = { paus: 'Bastoni', copas: 'Coppe', espadas: 'Spade', ouros: 'Denari' }
+const SUIT_DE = { paus: 'Stäbe', copas: 'Kelche', espadas: 'Schwerter', ouros: 'Münzen' }
+const SUIT_FR = { paus: 'Bâtons', copas: 'Coupes', espadas: 'Épées', ouros: 'Deniers' }
+const RANK_ES = { as: 'As', '02': 'Dos', '03': 'Tres', '04': 'Cuatro', '05': 'Cinco', '06': 'Seis', '07': 'Siete', '08': 'Ocho', '09': 'Nueve', '10': 'Diez', valete: 'Sota', cavaleiro: 'Caballo', rainha: 'Reina', rei: 'Rey' }
+const RANK_IT = { as: 'Asso', '02': 'Due', '03': 'Tre', '04': 'Quattro', '05': 'Cinque', '06': 'Sei', '07': 'Sette', '08': 'Otto', '09': 'Nove', '10': 'Dieci', valete: 'Fante', cavaleiro: 'Cavaliere', rainha: 'Regina', rei: 'Re' }
+const RANK_DE = { as: 'Ass', '02': 'Zwei', '03': 'Drei', '04': 'Vier', '05': 'Fünf', '06': 'Sechs', '07': 'Sieben', '08': 'Acht', '09': 'Neun', '10': 'Zehn', valete: 'Bube', cavaleiro: 'Ritter', rainha: 'Königin', rei: 'König' }
+const RANK_FR = { as: 'As', '02': 'Deux', '03': 'Trois', '04': 'Quatre', '05': 'Cinq', '06': 'Six', '07': 'Sept', '08': 'Huit', '09': 'Neuf', '10': 'Dix', valete: 'Valet', cavaleiro: 'Cavalier', rainha: 'Reine', rei: 'Roi' }
+
+function isMinor(carta) {
+  return carta?.tipo === 'minor' || (carta?.id != null && carta.id > 21)
+}
+
+function minorNome(carta, lang) {
+  const suits = lang === 'es' ? SUIT_ES : lang === 'it' ? SUIT_IT : lang === 'de' ? SUIT_DE : lang === 'fr' ? SUIT_FR : SUIT_EN
+  const ranks = lang === 'es' ? RANK_ES : lang === 'it' ? RANK_IT : lang === 'de' ? RANK_DE : lang === 'fr' ? RANK_FR : RANK_EN
+  const suit = suits[carta.naipe] || carta.naipe
+  const rank = ranks[carta.rank] || carta.rank
+  if (lang === 'en') return `${rank} of ${suit}`
+  if (lang === 'es' || lang === 'it' || lang === 'fr') return `${rank} de ${suit}`
+  return `${rank} der ${suit}`
+}
+
+function localizeMinor(carta, lang) {
+  const nome = minorNome(carta, lang)
+  const [k1, k2, k3] = carta.palavras || []
+  const reversed = lang === 'es' ? 'INVERTIDA' : lang === 'it' ? 'ROVESCIO' : lang === 'fr' ? 'RENVERSEE' : lang === 'de' ? 'UMGEKEHRT' : 'REVERSED'
+  if (lang === 'en') {
+    return {
+      ...carta,
+      nome,
+      luz: `The ${nome} brings ${k1}, ${k2} and ${k3} into focus. In upright position, this card supports growth, clarity and aligned action in your reading.`,
+      sombra: `Reversed, the ${nome} signals blocked ${k1}, excess or distortion in ${k2}. Pause and recenter before you decide.`,
+      conselho: `Let ${k1} guide your next step — with wisdom, patience and respect for your own limits.`,
+      invertidaLabel: carta.invertida ? reversed : undefined,
+    }
+  }
+  const luz = lang === 'es'
+    ? `${nome} activa ${k1}, ${k2} y ${k3}. En posición derecha, abre camino con claridad y presencia.`
+    : lang === 'it'
+      ? `${nome} attiva ${k1}, ${k2} e ${k3}. In posizione diritta, apre la strada con chiarezza.`
+      : lang === 'fr'
+        ? `${nome} active ${k1}, ${k2} et ${k3}. À l'endroit, elle ouvre le chemin avec clarté.`
+        : `${nome} aktiviert ${k1}, ${k2} und ${k3}. Aufrecht öffnet sie den Weg mit Klarheit.`
+  const sombra = lang === 'es'
+    ? `En sombra, ${nome} bloquea ${k1} o exagera ${k2}. Vuelve al centro antes de actuar.`
+    : lang === 'it'
+      ? `In ombra, ${nome} blocca ${k1} o esagera ${k2}. Torna al centro prima di agire.`
+      : lang === 'fr'
+        ? `À l'envers, ${nome} bloque ${k1} ou exagère ${k2}. Revenez au centre avant d'agir.`
+        : `Umgekehrt blockiert ${nome} ${k1} oder übertreibt ${k2}. Kehre vor dem Handeln in deine Mitte zurück.`
+  const conselho = lang === 'es'
+    ? `Deja que ${k1} guíe tu próximo paso con sabiduría y moderación.`
+    : lang === 'it'
+      ? `Lascia che ${k1} guidi il tuo prossimo passo con saggezza.`
+      : lang === 'fr'
+        ? `Laissez ${k1} guider votre prochain pas avec sagesse.`
+        : `Lass ${k1} deinen nächsten Schritt mit Weisheit leiten.`
+  return { ...carta, nome, luz, sombra, conselho, invertidaLabel: carta.invertida ? reversed : undefined }
+}
+
 export function localizeArcano(carta, lang) {
   if (!carta || lang === 'pt') return carta
+  if (isMinor(carta)) return localizeMinor(carta, lang)
   const en = ARCANOS_EN[carta.id] || {}
   if (lang === 'en') {
     return {

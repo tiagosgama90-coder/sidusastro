@@ -86,11 +86,11 @@ function pickPack(lang) {
   return { sol: SOL_EN, lua: LUA_EN }
 }
 
-/** Índice determinístico da carta do dia (0–21). */
+/** Índice determinístico da carta do dia (0–77, baralho completo). */
 export function indiceCartaDoDia(date = new Date()) {
   const iso = date.toISOString().slice(0, 10)
   const [ano, mes, dia] = iso.split('-').map(Number)
-  return (ano * 1000 + (mes - 1) * 31 + dia) % 22
+  return (ano * 1000 + (mes - 1) * 31 + dia) % 78
 }
 
 export function fraseSol(signoNome, lang = 'pt') {

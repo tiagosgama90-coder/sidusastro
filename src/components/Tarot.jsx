@@ -1,7 +1,6 @@
 /**
- * Sistema de Tarot Sidus
- * ─ Animação de embaralhar (fan + shuffle)
- * ─ Arte SVG única para cada Arcano
+ * Sistema de Tarot Sidus — baralho profissional de 78 cartas (Mystic Marchetti)
+ * ─ Ilustrações + interpretações profissionais
  * ─ 3 leituras gratuitas por conta · depois 2 € por leitura ou Premium
  * ─ 6 tipos de leitura · interpretações personalizadas com mapa natal
  */
@@ -9,7 +8,9 @@ import { useState, useEffect, useRef } from 'react'
 import { useLanguage } from '../lib/i18n/LanguageContext.jsx'
 import { localizeArcano, getTiposTarot, getPosicoesTarot } from '../lib/i18n/tarotArcana.js'
 import { PRECO_TAROT } from '../lib/pricing.js'
-import { gerarMensagemAnjos } from '../lib/tarotAnjos.js'
+import { sortearCartas, getCartaById, MAJOR_ARCANA } from '../lib/tarot/deck.js'
+import { interpretarLeitura } from '../lib/tarot/interpretacao.js'
+import { CartaTarot } from './CartaTarot.jsx'
 import {
   leituraDiariaAtiva, podeFazerLeituraDiaria, msAteProximaDiaria,
   formatarTempoRestante, registarLeituraDiaria,
@@ -27,194 +28,7 @@ const btnDourado = {
   position:'relative',zIndex:2,pointerEvents:'auto',
 }
 
-// ── Roman numerals ────────────────────────────────────────────────────────────
-function toRoman(n) {
-  const v=[10,9,5,4,1], s=['X','IX','V','IV','I']
-  let r=''; v.forEach((val,i)=>{ while(n>=val){r+=s[i];n-=val} }); return r
-}
-
-// ── Paleta de cores por Arcano ────────────────────────────────────────────────
-const PALETAS = {
-  0:'#6D28D9',1:'#B45309',2:'#0369A1',3:'#047857',4:'#B91C1C',
-  5:'#7C3AED',6:'#DB2777',7:'#D97706',8:'#92400E',9:'#1D4ED8',
-  10:'#7C3AED',11:'#059669',12:'#0284C7',13:'#1E293B',14:'#0891B2',
-  15:'#991B1B',16:'#6D28D9',17:'#1D4ED8',18:'#1E3A5F',19:'#B45309',
-  20:'#7C3AED',21:'#047857',
-}
-
-// ── SVG Art por carta ─────────────────────────────────────────────────────────
-function CartaSVG({ carta, size=90, virada=false }) {
-  if (!carta) return null
-  const w=size, h=Math.round(size*1.6)
-  const cor = PALETAS[carta.id] ?? '#6D28D9'
-  const id  = `c${carta.id}_${size}`
-
-  if (virada) {
-    return (
-      <svg width={w} height={h} viewBox="0 0 90 144">
-        <defs>
-          <linearGradient id={`vd_${id}`} x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#0d0722"/>
-            <stop offset="100%" stopColor="#1a0d3a"/>
-          </linearGradient>
-        </defs>
-        <rect width="90" height="144" rx="8" fill={`url(#vd_${id})`}/>
-        <rect x="2" y="2" width="86" height="140" rx="7" fill="none" stroke="#DFB76C" strokeWidth="1" opacity="0.4"/>
-        {[...Array(5)].map((_,i)=>[...Array(4)].map((_,j)=>(
-          <text key={`${i}${j}`} x={12+j*22} y={20+i*26} fontSize="14" fill="#DFB76C" opacity="0.08">✦</text>
-        )))}
-        <text x="45" y="76" fontSize="28" textAnchor="middle" dominantBaseline="middle" fill="#DFB76C" opacity="0.25">✦</text>
-      </svg>
-    )
-  }
-
-  return (
-    <svg width={w} height={h} viewBox="0 0 90 144"
-      style={{ transform: carta.invertida ? 'rotate(180deg)' : 'none', display:'block' }}>
-      <defs>
-        <radialGradient id={`bg_${id}`} cx="50%" cy="35%" r="70%">
-          <stop offset="0%" stopColor={cor} stopOpacity="0.65"/>
-          <stop offset="100%" stopColor="#0B071E"/>
-        </radialGradient>
-        <pattern id={`pt_${id}`} x="0" y="0" width="15" height="15" patternUnits="userSpaceOnUse">
-          <circle cx="2" cy="2" r="0.6" fill={cor} opacity="0.18"/>
-          <circle cx="10" cy="10" r="0.4" fill={cor} opacity="0.1"/>
-        </pattern>
-      </defs>
-      <rect width="90" height="144" rx="8" fill={`url(#bg_${id})`}/>
-      <rect width="90" height="144" rx="8" fill={`url(#pt_${id})`}/>
-      <rect x="2" y="2" width="86" height="140" rx="7" fill="none" stroke="#DFB76C" strokeWidth="1.2" opacity="0.65"/>
-      <rect x="6" y="6" width="78" height="132" rx="5" fill="none" stroke="#DFB76C" strokeWidth="0.4" opacity="0.3"/>
-      {/* Roman num top-left */}
-      <text x="10" y="17" fontSize="8" fill="#DFB76C" fontFamily="Georgia,serif" opacity="0.85">{carta.id===0?'☽':toRoman(carta.id)}</text>
-      {/* Central emoji art */}
-      <text x="45" y="82" fontSize="36" textAnchor="middle" dominantBaseline="middle">{carta.simb}</text>
-      {/* Decorative lines */}
-      <line x1="12" y1="108" x2="78" y2="108" stroke="#DFB76C" strokeWidth="0.6" opacity="0.5"/>
-      <line x1="14" y1="110.5" x2="76" y2="110.5" stroke="#DFB76C" strokeWidth="0.2" opacity="0.25"/>
-      {/* Card name */}
-      <text x="45" y="122" fontSize="6.2" textAnchor="middle" fill="#DFB76C" fontFamily="Georgia,serif" letterSpacing="0.8">{carta.nome.toUpperCase()}</text>
-      {/* Stars */}
-      {[18,34,56,72].map(x=><text key={x} x={x} y="134" fontSize="6" fill="#DFB76C" opacity="0.35" textAnchor="middle">✦</text>)}
-      {/* Invertida badge */}
-      {carta.invertida && (
-        <text x="45" y="141" fontSize="5.5" fill="#EF4444" textAnchor="middle" opacity="0.9">{carta.invertidaLabel || (carta.invertida ? 'INVERTIDA' : '')}</text>
-      )}
-    </svg>
-  )
-}
-
-// ── 22 Arcanos Maiores ────────────────────────────────────────────────────────
-const ARCANOS = [
-  {id:0,  nome:'O Louco',         simb:'🃏', palavras:['aventura','liberdade','começo'],
-   luz:'Abertura total ao desconhecido. Um salto de fé abre portas inesperadas. A tua inocência é força, não fraqueza.',
-   sombra:'Impulsividade perigosa. Risco de agir sem considerar as consequências para ti e para os que amas.',
-   conselho:'Ousa, mas não desprezes o chão sob os teus pés. O Louco conquista mundos quando alia a coragem à consciência.'},
-  {id:1,  nome:'O Mago',          simb:'🎩', palavras:['poder','vontade','manifestação'],
-   luz:'Tens todos os recursos que precisas. A tua força de vontade é capaz de transformar o pensamento em realidade.',
-   sombra:'Manipulação ou uso do talento para fins egoístas. O poder sem ética corrói quem o exerce.',
-   conselho:'Usa os teus dons com intenção clara. O Universo amplifica o que colocas no mundo - escolhe com sabedoria.'},
-  {id:2,  nome:'A Papisa',        simb:'📖', palavras:['intuição','mistério','sabedoria'],
-   luz:'A tua voz interior é precisa como um astrolábio. Confia no que sentes antes do que no que vês.',
-   sombra:'Segredos que bloqueiam o crescimento. O silêncio pode ser isolamento disfarçado de prudência.',
-   conselho:'Medita antes de agir. A resposta que procuras já existe dentro de ti - o silêncio é a sua língua.'},
-  {id:3,  nome:'A Imperatriz',    simb:'👑', palavras:['abundância','fertilidade','amor'],
-   luz:'Ciclo de prosperidade e criatividade extraordinária. Nutre os teus projetos com paciência e amor.',
-   sombra:'Excesso ou dependência. A abundância sem moderação pode tornar-se prisão dourada.',
-   conselho:'Recebe o que a vida te oferece com gratidão. A tua capacidade de criar e nutrir é um dom raro.'},
-  {id:4,  nome:'O Imperador',     simb:'⚔️', palavras:['autoridade','estrutura','proteção'],
-   luz:'Momento de assumir as rédeas. A disciplina e a liderança que exerces agora constroem o teu legado.',
-   sombra:'Rigidez que impede a adaptação. O controlo excessivo sufoca o crescimento - dos outros e do teu.',
-   conselho:'Estabelece limites saudáveis. A verdadeira autoridade não precisa de se impor - é reconhecida.'},
-  {id:5,  nome:'O Hierofante',    simb:'✝️', palavras:['tradição','fé','ensinamento'],
-   luz:'Um mentor ou ensinamento ancestral surge no teu caminho. Valores profundos guiam as tuas decisões.',
-   sombra:'Dogmatismo que sufoca a evolução. Seguir regras cegas por medo de questionar.',
-   conselho:'Honra a sabedoria do passado mas não deixes que ela te impeça de descobrir a tua própria verdade.'},
-  {id:6,  nome:'Os Amantes',      simb:'💞', palavras:['amor','escolha','harmonia'],
-   luz:'Uma união poderosa ou uma escolha que define o teu caminho. O coração sabe o que a mente demora a aceitar.',
-   sombra:'Indecisão paralisante. Tentação que te afasta do teu verdadeiro propósito e valores.',
-   conselho:'Age a partir do amor, não do medo. A escolha que parece mais difícil é frequentemente a mais libertadora.'},
-  {id:7,  nome:'O Carro',         simb:'🏆', palavras:['vitória','determinação','controlo'],
-   luz:'A tua força de vontade supera qualquer obstáculo. Velocidade e foco garantem a vitória que mereces.',
-   sombra:'Arrogância que cria inimigos desnecessários. Controlar pela força em vez de pela sabedoria.',
-   conselho:'Mantém o olhar no destino, não nos obstáculos. A tua determinação é a chave - usa-a com elegância.'},
-  {id:8,  nome:'A Força',         simb:'🦁', palavras:['coragem','compaixão','domínio'],
-   luz:'A verdadeira força nasce do amor, não da violência. Domas os teus medos com gentileza e inteligência emocional.',
-   sombra:'Repressão que consome energia vital. A força usada para suprimir em vez de transformar.',
-   conselho:'A tua maior batalha é interior. Vence-a com compaixão por ti próprio e a coragem crescerá naturalmente.'},
-  {id:9,  nome:'O Eremita',       simb:'🕯️', palavras:['reflexão','solidão','guia'],
-   luz:'Período de recolhimento necessário e frutífero. A tua luz interior ilumina quando tudo parece escuro.',
-   sombra:'Isolamento que se transforma em amargura. Recusar a ajuda que o mundo pode oferecer.',
-   conselho:'Afasta-te do ruído externo. Na solidão escolhida encontrarás as respostas que o mundo não pode dar.'},
-  {id:10, nome:'Roda da Fortuna', simb:'☸️', palavras:['destino','ciclos','mudança'],
-   luz:'O ciclo vira a teu favor. Uma reviravolta inesperada traz nova sorte e oportunidades extraordinárias.',
-   sombra:'Deixar a vida ao acaso. Resistência às mudanças inevitáveis que te impedem de evoluir.',
-   conselho:'Abraça as mudanças em vez de as resistir. A roda gira sempre - usa o movimento a teu favor.'},
-  {id:11, nome:'A Justiça',       simb:'⚖️', palavras:['equilíbrio','verdade','karma'],
-   luz:'A verdade prevalece e o equilíbrio é restaurado. Cada ação tem a sua consequência - e agora colhes o que plantaste.',
-   sombra:'Julgamento severo que ignora a compaixão. Desequilíbrio em decisões importantes.',
-   conselho:'Age com integridade em todas as situações. O Universo regista cada pensamento, palavra e ação.'},
-  {id:12, nome:'O Enforcado',     simb:'🔄', palavras:['sacrifício','perspetiva','pausa'],
-   luz:'Uma pausa necessária para ver o que estava oculto. O sacrifício voluntário abre perspetivas transformadoras.',
-   sombra:'Martírio desnecessário. Paralisação por recusa em ver a situação de um ângulo diferente.',
-   conselho:'Inverte a tua perspetiva. O que parece uma derrota pode ser o maior presente que a vida te fez.'},
-  {id:13, nome:'A Morte',         simb:'🌑', palavras:['transformação','fim','renascimento'],
-   luz:'Uma fase encerra-se para que algo mais elevado e autêntico nasça. A transformação é inevitável e libertadora.',
-   sombra:'Resistência teimosa à mudança que prolonga o sofrimento desnecessariamente.',
-   conselho:'Deixa ir o que já não te serve. Cada fim é o início disfarçado de algo extraordinário.'},
-  {id:14, nome:'A Temperança',    simb:'🌊', palavras:['equilíbrio','paciência','alquimia'],
-   luz:'A mistura perfeita entre opostos cria algo extraordinário. A paciência e moderação são as tuas maiores aliadas.',
-   sombra:'Excesso ou privação. O desequilíbrio entre o que dás e o que recebes esgota a tua energia vital.',
-   conselho:'Encontra o ponto de equilíbrio. A verdadeira magia acontece quando os opostos se harmonizam em ti.'},
-  {id:15, nome:'O Diabo',         simb:'⛓️', palavras:['apego','ilusão','libertação'],
-   luz:'Reconhecer o que te prende é o primeiro passo para a liberdade total. O poder de mudar está sempre em ti.',
-   sombra:'Vícios e obsessões que te mantêm acorrentado a padrões que já conheces mas não abandonas.',
-   conselho:'Olha diretamente para o que temes. A ilusão só tem poder sobre ti enquanto a evitares.'},
-  {id:16, nome:'A Torre',         simb:'⚡', palavras:['ruptura','revelação','reconstrução'],
-   luz:'O que se destrói era falso ou já não te servia. A ruptura, dolorosa, abre espaço para a verdade.',
-   sombra:'Caos criado pela teimosia em manter estruturas que já desmoronaram por dentro.',
-   conselho:'Permite que o que é frágil caia. O que for verdadeiro permanecerá e será reconstruído mais forte.'},
-  {id:17, nome:'A Estrela',       simb:'⭐', palavras:['esperança','cura','inspiração'],
-   luz:'Depois de qualquer tempestade, surge a luz. Cura profunda e renovação da esperança chegam agora.',
-   sombra:'Idealismo que ignora a realidade prática. Esperar que as estrelas resolvam o que é teu para resolver.',
-   conselho:'Deixa a esperança entrar. Não como fuga, mas como combustível para construires o que sonhas.'},
-  {id:18, nome:'A Lua',           simb:'🌙', palavras:['intuição','inconsciente','sonhos'],
-   luz:'Mergulha nas profundezas do teu inconsciente. Os teus sonhos e intuições carregam mensagens reais e precisas.',
-   sombra:'Medos irracionais e ilusões que distorcem a realidade. Confundir o desejo com a intuição.',
-   conselho:'Confia nos teus sonhos - mas distingue o medo da intuição. Ambos falam, mas com vozes diferentes.'},
-  {id:19, nome:'O Sol',           simb:'☀️', palavras:['alegria','sucesso','clareza'],
-   luz:'Clareza total e alegria genuína. O sucesso surge quando ages com plena autenticidade e confiança.',
-   sombra:'Vaidade que obscurece a humildade. Excesso de confiança que não vê os próprios pontos cegos.',
-   conselho:'Brilha sem pedir desculpa por isso. A tua alegria é contagiante e tem o poder de curar os que te rodeiam.'},
-  {id:20, nome:'O Julgamento',    simb:'📯', palavras:['despertar','redenção','chamado'],
-   luz:'Um despertar espiritual profundo. Estás a ser chamado ao teu propósito maior - o Universo bate à tua porta.',
-   sombra:'Incapacidade de perdoar a si mesmo ou aos outros. Ignorar o chamado por medo das exigências que traz.',
-   conselho:'Responde ao chamado interior. O perdão - de ti e dos outros - é a chave para este novo capítulo.'},
-  {id:21, nome:'O Mundo',         simb:'🌍', palavras:['conclusão','integração','plenitude'],
-   luz:'Ciclo completado com sucesso e maturidade. Tens todas as ferramentas para viver plenamente o teu destino.',
-   sombra:'Resistência em deixar ir o que já foi. O medo do vazio após a conclusão impede o próximo começo.',
-   conselho:'Celebra o caminho percorrido. A plenitude que sentes agora é a base do próximo e mais rico ciclo.'},
-]
-
-function baralhoCompleto() {
-  return ARCANOS.map((c) => ({ ...c, invertida: false }))
-}
-
-function sortearCartas(n) {
-  const deck = embaralhar(baralhoCompleto())
-  return deck.slice(0, n).map((c) => ({
-    ...c,
-    invertida: Math.random() < 0.35,
-  }))
-}
-
-function embaralhar(arr) {
-  const a=[...arr]
-  for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}
-  return a
-}
-
-// ── 3 leituras gratuitas por conta ───────────────────────────────────────────
+// ── Tipos de leitura ───────────────────────────────────────────────────────────
 export const MAX_LEITURAS_GRATIS = 3
 const STORAGE_KEY = 'sidus_tarot_free_v4'
 
@@ -267,58 +81,6 @@ const POSICOES={
   geral:['O passado', 'O presente', 'O futuro'],
   cigano:['Amor & relações','Trabalho & carreira','Finanças','Saúde & energia','Destino & rumo'],
   oraculo:['A tua essência','O obstáculo','O aliado secreto','A acção a tomar','O resultado final'],
-}
-
-// ── Interpretação final da leitura ────────────────────────────────────────────
-function interpretarLeitura(cartas, tipoId, pergunta, mapaNatal, lang = 'pt', t) {
-  const tr = (key, vars) => (t ? t(key, vars) : key)
-  const cartasLocalizadas = cartas.map((c) => localizeArcano(c, lang))
-  const astro = mapaNatal
-    ? `\n${tr('tarot.natalContext', { solar: mapaNatal.solar?.nome, lunar: mapaNatal.lunar?.nome, asc: mapaNatal.ascendente?.nome })}`
-    : ''
-
-  if (tipoId === 'simnao') {
-    const cartasPositivas = new Set([0,1,3,4,6,7,8,10,11,14,17,19,20,21])
-    const positiva = !cartasLocalizadas[0].invertida && cartasPositivas.has(cartasLocalizadas[0].id)
-    return {
-      resposta: positiva ? tr('tarot.yes') : tr('tarot.no'),
-      detalhe: `${astro}\n\n${cartasLocalizadas[0].invertida ? cartasLocalizadas[0].sombra : cartasLocalizadas[0].luz}\n\n${cartasLocalizadas[0].conselho}`,
-      mensagemAnjos: gerarMensagemAnjos(cartasLocalizadas, mapaNatal, lang),
-    }
-  }
-
-  const mapaPosicoes = getPosicoesTarot(lang)
-  const posicoes = (mapaPosicoes?.[tipoId]) || POSICOES[tipoId] || []
-  const linhas = cartasLocalizadas.map((c,i) => {
-    const pos = posicoes[i] || tr('tarot.cardN', { n: i + 1 })
-    const revLabel = tr('tarot.reversedLabel')
-    const txt = c.invertida ? c.sombra : c.luz
-    return `**${pos}**: ${c.nome} ${c.invertida ? revLabel : ''}\n${txt}`
-  })
-
-  let conclusao = ''
-  if (tipoId === 'amor') {
-    conclusao = `\n\n${tr('tarot.synthesisAmor', {
-      theme: cartasLocalizadas[0].palavras?.[0] || cartasLocalizadas[0].nome,
-      outcome: cartasLocalizadas[2]?.invertida ? tr('tarot.synthesisAmorChallenge') : tr('tarot.synthesisAmorOpen'),
-    })}`
-  } else if (tipoId === 'geral') {
-    conclusao = `\n\n${tr('tarot.synthesisGeral', {
-      root: cartasLocalizadas[0].nome.toLowerCase(),
-      present: cartasLocalizadas[1]?.palavras?.[0] || '',
-      future: cartasLocalizadas[2]?.palavras?.[1] || cartasLocalizadas[2]?.palavras?.[0] || '',
-    })}`
-  } else if (tipoId === 'cigano' || tipoId === 'oraculo') {
-    conclusao = `\n\n${tr('tarot.synthesisCigano', {
-      start: cartasLocalizadas[0].nome,
-      end: cartasLocalizadas[4]?.nome || cartasLocalizadas[cartasLocalizadas.length - 1]?.nome,
-      path: cartasLocalizadas[2]?.palavras?.[0] || '',
-    })}`
-  }
-
-  const mensagemAnjos = gerarMensagemAnjos(cartasLocalizadas, mapaNatal, lang)
-
-  return { resposta: null, detalhe: `${astro}\n\n${linhas.join('\n\n')}${conclusao}`, mensagemAnjos }
 }
 
 // ── Componente principal ──────────────────────────────────────────────────────
@@ -436,7 +198,7 @@ export function EcraTarot({ mapaNatal, isPremium, userId, leiturasTarotUsadas = 
     setReveladas(novo)
     if (novo.length === cartas.length && novo.length > 0 && novo.every(Boolean)) {
       try {
-        const res = interpretarLeitura(cartas, tipoId, pergunta, mapaNatal, lang, t)
+        const res = interpretarLeitura(cartas, tipoId, pergunta, mapaNatal, lang, t, getPosicoesTarot)
         setResultado(res)
         if (tipoId === 'diaria') {
           registarLeituraDiaria(userId, {
@@ -527,7 +289,7 @@ export function EcraTarot({ mapaNatal, isPremium, userId, leiturasTarotUsadas = 
 // ── Sub-telas ─────────────────────────────────────────────────────────────────
 function TelaDiariaBloqueada({ t, lang, ativa, msRestante, onVoltar }) {
   const cartaSalva = ativa?.cartas?.[0]
-  const arcano = cartaSalva ? ARCANOS.find((a) => a.id === cartaSalva.id) : null
+  const arcano = cartaSalva ? getCartaById(cartaSalva.id) : null
   const carta = arcano ? { ...arcano, invertida: !!cartaSalva.invertida, invertidaLabel: cartaSalva.invertida ? t('tarot.reversed') : '' } : null
 
   return (
@@ -552,7 +314,7 @@ function TelaDiariaBloqueada({ t, lang, ativa, msRestante, onVoltar }) {
         <div style={{ background: 'rgba(255,255,255,0.04)', border: `1px solid ${CORES.vidroBorda}`, borderRadius: 14, padding: 18, marginBottom: 16, textAlign: 'center' }}>
           <div style={{ fontSize: 11, color: CORES.dourado, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 12 }}>{t('tarot.dailySaved')}</div>
           <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 12 }}>
-            <CartaSVG carta={localizeArcano(carta, lang)} size={110} />
+            <CartaTarot carta={localizeArcano(carta, lang)} size={110} />
           </div>
           <div style={{ fontSize: 16, fontWeight: 700, color: CORES.branco }}>{localizeArcano(carta, lang).nome}</div>
           {carta.invertida && <div style={{ fontSize: 11, color: '#F87171', marginTop: 4 }}>{t('tarot.reversed')}</div>}
@@ -717,7 +479,7 @@ function TelaEmbaralhar({ t }) {
             animation:`shuffle 0.6s ease-in-out ${i*0.12}s infinite`,
             transformOrigin:'center bottom',
           }}>
-            <CartaSVG carta={ARCANOS[0]} virada size={90}/>
+            <CartaTarot carta={MAJOR_ARCANA[0]} virada size={90}/>
           </div>
         ))}
       </div>
@@ -739,7 +501,7 @@ function TelaDistribuir({ cartas, posicoes, distribuindo, t }) {
             animation: i<=distribuindo ? 'deal 0.4s ease-out forwards' : 'none',
             opacity: i<=distribuindo ? 1 : 0.15,
           }}>
-            <CartaSVG carta={i<=distribuindo ? ARCANOS[0] : ARCANOS[0]} virada size={70}/>
+            <CartaTarot carta={i<=distribuindo ? MAJOR_ARCANA[0] : MAJOR_ARCANA[0]} virada size={70}/>
             <div style={{fontSize:9,color:CORES.brancoMuted,marginTop:4,width:70}}>{pos}</div>
           </div>
         ))}
@@ -775,7 +537,7 @@ function TelaRevelar({ cartas, reveladas = [], onRevelar, posicoes = [], tipo, p
               cursor:reveladas[i]?'default':'pointer',
               animation: reveladas[i] ? 'flip3d 0.6s ease-out, glow 2s ease-in-out 0.6s 3' : 'none',
             }}>
-              {reveladas[i] ? <CartaSVG carta={c} size={80}/> : <CartaSVG carta={c} virada size={80}/>}
+              {reveladas[i] ? <CartaTarot carta={c} size={80}/> : <CartaTarot carta={c} virada size={80}/>}
             </div>
             <div style={{fontSize:9,color:CORES.brancoMuted,marginTop:4,width:80,lineHeight:1.3}}>
               {reveladas[i] ? (c.invertida ? t('tarot.reversedShort') : t('tarot.uprightShort')) : posicoes[i]}
@@ -793,7 +555,7 @@ function TelaRevelar({ cartas, reveladas = [], onRevelar, posicoes = [], tipo, p
       {cartas.map((c,i) => reveladas[i] && (
         <div key={i} style={{background:'rgba(255,255,255,0.04)',border:`1px solid rgba(223,183,108,0.2)`,borderRadius:14,padding:18,marginBottom:12}}>
           <div style={{display:'flex',gap:14,alignItems:'flex-start',marginBottom:12}}>
-            <CartaSVG carta={c} size={56}/>
+            <CartaTarot carta={c} size={56}/>
             <div>
               <div style={{fontSize:8,color:CORES.brancoMuted,textTransform:'uppercase',letterSpacing:'0.1em',marginBottom:4}}>{posicoes[i]}</div>
               <div style={{fontSize:16,fontWeight:700,color:CORES.branco,lineHeight:1.2}}>
