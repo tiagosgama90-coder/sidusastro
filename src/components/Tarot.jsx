@@ -128,6 +128,7 @@ export function EcraTarot({ mapaNatal, isPremium, userId, leiturasTarotUsadas = 
   const [resultado, setResultado]       = useState(null)
   const [leituraPaga, setLeituraPaga]   = useState(false)
   const [aIniciarLeitura, setAIniciarLeitura] = useState(false)
+  const [animarCliqueIdx, setAnimarCliqueIdx] = useState(-1)
   const montadoRef = useRef(true)
   const timersRef = useRef([])
 
@@ -227,30 +228,34 @@ export function EcraTarot({ mapaNatal, isPremium, userId, leiturasTarotUsadas = 
   }, [distribuindo, tipoId, cartas.length])
 
   const revelarCarta = (i) => {
-    if (!Array.isArray(reveladas) || !cartas[i] || reveladas[i]) return
-    const novo = [...reveladas]
-    novo[i] = true
-    setReveladas(novo)
-    if (novo.length === cartas.length && novo.length > 0 && novo.every(Boolean)) {
-      try {
-        const res = interpretarLeitura(cartas, tipoId, pergunta, mapaNatal, lang, t, getPosicoesTarot)
-        setResultado(res)
-        if (tipoId === 'diaria') {
-          registarLeituraDiaria(userId, {
-            cartas: cartas.map((c) => ({ id: c.id, nome: c.nome, invertida: !!c.invertida })),
-            pergunta,
-            detalhe: res?.detalhe || '',
-            mensagemAnjos: res?.mensagemAnjos || '',
+    if (!Array.isArray(reveladas) || !cartas[i] || reveladas[i] || animarCliqueIdx === i) return
+    setAnimarCliqueIdx(i)
+    agendar(() => {
+      const novo = [...reveladas]
+      novo[i] = true
+      setReveladas(novo)
+      setAnimarCliqueIdx(-1)
+      if (novo.length === cartas.length && novo.length > 0 && novo.every(Boolean)) {
+        try {
+          const res = interpretarLeitura(cartas, tipoId, pergunta, mapaNatal, lang, t, getPosicoesTarot)
+          setResultado(res)
+          if (tipoId === 'diaria') {
+            registarLeituraDiaria(userId, {
+              cartas: cartas.map((c) => ({ id: c.id, nome: c.nome, invertida: !!c.invertida })),
+              pergunta,
+              detalhe: res?.detalhe || '',
+              mensagemAnjos: res?.mensagemAnjos || '',
+            })
+          }
+        } catch (e) {
+          console.error('[Tarot]', e)
+          setResultado({
+            detalhe: t('tarot.interpretError'),
+            mensagemAnjos: '',
           })
         }
-      } catch (e) {
-        console.error('[Tarot]', e)
-        setResultado({
-          detalhe: t('tarot.interpretError'),
-          mensagemAnjos: '',
-        })
       }
-    }
+    }, 220)
   }
 
   const voltar = () => {
@@ -262,6 +267,7 @@ export function EcraTarot({ mapaNatal, isPremium, userId, leiturasTarotUsadas = 
     setReveladas([])
     setResultado(null)
     setEmbaralhando(false)
+    setAnimarCliqueIdx(-1)
     setDistribuindo(-1)
     refrescar()
   }
@@ -317,6 +323,7 @@ export function EcraTarot({ mapaNatal, isPremium, userId, leiturasTarotUsadas = 
 
   if (fase==='revelar') return (
     <TelaRevelar cartas={cartas.map(c => localizeArcano(c, lang))} reveladas={reveladas} onRevelar={revelarCarta}
+      animarCliqueIdx={animarCliqueIdx}
       posicoes={posicoes} tipo={tipoLabel} lang={lang} t={t} pergunta={pergunta} resultado={resultado}
       onVoltar={voltar} isPremium={isPremium} onPagar={onPagar}/>
   )
@@ -588,12 +595,20 @@ function TelaDistribuir({ cartas, posicoes, distribuindo, t }) {
   )
 }
 
-function TelaRevelar({ cartas, reveladas = [], onRevelar, posicoes = [], tipo, pergunta, resultado, onVoltar, t }) {
+function TelaRevelar({ cartas, reveladas = [], onRevelar, animarCliqueIdx = -1, posicoes = [], tipo, pergunta, resultado, onVoltar, t }) {
   const CARTA = useTamanhoCartas()
   const todasReveladas = reveladas.length > 0 && reveladas.length === cartas.length && reveladas.every(Boolean)
 
   return (
     <div style={{padding:'20px 20px 110px',overflow:'visible'}}>
+      <style>{`
+        @keyframes tapShuffleSpin {
+          0% { transform: rotate(0deg) scale(1); filter: brightness(1); }
+          35% { transform: rotate(-8deg) scale(1.03); filter: brightness(1.1); }
+          70% { transform: rotate(7deg) scale(1.02); filter: brightness(1.06); }
+          100% { transform: rotate(0deg) scale(1); filter: brightness(1); }
+        }
+      `}</style>
       <div style={{display:'flex',alignItems:'center',gap:10,marginBottom:16}}>
         <button type="button" onClick={onVoltar} style={{background:'none',border:'none',color:CORES.brancoMuted,cursor:'pointer',padding:0}}>←</button>
         <h3 style={{margin:0,fontSize:17,color:CORES.dourado}}>{tipo?.nome}</h3>
@@ -610,7 +625,12 @@ function TelaRevelar({ cartas, reveladas = [], onRevelar, posicoes = [], tipo, p
           <div key={i} style={{textAlign:'center'}}>
             <div
               onClick={()=>onRevelar(i)}
-              style={{ cursor: reveladas[i] ? 'default' : 'pointer', display: 'inline-block' }}
+              style={{
+                cursor: reveladas[i] ? 'default' : 'pointer',
+                display: 'inline-block',
+                animation: animarCliqueIdx === i ? 'tapShuffleSpin 220ms ease-in-out 1' : 'none',
+                transformOrigin: 'center center',
+              }}
             >
               <CartaTarot
                 carta={c}
