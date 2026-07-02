@@ -2,18 +2,25 @@ import { localizeArcano } from '../i18n/tarotArcana.js'
 import { gerarMensagemAnjos } from '../tarotAnjos.js'
 import { cartaPositivaSimNao } from './deck.js'
 
-const POSICOES_PT = {
-  diaria: ['A mensagem do dia'],
-  simnao: ['A resposta do Universo'],
-  amor: ['O teu estado', 'A vossa ligação', 'O futuro juntos'],
-  geral: ['O passado', 'O presente', 'O futuro'],
+export const POSICOES_PT = {
+  diaria: ['Energia do Dia', 'Alerta', 'Conselho'],
+  simnao: ['Resposta Directa (Sim/Não)', 'Justificação'],
+  amor: ['Tu (O Teu Estado)', 'A Ligação (A Energia Atual)', 'O Futuro Juntos'],
+  geral: ['Passado (A Origem)', 'Presente (O Momento Atual)', 'Futuro (A Tendência)'],
   cigano: ['Amor & relações', 'Trabalho & carreira', 'Finanças', 'Saúde & energia', 'Destino & rumo'],
-  oraculo: ['A tua essência', 'O obstáculo', 'O aliado secreto', 'A acção a tomar', 'O resultado final'],
+  oraculo: ['Mensagem Oculta', 'Conselho da Alma'],
+  trabalho: ['Situação Atual', 'O Obstáculo Profissional', 'Conselho / Futuro'],
+  ferradura: ['O Passado', 'O Presente', 'Futuro Oculto', 'A Tua Atitude', 'O Ambiente', 'Os Obstáculos', 'Resultado Final'],
+  cruzcelta: [
+    'Energia Atual', 'O Desafio', 'Raiz do Problema', 'Passado Recente', 'Metas Conscientes',
+    'Futuro Próximo', 'A Tua Atitude', 'Ambiente Externo', 'Esperanças/Medos', 'Desfecho Longo Prazo',
+  ],
 }
 
 function contarNaipes(cartas) {
   const n = { paus: 0, copas: 0, espadas: 0, ouros: 0, major: 0 }
   for (const c of cartas) {
+    if (c.tipo === 'lenormand') continue
     if (c.tipo === 'major' || c.id <= 21) n.major += 1
     else if (c.naipe) n[c.naipe] = (n[c.naipe] || 0) + 1
   }
@@ -43,6 +50,16 @@ function sinteseElementos(contagem, lang) {
   return pack[dominante[0]] || ''
 }
 
+function sinteseLenormand(cartas, lang) {
+  if (!cartas.length) return ''
+  const inicio = cartas[0].nome
+  const fim = cartas[cartas.length - 1].nome
+  if (lang === 'en') {
+    return `\n\n✦ **Lenormand synthesis:** From ${inicio} to ${fim} - a material, fast-moving path. Focus on concrete facts and timing within the next 90 days.`
+  }
+  return `\n\n✦ **Síntese Lenormand:** De ${inicio} a ${fim} - um caminho material e rápido. Foca nos factos concretos e no prazo máximo de 90 dias.`
+}
+
 function aberturaPergunta(pergunta, lang) {
   if (!pergunta?.trim()) return ''
   const p = pergunta.trim()
@@ -51,6 +68,7 @@ function aberturaPergunta(pergunta, lang) {
 }
 
 function analiseCombinacoes(cartas, lang) {
+  if (cartas[0]?.tipo === 'lenormand') return ''
   const majors = cartas.filter((c) => c.tipo === 'major' || c.id <= 21)
   if (majors.length >= 2 && lang === 'pt') {
     return `\n\n**Síntese arquetípica:** ${majors.map((c) => c.nome).join(' e ')} dialogam nesta tiragem - observa como estas energias se reforçam ou tensionam entre si.`
@@ -59,6 +77,19 @@ function analiseCombinacoes(cartas, lang) {
     return `\n\n**Archetypal synthesis:** ${majors.map((c) => c.nome).join(' and ')} dialogue in this spread - notice how these energies reinforce or tension each other.`
   }
   return ''
+}
+
+function linhaCarta(c, pos, lang, tr) {
+  const txt = c.luz || c.sombra || ''
+  if (c.tipo === 'lenormand') {
+    return `**${pos}** · ${c.nome}\n${txt}`
+  }
+  const revLabel = tr('tarot.reversedLabel')
+  const orient = c.invertida
+    ? (lang === 'en' ? 'Reversed - shadow aspect' : 'Invertida - aspecto sombra')
+    : (lang === 'en' ? 'Upright - light aspect' : 'Direita - aspecto luz')
+  const body = c.invertida ? c.sombra : c.luz
+  return `**${pos}** · ${c.nome} (${orient}${c.invertida ? ` ${revLabel}` : ''})\n${body}`
 }
 
 /**
@@ -73,13 +104,17 @@ export function interpretarLeitura(cartas, tipoId, pergunta, mapaNatal, lang = '
 
   if (tipoId === 'simnao') {
     const c = cartasLocalizadas[0]
+    const just = cartasLocalizadas[1]
     const positiva = cartaPositivaSimNao(c)
     const nuance = c.invertida
       ? (lang === 'en' ? 'The reversed position suggests caution - the answer leans negative or "not yet".' : 'A posição invertida sugere cautela - a resposta inclina para negativo ou "ainda não".')
       : (lang === 'en' ? 'In upright position, the energy supports affirmation.' : 'Em posição direita, a energia favorece a afirmação.')
+    const justTxt = just
+      ? `\n\n**${tr('tarot.posSimnaoJust') || 'Justificação'}** · ${just.nome}\n${just.invertida ? just.sombra : just.luz}`
+      : ''
     return {
       resposta: positiva ? tr('tarot.yes') : tr('tarot.no'),
-      detalhe: `${aberturaPergunta(pergunta, lang)}${nuance}\n\n${c.invertida ? c.sombra : c.luz}\n\n✦ ${c.conselho}${astro}`,
+      detalhe: `${aberturaPergunta(pergunta, lang)}${nuance}\n\n${c.invertida ? c.sombra : c.luz}${justTxt}${astro}`,
       mensagemAnjos: gerarMensagemAnjos(cartasLocalizadas, mapaNatal, lang),
     }
   }
@@ -88,12 +123,7 @@ export function interpretarLeitura(cartas, tipoId, pergunta, mapaNatal, lang = '
   const posicoes = mapaPosicoes?.[tipoId] || POSICOES_PT[tipoId] || []
   const linhas = cartasLocalizadas.map((c, i) => {
     const pos = posicoes[i] || tr('tarot.cardN', { n: i + 1 })
-    const revLabel = tr('tarot.reversedLabel')
-    const txt = c.invertida ? c.sombra : c.luz
-    const orient = c.invertida
-      ? (lang === 'en' ? 'Reversed - shadow aspect' : 'Invertida - aspecto sombra')
-      : (lang === 'en' ? 'Upright - light aspect' : 'Direita - aspecto luz')
-    return `**${pos}** · ${c.nome} (${orient}${c.invertida ? ` ${revLabel}` : ''})\n${txt}`
+    return linhaCarta(c, pos, lang, tr)
   })
 
   let conclusao = ''
@@ -104,19 +134,41 @@ export function interpretarLeitura(cartas, tipoId, pergunta, mapaNatal, lang = '
     })}`
   } else if (tipoId === 'geral') {
     conclusao = `\n\n${tr('tarot.synthesisGeral', {
-      root: cartasLocalizadas[0].nome.toLowerCase(),
+      root: (cartasLocalizadas[0]?.nome || '').toLowerCase(),
       present: cartasLocalizadas[1]?.palavras?.[0] || '',
       future: cartasLocalizadas[2]?.palavras?.[1] || cartasLocalizadas[2]?.palavras?.[0] || '',
     })}`
-  } else if (tipoId === 'cigano' || tipoId === 'oraculo') {
-    conclusao = `\n\n${tr('tarot.synthesisCigano', {
-      start: cartasLocalizadas[0].nome,
-      end: cartasLocalizadas[4]?.nome || cartasLocalizadas[cartasLocalizadas.length - 1]?.nome,
-      path: cartasLocalizadas[2]?.palavras?.[0] || '',
+  } else if (tipoId === 'cigano') {
+    conclusao = sinteseLenormand(cartasLocalizadas, lang)
+  } else if (tipoId === 'oraculo') {
+    conclusao = `\n\n${tr('tarot.synthesisOraculo', {
+      hidden: cartasLocalizadas[0]?.nome || '',
+      soul: cartasLocalizadas[1]?.nome || '',
+    })}`
+  } else if (tipoId === 'trabalho') {
+    conclusao = `\n\n${tr('tarot.synthesisTrabalho', {
+      situacao: cartasLocalizadas[0]?.nome || '',
+      futuro: cartasLocalizadas[2]?.nome || '',
+    })}`
+  } else if (tipoId === 'ferradura') {
+    conclusao = `\n\n${tr('tarot.synthesisFerradura', {
+      passado: cartasLocalizadas[0]?.nome || '',
+      resultado: cartasLocalizadas[6]?.nome || '',
+    })}`
+  } else if (tipoId === 'cruzcelta') {
+    conclusao = `\n\n${tr('tarot.synthesisCruzCelta', {
+      energia: cartasLocalizadas[0]?.nome || '',
+      desfecho: cartasLocalizadas[9]?.nome || '',
+    })}`
+  } else if (tipoId === 'diaria') {
+    conclusao = `\n\n${tr('tarot.synthesisDiaria', {
+      energia: cartasLocalizadas[0]?.nome || '',
+      conselho: cartasLocalizadas[2]?.nome || '',
     })}`
   }
 
-  const elemento = sinteseElementos(contagemNaipes(cartasLocalizadas), lang)
+  const isLenormand = cartasLocalizadas[0]?.tipo === 'lenormand'
+  const elemento = isLenormand ? '' : sinteseElementos(contarNaipes(cartasLocalizadas), lang)
   const combinacoes = analiseCombinacoes(cartasLocalizadas, lang)
   const conselhos = cartasLocalizadas
     .filter((c) => c.conselho)
@@ -127,7 +179,7 @@ export function interpretarLeitura(cartas, tipoId, pergunta, mapaNatal, lang = '
     ? `\n\n**${lang === 'en' ? 'Guidance' : 'Orientação final'}**\n${conselhos}`
     : ''
 
-  const mensagemAnjos = gerarMensagemAnjos(cartasLocalizadas, mapaNatal, lang)
+  const mensagemAnjos = isLenormand ? '' : gerarMensagemAnjos(cartasLocalizadas, mapaNatal, lang)
 
   const detalhe = [
     aberturaPergunta(pergunta, lang).trim(),

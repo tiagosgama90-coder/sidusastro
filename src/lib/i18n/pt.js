@@ -119,8 +119,6 @@ export default {
       'auth/internal-error': 'Erro interno do Firebase.',
       'auth/missing-email': 'Introduz um e-mail.',
       'auth/missing-password': 'Introduz uma senha.',
-      'auth/api-key-not-valid.-please-pass-a-valid-api-key.': 'Chave Firebase inválida no servidor. Verifica VITE_FIREBASE_API_KEY no Netlify (sem aspas), usa a Browser key, e faz redeploy.',
-      apiKeyInvalid: 'Chave Firebase inválida. No Netlify usa a Browser key (AIzaSy...) sem aspas nem vírgulas, confirma Email/Password activo no Firebase, e faz Clear cache and deploy.',
       unknown: 'Erro desconhecido',
     },
     feature: {
@@ -169,7 +167,6 @@ export default {
     sentManual: 'E-mail de confirmação enviado para {email}. Verifica a caixa de entrada e o spam.',
     checkSpam: 'Conta criada! Enviámos um e-mail de confirmação para {email}. Abre a caixa de entrada e verifica também a pasta de spam ou lixo eletrónico antes de continuar.',
     spamReminder: '📬 Verifica a caixa de entrada e a pasta de spam ou lixo eletrónico. O e-mail de confirmação pode demorar alguns minutos a chegar.',
-    draftSaved: '✓ Os teus dados de nascimento estão guardados - após confirmar o e-mail, o formulário do mapa virá pré-preenchido.',
     confirmedAuto: '✦ E-mail confirmado! A tua conta está activa.',
     confirmedLogin: 'E-mail confirmado. Entra com o teu email e senha para continuar.',
     confirmBtn: 'Já confirmei - continuar',
@@ -410,7 +407,7 @@ export default {
   tarot: {
     title: '✦ Tarot Online',
     subtitle: 'Arcanos Virtuais',
-    desc: '6 baralhos · interpretação personalizada com o teu mapa natal',
+    desc: '9 jogos · interpretação personalizada com o teu mapa natal',
     freeExhausted: '3 leituras grátis esgotadas',
     freeRemaining: '{count} leitura grátis',
     freeRemainingPlural: '{count} leituras grátis',
@@ -450,6 +447,50 @@ export default {
     synthesisAmorChallenge: 'Existem desafios a resolver antes de avançar.',
     synthesisGeral: '✦ Síntese: O teu ciclo de transformação tem raízes no {root}, cresce no presente através de {present}, e aponta para {future}.',
     synthesisCigano: '✦ Síntese: As cinco cartas formam um mapa: o ponto de partida é {start}, o destino é {end}. O caminho entre eles exige {path}.',
+    synthesisOraculo: '✦ Síntese: A mensagem oculta de {hidden} pede que escutes o conselho da alma através de {soul}.',
+    synthesisTrabalho: '✦ Síntese: A situação profissional em {situacao} aponta para {futuro} como tendência nos próximos 3 meses.',
+    synthesisFerradura: '✦ Síntese: Desde {passado} até {resultado} - o arco deste projecto revela-se ao longo de 6 meses.',
+    synthesisCruzCelta: '✦ Síntese: A energia actual {energia} conduz ao desfecho {desfecho} num horizonte de 6 a 12 meses.',
+    synthesisDiaria: '✦ Síntese do dia: {energia} como energia, com conselho final em {conselho}. Válido até à meia-noite.',
+    posSimnaoJust: 'Justificação',
+    types: {
+      diaria: {
+        prazo: '24 Horas',
+        foco: 'Válido estritamente para o dia em que a carta é tirada (até à meia-noite ou próximas 24h).',
+      },
+      simnao: {
+        prazo: 'Imediato a 1 Mês',
+        foco: 'Responde ao estado actual da questão. Se a situação mudar muito no espaço de um mês, podes voltar a perguntar.',
+      },
+      amor: {
+        prazo: '3 a 6 Meses',
+        foco: 'As relações mudam de dinâmica com frequência. O "Futuro Juntos" prevê a tendência para os próximos meses.',
+      },
+      geral: {
+        prazo: '6 Meses',
+        foco: 'O "Passado" cobre os últimos 3 meses, o "Presente" o momento actual, e o "Futuro" até metade de um ano.',
+      },
+      cigano: {
+        prazo: '3 Meses',
+        foco: 'Lenormand focado no plano material. O futuro próximo fala das próximas semanas; o desfecho aponta para até 90 dias.',
+      },
+      oraculo: {
+        prazo: 'Sem Prazo (Energia Actual)',
+        foco: 'Funciona como conselho psicológico ou espiritual para o momento em que passas pela situação.',
+      },
+      trabalho: {
+        prazo: '3 Meses',
+        foco: 'Leitura dinâmica sobre vida profissional: emprego actual, busca de trabalho ou negócios.',
+      },
+      ferradura: {
+        prazo: '6 Meses',
+        foco: 'Ideal para analisar um projecto específico (processo em tribunal, comprar casa, lançar negócio).',
+      },
+      cruzcelta: {
+        prazo: '6 a 12 Meses',
+        foco: 'Radiografia total da vida ou de um dilema extremamente complexo - o jogo de mais longo prazo.',
+      },
+    },
     dailyOnce: '1× por dia · 24 h',
     dailyLocked: 'Leitura diária já revelada',
     dailyLockedDesc: 'Só podes baralhar uma vez a cada 24 horas - premium ou não. A carta de hoje permanece até amanhã.',

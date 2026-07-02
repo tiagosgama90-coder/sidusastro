@@ -22,11 +22,11 @@ export function embaralhar(arr) {
   return a
 }
 
-export function sortearCartas(n) {
+export function sortearCartas(n, { semInvertida = false } = {}) {
   const deck = embaralhar(baralhoCompleto())
   return deck.slice(0, n).map((c) => ({
     ...c,
-    invertida: Math.random() < 0.35,
+    invertida: semInvertida ? false : Math.random() < 0.35,
   }))
 }
 

@@ -97,8 +97,9 @@ function SuitGlyph({ naipe, cor, size = 28 }) {
 function CartaFallbackSVG({ carta, size }) {
   const w = size
   const h = Math.round(size * 1.6)
-  const isMajor = carta.tipo === 'major' || carta.id <= 21
-  const cor = isMajor ? (PALETAS_MAJOR[carta.id] ?? '#6D28D9') : (NAIPES_COR[carta.naipe] ?? carta.cor ?? '#6D28D9')
+  const isLenormand = carta.tipo === 'lenormand'
+  const isMajor = !isLenormand && (carta.tipo === 'major' || carta.id <= 21)
+  const cor = isLenormand ? '#5B21B6' : isMajor ? (PALETAS_MAJOR[carta.id] ?? '#6D28D9') : (NAIPES_COR[carta.naipe] ?? carta.cor ?? '#6D28D9')
   const id = `fb_${carta.id}_${size}`
 
   return (
@@ -117,7 +118,9 @@ function CartaFallbackSVG({ carta, size }) {
       <rect x="2" y="2" width="86" height="140" rx="7" fill="none" stroke={CORES.dourado} strokeWidth="1.2" opacity="0.7" />
       <rect x="6" y="6" width="78" height="132" rx="5" fill="none" stroke={CORES.dourado} strokeWidth="0.4" opacity="0.35" />
       <text x="10" y="17" fontSize="8" fill={CORES.dourado} fontFamily="Georgia,serif" opacity="0.9">{rankLabel(carta)}</text>
-      {isMajor ? (
+      {isLenormand ? (
+        <text x="45" y="82" fontSize="34" textAnchor="middle" dominantBaseline="middle">{carta.simb}</text>
+      ) : isMajor ? (
         <text x="45" y="82" fontSize="34" textAnchor="middle" dominantBaseline="middle">{carta.simb}</text>
       ) : (
         <SuitGlyph naipe={carta.naipe} cor={cor} />
@@ -129,7 +132,7 @@ function CartaFallbackSVG({ carta, size }) {
       {[18, 34, 56, 72].map((x) => (
         <text key={x} x={x} y="134" fontSize="6" fill={CORES.dourado} opacity="0.35" textAnchor="middle">✦</text>
       ))}
-      {carta.invertida && (
+      {carta.invertida && !isLenormand && (
         <text x="45" y="141" fontSize="5" fill="#EF4444" textAnchor="middle" opacity="0.9">
           {carta.invertidaLabel || 'INV'}
         </text>
@@ -185,7 +188,7 @@ export function CartaTarot({ carta, size = 110, virada = false, animarFlip = fal
   const faceStyle = {
     width: '100%',
     height: '100%',
-    transform: carta.invertida && !virada ? 'rotate(180deg)' : undefined,
+    transform: carta.invertida && !virada && carta.tipo !== 'lenormand' ? 'rotate(180deg)' : undefined,
     transformOrigin: 'center center',
     animation: animarFlip && !virada ? 'cartaFlipIn 0.65s ease-out forwards' : undefined,
     backfaceVisibility: 'hidden',

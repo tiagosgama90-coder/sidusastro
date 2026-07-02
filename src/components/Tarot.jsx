@@ -2,13 +2,14 @@
  * Sistema de Tarot Sidus - baralho profissional de 78 cartas (Mystic Marchetti)
  * ─ Ilustrações + interpretações profissionais
  * ─ 3 leituras gratuitas por conta · depois 2 € por leitura ou Premium
- * ─ 6 tipos de leitura · interpretações personalizadas com mapa natal
+ * ─ 9 tipos de leitura · interpretações personalizadas com mapa natal
  */
 import { useState, useEffect, useRef } from 'react'
 import { useLanguage } from '../lib/i18n/LanguageContext.jsx'
 import { localizeArcano, getTiposTarot, getPosicoesTarot } from '../lib/i18n/tarotArcana.js'
 import { PRECO_TAROT } from '../lib/pricing.js'
 import { sortearCartas, getCartaById, MAJOR_ARCANA } from '../lib/tarot/deck.js'
+import { sortearLenormand } from '../lib/tarot/lenormand.js'
 import { interpretarLeitura } from '../lib/tarot/interpretacao.js'
 import { CartaTarot } from './CartaTarot.jsx'
 import {
@@ -98,20 +99,29 @@ function podeLerGratis(isPremium, userId, leiturasRemotas = 0) {
 }
 
 const TIPOS = [
-  {id:'diaria',  nome:'Leitura Diária',     icone:'🌅',n:1,desc:'Uma carta para guiar o teu dia'},
-  {id:'simnao',  nome:'Tarot Sim ou Não',   icone:'🔮',n:1,desc:'Resposta directa e clara à tua questão'},
-  {id:'amor',    nome:'Tarot do Amor',       icone:'💞',n:3,desc:'Tu · A ligação · O futuro juntos'},
-  {id:'geral',   nome:'Leitura Geral',       icone:'✨',n:3,desc:'Passado · Presente · Futuro'},
-  {id:'cigano',  nome:'Baralho Cigano',      icone:'🎴',n:5,desc:'Leitura ancestral cigana de 5 cartas'},
-  {id:'oraculo', nome:'Tarot Oráculo',       icone:'🌌',n:5,desc:'Consulta profunda do teu destino'},
+  { id: 'diaria', nome: 'Leitura Diária', icone: '🌅', n: 3, desc: 'Energia do dia · Alerta · Conselho', prazoKey: 'tarot.types.diaria.prazo', focoKey: 'tarot.types.diaria.foco' },
+  { id: 'simnao', nome: 'Tarot Sim ou Não', icone: '🔮', n: 2, desc: 'Resposta directa e justificação', prazoKey: 'tarot.types.simnao.prazo', focoKey: 'tarot.types.simnao.foco' },
+  { id: 'amor', nome: 'Tarot do Amor', icone: '💞', n: 3, desc: 'Tu · A ligação · O futuro juntos', prazoKey: 'tarot.types.amor.prazo', focoKey: 'tarot.types.amor.foco' },
+  { id: 'geral', nome: 'Leitura Geral', icone: '✨', n: 3, desc: 'Passado · Presente · Futuro', prazoKey: 'tarot.types.geral.prazo', focoKey: 'tarot.types.geral.foco' },
+  { id: 'cigano', nome: 'Baralho Cigano', icone: '🎴', n: 5, desc: 'Lenormand · 36 cartas · leitura material', prazoKey: 'tarot.types.cigano.prazo', focoKey: 'tarot.types.cigano.foco' },
+  { id: 'oraculo', nome: 'Tarot Oráculo', icone: '🌌', n: 2, desc: 'Mensagem oculta · Conselho da alma', prazoKey: 'tarot.types.oraculo.prazo', focoKey: 'tarot.types.oraculo.foco' },
+  { id: 'trabalho', nome: 'Tarot do Trabalho', icone: '💼', n: 3, desc: 'Situação · Obstáculo · Conselho profissional', prazoKey: 'tarot.types.trabalho.prazo', focoKey: 'tarot.types.trabalho.foco' },
+  { id: 'ferradura', nome: 'A Ferradura', icone: '🧲', n: 7, desc: '7 cartas · análise de projecto ou dilema', prazoKey: 'tarot.types.ferradura.prazo', focoKey: 'tarot.types.ferradura.foco' },
+  { id: 'cruzcelta', nome: 'A Cruz Celta', icone: '☩', n: 10, desc: '10 cartas · radiografia completa da vida', prazoKey: 'tarot.types.cruzcelta.prazo', focoKey: 'tarot.types.cruzcelta.foco' },
 ]
-const POSICOES={
-  diaria:['A mensagem do dia'],
-  simnao:['A resposta do Universo'],
-  amor:['O teu estado', 'A vossa ligação', 'O futuro juntos'],
-  geral:['O passado', 'O presente', 'O futuro'],
-  cigano:['Amor & relações','Trabalho & carreira','Finanças','Saúde & energia','Destino & rumo'],
-  oraculo:['A tua essência','O obstáculo','O aliado secreto','A acção a tomar','O resultado final'],
+const POSICOES = {
+  diaria: ['Energia do Dia', 'Alerta', 'Conselho'],
+  simnao: ['Resposta Directa (Sim/Não)', 'Justificação'],
+  amor: ['Tu (O Teu Estado)', 'A Ligação (A Energia Atual)', 'O Futuro Juntos'],
+  geral: ['Passado (A Origem)', 'Presente (O Momento Atual)', 'Futuro (A Tendência)'],
+  cigano: ['Amor & relações', 'Trabalho & carreira', 'Finanças', 'Saúde & energia', 'Destino & rumo'],
+  oraculo: ['Mensagem Oculta', 'Conselho da Alma'],
+  trabalho: ['Situação Atual', 'O Obstáculo Profissional', 'Conselho / Futuro'],
+  ferradura: ['O Passado', 'O Presente', 'Futuro Oculto', 'A Tua Atitude', 'O Ambiente', 'Os Obstáculos', 'Resultado Final'],
+  cruzcelta: [
+    'Energia Atual', 'O Desafio', 'Raiz do Problema', 'Passado Recente', 'Metas Conscientes',
+    'Futuro Próximo', 'A Tua Atitude', 'Ambiente Externo', 'Esperanças/Medos', 'Desfecho Longo Prazo',
+  ],
 }
 
 // ── Componente principal ──────────────────────────────────────────────────────
@@ -166,7 +176,7 @@ export function EcraTarot({ mapaNatal, isPremium, userId, leiturasTarotUsadas = 
   const mapaTipos = getTiposTarot(lang)
   const mapaPosicoes = getPosicoesTarot(lang)
   const tipoLabel = tipo && mapaTipos?.[tipo.id]
-    ? { ...tipo, nome: mapaTipos[tipo.id].nome, desc: mapaTipos[tipo.id].desc }
+    ? { ...tipo, nome: mapaTipos[tipo.id].nome, desc: mapaTipos[tipo.id].desc, prazoKey: tipo.prazoKey, focoKey: tipo.focoKey }
     : tipo
   const posicoes = (mapaPosicoes?.[tipoId]) || POSICOES[tipoId] || []
   const usadas = leiturasGratisUsadas(userId, leiturasTarotUsadas)
@@ -204,7 +214,9 @@ export function EcraTarot({ mapaNatal, isPremium, userId, leiturasTarotUsadas = 
     }
     setEmbaralhando(true)
     agendar(() => {
-      const sel = sortearCartas(tipoAtual.n)
+      const sel = tipoEscolhidoId === 'cigano'
+        ? sortearLenormand(tipoAtual.n)
+        : sortearCartas(tipoAtual.n)
       setCartas(sel)
       setReveladas(new Array(tipoAtual.n).fill(false))
       setEmbaralhando(false)
@@ -290,7 +302,7 @@ export function EcraTarot({ mapaNatal, isPremium, userId, leiturasTarotUsadas = 
   }
 
   if (fase==='seleccionar') return (
-    <TelaSeleccionar tipos={TIPOS.map((t) => mapaTipos?.[t.id] ? { ...t, nome: mapaTipos[t.id].nome, desc: mapaTipos[t.id].desc } : t)} lang={lang} t={t} userId={userId} onSeleccionar={iniciarLeitura} isPremium={isPremium} gratisEsgotada={gratisEsgotada} restantes={restantes} tick={tick} onVoltar={onVoltar}/>
+    <TelaSeleccionar tipos={TIPOS.map((tp) => mapaTipos?.[tp.id] ? { ...tp, nome: mapaTipos[tp.id].nome, desc: mapaTipos[tp.id].desc } : tp)} lang={lang} t={t} userId={userId} onSeleccionar={iniciarLeitura} isPremium={isPremium} gratisEsgotada={gratisEsgotada} restantes={restantes} tick={tick} onVoltar={onVoltar}/>
   )
 
   if (fase==='pergunta') return (
@@ -423,6 +435,16 @@ function TelaSeleccionar({ tipos, onSeleccionar, isPremium, gratisEsgotada, rest
             <div style={{flex:1}}>
               <div style={{fontSize:14,fontWeight:600,color:CORES.branco}}>{tipo.nome}</div>
               <div style={{fontSize:11,color:CORES.brancoMuted}}>{tipo.desc}</div>
+              {tipo.prazoKey && (
+                <div style={{fontSize:10,marginTop:5,color:CORES.dourado,fontWeight:600}}>
+                  ⏱ {t(tipo.prazoKey)}
+                </div>
+              )}
+              {tipo.focoKey && (
+                <div style={{fontSize:10,marginTop:3,color:CORES.brancoMuted,lineHeight:1.4}}>
+                  {t(tipo.focoKey)}
+                </div>
+              )}
               {tipo.id === 'diaria' ? (
                 <div style={{fontSize:10,marginTop:4,color: diariaAtiva ? '#F87171' : '#34D399'}}>
                   {diariaAtiva
@@ -472,6 +494,12 @@ function TelaPergunta({ tipo, pergunta, setPergunta, onVoltar, podeLer, isPremiu
         <div style={{fontSize:44}}>{tipo?.icone}</div>
         <h2 style={{color:CORES.dourado,margin:'8px 0 4px'}}>{tipo?.nome}</h2>
         <p style={{fontSize:12,color:CORES.brancoMuted}}>{tipo?.desc}</p>
+        {tipo?.prazoKey && (
+          <p style={{fontSize:11,color:CORES.dourado,margin:'10px 0 0',fontWeight:600}}>⏱ {t(tipo.prazoKey)}</p>
+        )}
+        {tipo?.focoKey && (
+          <p style={{fontSize:11,color:CORES.brancoMuted,margin:'6px 0 0',lineHeight:1.45}}>{t(tipo.focoKey)}</p>
+        )}
       </div>
       <div style={{background:'rgba(255,255,255,0.04)',borderRadius:14,border:`1px solid rgba(223,183,108,0.2)`,padding:18,marginBottom:20}}>
         <label style={{fontSize:11,color:CORES.dourado,textTransform:'uppercase',letterSpacing:'0.08em',display:'block',marginBottom:10}}>
@@ -640,7 +668,9 @@ function TelaRevelar({ cartas, reveladas = [], onRevelar, animarCliqueIdx = -1, 
               />
             </div>
             <div style={{fontSize:10,color:CORES.brancoMuted,marginTop:5,width:CARTA.revelar,lineHeight:1.3}}>
-              {reveladas[i] ? (c.invertida ? t('tarot.reversedShort') : t('tarot.uprightShort')) : posicoes[i]}
+              {reveladas[i]
+                ? (c.tipo === 'lenormand' ? c.nome : (c.invertida ? t('tarot.reversedShort') : t('tarot.uprightShort')))
+                : posicoes[i]}
             </div>
           </div>
         ))}

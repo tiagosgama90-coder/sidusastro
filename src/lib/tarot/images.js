@@ -13,6 +13,7 @@ const RANKS = ['as', '02', '03', '04', '05', '06', '07', '08', '09', '10', 'vale
 
 export function slugForCarta(carta) {
   if (!carta) return null
+  if (carta.tipo === 'lenormand') return carta.slug ?? `lenormand-${String(carta.id).padStart(2, '0')}`
   if (carta.slug) return carta.slug
   if (carta.tipo === 'major' || carta.id <= 21) return MAJOR_SLUGS[carta.id] ?? null
   if (carta.naipe && carta.rank) return `${String(carta.id).padStart(2, '0')}-${carta.naipe}-${carta.rank}`
@@ -22,6 +23,7 @@ export function slugForCarta(carta) {
 export function imagemCartaUrl(carta) {
   const slug = slugForCarta(carta)
   if (!slug) return null
+  if (carta.tipo === 'lenormand') return `/tarot/lenormand/${slug}.png`
   return `/tarot/mystic/${slug}.png`
 }
 

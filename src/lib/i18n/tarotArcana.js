@@ -232,6 +232,7 @@ function localizeMinor(carta, lang) {
 
 export function localizeArcano(carta, lang) {
   if (!carta || lang === 'pt') return carta
+  if (carta.tipo === 'lenormand') return carta
   if (isMinor(carta)) return localizeMinor(carta, lang)
   const en = ARCANOS_EN[carta.id] || {}
   if (lang === 'en') {
@@ -284,88 +285,118 @@ export function localizeArcano(carta, lang) {
 }
 
 export const TIPOS_FR = {
-  diaria: { nome: 'Tirage du jour', desc: 'Une carte pour guider votre journée' },
-  simnao: { nome: 'Tarot Oui ou Non', desc: 'Une réponse directe et claire à votre question' },
+  diaria: { nome: 'Tirage du jour', desc: 'Énergie du jour · Alerte · Conseil' },
+  simnao: { nome: 'Tarot Oui ou Non', desc: 'Réponse directe et justification' },
   amor: { nome: "Tarot de l'Amour", desc: 'Vous · Le lien · L\'avenir ensemble' },
   geral: { nome: 'Tirage général', desc: 'Passé · Présent · Futur' },
-  cigano: { nome: 'Jeu gitane', desc: 'Tirage ancestral gitane à 5 cartes' },
-  oraculo: { nome: 'Tarot Oráculo', desc: 'Consultation profonde de votre destin' },
+  cigano: { nome: 'Jeu gitane', desc: 'Lenormand · 36 cartes · lecture matérielle' },
+  oraculo: { nome: 'Tarot Oráculo', desc: 'Message caché · Conseil de l\'âme' },
+  trabalho: { nome: 'Tarot du Travail', desc: 'Situation · Obstacle · Conseil professionnel' },
+  ferradura: { nome: 'Le Fer à Cheval', desc: '7 cartes · analyse de projet' },
+  cruzcelta: { nome: 'La Croix Celtique', desc: '10 cartes · radiographie complète' },
 }
 export const POSICOES_FR = {
-  diaria: ['Votre carte du jour'],
-  simnao: ['La réponse'],
-  amor: ['Vous', 'Le lien', "L'avenir ensemble"],
-  geral: ['Passé', 'Présent', 'Futur'],
-  cigano: ['Racine', 'Défi', 'Passé', 'Futur', 'Résultat'],
-  oraculo: ['Situation', 'Obstacle', 'Conseil', 'Influence cachée', 'Résultat'],
+  diaria: ['Énergie du jour', 'Alerte', 'Conseil'],
+  simnao: ['Réponse directe (Oui/Non)', 'Justification'],
+  amor: ['Vous (votre état)', 'Le lien (énergie actuelle)', "L'avenir ensemble"],
+  geral: ['Passé (l\'origine)', 'Présent (le moment)', 'Futur (la tendance)'],
+  cigano: ['Amour & relations', 'Travail & carrière', 'Finances', 'Santé & énergie', 'Destin & direction'],
+  oraculo: ['Message caché', 'Conseil de l\'âme'],
+  trabalho: ['Situation actuelle', 'Obstacle professionnel', 'Conseil / Futur'],
+  ferradura: ['Le passé', 'Le présent', 'Futur caché', 'Votre attitude', 'L\'environnement', 'Les obstacles', 'Résultat final'],
+  cruzcelta: ['Énergie actuelle', 'Le défi', 'Racine du problème', 'Passé récent', 'Objectifs conscients', 'Futur proche', 'Votre attitude', 'Environnement externe', 'Espoirs/Craintes', 'Issue long terme'],
 }
 
 export const TIPOS_EN = {
-  diaria:  { nome: 'Daily Reading',     desc: 'One card to guide your day' },
-  simnao:  { nome: 'Yes or No Tarot',   desc: 'A direct, clear answer to your question' },
+  diaria:  { nome: 'Daily Reading',     desc: 'Day energy · Alert · Guidance' },
+  simnao:  { nome: 'Yes or No Tarot',   desc: 'Direct answer and justification' },
   amor:    { nome: 'Love Tarot',        desc: 'You · The bond · The future together' },
   geral:   { nome: 'General Reading',   desc: 'Past · Present · Future' },
-  cigano:  { nome: 'Gypsy Deck',        desc: 'Ancestral 5-card gypsy reading' },
-  oraculo: { nome: 'Oracle Tarot',      desc: 'Deep consultation of your destiny' },
+  cigano:  { nome: 'Gypsy Deck',        desc: 'Lenormand · 36 cards · material reading' },
+  oraculo: { nome: 'Oracle Tarot',      desc: 'Hidden message · Soul guidance' },
+  trabalho: { nome: 'Career Tarot', desc: 'Situation · Obstacle · Professional advice' },
+  ferradura: { nome: 'The Horseshoe', desc: '7 cards · project or dilemma analysis' },
+  cruzcelta: { nome: 'Celtic Cross', desc: '10 cards · full life radiography' },
 }
 
 export const TIPOS_ES = {
-  diaria: { nome: 'Lectura diaria', desc: 'Una carta para guiar tu día' },
-  simnao: { nome: 'Tarot Sí o No', desc: 'Respuesta directa y clara a tu pregunta' },
+  diaria: { nome: 'Lectura diaria', desc: 'Energía del día · Alerta · Consejo' },
+  simnao: { nome: 'Tarot Sí o No', desc: 'Respuesta directa y justificación' },
   amor: { nome: 'Tarot del Amor', desc: 'Tú · El vínculo · El futuro juntos' },
   geral: { nome: 'Lectura general', desc: 'Pasado · Presente · Futuro' },
-  cigano: { nome: 'Baraja gitana', desc: 'Lectura ancestral gitana de 5 cartas' },
-  oraculo: { nome: 'Tarot Oráculo', desc: 'Consulta profunda de tu destino' },
+  cigano: { nome: 'Baraja gitana', desc: 'Lenormand · 36 cartas · lectura material' },
+  oraculo: { nome: 'Tarot Oráculo', desc: 'Mensaje oculto · Consejo del alma' },
+  trabalho: { nome: 'Tarot del Trabajo', desc: 'Situación · Obstáculo · Consejo profesional' },
+  ferradura: { nome: 'La Herradura', desc: '7 cartas · análisis de proyecto' },
+  cruzcelta: { nome: 'La Cruz Celta', desc: '10 cartas · radiografía completa' },
 }
 export const TIPOS_IT = {
   diaria: { nome: 'Lettura quotidiana', desc: 'Una carta per guidare la tua giornata' },
   simnao: { nome: 'Tarocchi Sì o No', desc: 'Risposta diretta e chiara alla tua domanda' },
   amor: { nome: 'Tarocchi dell’Amore', desc: 'Tu · Il legame · Il futuro insieme' },
   geral: { nome: 'Lettura generale', desc: 'Passato · Presente · Futuro' },
-  cigano: { nome: 'Mazzo gitano', desc: 'Lettura ancestrale gitana a 5 carte' },
-  oraculo: { nome: 'Tarocchi Oracolo', desc: 'Consulto profondo del tuo destino' },
+  cigano: { nome: 'Mazzo gitano', desc: 'Lenormand · 36 carte · lettura materiale' },
+  oraculo: { nome: 'Tarocchi Oracolo', desc: 'Messaggio nascosto · Consiglio dell\'anima' },
+  trabalho: { nome: 'Tarocchi del Lavoro', desc: 'Situazione · Ostacolo · Consiglio professionale' },
+  ferradura: { nome: 'Il Ferro di Cavallo', desc: '7 carte · analisi di progetto' },
+  cruzcelta: { nome: 'La Croce Celtica', desc: '10 carte · radiografia completa' },
 }
 export const TIPOS_DE = {
-  diaria: { nome: 'Tageslegung', desc: 'Eine Karte für deinen Tag' },
-  simnao: { nome: 'Ja/Nein Tarot', desc: 'Eine direkte und klare Antwort auf deine Frage' },
+  diaria: { nome: 'Tageslegung', desc: 'Tagesenergie · Warnung · Rat' },
+  simnao: { nome: 'Ja/Nein Tarot', desc: 'Direkte Antwort und Begründung' },
   amor: { nome: 'Liebes-Tarot', desc: 'Du · Die Verbindung · Die gemeinsame Zukunft' },
   geral: { nome: 'Allgemeine Legung', desc: 'Vergangenheit · Gegenwart · Zukunft' },
-  cigano: { nome: 'Zigeuner-Deck', desc: 'Ahnen-Legung mit 5 Karten' },
-  oraculo: { nome: 'Orakel-Tarot', desc: 'Tiefe Beratung zu deinem Schicksal' },
+  cigano: { nome: 'Zigeuner-Deck', desc: 'Lenormand · 36 Karten · materielle Legung' },
+  oraculo: { nome: 'Orakel-Tarot', desc: 'Verborgene Botschaft · Seelenrat' },
+  trabalho: { nome: 'Berufs-Tarot', desc: 'Situation · Hindernis · Berufsberatung' },
+  ferradura: { nome: 'Das Hufeisen', desc: '7 Karten · Projektanalyse' },
+  cruzcelta: { nome: 'Keltisches Kreuz', desc: '10 Karten · vollständige Lebensanalyse' },
 }
 
 export const POSICOES_EN = {
-  diaria:  ['Your card for today'],
-  simnao:  ['The answer'],
-  amor:    ['You', 'The connection', 'The future together'],
-  geral:   ['Past', 'Present', 'Future'],
-  cigano:  ['Root', 'Challenge', 'Past', 'Future', 'Outcome'],
-  oraculo: ['Situation', 'Obstacle', 'Advice', 'Hidden influence', 'Outcome'],
+  diaria:  ['Day Energy', 'Alert', 'Guidance'],
+  simnao:  ['Direct Answer (Yes/No)', 'Justification'],
+  amor:    ['You (Your State)', 'The Bond (Current Energy)', 'The Future Together'],
+  geral:   ['Past (The Origin)', 'Present (Current Moment)', 'Future (The Trend)'],
+  cigano:  ['Love & relationships', 'Work & career', 'Finances', 'Health & energy', 'Destiny & direction'],
+  oraculo: ['Hidden Message', 'Soul Guidance'],
+  trabalho: ['Current Situation', 'Professional Obstacle', 'Advice / Future'],
+  ferradura: ['The Past', 'The Present', 'Hidden Future', 'Your Attitude', 'The Environment', 'Obstacles', 'Final Outcome'],
+  cruzcelta: ['Current Energy', 'The Challenge', 'Root of Problem', 'Recent Past', 'Conscious Goals', 'Near Future', 'Your Attitude', 'External Environment', 'Hopes/Fears', 'Long-term Outcome'],
 }
 
 export const POSICOES_ES = {
-  diaria: ['Tu carta de hoy'],
-  simnao: ['La respuesta'],
-  amor: ['Tú', 'La conexión', 'El futuro juntos'],
-  geral: ['Pasado', 'Presente', 'Futuro'],
-  cigano: ['Raíz', 'Desafío', 'Pasado', 'Futuro', 'Resultado'],
-  oraculo: ['Situación', 'Obstáculo', 'Consejo', 'Influencia oculta', 'Resultado'],
+  diaria: ['Energía del día', 'Alerta', 'Consejo'],
+  simnao: ['Respuesta directa (Sí/No)', 'Justificación'],
+  amor: ['Tú (tu estado)', 'El vínculo (energía actual)', 'El futuro juntos'],
+  geral: ['Pasado (el origen)', 'Presente (el momento)', 'Futuro (la tendencia)'],
+  cigano: ['Amor y relaciones', 'Trabajo y carrera', 'Finanzas', 'Salud y energía', 'Destino y rumbo'],
+  oraculo: ['Mensaje oculto', 'Consejo del alma'],
+  trabalho: ['Situación actual', 'Obstáculo profesional', 'Consejo / Futuro'],
+  ferradura: ['El pasado', 'El presente', 'Futuro oculto', 'Tu actitud', 'El entorno', 'Obstáculos', 'Resultado final'],
+  cruzcelta: ['Energía actual', 'El desafío', 'Raíz del problema', 'Pasado reciente', 'Metas conscientes', 'Futuro próximo', 'Tu actitud', 'Entorno externo', 'Esperanzas/Miedos', 'Desenlace largo plazo'],
 }
 export const POSICOES_IT = {
-  diaria: ['La tua carta di oggi'],
-  simnao: ['La risposta'],
-  amor: ['Tu', 'La connessione', 'Il futuro insieme'],
-  geral: ['Passato', 'Presente', 'Futuro'],
-  cigano: ['Radice', 'Sfida', 'Passato', 'Futuro', 'Esito'],
-  oraculo: ['Situazione', 'Ostacolo', 'Consiglio', 'Influenza nascosta', 'Esito'],
+  diaria: ['Energia del giorno', 'Avviso', 'Consiglio'],
+  simnao: ['Risposta diretta (Sì/No)', 'Giustificazione'],
+  amor: ['Tu (il tuo stato)', 'Il legame (energia attuale)', 'Il futuro insieme'],
+  geral: ['Passato (l\'origine)', 'Presente (il momento)', 'Futuro (la tendenza)'],
+  cigano: ['Amore e relazioni', 'Lavoro e carriera', 'Finanze', 'Salute ed energia', 'Destino e direzione'],
+  oraculo: ['Messaggio nascosto', 'Consiglio dell\'anima'],
+  trabalho: ['Situazione attuale', 'Ostacolo professionale', 'Consiglio / Futuro'],
+  ferradura: ['Il passato', 'Il presente', 'Futuro nascosto', 'Il tuo atteggiamento', 'L\'ambiente', 'Ostacoli', 'Risultato finale'],
+  cruzcelta: ['Energia attuale', 'La sfida', 'Radice del problema', 'Passato recente', 'Obiettivi consapevoli', 'Futuro prossimo', 'Il tuo atteggiamento', 'Ambiente esterno', 'Speranze/Paure', 'Esito a lungo termine'],
 }
 export const POSICOES_DE = {
-  diaria: ['Deine Karte für heute'],
-  simnao: ['Die Antwort'],
-  amor: ['Du', 'Die Verbindung', 'Die gemeinsame Zukunft'],
-  geral: ['Vergangenheit', 'Gegenwart', 'Zukunft'],
-  cigano: ['Wurzel', 'Herausforderung', 'Vergangenheit', 'Zukunft', 'Ergebnis'],
-  oraculo: ['Situation', 'Hindernis', 'Rat', 'Verborgener Einfluss', 'Ergebnis'],
+  diaria: ['Tagesenergie', 'Warnung', 'Rat'],
+  simnao: ['Direkte Antwort (Ja/Nein)', 'Begründung'],
+  amor: ['Du (dein Zustand)', 'Die Verbindung (aktuelle Energie)', 'Die gemeinsame Zukunft'],
+  geral: ['Vergangenheit (Ursprung)', 'Gegenwart (aktueller Moment)', 'Zukunft (Tendenz)'],
+  cigano: ['Liebe & Beziehungen', 'Arbeit & Karriere', 'Finanzen', 'Gesundheit & Energie', 'Schicksal & Richtung'],
+  oraculo: ['Verborgene Botschaft', 'Seelenrat'],
+  trabalho: ['Aktuelle Situation', 'Berufliches Hindernis', 'Rat / Zukunft'],
+  ferradura: ['Die Vergangenheit', 'Die Gegenwart', 'Verborgene Zukunft', 'Deine Haltung', 'Die Umgebung', 'Hindernisse', 'Endergebnis'],
+  cruzcelta: ['Aktuelle Energie', 'Die Herausforderung', 'Wurzel des Problems', 'Jüngste Vergangenheit', 'Bewusste Ziele', 'Nahe Zukunft', 'Deine Haltung', 'Äußere Umgebung', 'Hoffnungen/Ängste', 'Langfristiges Ergebnis'],
 }
 
 export function getTiposTarot(lang) {
