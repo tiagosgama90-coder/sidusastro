@@ -127,6 +127,7 @@ export function EcraTarot({ mapaNatal, isPremium, userId, leiturasTarotUsadas = 
   const [tick, setTick]           = useState(0)
   const [resultado, setResultado]       = useState(null)
   const [leituraPaga, setLeituraPaga]   = useState(false)
+  const [aIniciarLeitura, setAIniciarLeitura] = useState(false)
   const montadoRef = useRef(true)
   const timersRef = useRef([])
 
@@ -189,10 +190,12 @@ export function EcraTarot({ mapaNatal, isPremium, userId, leiturasTarotUsadas = 
     setFase('pergunta')
   }
 
-  const comecarEmbaralhar = () => {
-    const tipoAtual = tipo || TIPOS.find((x) => x.id === tipoId)
+  const comecarEmbaralhar = (tipoEscolhidoId = tipoId) => {
+    if (aIniciarLeitura || embaralhando || distribuindo >= 0) return
+    const tipoAtual = TIPOS.find((x) => x.id === tipoEscolhidoId) || tipo
     if (!tipoAtual?.n) return
-    const isDiaria = tipoId === 'diaria'
+    setAIniciarLeitura(true)
+    const isDiaria = tipoEscolhidoId === 'diaria'
     if (!isDiaria && !isPremium && !leituraPaga && podeLerGratis(isPremium, userId, leiturasTarotUsadas)) {
       const n = registarLeituraGratis(userId)
       onLeituraGratisUsada?.(n)
@@ -205,6 +208,7 @@ export function EcraTarot({ mapaNatal, isPremium, userId, leiturasTarotUsadas = 
       setReveladas(new Array(tipoAtual.n).fill(false))
       setEmbaralhando(false)
       setDistribuindo(0)
+      setAIniciarLeitura(false)
     }, 2000)
   }
 
@@ -251,6 +255,7 @@ export function EcraTarot({ mapaNatal, isPremium, userId, leiturasTarotUsadas = 
 
   const voltar = () => {
     setLeituraPaga(false)
+    setAIniciarLeitura(false)
     setFase('seleccionar')
     setTipoId(null)
     setCartas([])
@@ -286,19 +291,21 @@ export function EcraTarot({ mapaNatal, isPremium, userId, leiturasTarotUsadas = 
     <TelaPergunta tipo={tipoLabel} lang={lang} t={t} pergunta={pergunta} setPergunta={setPergunta}
       onVoltar={voltar} podeLer={podeLer} isPremium={isPremium} restantes={restantes}
       onPagar={onPagar}
+      aIniciarLeitura={aIniciarLeitura}
       onComecar={() => {
+        if (aIniciarLeitura) return
         if (isPremium || podeLer) {
           setLeituraPaga(false)
-          comecarEmbaralhar()
+          comecarEmbaralhar(tipoId)
         } else {
           onPagar(t('tarot.payDesc', { tipo: tipo?.nome || '' }), PRECO_TAROT, () => {
             setLeituraPaga(true)
-            comecarEmbaralhar()
+            comecarEmbaralhar(tipoId)
           }, { productType: 'tarot' })
         }
       }}
       onPremium={onPremium}
-      onComecarPago={() => { setLeituraPaga(true); comecarEmbaralhar() }}
+      onComecarPago={() => { setLeituraPaga(true); comecarEmbaralhar(tipoId) }}
     />
   )
 
@@ -431,7 +438,7 @@ function TelaSeleccionar({ tipos, onSeleccionar, isPremium, gratisEsgotada, rest
   )
 }
 
-function TelaPergunta({ tipo, pergunta, setPergunta, onVoltar, podeLer, isPremium, restantes, onComecar, onPagar, onComecarPago, onPremium, t }) {
+function TelaPergunta({ tipo, pergunta, setPergunta, onVoltar, podeLer, isPremium, restantes, onComecar, onPagar, onComecarPago, onPremium, t, aIniciarLeitura = false }) {
   const [aPagar, setAPagar] = useState(false)
 
   const handlePagarLeitura = async (e) => {
@@ -467,10 +474,14 @@ function TelaPergunta({ tipo, pergunta, setPergunta, onVoltar, podeLer, isPremiu
           style={{width:'100%',background:'rgba(255,255,255,0.05)',border:`1px solid rgba(223,183,108,0.2)`,borderRadius:10,color:CORES.branco,fontSize:14,padding:12,resize:'none',height:80,boxSizing:'border-box',outline:'none'}}/>
       </div>
       {isPremium ? (
-        <button type="button" onClick={onComecar} style={{...btnDourado,width:'100%'}}>{t('tarot.shuffleReveal')}</button>
+        <button type="button" disabled={aIniciarLeitura} onClick={onComecar} style={{...btnDourado,width:'100%',opacity:aIniciarLeitura?0.7:1}}>
+          {aIniciarLeitura ? t('tarot.shuffling') : t('tarot.shuffleReveal')}
+        </button>
       ) : podeLer ? (
-        <button type="button" onClick={onComecar} style={{...btnDourado,width:'100%'}}>
-          {restantes === 1 ? t('tarot.shuffleFree', { count: restantes }) : t('tarot.shuffleFreePlural', { count: restantes })}
+        <button type="button" disabled={aIniciarLeitura} onClick={onComecar} style={{...btnDourado,width:'100%',opacity:aIniciarLeitura?0.7:1}}>
+          {aIniciarLeitura
+            ? t('tarot.shuffling')
+            : (restantes === 1 ? t('tarot.shuffleFree', { count: restantes }) : t('tarot.shuffleFreePlural', { count: restantes }))}
         </button>
       ) : (
         <div style={{background:'rgba(223,183,108,0.06)',border:`1px solid ${CORES.dourado}`,borderRadius:14,padding:20,textAlign:'center',position:'relative',zIndex:1}}>
@@ -500,24 +511,56 @@ function TelaPergunta({ tipo, pergunta, setPergunta, onVoltar, podeLer, isPremiu
 function TelaEmbaralhar({ t }) {
   const CARTA = useTamanhoCartas()
   const h = Math.round(CARTA.embaralhar * 1.6)
+  const stack = Array.from({ length: 8 })
   return (
     <div style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',minHeight:'50vh',padding:20,gap:20,overflow:'visible'}}>
       <style>{`
-        @keyframes shuffle { 0%{transform:rotate(0) translateX(0)} 25%{transform:rotate(-18deg) translateX(-30px)} 50%{transform:rotate(18deg) translateX(30px)} 75%{transform:rotate(-10deg) translateX(-15px)} 100%{transform:rotate(0) translateX(0)} }
-        @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+        @keyframes riffle {
+          0% { transform: translate(0,0) rotate(0deg) scale(0.98); }
+          18% { transform: translate(-38px,-18px) rotate(-18deg) scale(1); }
+          36% { transform: translate(34px,-8px) rotate(14deg) scale(1.02); }
+          52% { transform: translate(-22px,16px) rotate(-10deg) scale(1); }
+          70% { transform: translate(18px,20px) rotate(8deg) scale(0.99); }
+          100% { transform: translate(0,0) rotate(0deg) scale(0.98); }
+        }
+        @keyframes orbitGlow {
+          0%,100% { box-shadow: 0 0 0 rgba(223,183,108,0.0); }
+          45% { box-shadow: 0 0 26px rgba(223,183,108,0.35); }
+        }
+        @keyframes pulseFloat { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+        @keyframes sparkle {
+          0%,100% { opacity: 0; transform: scale(0.7) rotate(0deg); }
+          50% { opacity: 0.9; transform: scale(1.2) rotate(40deg); }
+        }
       `}</style>
-      <div style={{position:'relative',width:CARTA.embaralhar + 24,height:h + 20,overflow:'visible'}}>
-        {[...Array(5)].map((_,i)=>(
+      <div style={{position:'relative',width:CARTA.embaralhar + 70,height:h + 56,overflow:'visible'}}>
+        {stack.map((_,i)=>(
           <div key={i} style={{
-            position:'absolute',top:0,left:0,
-            animation:`shuffle 0.6s ease-in-out ${i*0.12}s infinite`,
-            transformOrigin:'center bottom',
+            position:'absolute',
+            top: 14 + ((i % 2) * 2),
+            left: 28,
+            animation:`riffle 0.95s cubic-bezier(.45,.05,.55,.95) ${i*0.08}s infinite, orbitGlow 1.4s ease-in-out ${i*0.11}s infinite`,
+            transformOrigin:'center center',
+            filter: `brightness(${0.92 + (i * 0.015)})`,
+            zIndex: i + 1,
           }}>
             <CartaTarot carta={MAJOR_ARCANA[0]} virada size={CARTA.embaralhar}/>
           </div>
         ))}
+        {[0,1,2,3,4].map((i)=>(
+          <span key={`spark-${i}`} style={{
+            position:'absolute',
+            top: 10 + (i * 18),
+            right: 10 + ((i % 2) * 12),
+            color: '#DFB76C',
+            fontSize: 12 + (i % 3),
+            animation:`sparkle 1.3s ease-in-out ${i*0.2}s infinite`,
+            userSelect: 'none',
+            pointerEvents: 'none',
+          }}>✦</span>
+        ))}
       </div>
-      <p style={{fontSize:15,color:CORES.brancoMuted,fontStyle:'italic',textAlign:'center',animation:'float 2s ease-in-out infinite'}}>
+      <p style={{fontSize:15,color:CORES.brancoMuted,fontStyle:'italic',textAlign:'center',animation:'pulseFloat 1.9s ease-in-out infinite'}}>
         {t('tarot.shuffling')}
       </p>
     </div>
