@@ -22,6 +22,14 @@ const CORES = {
   brancoMuted:'rgba(255,255,255,0.55)', vidroBorda:'rgba(223,183,108,0.22)',
 }
 
+const CARTA = {
+  revelar: 118,
+  revelarMini: 84,
+  embaralhar: 128,
+  distribuir: 100,
+  diaria: 152,
+}
+
 const btnDourado = {
   background:'linear-gradient(135deg,#DFB76C,#B8944F)',border:'none',borderRadius:12,
   color:'#0B071E',fontSize:15,fontWeight:700,padding:'14px 24px',cursor:'pointer',
@@ -314,7 +322,7 @@ function TelaDiariaBloqueada({ t, lang, ativa, msRestante, onVoltar }) {
         <div style={{ background: 'rgba(255,255,255,0.04)', border: `1px solid ${CORES.vidroBorda}`, borderRadius: 14, padding: 18, marginBottom: 16, textAlign: 'center' }}>
           <div style={{ fontSize: 11, color: CORES.dourado, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 12 }}>{t('tarot.dailySaved')}</div>
           <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 12 }}>
-            <CartaTarot carta={localizeArcano(carta, lang)} size={128} />
+            <CartaTarot carta={localizeArcano(carta, lang)} size={CARTA.diaria} />
           </div>
           <div style={{ fontSize: 16, fontWeight: 700, color: CORES.branco }}>{localizeArcano(carta, lang).nome}</div>
           {carta.invertida && <div style={{ fontSize: 11, color: '#F87171', marginTop: 4 }}>{t('tarot.reversed')}</div>}
@@ -472,14 +480,14 @@ function TelaEmbaralhar({ t }) {
         @keyframes shuffle { 0%{transform:rotate(0) translateX(0)} 25%{transform:rotate(-18deg) translateX(-30px)} 50%{transform:rotate(18deg) translateX(30px)} 75%{transform:rotate(-10deg) translateX(-15px)} 100%{transform:rotate(0) translateX(0)} }
         @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
       `}</style>
-      <div style={{position:'relative',width:118,height:188}}>
+      <div style={{position:'relative',width:142,height:226}}>
         {[...Array(5)].map((_,i)=>(
           <div key={i} style={{
             position:'absolute',top:0,left:0,
             animation:`shuffle 0.6s ease-in-out ${i*0.12}s infinite`,
             transformOrigin:'center bottom',
           }}>
-            <CartaTarot carta={MAJOR_ARCANA[0]} virada size={105}/>
+            <CartaTarot carta={MAJOR_ARCANA[0]} virada size={CARTA.embaralhar}/>
           </div>
         ))}
       </div>
@@ -501,8 +509,8 @@ function TelaDistribuir({ cartas, posicoes, distribuindo, t }) {
             animation: i<=distribuindo ? 'deal 0.4s ease-out forwards' : 'none',
             opacity: i<=distribuindo ? 1 : 0.15,
           }}>
-            <CartaTarot carta={i<=distribuindo ? MAJOR_ARCANA[0] : MAJOR_ARCANA[0]} virada size={82}/>
-            <div style={{fontSize:9,color:CORES.brancoMuted,marginTop:4,width:82}}>{pos}</div>
+            <CartaTarot carta={i<=distribuindo ? MAJOR_ARCANA[0] : MAJOR_ARCANA[0]} virada size={CARTA.distribuir}/>
+            <div style={{fontSize:9,color:CORES.brancoMuted,marginTop:4,width:CARTA.distribuir}}>{pos}</div>
           </div>
         ))}
       </div>
@@ -530,16 +538,16 @@ function TelaRevelar({ cartas, reveladas = [], onRevelar, posicoes = [], tipo, p
       )}
 
       {/* Cartas */}
-      <div style={{display:'flex',justifyContent:'center',flexWrap:'wrap',gap:12,marginBottom:20}}>
+      <div style={{display:'flex',justifyContent:'center',flexWrap:'wrap',gap:14,marginBottom:20}}>
         {cartas.map((c,i)=>(
           <div key={i} style={{textAlign:'center'}}>
             <div onClick={()=>onRevelar(i)} style={{
               cursor:reveladas[i]?'default':'pointer',
               animation: reveladas[i] ? 'flip3d 0.6s ease-out, glow 2s ease-in-out 0.6s 3' : 'none',
             }}>
-              {reveladas[i] ? <CartaTarot carta={c} size={94}/> : <CartaTarot carta={c} virada size={94}/>}
+              {reveladas[i] ? <CartaTarot carta={c} size={CARTA.revelar}/> : <CartaTarot carta={c} virada size={CARTA.revelar}/>}
             </div>
-            <div style={{fontSize:9,color:CORES.brancoMuted,marginTop:4,width:94,lineHeight:1.3}}>
+            <div style={{fontSize:10,color:CORES.brancoMuted,marginTop:5,width:CARTA.revelar,lineHeight:1.3}}>
               {reveladas[i] ? (c.invertida ? t('tarot.reversedShort') : t('tarot.uprightShort')) : posicoes[i]}
             </div>
           </div>
@@ -555,7 +563,7 @@ function TelaRevelar({ cartas, reveladas = [], onRevelar, posicoes = [], tipo, p
       {cartas.map((c,i) => reveladas[i] && (
         <div key={i} style={{background:'rgba(255,255,255,0.04)',border:`1px solid rgba(223,183,108,0.2)`,borderRadius:14,padding:18,marginBottom:12}}>
           <div style={{display:'flex',gap:14,alignItems:'flex-start',marginBottom:12}}>
-            <CartaTarot carta={c} size={66}/>
+            <CartaTarot carta={c} size={CARTA.revelarMini}/>
             <div>
               <div style={{fontSize:8,color:CORES.brancoMuted,textTransform:'uppercase',letterSpacing:'0.1em',marginBottom:4}}>{posicoes[i]}</div>
               <div style={{fontSize:16,fontWeight:700,color:CORES.branco,lineHeight:1.2}}>
