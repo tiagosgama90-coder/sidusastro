@@ -27,7 +27,8 @@ export function imagemCartaUrl(carta) {
   return `/tarot/mystic/${slug}.png`
 }
 
-export function imagemVersoUrl() {
+export function imagemVersoUrl(deck = 'tarot') {
+  if (deck === 'lenormand') return '/tarot/lenormand/verso.png'
   return '/tarot/mystic/verso.png'
 }
 
