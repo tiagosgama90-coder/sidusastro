@@ -21,6 +21,26 @@ const NAIPES_COR = {
   ouros: '#047857',
 }
 
+const FLIP_CSS = `
+@keyframes cartaFlipIn {
+  0% { transform: rotateY(180deg); }
+  100% { transform: rotateY(0deg); }
+}
+@keyframes cartaGlow {
+  0%, 100% { box-shadow: 0 4px 24px rgba(223,183,108,0.2); }
+  50% { box-shadow: 0 4px 32px rgba(223,183,108,0.55); }
+}
+`
+
+let flipCssInjected = false
+function ensureFlipCss() {
+  if (flipCssInjected || typeof document === 'undefined') return
+  const el = document.createElement('style')
+  el.textContent = FLIP_CSS
+  document.head.appendChild(el)
+  flipCssInjected = true
+}
+
 function toRoman(n) {
   const v = [10, 9, 5, 4, 1]
   const s = ['X', 'IX', 'V', 'IV', 'I']
@@ -82,8 +102,7 @@ function CartaFallbackSVG({ carta, size }) {
   const id = `fb_${carta.id}_${size}`
 
   return (
-    <svg width={w} height={h} viewBox="0 0 90 144"
-      style={{ transform: carta.invertida ? 'rotate(180deg)' : 'none', display: 'block' }}>
+    <svg width={w} height={h} viewBox="0 0 90 144" style={{ display: 'block' }}>
       <defs>
         <radialGradient id={`bg_${id}`} cx="50%" cy="35%" r="70%">
           <stop offset="0%" stopColor={cor} stopOpacity="0.7" />
@@ -119,66 +138,96 @@ function CartaFallbackSVG({ carta, size }) {
   )
 }
 
+function VersoSVG({ w, h }) {
+  return (
+    <svg width={w} height={h} viewBox="0 0 90 144">
+      <defs>
+        <linearGradient id="vd_mystic" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#0d0722" />
+          <stop offset="100%" stopColor="#1a0d3a" />
+        </linearGradient>
+      </defs>
+      <rect width="90" height="144" rx="8" fill="url(#vd_mystic)" />
+      <rect x="2" y="2" width="86" height="140" rx="7" fill="none" stroke={CORES.dourado} strokeWidth="1" opacity="0.45" />
+      <text x="45" y="76" fontSize="26" textAnchor="middle" dominantBaseline="middle" fill={CORES.dourado} opacity="0.3">✦</text>
+    </svg>
+  )
+}
+
 /**
  * Carta de tarot profissional - ilustração Mystic com fallback SVG ornamentado.
+ * animarFlip: animação 3D ao revelar (sem conflito com rotação invertida).
  */
-export function CartaTarot({ carta, size = 118, virada = false, className, style }) {
+export function CartaTarot({ carta, size = 110, virada = false, animarFlip = false, className, style }) {
   const [imgOk, setImgOk] = useState(true)
   if (!carta) return null
+  if (animarFlip) ensureFlipCss()
 
   const w = size
   const h = Math.round(size * 1.6)
   const src = virada ? imagemVersoUrl() : imagemCartaUrl(carta)
   const showImg = src && imgOk
 
-  const wrapperStyle = {
+  const outerStyle = {
     width: w,
     height: h,
     borderRadius: 8,
     overflow: 'hidden',
     flexShrink: 0,
+    display: 'inline-block',
+    verticalAlign: 'top',
+    perspective: animarFlip ? 800 : undefined,
     boxShadow: virada ? '0 4px 20px rgba(0,0,0,0.4)' : '0 4px 24px rgba(223,183,108,0.2)',
-    transform: !virada && carta.invertida ? 'rotate(180deg)' : 'none',
+    animation: animarFlip && !virada ? 'cartaGlow 2s ease-in-out 0.6s 3' : undefined,
     ...style,
   }
 
-  if (!showImg) {
-    if (virada) {
-      return (
-        <div className={className} style={wrapperStyle}>
-          <svg width={w} height={h} viewBox="0 0 90 144">
-            <defs>
-              <linearGradient id="vd_mystic" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#0d0722" />
-                <stop offset="100%" stopColor="#1a0d3a" />
-              </linearGradient>
-            </defs>
-            <rect width="90" height="144" rx="8" fill="url(#vd_mystic)" />
-            <rect x="2" y="2" width="86" height="140" rx="7" fill="none" stroke={CORES.dourado} strokeWidth="1" opacity="0.45" />
-            <text x="45" y="76" fontSize="26" textAnchor="middle" dominantBaseline="middle" fill={CORES.dourado} opacity="0.3">✦</text>
-          </svg>
-        </div>
-      )
-    }
-    return (
-      <div className={className} style={wrapperStyle}>
-        <CartaFallbackSVG carta={carta} size={size} />
-      </div>
-    )
+  const faceStyle = {
+    width: '100%',
+    height: '100%',
+    transform: carta.invertida && !virada ? 'rotate(180deg)' : undefined,
+    transformOrigin: 'center center',
+    animation: animarFlip && !virada ? 'cartaFlipIn 0.65s ease-out forwards' : undefined,
+    backfaceVisibility: 'hidden',
+    WebkitBackfaceVisibility: 'hidden',
   }
 
-  return (
-    <div className={className} style={wrapperStyle}>
+  const renderFace = () => {
+    if (virada) {
+      if (!showImg) return <VersoSVG w={w} h={h} />
+      return (
+        <img
+          src={src}
+          alt="Verso"
+          width={w}
+          height={h}
+          loading="eager"
+          decoding="async"
+          onError={() => setImgOk(false)}
+          style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+        />
+      )
+    }
+    if (!showImg) return <CartaFallbackSVG carta={carta} size={size} />
+    return (
       <img
         src={src}
-        alt={virada ? 'Verso' : carta.nome}
+        alt={carta.nome}
         width={w}
         height={h}
-        loading="lazy"
+        loading="eager"
         decoding="async"
         onError={() => setImgOk(false)}
         style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
       />
+    )
+  }
+
+  return (
+    <div className={className} style={outerStyle}>
+      <div style={faceStyle}>
+        {renderFace()}
+      </div>
     </div>
   )
 }

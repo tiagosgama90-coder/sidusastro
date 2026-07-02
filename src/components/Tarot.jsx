@@ -22,12 +22,35 @@ const CORES = {
   brancoMuted:'rgba(255,255,255,0.55)', vidroBorda:'rgba(223,183,108,0.22)',
 }
 
-const CARTA = {
+const CARTA_MOBILE = {
   revelar: 118,
   revelarMini: 84,
   embaralhar: 128,
   distribuir: 100,
   diaria: 152,
+}
+
+const CARTA_DESKTOP = {
+  revelar: 112,
+  revelarMini: 80,
+  embaralhar: 120,
+  distribuir: 96,
+  diaria: 140,
+}
+
+function tamanhoCartas() {
+  if (typeof window === 'undefined') return CARTA_MOBILE
+  return window.innerWidth >= 900 ? CARTA_DESKTOP : CARTA_MOBILE
+}
+
+function useTamanhoCartas() {
+  const [cartas, setCartas] = useState(tamanhoCartas)
+  useEffect(() => {
+    const onResize = () => setCartas(tamanhoCartas())
+    window.addEventListener('resize', onResize)
+    return () => window.removeEventListener('resize', onResize)
+  }, [])
+  return cartas
 }
 
 const btnDourado = {
@@ -296,6 +319,7 @@ export function EcraTarot({ mapaNatal, isPremium, userId, leiturasTarotUsadas = 
 
 // ── Sub-telas ─────────────────────────────────────────────────────────────────
 function TelaDiariaBloqueada({ t, lang, ativa, msRestante, onVoltar }) {
+  const CARTA = useTamanhoCartas()
   const cartaSalva = ativa?.cartas?.[0]
   const arcano = cartaSalva ? getCartaById(cartaSalva.id) : null
   const carta = arcano ? { ...arcano, invertida: !!cartaSalva.invertida, invertidaLabel: cartaSalva.invertida ? t('tarot.reversed') : '' } : null
@@ -474,13 +498,15 @@ function TelaPergunta({ tipo, pergunta, setPergunta, onVoltar, podeLer, isPremiu
 }
 
 function TelaEmbaralhar({ t }) {
+  const CARTA = useTamanhoCartas()
+  const h = Math.round(CARTA.embaralhar * 1.6)
   return (
-    <div style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',minHeight:'50vh',padding:20,gap:20}}>
+    <div style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',minHeight:'50vh',padding:20,gap:20,overflow:'visible'}}>
       <style>{`
         @keyframes shuffle { 0%{transform:rotate(0) translateX(0)} 25%{transform:rotate(-18deg) translateX(-30px)} 50%{transform:rotate(18deg) translateX(30px)} 75%{transform:rotate(-10deg) translateX(-15px)} 100%{transform:rotate(0) translateX(0)} }
         @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
       `}</style>
-      <div style={{position:'relative',width:142,height:226}}>
+      <div style={{position:'relative',width:CARTA.embaralhar + 24,height:h + 20,overflow:'visible'}}>
         {[...Array(5)].map((_,i)=>(
           <div key={i} style={{
             position:'absolute',top:0,left:0,
@@ -499,8 +525,9 @@ function TelaEmbaralhar({ t }) {
 }
 
 function TelaDistribuir({ cartas, posicoes, distribuindo, t }) {
+  const CARTA = useTamanhoCartas()
   return (
-    <div style={{padding:'30px 20px',textAlign:'center'}}>
+    <div style={{padding:'30px 20px',textAlign:'center',overflow:'visible'}}>
       <style>{`@keyframes deal{from{transform:translateY(-60px) scale(0.7);opacity:0}to{transform:translateY(0) scale(1);opacity:1}}`}</style>
       <p style={{fontSize:13,color:CORES.brancoMuted,marginBottom:20}}>{t('tarot.dealing')}</p>
       <div style={{display:'flex',justifyContent:'center',flexWrap:'wrap',gap:10}}>
@@ -519,14 +546,11 @@ function TelaDistribuir({ cartas, posicoes, distribuindo, t }) {
 }
 
 function TelaRevelar({ cartas, reveladas = [], onRevelar, posicoes = [], tipo, pergunta, resultado, onVoltar, t }) {
+  const CARTA = useTamanhoCartas()
   const todasReveladas = reveladas.length > 0 && reveladas.length === cartas.length && reveladas.every(Boolean)
 
   return (
-    <div style={{padding:'20px 20px 110px'}}>
-      <style>{`
-        @keyframes flip3d{0%{transform:perspective(600px) rotateY(180deg)}100%{transform:perspective(600px) rotateY(0deg)}}
-        @keyframes glow{0%,100%{box-shadow:0 0 10px rgba(223,183,108,0.3)}50%{box-shadow:0 0 25px rgba(223,183,108,0.6)}}
-      `}</style>
+    <div style={{padding:'20px 20px 110px',overflow:'visible'}}>
       <div style={{display:'flex',alignItems:'center',gap:10,marginBottom:16}}>
         <button type="button" onClick={onVoltar} style={{background:'none',border:'none',color:CORES.brancoMuted,cursor:'pointer',padding:0}}>←</button>
         <h3 style={{margin:0,fontSize:17,color:CORES.dourado}}>{tipo?.nome}</h3>
@@ -538,14 +562,19 @@ function TelaRevelar({ cartas, reveladas = [], onRevelar, posicoes = [], tipo, p
       )}
 
       {/* Cartas */}
-      <div style={{display:'flex',justifyContent:'center',flexWrap:'wrap',gap:14,marginBottom:20}}>
+      <div style={{display:'flex',justifyContent:'center',flexWrap:'wrap',gap:14,marginBottom:20,overflow:'visible'}}>
         {cartas.map((c,i)=>(
           <div key={i} style={{textAlign:'center'}}>
-            <div onClick={()=>onRevelar(i)} style={{
-              cursor:reveladas[i]?'default':'pointer',
-              animation: reveladas[i] ? 'flip3d 0.6s ease-out, glow 2s ease-in-out 0.6s 3' : 'none',
-            }}>
-              {reveladas[i] ? <CartaTarot carta={c} size={CARTA.revelar}/> : <CartaTarot carta={c} virada size={CARTA.revelar}/>}
+            <div
+              onClick={()=>onRevelar(i)}
+              style={{ cursor: reveladas[i] ? 'default' : 'pointer', display: 'inline-block' }}
+            >
+              <CartaTarot
+                carta={c}
+                size={CARTA.revelar}
+                virada={!reveladas[i]}
+                animarFlip={!!reveladas[i]}
+              />
             </div>
             <div style={{fontSize:10,color:CORES.brancoMuted,marginTop:5,width:CARTA.revelar,lineHeight:1.3}}>
               {reveladas[i] ? (c.invertida ? t('tarot.reversedShort') : t('tarot.uprightShort')) : posicoes[i]}
