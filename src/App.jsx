@@ -3113,7 +3113,8 @@ function Navbar({ passo, setPasso, isDesktop, dados, fotoPerfil }) {
 
   const ferramentasNav = getFerramentas(lang).map((f) => ({
     id: f.id,
-    label: f.nome,
+    label: f.nomeNav || f.nome,
+    title: f.nome,
     icon: f.icon,
     glow: f.premium ? CORES.dourado : '#93C5FD',
   }))
@@ -3167,7 +3168,7 @@ function Navbar({ passo, setPasso, isDesktop, dados, fotoPerfil }) {
       <header style={headerStyle}>
         {isDesktop ? (
           <>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
+            <div className="desktop-nav-brand">
               <LogoSidus onClick={irHome} compact />
               <LanguageSwitcher variant="inline" />
             </div>
@@ -3184,7 +3185,7 @@ function Navbar({ passo, setPasso, isDesktop, dados, fotoPerfil }) {
                     onClick={() => navegar(item.id)}
                     onMouseEnter={() => setHover(item.id)}
                     onMouseLeave={() => setHover(null)}
-                    title={item.label}
+                    title={item.title || item.label}
                     style={{
                       background: ativo ? 'rgba(223,183,108,0.18)' : emHover ? 'rgba(255,255,255,0.06)' : 'transparent',
                       border: `1px solid ${ativo ? CORES.dourado : emHover ? 'rgba(223,183,108,0.3)' : 'transparent'}`,
