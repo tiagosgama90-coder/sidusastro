@@ -2202,6 +2202,8 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
 
   const downloadPdf = async () => {
     if (gerandoPdf) return
+    const scrollX = window.scrollX
+    const scrollY = window.scrollY
     setGerandoPdf(true)
     try {
       const { gerarPdfMapaAstral } = await import('./components/PdfMapa.jsx')
@@ -2212,6 +2214,9 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
       console.error('PDF error:', e)
       alert(t('mapa.pdfError'))
     } finally {
+      requestAnimationFrame(() => {
+        window.scrollTo(scrollX, scrollY)
+      })
       setGerandoPdf(false)
     }
   }

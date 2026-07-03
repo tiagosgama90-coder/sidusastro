@@ -1,64 +1,41 @@
-/** Remove símbolos que o Helvetica do jsPDF não renderiza bem. */
+/** Fator de seguranca: Helvetica subestima largura de acentos PT/ES/FR. */
+const UNICODE_SAFE_FACTOR = 0.62
+
+/** Remove simbolos que o Helvetica do jsPDF nao renderiza bem. */
 export function sanitizarTextoPdf(texto) {
   return String(texto ?? '')
     .replace(/\u2726/g, '>>')
     .replace(/[🔥🌍💨💧⚡🏔🌊❤💼🔮📄✉⏳✓💳]/g, '')
     .replace(/℞/g, 'R')
     .replace(/\u00A0/g, ' ')
+    .replace(/[\u2013\u2014]/g, '-')
 }
 
 /**
- * Quebra texto usando getTextWidth (consistente com doc.text).
- * splitTextToSize do jsPDF subestima largura com acentos PT/ES/FR.
+ * Quebra texto para caber na pagina (splitTextToSize + margem unicode).
  */
 export function wrapPdfText(doc, texto, maxWidthMm) {
   const text = sanitizarTextoPdf(texto)
   if (!text) return ['']
-
-  const linhas = []
-  for (const paragrafo of text.split(/\n/)) {
-    const trimmed = paragrafo.trim()
-    if (!trimmed) {
-      linhas.push('')
-      continue
-    }
-
-    const palavras = trimmed.split(/\s+/).filter(Boolean)
-    let linha = ''
-
-    for (const palavra of palavras) {
-      const candidata = linha ? `${linha} ${palavra}` : palavra
-      if (doc.getTextWidth(candidata) <= maxWidthMm) {
-        linha = candidata
-        continue
-      }
-
-      if (linha) linhas.push(linha)
-
-      if (doc.getTextWidth(palavra) <= maxWidthMm) {
-        linha = palavra
-        continue
-      }
-
-      let pedaco = ''
-      for (const ch of palavra) {
-        const teste = pedaco + ch
-        if (doc.getTextWidth(teste) <= maxWidthMm) {
-          pedaco = teste
-        } else {
-          if (pedaco) linhas.push(pedaco)
-          pedaco = ch
-        }
-      }
-      linha = pedaco
-    }
-
-    if (linha) linhas.push(linha)
-  }
-
-  return linhas.length ? linhas : ['']
+  const safeWidth = Math.max(20, maxWidthMm * UNICODE_SAFE_FACTOR)
+  return doc.splitTextToSize(text, safeWidth)
 }
 
 export function alturaTextoPdf(doc, texto, maxWidthMm, alturaLinha = 5) {
   return wrapPdfText(doc, texto, maxWidthMm).length * alturaLinha + 3
+}
+
+/** Desenha linhas centradas; devolve o Y final. */
+export function escreverLinhasCentradas(doc, linhas, centerX, y, lineHeight = 5) {
+  for (const linha of linhas) {
+    if (linha) doc.text(linha, centerX, y, { align: 'center' })
+    y += lineHeight
+  }
+  return y
+}
+
+/** Quebra e desenha paragrafo centrado; devolve o Y final. */
+export function escreverParagrafoCentrado(doc, texto, centerX, y, maxWidthMm, lineHeight = 5) {
+  const linhas = wrapPdfText(doc, texto, maxWidthMm)
+  return escreverLinhasCentradas(doc, linhas, centerX, y, lineHeight) + 3
 }

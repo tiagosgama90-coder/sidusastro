@@ -1,10 +1,10 @@
-/** Captura a mandala completa (roda + grelha + tabela) visível no DOM para jsPDF. */
+/** Captura a mandala completa (roda + grelha + tabela) visivel no DOM para jsPDF. */
 export async function capturarMandalaParaPdf(selector = '[data-sidus-mandala-export]') {
   const el = document.querySelector(selector)
   if (!el) return null
 
-  el.scrollIntoView({ block: 'start' })
-  await new Promise((r) => setTimeout(r, 200))
+  const scrollX = window.scrollX
+  const scrollY = window.scrollY
 
   try {
     const { default: html2canvas } = await import('html2canvas')
@@ -17,11 +17,19 @@ export async function capturarMandalaParaPdf(selector = '[data-sidus-mandala-exp
       height: el.scrollHeight,
       windowWidth: el.scrollWidth,
       windowHeight: el.scrollHeight,
+      scrollX: 0,
+      scrollY: 0,
+      x: 0,
+      y: 0,
     })
     return canvas.toDataURL('image/png')
   } catch (e) {
     console.warn('[Sidus] Mandala PDF capture:', e?.message)
     return null
+  } finally {
+    requestAnimationFrame(() => {
+      window.scrollTo(scrollX, scrollY)
+    })
   }
 }
 
@@ -34,7 +42,7 @@ function loadImage(src) {
   })
 }
 
-/** Insere imagem alta no jsPDF, repartindo por páginas se necessário (sem cortar). */
+/** Insere imagem alta no jsPDF, repartindo por paginas se necessario (sem cortar). */
 export async function adicionarMandalaAoPdf(doc, mandalaPng, { L, W, yStart, pageBottom = 275, ESCURO = [11, 7, 30] }) {
   const props = doc.getImageProperties(mandalaPng)
   const imgW = W
