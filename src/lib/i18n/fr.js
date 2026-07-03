@@ -1,8 +1,8 @@
 export default {
   nav: {
-    home: "Accueil",
+    home: "Home",
     mapa: "Carte astrale",
-    tarot: "Tarot en ligne",
+    tarot: "Tarot Online",
     ferramentas: "Outils",
     oraculo: "Chat Oráculo",
     perfil: "Profil",

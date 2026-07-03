@@ -2,63 +2,63 @@ import { Compass, Heart, Activity, BookOpen, Moon, Sparkles, Clock } from 'lucid
 import { contentForLang } from './langUtil.js'
 
 const FERRAMENTAS_PT = [
-  { id: 'bussola', nome: 'Bússola Cósmica', nomeNav: 'Bússola Cósmica', icon: Compass, premium: true },
-  { id: 'sinastria', nome: 'Radar de Afinidades', nomeNav: 'Radar de Afinidades', sub: 'Prévia grátis · Sinastria Pro', icon: Heart, premium: false },
-  { id: 'numerologia', nome: 'Numerologia', nomeNav: 'Numerologia', sub: 'Vibração espiritual do nome', icon: Sparkles, premium: true },
-  { id: 'sonhos', nome: 'Interpretação de Sonhos', nomeNav: 'Interpretação de Sonhos', sub: 'Símbolos e mensagens', icon: Moon, premium: false },
-  { id: 'biorritmo', nome: 'Fluxo Vital', nomeNav: 'Fluxo Vital', sub: 'Biorritmo', icon: Activity, premium: false },
-  { id: 'horasIguais', nome: 'Horas Iguais', nomeNav: 'Horas Iguais', sub: 'Mensagens angélicas', icon: Clock, premium: false },
-  { id: 'diario', nome: 'Diário Astral', nomeNav: 'Diário Astral', icon: BookOpen, premium: false },
+  { id: 'bussola', nome: 'Bússola Cósmica', icon: Compass, premium: true },
+  { id: 'sinastria', nome: 'Radar de Afinidades', sub: 'Prévia grátis · Sinastria Pro', icon: Heart, premium: false },
+  { id: 'numerologia', nome: 'Numerologia', sub: 'Vibração espiritual do nome', icon: Sparkles, premium: true },
+  { id: 'sonhos', nome: 'Interpretação de Sonhos', sub: 'Símbolos e mensagens', icon: Moon, premium: false },
+  { id: 'biorritmo', nome: 'Fluxo Vital', sub: 'Biorritmo', icon: Activity, premium: false },
+  { id: 'horasIguais', nome: 'Horas Iguais', sub: 'Mensagens angélicas', icon: Clock, premium: false },
+  { id: 'diario', nome: 'Diário Astral', icon: BookOpen, premium: false },
 ]
 
 const FERRAMENTAS_EN = [
-  { id: 'bussola', nome: 'Cosmic Compass', nomeNav: 'Cosmic Compass', icon: Compass, premium: true },
-  { id: 'sinastria', nome: 'Affinity Radar', nomeNav: 'Radar Affin.', sub: 'Free preview · Pro synastry', icon: Heart, premium: false },
-  { id: 'numerologia', nome: 'Numerology', nomeNav: 'Numerology', sub: 'Spiritual name vibration', icon: Sparkles, premium: true },
-  { id: 'sonhos', nome: 'Dream Interpretation', nomeNav: 'Interpr. Dreams', sub: 'Symbols & messages', icon: Moon, premium: false },
-  { id: 'biorritmo', nome: 'Vital Flow', nomeNav: 'Vital Flow', sub: 'Biorhythm', icon: Activity, premium: false },
-  { id: 'horasIguais', nome: 'Mirror Hours', nomeNav: 'Mirror Hours', sub: 'Angelic messages', icon: Clock, premium: false },
-  { id: 'diario', nome: 'Astral Journal', nomeNav: 'Astral Journal', icon: BookOpen, premium: false },
+  { id: 'bussola', nome: 'Cosmic Compass', icon: Compass, premium: true },
+  { id: 'sinastria', nome: 'Affinity Radar', sub: 'Free preview · Pro synastry', icon: Heart, premium: false },
+  { id: 'numerologia', nome: 'Numerology', sub: 'Spiritual name vibration', icon: Sparkles, premium: true },
+  { id: 'sonhos', nome: 'Dream Interpretation', sub: 'Symbols & messages', icon: Moon, premium: false },
+  { id: 'biorritmo', nome: 'Vital Flow', sub: 'Biorhythm', icon: Activity, premium: false },
+  { id: 'horasIguais', nome: 'Mirror Hours', sub: 'Angelic messages', icon: Clock, premium: false },
+  { id: 'diario', nome: 'Astral Journal', icon: BookOpen, premium: false },
 ]
 
 const FERRAMENTAS_ES = [
-  { id: 'bussola', nome: 'Brújula Cósmica', nomeNav: 'Brújula Cósmica', icon: Compass, premium: true },
-  { id: 'sinastria', nome: 'Radar de Afinidades', nomeNav: 'Radar Afinid.', sub: 'Vista previa gratis · Sinastría Pro', icon: Heart, premium: false },
-  { id: 'numerologia', nome: 'Numerología', nomeNav: 'Numerología', sub: 'Vibración espiritual del nombre', icon: Sparkles, premium: true },
-  { id: 'sonhos', nome: 'Interpretación de Sueños', nomeNav: 'Interpr. Sueños', sub: 'Símbolos y mensajes', icon: Moon, premium: false },
-  { id: 'biorritmo', nome: 'Flujo Vital', nomeNav: 'Flujo Vital', sub: 'Biorritmo', icon: Activity, premium: false },
-  { id: 'horasIguais', nome: 'Horas Espejo', nomeNav: 'Horas Espejo', sub: 'Mensajes angélicos', icon: Clock, premium: false },
-  { id: 'diario', nome: 'Diario Astral', nomeNav: 'Diario Astral', icon: BookOpen, premium: false },
+  { id: 'bussola', nome: 'Brújula Cósmica', icon: Compass, premium: true },
+  { id: 'sinastria', nome: 'Radar de Afinidades', sub: 'Vista previa gratis · Sinastría Pro', icon: Heart, premium: false },
+  { id: 'numerologia', nome: 'Numerología', sub: 'Vibración espiritual del nombre', icon: Sparkles, premium: true },
+  { id: 'sonhos', nome: 'Interpretación de Sueños', sub: 'Símbolos y mensajes', icon: Moon, premium: false },
+  { id: 'biorritmo', nome: 'Flujo Vital', sub: 'Biorritmo', icon: Activity, premium: false },
+  { id: 'horasIguais', nome: 'Horas Espejo', sub: 'Mensajes angélicos', icon: Clock, premium: false },
+  { id: 'diario', nome: 'Diario Astral', icon: BookOpen, premium: false },
 ]
 
 const FERRAMENTAS_IT = [
-  { id: 'bussola', nome: 'Bussola Cosmica', nomeNav: 'Bussola Cosmica', icon: Compass, premium: true },
-  { id: 'sinastria', nome: 'Radar delle Affinità', nomeNav: 'Radar Affin.', sub: 'Anteprima gratis · Sinastria Pro', icon: Heart, premium: false },
-  { id: 'numerologia', nome: 'Numerologia', nomeNav: 'Numerologia', sub: 'Vibrazione spirituale del nome', icon: Sparkles, premium: true },
-  { id: 'sonhos', nome: 'Interpretazione dei Sogni', nomeNav: 'Interpr. Sogni', sub: 'Simboli e messaggi', icon: Moon, premium: false },
-  { id: 'biorritmo', nome: 'Flusso Vitale', nomeNav: 'Flusso Vitale', sub: 'Bioritmo', icon: Activity, premium: false },
-  { id: 'horasIguais', nome: 'Ore Specchio', nomeNav: 'Ore Specchio', sub: 'Messaggi angelici', icon: Clock, premium: false },
-  { id: 'diario', nome: 'Diario Astrale', nomeNav: 'Diario Astrale', icon: BookOpen, premium: false },
+  { id: 'bussola', nome: 'Bussola Cosmica', icon: Compass, premium: true },
+  { id: 'sinastria', nome: 'Radar delle Affinità', sub: 'Anteprima gratis · Sinastria Pro', icon: Heart, premium: false },
+  { id: 'numerologia', nome: 'Numerologia', sub: 'Vibrazione spirituale del nome', icon: Sparkles, premium: true },
+  { id: 'sonhos', nome: 'Interpretazione dei Sogni', sub: 'Simboli e messaggi', icon: Moon, premium: false },
+  { id: 'biorritmo', nome: 'Flusso Vitale', sub: 'Bioritmo', icon: Activity, premium: false },
+  { id: 'horasIguais', nome: 'Ore Specchio', sub: 'Messaggi angelici', icon: Clock, premium: false },
+  { id: 'diario', nome: 'Diario Astrale', icon: BookOpen, premium: false },
 ]
 
 const FERRAMENTAS_DE = [
-  { id: 'bussola', nome: 'Kosmischer Kompass', nomeNav: 'Kosm. Kompass', icon: Compass, premium: true },
-  { id: 'sinastria', nome: 'Affinitäts-Radar', nomeNav: 'Radar Affin.', sub: 'Kostenlose Vorschau · Pro-Synastrie', icon: Heart, premium: false },
-  { id: 'numerologia', nome: 'Numerologie', nomeNav: 'Numerologie', sub: 'Spirituelle Namensschwingung', icon: Sparkles, premium: true },
-  { id: 'sonhos', nome: 'Traumdeutung', nomeNav: 'Traumdeutung', sub: 'Symbole & Botschaften', icon: Moon, premium: false },
-  { id: 'biorritmo', nome: 'Vitaler Fluss', nomeNav: 'Vital-Fluss', sub: 'Biorhythmus', icon: Activity, premium: false },
-  { id: 'horasIguais', nome: 'Spiegelstunden', nomeNav: 'Spiegel-Uhr', sub: 'Engelsbotschaften', icon: Clock, premium: false },
-  { id: 'diario', nome: 'Astraltagebuch', nomeNav: 'Astro-Tagebuch', icon: BookOpen, premium: false },
+  { id: 'bussola', nome: 'Kosmischer Kompass', icon: Compass, premium: true },
+  { id: 'sinastria', nome: 'Affinitäts-Radar', sub: 'Kostenlose Vorschau · Pro-Synastrie', icon: Heart, premium: false },
+  { id: 'numerologia', nome: 'Numerologie', sub: 'Spirituelle Namensschwingung', icon: Sparkles, premium: true },
+  { id: 'sonhos', nome: 'Traumdeutung', sub: 'Symbole & Botschaften', icon: Moon, premium: false },
+  { id: 'biorritmo', nome: 'Vitaler Fluss', sub: 'Biorhythmus', icon: Activity, premium: false },
+  { id: 'horasIguais', nome: 'Spiegelstunden', sub: 'Engelsbotschaften', icon: Clock, premium: false },
+  { id: 'diario', nome: 'Astraltagebuch', icon: BookOpen, premium: false },
 ]
 
 const FERRAMENTAS_FR = [
-  { id: 'bussola', nome: 'Boussole Cosmique', nomeNav: 'Boussole Cos.', icon: Compass, premium: true },
-  { id: 'sinastria', nome: 'Radar d\'Affinités', nomeNav: 'Radar Affin.', sub: 'Aperçu gratuit · Synastrie Pro', icon: Heart, premium: false },
-  { id: 'numerologia', nome: 'Numérologie', nomeNav: 'Numérologie', sub: 'Vibration spirituelle du nom', icon: Sparkles, premium: true },
-  { id: 'sonhos', nome: 'Interprétation des Rêves', nomeNav: 'Interpr. Rêves', sub: 'Symboles et messages', icon: Moon, premium: false },
-  { id: 'biorritmo', nome: 'Flux Vital', nomeNav: 'Flux Vital', sub: 'Biorythme', icon: Activity, premium: false },
-  { id: 'horasIguais', nome: 'Heures Miroirs', nomeNav: 'Heures Miroir', sub: 'Messages angéliques', icon: Clock, premium: false },
-  { id: 'diario', nome: 'Journal Astral', nomeNav: 'Journal Astral', icon: BookOpen, premium: false },
+  { id: 'bussola', nome: 'Boussole Cosmique', icon: Compass, premium: true },
+  { id: 'sinastria', nome: 'Radar d\'Affinités', sub: 'Aperçu gratuit · Synastrie Pro', icon: Heart, premium: false },
+  { id: 'numerologia', nome: 'Numérologie', sub: 'Vibration spirituelle du nom', icon: Sparkles, premium: true },
+  { id: 'sonhos', nome: 'Interprétation des Rêves', sub: 'Symboles et messages', icon: Moon, premium: false },
+  { id: 'biorritmo', nome: 'Flux Vital', sub: 'Biorythme', icon: Activity, premium: false },
+  { id: 'horasIguais', nome: 'Heures Miroirs', sub: 'Messages angéliques', icon: Clock, premium: false },
+  { id: 'diario', nome: 'Journal Astral', icon: BookOpen, premium: false },
 ]
 
 const BENEFICIOS_VIP_PT = [

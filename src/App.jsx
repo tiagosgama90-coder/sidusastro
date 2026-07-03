@@ -80,7 +80,6 @@ import { LanguageSwitcher } from './components/LanguageSwitcher.jsx'
 import { useLanguage } from './lib/i18n/LanguageContext.jsx'
 import { readLandingDraft, clearLandingDraft, mergeLandingDraft, hasLandingDraft, flushLandingDraft } from './lib/landingDraft.js'
 import { getFerramentas, getBeneficiosVip } from './lib/i18n/ferramentasData.js'
-import { getNavBarLabels, getNavSlotCh } from './lib/i18n/navBarLabels.js'
 import { validarOnboarding } from './lib/i18n/validation.js'
 import { traduzirErroAuth } from './lib/i18n/authErrors.js'
 import { labelBarraCurto, tituloSecaoMapa } from './lib/i18n/labelUtil.js'
@@ -3112,22 +3111,19 @@ function Navbar({ passo, setPasso, isDesktop, dados, fotoPerfil }) {
     setMenuAberto(false)
   }
 
-  const navBar = getNavBarLabels(lang)
-
   const ferramentasNav = getFerramentas(lang).map((f) => ({
     id: f.id,
-    label: f.nomeNav || f.nome,
-    title: f.nome,
+    label: f.nome,
     icon: f.icon,
     glow: f.premium ? CORES.dourado : '#93C5FD',
   }))
 
   const itens = [
-    { id: 'home',        label: navBar.home,    title: t('nav.home'),    icon: Home,          glow: '#DFB76C' },
-    { id: 'mapa',        label: navBar.mapa,    title: t('nav.mapa'),    icon: Map,           glow: '#C4B5FD' },
-    { id: 'tarot',       label: navBar.tarot,   title: t('nav.tarot'),   icon: Layers,        glow: '#F472B6' },
+    { id: 'home',        label: t('nav.home'),    icon: Home,          glow: '#DFB76C' },
+    { id: 'mapa',        label: t('nav.mapa'),    icon: Map,           glow: '#C4B5FD' },
+    { id: 'tarot',       label: t('nav.tarot'),   icon: Layers,        glow: '#F472B6' },
     ...ferramentasNav,
-    { id: 'chat',        label: navBar.oraculo, title: t('nav.oraculo'), icon: MessageCircle, glow: '#34D399' },
+    { id: 'chat',        label: t('nav.oraculo'), icon: MessageCircle, glow: '#34D399' },
   ]
 
   const passosFerramenta = new Set(ferramentasNav.map((f) => f.id))
@@ -3175,7 +3171,8 @@ function Navbar({ passo, setPasso, isDesktop, dados, fotoPerfil }) {
               <LogoSidus onClick={irHome} compact />
               <LanguageSwitcher variant="inline" />
             </div>
-            <div className="desktop-nav-items">
+            <div className="desktop-nav-scroll">
+              <div className="desktop-nav-items">
               {itens.map((item) => {
                 const Icon = item.icon
                 const ativo = itemAtivo(item)
@@ -3188,20 +3185,20 @@ function Navbar({ passo, setPasso, isDesktop, dados, fotoPerfil }) {
                     onClick={() => navegar(item.id)}
                     onMouseEnter={() => setHover(item.id)}
                     onMouseLeave={() => setHover(null)}
-                    title={item.title || item.label}
+                    title={item.label}
                     style={{
-                      minWidth: `${getNavSlotCh(item.id)}ch`,
                       background: ativo ? 'rgba(223,183,108,0.18)' : emHover ? 'rgba(255,255,255,0.06)' : 'transparent',
                       border: `1px solid ${ativo ? CORES.dourado : emHover ? 'rgba(223,183,108,0.3)' : 'transparent'}`,
                       borderRadius: 8,
                       color: ativo ? CORES.dourado : emHover ? CORES.branco : CORES.brancoMuted,
                     }}
                   >
-                    <Icon size={14} strokeWidth={ativo ? 2.2 : 1.8} />
+                    <Icon size={12} strokeWidth={ativo ? 2.2 : 1.8} />
                     <span>{item.label}</span>
                   </button>
                 )
               })}
+              </div>
             </div>
           </>
         ) : (
