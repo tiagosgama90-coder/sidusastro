@@ -95,9 +95,8 @@ function SuitGlyph({ naipe, cor, size = 28 }) {
 }
 
 function CartaFallbackSVG({ carta, size }) {
-  const w = size
-  const h = Math.round(size * 1.6)
   const isLenormand = carta.tipo === 'lenormand'
+  const { w, h } = dimensoesCarta(size, isLenormand ? 'lenormand' : 'tarot')
   const isMajor = !isLenormand && (carta.tipo === 'major' || carta.id <= 21)
   const cor = isLenormand ? '#5B21B6' : isMajor ? (PALETAS_MAJOR[carta.id] ?? '#6D28D9') : (NAIPES_COR[carta.naipe] ?? carta.cor ?? '#6D28D9')
   const id = `fb_${carta.id}_${size}`
@@ -157,6 +156,15 @@ function VersoSVG({ w, h }) {
   )
 }
 
+export const LENORMAND_ASPECT = 1.5 // largura / altura (1536×1024)
+
+export function dimensoesCarta(size, deck = 'tarot') {
+  if (deck === 'lenormand') {
+    return { w: Math.round(size * LENORMAND_ASPECT), h: size }
+  }
+  return { w: size, h: Math.round(size * 1.6) }
+}
+
 /**
  * Carta de tarot profissional - ilustração Mystic com fallback SVG ornamentado.
  * animarFlip: animação 3D ao revelar (sem conflito com rotação invertida).
@@ -166,8 +174,9 @@ export function CartaTarot({ carta, size = 110, virada = false, animarFlip = fal
   if (!carta) return null
   if (animarFlip) ensureFlipCss()
 
-  const w = size
-  const h = Math.round(size * (carta?.tipo === 'lenormand' ? 1.5 : 1.6))
+  const isLenormand = carta?.tipo === 'lenormand'
+  const deck = isLenormand ? 'lenormand' : 'tarot'
+  const { w, h } = dimensoesCarta(size, deck)
   const src = virada
     ? imagemVersoUrl(carta?.tipo === 'lenormand' ? 'lenormand' : 'tarot')
     : imagemCartaUrl(carta)
@@ -197,11 +206,10 @@ export function CartaTarot({ carta, size = 110, virada = false, animarFlip = fal
     WebkitBackfaceVisibility: 'hidden',
   }
 
-  const isLenormand = carta.tipo === 'lenormand'
   const imgStyle = {
     width: '100%',
     height: '100%',
-    objectFit: isLenormand ? 'contain' : 'cover',
+    objectFit: 'cover',
     objectPosition: 'center',
     display: 'block',
     background: isLenormand ? '#0a0f18' : undefined,

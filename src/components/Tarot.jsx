@@ -11,7 +11,7 @@ import { PRECO_TAROT } from '../lib/pricing.js'
 import { sortearCartas, getCartaById, MAJOR_ARCANA } from '../lib/tarot/deck.js'
 import { sortearLenormand, LENORMAND_VERSO } from '../lib/tarot/lenormand.js'
 import { interpretarLeitura } from '../lib/tarot/interpretacao.js'
-import { CartaTarot } from './CartaTarot.jsx'
+import { CartaTarot, dimensoesCarta } from './CartaTarot.jsx'
 import {
   leituraDiariaAtiva, podeFazerLeituraDiaria, msAteProximaDiaria,
   formatarTempoRestante, registarLeituraDiaria,
@@ -32,27 +32,27 @@ const CARTA_MOBILE = {
 }
 
 const CARTA_DESKTOP = {
-  revelar: 112,
-  revelarMini: 80,
-  embaralhar: 120,
-  distribuir: 96,
-  diaria: 140,
+  revelar: 132,
+  revelarMini: 96,
+  embaralhar: 142,
+  distribuir: 114,
+  diaria: 164,
 }
 
 const CARTA_LENORMAND_MOBILE = {
-  revelar: 148,
-  revelarMini: 108,
-  embaralhar: 148,
-  distribuir: 118,
+  revelar: 152,
+  revelarMini: 112,
+  embaralhar: 152,
+  distribuir: 122,
   diaria: 152,
 }
 
 const CARTA_LENORMAND_DESKTOP = {
-  revelar: 138,
-  revelarMini: 100,
-  embaralhar: 140,
-  distribuir: 112,
-  diaria: 140,
+  revelar: 162,
+  revelarMini: 118,
+  embaralhar: 166,
+  distribuir: 132,
+  diaria: 164,
 }
 
 function tamanhoCartas(deck = 'tarot') {
@@ -564,8 +564,7 @@ function TelaPergunta({ tipo, pergunta, setPergunta, onVoltar, podeLer, isPremiu
 
 function TelaEmbaralhar({ t, deck = 'tarot', cartaVerso = MAJOR_ARCANA[0] }) {
   const CARTA = useTamanhoCartas(deck)
-  const aspect = deck === 'lenormand' ? 1.5 : 1.6
-  const h = Math.round(CARTA.embaralhar * aspect)
+  const { w: cardW, h: cardH } = dimensoesCarta(CARTA.embaralhar, deck)
   const stack = Array.from({ length: 8 })
   return (
     <div style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',minHeight:'50vh',padding:20,gap:20,overflow:'visible'}}>
@@ -588,7 +587,7 @@ function TelaEmbaralhar({ t, deck = 'tarot', cartaVerso = MAJOR_ARCANA[0] }) {
           50% { opacity: 0.9; transform: scale(1.2) rotate(40deg); }
         }
       `}</style>
-      <div style={{position:'relative',width:CARTA.embaralhar + 70,height:h + 56,overflow:'visible'}}>
+      <div style={{position:'relative',width:cardW + 70,height:cardH + 56,overflow:'visible'}}>
         {stack.map((_,i)=>(
           <div key={i} style={{
             position:'absolute',
@@ -624,6 +623,7 @@ function TelaEmbaralhar({ t, deck = 'tarot', cartaVerso = MAJOR_ARCANA[0] }) {
 
 function TelaDistribuir({ cartas, posicoes, distribuindo, t, deck = 'tarot', cartaVerso = MAJOR_ARCANA[0] }) {
   const CARTA = useTamanhoCartas(deck)
+  const { w: cardW } = dimensoesCarta(CARTA.distribuir, deck)
   return (
     <div style={{padding:'30px 20px',textAlign:'center',overflow:'visible'}}>
       <style>{`@keyframes deal{from{transform:translateY(-60px) scale(0.7);opacity:0}to{transform:translateY(0) scale(1);opacity:1}}`}</style>
@@ -635,7 +635,7 @@ function TelaDistribuir({ cartas, posicoes, distribuindo, t, deck = 'tarot', car
             opacity: i<=distribuindo ? 1 : 0.15,
           }}>
             <CartaTarot carta={cartaVerso} virada size={CARTA.distribuir}/>
-            <div style={{fontSize:9,color:CORES.brancoMuted,marginTop:4,width:CARTA.distribuir}}>{pos}</div>
+            <div style={{fontSize:9,color:CORES.brancoMuted,marginTop:4,width:cardW}}>{pos}</div>
           </div>
         ))}
       </div>
@@ -645,6 +645,8 @@ function TelaDistribuir({ cartas, posicoes, distribuindo, t, deck = 'tarot', car
 
 function TelaRevelar({ cartas, reveladas = [], onRevelar, animarCliqueIdx = -1, posicoes = [], tipo, pergunta, resultado, onVoltar, t, deck = 'tarot' }) {
   const CARTA = useTamanhoCartas(deck)
+  const { w: cardW } = dimensoesCarta(CARTA.revelar, deck)
+  const { w: miniW } = dimensoesCarta(CARTA.revelarMini, deck)
   const todasReveladas = reveladas.length > 0 && reveladas.length === cartas.length && reveladas.every(Boolean)
 
   return (
@@ -687,7 +689,7 @@ function TelaRevelar({ cartas, reveladas = [], onRevelar, animarCliqueIdx = -1, 
                 animarFlip={!!reveladas[i]}
               />
             </div>
-            <div style={{fontSize:10,color:CORES.brancoMuted,marginTop:5,width:CARTA.revelar,lineHeight:1.3}}>
+            <div style={{fontSize:10,color:CORES.brancoMuted,marginTop:5,width:cardW,lineHeight:1.3}}>
               {reveladas[i]
                 ? (c.tipo === 'lenormand' ? c.nome : (c.invertida ? t('tarot.reversedShort') : t('tarot.uprightShort')))
                 : posicoes[i]}
