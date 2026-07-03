@@ -153,26 +153,27 @@ export async function gerarPdfMapaAstral(mapaNatal, dados, planetas = [], analis
   })
   yRef.value += 26
 
-  for (const sec of analiseFinal.seccoes) {
+  for (const sec of (analiseFinal?.seccoes || [])) {
     caberNaPagina(22)
-    yRef.value = secaoTitulo(doc, yRef.value, `>> ${sec.id}. ${sanitizarTextoPdf(sec.titulo).toUpperCase()}`, DOURADO, ROXO, L, W, TEXT_X, TEXT_W)
+    yRef.value = secaoTitulo(doc, yRef.value, `>> ${sec.id}. ${sanitizarTextoPdf(sec.titulo || '').toUpperCase()}`, DOURADO, ROXO, L, W, TEXT_X, TEXT_W)
     yRef.value += 4
 
-    for (const bloco of sec.blocos) {
-      doc.setFontSize(10)
-      doc.setFont('helvetica', 'bold')
-      const tituloLinhas = wrapPdfText(doc, bloco.subtitulo, TEXT_W)
-      const metaLinhas = bloco.meta ? wrapPdfText(doc, bloco.meta, TEXT_W) : []
+    for (const bloco of (sec.blocos || [])) {
+      const subtitulo = sanitizarTextoPdf(bloco?.subtitulo || '')
+      const meta = bloco?.meta ? sanitizarTextoPdf(bloco.meta) : ''
+      const texto = sanitizarTextoPdf(bloco?.texto || '')
 
       doc.setFontSize(10)
       doc.setFont('helvetica', 'bold')
       doc.setTextColor(...DOURADO)
+      const tituloLinhas = subtitulo ? wrapPdfText(doc, subtitulo, TEXT_W) : []
       escreverLinhasJustificadas(doc, tituloLinhas, TEXT_X, TEXT_W, yRef, PAGE_BOTTOM, LINE_H, onNewPage)
 
-      if (bloco.meta) {
+      if (meta) {
         doc.setTextColor(...MUTED)
         doc.setFontSize(8)
         doc.setFont('helvetica', 'normal')
+        const metaLinhas = wrapPdfText(doc, meta, TEXT_W)
         escreverLinhasJustificadas(doc, metaLinhas, TEXT_X, TEXT_W, yRef, PAGE_BOTTOM, LINE_H, onNewPage)
       }
 
@@ -180,7 +181,9 @@ export async function gerarPdfMapaAstral(mapaNatal, dados, planetas = [], analis
       doc.setFontSize(9)
       doc.setFont('helvetica', 'normal')
       doc.setTextColor(...BRANCO)
-      escreverParagrafoJustificado(doc, bloco.texto, TEXT_X, TEXT_W, yRef, PAGE_BOTTOM, LINE_H, onNewPage)
+      if (texto) {
+        escreverParagrafoJustificado(doc, texto, TEXT_X, TEXT_W, yRef, PAGE_BOTTOM, LINE_H, onNewPage)
+      }
       yRef.value += 3
     }
     yRef.value += 4
@@ -266,25 +269,34 @@ export async function gerarPdfMapaAstral(mapaNatal, dados, planetas = [], analis
     valorLinhas.forEach((l, idx) => {
       if (yRef.value + LINE_H > PAGE_BOTTOM) novaPagina()
       const ultima = idx === valorLinhas.length - 1
-      doc.text(l, TEXT_X + 38, yRef.value, {
-        align: ultima ? 'left' : 'justify',
-        maxWidth: TEXT_W - 38,
-      })
+      try {
+        doc.text(l, TEXT_X + 38, yRef.value, {
+          align: ultima ? 'left' : 'justify',
+          maxWidth: TEXT_W - 38,
+        })
+      } catch {
+        doc.text(l, TEXT_X + 38, yRef.value, { align: 'left', maxWidth: TEXT_W - 38 })
+      }
       yRef.value += LINE_H
     })
     yRef.value += 2
   })
 
   if (mandalaPng) {
-    novaPagina()
-    yRef.value = secaoTitulo(doc, yRef.value, labels.mandala, DOURADO, ROXO, L, W, TEXT_X, TEXT_W)
-    yRef.value += 6
-    const { adicionarMandalaAoPdf } = await import('../lib/mandalaPdf.js')
-    await adicionarMandalaAoPdf(doc, mandalaPng, { L, W, yStart: yRef.value, pageBottom: PAGE_BOTTOM, ESCURO })
+    try {
+      novaPagina()
+      yRef.value = secaoTitulo(doc, yRef.value, labels.mandala, DOURADO, ROXO, L, W, TEXT_X, TEXT_W)
+      yRef.value += 6
+      const { adicionarMandalaAoPdf } = await import('../lib/mandalaPdf.js')
+      await adicionarMandalaAoPdf(doc, mandalaPng, { L, W, yStart: yRef.value, pageBottom: PAGE_BOTTOM, ESCURO })
+    } catch (e) {
+      console.warn('[Sidus] Mandala PDF section skipped:', e?.message)
+    }
   }
 
   const totalPaginas = doc.getNumberOfPages()
-  const dateLocale = lang === 'pt' ? 'pt-PT' : lang === 'en' ? 'en-GB' : `${lang}-${lang.toUpperCase()}`
+  const dateLocales = { pt: 'pt-PT', en: 'en-GB', es: 'es-ES', de: 'de-DE', fr: 'fr-FR', it: 'it-IT' }
+  const dateLocale = dateLocales[lang] || 'en-GB'
   for (let i = 1; i <= totalPaginas; i++) {
     doc.setPage(i)
     doc.setFillColor(11, 7, 30)

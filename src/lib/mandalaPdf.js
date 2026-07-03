@@ -44,11 +44,31 @@ function loadImage(src) {
 
 /** Insere imagem alta no jsPDF, repartindo por paginas se necessario (sem cortar). */
 export async function adicionarMandalaAoPdf(doc, mandalaPng, { L, W, yStart, pageBottom = 275, ESCURO = [11, 7, 30] }) {
-  const props = doc.getImageProperties(mandalaPng)
+  if (!mandalaPng || typeof mandalaPng !== 'string' || !mandalaPng.startsWith('data:image')) {
+    return
+  }
+
+  let props
+  try {
+    props = doc.getImageProperties(mandalaPng)
+  } catch (e) {
+    console.warn('[Sidus] Mandala PDF props:', e?.message)
+    return
+  }
+  if (!props?.width || !props?.height) return
+
   const imgW = W
   const imgH = (props.height / props.width) * imgW
+  if (!Number.isFinite(imgH) || imgH <= 0) return
 
-  const img = await loadImage(mandalaPng)
+  let img
+  try {
+    img = await loadImage(mandalaPng)
+  } catch (e) {
+    console.warn('[Sidus] Mandala PDF load:', e?.message)
+    return
+  }
+  if (!img?.naturalWidth || !img?.naturalHeight) return
   const fullCanvas = document.createElement('canvas')
   fullCanvas.width = img.naturalWidth
   fullCanvas.height = img.naturalHeight
@@ -71,6 +91,7 @@ export async function adicionarMandalaAoPdf(doc, mandalaPng, { L, W, yStart, pag
     const remainingMm = (remainingPx / fullCanvas.width) * imgW
     const sliceMm = Math.min(availMm, remainingMm)
     const slicePx = (sliceMm / imgH) * fullCanvas.height
+    if (!Number.isFinite(slicePx) || slicePx < 1) break
 
     const sliceCanvas = document.createElement('canvas')
     sliceCanvas.width = fullCanvas.width

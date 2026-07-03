@@ -24,7 +24,7 @@ const TECHNICAL = {
 
 export function getPdfLabels(lang = 'pt') {
   const code = LOCALES[lang] ? lang : 'en'
-  const m = LOCALES[code].mapa
+  const m = LOCALES[code].mapa || {}
   const copy = getMapaCopy(code)
   const tech = TECHNICAL[code] || TECHNICAL.en
 

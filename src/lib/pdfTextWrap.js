@@ -26,17 +26,26 @@ export function alturaTextoPdf(doc, texto, maxWidthMm, alturaLinha = 4.8) {
 /** Desenha linhas justificadas (ultima linha de cada bloco alinhada a esquerda). */
 export function escreverLinhasJustificadas(doc, linhas, x, maxWidthMm, yRef, pageBottom, lineHeight, onNewPage) {
   let y = yRef.value
-  const validas = linhas.filter(Boolean)
+  const validas = (linhas || []).filter((l) => l != null && String(l).length > 0)
+  if (validas.length === 0) {
+    yRef.value = y
+    return y
+  }
   validas.forEach((linha, idx) => {
     if (y + lineHeight > pageBottom) {
       onNewPage()
       y = yRef.value
     }
     const ultima = idx === validas.length - 1
-    doc.text(linha, x, y, {
-      align: ultima ? 'left' : 'justify',
-      maxWidth: maxWidthMm,
-    })
+    const texto = String(linha)
+    try {
+      doc.text(texto, x, y, {
+        align: ultima ? 'left' : 'justify',
+        maxWidth: maxWidthMm,
+      })
+    } catch {
+      doc.text(texto, x, y, { align: 'left', maxWidth: maxWidthMm })
+    }
     y += lineHeight
   })
   yRef.value = y
