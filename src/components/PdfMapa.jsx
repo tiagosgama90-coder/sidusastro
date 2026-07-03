@@ -141,16 +141,6 @@ export async function gerarPdfMapaAstral(mapaNatal, dados, planetas = [], analis
   })
   y += 28
 
-  if (mandalaPng) {
-    novaPageSeNecessario(100)
-    secaoTitulo(doc, y, lang !== 'pt' ? '✦ ASTROLOGICAL MANDALA' : '✦ MANDALA ASTROLÓGICA', DOURADO, ROXO, L, W)
-    y += 12
-    const imgSize = Math.min(W, 155)
-    const imgX = L + (W - imgSize) / 2
-    doc.addImage(mandalaPng, 'PNG', imgX, y, imgSize, imgSize)
-    y += imgSize + 12
-  }
-
   // ── 5 Secções de interpretação ──
   for (const sec of analiseFinal.seccoes) {
     novaPageSeNecessario(20)
@@ -255,6 +245,18 @@ export async function gerarPdfMapaAstral(mapaNatal, dados, planetas = [], analis
     doc.text(String(valor), L + 42, y)
     y += 7
   })
+
+  // ── Mandala astrológica (última secção — igual ao site) ──
+  if (mandalaPng) {
+    doc.addPage()
+    doc.setFillColor(...ESCURO)
+    doc.rect(0, 0, 210, 297, 'F')
+    y = 20
+    secaoTitulo(doc, y, lang !== 'pt' ? '✦ ASTROLOGICAL MANDALA' : '✦ MANDALA ASTROLÓGICA', DOURADO, ROXO, L, W)
+    y += 12
+    const { adicionarMandalaAoPdf } = await import('../lib/mandalaPdf.js')
+    await adicionarMandalaAoPdf(doc, mandalaPng, { L, W, yStart: y, pageBottom: 275, ESCURO })
+  }
 
   const totalPaginas = doc.getNumberOfPages()
   for (let i = 1; i <= totalPaginas; i++) {

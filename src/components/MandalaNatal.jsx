@@ -275,7 +275,7 @@ export function MandalaNatal({
   const ascSigno = translateSign(mapaNatal?.ascendente?.nome)
 
   return (
-    <div className={className} style={{ width: '100%', ...style }}>
+    <div className={className} data-sidus-mandala-export style={{ width: '100%', ...style }}>
       {(nome || dataNascimento) && (
         <div style={{
           textAlign: 'center',
