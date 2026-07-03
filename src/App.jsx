@@ -3385,8 +3385,11 @@ export default function App() {
         if (cacheImediato.dados && dadosNataisMinimos(cacheImediato.dados)) {
           setDados((prev) => normalizarDadosPerfil({ ...DADOS_VAZIO, ...prev, ...cacheImediato.dados }) || DADOS_VAZIO)
         }
-
-        setPerfilCarregando(true)
+        if (mapaNatalValido(cacheImediato.mapa) || (cacheImediato.dados && dadosNataisMinimos(cacheImediato.dados))) {
+          setPerfilCarregando(false)
+        } else {
+          setPerfilCarregando(true)
+        }
         perfilTimeoutId = setTimeout(() => {
           console.warn('[Sidus] Perfil cloud demorou - a continuar sem bloquear a interface')
           setPerfilCarregando(false)
@@ -3547,7 +3550,10 @@ export default function App() {
     })()
   }, [location.search, navigate, t])
 
-  const rotasPublicasSemAuth = new Set(['/login', '/privacidade'])
+  const rotasPublicasSemAuth = (pathname) => {
+    const p = stripLangPrefix(pathname || '/').replace(/\/$/, '') || '/'
+    return p === '/login' || p === '/privacidade'
+  }
 
   // Visitante → /login (exceto privacidade)
   useEffect(() => {
@@ -3555,10 +3561,9 @@ export default function App() {
     if (utilizador) return
     const params = new URLSearchParams(location.search)
     if (params.get('mode') === 'verifyEmail' && params.get('oobCode')) return
-    const path = (location.pathname || '/').replace(/\/$/, '') || '/'
-    if (rotasPublicasSemAuth.has(path)) return
-    navigate('/login', { replace: true })
-  }, [authCarregando, utilizador, location.pathname, location.search, navigate])
+    if (rotasPublicasSemAuth(location.pathname)) return
+    navigate(pathFromPasso('login', langFromPath(location.pathname) || lang), { replace: true })
+  }, [authCarregando, utilizador, location.pathname, location.search, navigate, lang])
 
   // Após login: contas existentes → home; contas novas → onboarding
   useEffect(() => {
@@ -3568,11 +3573,12 @@ export default function App() {
     if (!utilizador) return
     if (precisaVerificarEmail(utilizador)) return
 
-    const path = (location.pathname || '/').replace(/\/$/, '') || '/'
+    const path = stripLangPrefix(location.pathname).replace(/\/$/, '') || '/'
     if (path === '/login') {
       setPagamentoMsg(null)
-      navigate(contaConfigurada ? '/home' : '/comecar', { replace: true })
-      if (!contaConfigurada) setPasso('onboarding')
+      const destino = contaConfigurada ? 'home' : 'onboarding'
+      setPasso(destino)
+      navigate(pathFromPasso(destino, lang), { replace: true })
       return
     }
 
@@ -3580,16 +3586,17 @@ export default function App() {
     if (!acabouDeEntrar) return
 
     if (!contaConfigurada) {
-      navigate('/comecar', { replace: true })
+      setPasso('onboarding')
+      navigate(pathFromPasso('onboarding', lang), { replace: true })
       return
     }
 
     const irParaHome = ['/login', '/home', '/', '/inicio', '/perfil'].includes(path)
     if (irParaHome) {
-      navigate('/home', { replace: true })
       setPasso('home')
+      navigate(pathFromPasso('home', lang), { replace: true })
     }
-  }, [authCarregando, utilizador, location.pathname, navigate, contaConfigurada])
+  }, [authCarregando, utilizador, location.pathname, navigate, contaConfigurada, lang])
 
   // Rascunho da landing → dados do perfil assim que há sessão (sobrevive à verificação de e-mail)
   useEffect(() => {
@@ -3944,8 +3951,8 @@ export default function App() {
     return p.get('mode') === 'verifyEmail' && Boolean(p.get('oobCode'))
   })()
 
-  // Ecrã de carregamento (auth, perfil Firestore, ou link de verificação a processar)
-  if (authCarregando || linkEmailPendente || (utilizador && perfilCarregando)) {
+  // Ecrã de carregamento (auth ou link de verificação a processar)
+  if (authCarregando || linkEmailPendente) {
     return (
       <div style={{ ...estilos.app, display: 'flex', flexDirection: 'column', minHeight: '100svh' }}>
         <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '24px 20px' }}>
