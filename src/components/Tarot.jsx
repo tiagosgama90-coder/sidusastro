@@ -54,6 +54,10 @@ function useTamanhoCartas() {
   return cartas
 }
 
+const SHUFFLE_MS = 1200
+const DEAL_MS = 280
+const REVEAL_SHUFFLE_MS = 380
+
 const btnDourado = {
   background:'linear-gradient(135deg,#DFB76C,#B8944F)',border:'none',borderRadius:12,
   color:'#0B071E',fontSize:15,fontWeight:700,padding:'14px 24px',cursor:'pointer',
@@ -222,14 +226,14 @@ export function EcraTarot({ mapaNatal, isPremium, userId, leiturasTarotUsadas = 
       setEmbaralhando(false)
       setDistribuindo(0)
       setAIniciarLeitura(false)
-    }, 2000)
+    }, SHUFFLE_MS)
   }
 
   useEffect(() => {
     const tipoAtual = TIPOS.find((x) => x.id === tipoId)
     if (!tipoAtual?.n || distribuindo < 0) return undefined
     if (distribuindo < tipoAtual.n) {
-      const id = agendar(() => setDistribuindo((i) => i + 1), 350)
+      const id = agendar(() => setDistribuindo((i) => i + 1), DEAL_MS)
       return () => clearTimeout(id)
     }
     if (distribuindo >= tipoAtual.n && cartas.length >= tipoAtual.n) {
@@ -267,7 +271,7 @@ export function EcraTarot({ mapaNatal, isPremium, userId, leiturasTarotUsadas = 
           })
         }
       }
-    }, 220)
+    }, REVEAL_SHUFFLE_MS)
   }
 
   const voltar = () => {
@@ -305,6 +309,12 @@ export function EcraTarot({ mapaNatal, isPremium, userId, leiturasTarotUsadas = 
     <TelaSeleccionar tipos={TIPOS.map((tp) => mapaTipos?.[tp.id] ? { ...tp, nome: mapaTipos[tp.id].nome, desc: mapaTipos[tp.id].desc } : tp)} lang={lang} t={t} userId={userId} onSeleccionar={iniciarLeitura} isPremium={isPremium} gratisEsgotada={gratisEsgotada} restantes={restantes} tick={tick} onVoltar={onVoltar}/>
   )
 
+  if (embaralhando) return <TelaEmbaralhar t={t} cartaVerso={tipoId === 'cigano' ? LENORMAND_VERSO : MAJOR_ARCANA[0]} />
+
+  if (distribuindo>=0) return (
+    <TelaDistribuir cartas={cartas} posicoes={posicoes} distribuindo={distribuindo} t={t} cartaVerso={tipoId === 'cigano' ? LENORMAND_VERSO : MAJOR_ARCANA[0]} />
+  )
+
   if (fase==='pergunta') return (
     <TelaPergunta tipo={tipoLabel} lang={lang} t={t} pergunta={pergunta} setPergunta={setPergunta}
       onVoltar={voltar} podeLer={podeLer} isPremium={isPremium} restantes={restantes}
@@ -325,12 +335,6 @@ export function EcraTarot({ mapaNatal, isPremium, userId, leiturasTarotUsadas = 
       onPremium={onPremium}
       onComecarPago={() => { setLeituraPaga(true); comecarEmbaralhar(tipoId) }}
     />
-  )
-
-  if (embaralhando) return <TelaEmbaralhar t={t} cartaVerso={tipoId === 'cigano' ? LENORMAND_VERSO : MAJOR_ARCANA[0]} />
-
-  if (distribuindo>=0) return (
-    <TelaDistribuir cartas={cartas} posicoes={posicoes} distribuindo={distribuindo} t={t} cartaVerso={tipoId === 'cigano' ? LENORMAND_VERSO : MAJOR_ARCANA[0]} />
   )
 
   if (fase==='revelar') return (
@@ -551,30 +555,35 @@ function TelaEmbaralhar({ t, cartaVerso = MAJOR_ARCANA[0] }) {
     <div style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',minHeight:'50vh',padding:20,gap:20,overflow:'visible'}}>
       <style>{`
         @keyframes riffle {
-          0% { transform: translate(0,0) rotate(0deg) scale(0.98); }
-          18% { transform: translate(-38px,-18px) rotate(-18deg) scale(1); }
-          36% { transform: translate(34px,-8px) rotate(14deg) scale(1.02); }
-          52% { transform: translate(-22px,16px) rotate(-10deg) scale(1); }
-          70% { transform: translate(18px,20px) rotate(8deg) scale(0.99); }
-          100% { transform: translate(0,0) rotate(0deg) scale(0.98); }
+          0% { transform: translate(0,0) rotate(0deg) scale(0.96); }
+          12% { transform: translate(-42px,-22px) rotate(-22deg) scale(1.02); }
+          28% { transform: translate(40px,-10px) rotate(18deg) scale(1.04); }
+          44% { transform: translate(-28px,18px) rotate(-14deg) scale(1); }
+          60% { transform: translate(24px,22px) rotate(12deg) scale(1.02); }
+          76% { transform: translate(-16px,8px) rotate(-8deg) scale(0.99); }
+          100% { transform: translate(0,0) rotate(0deg) scale(0.96); }
+        }
+        @keyframes riffleBurst {
+          0%,100% { transform: scale(1); opacity: 0.35; }
+          50% { transform: scale(1.35); opacity: 0.85; }
         }
         @keyframes orbitGlow {
           0%,100% { box-shadow: 0 0 0 rgba(223,183,108,0.0); }
-          45% { box-shadow: 0 0 26px rgba(223,183,108,0.35); }
+          50% { box-shadow: 0 0 32px rgba(223,183,108,0.45); }
         }
-        @keyframes pulseFloat { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+        @keyframes pulseFloat { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
         @keyframes sparkle {
-          0%,100% { opacity: 0; transform: scale(0.7) rotate(0deg); }
-          50% { opacity: 0.9; transform: scale(1.2) rotate(40deg); }
+          0%,100% { opacity: 0; transform: scale(0.6) rotate(0deg); }
+          50% { opacity: 1; transform: scale(1.3) rotate(50deg); }
         }
       `}</style>
-      <div style={{position:'relative',width:cardW + 70,height:cardH + 56,overflow:'visible'}}>
+      <div style={{position:'relative',width:cardW + 90,height:cardH + 64,overflow:'visible'}}>
         {stack.map((_,i)=>(
           <div key={i} style={{
             position:'absolute',
-            top: 14 + ((i % 2) * 2),
-            left: 28,
-            animation:`riffle 0.95s cubic-bezier(.45,.05,.55,.95) ${i*0.08}s infinite, orbitGlow 1.4s ease-in-out ${i*0.11}s infinite`,
+            top: 12 + ((i % 2) * 3),
+            left: 24 + (i % 3) * 2,
+            animation:`riffle 0.52s cubic-bezier(.4,.05,.6,.95) ${i*0.045}s infinite, orbitGlow 0.9s ease-in-out ${i*0.07}s infinite`,
             transformOrigin:'center center',
             filter: `brightness(${0.92 + (i * 0.015)})`,
             zIndex: i + 1,
@@ -582,14 +591,15 @@ function TelaEmbaralhar({ t, cartaVerso = MAJOR_ARCANA[0] }) {
             <CartaTarot carta={cartaVerso} virada size={CARTA.embaralhar}/>
           </div>
         ))}
-        {[0,1,2,3,4].map((i)=>(
+        {[0,1,2,3,4,5].map((i)=>(
           <span key={`spark-${i}`} style={{
             position:'absolute',
-            top: 10 + (i * 18),
-            right: 10 + ((i % 2) * 12),
+            top: 6 + (i * 16),
+            right: 4 + ((i % 2) * 14),
+            left: i % 2 === 0 ? 4 + (i * 8) : undefined,
             color: '#DFB76C',
-            fontSize: 12 + (i % 3),
-            animation:`sparkle 1.3s ease-in-out ${i*0.2}s infinite`,
+            fontSize: 11 + (i % 3),
+            animation:`sparkle 0.75s ease-in-out ${i*0.12}s infinite`,
             userSelect: 'none',
             pointerEvents: 'none',
           }}>✦</span>
@@ -606,13 +616,16 @@ function TelaDistribuir({ cartas, posicoes, distribuindo, t, cartaVerso = MAJOR_
   const CARTA = useTamanhoCartas()
   return (
     <div style={{padding:'30px 20px',textAlign:'center',overflow:'visible'}}>
-      <style>{`@keyframes deal{from{transform:translateY(-60px) scale(0.7);opacity:0}to{transform:translateY(0) scale(1);opacity:1}}`}</style>
+      <style>{`
+        @keyframes deal{from{transform:translateY(-70px) rotate(-12deg) scale(0.65);opacity:0}to{transform:translateY(0) rotate(0deg) scale(1);opacity:1}}
+        @keyframes dealShuffle{0%,100%{transform:rotate(0deg)}25%{transform:rotate(-6deg)}75%{transform:rotate(5deg)}}
+      `}</style>
       <p style={{fontSize:13,color:CORES.brancoMuted,marginBottom:20}}>{t('tarot.dealing')}</p>
       <div style={{display:'flex',justifyContent:'center',flexWrap:'wrap',gap:10}}>
         {posicoes.map((pos,i)=>(
           <div key={i} style={{textAlign:'center',
-            animation: i<=distribuindo ? 'deal 0.4s ease-out forwards' : 'none',
-            opacity: i<=distribuindo ? 1 : 0.15,
+            animation: i<=distribuindo ? 'deal 0.32s ease-out forwards, dealShuffle 0.32s ease-in-out' : 'none',
+            opacity: i<=distribuindo ? 1 : 0.12,
           }}>
             <CartaTarot carta={cartaVerso} virada size={CARTA.distribuir}/>
             <div style={{fontSize:9,color:CORES.brancoMuted,marginTop:4,width:CARTA.distribuir}}>{pos}</div>
@@ -631,10 +644,11 @@ function TelaRevelar({ cartas, reveladas = [], onRevelar, animarCliqueIdx = -1, 
     <div style={{padding:'20px 20px 110px',overflow:'visible'}}>
       <style>{`
         @keyframes tapShuffleSpin {
-          0% { transform: rotate(0deg) scale(1); filter: brightness(1); }
-          35% { transform: rotate(-8deg) scale(1.03); filter: brightness(1.1); }
-          70% { transform: rotate(7deg) scale(1.02); filter: brightness(1.06); }
-          100% { transform: rotate(0deg) scale(1); filter: brightness(1); }
+          0% { transform: rotate(0deg) scale(1) translate(0,0); filter: brightness(1); }
+          20% { transform: rotate(-14deg) scale(1.05) translate(-4px,-3px); filter: brightness(1.12); }
+          45% { transform: rotate(12deg) scale(1.04) translate(5px,-2px); filter: brightness(1.08); }
+          70% { transform: rotate(-7deg) scale(1.02) translate(-2px,2px); filter: brightness(1.05); }
+          100% { transform: rotate(0deg) scale(1) translate(0,0); filter: brightness(1); }
         }
       `}</style>
       <div style={{display:'flex',alignItems:'center',gap:10,marginBottom:16}}>
@@ -656,7 +670,7 @@ function TelaRevelar({ cartas, reveladas = [], onRevelar, animarCliqueIdx = -1, 
               style={{
                 cursor: reveladas[i] ? 'default' : 'pointer',
                 display: 'inline-block',
-                animation: animarCliqueIdx === i ? 'tapShuffleSpin 220ms ease-in-out 1' : 'none',
+                animation: animarCliqueIdx === i ? 'tapShuffleSpin 380ms ease-in-out 1' : 'none',
                 transformOrigin: 'center center',
               }}
             >
