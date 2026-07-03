@@ -13,7 +13,8 @@ const ELEMENTO_DO_SIGNO = {
   Caranguejo:'Água', Escorpião:'Água', Peixes:'Água',
 }
 
-export async function gerarPdfMapaAstral(mapaNatal, dados, planetas = [], analise = null, lang = 'pt') {
+export async function gerarPdfMapaAstral(mapaNatal, dados, planetas = [], analise = null, lang = 'pt', opts = {}) {
+  const { mandalaPng } = opts
   const { jsPDF } = await import('jspdf')
 
   const analiseFinal = analise || gerarAnaliseCompleta(mapaNatal, planetas, [], dados)
@@ -139,6 +140,16 @@ export async function gerarPdfMapaAstral(mapaNatal, dados, planetas = [], analis
     }
   })
   y += 28
+
+  if (mandalaPng) {
+    novaPageSeNecessario(100)
+    secaoTitulo(doc, y, lang !== 'pt' ? '✦ ASTROLOGICAL MANDALA' : '✦ MANDALA ASTROLÓGICA', DOURADO, ROXO, L, W)
+    y += 12
+    const imgSize = Math.min(W, 155)
+    const imgX = L + (W - imgSize) / 2
+    doc.addImage(mandalaPng, 'PNG', imgX, y, imgSize, imgSize)
+    y += imgSize + 12
+  }
 
   // ── 5 Secções de interpretação ──
   for (const sec of analiseFinal.seccoes) {

@@ -296,7 +296,7 @@ export function MandalaNatal({
             </div>
           )}
           <div style={{ fontSize: 11, color: CORES.dourado, marginTop: 8, fontWeight: 600 }}>
-            ☉ {solSigno || '—'} · ☽ {luaSigno || '—'} · AS {ascSigno || '—'}
+            ☉ {solSigno || '-'} · ☽ {luaSigno || '-'} · AS {ascSigno || '-'}
           </div>
           {(mapaNatal?.motor || motorAstro) && (
             <div style={{ fontSize: 9, color: CORES.muted, marginTop: 6, letterSpacing: '0.04em' }}>
@@ -310,6 +310,7 @@ export function MandalaNatal({
 
       <div style={{ display: 'flex', justifyContent: 'center' }}>
         <svg
+          data-sidus-mandala-chart
           viewBox={`0 0 ${size} ${size}`}
           width="100%"
           style={{ maxWidth: size, height: 'auto', display: 'block', filter: 'drop-shadow(0 8px 32px rgba(0,0,0,0.45))' }}

@@ -2205,7 +2205,9 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
     setGerandoPdf(true)
     try {
       const { gerarPdfMapaAstral } = await import('./components/PdfMapa.jsx')
-      await gerarPdfMapaAstral(mapaNatal, dados, planetasComCasa, analiseCompleta)
+      const { capturarMandalaParaPdf } = await import('./lib/mandalaPdf.js')
+      const mandalaPng = mapaCompletoDesbloqueado ? await capturarMandalaParaPdf() : null
+      await gerarPdfMapaAstral(mapaNatal, dados, planetasComCasa, analiseCompleta, lang, { mandalaPng })
     } catch (e) {
       console.error('PDF error:', e)
       alert(t('mapa.pdfError'))
@@ -2430,6 +2432,38 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
             ))}
           </div>
 
+          {mapaCompletoVisivel && (
+            <div style={{
+              ...estilos.vidro,
+              padding: isDesktop ? 24 : 18,
+              marginBottom: 20,
+              background: 'linear-gradient(160deg, rgba(223,183,108,0.06) 0%, rgba(11,7,30,0.95) 40%, rgba(139,92,246,0.05) 100%)',
+              border: '1px solid rgba(223,183,108,0.22)',
+              boxShadow: '0 12px 40px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.04)',
+            }}>
+              <div style={{ textAlign: 'center', marginBottom: 20 }}>
+                <div style={{ fontSize: 12, color: CORES.dourado, textTransform: 'uppercase', letterSpacing: '0.12em', fontWeight: 700, marginBottom: 8 }}>
+                  {t('mapa.mandalaTitle')}
+                </div>
+                <p style={{ fontSize: 12, color: CORES.brancoMuted, margin: 0, lineHeight: 1.6, maxWidth: 420, marginLeft: 'auto', marginRight: 'auto' }}>
+                  {t('mapa.mandalaSubtitle')}
+                </p>
+              </div>
+              <MandalaNatal
+                mapaNatal={mapaNatal}
+                planetas={planetasComCasa}
+                aspectos={aspetosCompletos}
+                nome={dados.nome}
+                dataNascimento={formatarData(dados.data)}
+                horaNascimento={dados.hora}
+                translateSign={ts}
+                motorAstro={motorAstro}
+                size={isDesktop ? 480 : 360}
+                unavailableLabel={t('mapa.mandalaUnavailable')}
+              />
+            </div>
+          )}
+
           <div style={{ fontSize: 11, color: CORES.dourado, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 10, fontWeight: 700 }}>
             {t('mapa.export')}
           </div>
@@ -2555,39 +2589,6 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
             </div>
           )}
         </>
-      )}
-
-      {mapaCompletoDesbloqueado && mapaCompletoVisivel && (
-        <div style={{
-          ...estilos.vidro,
-          padding: isDesktop ? 24 : 18,
-          marginBottom: 20,
-          marginTop: 8,
-          background: 'linear-gradient(160deg, rgba(223,183,108,0.06) 0%, rgba(11,7,30,0.95) 40%, rgba(139,92,246,0.05) 100%)',
-          border: '1px solid rgba(223,183,108,0.22)',
-          boxShadow: '0 12px 40px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.04)',
-        }}>
-          <div style={{ textAlign: 'center', marginBottom: 20 }}>
-            <div style={{ fontSize: 12, color: CORES.dourado, textTransform: 'uppercase', letterSpacing: '0.12em', fontWeight: 700, marginBottom: 8 }}>
-              {t('mapa.mandalaTitle')}
-            </div>
-            <p style={{ fontSize: 12, color: CORES.brancoMuted, margin: 0, lineHeight: 1.6, maxWidth: 420, marginLeft: 'auto', marginRight: 'auto' }}>
-              {t('mapa.mandalaSubtitle')}
-            </p>
-          </div>
-          <MandalaNatal
-            mapaNatal={mapaNatal}
-            planetas={planetasComCasa}
-            aspectos={aspetosCompletos}
-            nome={dados.nome}
-            dataNascimento={formatarData(dados.data)}
-            horaNascimento={dados.hora}
-            translateSign={ts}
-            motorAstro={motorAstro}
-            size={isDesktop ? 480 : 360}
-            unavailableLabel={t('mapa.mandalaUnavailable')}
-          />
-        </div>
       )}
     </div>
   )

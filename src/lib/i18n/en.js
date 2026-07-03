@@ -87,7 +87,7 @@ export default {
         a3: 'Yes - your data is processed encrypted through Firebase.',
         q4: 'What is the difference between the one-off chart and Premium?',
         a4: 'The one-off chart is a single payment - you get the full PDF report with no monthly subscription. Sidus Premium includes the full natal chart plus AI oracle, tarot, synastry and all tools. If you want more than the PDF, Premium is the best choice.',
-        q5: 'Is the natal mandala calculated for each person?',
+        q5: 'Is the astrological mandala calculated for each person?',
         a5: 'Yes. Every wheel is generated in real time with Swiss Ephemeris from your exact birth date, time and place - planets, Placidus houses, aspects and angles (ASC/MC) at professional ephemeris precision.',
         q6: 'Do I need an exact birth time?',
         a6: 'For an accurate Ascendant, houses and Moon, yes. Without an exact time we still calculate the Sun and outer planets; the mandala and full chart use the time you provide.',
@@ -136,6 +136,7 @@ export default {
       'auth/internal-error': 'Firebase internal error.',
       'auth/missing-email': 'Enter an email.',
       'auth/missing-password': 'Enter a password.',
+      apiKeyInvalid: 'Invalid Firebase configuration on this site. Hard-refresh (Ctrl+F5) or try again later - if it persists, contact support.',
       unknown: 'Unknown error',
     },
     feature: {
@@ -311,8 +312,8 @@ export default {
     aiFallbackNote: 'Professional interpretation (classic mode)',
     freeTasteHint: 'You are viewing a free sample. The rest of the chart - full interpretation, positions, aspects and PDF - is reserved for Premium.',
     freeBlurTeaser: 'Professional interpretation, life spheres, PDF export and much more…',
-    mandalaTitle: '✦ Natal Mandala',
-    mandalaSubtitle: 'Your unique celestial wheel — exact positions, Placidus houses and aspects calculated for your birth moment.',
+    mandalaTitle: '✦ Astrological Mandala',
+    mandalaSubtitle: 'Your unique celestial wheel - exact positions, Placidus houses and aspects calculated for your birth moment.',
     mandalaUnavailable: 'The mandala will appear once planetary positions are available.',
   },
   cartaoDia: {

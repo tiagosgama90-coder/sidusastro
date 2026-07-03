@@ -69,5 +69,5 @@ export const TAROT_TYPES_DE = {
   oraculo: { nome: 'Orakel-Tarot', desc: 'Verborgene Botschaft · Seelenrat', prazo: 'Ohne Frist (aktuelle Energie)', foco: 'Psychologischer oder spiritueller Rat für den Moment, den du gerade erlebst.' },
   trabalho: { nome: 'Berufs-Tarot', desc: 'Situation · Hindernis · Berufsberatung', prazo: '3 Monate', foco: 'Dynamische Legung zur Berufslaufbahn: aktueller Job, Jobsuche oder Geschäft.' },
   ferradura: { nome: 'Das Hufeisen', desc: '7 Karten · Projektanalyse', prazo: '6 Monate', foco: 'Ideal für ein konkretes Projekt (Gerichtsverfahren, Hauskauf, Geschäftsstart).' },
-  cruzcelta: { nome: 'Keltisches Kreuz', desc: '10 Karten · vollständige Analyse', prazo: '6–12 Monate', foco: 'Vollständige Lebensanalyse oder sehr komplexes Dilemma — die Langzeit-Legung.' },
+  cruzcelta: { nome: 'Keltisches Kreuz', desc: '10 Karten · vollständige Analyse', prazo: '6–12 Monate', foco: 'Vollständige Lebensanalyse oder sehr komplexes Dilemma - die Langzeit-Legung.' },
 }
