@@ -200,6 +200,7 @@ export function MandalaNatal({
   translateSign = (s) => s,
   motorAstro,
   size = 400,
+  chartOnly = false,
   className,
   style,
   unavailableLabel,
@@ -275,8 +276,12 @@ export function MandalaNatal({
   const ascSigno = translateSign(mapaNatal?.ascendente?.nome)
 
   return (
-    <div className={className} data-sidus-mandala-export style={{ width: '100%', ...style }}>
-      {(nome || dataNascimento) && (
+    <div
+      className={className}
+      {...(!chartOnly ? { 'data-sidus-mandala-export': true } : {})}
+      style={{ width: '100%', ...style }}
+    >
+      {!chartOnly && (nome || dataNascimento) && (
         <div style={{
           textAlign: 'center',
           marginBottom: 16,
@@ -635,7 +640,7 @@ export function MandalaNatal({
         </svg>
       </div>
 
-      {/* Grelha de aspectos + tabela de posições */}
+      {!chartOnly && (
       <div style={{
         marginTop: 20,
         display: 'grid',
@@ -683,6 +688,7 @@ export function MandalaNatal({
           ))}
         </div>
       </div>
+      )}
     </div>
   )
 }

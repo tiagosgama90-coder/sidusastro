@@ -2389,6 +2389,30 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
               })}
             </div>
           )}
+
+          {!mapaCompletoDesbloqueado && (
+            <div style={{
+              ...estilos.vidro,
+              padding: isDesktop ? 24 : 18,
+              marginBottom: 14,
+              background: 'linear-gradient(160deg, rgba(223,183,108,0.06) 0%, rgba(11,7,30,0.95) 40%, rgba(139,92,246,0.05) 100%)',
+              border: '1px solid rgba(223,183,108,0.22)',
+            }}>
+              <div style={{ textAlign: 'center', marginBottom: 16 }}>
+                <div style={{ fontSize: 12, color: CORES.dourado, textTransform: 'uppercase', letterSpacing: '0.12em', fontWeight: 700 }}>
+                  {t('mapa.mandalaTitle')}
+                </div>
+              </div>
+              <MandalaNatal
+                chartOnly
+                mapaNatal={mapaNatal}
+                planetas={planetasComCasa}
+                aspectos={aspetosNatais}
+                translateSign={ts}
+                size={isDesktop ? 480 : 360}
+              />
+            </div>
+          )}
         </>
       )}
 
