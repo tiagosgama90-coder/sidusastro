@@ -81,7 +81,7 @@ Create in Stripe Dashboard (or let Checkout use dynamic `price_data` - already i
 ### 3.3 Webhook
 
 1. Stripe → Developers → Webhooks → Add endpoint
-2. URL: `https://your-site.netlify.app/.netlify/functions/stripe-webhook`
+2. URL: `https://sidusastro.com/api/stripe-webhook` (ou `https://SEU-SITE.netlify.app/api/stripe-webhook`)
 3. Events: `checkout.session.completed`, `customer.subscription.updated`, `customer.subscription.deleted` (and related)
 4. Signing secret → `STRIPE_WEBHOOK_SECRET` in Netlify
 

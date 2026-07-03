@@ -6,6 +6,12 @@ export function labelBarraCurto(texto) {
   return s.length > 22 ? `${s.slice(0, 20).trim()}…` : s
 }
 
+/** Label navbar desktop — referência PT (máx. 22 chars, 1 linha). */
+export function labelNavBarra(texto) {
+  const s = String(texto ?? '').trim()
+  return s.length > 22 ? `${s.slice(0, 21).trim()}…` : s
+}
+
 /** Título de secção com altura fixa (referência PT, 1 linha). */
 export function tituloSecaoMapa(texto) {
   const s = String(texto ?? '')

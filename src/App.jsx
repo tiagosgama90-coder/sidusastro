@@ -82,7 +82,7 @@ import { readLandingDraft, clearLandingDraft, mergeLandingDraft, hasLandingDraft
 import { getFerramentas, getBeneficiosVip } from './lib/i18n/ferramentasData.js'
 import { validarOnboarding } from './lib/i18n/validation.js'
 import { traduzirErroAuth } from './lib/i18n/authErrors.js'
-import { labelBarraCurto, tituloSecaoMapa } from './lib/i18n/labelUtil.js'
+import { labelBarraCurto, labelNavBarra, tituloSecaoMapa } from './lib/i18n/labelUtil.js'
 import {
   validarPerguntaOracle, gerarRespostaOracle,
   getChatGreeting, getOracleLimitMessage,
@@ -3111,17 +3111,17 @@ function Navbar({ passo, setPasso, isDesktop, dados, fotoPerfil }) {
 
   const ferramentasNav = getFerramentas(lang).map((f) => ({
     id: f.id,
-    label: f.nome,
+    label: labelNavBarra(f.nomeNav || f.nome),
     icon: f.icon,
     glow: f.premium ? CORES.dourado : '#93C5FD',
   }))
 
   const itens = [
-    { id: 'home',        label: t('nav.home'),    icon: Home,          glow: '#DFB76C' },
-    { id: 'mapa',        label: t('nav.mapa'),    icon: Map,           glow: '#C4B5FD' },
-    { id: 'tarot',       label: t('nav.tarot'),   icon: Layers,        glow: '#F472B6' },
+    { id: 'home',        label: labelNavBarra(t('nav.home')),    icon: Home,          glow: '#DFB76C' },
+    { id: 'mapa',        label: labelNavBarra(t('nav.mapa')),    icon: Map,           glow: '#C4B5FD' },
+    { id: 'tarot',       label: labelNavBarra(t('nav.tarot')),   icon: Layers,        glow: '#F472B6' },
     ...ferramentasNav,
-    { id: 'chat',        label: t('nav.oraculo'), icon: MessageCircle, glow: '#34D399' },
+    { id: 'chat',        label: labelNavBarra(t('nav.oraculo')), icon: MessageCircle, glow: '#34D399' },
   ]
 
   const passosFerramenta = new Set(ferramentasNav.map((f) => f.id))
