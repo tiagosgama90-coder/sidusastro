@@ -1,10 +1,10 @@
 export default {
   "nav": {
-    "home": "Home",
+    "home": "Hogar",
     "mapa": "Carta Astral",
-    "tarot": "Tarot Online",
+    "tarot": "Tarot en línea",
     "ferramentas": "Herramientas",
-    "oraculo": "Chat Oráculo",
+    "oraculo": "Oráculo de conversación",
     "perfil": "Perfil",
     "menu": "Menú",
     "openMenu": "abrir menú",

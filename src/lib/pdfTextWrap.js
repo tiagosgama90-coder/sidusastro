@@ -1,5 +1,5 @@
-/** Margem de seguranca para acentos PT/ES/FR no Helvetica. */
-const UNICODE_SAFE_FACTOR = 0.92
+/** Margem simetrica: quebra na largura util exacta (justificado ate a margem direita). */
+const UNICODE_SAFE_FACTOR = 1
 
 /** Remove simbolos que o Helvetica do jsPDF nao renderiza bem. */
 export function sanitizarTextoPdf(texto) {

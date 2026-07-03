@@ -33,11 +33,11 @@ export async function gerarPdfMapaAstral(mapaNatal, dados, planetas = [], analis
   const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' })
 
   const L = 18
-  const W = 174
+  const R = 18
+  const W = 210 - L - R
   const CX = 105
-  const PAD = 3
-  const TEXT_X = L + PAD
-  const TEXT_W = W - PAD * 2
+  const TEXT_X = L
+  const TEXT_W = W
   const PAGE_TOP = 20
   const PAGE_BOTTOM = 278
   const LINE_H = 4.8
@@ -328,7 +328,7 @@ function secaoTitulo(doc, y, texto, DOURADO, ROXO, L, W, textX, textW) {
   doc.setFontSize(8)
   doc.setFont('helvetica', 'bold')
   const linhas = wrapPdfText(doc, texto, textW - 4)
-  doc.text(linhas[0] || '', textX, y + 6)
+  doc.text(linhas[0] || '', textX + 2, y + 6)
   return y + 11
 }
 
