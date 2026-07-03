@@ -1,6 +1,6 @@
 /**
  * Gerador de PDF do Mapa Astral Completo - Sidus
- * Tropical · Placidus · 5 seccoes profissionais
+ * Layout tipo documento Word: margens fixas, texto justificado a esquerda.
  */
 
 import { gerarAnaliseCompleta } from '../lib/mapaInterpretacao.js'
@@ -10,8 +10,8 @@ import {
   wrapPdfText,
   alturaTextoPdf,
   sanitizarTextoPdf,
-  escreverLinhasCentradas,
-  escreverParagrafoCentrado,
+  escreverLinhasEsquerda,
+  escreverParagrafoEsquerda,
 } from '../lib/pdfTextWrap.js'
 
 const ELEMENTO_DO_SIGNO = {
@@ -31,12 +31,16 @@ export async function gerarPdfMapaAstral(mapaNatal, dados, planetas = [], analis
   const labels = getPdfLabels(lang)
 
   const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' })
+
+  const L = 18
+  const W = 174
   const CX = 105
-  const L = 25
-  const W = 160
-  const TEXT_W = 130
-  const PAGE_BOTTOM = 265
-  let y = 22
+  const PAD = 3
+  const TEXT_X = L + PAD
+  const TEXT_W = W - PAD * 2
+  const PAGE_TOP = 20
+  const PAGE_BOTTOM = 278
+  const LINE_H = 4.8
 
   const DOURADO = [223, 183, 108]
   const BRANCO  = [255, 255, 255]
@@ -48,14 +52,20 @@ export async function gerarPdfMapaAstral(mapaNatal, dados, planetas = [], analis
   const AZUL    = [147, 197, 253]
   const LILAS   = [129, 140, 248]
 
-  const novaPageSeNecessario = (h = 25) => {
-    if (y + h > PAGE_BOTTOM) {
-      doc.addPage()
-      doc.setFillColor(...ESCURO)
-      doc.rect(0, 0, 210, 297, 'F')
-      y = 22
-    }
+  const yRef = { value: PAGE_TOP }
+
+  const novaPagina = () => {
+    doc.addPage()
+    doc.setFillColor(...ESCURO)
+    doc.rect(0, 0, 210, 297, 'F')
+    yRef.value = PAGE_TOP
   }
+
+  const caberNaPagina = (alturaNecessaria) => {
+    if (yRef.value + alturaNecessaria > PAGE_BOTTOM) novaPagina()
+  }
+
+  const onNewPage = () => novaPagina()
 
   doc.setFillColor(...ESCURO)
   doc.rect(0, 0, 210, 297, 'F')
@@ -103,10 +113,10 @@ export async function gerarPdfMapaAstral(mapaNatal, dados, planetas = [], analis
   ].filter(Boolean).join(' ')
   doc.text(sanitizarTextoPdf(localDt), CX, 55, { align: 'center', maxWidth: TEXT_W })
 
-  y = 68
+  yRef.value = 68
 
-  y = secaoTitulo(doc, y, labels.fourPillars, DOURADO, ROXO, L, W, CX, TEXT_W)
-  y += 6
+  yRef.value = secaoTitulo(doc, yRef.value, labels.fourPillars, DOURADO, ROXO, L, W, TEXT_X, TEXT_W)
+  yRef.value += 4
 
   const pilares = [
     { label: labels.labels.sun, valor: mapaNatal?.solar?.nome || '-', grau: mapaNatal?.solar?.graus },
@@ -118,97 +128,95 @@ export async function gerarPdfMapaAstral(mapaNatal, dados, planetas = [], analis
 
   pilares.forEach((p, i) => {
     const col = i % 2
-    const boxW = W / 2 - 3
-    const x = L + col * (W / 2 + 1)
-    if (col === 0 && i > 0) y += 24
-    novaPageSeNecessario(22)
+    const boxW = W / 2 - 2
+    const x = L + col * (W / 2 + 2)
+    if (col === 0 && i > 0) yRef.value += 22
+    caberNaPagina(20)
     doc.setFillColor(28, 16, 58)
-    doc.roundedRect(x, y, boxW, 20, 3, 3, 'F')
+    doc.roundedRect(x, yRef.value, boxW, 18, 3, 3, 'F')
     doc.setDrawColor(...DOURADO)
     doc.setLineWidth(0.3)
-    doc.roundedRect(x, y, boxW, 20, 3, 3, 'S')
-    const boxCx = x + boxW / 2
+    doc.roundedRect(x, yRef.value, boxW, 18, 3, 3, 'S')
     doc.setTextColor(...MUTED)
     doc.setFontSize(7)
     doc.setFont('helvetica', 'normal')
-    doc.text(sanitizarTextoPdf(p.label.toUpperCase()), boxCx, y + 7, { align: 'center', maxWidth: boxW - 4 })
+    doc.text(sanitizarTextoPdf(p.label.toUpperCase()), x + 5, yRef.value + 7)
     doc.setTextColor(...BRANCO)
     doc.setFontSize(11)
     doc.setFont('helvetica', 'bold')
-    doc.text(sanitizarTextoPdf(p.valor), boxCx, y + 14, { align: 'center', maxWidth: boxW - 4 })
+    doc.text(sanitizarTextoPdf(p.valor), x + 13, yRef.value + 14)
     if (p.grau != null) {
       doc.setTextColor(...MUTED)
       doc.setFontSize(7)
-      doc.text(`${p.grau}°`, boxCx, y + 18, { align: 'center' })
+      doc.text(`${p.grau}°`, x + boxW - 12, yRef.value + 14)
     }
   })
-  y += 28
+  yRef.value += 26
 
   for (const sec of analiseFinal.seccoes) {
-    novaPageSeNecessario(28)
-    y = secaoTitulo(doc, y, `>> ${sec.id}. ${sanitizarTextoPdf(sec.titulo).toUpperCase()}`, DOURADO, ROXO, L, W, CX, TEXT_W)
-    y += 6
+    caberNaPagina(22)
+    yRef.value = secaoTitulo(doc, yRef.value, `>> ${sec.id}. ${sanitizarTextoPdf(sec.titulo).toUpperCase()}`, DOURADO, ROXO, L, W, TEXT_X, TEXT_W)
+    yRef.value += 4
 
     for (const bloco of sec.blocos) {
       doc.setFontSize(10)
       doc.setFont('helvetica', 'bold')
       const tituloLinhas = wrapPdfText(doc, bloco.subtitulo, TEXT_W)
       const metaLinhas = bloco.meta ? wrapPdfText(doc, bloco.meta, TEXT_W) : []
-      const alturaParag = alturaTextoPdf(doc, bloco.texto, TEXT_W)
-      novaPageSeNecessario(tituloLinhas.length * 5 + metaLinhas.length * 5 + alturaParag + 12)
 
       doc.setFontSize(10)
       doc.setFont('helvetica', 'bold')
       doc.setTextColor(...DOURADO)
-      y = escreverLinhasCentradas(doc, tituloLinhas, CX, y, 5)
+      escreverLinhasEsquerda(doc, tituloLinhas, TEXT_X, yRef, PAGE_BOTTOM, LINE_H, onNewPage)
 
       if (bloco.meta) {
         doc.setTextColor(...MUTED)
         doc.setFontSize(8)
         doc.setFont('helvetica', 'normal')
-        y = escreverLinhasCentradas(doc, metaLinhas, CX, y, 5)
+        escreverLinhasEsquerda(doc, metaLinhas, TEXT_X, yRef, PAGE_BOTTOM, LINE_H, onNewPage)
       }
 
-      y += 2
+      yRef.value += 2
       doc.setFontSize(9)
       doc.setFont('helvetica', 'normal')
       doc.setTextColor(...BRANCO)
-      y = escreverParagrafoCentrado(doc, bloco.texto, CX, y, TEXT_W, 5)
-      y += 4
+      escreverParagrafoEsquerda(doc, bloco.texto, TEXT_X, yRef, TEXT_W, PAGE_BOTTOM, LINE_H, onNewPage)
+      yRef.value += 3
     }
-    y += 4
+    yRef.value += 4
   }
 
-  novaPageSeNecessario(28)
-  y = secaoTitulo(doc, y, labels.positions, DOURADO, ROXO, L, W, CX, TEXT_W)
-  y += 6
+  caberNaPagina(22)
+  yRef.value = secaoTitulo(doc, yRef.value, labels.positions, DOURADO, ROXO, L, W, TEXT_X, TEXT_W)
+  yRef.value += 4
 
   if (planetas.length > 0) {
     planetas.forEach((pl, i) => {
-      novaPageSeNecessario(16)
+      caberNaPagina(12)
       const col = i % 2
-      const boxW = W / 2 - 3
-      const x = L + col * (W / 2 + 1)
-      if (col === 0 && i > 0) y += 14
-      const boxCx = x + boxW / 2
+      const boxW = W / 2 - 2
+      const x = L + col * (W / 2 + 2)
+      if (col === 0 && i > 0) yRef.value += 11
       doc.setFillColor(20, 12, 45)
-      doc.roundedRect(x, y, boxW, 12, 2, 2, 'F')
+      doc.roundedRect(x, yRef.value, boxW, 10, 2, 2, 'F')
       doc.setTextColor(...DOURADO)
       doc.setFontSize(8)
       doc.setFont('helvetica', 'bold')
-      doc.text(sanitizarTextoPdf(`${pl.simbolo || ''} ${pl.nome || ''}`.trim()), boxCx, y + 5, { align: 'center', maxWidth: boxW - 4 })
+      doc.text(sanitizarTextoPdf(`${pl.simbolo || ''} ${pl.nome || ''}`.trim()), x + 4, yRef.value + 7)
       doc.setTextColor(...BRANCO)
       doc.setFont('helvetica', 'normal')
       doc.setFontSize(7)
-      const signoCasa = sanitizarTextoPdf(`${pl.signo?.nome || '-'}${pl.casa ? ` - C${pl.casa}` : ''}`)
-      doc.text(signoCasa, boxCx, y + 9, { align: 'center', maxWidth: boxW - 4 })
+      const signoCasa = sanitizarTextoPdf(`${pl.signo?.nome || '-'}${pl.casa ? ` · C${pl.casa}` : ''}`)
+      doc.text(signoCasa, x + 28, yRef.value + 7, { maxWidth: boxW - 32 })
+      doc.setTextColor(...MUTED)
+      doc.text(`${(pl.longitude ?? 0).toFixed(1)}°${pl.retrograde ? ' R' : ''}`, x + boxW - 18, yRef.value + 7)
     })
-    y += 18
+    yRef.value += 16
   }
 
-  novaPageSeNecessario(55)
-  y = secaoTitulo(doc, y, labels.elements, DOURADO, ROXO, L, W, CX, TEXT_W)
-  y += 6
+  caberNaPagina(50)
+  yRef.value = secaoTitulo(doc, yRef.value, labels.elements, DOURADO, ROXO, L, W, TEXT_X, TEXT_W)
+  yRef.value += 4
 
   if (planetas.length > 0) {
     const balEl = { Fogo: 0, Terra: 0, Ar: 0, Água: 0 }
@@ -220,56 +228,55 @@ export async function gerarPdfMapaAstral(mapaNatal, dados, planetas = [], analis
       { label: labels.air, key: 'Ar', cor: AZUL },
       { label: labels.water, key: 'Água', cor: LILAS },
     ].forEach(({ label, key, cor }) => {
-      novaPageSeNecessario(16)
+      caberNaPagina(13)
       const count = balEl[key] || 0
       const pct = total > 0 ? count / total : 0
       doc.setTextColor(...BRANCO)
       doc.setFontSize(9)
       doc.setFont('helvetica', 'bold')
-      doc.text(sanitizarTextoPdf(`${label}  ${count}/${total}`), CX, y + 4, { align: 'center' })
-      const barW = TEXT_W
-      const barX = CX - barW / 2
+      doc.text(sanitizarTextoPdf(`${label}  ${count}/${total}`), TEXT_X, yRef.value + 5)
       doc.setFillColor(255, 255, 255, 0.06)
-      doc.roundedRect(barX, y + 7, barW, 4, 1, 1, 'F')
+      doc.roundedRect(TEXT_X, yRef.value + 7, TEXT_W, 3.5, 1, 1, 'F')
       if (pct > 0) {
         doc.setFillColor(...cor)
-        doc.roundedRect(barX, y + 7, barW * pct, 4, 1, 1, 'F')
+        doc.roundedRect(TEXT_X, yRef.value + 7, TEXT_W * pct, 3.5, 1, 1, 'F')
       }
-      y += 14
+      yRef.value += 13
     })
   }
 
-  novaPageSeNecessario(40)
-  y = secaoTitulo(doc, y, labels.technical, DOURADO, ROXO, L, W, CX, TEXT_W)
-  y += 6
+  caberNaPagina(35)
+  yRef.value = secaoTitulo(doc, yRef.value, labels.technical, DOURADO, ROXO, L, W, TEXT_X, TEXT_W)
+  yRef.value += 4
 
   ;[
     [labels.technicalSystem, labels.technicalSystemVal],
     [labels.technicalUt, mapaNatal?.instanteUTC ? mapaNatal.instanteUTC.replace('T', ' ').slice(0, 16) + ' UTC' : '-'],
     [labels.technicalCoords, mapaNatal?.lat != null ? `${mapaNatal.lat.toFixed(4)}°, ${mapaNatal.lon?.toFixed(4)}°` : '-'],
   ].forEach(([label, valor]) => {
-    novaPageSeNecessario(14)
+    caberNaPagina(12)
     doc.setTextColor(...MUTED)
-    doc.setFontSize(8)
+    doc.setFontSize(9)
     doc.setFont('helvetica', 'normal')
-    doc.text(sanitizarTextoPdf(label), CX, y, { align: 'center', maxWidth: TEXT_W })
-    y += 5
+    doc.text(sanitizarTextoPdf(label), TEXT_X, yRef.value)
     doc.setTextColor(...BRANCO)
     doc.setFont('helvetica', 'bold')
     doc.setFontSize(8)
-    y = escreverParagrafoCentrado(doc, String(valor), CX, y, TEXT_W, 5)
-    y += 2
+    const valorLinhas = wrapPdfText(doc, String(valor), TEXT_W - 38)
+    valorLinhas.forEach((l) => {
+      if (yRef.value + LINE_H > PAGE_BOTTOM) novaPagina()
+      doc.text(l, TEXT_X + 38, yRef.value)
+      yRef.value += LINE_H
+    })
+    yRef.value += 2
   })
 
   if (mandalaPng) {
-    doc.addPage()
-    doc.setFillColor(...ESCURO)
-    doc.rect(0, 0, 210, 297, 'F')
-    y = 22
-    y = secaoTitulo(doc, y, labels.mandala, DOURADO, ROXO, L, W, CX, TEXT_W)
-    y += 8
+    novaPagina()
+    yRef.value = secaoTitulo(doc, yRef.value, labels.mandala, DOURADO, ROXO, L, W, TEXT_X, TEXT_W)
+    yRef.value += 6
     const { adicionarMandalaAoPdf } = await import('../lib/mandalaPdf.js')
-    await adicionarMandalaAoPdf(doc, mandalaPng, { L, W, yStart: y, pageBottom: PAGE_BOTTOM, ESCURO })
+    await adicionarMandalaAoPdf(doc, mandalaPng, { L, W, yStart: yRef.value, pageBottom: PAGE_BOTTOM, ESCURO })
   }
 
   const totalPaginas = doc.getNumberOfPages()
@@ -277,36 +284,36 @@ export async function gerarPdfMapaAstral(mapaNatal, dados, planetas = [], analis
   for (let i = 1; i <= totalPaginas; i++) {
     doc.setPage(i)
     doc.setFillColor(11, 7, 30)
-    doc.rect(0, 287, 210, 10, 'F')
+    doc.rect(0, 285, 210, 12, 'F')
     doc.setDrawColor(...DOURADO)
     doc.setLineWidth(0.2)
-    doc.line(L, 287, 210 - L, 287)
+    doc.line(L, 285, 210 - L, 285)
     doc.setTextColor(...MUTED)
     doc.setFontSize(6.5)
     doc.setFont('helvetica', 'normal')
-    const footerLine = `Sidus Astro - ${sanitizarTextoPdf(dados.nome || '')} - Tropical Placidus - ${new Date().toLocaleDateString(dateLocale)} - ${labels.pageLabel} ${i}/${totalPaginas}`
-    doc.text(footerLine, CX, 290, { align: 'center', maxWidth: TEXT_W })
+    const footerLine = `Sidus Astro · ${sanitizarTextoPdf(dados.nome || '')} · Tropical Placidus · ${new Date().toLocaleDateString(dateLocale)} · ${labels.pageLabel} ${i}/${totalPaginas}`
+    doc.text(footerLine, CX, 289, { align: 'center', maxWidth: TEXT_W })
     doc.setFontSize(5.5)
     wrapPdfText(doc, copyright, TEXT_W).forEach((line, idx) => {
-      doc.text(line, CX, 293.5 + idx * 2.6, { align: 'center' })
+      doc.text(line, CX, 292 + idx * 2.4, { align: 'center' })
     })
   }
 
   doc.save(`Sidus_MapaNatal_${(dados.nome || 'perfil').replace(/\s+/g, '_')}.pdf`)
 }
 
-function secaoTitulo(doc, y, texto, DOURADO, ROXO, L, W, CX, TEXT_W) {
+function secaoTitulo(doc, y, texto, DOURADO, ROXO, L, W, textX, textW) {
   doc.setFillColor(...ROXO)
-  doc.rect(L, y, W, 10, 'F')
+  doc.rect(L, y, W, 9, 'F')
   doc.setDrawColor(...DOURADO)
   doc.setLineWidth(0.3)
-  doc.rect(L, y, W, 10, 'S')
+  doc.rect(L, y, W, 9, 'S')
   doc.setTextColor(...DOURADO)
   doc.setFontSize(8)
   doc.setFont('helvetica', 'bold')
-  const linhas = wrapPdfText(doc, texto, TEXT_W)
-  doc.text(linhas[0] || '', CX, y + 6.5, { align: 'center' })
-  return y + 12
+  const linhas = wrapPdfText(doc, texto, textW - 4)
+  doc.text(linhas[0] || '', textX, y + 6)
+  return y + 11
 }
 
 function formatarData(iso) {

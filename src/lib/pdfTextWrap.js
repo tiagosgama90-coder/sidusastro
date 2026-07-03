@@ -1,5 +1,5 @@
-/** Fator de seguranca: Helvetica subestima largura de acentos PT/ES/FR. */
-const UNICODE_SAFE_FACTOR = 0.62
+/** Margem de seguranca para acentos PT/ES/FR no Helvetica. */
+const UNICODE_SAFE_FACTOR = 0.9
 
 /** Remove simbolos que o Helvetica do jsPDF nao renderiza bem. */
 export function sanitizarTextoPdf(texto) {
@@ -11,31 +11,37 @@ export function sanitizarTextoPdf(texto) {
     .replace(/[\u2013\u2014]/g, '-')
 }
 
-/**
- * Quebra texto para caber na pagina (splitTextToSize + margem unicode).
- */
+/** Quebra texto para caber na largura util (mm). */
 export function wrapPdfText(doc, texto, maxWidthMm) {
   const text = sanitizarTextoPdf(texto)
   if (!text) return ['']
-  const safeWidth = Math.max(20, maxWidthMm * UNICODE_SAFE_FACTOR)
+  const safeWidth = Math.max(30, maxWidthMm * UNICODE_SAFE_FACTOR)
   return doc.splitTextToSize(text, safeWidth)
 }
 
-export function alturaTextoPdf(doc, texto, maxWidthMm, alturaLinha = 5) {
+export function alturaTextoPdf(doc, texto, maxWidthMm, alturaLinha = 4.8) {
   return wrapPdfText(doc, texto, maxWidthMm).length * alturaLinha + 3
 }
 
-/** Desenha linhas centradas; devolve o Y final. */
-export function escreverLinhasCentradas(doc, linhas, centerX, y, lineHeight = 5) {
+/** Desenha linhas alinhadas a esquerda com quebra de pagina linha a linha. */
+export function escreverLinhasEsquerda(doc, linhas, x, yRef, pageBottom, lineHeight, onNewPage) {
+  let y = yRef.value
   for (const linha of linhas) {
-    if (linha) doc.text(linha, centerX, y, { align: 'center' })
+    if (y + lineHeight > pageBottom) {
+      onNewPage()
+      y = yRef.value
+    }
+    if (linha) doc.text(linha, x, y)
     y += lineHeight
   }
+  yRef.value = y
   return y
 }
 
-/** Quebra e desenha paragrafo centrado; devolve o Y final. */
-export function escreverParagrafoCentrado(doc, texto, centerX, y, maxWidthMm, lineHeight = 5) {
+/** Quebra e desenha paragrafo alinhado a esquerda. */
+export function escreverParagrafoEsquerda(doc, texto, x, yRef, maxWidthMm, pageBottom, lineHeight, onNewPage) {
   const linhas = wrapPdfText(doc, texto, maxWidthMm)
-  return escreverLinhasCentradas(doc, linhas, centerX, y, lineHeight) + 3
+  escreverLinhasEsquerda(doc, linhas, x, yRef, pageBottom, lineHeight, onNewPage)
+  yRef.value += 3
+  return yRef.value
 }
