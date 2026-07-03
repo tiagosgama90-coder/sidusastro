@@ -9,7 +9,7 @@ import { useLanguage } from '../lib/i18n/LanguageContext.jsx'
 import { localizeArcano, getTiposTarot, getPosicoesTarot } from '../lib/i18n/tarotArcana.js'
 import { PRECO_TAROT } from '../lib/pricing.js'
 import { sortearCartas, getCartaById, MAJOR_ARCANA } from '../lib/tarot/deck.js'
-import { sortearLenormand } from '../lib/tarot/lenormand.js'
+import { sortearLenormand, LENORMAND_VERSO } from '../lib/tarot/lenormand.js'
 import { interpretarLeitura } from '../lib/tarot/interpretacao.js'
 import { CartaTarot } from './CartaTarot.jsx'
 import {
@@ -327,10 +327,10 @@ export function EcraTarot({ mapaNatal, isPremium, userId, leiturasTarotUsadas = 
     />
   )
 
-  if (embaralhando) return <TelaEmbaralhar t={t}/>
+  if (embaralhando) return <TelaEmbaralhar t={t} cartaVerso={tipoId === 'cigano' ? LENORMAND_VERSO : MAJOR_ARCANA[0]} />
 
   if (distribuindo>=0) return (
-    <TelaDistribuir cartas={cartas} posicoes={posicoes} distribuindo={distribuindo} t={t}/>
+    <TelaDistribuir cartas={cartas} posicoes={posicoes} distribuindo={distribuindo} t={t} cartaVerso={tipoId === 'cigano' ? LENORMAND_VERSO : MAJOR_ARCANA[0]} />
   )
 
   if (fase==='revelar') return (
@@ -543,7 +543,7 @@ function TelaPergunta({ tipo, pergunta, setPergunta, onVoltar, podeLer, isPremiu
   )
 }
 
-function TelaEmbaralhar({ t }) {
+function TelaEmbaralhar({ t, cartaVerso = MAJOR_ARCANA[0] }) {
   const CARTA = useTamanhoCartas()
   const h = Math.round(CARTA.embaralhar * 1.6)
   const stack = Array.from({ length: 8 })
@@ -579,7 +579,7 @@ function TelaEmbaralhar({ t }) {
             filter: `brightness(${0.92 + (i * 0.015)})`,
             zIndex: i + 1,
           }}>
-            <CartaTarot carta={MAJOR_ARCANA[0]} virada size={CARTA.embaralhar}/>
+            <CartaTarot carta={cartaVerso} virada size={CARTA.embaralhar}/>
           </div>
         ))}
         {[0,1,2,3,4].map((i)=>(
@@ -602,7 +602,7 @@ function TelaEmbaralhar({ t }) {
   )
 }
 
-function TelaDistribuir({ cartas, posicoes, distribuindo, t }) {
+function TelaDistribuir({ cartas, posicoes, distribuindo, t, cartaVerso = MAJOR_ARCANA[0] }) {
   const CARTA = useTamanhoCartas()
   return (
     <div style={{padding:'30px 20px',textAlign:'center',overflow:'visible'}}>
@@ -614,7 +614,7 @@ function TelaDistribuir({ cartas, posicoes, distribuindo, t }) {
             animation: i<=distribuindo ? 'deal 0.4s ease-out forwards' : 'none',
             opacity: i<=distribuindo ? 1 : 0.15,
           }}>
-            <CartaTarot carta={i<=distribuindo ? MAJOR_ARCANA[0] : MAJOR_ARCANA[0]} virada size={CARTA.distribuir}/>
+            <CartaTarot carta={cartaVerso} virada size={CARTA.distribuir}/>
             <div style={{fontSize:9,color:CORES.brancoMuted,marginTop:4,width:CARTA.distribuir}}>{pos}</div>
           </div>
         ))}
