@@ -145,3 +145,47 @@ export function nomePlanetaDeAspeto(str) {
   if (!str) return ''
   return str.replace(/\s+[^\s]+\s*$/u, '').trim()
 }
+
+export function indiceSignoDeLongitude(longitude) {
+  const lon = normalizarLongitude(longitude)
+  return Math.min(11, Math.max(0, Math.floor(lon / 30)))
+}
+
+export function grausNoSigno(longitude) {
+  const lon = normalizarLongitude(longitude)
+  return lon % 30
+}
+
+export function formatarGrauSigno(longitude) {
+  const g = grausNoSigno(longitude)
+  const graus = Math.floor(g)
+  const minutos = Math.round((g - graus) * 60)
+  return minutos > 0 ? `${graus}°${String(minutos).padStart(2, '0')}'` : `${graus}°`
+}
+
+export const COR_PLANETA = {
+  Sol: '#FBBF24',
+  Lua: '#C4B5FD',
+  Mercúrio: '#93C5FD',
+  Vénus: '#F472B6',
+  Marte: '#F87171',
+  Júpiter: '#34D399',
+  Saturno: '#A78BFA',
+  Urano: '#67E8F9',
+  Neptuno: '#818CF8',
+  Plutão: '#E879F9',
+  Quíron: '#FB923C',
+  'Nodo Norte': '#DFB76C',
+  Lilith: '#9CA3AF',
+}
+
+export const ABREV_SIGNO = ['Ar', 'To', 'Gm', 'Cj', 'Le', 'Vg', 'Ba', 'Es', 'Sg', 'Cp', 'Aq', 'Px']
+
+export function indiceSignoDePonto(ponto) {
+  if (!ponto) return null
+  if (ponto.longitude != null && Number.isFinite(Number(ponto.longitude))) {
+    return indiceSignoDeLongitude(ponto.longitude)
+  }
+  if (ponto.nome && SIGNO_INDICE[ponto.nome] != null) return SIGNO_INDICE[ponto.nome]
+  return null
+}

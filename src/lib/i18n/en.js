@@ -295,7 +295,7 @@ export default {
     freeTasteHint: 'You are viewing a free sample. The rest of the chart - full interpretation, positions, aspects and PDF - is reserved for Premium.',
     freeBlurTeaser: 'Professional interpretation, life spheres, PDF export and much more…',
     mandalaTitle: '✦ Natal Mandala',
-    mandalaSubtitle: 'Personal astrological wheel with your planetary positions, Placidus houses and aspects · Tropical',
+    mandalaSubtitle: 'Your unique celestial wheel — exact positions, Placidus houses and aspects calculated for your birth moment.',
     mandalaUnavailable: 'The mandala will appear once planetary positions are available.',
   },
   cartaoDia: {
