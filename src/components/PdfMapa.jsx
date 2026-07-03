@@ -10,8 +10,8 @@ import {
   wrapPdfText,
   alturaTextoPdf,
   sanitizarTextoPdf,
-  escreverLinhasEsquerda,
-  escreverParagrafoEsquerda,
+  escreverLinhasJustificadas,
+  escreverParagrafoJustificado,
 } from '../lib/pdfTextWrap.js'
 
 const ELEMENTO_DO_SIGNO = {
@@ -167,20 +167,20 @@ export async function gerarPdfMapaAstral(mapaNatal, dados, planetas = [], analis
       doc.setFontSize(10)
       doc.setFont('helvetica', 'bold')
       doc.setTextColor(...DOURADO)
-      escreverLinhasEsquerda(doc, tituloLinhas, TEXT_X, yRef, PAGE_BOTTOM, LINE_H, onNewPage)
+      escreverLinhasJustificadas(doc, tituloLinhas, TEXT_X, TEXT_W, yRef, PAGE_BOTTOM, LINE_H, onNewPage)
 
       if (bloco.meta) {
         doc.setTextColor(...MUTED)
         doc.setFontSize(8)
         doc.setFont('helvetica', 'normal')
-        escreverLinhasEsquerda(doc, metaLinhas, TEXT_X, yRef, PAGE_BOTTOM, LINE_H, onNewPage)
+        escreverLinhasJustificadas(doc, metaLinhas, TEXT_X, TEXT_W, yRef, PAGE_BOTTOM, LINE_H, onNewPage)
       }
 
       yRef.value += 2
       doc.setFontSize(9)
       doc.setFont('helvetica', 'normal')
       doc.setTextColor(...BRANCO)
-      escreverParagrafoEsquerda(doc, bloco.texto, TEXT_X, yRef, TEXT_W, PAGE_BOTTOM, LINE_H, onNewPage)
+      escreverParagrafoJustificado(doc, bloco.texto, TEXT_X, TEXT_W, yRef, PAGE_BOTTOM, LINE_H, onNewPage)
       yRef.value += 3
     }
     yRef.value += 4
@@ -263,9 +263,13 @@ export async function gerarPdfMapaAstral(mapaNatal, dados, planetas = [], analis
     doc.setFont('helvetica', 'bold')
     doc.setFontSize(8)
     const valorLinhas = wrapPdfText(doc, String(valor), TEXT_W - 38)
-    valorLinhas.forEach((l) => {
+    valorLinhas.forEach((l, idx) => {
       if (yRef.value + LINE_H > PAGE_BOTTOM) novaPagina()
-      doc.text(l, TEXT_X + 38, yRef.value)
+      const ultima = idx === valorLinhas.length - 1
+      doc.text(l, TEXT_X + 38, yRef.value, {
+        align: ultima ? 'left' : 'justify',
+        maxWidth: TEXT_W - 38,
+      })
       yRef.value += LINE_H
     })
     yRef.value += 2

@@ -1,5 +1,5 @@
 /** Margem de seguranca para acentos PT/ES/FR no Helvetica. */
-const UNICODE_SAFE_FACTOR = 0.9
+const UNICODE_SAFE_FACTOR = 0.92
 
 /** Remove simbolos que o Helvetica do jsPDF nao renderiza bem. */
 export function sanitizarTextoPdf(texto) {
@@ -23,25 +23,30 @@ export function alturaTextoPdf(doc, texto, maxWidthMm, alturaLinha = 4.8) {
   return wrapPdfText(doc, texto, maxWidthMm).length * alturaLinha + 3
 }
 
-/** Desenha linhas alinhadas a esquerda com quebra de pagina linha a linha. */
-export function escreverLinhasEsquerda(doc, linhas, x, yRef, pageBottom, lineHeight, onNewPage) {
+/** Desenha linhas justificadas (ultima linha de cada bloco alinhada a esquerda). */
+export function escreverLinhasJustificadas(doc, linhas, x, maxWidthMm, yRef, pageBottom, lineHeight, onNewPage) {
   let y = yRef.value
-  for (const linha of linhas) {
+  const validas = linhas.filter(Boolean)
+  validas.forEach((linha, idx) => {
     if (y + lineHeight > pageBottom) {
       onNewPage()
       y = yRef.value
     }
-    if (linha) doc.text(linha, x, y)
+    const ultima = idx === validas.length - 1
+    doc.text(linha, x, y, {
+      align: ultima ? 'left' : 'justify',
+      maxWidth: maxWidthMm,
+    })
     y += lineHeight
-  }
+  })
   yRef.value = y
   return y
 }
 
-/** Quebra e desenha paragrafo alinhado a esquerda. */
-export function escreverParagrafoEsquerda(doc, texto, x, yRef, maxWidthMm, pageBottom, lineHeight, onNewPage) {
+/** Quebra e desenha paragrafo justificado. */
+export function escreverParagrafoJustificado(doc, texto, x, maxWidthMm, yRef, pageBottom, lineHeight, onNewPage) {
   const linhas = wrapPdfText(doc, texto, maxWidthMm)
-  escreverLinhasEsquerda(doc, linhas, x, yRef, pageBottom, lineHeight, onNewPage)
+  escreverLinhasJustificadas(doc, linhas, x, maxWidthMm, yRef, pageBottom, lineHeight, onNewPage)
   yRef.value += 3
   return yRef.value
 }

@@ -82,6 +82,7 @@ import { readLandingDraft, clearLandingDraft, mergeLandingDraft, hasLandingDraft
 import { getFerramentas, getBeneficiosVip } from './lib/i18n/ferramentasData.js'
 import { validarOnboarding } from './lib/i18n/validation.js'
 import { traduzirErroAuth } from './lib/i18n/authErrors.js'
+import { labelBarraCurto, tituloSecaoMapa } from './lib/i18n/labelUtil.js'
 import {
   validarPerguntaOracle, gerarRespostaOracle,
   getChatGreeting, getOracleLimitMessage,
@@ -2015,11 +2016,12 @@ function PilarCard({ titulo, simbolo, nome, graus, elemento, icon: Icon, corBord
 
 function BarraElemento({ label, valor, total, cor }) {
   const pct = total > 0 ? Math.round((valor / total) * 100) : 0
+  const labelCurto = labelBarraCurto(label)
   return (
     <div style={{ marginBottom: 10 }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 3 }}>
-        <span style={{ fontSize: 12, color: CORES.brancoSuave }}>{label}</span>
-        <span style={{ fontSize: 11, color: cor, fontWeight: 700 }}>{valor} ({pct}%)</span>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8, marginBottom: 3 }}>
+        <span className="mapa-bar-label" style={{ fontSize: 12, color: CORES.brancoSuave }}>{labelCurto}</span>
+        <span style={{ fontSize: 11, color: cor, fontWeight: 700, flexShrink: 0 }}>{valor} ({pct}%)</span>
       </div>
       <div style={{ height: 6, borderRadius: 3, background: 'rgba(255,255,255,0.08)' }}>
         <div style={{ height: '100%', borderRadius: 3, width: `${pct}%`, background: cor, transition: 'width 0.6s ease' }} />
@@ -2325,8 +2327,8 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
       )}
 
       {/* ── Quatro Pilares ── */}
-      <div style={{ fontSize: 11, color: CORES.dourado, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 10, fontWeight: 700 }}>
-        {t('mapa.angularAxes')}
+      <div className="mapa-sec-label" style={{ fontSize: 11, color: CORES.dourado, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 10, fontWeight: 700 }}>
+        {tituloSecaoMapa(t('mapa.angularAxes'))}
       </div>
       {pilaresCompletos.map(p => <PilarCard key={p.titulo} {...p} />)}
 
@@ -2335,8 +2337,8 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
         <>
           {balEl && (
             <div style={{ ...estilos.vidro, padding: 18, marginBottom: 14 }}>
-              <div style={{ fontSize: 11, color: CORES.dourado, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 14, fontWeight: 700 }}>
-                {t('mapa.elementBalance')}
+              <div className="mapa-sec-label" style={{ fontSize: 11, color: CORES.dourado, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 14, fontWeight: 700 }}>
+                {tituloSecaoMapa(t('mapa.elementBalance'))}
               </div>
               <BarraElemento label={t('mapa.fire')}  valor={balEl.Fogo}  total={totalPlanetas} cor="#FB923C" />
               <BarraElemento label={t('mapa.earth')} valor={balEl.Terra} total={totalPlanetas} cor="#4ADE80" />
@@ -2344,8 +2346,8 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
               <BarraElemento label={t('mapa.water')}   valor={balEl.Água} total={totalPlanetas} cor="#818CF8" />
               {balMod && (
                 <>
-                  <div style={{ fontSize: 11, color: CORES.dourado, textTransform: 'uppercase', letterSpacing: '0.08em', margin: '16px 0 12px', fontWeight: 700 }}>
-                    {t('mapa.modalities')}
+                  <div className="mapa-sec-label" style={{ fontSize: 11, color: CORES.dourado, textTransform: 'uppercase', letterSpacing: '0.08em', margin: '16px 0 12px', fontWeight: 700 }}>
+                    {tituloSecaoMapa(t('mapa.modalities'))}
                   </div>
                   <BarraElemento label={t('mapa.cardinal')} valor={balMod.Cardinal} total={totalPlanetas} cor="#F472B6" />
                   <BarraElemento label={t('mapa.fixed')}    valor={balMod.Fixo}    total={totalPlanetas} cor="#FBBF24" />
@@ -2356,8 +2358,8 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
           )}
 
           <div style={{ ...estilos.vidro, padding: 18, marginBottom: 14 }}>
-            <div style={{ fontSize: 11, color: CORES.dourado, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 14, fontWeight: 700 }}>
-              {t('mapa.positions')}
+            <div className="mapa-sec-label" style={{ fontSize: 11, color: CORES.dourado, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 14, fontWeight: 700 }}>
+              {tituloSecaoMapa(t('mapa.positions'))}
             </div>
             {planetasComCasa.map((p) => (
               <div key={p.key} style={{ padding: '10px 0', borderBottom: `1px solid ${CORES.vidroBorda}` }}>
@@ -2380,8 +2382,8 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
 
           {aspetosNatais.length > 0 && (
             <div style={{ ...estilos.vidro, padding: 18, marginBottom: 14 }}>
-              <div style={{ fontSize: 11, color: CORES.dourado, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 14, fontWeight: 700 }}>
-                {t('mapa.aspects')}
+              <div className="mapa-sec-label" style={{ fontSize: 11, color: CORES.dourado, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 14, fontWeight: 700 }}>
+                {tituloSecaoMapa(t('mapa.aspects'))}
               </div>
               {aspetosNatais.map((a, i) => {
                 const corAsp = a.aspecto === 'Conjunção' ? '#DFB76C' : a.aspecto === 'Trígono' || a.aspecto === 'Sextil' ? '#34D399' : '#F87171'
