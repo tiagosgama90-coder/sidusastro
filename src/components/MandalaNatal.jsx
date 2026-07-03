@@ -7,6 +7,7 @@ import {
   nomePlanetaDeAspeto,
   normalizarLongitude,
   polarParaXY,
+  prepararDadosMandala,
   separarPlanetasSobrepostos,
 } from '../lib/mandalaNatal.js'
 
@@ -28,10 +29,18 @@ function linhaCuspide(cx, cy, r0, r1, longitude, asc) {
 /**
  * Roda natal SVG personalizada — Placidus, planetas e aspectos do utilizador.
  */
-export function MandalaNatal({ mapaNatal, planetas = [], aspectos = [], size = 340, className, style }) {
-  const cusps = mapaNatal?.cusps
-  const ascLon = mapaNatal?.ascendente?.longitude ?? cusps?.[0]
-  if (ascLon == null || !planetas?.length) return null
+export function MandalaNatal({ mapaNatal, planetas = [], aspectos = [], size = 340, className, style, unavailableLabel }) {
+  const dados = prepararDadosMandala(mapaNatal, planetas)
+  if (!dados) {
+    if (!unavailableLabel) return null
+    return (
+      <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.45)', textAlign: 'center', margin: 0 }}>
+        {unavailableLabel}
+      </p>
+    )
+  }
+
+  const { ascLon, cusps, mcLon, dcLon, icLon, planetas: planetasNorm } = dados
 
   const cx = size / 2
   const cy = size / 2
@@ -44,7 +53,7 @@ export function MandalaNatal({ mapaNatal, planetas = [], aspectos = [], size = 3
   const rAspect = rOuter * 0.38
   const rCenter = rOuter * 0.12
 
-  const planetasVisiveis = separarPlanetasSobrepostos(planetas, ascLon)
+  const planetasVisiveis = separarPlanetasSobrepostos(planetasNorm, ascLon)
   const mapaPos = new Map(
     planetasVisiveis.map((p) => {
       const pt = polarParaXY(p.chartAngle, rPlanet, cx, cy)
@@ -54,9 +63,9 @@ export function MandalaNatal({ mapaNatal, planetas = [], aspectos = [], size = 3
 
   const eixos = [
     { lon: ascLon, label: 'ASC', cor: '#C4B5FD' },
-    { lon: mapaNatal?.mc?.longitude ?? cusps?.[9], label: 'MC', cor: '#34D399' },
-    { lon: mapaNatal?.descendente?.longitude ?? cusps?.[6], label: 'DC', cor: '#F472B6' },
-    { lon: mapaNatal?.ic?.longitude ?? cusps?.[3], label: 'IC', cor: '#93C5FD' },
+    { lon: mcLon, label: 'MC', cor: '#34D399' },
+    { lon: dcLon, label: 'DC', cor: '#F472B6' },
+    { lon: icLon, label: 'IC', cor: '#93C5FD' },
   ].filter((e) => e.lon != null)
 
   return (

@@ -87,23 +87,6 @@ export default {
         a3: 'Yes - your data is processed encrypted through Firebase.',
         q4: 'What is the difference between the one-off chart and Premium?',
         a4: 'The one-off chart is a single payment - you get the full PDF report with no monthly subscription. Sidus Premium includes the full natal chart plus AI oracle, tarot, synastry and all tools. If you want more than the PDF, Premium is the best choice.',
-        q5: 'What is the Ascendant and why does it matter?',
-        a5: 'The Ascendant is the sign rising on the eastern horizon at your exact birth time. It shapes first impressions, how you approach life and your 1st House cusp. That is why birth time matters - two babies born on the same day can have different Ascendants.',
-        q6: 'Is Sidusastro free?',
-        a6: 'Yes, you can create a free account, calculate your basic natal chart, use daily tarot and explore several tools. The full PDF report, unlimited AI oracle and advanced tools are part of Premium or one-off purchases.',
-      },
-      guides: {
-        ariaLabel: 'Sidusastro astrology guides',
-        title: 'Astrology Guides',
-        lead: 'Free articles on natal charts, Ascendant, zodiac signs and tarot - written by the Sidusastro team to learn astrology with rigour.',
-        mapaTitle: 'What is a natal chart?',
-        mapaDesc: 'Planets, houses, aspects and how to read your birth chart.',
-        ascendenteTitle: 'Ascendant Guide',
-        ascendenteDesc: 'Why birth time changes everything in your chart.',
-        signosTitle: 'The 12 zodiac signs',
-        signosDesc: 'Elements, modalities and traits of each sign.',
-        tarotTitle: 'Tarot and astrology',
-        tarotDesc: 'How tarot complements the natal chart in symbolic reading.',
       },
       testimonials: {
         ariaLabel: 'Sidusastro user testimonials',
@@ -313,6 +296,7 @@ export default {
     freeBlurTeaser: 'Professional interpretation, life spheres, PDF export and much more…',
     mandalaTitle: '✦ Natal Mandala',
     mandalaSubtitle: 'Personal astrological wheel with your planetary positions, Placidus houses and aspects · Tropical',
+    mandalaUnavailable: 'The mandala will appear once planetary positions are available.',
   },
   cartaoDia: {
     title: '✦ Card of the Day · {date}',
@@ -421,7 +405,6 @@ export default {
   },
   footer: {
     tagline: '© 2026 Sidus Astro. Portals and paths revealed through Tarot and Astrology. All rights reserved.',
-    guides: 'Astrology guides',
     privacy: 'Privacy Policy',
   },
   tarot: {

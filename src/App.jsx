@@ -46,7 +46,6 @@ import { ConteudoDinamicoSidus } from './components/ConteudoDinamicoSidus'
 import { LandingCosmicBackground } from './components/LandingCosmicBackground.jsx'
 import { LandingBirthPortal } from './components/LandingBirthPortal.jsx'
 import { LandingFaq } from './components/LandingFaq.jsx'
-import { LandingGuides } from './components/LandingGuides.jsx'
 import { LandingPortalHero } from './components/LandingPortalHero.jsx'
 import { LandingSkyLive } from './components/LandingSkyLive.jsx'
 import { LandingTestimonials } from './components/LandingTestimonials.jsx'
@@ -72,11 +71,12 @@ import { atribuirCasasPlanetas } from './lib/casasPlacidus.js'
 import { gerarAnaliseCompleta, gerarResumoGratuito, mapaPlanetasProntos } from './lib/mapaInterpretacao.js'
 import { calcularFaseLua } from './lib/faseLua.js'
 import { useNavigate, useLocation } from 'react-router-dom'
-import { passoFromPath, pathFromPasso, langFromPath, stripLangPrefix } from './lib/routes.js'
+import { passoFromPath, pathFromPasso, langFromPath } from './lib/routes.js'
 import { initAdSense } from './lib/adsense.js'
 import { initGoogleAnalytics } from './lib/googleAnalytics.js'
+import { AdSenseBanner } from './components/AdSenseBanner.jsx'
 import { CookieConsent } from './components/CookieConsent.jsx'
-import { allowsAds, getCookieConsent } from './lib/cookieConsent.js'
+import { allowsAds, applyAdConsentToGoogle, getCookieConsent } from './lib/cookieConsent.js'
 import { LanguageSwitcher } from './components/LanguageSwitcher.jsx'
 import { useLanguage } from './lib/i18n/LanguageContext.jsx'
 import { getFerramentas, getBeneficiosVip } from './lib/i18n/ferramentasData.js'
@@ -1571,7 +1571,6 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
       </div>
       <LandingTestimonials />
       <LandingFaq />
-      <LandingGuides />
     </div>
   )
 }
@@ -2353,6 +2352,24 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
         </>
       )}
 
+      {mapaCompletoDesbloqueado && mapaCompletoVisivel && (
+        <div style={{ ...estilos.vidro, padding: 18, marginBottom: 14 }}>
+          <div style={{ fontSize: 11, color: CORES.dourado, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 6, fontWeight: 700 }}>
+            {t('mapa.mandalaTitle')}
+          </div>
+          <p style={{ fontSize: 11, color: CORES.brancoMuted, margin: '0 0 16px', lineHeight: 1.5 }}>
+            {t('mapa.mandalaSubtitle')}
+          </p>
+          <MandalaNatal
+            mapaNatal={mapaNatal}
+            planetas={planetasComCasa}
+            aspectos={aspetosCompletos}
+            size={isDesktop ? 380 : 320}
+            unavailableLabel={t('mapa.mandalaUnavailable')}
+          />
+        </div>
+      )}
+
       {/* ── Interpretação + premium ── */}
       {analiseCompleta && mapaCompletoDesbloqueado && (
         <>
@@ -2391,21 +2408,6 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
                 </div>
               </div>
             ))}
-          </div>
-
-          <div style={{ ...estilos.vidro, padding: 18, marginBottom: 14 }}>
-            <div style={{ fontSize: 11, color: CORES.dourado, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 6, fontWeight: 700 }}>
-              {t('mapa.mandalaTitle')}
-            </div>
-            <p style={{ fontSize: 11, color: CORES.brancoMuted, margin: '0 0 16px', lineHeight: 1.5 }}>
-              {t('mapa.mandalaSubtitle')}
-            </p>
-            <MandalaNatal
-              mapaNatal={mapaNatal}
-              planetas={planetasComCasa}
-              aspectos={aspetosCompletos}
-              size={isDesktop ? 380 : 320}
-            />
           </div>
 
           <div style={{ fontSize: 11, color: CORES.dourado, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 10, fontWeight: 700 }}>
@@ -2950,9 +2952,6 @@ function RodapeSidus({ isDesktop, mostrarNavbar }) {
         {t('footer.tagline')}
       </p>
       <p style={{ margin: '10px 0 0', fontSize: isDesktop ? 11 : 10 }}>
-        <a href="/guia/mapa-astral.html" style={{ color: 'rgba(255,255,255,0.35)', textDecoration: 'underline', marginRight: 12 }}>
-          {t('footer.guides')}
-        </a>
         <a
           href="/privacidade"
           style={{ color: 'rgba(255,255,255,0.35)', textDecoration: 'underline' }}
@@ -3431,7 +3430,10 @@ export default function App() {
   useEffect(() => {
     if (!allowsAds()) return
     initGoogleAnalytics()
-  }, [cookieConsent])
+    if (isPremium) return
+    applyAdConsentToGoogle()
+    initAdSense()
+  }, [isPremium, cookieConsent])
 
   // Firebase email verification link
   useEffect(() => {
@@ -3841,6 +3843,7 @@ export default function App() {
   const isDev = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
 
   const mostrarNavbar = utilizador && contaConfigurada && passo !== 'paywall'
+  const mostrarAdsGratis = !isPremium && allowsAds() && cookieConsent
 
   const chatFullScreen = passo === 'chat'
 
@@ -4011,6 +4014,9 @@ export default function App() {
           {renderEcran()}
         </ErrorBoundary>
       </div>
+      {utilizador && mostrarAdsGratis && !['login', 'onboarding', 'privacidade', 'paywall'].includes(passo) && (
+        <AdSenseBanner isPremium={isPremium} />
+      )}
       <RodapeSidus isDesktop={isDesktop} mostrarNavbar={mostrarNavbar} />
       {mostrarNavbar && (
         <Navbar

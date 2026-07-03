@@ -26,6 +26,66 @@ const ELEMENTO_POR_SIGNO = [
   'Fogo', 'Terra', 'Ar', 'Água', 'Fogo', 'Terra', 'Ar', 'Água', 'Fogo', 'Terra', 'Ar', 'Água',
 ]
 
+const SIGNO_INDICE = {
+  Carneiro: 0, Touro: 1, Gémeos: 2, Caranguejo: 3, Leão: 4, Virgem: 5,
+  Balança: 6, Escorpião: 7, Sagitário: 8, Capricórnio: 9, Aquário: 10, Peixes: 11,
+  Aries: 0, Taurus: 1, Gemini: 2, Cancer: 3, Leo: 4, Virgo: 5,
+  Libra: 6, Scorpio: 7, Sagittarius: 8, Capricorn: 9, Aquarius: 10, Pisces: 11,
+}
+
+export function longitudeDeSigno(nomeSigno, grausNoSigno) {
+  if (!nomeSigno) return null
+  const idx = SIGNO_INDICE[nomeSigno]
+  if (idx == null) return null
+  const g = parseFloat(grausNoSigno)
+  if (!Number.isFinite(g)) return null
+  return normalizarLongitude(idx * 30 + g)
+}
+
+/** Resolve longitude eclíptica (mapas em cache antigos podem não ter .longitude). */
+export function longitudeDoPonto(ponto, cuspFallback = null) {
+  if (ponto?.longitude != null && Number.isFinite(Number(ponto.longitude))) {
+    return normalizarLongitude(ponto.longitude)
+  }
+  if (cuspFallback != null && Number.isFinite(Number(cuspFallback))) {
+    return normalizarLongitude(cuspFallback)
+  }
+  return longitudeDeSigno(ponto?.nome, ponto?.graus ?? ponto?.signo?.graus)
+}
+
+export function enriquecerPlanetaLongitude(planeta) {
+  if (!planeta) return null
+  if (Number.isFinite(planeta.longitude)) return planeta
+  const lon = longitudeDeSigno(planeta.signo?.nome, planeta.signo?.graus)
+  if (lon == null) return null
+  return { ...planeta, longitude: lon }
+}
+
+export function prepararDadosMandala(mapaNatal, planetas = []) {
+  const ascLon = longitudeDoPonto(mapaNatal?.ascendente, mapaNatal?.cusps?.[0])
+  if (ascLon == null) return null
+
+  let cusps = mapaNatal?.cusps
+  if (!Array.isArray(cusps) || cusps.length < 12) {
+    cusps = Array.from({ length: 12 }, (_, i) => normalizarLongitude(ascLon + i * 30))
+  }
+
+  const planetasNorm = planetas
+    .map(enriquecerPlanetaLongitude)
+    .filter((p) => p && Number.isFinite(p.longitude))
+
+  if (!planetasNorm.length) return null
+
+  return {
+    ascLon,
+    cusps,
+    mcLon: longitudeDoPonto(mapaNatal?.mc, cusps[9]),
+    dcLon: longitudeDoPonto(mapaNatal?.descendente, cusps[6]),
+    icLon: longitudeDoPonto(mapaNatal?.ic, cusps[3]),
+    planetas: planetasNorm,
+  }
+}
+
 export function normalizarLongitude(lon) {
   return ((Number(lon) % 360) + 360) % 360
 }
