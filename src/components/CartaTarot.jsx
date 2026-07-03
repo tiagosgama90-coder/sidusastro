@@ -95,8 +95,8 @@ function SuitGlyph({ naipe, cor, size = 28 }) {
 }
 
 function CartaFallbackSVG({ carta, size }) {
+  const { w, h } = dimensoesCarta(size)
   const isLenormand = carta.tipo === 'lenormand'
-  const { w, h } = dimensoesCarta(size, isLenormand ? 'lenormand' : 'tarot')
   const isMajor = !isLenormand && (carta.tipo === 'major' || carta.id <= 21)
   const cor = isLenormand ? '#5B21B6' : isMajor ? (PALETAS_MAJOR[carta.id] ?? '#6D28D9') : (NAIPES_COR[carta.naipe] ?? carta.cor ?? '#6D28D9')
   const id = `fb_${carta.id}_${size}`
@@ -156,13 +156,10 @@ function VersoSVG({ w, h }) {
   )
 }
 
-export const LENORMAND_ASPECT = 1.5 // largura / altura (1536×1024)
+export const CARTA_ASPECT = 1.6 // altura / largura (formato portrait tarot)
 
-export function dimensoesCarta(size, deck = 'tarot') {
-  if (deck === 'lenormand') {
-    return { w: Math.round(size * LENORMAND_ASPECT), h: size }
-  }
-  return { w: size, h: Math.round(size * 1.6) }
+export function dimensoesCarta(size) {
+  return { w: size, h: Math.round(size * CARTA_ASPECT) }
 }
 
 /**
@@ -175,8 +172,7 @@ export function CartaTarot({ carta, size = 110, virada = false, animarFlip = fal
   if (animarFlip) ensureFlipCss()
 
   const isLenormand = carta?.tipo === 'lenormand'
-  const deck = isLenormand ? 'lenormand' : 'tarot'
-  const { w, h } = dimensoesCarta(size, deck)
+  const { w, h } = dimensoesCarta(size)
   const src = virada
     ? imagemVersoUrl(carta?.tipo === 'lenormand' ? 'lenormand' : 'tarot')
     : imagemCartaUrl(carta)
@@ -212,7 +208,6 @@ export function CartaTarot({ carta, size = 110, virada = false, animarFlip = fal
     objectFit: 'cover',
     objectPosition: 'center',
     display: 'block',
-    background: isLenormand ? '#0a0f18' : undefined,
   }
 
   const renderFace = () => {
