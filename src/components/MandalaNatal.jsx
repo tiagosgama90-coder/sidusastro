@@ -23,7 +23,7 @@ function linhaCuspide(cx, cy, r0, r1, longitude, asc) {
   const a = anguloCarta(longitude, asc)
   const p0 = polarParaXY(a, r0, cx, cy)
   const p1 = polarParaXY(a, r1, cx, cy)
-  return { x1: p0.x, y1: p0.y, x2: p1.x, y2: p2.y, angle: a }
+  return { x1: p0.x, y1: p0.y, x2: p1.x, y2: p1.y, angle: a }
 }
 
 /**
