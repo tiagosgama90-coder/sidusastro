@@ -36,8 +36,8 @@ export async function gerarPdfMapaAstral(mapaNatal, dados, planetas = [], analis
   const AZUL    = [147, 197, 253]
   const LILAS   = [129, 140, 248]
 
-  const novaPageSeNecessario = (h = 20) => {
-    if (y + h > 275) {
+  const novaPageSeNecessario = (h = 25) => {
+    if (y + h > 270) {
       doc.addPage()
       doc.setFillColor(...ESCURO)
       doc.rect(0, 0, 210, 297, 'F')
@@ -45,14 +45,21 @@ export async function gerarPdfMapaAstral(mapaNatal, dados, planetas = [], analis
     }
   }
 
+  const calcularAlturaTexto = (texto, largura = W - 6) => {
+    const linhas = doc.splitTextToSize(texto, largura)
+    return linhas.length * 5 + 3
+  }
+
   const escreverParagrafo = (texto, indent = 0) => {
-    const linhas = doc.splitTextToSize(texto, W - 4 - indent)
+    const largura = W - 6 - indent
+    const linhas = doc.splitTextToSize(texto, largura)
+    const alturaTotal = linhas.length * 5 + 3
+    novaPageSeNecessario(alturaTotal + 8)
     doc.setTextColor(...BRANCO)
     doc.setFontSize(9)
     doc.setFont('helvetica', 'normal')
     linhas.forEach(l => {
-      novaPageSeNecessario(7)
-      doc.text(l, L + 2 + indent, y)
+      doc.text(l, L + 3 + indent, y)
       y += 5
     })
     y += 3
@@ -143,46 +150,56 @@ export async function gerarPdfMapaAstral(mapaNatal, dados, planetas = [], analis
 
   // ── 5 Secções de interpretação ──
   for (const sec of analiseFinal.seccoes) {
-    novaPageSeNecessario(20)
+    novaPageSeNecessario(25)
     secaoTitulo(doc, y, `✦ ${sec.id}. ${sec.titulo.toUpperCase()}`, DOURADO, ROXO, L, W)
     y += 12
 
     for (const bloco of sec.blocos) {
-      novaPageSeNecessario(15)
+      const alturaSubtitulo = 5
+      const alturaMeta = bloco.meta ? 5 : 0
+      const alturaParag = calcularAlturaTexto(bloco.texto, W - 6 - (bloco.destaque ? 2 : 0))
+      const alturaTotal = alturaSubtitulo + alturaMeta + alturaParag + 6
+      
+      novaPageSeNecessario(alturaTotal)
+      
       doc.setTextColor(...DOURADO)
-      doc.setFontSize(9)
+      doc.setFontSize(10)
       doc.setFont('helvetica', 'bold')
-      const tituloLinhas = doc.splitTextToSize(bloco.subtitulo, W - 4)
-      tituloLinhas.forEach(l => { doc.text(l, L + 2, y); y += 5 })
+      const tituloLinhas = doc.splitTextToSize(bloco.subtitulo, W - 6)
+      tituloLinhas.forEach(l => {
+        doc.text(l, L + 3, y)
+        y += 5
+      })
+      
       if (bloco.meta) {
         doc.setTextColor(...MUTED)
-        doc.setFontSize(7)
+        doc.setFontSize(8)
         doc.setFont('helvetica', 'normal')
-        doc.text(bloco.meta, L + 2, y)
+        doc.text(bloco.meta, L + 3, y)
         y += 5
       }
       y += 2
       escreverParagrafo(bloco.texto, bloco.destaque ? 2 : 0)
       y += 2
     }
-    y += 4
+    y += 6
   }
 
   // ── Posições planetárias ──
-  novaPageSeNecessario(20)
+  novaPageSeNecessario(25)
   secaoTitulo(doc, y, '✦ POSIÇÕES PLANETÁRIAS · PLACIDUS', DOURADO, ROXO, L, W)
   y += 12
 
   if (planetas.length > 0) {
     planetas.forEach((pl, i) => {
-      novaPageSeNecessario(12)
+      novaPageSeNecessario(14)
       const col = i % 2
       const x = L + col * (W / 2 + 2)
-      if (col === 0 && i > 0) y += 11
+      if (col === 0 && i > 0) y += 12
       doc.setFillColor(20, 12, 45)
       doc.roundedRect(x, y, W / 2 - 2, 10, 2, 2, 'F')
       doc.setTextColor(...DOURADO)
-      doc.setFontSize(8)
+      doc.setFontSize(9)
       doc.setFont('helvetica', 'bold')
       doc.text(`${pl.simbolo || ''} ${pl.nome || ''}`, x + 4, y + 7)
       doc.setTextColor(...BRANCO)
@@ -190,14 +207,14 @@ export async function gerarPdfMapaAstral(mapaNatal, dados, planetas = [], analis
       const signoCasa = `${pl.signo?.nome || '-'}${pl.casa ? ` · C${pl.casa}` : ''}`
       doc.text(signoCasa, x + 28, y + 7)
       doc.setTextColor(...MUTED)
-      doc.setFontSize(7)
+      doc.setFontSize(8)
       doc.text(`${(pl.longitude ?? 0).toFixed(1)}°${pl.retrograde ? ' ℞' : ''}`, x + W / 2 - 22, y + 7)
     })
     y += 18
   }
 
   // ── Elementos ──
-  novaPageSeNecessario(50)
+  novaPageSeNecessario(55)
   secaoTitulo(doc, y, '✦ EQUILÍBRIO DE ELEMENTOS', DOURADO, ROXO, L, W)
   y += 12
 
@@ -211,23 +228,24 @@ export async function gerarPdfMapaAstral(mapaNatal, dados, planetas = [], analis
       { label: 'Ar', cor: AZUL },
       { label: 'Água', cor: LILAS },
     ].forEach(({ label, cor }) => {
-      novaPageSeNecessario(12)
+      novaPageSeNecessario(14)
       const count = balEl[label] || 0
       const pct = total > 0 ? count / total : 0
       doc.setTextColor(...BRANCO)
-      doc.setFontSize(8)
-      doc.text(`${label}  ${count}/${total}`, L + 2, y + 5)
+      doc.setFontSize(9)
+      doc.setFont('helvetica', 'bold')
+      doc.text(`${label}  ${count}/${total}`, L + 3, y + 5)
       doc.setFillColor(255, 255, 255, 0.06)
-      doc.roundedRect(L + 2, y + 7, W - 4, 3, 1, 1, 'F')
+      doc.roundedRect(L + 3, y + 7, W - 6, 4, 1, 1, 'F')
       if (pct > 0) {
         doc.setFillColor(...cor)
-        doc.roundedRect(L + 2, y + 7, (W - 4) * pct, 3, 1, 1, 'F')
+        doc.roundedRect(L + 3, y + 7, (W - 6) * pct, 4, 1, 1, 'F')
       }
       y += 13
     })
   }
 
-  novaPageSeNecessario(35)
+  novaPageSeNecessario(40)
   secaoTitulo(doc, y, '✦ DADOS TÉCNICOS', DOURADO, ROXO, L, W)
   y += 12
 
@@ -236,14 +254,15 @@ export async function gerarPdfMapaAstral(mapaNatal, dados, planetas = [], analis
     ['Data UT:', mapaNatal?.instanteUTC ? mapaNatal.instanteUTC.replace('T', ' ').slice(0, 16) + ' UTC' : '-'],
     ['Coordenadas:', mapaNatal?.lat != null ? `${mapaNatal.lat.toFixed(4)}°, ${mapaNatal.lon?.toFixed(4)}°` : '-'],
   ].forEach(([label, valor]) => {
-    novaPageSeNecessario(8)
+    novaPageSeNecessario(10)
     doc.setTextColor(...MUTED)
-    doc.setFontSize(8)
-    doc.text(label, L + 2, y)
+    doc.setFontSize(9)
+    doc.setFont('helvetica', 'normal')
+    doc.text(label, L + 3, y)
     doc.setTextColor(...BRANCO)
     doc.setFont('helvetica', 'bold')
-    doc.text(String(valor), L + 42, y)
-    y += 7
+    doc.text(String(valor), L + 45, y)
+    y += 8
   })
 
   // ── Mandala astrológica (última secção — igual ao site) ──
@@ -283,14 +302,14 @@ export async function gerarPdfMapaAstral(mapaNatal, dados, planetas = [], analis
 
 function secaoTitulo(doc, y, texto, DOURADO, ROXO, L, W) {
   doc.setFillColor(...ROXO)
-  doc.rect(L, y, W, 8, 'F')
+  doc.rect(L, y, W, 9, 'F')
   doc.setDrawColor(...DOURADO)
-  doc.setLineWidth(0.2)
-  doc.rect(L, y, W, 8, 'S')
+  doc.setLineWidth(0.3)
+  doc.rect(L, y, W, 9, 'S')
   doc.setTextColor(...DOURADO)
-  doc.setFontSize(8)
+  doc.setFontSize(9)
   doc.setFont('helvetica', 'bold')
-  doc.text(texto, L + 4, y + 5.5)
+  doc.text(texto, L + 4, y + 6)
 }
 
 function formatarData(iso) {
