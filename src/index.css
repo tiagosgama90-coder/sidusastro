@@ -15,7 +15,7 @@
   --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
   --mono: ui-monospace, Consolas, monospace;
 
-  font: 18px/145% var(--sans);
+  font: 18.36px/145% var(--sans);
   letter-spacing: 0.18px;
   color-scheme: light dark;
   color: var(--text);
@@ -26,7 +26,7 @@
   -moz-osx-font-smoothing: grayscale;
 
   @media (max-width: 1024px) {
-    font-size: 16px;
+    font-size: 16.32px;
   }
 }
 
@@ -60,6 +60,7 @@ body {
 }
 
 html {
+  font-size: 102%;
   overflow-x: hidden;
   overflow-y: scroll;
   -webkit-overflow-scrolling: touch;
@@ -504,63 +505,6 @@ html.sidus-no-ads .google-auto-placed {
   text-align: center;
   color: rgba(223, 183, 108, 0.88);
   font-weight: 600;
-}
-
-/* Guias editoriais (SEO / AdSense) */
-.landing-guides {
-  margin-top: 24px;
-  padding: 20px 18px 22px;
-  border-radius: 16px;
-  border: 1px solid rgba(223, 183, 108, 0.18);
-}
-.landing-guides-title {
-  margin: 0 0 8px;
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  text-align: center;
-  color: #DFB76C;
-}
-.landing-guides-lead {
-  margin: 0 0 16px;
-  font-size: 13px;
-  line-height: 1.55;
-  text-align: center;
-  color: rgba(255, 255, 255, 0.62);
-}
-.landing-guides-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: grid;
-  gap: 10px;
-}
-.landing-guides-link {
-  display: block;
-  padding: 12px 14px;
-  border-radius: 12px;
-  border: 1px solid rgba(223, 183, 108, 0.16);
-  background: rgba(11, 7, 30, 0.45);
-  text-decoration: none;
-  transition: border-color 0.2s, background 0.2s;
-}
-.landing-guides-link:hover {
-  border-color: rgba(223, 183, 108, 0.4);
-  background: rgba(223, 183, 108, 0.06);
-}
-.landing-guides-link-title {
-  display: block;
-  font-size: 14px;
-  font-weight: 600;
-  color: rgba(255, 255, 255, 0.92);
-  margin-bottom: 4px;
-}
-.landing-guides-link-desc {
-  display: block;
-  font-size: 12px;
-  line-height: 1.45;
-  color: rgba(255, 255, 255, 0.55);
 }
 
 /* Testemunhos + preview mapa */

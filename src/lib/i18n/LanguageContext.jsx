@@ -6,6 +6,10 @@ import it from './it.js'
 import de from './de.js'
 import fr from './fr.js'
 import {
+  TAROT_TYPES_PT, TAROT_TYPES_EN, TAROT_TYPES_ES,
+  TAROT_TYPES_IT, TAROT_TYPES_FR, TAROT_TYPES_DE,
+} from './tarotTypesLocales.js'
+import {
   translateSigno, translatePlaneta, translateElemento,
   translateModalidade, translateAspecto, localizeSignoObj,
 } from './astro.js'
@@ -14,6 +18,18 @@ const STORAGE_KEY = 'sidus_lang'
 
 const LOCALES = { pt, en, es, it, de, fr }
 const SUPPORTED_LANGS = new Set(['pt', 'en', 'es', 'it', 'de', 'fr'])
+
+function mergeTarotTypes(locale, typesMap) {
+  if (!locale.tarot) locale.tarot = {}
+  locale.tarot.types = { ...(locale.tarot.types || {}), ...typesMap }
+}
+
+mergeTarotTypes(pt, TAROT_TYPES_PT)
+mergeTarotTypes(en, TAROT_TYPES_EN)
+mergeTarotTypes(es, TAROT_TYPES_ES)
+mergeTarotTypes(it, TAROT_TYPES_IT)
+mergeTarotTypes(fr, TAROT_TYPES_FR)
+mergeTarotTypes(de, TAROT_TYPES_DE)
 
 const LanguageContext = createContext(null)
 

@@ -319,7 +319,16 @@ export function EcraTarot({ mapaNatal, isPremium, userId, leiturasTarotUsadas = 
   }
 
   if (fase==='seleccionar') return (
-    <TelaSeleccionar tipos={TIPOS.map((tp) => mapaTipos?.[tp.id] ? { ...tp, nome: mapaTipos[tp.id].nome, desc: mapaTipos[tp.id].desc } : tp)} lang={lang} t={t} userId={userId} onSeleccionar={iniciarLeitura} isPremium={isPremium} gratisEsgotada={gratisEsgotada} restantes={restantes} tick={tick} onVoltar={onVoltar}/>
+    <TelaSeleccionar tipos={TIPOS.map((tp) => {
+      const map = mapaTipos?.[tp.id]
+      const nome = map?.nome ?? t(`tarot.types.${tp.id}.nome`)
+      const desc = map?.desc ?? t(`tarot.types.${tp.id}.desc`)
+      return {
+        ...tp,
+        nome: nome && !String(nome).startsWith('tarot.types.') ? nome : tp.nome,
+        desc: desc && !String(desc).startsWith('tarot.types.') ? desc : tp.desc,
+      }
+    })} lang={lang} t={t} userId={userId} onSeleccionar={iniciarLeitura} isPremium={isPremium} gratisEsgotada={gratisEsgotada} restantes={restantes} tick={tick} onVoltar={onVoltar}/>
   )
 
   if (embaralhando) return (
