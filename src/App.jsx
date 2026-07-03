@@ -80,7 +80,7 @@ import { LanguageSwitcher } from './components/LanguageSwitcher.jsx'
 import { useLanguage } from './lib/i18n/LanguageContext.jsx'
 import { readLandingDraft, clearLandingDraft, mergeLandingDraft, hasLandingDraft, flushLandingDraft } from './lib/landingDraft.js'
 import { getFerramentas, getBeneficiosVip } from './lib/i18n/ferramentasData.js'
-import { getNavBarLabels } from './lib/i18n/navBarLabels.js'
+import { getNavBarLabels, getNavSlotCh } from './lib/i18n/navBarLabels.js'
 import { validarOnboarding } from './lib/i18n/validation.js'
 import { traduzirErroAuth } from './lib/i18n/authErrors.js'
 import { labelBarraCurto, tituloSecaoMapa } from './lib/i18n/labelUtil.js'
@@ -3190,6 +3190,7 @@ function Navbar({ passo, setPasso, isDesktop, dados, fotoPerfil }) {
                     onMouseLeave={() => setHover(null)}
                     title={item.title || item.label}
                     style={{
+                      minWidth: `${getNavSlotCh(item.id)}ch`,
                       background: ativo ? 'rgba(223,183,108,0.18)' : emHover ? 'rgba(255,255,255,0.06)' : 'transparent',
                       border: `1px solid ${ativo ? CORES.dourado : emHover ? 'rgba(223,183,108,0.3)' : 'transparent'}`,
                       borderRadius: 8,

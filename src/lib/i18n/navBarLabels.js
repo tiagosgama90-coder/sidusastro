@@ -11,6 +11,25 @@ const NAV_BAR = {
   fr: { home: 'Home', mapa: 'Mapa Astral', tarot: 'Tarot Online', oraculo: 'Chat Oráculo' },
 }
 
+/** Largura mínima por item (ch) — calibrado para PT: «Radar de Afinidades», «Interpretação de Sonhos». */
+export const NAV_SLOT_CH = {
+  home: 5,
+  mapa: 12,
+  tarot: 13,
+  bussola: 16,
+  sinastria: 22,
+  numerologia: 12,
+  sonhos: 26,
+  biorritmo: 12,
+  horasIguais: 13,
+  diario: 14,
+  chat: 13,
+}
+
 export function getNavBarLabels(lang = 'pt') {
   return NAV_BAR[lang] || NAV_BAR.en
+}
+
+export function getNavSlotCh(id) {
+  return NAV_SLOT_CH[id] || 12
 }
