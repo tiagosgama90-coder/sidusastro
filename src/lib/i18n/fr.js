@@ -474,6 +474,7 @@ export default {
     premiumBtn: "✦ Sidus Premium 9,99€/mes · Todo incluido",
     paymentMethods: "Tarjeta · MB Way · Multibanco · PayPal · PIX - Stripe",
     shuffling: "Barajando las cartas del destino...",
+    shufflingCount: '{count} cartas en el mazo',
     dealing: "Repartiendo las cartas...",
     tapToReveal: "✦ Toca una tarjeta para revelarla",
     reversed: "Renversée",

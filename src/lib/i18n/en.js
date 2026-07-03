@@ -428,6 +428,7 @@ export default {
     premiumBtn: '✦ Sidus Premium €9.99 · Everything included',
     paymentMethods: 'Card · MB Way · Multibanco · PayPal · PIX - Stripe',
     shuffling: 'Shuffling the cards of destiny...',
+    shufflingCount: '{count} cards in the deck',
     dealing: 'Dealing the cards...',
     tapToReveal: '✦ Tap a card to reveal it',
     reversed: 'Reversed',
