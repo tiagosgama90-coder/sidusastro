@@ -1,12 +1,17 @@
 import { useId, useMemo } from 'react'
 import {
   ABREV_SIGNO,
-  COR_PLANETA,
+  ROMANOS_CASA,
   SIGNOS_ZODIACO,
+  SIMBOLO_ASPECTO,
   anguloCarta,
   arcoSvg,
+  calcularAspetosPontos,
+  construirMatrizAspectos,
   corAspecto,
   corElementoSigno,
+  corPonto,
+  formatarGrauDecimal,
   formatarGrauSigno,
   indiceSignoDePonto,
   nomePlanetaDeAspeto,
@@ -14,6 +19,7 @@ import {
   polarParaXY,
   prepararDadosMandala,
   separarPlanetasSobrepostos,
+  simboloSignoDeLongitude,
 } from '../lib/mandalaNatal.js'
 
 const CORES = {
@@ -23,6 +29,7 @@ const CORES = {
   fundo: '#0B071E',
   branco: 'rgba(255,255,255,0.92)',
   muted: 'rgba(255,255,255,0.38)',
+  borda: 'rgba(223,183,108,0.25)',
 }
 
 function linhaCuspide(cx, cy, r0, r1, longitude, asc) {
@@ -32,12 +39,151 @@ function linhaCuspide(cx, cy, r0, r1, longitude, asc) {
   return { x1: p0.x, y1: p0.y, x2: p1.x, y2: p1.y, angle: a }
 }
 
-function corPlaneta(nome) {
-  return COR_PLANETA[nome] || CORES.douradoClaro
+function GrelhaAspectos({ pontos, matriz, cellSize = 22 }) {
+  const n = pontos.length
+  const headerH = cellSize + 4
+  const labelW = cellSize + 8
+  const w = labelW + n * cellSize
+  const h = headerH + n * cellSize
+
+  return (
+    <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
+      <svg viewBox={`0 0 ${w} ${h}`} width={w} height={h} style={{ display: 'block', minWidth: w }}>
+        <rect x={0} y={0} width={w} height={h} fill="rgba(0,0,0,0.35)" stroke={CORES.borda} strokeWidth="1" rx="4" />
+        {pontos.map((p, col) => {
+          const x = labelW + col * cellSize + cellSize / 2
+          const cor = corPonto(p.nome)
+          return (
+            <text
+              key={`col-${p.key || p.nome}`}
+              x={x}
+              y={headerH - 6}
+              textAnchor="middle"
+              fill={cor}
+              fontSize={cellSize * 0.55}
+              fontFamily="Georgia, serif"
+            >
+              {p.isAngular ? p.abrev : p.simbolo}
+            </text>
+          )
+        })}
+        {pontos.map((p, row) => {
+          const y = headerH + row * cellSize + cellSize / 2
+          const cor = corPonto(p.nome)
+          return (
+            <text
+              key={`row-${p.key || p.nome}`}
+              x={labelW - 6}
+              y={y}
+              textAnchor="end"
+              dominantBaseline="middle"
+              fill={cor}
+              fontSize={cellSize * 0.55}
+              fontFamily="Georgia, serif"
+            >
+              {p.isAngular ? p.abrev : p.simbolo}
+            </text>
+          )
+        })}
+        {matriz.map((linha, row) =>
+          linha.map((asp, col) => {
+            if (!asp) return null
+            const x = labelW + col * cellSize + cellSize / 2
+            const y = headerH + row * cellSize + cellSize / 2
+            return (
+              <text
+                key={`cell-${row}-${col}`}
+                x={x}
+                y={y}
+                textAnchor="middle"
+                dominantBaseline="middle"
+                fill={corAspecto(asp.aspecto)}
+                fontSize={cellSize * 0.62}
+                fontFamily="Georgia, serif"
+                fontWeight="600"
+              >
+                {SIMBOLO_ASPECTO[asp.aspecto] || '·'}
+              </text>
+            )
+          }),
+        )}
+        {Array.from({ length: n + 1 }, (_, i) => (
+          <line
+            key={`grid-h-${i}`}
+            x1={labelW}
+            y1={headerH + i * cellSize}
+            x2={w}
+            y2={headerH + i * cellSize}
+            stroke="rgba(255,255,255,0.06)"
+            strokeWidth="0.5"
+          />
+        ))}
+        {Array.from({ length: n + 1 }, (_, i) => (
+          <line
+            key={`grid-v-${i}`}
+            x1={labelW + i * cellSize}
+            y1={headerH}
+            x2={labelW + i * cellSize}
+            y2={h}
+            stroke="rgba(255,255,255,0.06)"
+            strokeWidth="0.5"
+          />
+        ))}
+      </svg>
+    </div>
+  )
+}
+
+function TabelaPosicoes({ pontos, translateSign }) {
+  return (
+    <div style={{
+      border: `1px solid ${CORES.borda}`,
+      borderRadius: 8,
+      overflow: 'hidden',
+      background: 'rgba(0,0,0,0.35)',
+    }}>
+      <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 11 }}>
+        <thead>
+          <tr style={{ borderBottom: `1px solid ${CORES.borda}`, background: 'rgba(223,183,108,0.06)' }}>
+            <th style={{ padding: '6px 8px', textAlign: 'left', color: CORES.muted, fontWeight: 600, fontSize: 9, letterSpacing: '0.08em' }}>PONTO</th>
+            <th style={{ padding: '6px 8px', textAlign: 'right', color: CORES.muted, fontWeight: 600, fontSize: 9, letterSpacing: '0.08em' }}>POSIÇÃO</th>
+          </tr>
+        </thead>
+        <tbody>
+          {pontos.map((p) => {
+            const cor = corPonto(p.nome)
+            const signoNome = p.signo?.nome || SIGNOS_ZODIACO[indiceSignoDePonto(p)]?.nome
+            const signoSym = simboloSignoDeLongitude(p.longitude)
+            const label = p.isAngular ? p.abrev : p.nome
+            const glyph = p.isAngular ? p.simbolo : p.simbolo
+            return (
+              <tr key={p.key || p.nome} style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
+                <td style={{ padding: '5px 8px' }}>
+                  <span style={{ color: cor, fontFamily: 'Georgia, serif', fontSize: 13, marginRight: 6 }}>{glyph}</span>
+                  <span style={{ color: CORES.branco, fontWeight: p.isAngular ? 700 : 500 }}>{label}</span>
+                  {p.retrograde && <span style={{ color: '#F87171', marginLeft: 4, fontSize: 10 }}>℞</span>}
+                </td>
+                <td style={{ padding: '5px 8px', textAlign: 'right', whiteSpace: 'nowrap' }}>
+                  <span style={{ color: cor, fontFamily: 'Georgia, serif', fontSize: 12, marginRight: 4 }}>{signoSym}</span>
+                  <span style={{ color: CORES.douradoClaro, fontWeight: 600, fontVariantNumeric: 'tabular-nums' }}>
+                    {formatarGrauDecimal(p.longitude)}
+                  </span>
+                  <span style={{ color: CORES.muted, fontSize: 9, marginLeft: 4 }}>
+                    {translateSign(signoNome)}
+                    {p.casa ? ` · ${ROMANOS_CASA[p.casa - 1]}` : ''}
+                  </span>
+                </td>
+              </tr>
+            )
+          })}
+        </tbody>
+      </table>
+    </div>
+  )
 }
 
 /**
- * Roda natal SVG personalizada — Placidus, planetas e aspectos do utilizador.
+ * Roda natal profissional — Placidus, aspectos, grelha e tabela de posições.
  */
 export function MandalaNatal({
   mapaNatal,
@@ -64,11 +210,16 @@ export function MandalaNatal({
     return set
   }, [mapaNatal])
 
-  const aspectosVisiveis = useMemo(() => {
-    return [...aspectos]
-      .sort((a, b) => parseFloat(a.orbe) - parseFloat(b.orbe))
-      .slice(0, 18)
-  }, [aspectos])
+  const aspectosCompletos = useMemo(() => {
+    if (!dados?.todosPontos) return aspectos
+    const calculados = calcularAspetosPontos(dados.todosPontos)
+    return calculados.length > 0 ? calculados : aspectos
+  }, [dados, aspectos])
+
+  const matrizAspectos = useMemo(() => {
+    if (!dados?.pontosGrelha) return []
+    return construirMatrizAspectos(dados.pontosGrelha)
+  }, [dados])
 
   if (!dados) {
     if (!unavailableLabel) return null
@@ -79,34 +230,38 @@ export function MandalaNatal({
     )
   }
 
-  const { ascLon, cusps, mcLon, dcLon, icLon, planetas: planetasNorm } = dados
+  const { ascLon, cusps, mcLon, dcLon, icLon, todosPontos, pontosGrelha, tabelaPontos } = dados
 
   const cx = size / 2
   const cy = size / 2
   const rOuter = size * 0.46
-  const rDecor = rOuter + size * 0.018
+  const rDecor = rOuter + size * 0.022
   const rZodiacOut = rOuter
-  const rZodiacIn = rOuter * 0.855
-  const rHouseOut = rOuter * 0.81
-  const rHouseIn = rOuter * 0.54
-  const rPlanet = rOuter * 0.675
-  const rTick = rOuter * 0.89
-  const rAspect = rOuter * 0.36
-  const rCenter = rOuter * 0.1
+  const rZodiacIn = rOuter * 0.848
+  const rDegreeOut = rZodiacIn
+  const rDegreeIn = rOuter * 0.805
+  const rHouseOut = rOuter * 0.785
+  const rHouseIn = rOuter * 0.52
+  const rPlanet = rOuter * 0.655
+  const rTick = rOuter * 0.895
+  const rAspect = rOuter * 0.34
+  const rCenter = rOuter * 0.09
 
-  const planetasVisiveis = separarPlanetasSobrepostos(planetasNorm, ascLon, 7)
+  const planetasVisiveis = separarPlanetasSobrepostos(todosPontos, ascLon, 5)
   const mapaPos = new Map(
     planetasVisiveis.map((p) => {
-      const pt = polarParaXY(p.chartAngle, rPlanet, cx, cy)
-      return [p.nome, { ...p, ...pt }]
+      const lon = p.longitude
+      const chartAngle = p.chartAngle ?? anguloCarta(lon, ascLon)
+      const pt = polarParaXY(chartAngle, rPlanet, cx, cy)
+      return [p.nome, { ...p, chartAngle, ...pt }]
     }),
   )
 
   const eixos = [
-    { lon: ascLon, label: 'ASC', cor: '#C4B5FD', peso: 2.2 },
-    { lon: mcLon, label: 'MC', cor: '#34D399', peso: 2 },
-    { lon: dcLon, label: 'DC', cor: '#F472B6', peso: 1.6 },
-    { lon: icLon, label: 'IC', cor: '#93C5FD', peso: 1.6 },
+    { lon: ascLon, label: 'AS', cor: '#C4B5FD', peso: 2.4 },
+    { lon: mcLon, label: 'MC', cor: '#34D399', peso: 2.2 },
+    { lon: dcLon, label: 'DC', cor: '#F472B6', peso: 1.5 },
+    { lon: icLon, label: 'IC', cor: '#93C5FD', peso: 1.5 },
   ].filter((e) => e.lon != null)
 
   const solSigno = translateSign(mapaNatal?.solar?.nome)
@@ -135,8 +290,13 @@ export function MandalaNatal({
             </div>
           )}
           <div style={{ fontSize: 11, color: CORES.dourado, marginTop: 8, fontWeight: 600 }}>
-            ☉ {solSigno || '—'} · ☽ {luaSigno || '—'} · ↑ {ascSigno || '—'}
+            ☉ {solSigno || '—'} · ☽ {luaSigno || '—'} · AS {ascSigno || '—'}
           </div>
+          {mapaNatal?.motor && (
+            <div style={{ fontSize: 9, color: CORES.muted, marginTop: 6, letterSpacing: '0.04em' }}>
+              {mapaNatal.motor}
+            </div>
+          )}
         </div>
       )}
 
@@ -150,8 +310,8 @@ export function MandalaNatal({
         >
           <defs>
             <radialGradient id={`${uid}_bg`} cx="50%" cy="50%" r="50%">
-              <stop offset="0%" stopColor="rgba(139,92,246,0.22)" />
-              <stop offset="55%" stopColor="rgba(11,7,30,0.92)" />
+              <stop offset="0%" stopColor="rgba(139,92,246,0.18)" />
+              <stop offset="55%" stopColor="rgba(11,7,30,0.94)" />
               <stop offset="100%" stopColor={CORES.fundo} />
             </radialGradient>
             <linearGradient id={`${uid}_ring`} x1="0%" y1="0%" x2="100%" y2="100%">
@@ -160,7 +320,7 @@ export function MandalaNatal({
               <stop offset="100%" stopColor="rgba(223,183,108,0.55)" />
             </linearGradient>
             <filter id={`${uid}_glow`}>
-              <feGaussianBlur stdDeviation="2.5" result="b" />
+              <feGaussianBlur stdDeviation="2" result="b" />
               <feMerge>
                 <feMergeNode in="b" />
                 <feMergeNode in="SourceGraphic" />
@@ -168,22 +328,55 @@ export function MandalaNatal({
             </filter>
           </defs>
 
-          {/* Halo exterior */}
-          <circle cx={cx} cy={cy} r={rDecor + 3} fill="none" stroke="rgba(223,183,108,0.12)" strokeWidth="1" />
-          <circle cx={cx} cy={cy} r={rDecor} fill="none" stroke={`url(#${uid}_ring)`} strokeWidth="1.4" opacity="0.85" />
+          <circle cx={cx} cy={cy} r={rDecor + 4} fill="none" stroke="rgba(223,183,108,0.1)" strokeWidth="1" />
+          <circle cx={cx} cy={cy} r={rDecor} fill="none" stroke={`url(#${uid}_ring)`} strokeWidth="1.5" opacity="0.9" />
 
-          {/* Marcas de grau (cada 30°) */}
-          {Array.from({ length: 12 }, (_, i) => {
-            const lon = i * 30
+          {/* Escala de graus — cada 5° */}
+          {Array.from({ length: 72 }, (_, i) => {
+            const lon = i * 5
             const a = anguloCarta(lon, ascLon)
-            const pIn = polarParaXY(a, rDecor - 2, cx, cy)
-            const pOut = polarParaXY(a, rDecor + 5, cx, cy)
+            const isMajor = lon % 30 === 0
+            const isMid = lon % 10 === 0
+            const lenOut = isMajor ? 7 : isMid ? 5 : 2.5
+            const pIn = polarParaXY(a, rDecor - 1, cx, cy)
+            const pOut = polarParaXY(a, rDecor + lenOut, cx, cy)
             return (
-              <line key={`tick-${i}`} x1={pIn.x} y1={pIn.y} x2={pOut.x} y2={pOut.y} stroke={CORES.douradoSuave} strokeWidth="1" opacity="0.7" />
+              <line
+                key={`deg-${i}`}
+                x1={pIn.x}
+                y1={pIn.y}
+                x2={pOut.x}
+                y2={pOut.y}
+                stroke={isMajor ? CORES.dourado : isMid ? CORES.douradoSuave : 'rgba(255,255,255,0.15)'}
+                strokeWidth={isMajor ? 1.2 : isMid ? 0.7 : 0.4}
+                opacity={isMajor ? 0.9 : isMid ? 0.6 : 0.4}
+              />
             )
           })}
 
           <circle cx={cx} cy={cy} r={rOuter + 2} fill={`url(#${uid}_bg)`} stroke={CORES.douradoSuave} strokeWidth="1.3" />
+
+          {/* Anel de graus interior */}
+          <circle cx={cx} cy={cy} r={rDegreeOut} fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="0.5" />
+          <circle cx={cx} cy={cy} r={rDegreeIn} fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="0.5" />
+          {Array.from({ length: 360 }, (_, d) => {
+            if (d % 5 !== 0) return null
+            const a = anguloCarta(d, ascLon)
+            const is30 = d % 30 === 0
+            const p0 = polarParaXY(a, rDegreeIn, cx, cy)
+            const p1 = polarParaXY(a, rDegreeOut, cx, cy)
+            return (
+              <line
+                key={`inner-deg-${d}`}
+                x1={p0.x}
+                y1={p0.y}
+                x2={p1.x}
+                y2={p1.y}
+                stroke={is30 ? 'rgba(223,183,108,0.35)' : 'rgba(255,255,255,0.1)'}
+                strokeWidth={is30 ? 0.8 : 0.35}
+              />
+            )
+          })}
 
           {/* Signos do zodíaco */}
           {SIGNOS_ZODIACO.map((signo, i) => {
@@ -192,13 +385,13 @@ export function MandalaNatal({
             const mid = lon0 + 15
             const destaque = signosDestaque.has(i)
             const labelPt = polarParaXY(anguloCarta(mid, ascLon), (rZodiacOut + rZodiacIn) / 2, cx, cy)
-            const abrevPt = polarParaXY(anguloCarta(mid, ascLon), rZodiacOut - size * 0.028, cx, cy)
+            const abrevPt = polarParaXY(anguloCarta(mid, ascLon), rZodiacOut - size * 0.03, cx, cy)
             return (
               <g key={signo.simbolo}>
                 <path
                   d={arcoSvg(cx, cy, rZodiacOut, lon0, lon1, ascLon)}
-                  fill={destaque ? 'rgba(223,183,108,0.18)' : corElementoSigno(i)}
-                  stroke={destaque ? 'rgba(223,183,108,0.35)' : 'none'}
+                  fill={destaque ? 'rgba(223,183,108,0.2)' : corElementoSigno(i)}
+                  stroke={destaque ? 'rgba(223,183,108,0.4)' : 'rgba(255,255,255,0.04)'}
                   strokeWidth="0.5"
                 />
                 <path d={arcoSvg(cx, cy, rZodiacIn, lon0, lon1, ascLon)} fill={CORES.fundo} stroke="none" />
@@ -208,8 +401,8 @@ export function MandalaNatal({
                   x2={polarParaXY(anguloCarta(lon0, ascLon), rZodiacOut, cx, cy).x}
                   y2={polarParaXY(anguloCarta(lon0, ascLon), rZodiacOut, cx, cy).y}
                   stroke={CORES.douradoSuave}
-                  strokeWidth="0.5"
-                  opacity="0.8"
+                  strokeWidth="0.6"
+                  opacity="0.85"
                 />
                 <text
                   x={labelPt.x}
@@ -217,9 +410,9 @@ export function MandalaNatal({
                   textAnchor="middle"
                   dominantBaseline="middle"
                   fill={destaque ? CORES.douradoClaro : CORES.dourado}
-                  fontSize={size * 0.048}
+                  fontSize={size * 0.05}
                   fontFamily="Georgia, serif"
-                  opacity={destaque ? 1 : 0.88}
+                  opacity={destaque ? 1 : 0.9}
                   fontWeight={destaque ? 700 : 400}
                 >
                   {signo.simbolo}
@@ -230,7 +423,7 @@ export function MandalaNatal({
                   textAnchor="middle"
                   dominantBaseline="middle"
                   fill={CORES.muted}
-                  fontSize={size * 0.022}
+                  fontSize={size * 0.02}
                   fontFamily="system-ui, sans-serif"
                   letterSpacing="0.04em"
                 >
@@ -241,16 +434,16 @@ export function MandalaNatal({
           })}
 
           <circle cx={cx} cy={cy} r={rZodiacIn} fill="none" stroke={CORES.douradoSuave} strokeWidth="0.9" />
-          <circle cx={cx} cy={cy} r={rHouseOut} fill="rgba(11,7,30,0.72)" stroke={CORES.douradoSuave} strokeWidth="0.7" />
+          <circle cx={cx} cy={cy} r={rHouseOut} fill="rgba(11,7,30,0.78)" stroke={CORES.douradoSuave} strokeWidth="0.7" />
 
-          {/* Casas Placidus */}
+          {/* Casas Placidus — numeração romana */}
           {cusps?.length >= 12 && cusps.map((cusp, i) => {
             const linha = linhaCuspide(cx, cy, rHouseIn, rHouseOut, cusp, ascLon)
             const cuspNext = cusps[(i + 1) % 12]
             let span = normalizarLongitude(cuspNext - cusp)
             if (span <= 0) span += 360
             const midLon = normalizarLongitude(cusp + span / 2)
-            const numPt = polarParaXY(anguloCarta(midLon, ascLon), rHouseIn + (rHouseOut - rHouseIn) * 0.38, cx, cy)
+            const numPt = polarParaXY(anguloCarta(midLon, ascLon), rHouseIn + (rHouseOut - rHouseIn) * 0.42, cx, cy)
             const isAngle = i === 0 || i === 3 || i === 6 || i === 9
             return (
               <g key={`casa-${i}`}>
@@ -260,8 +453,8 @@ export function MandalaNatal({
                   x2={linha.x2}
                   y2={linha.y2}
                   stroke={isAngle ? CORES.dourado : CORES.muted}
-                  strokeWidth={isAngle ? 1.4 : 0.65}
-                  opacity={isAngle ? 0.95 : 0.45}
+                  strokeWidth={isAngle ? 1.6 : 0.6}
+                  opacity={isAngle ? 0.95 : 0.4}
                 />
                 <text
                   x={numPt.x}
@@ -269,29 +462,31 @@ export function MandalaNatal({
                   textAnchor="middle"
                   dominantBaseline="middle"
                   fill={isAngle ? CORES.douradoClaro : CORES.muted}
-                  fontSize={size * 0.026}
-                  fontFamily="system-ui, sans-serif"
+                  fontSize={size * 0.028}
+                  fontFamily="Georgia, serif"
                   fontWeight={isAngle ? 700 : 500}
+                  opacity={isAngle ? 1 : 0.65}
                 >
-                  {i + 1}
+                  {ROMANOS_CASA[i]}
                 </text>
               </g>
             )
           })}
 
-          <circle cx={cx} cy={cy} r={rHouseIn} fill="none" stroke={CORES.douradoSuave} strokeWidth="0.5" opacity="0.45" />
+          <circle cx={cx} cy={cy} r={rHouseIn} fill="none" stroke={CORES.douradoSuave} strokeWidth="0.5" opacity="0.4" />
 
-          {/* Aspectos */}
-          {aspectosVisiveis.map((asp, idx) => {
-            const nomeA = nomePlanetaDeAspeto(asp.planetaA)
-            const nomeB = nomePlanetaDeAspeto(asp.planetaB)
+          {/* Aspectos — todos os calculados */}
+          {aspectosCompletos.map((asp, idx) => {
+            const nomeA = typeof asp.planetaA === 'string' ? nomePlanetaDeAspeto(asp.planetaA) : asp.planetaA
+            const nomeB = typeof asp.planetaB === 'string' ? nomePlanetaDeAspeto(asp.planetaB) : asp.planetaB
             const pa = mapaPos.get(nomeA)
             const pb = mapaPos.get(nomeB)
             if (!pa || !pb) return null
-            const orbe = parseFloat(asp.orbe) || 8
-            const opac = Math.max(0.25, 0.75 - orbe * 0.06)
+            const orbe = parseFloat(asp.orbe) || 6
+            const opac = Math.max(0.2, 0.8 - orbe * 0.08)
             const ca = polarParaXY(anguloCarta(pa.longitude, ascLon), rAspect, cx, cy)
             const cb = polarParaXY(anguloCarta(pb.longitude, ascLon), rAspect, cx, cy)
+            const isHard = (asp.aspecto || '').includes('Quad') || (asp.aspecto || '').includes('Opos')
             return (
               <line
                 key={`asp-${idx}`}
@@ -300,46 +495,47 @@ export function MandalaNatal({
                 x2={cb.x}
                 y2={cb.y}
                 stroke={corAspecto(asp.aspecto)}
-                strokeWidth="1"
+                strokeWidth={isHard ? 1.1 : 0.85}
                 opacity={opac}
+                strokeDasharray={isHard ? 'none' : '3 2'}
               />
             )
           })}
 
-          {/* Centro */}
-          <circle cx={cx} cy={cy} r={rCenter} fill="rgba(223,183,108,0.1)" stroke={CORES.douradoSuave} strokeWidth="0.8" />
-          <circle cx={cx} cy={cy} r={rCenter * 0.55} fill="none" stroke="rgba(223,183,108,0.2)" strokeWidth="0.5" />
-          <text x={cx} y={cy} textAnchor="middle" dominantBaseline="middle" fill={CORES.dourado} fontSize={size * 0.055} opacity="0.5">✦</text>
+          <circle cx={cx} cy={cy} r={rCenter} fill="rgba(30,20,50,0.9)" stroke={CORES.douradoSuave} strokeWidth="0.8" />
 
-          {/* Planetas com grau */}
+          {/* Planetas e ângulos */}
           {planetasVisiveis.map((p) => {
             const pt = polarParaXY(p.chartAngle, rPlanet, cx, cy)
             const tickOut = polarParaXY(anguloCarta(p.longitude, ascLon), rTick, cx, cy)
-            const tickIn = polarParaXY(anguloCarta(p.longitude, ascLon), rPlanet + size * 0.032, cx, cy)
-            const labelPt = polarParaXY(p.chartAngle, rPlanet + size * 0.058, cx, cy)
-            const cor = corPlaneta(p.nome)
+            const tickIn = polarParaXY(anguloCarta(p.longitude, ascLon), rPlanet + size * 0.028, cx, cy)
+            const labelPt = polarParaXY(p.chartAngle, rPlanet + size * 0.062, cx, cy)
+            const cor = corPonto(p.nome)
             const isLuminar = p.nome === 'Sol' || p.nome === 'Lua'
+            const isAngular = p.isAngular
+            const rGlyph = isAngular ? size * 0.028 : isLuminar ? size * 0.03 : size * 0.024
             return (
-              <g key={p.key || p.nome} filter={`url(#${uid}_glow)`}>
-                <line x1={tickIn.x} y1={tickIn.y} x2={tickOut.x} y2={tickOut.y} stroke={cor} strokeWidth="0.7" opacity="0.65" />
+              <g key={p.key || p.nome} filter={isLuminar || isAngular ? `url(#${uid}_glow)` : undefined}>
+                <line x1={tickIn.x} y1={tickIn.y} x2={tickOut.x} y2={tickOut.y} stroke={cor} strokeWidth="0.8" opacity="0.7" />
                 <circle
                   cx={pt.x}
                   cy={pt.y}
-                  r={isLuminar ? size * 0.032 : size * 0.026}
-                  fill="rgba(11,7,30,0.9)"
+                  r={rGlyph + 2}
+                  fill="rgba(11,7,30,0.92)"
                   stroke={cor}
-                  strokeWidth={isLuminar ? 1.2 : 0.9}
+                  strokeWidth={isLuminar || isAngular ? 1.3 : 0.9}
                 />
                 <text
                   x={pt.x}
                   y={pt.y}
                   textAnchor="middle"
                   dominantBaseline="middle"
-                  fill={CORES.branco}
-                  fontSize={isLuminar ? size * 0.044 : size * 0.038}
-                  fontFamily="Georgia, serif"
+                  fill={isAngular ? cor : CORES.branco}
+                  fontSize={isAngular ? size * 0.028 : isLuminar ? size * 0.042 : size * 0.036}
+                  fontFamily={isAngular ? 'system-ui, sans-serif' : 'Georgia, serif'}
+                  fontWeight={isAngular ? 800 : 400}
                 >
-                  {p.simbolo}
+                  {isAngular ? p.abrev : p.simbolo}
                 </text>
                 <text
                   x={labelPt.x}
@@ -347,18 +543,18 @@ export function MandalaNatal({
                   textAnchor="middle"
                   dominantBaseline="middle"
                   fill={cor}
-                  fontSize={size * 0.02}
+                  fontSize={size * 0.019}
                   fontFamily="system-ui, sans-serif"
-                  opacity="0.9"
+                  opacity="0.85"
                 >
                   {formatarGrauSigno(p.longitude)}
                 </text>
                 {p.retrograde && (
                   <text
-                    x={pt.x + size * 0.03}
-                    y={pt.y - size * 0.026}
+                    x={pt.x + size * 0.028}
+                    y={pt.y - size * 0.024}
                     fill="#F87171"
-                    fontSize={size * 0.02}
+                    fontSize={size * 0.019}
                     fontFamily="system-ui, sans-serif"
                     fontWeight="700"
                   >
@@ -369,10 +565,11 @@ export function MandalaNatal({
             )
           })}
 
-          {/* Eixos angulares */}
+          {/* Eixos angulares com setas */}
           {eixos.map((e) => {
-            const linha = linhaCuspide(cx, cy, rHouseIn, rDecor, e.lon, ascLon)
-            const pt = polarParaXY(anguloCarta(e.lon, ascLon), rDecor + size * 0.045, cx, cy)
+            const linha = linhaCuspide(cx, cy, rHouseIn, rDecor + 2, e.lon, ascLon)
+            const pt = polarParaXY(anguloCarta(e.lon, ascLon), rDecor + size * 0.048, cx, cy)
+            const isMain = e.label === 'AS' || e.label === 'MC'
             return (
               <g key={e.label}>
                 <line
@@ -382,17 +579,33 @@ export function MandalaNatal({
                   y2={linha.y2}
                   stroke={e.cor}
                   strokeWidth={e.peso}
-                  opacity="0.85"
+                  opacity={isMain ? 0.9 : 0.55}
                 />
+                {isMain && (
+                  <>
+                    <polygon
+                      points={(() => {
+                        const tip = polarParaXY(anguloCarta(e.lon, ascLon), rDecor + size * 0.038, cx, cy)
+                        const base = polarParaXY(anguloCarta(e.lon, ascLon), rDecor + size * 0.028, cx, cy)
+                        const perp = anguloCarta(e.lon, ascLon) + 90
+                        const l = polarParaXY(perp, size * 0.012, base.x, base.y)
+                        const r = polarParaXY(perp + 180, size * 0.012, base.x, base.y)
+                        return `${tip.x},${tip.y} ${l.x},${l.y} ${r.x},${r.y}`
+                      })()}
+                      fill={e.cor}
+                      opacity="0.9"
+                    />
+                  </>
+                )}
                 <rect
-                  x={pt.x - size * 0.028}
-                  y={pt.y - size * 0.014}
-                  width={size * 0.056}
-                  height={size * 0.028}
+                  x={pt.x - size * 0.03}
+                  y={pt.y - size * 0.015}
+                  width={size * 0.06}
+                  height={size * 0.03}
                   rx={size * 0.008}
-                  fill="rgba(11,7,30,0.85)"
+                  fill="rgba(11,7,30,0.9)"
                   stroke={e.cor}
-                  strokeWidth="0.8"
+                  strokeWidth="0.9"
                 />
                 <text
                   x={pt.x}
@@ -400,7 +613,7 @@ export function MandalaNatal({
                   textAnchor="middle"
                   dominantBaseline="middle"
                   fill={e.cor}
-                  fontSize={size * 0.026}
+                  fontSize={size * 0.027}
                   fontWeight="800"
                   fontFamily="system-ui, sans-serif"
                   letterSpacing="0.06em"
@@ -413,27 +626,53 @@ export function MandalaNatal({
         </svg>
       </div>
 
-      {/* Legenda planetária */}
+      {/* Grelha de aspectos + tabela de posições */}
       <div style={{
-        marginTop: 18,
+        marginTop: 20,
         display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fill, minmax(130px, 1fr))',
-        gap: '6px 12px',
-        padding: '14px 16px',
-        borderRadius: 12,
-        background: 'rgba(255,255,255,0.03)',
-        border: '1px solid rgba(255,255,255,0.06)',
+        gridTemplateColumns: 'minmax(0, 1fr)',
+        gap: 16,
       }}>
-        {planetasNorm.slice(0, 12).map((p) => (
-          <div key={p.key || p.nome} style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 10 }}>
-            <span style={{ color: corPlaneta(p.nome), fontSize: 13, width: 16, textAlign: 'center' }}>{p.simbolo}</span>
-            <span style={{ color: CORES.muted, flex: 1 }}>{p.nome}</span>
-            <span style={{ color: CORES.douradoClaro, fontWeight: 600 }}>
-              {formatarGrauSigno(p.longitude)}
-              {p.casa ? ` · C${p.casa}` : ''}
-            </span>
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
+          gap: 16,
+          alignItems: 'start',
+        }}>
+          <div>
+            <div style={{ fontSize: 10, color: CORES.dourado, textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 700, marginBottom: 8 }}>
+              Grelha de aspectos
+            </div>
+            <GrelhaAspectos pontos={pontosGrelha} matriz={matrizAspectos} cellSize={size > 400 ? 24 : 20} />
           </div>
-        ))}
+          <div>
+            <div style={{ fontSize: 10, color: CORES.dourado, textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 700, marginBottom: 8 }}>
+              Posições planetárias
+            </div>
+            <TabelaPosicoes pontos={tabelaPontos} translateSign={translateSign} />
+          </div>
+        </div>
+
+        {/* Legenda de aspectos */}
+        <div style={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          gap: '8px 16px',
+          justifyContent: 'center',
+          padding: '10px 12px',
+          borderRadius: 8,
+          background: 'rgba(255,255,255,0.02)',
+          border: '1px solid rgba(255,255,255,0.05)',
+          fontSize: 10,
+          color: CORES.muted,
+        }}>
+          {Object.entries(SIMBOLO_ASPECTO).map(([nome, sym]) => (
+            <span key={nome} style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+              <span style={{ color: corAspecto(nome), fontSize: 13, fontFamily: 'Georgia, serif' }}>{sym}</span>
+              <span>{nome}</span>
+            </span>
+          ))}
+        </div>
       </div>
     </div>
   )

@@ -1,4 +1,4 @@
-/** Geometria da roda natal (SVG) — zodíaco tropical, ASC à esquerda. */
+/** Geometria da roda natal (SVG) — zodíaco tropical, ASC à esquerda, Placidus. */
 
 export const SIGNOS_ZODIACO = [
   { simbolo: '♈', nome: 'Áries' },
@@ -14,6 +14,24 @@ export const SIGNOS_ZODIACO = [
   { simbolo: '♒', nome: 'Aquário' },
   { simbolo: '♓', nome: 'Peixes' },
 ]
+
+export const ROMANOS_CASA = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII']
+
+const ASPECTOS_MAIORES = [
+  { nome: 'Conjuncao', angulo: 0 },
+  { nome: 'Sextil', angulo: 60 },
+  { nome: 'Quadratura', angulo: 90 },
+  { nome: 'Trigono', angulo: 120 },
+  { nome: 'Oposicao', angulo: 180 },
+]
+
+export const SIMBOLO_ASPECTO = {
+  Conjuncao: '☌',
+  Sextil: '✶',
+  Quadratura: '□',
+  Trigono: '△',
+  Oposicao: '☍',
+}
 
 const ELEMENTO_COR = {
   Fogo: 'rgba(251,146,60,0.14)',
@@ -33,6 +51,11 @@ const SIGNO_INDICE = {
   Libra: 6, Scorpio: 7, Sagittarius: 8, Capricorn: 9, Aquarius: 10, Pisces: 11,
 }
 
+const ORDEM_GRELHA = [
+  'Sol', 'Lua', 'Mercúrio', 'Vénus', 'Marte', 'Júpiter', 'Saturno',
+  'Urano', 'Neptuno', 'Plutão', 'Ascendente', 'Meio do Céu',
+]
+
 export function longitudeDeSigno(nomeSigno, grausNoSigno) {
   if (!nomeSigno) return null
   const idx = SIGNO_INDICE[nomeSigno]
@@ -42,7 +65,6 @@ export function longitudeDeSigno(nomeSigno, grausNoSigno) {
   return normalizarLongitude(idx * 30 + g)
 }
 
-/** Resolve longitude eclíptica (mapas em cache antigos podem não ter .longitude). */
 export function longitudeDoPonto(ponto, cuspFallback = null) {
   if (ponto?.longitude != null && Number.isFinite(Number(ponto.longitude))) {
     return normalizarLongitude(ponto.longitude)
@@ -61,6 +83,61 @@ export function enriquecerPlanetaLongitude(planeta) {
   return { ...planeta, longitude: lon }
 }
 
+function diferencaAngular(a, b) {
+  const diff = Math.abs(a - b) % 360
+  return diff > 180 ? 360 - diff : diff
+}
+
+export function aspectoEntreLongitudes(lonA, lonB, orbe = 6) {
+  if (!Number.isFinite(lonA) || !Number.isFinite(lonB)) return null
+  const angle = diferencaAngular(lonA, lonB)
+  const nearest = ASPECTOS_MAIORES
+    .map((x) => ({ ...x, orbe: Math.abs(angle - x.angulo) }))
+    .sort((x, y) => x.orbe - y.orbe)[0]
+  if (nearest.orbe <= orbe) {
+    return { aspecto: nearest.nome, orbe: nearest.orbe, distancia: angle }
+  }
+  return null
+}
+
+export function calcularAspetosPontos(pontos, orbe = 6) {
+  const lista = []
+  for (let i = 0; i < pontos.length; i++) {
+    for (let j = i + 1; j < pontos.length; j++) {
+      const a = pontos[i]
+      const b = pontos[j]
+      const asp = aspectoEntreLongitudes(a.longitude, b.longitude, orbe)
+      if (asp) {
+        lista.push({
+          planetaA: a.nome,
+          planetaB: b.nome,
+          keyA: a.key || a.nome,
+          keyB: b.key || b.nome,
+          aspecto: asp.aspecto,
+          orbe: asp.orbe,
+          distancia: asp.distancia,
+        })
+      }
+    }
+  }
+  return lista.sort((x, y) => x.orbe - y.orbe)
+}
+
+function criarPontoAngular(key, nome, abrev, simbolo, longitude, signo, casa) {
+  if (longitude == null) return null
+  return {
+    key,
+    nome,
+    abrev,
+    simbolo,
+    longitude,
+    signo: signo || { nome: SIGNOS_ZODIACO[indiceSignoDeLongitude(longitude)].nome },
+    casa,
+    retrograde: false,
+    isAngular: true,
+  }
+}
+
 export function prepararDadosMandala(mapaNatal, planetas = []) {
   const ascLon = longitudeDoPonto(mapaNatal?.ascendente, mapaNatal?.cusps?.[0])
   if (ascLon == null) return null
@@ -76,21 +153,72 @@ export function prepararDadosMandala(mapaNatal, planetas = []) {
 
   if (!planetasNorm.length) return null
 
+  const mcLon = longitudeDoPonto(mapaNatal?.mc, cusps[9])
+  const dcLon = longitudeDoPonto(mapaNatal?.descendente, cusps[6])
+  const icLon = longitudeDoPonto(mapaNatal?.ic, cusps[3])
+
+  const angulares = [
+    criarPontoAngular('asc', 'Ascendente', 'ASC', 'As', ascLon, mapaNatal?.ascendente, 1),
+    criarPontoAngular('mc', 'Meio do Céu', 'MC', 'Mc', mcLon, mapaNatal?.mc, 10),
+    criarPontoAngular('dc', 'Descendente', 'DC', 'Dc', dcLon, mapaNatal?.descendente, 7),
+    criarPontoAngular('ic', 'Fundo do Céu', 'IC', 'Ic', icLon, mapaNatal?.ic, 4),
+  ].filter(Boolean)
+
+  const todosPontos = [...planetasNorm, ...angulares.filter((a) => ['asc', 'mc'].includes(a.key))]
+
+  const pontosGrelha = ORDEM_GRELHA
+    .map((nome) => {
+      if (nome === 'Ascendente') return angulares.find((a) => a.key === 'asc')
+      if (nome === 'Meio do Céu') return angulares.find((a) => a.key === 'mc')
+      return planetasNorm.find((p) => p.nome === nome)
+    })
+    .filter(Boolean)
+
+  const tabelaPontos = [
+    ...planetasNorm,
+    ...angulares.filter((a) => ['asc', 'mc'].includes(a.key)),
+  ]
+
   return {
     ascLon,
     cusps,
-    mcLon: longitudeDoPonto(mapaNatal?.mc, cusps[9]),
-    dcLon: longitudeDoPonto(mapaNatal?.descendente, cusps[6]),
-    icLon: longitudeDoPonto(mapaNatal?.ic, cusps[3]),
+    mcLon,
+    dcLon,
+    icLon,
     planetas: planetasNorm,
+    angulares,
+    todosPontos,
+    pontosGrelha,
+    tabelaPontos,
   }
+}
+
+export function construirMatrizAspectos(pontosGrelha, orbe = 6) {
+  const n = pontosGrelha.length
+  const matriz = []
+  for (let row = 0; row < n; row++) {
+    const linha = []
+    for (let col = 0; col < n; col++) {
+      if (col >= row) {
+        linha.push(null)
+      } else {
+        const asp = aspectoEntreLongitudes(
+          pontosGrelha[row].longitude,
+          pontosGrelha[col].longitude,
+          orbe,
+        )
+        linha.push(asp)
+      }
+    }
+    matriz.push(linha)
+  }
+  return matriz
 }
 
 export function normalizarLongitude(lon) {
   return ((Number(lon) % 360) + 360) % 360
 }
 
-/** Ângulo no ecrã: ASC à esquerda (9h), sentido anti-horário. */
 export function anguloCarta(longitude, ascendant) {
   return normalizarLongitude(ascendant - longitude + 180)
 }
@@ -121,24 +249,30 @@ export function corElementoSigno(indiceSigno) {
 export function corAspecto(nome) {
   const n = (nome || '').toLowerCase()
   if (n.includes('conj')) return '#DFB76C'
-  if (n.includes('trig') || n.includes('sext')) return '#34D399'
-  if (n.includes('quad') || n.includes('opos')) return '#F87171'
+  if (n.includes('trig')) return '#60A5FA'
+  if (n.includes('sext')) return '#34D399'
+  if (n.includes('quad')) return '#F87171'
+  if (n.includes('opos')) return '#C084FC'
   return 'rgba(223,183,108,0.35)'
 }
 
-export function separarPlanetasSobrepostos(planetas, ascendant, minGrau = 6.5) {
+export function separarPlanetasSobrepostos(planetas, ascendant, minGrau = 5.5) {
   const comAngulo = planetas
     .filter((p) => Number.isFinite(p.longitude))
     .map((p) => ({ ...p, chartAngle: anguloCarta(p.longitude, ascendant) }))
     .sort((a, b) => a.chartAngle - b.chartAngle)
 
-  for (let i = 1; i < comAngulo.length; i++) {
-    const diff = comAngulo[i].chartAngle - comAngulo[i - 1].chartAngle
+  const angulares = comAngulo.filter((p) => p.isAngular)
+  const moveis = comAngulo.filter((p) => !p.isAngular)
+
+  for (let i = 1; i < moveis.length; i++) {
+    const diff = moveis[i].chartAngle - moveis[i - 1].chartAngle
     if (diff < minGrau) {
-      comAngulo[i].chartAngle = comAngulo[i - 1].chartAngle + minGrau
+      moveis[i].chartAngle = moveis[i - 1].chartAngle + minGrau
     }
   }
-  return comAngulo
+
+  return [...moveis, ...angulares].sort((a, b) => a.chartAngle - b.chartAngle)
 }
 
 export function nomePlanetaDeAspeto(str) {
@@ -156,6 +290,10 @@ export function grausNoSigno(longitude) {
   return lon % 30
 }
 
+export function simboloSignoDeLongitude(longitude) {
+  return SIGNOS_ZODIACO[indiceSignoDeLongitude(longitude)].simbolo
+}
+
 export function formatarGrauSigno(longitude) {
   const g = grausNoSigno(longitude)
   const graus = Math.floor(g)
@@ -163,9 +301,17 @@ export function formatarGrauSigno(longitude) {
   return minutos > 0 ? `${graus}°${String(minutos).padStart(2, '0')}'` : `${graus}°`
 }
 
+/** Formato profissional: graus.minutos (ex. 8.45 = 8°45') */
+export function formatarGrauDecimal(longitude) {
+  const g = grausNoSigno(longitude)
+  const graus = Math.floor(g)
+  const minutos = Math.round((g - graus) * 60)
+  return `${graus}.${String(minutos).padStart(2, '0')}`
+}
+
 export const COR_PLANETA = {
   Sol: '#FBBF24',
-  Lua: '#C4B5FD',
+  Lua: '#E8E4F0',
   Mercúrio: '#93C5FD',
   Vénus: '#F472B6',
   Marte: '#F87171',
@@ -177,6 +323,10 @@ export const COR_PLANETA = {
   Quíron: '#FB923C',
   'Nodo Norte': '#DFB76C',
   Lilith: '#9CA3AF',
+  Ascendente: '#C4B5FD',
+  'Meio do Céu': '#34D399',
+  Descendente: '#F472B6',
+  'Fundo do Céu': '#93C5FD',
 }
 
 export const ABREV_SIGNO = ['Ar', 'To', 'Gm', 'Cj', 'Le', 'Vg', 'Ba', 'Es', 'Sg', 'Cp', 'Aq', 'Px']
@@ -188,4 +338,8 @@ export function indiceSignoDePonto(ponto) {
   }
   if (ponto.nome && SIGNO_INDICE[ponto.nome] != null) return SIGNO_INDICE[ponto.nome]
   return null
+}
+
+export function corPonto(nome) {
+  return COR_PLANETA[nome] || '#DFB76C'
 }

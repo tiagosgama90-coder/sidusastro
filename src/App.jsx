@@ -2582,7 +2582,7 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
             dataNascimento={formatarData(dados.data)}
             horaNascimento={dados.hora}
             translateSign={ts}
-            size={isDesktop ? 440 : 340}
+            size={isDesktop ? 480 : 360}
             unavailableLabel={t('mapa.mandalaUnavailable')}
           />
         </div>
