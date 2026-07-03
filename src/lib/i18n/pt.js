@@ -311,6 +311,8 @@ export default {
     aiFallbackNote: 'Interpretação profissional (modo clássico)',
     freeTasteHint: 'Estás a ver uma amostra gratuita. O resto do mapa - interpretação completa, posições, aspectos e PDF - está reservado ao Premium.',
     freeBlurTeaser: 'Interpretação profissional, esferas de vida, exportação PDF e muito mais…',
+    mandalaTitle: '✦ Mandala Natal',
+    mandalaSubtitle: 'Roda astrológica personalizada com as tuas posições planetárias, casas Placidus e aspectos · Tropical',
   },
   cartaoDia: {
     title: '✦ Carta do Dia · {date}',

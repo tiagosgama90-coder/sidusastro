@@ -311,6 +311,8 @@ export default {
     aiFallbackNote: 'Professional interpretation (classic mode)',
     freeTasteHint: 'You are viewing a free sample. The rest of the chart - full interpretation, positions, aspects and PDF - is reserved for Premium.',
     freeBlurTeaser: 'Professional interpretation, life spheres, PDF export and much more…',
+    mandalaTitle: '✦ Natal Mandala',
+    mandalaSubtitle: 'Personal astrological wheel with your planetary positions, Placidus houses and aspects · Tropical',
   },
   cartaoDia: {
     title: '✦ Card of the Day · {date}',
