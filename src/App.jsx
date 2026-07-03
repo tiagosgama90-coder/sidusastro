@@ -726,6 +726,7 @@ function calcularMapaNatalComSwe(swe, dados) {
       ic:         longitudeParaSigno(angulos.ic),
       cusps:      angulos.cusps,
       sistema:    angulos.sistema,
+      jd,
       instanteUTC: dateUTC.toISOString(),
       lat, lon, fuso,
       motor: motorLabel,
@@ -2582,6 +2583,7 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
             dataNascimento={formatarData(dados.data)}
             horaNascimento={dados.hora}
             translateSign={ts}
+            motorAstro={motorAstro}
             size={isDesktop ? 480 : 360}
             unavailableLabel={t('mapa.mandalaUnavailable')}
           />
@@ -3308,6 +3310,7 @@ export default function App() {
   const mapaDesbloqueado = isPremium || mapaCompleto
   const acessoVip = mapaDesbloqueado
   const contaConfigurada = mapaGerado || acessoVip
+    || (mapaNatalValido(mapaNatal) && dadosNataisCompletos(dados))
 
   const irPara = useCallback((novoPasso, { replace = false } = {}) => {
     setFerramentaAberta(null)
@@ -3374,6 +3377,15 @@ export default function App() {
       }
 
       if (user) {
+        const cacheImediato = restaurarCachePerfil(user.uid)
+        if (mapaNatalValido(cacheImediato.mapa)) {
+          setMapaNatal(cacheImediato.mapa)
+          setMapaGerado(true)
+        }
+        if (cacheImediato.dados && dadosNataisMinimos(cacheImediato.dados)) {
+          setDados((prev) => normalizarDadosPerfil({ ...DADOS_VAZIO, ...prev, ...cacheImediato.dados }) || DADOS_VAZIO)
+        }
+
         setPerfilCarregando(true)
         perfilTimeoutId = setTimeout(() => {
           console.warn('[Sidus] Perfil cloud demorou - a continuar sem bloquear a interface')
@@ -3413,6 +3425,7 @@ export default function App() {
 
                 if (!emOnboarding && mapaNatalValido(cache.mapa)) {
                   setMapaNatal(cache.mapa)
+                  setMapaGerado(true)
                 }
                 if (!dadosPerfil && cache.dados) dadosPerfil = cache.dados
 
@@ -3547,9 +3560,9 @@ export default function App() {
     navigate('/login', { replace: true })
   }, [authCarregando, utilizador, location.pathname, location.search, navigate])
 
-  // Após login: contas existentes → perfil; contas novas → onboarding (1x)
+  // Após login: contas existentes → home; contas novas → onboarding
   useEffect(() => {
-    if (authCarregando || perfilCarregando) return
+    if (authCarregando) return
     const hadUser = prevUserRef.current
     prevUserRef.current = utilizador
     if (!utilizador) return
@@ -3576,7 +3589,7 @@ export default function App() {
       navigate('/home', { replace: true })
       setPasso('home')
     }
-  }, [authCarregando, perfilCarregando, utilizador, location.pathname, navigate, contaConfigurada])
+  }, [authCarregando, utilizador, location.pathname, navigate, contaConfigurada])
 
   // Rascunho da landing → dados do perfil assim que há sessão (sobrevive à verificação de e-mail)
   useEffect(() => {

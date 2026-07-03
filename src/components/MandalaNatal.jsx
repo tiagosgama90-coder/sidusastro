@@ -12,7 +12,8 @@ import {
   corElementoSigno,
   corPonto,
   formatarGrauDecimal,
-  formatarGrauSigno,
+  formatarGrauDms,
+  formatarLongitudeEcliptica,
   indiceSignoDePonto,
   nomePlanetaDeAspeto,
   normalizarLongitude,
@@ -147,6 +148,7 @@ function TabelaPosicoes({ pontos, translateSign }) {
           <tr style={{ borderBottom: `1px solid ${CORES.borda}`, background: 'rgba(223,183,108,0.06)' }}>
             <th style={{ padding: '6px 8px', textAlign: 'left', color: CORES.muted, fontWeight: 600, fontSize: 9, letterSpacing: '0.08em' }}>PONTO</th>
             <th style={{ padding: '6px 8px', textAlign: 'right', color: CORES.muted, fontWeight: 600, fontSize: 9, letterSpacing: '0.08em' }}>POSIÇÃO</th>
+            <th style={{ padding: '6px 8px', textAlign: 'right', color: CORES.muted, fontWeight: 600, fontSize: 9, letterSpacing: '0.08em' }}>λ ECLÍPTICA</th>
           </tr>
         </thead>
         <tbody>
@@ -166,12 +168,15 @@ function TabelaPosicoes({ pontos, translateSign }) {
                 <td style={{ padding: '5px 8px', textAlign: 'right', whiteSpace: 'nowrap' }}>
                   <span style={{ color: cor, fontFamily: 'Georgia, serif', fontSize: 12, marginRight: 4 }}>{signoSym}</span>
                   <span style={{ color: CORES.douradoClaro, fontWeight: 600, fontVariantNumeric: 'tabular-nums' }}>
-                    {formatarGrauDecimal(p.longitude)}
+                    {formatarGrauDms(p.longitude)}
                   </span>
                   <span style={{ color: CORES.muted, fontSize: 9, marginLeft: 4 }}>
                     {translateSign(signoNome)}
                     {p.casa ? ` · ${ROMANOS_CASA[p.casa - 1]}` : ''}
                   </span>
+                </td>
+                <td style={{ padding: '5px 8px', textAlign: 'right', color: CORES.muted, fontSize: 10, fontVariantNumeric: 'tabular-nums', whiteSpace: 'nowrap' }}>
+                  {formatarLongitudeEcliptica(p.longitude)}
                 </td>
               </tr>
             )
@@ -193,6 +198,7 @@ export function MandalaNatal({
   dataNascimento,
   horaNascimento,
   translateSign = (s) => s,
+  motorAstro,
   size = 400,
   className,
   style,
@@ -230,7 +236,7 @@ export function MandalaNatal({
     )
   }
 
-  const { ascLon, cusps, mcLon, dcLon, icLon, todosPontos, pontosGrelha, tabelaPontos } = dados
+  const { ascLon, cusps, mcLon, dcLon, icLon, todosPontos, pontosGrelha, tabelaPontos, jd, motor, instanteUTC } = dados
 
   const cx = size / 2
   const cy = size / 2
@@ -292,9 +298,11 @@ export function MandalaNatal({
           <div style={{ fontSize: 11, color: CORES.dourado, marginTop: 8, fontWeight: 600 }}>
             ☉ {solSigno || '—'} · ☽ {luaSigno || '—'} · AS {ascSigno || '—'}
           </div>
-          {mapaNatal?.motor && (
+          {(mapaNatal?.motor || motorAstro) && (
             <div style={{ fontSize: 9, color: CORES.muted, marginTop: 6, letterSpacing: '0.04em' }}>
-              {mapaNatal.motor}
+              {mapaNatal?.motor || motorAstro}
+              {jd != null && ` · JD ${Number(jd).toFixed(8)}`}
+              {instanteUTC && ` · ${instanteUTC.slice(0, 19)} UTC`}
             </div>
           )}
         </div>
@@ -356,11 +364,11 @@ export function MandalaNatal({
 
           <circle cx={cx} cy={cy} r={rOuter + 2} fill={`url(#${uid}_bg)`} stroke={CORES.douradoSuave} strokeWidth="1.3" />
 
-          {/* Anel de graus interior */}
+          {/* Anel de graus interior — cada 5° */}
           <circle cx={cx} cy={cy} r={rDegreeOut} fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="0.5" />
           <circle cx={cx} cy={cy} r={rDegreeIn} fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="0.5" />
-          {Array.from({ length: 360 }, (_, d) => {
-            if (d % 5 !== 0) return null
+          {Array.from({ length: 72 }, (_, i) => {
+            const d = i * 5
             const a = anguloCarta(d, ascLon)
             const is30 = d % 30 === 0
             const p0 = polarParaXY(a, rDegreeIn, cx, cy)
@@ -547,7 +555,7 @@ export function MandalaNatal({
                   fontFamily="system-ui, sans-serif"
                   opacity="0.85"
                 >
-                  {formatarGrauSigno(p.longitude)}
+                  {formatarGrauDms(p.longitude)}
                 </text>
                 {p.retrograde && (
                   <text

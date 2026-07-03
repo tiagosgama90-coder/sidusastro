@@ -75,12 +75,48 @@ export function longitudeDoPonto(ponto, cuspFallback = null) {
   return longitudeDeSigno(ponto?.nome, ponto?.graus ?? ponto?.signo?.graus)
 }
 
+/** Longitude eclíptica com precisão total (Swiss Ephemeris / double). */
+export function garantirLongitudePrecisa(ponto) {
+  if (!ponto) return null
+  if (Number.isFinite(Number(ponto.longitude))) {
+    return normalizarLongitude(Number(ponto.longitude))
+  }
+  if (Number.isFinite(Number(ponto.signo?.longitude))) {
+    return normalizarLongitude(Number(ponto.signo.longitude))
+  }
+  const graus = ponto.graus ?? ponto.signo?.graus
+  const lon = longitudeDeSigno(ponto.signo?.nome ?? ponto.nome, graus)
+  return lon != null ? lon : null
+}
+
 export function enriquecerPlanetaLongitude(planeta) {
   if (!planeta) return null
-  if (Number.isFinite(planeta.longitude)) return planeta
-  const lon = longitudeDeSigno(planeta.signo?.nome, planeta.signo?.graus)
+  const lon = garantirLongitudePrecisa(planeta)
   if (lon == null) return null
   return { ...planeta, longitude: lon }
+}
+
+/** Garante longitudes e cúspides em float completo (mapas em cache antigos). */
+export function enriquecerMapaNatalLongitudes(mapa) {
+  if (!mapa) return null
+  const enrich = (p) => {
+    if (!p) return p
+    const lon = garantirLongitudePrecisa(p)
+    return lon != null ? { ...p, longitude: lon } : p
+  }
+  const cusps = Array.isArray(mapa.cusps)
+    ? mapa.cusps.map((c) => (Number.isFinite(Number(c)) ? normalizarLongitude(Number(c)) : c))
+    : mapa.cusps
+  return {
+    ...mapa,
+    solar: enrich(mapa.solar),
+    lunar: enrich(mapa.lunar),
+    ascendente: enrich(mapa.ascendente),
+    descendente: enrich(mapa.descendente),
+    mc: enrich(mapa.mc),
+    ic: enrich(mapa.ic),
+    cusps,
+  }
 }
 
 function diferencaAngular(a, b) {
@@ -139,12 +175,15 @@ function criarPontoAngular(key, nome, abrev, simbolo, longitude, signo, casa) {
 }
 
 export function prepararDadosMandala(mapaNatal, planetas = []) {
-  const ascLon = longitudeDoPonto(mapaNatal?.ascendente, mapaNatal?.cusps?.[0])
+  const mapa = enriquecerMapaNatalLongitudes(mapaNatal)
+  const ascLon = longitudeDoPonto(mapa?.ascendente, mapa?.cusps?.[0])
   if (ascLon == null) return null
 
-  let cusps = mapaNatal?.cusps
+  let cusps = mapa?.cusps
   if (!Array.isArray(cusps) || cusps.length < 12) {
     cusps = Array.from({ length: 12 }, (_, i) => normalizarLongitude(ascLon + i * 30))
+  } else {
+    cusps = cusps.slice(0, 12).map((c) => normalizarLongitude(Number(c)))
   }
 
   const planetasNorm = planetas
@@ -153,15 +192,15 @@ export function prepararDadosMandala(mapaNatal, planetas = []) {
 
   if (!planetasNorm.length) return null
 
-  const mcLon = longitudeDoPonto(mapaNatal?.mc, cusps[9])
-  const dcLon = longitudeDoPonto(mapaNatal?.descendente, cusps[6])
-  const icLon = longitudeDoPonto(mapaNatal?.ic, cusps[3])
+  const mcLon = longitudeDoPonto(mapa?.mc, cusps[9])
+  const dcLon = longitudeDoPonto(mapa?.descendente, cusps[6])
+  const icLon = longitudeDoPonto(mapa?.ic, cusps[3])
 
   const angulares = [
-    criarPontoAngular('asc', 'Ascendente', 'ASC', 'As', ascLon, mapaNatal?.ascendente, 1),
-    criarPontoAngular('mc', 'Meio do Céu', 'MC', 'Mc', mcLon, mapaNatal?.mc, 10),
-    criarPontoAngular('dc', 'Descendente', 'DC', 'Dc', dcLon, mapaNatal?.descendente, 7),
-    criarPontoAngular('ic', 'Fundo do Céu', 'IC', 'Ic', icLon, mapaNatal?.ic, 4),
+    criarPontoAngular('asc', 'Ascendente', 'ASC', 'As', ascLon, mapa?.ascendente, 1),
+    criarPontoAngular('mc', 'Meio do Céu', 'MC', 'Mc', mcLon, mapa?.mc, 10),
+    criarPontoAngular('dc', 'Descendente', 'DC', 'Dc', dcLon, mapa?.descendente, 7),
+    criarPontoAngular('ic', 'Fundo do Céu', 'IC', 'Ic', icLon, mapa?.ic, 4),
   ].filter(Boolean)
 
   const todosPontos = [...planetasNorm, ...angulares.filter((a) => ['asc', 'mc'].includes(a.key))]
@@ -190,6 +229,10 @@ export function prepararDadosMandala(mapaNatal, planetas = []) {
     todosPontos,
     pontosGrelha,
     tabelaPontos,
+    mapaEnriquecido: mapa,
+    jd: mapa?.jd ?? null,
+    motor: mapa?.motor ?? null,
+    instanteUTC: mapa?.instanteUTC ?? null,
   }
 }
 
@@ -307,6 +350,23 @@ export function formatarGrauDecimal(longitude) {
   const graus = Math.floor(g)
   const minutos = Math.round((g - graus) * 60)
   return `${graus}.${String(minutos).padStart(2, '0')}`
+}
+
+/** Graus, minutos e segundos de arco no signo (precisão ephemeris). */
+export function formatarGrauDms(longitude) {
+  const g = grausNoSigno(longitude)
+  let graus = Math.floor(g)
+  let totalMin = (g - graus) * 60
+  let minutos = Math.floor(totalMin)
+  let segundos = Math.round((totalMin - minutos) * 60)
+  if (segundos >= 60) { segundos = 0; minutos++ }
+  if (minutos >= 60) { minutos = 0; graus++ }
+  return `${graus}°${String(minutos).padStart(2, '0')}'${String(segundos).padStart(2, '0')}"`
+}
+
+/** Longitude eclíptica absoluta (0–360°) com 6 casas decimais. */
+export function formatarLongitudeEcliptica(longitude) {
+  return `${normalizarLongitude(longitude).toFixed(6)}°`
 }
 
 export const COR_PLANETA = {
