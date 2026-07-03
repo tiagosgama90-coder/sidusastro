@@ -45,6 +45,7 @@ import { ConteudoDinamicoSidus } from './components/ConteudoDinamicoSidus'
 import { LandingCosmicBackground } from './components/LandingCosmicBackground.jsx'
 import { LandingBirthPortal } from './components/LandingBirthPortal.jsx'
 import { LandingFaq } from './components/LandingFaq.jsx'
+import { LandingGuides } from './components/LandingGuides.jsx'
 import { LandingPortalHero } from './components/LandingPortalHero.jsx'
 import { LandingSkyLive } from './components/LandingSkyLive.jsx'
 import { LandingTestimonials } from './components/LandingTestimonials.jsx'
@@ -71,11 +72,9 @@ import { gerarAnaliseCompleta, gerarResumoGratuito, mapaPlanetasProntos } from '
 import { calcularFaseLua } from './lib/faseLua.js'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { passoFromPath, pathFromPasso, langFromPath, stripLangPrefix } from './lib/routes.js'
-import { initAdSense } from './lib/adsense.js'
 import { initGoogleAnalytics } from './lib/googleAnalytics.js'
-import { AdSenseBanner } from './components/AdSenseBanner.jsx'
 import { CookieConsent } from './components/CookieConsent.jsx'
-import { allowsAds, applyAdConsentToGoogle, getCookieConsent } from './lib/cookieConsent.js'
+import { allowsAds, getCookieConsent } from './lib/cookieConsent.js'
 import { LanguageSwitcher } from './components/LanguageSwitcher.jsx'
 import { useLanguage } from './lib/i18n/LanguageContext.jsx'
 import { readLandingDraft, clearLandingDraft, mergeLandingDraft, hasLandingDraft, flushLandingDraft } from './lib/landingDraft.js'
@@ -1592,6 +1591,7 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
       </div>
       <LandingTestimonials />
       <LandingFaq />
+      <LandingGuides />
     </div>
   )
 }
@@ -2965,6 +2965,9 @@ function RodapeSidus({ isDesktop, mostrarNavbar }) {
         {t('footer.tagline')}
       </p>
       <p style={{ margin: '10px 0 0', fontSize: isDesktop ? 11 : 10 }}>
+        <a href="/guia/mapa-astral.html" style={{ color: 'rgba(255,255,255,0.35)', textDecoration: 'underline', marginRight: 12 }}>
+          {t('footer.guides')}
+        </a>
         <a
           href="/privacidade"
           style={{ color: 'rgba(255,255,255,0.35)', textDecoration: 'underline' }}
@@ -3441,10 +3444,7 @@ export default function App() {
   useEffect(() => {
     if (!allowsAds()) return
     initGoogleAnalytics()
-    if (isPremium) return
-    applyAdConsentToGoogle()
-    initAdSense()
-  }, [isPremium, cookieConsent])
+  }, [cookieConsent])
 
   // Firebase email verification (?mode=verifyEmail&oobCode=...) - link abre na app
   useEffect(() => {
@@ -3886,7 +3886,6 @@ export default function App() {
   const isDev = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
 
   const mostrarNavbar = utilizador && contaConfigurada && passo !== 'paywall'
-  const mostrarAdsGratis = !isPremium && allowsAds() && cookieConsent
 
   const chatFullScreen = passo === 'chat'
   const linkEmailPendente = (() => {
@@ -4081,9 +4080,6 @@ export default function App() {
           {renderEcran()}
         </ErrorBoundary>
       </div>
-      {utilizador && mostrarAdsGratis && !['login', 'onboarding', 'privacidade', 'paywall'].includes(passo) && (
-        <AdSenseBanner isPremium={isPremium} />
-      )}
       <RodapeSidus isDesktop={isDesktop} mostrarNavbar={mostrarNavbar} />
       {mostrarNavbar && (
         <Navbar

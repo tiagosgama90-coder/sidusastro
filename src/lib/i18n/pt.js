@@ -87,6 +87,23 @@ export default {
         a3: 'Sim, os dados são processados de forma encriptada através do Firebase.',
         q4: 'Qual a diferença entre o mapa avulso e o Premium?',
         a4: 'O mapa avulso é pagamento único - recebes o relatório completo em PDF sem subscrição mensal. O Sidus Premium inclui o mapa astral completo mais oráculo de IA, tarot, sinastria e todas as ferramentas. Se queres ir além do PDF, o Premium é a melhor escolha.',
+        q5: 'O que é o ascendente e porque importa?',
+        a5: 'O ascendente é o signo que nascia no horizonte leste no momento exacto do teu nascimento. Define a primeira impressão que dás, o teu estilo de abordar a vida e a cúspide da Casa 1. Por isso a hora de nascimento é tão importante - dois bebés nascidos no mesmo dia podem ter ascendente diferente.',
+        q6: 'O Sidusastro é gratuito?',
+        a6: 'Sim, podes criar conta grátis, calcular o mapa natal básico, usar o tarot diário e explorar várias ferramentas. O relatório PDF completo, o oráculo IA ilimitado e ferramentas avançadas fazem parte do Premium ou de compras avulsas.',
+      },
+      guides: {
+        ariaLabel: 'Guias de astrologia Sidusastro',
+        title: 'Guias de Astrologia',
+        lead: 'Artigos gratuitos sobre mapa astral, ascendente, signos e tarot - escritos pela equipa Sidusastro para aprenderes astrologia com rigor.',
+        mapaTitle: 'O que é um mapa astral?',
+        mapaDesc: 'Planetas, casas, aspectos e como ler o teu mapa natal.',
+        ascendenteTitle: 'Guia do Ascendente',
+        ascendenteDesc: 'Porque a hora de nascimento muda tudo no teu mapa.',
+        signosTitle: 'Os 12 signos do zodíaco',
+        signosDesc: 'Elementos, modalidades e características de cada signo.',
+        tarotTitle: 'Tarot e astrologia',
+        tarotDesc: 'Como o tarot complementa o mapa natal na leitura simbólica.',
       },
       testimonials: {
         ariaLabel: 'Testemunhos de utilizadores Sidusastro',
@@ -402,6 +419,7 @@ export default {
   },
   footer: {
     tagline: '© 2026 Sidus Astro. Portais e caminhos revelados através do Tarot e da Astrologia. Todos os direitos reservados.',
+    guides: 'Guias de astrologia',
     privacy: 'Política de Privacidade',
   },
   tarot: {

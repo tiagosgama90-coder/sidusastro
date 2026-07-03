@@ -3,6 +3,9 @@ export const ADSENSE_PUBLISHER = 'ca-pub-2807052149540484'
 /** Bloco Display horizontal - sidusastro.com */
 export const ADSENSE_SLOT_DEFAULT = '7205155875'
 
+/** Páginas estáticas com conteúdo editorial onde AdSense é permitido (política Google). */
+export const ADSENSE_CONTENT_PATH_PREFIX = '/guia/'
+
 export function getAdsenseClient() {
   const fromEnv = import.meta.env.VITE_ADSENSE_CLIENT
   if (fromEnv && String(fromEnv).startsWith('ca-pub-')) return fromEnv
@@ -15,7 +18,7 @@ export function getAdsenseSlot() {
   return String(slot).trim()
 }
 
-/** Activar bloco in-app quando existir unidade (slot) e utilizador não é Premium. */
+/** Activar bloco quando existir unidade (slot). Na SPA da app os anúncios estão desactivados — só em /guia/*.html. */
 export function adsenseEnabled(isPremium = false) {
   if (isPremium) return false
   return /^\d+$/.test(getAdsenseSlot())

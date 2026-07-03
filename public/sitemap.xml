@@ -278,4 +278,26 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://sidusastro.com/privacidade"/>
   </url>
 
+  <!-- Guias editoriais (conteúdo AdSense) -->
+  <url>
+    <loc>https://sidusastro.com/guia/mapa-astral.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.92</priority>
+  </url>
+  <url>
+    <loc>https://sidusastro.com/guia/ascendente.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://sidusastro.com/guia/signos-zodiaco.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://sidusastro.com/guia/tarot-guia.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.88</priority>
+  </url>
+
 </urlset>

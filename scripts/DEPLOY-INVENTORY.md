@@ -48,9 +48,11 @@ git add -A && git commit -m "Sync handover" && git push
 
 ### AdSense no código
 
-- Script carrega após cookies (`App.jsx` → `initAdSense()`)
-- Banner só para utilizadores **logados**, **não Premium**, fora login/onboarding/paywall
-- Env Netlify (também em `netlify.toml` production): `VITE_ADSENSE_CLIENT`, `VITE_ADSENSE_SLOT`
+- **Anúncios só em páginas editoriais estáticas** (`public/guia/*.html`) — não na SPA
+- App (login, tarot, mapa, chat): **sem AdSense** (política Google)
+- Landing `/login`: FAQ + guias + testemunhos (sem anúncios no formulário)
+- Env Netlify: `VITE_ADSENSE_CLIENT`, `VITE_ADSENSE_SLOT` (usado nas páginas /guia/)
+- Ver `ADSENSE-POLICY-FIX.md` para pedir revisão após violações
 
 ---
 
