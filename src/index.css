@@ -242,7 +242,7 @@ html.sidus-no-ads .google-auto-placed {
   padding: 6px 3px;
   flex: 1 1 0;
   min-width: 0;
-  max-width: 8.25rem;
+  max-width: 7.35rem;
   white-space: nowrap;
   cursor: pointer;
   font-size: 11.5px;
@@ -294,7 +294,7 @@ html.sidus-no-ads .google-auto-placed {
     padding: 5px 2px;
     gap: 3px;
     font-size: 11px;
-    max-width: 7.5rem;
+    max-width: 6.85rem;
   }
   .desktop-nav-item span {
     font-size: 11px;

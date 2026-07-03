@@ -80,6 +80,7 @@ import { LanguageSwitcher } from './components/LanguageSwitcher.jsx'
 import { useLanguage } from './lib/i18n/LanguageContext.jsx'
 import { readLandingDraft, clearLandingDraft, mergeLandingDraft, hasLandingDraft, flushLandingDraft } from './lib/landingDraft.js'
 import { getFerramentas, getBeneficiosVip } from './lib/i18n/ferramentasData.js'
+import { getNavBarLabels } from './lib/i18n/navBarLabels.js'
 import { validarOnboarding } from './lib/i18n/validation.js'
 import { traduzirErroAuth } from './lib/i18n/authErrors.js'
 import { labelBarraCurto, tituloSecaoMapa } from './lib/i18n/labelUtil.js'
@@ -3111,6 +3112,8 @@ function Navbar({ passo, setPasso, isDesktop, dados, fotoPerfil }) {
     setMenuAberto(false)
   }
 
+  const navBar = getNavBarLabels(lang)
+
   const ferramentasNav = getFerramentas(lang).map((f) => ({
     id: f.id,
     label: f.nomeNav || f.nome,
@@ -3120,11 +3123,11 @@ function Navbar({ passo, setPasso, isDesktop, dados, fotoPerfil }) {
   }))
 
   const itens = [
-    { id: 'home',        label: t('nav.home'),    icon: Home,          glow: '#DFB76C' },
-    { id: 'mapa',        label: t('nav.mapa'),    icon: Map,           glow: '#C4B5FD' },
-    { id: 'tarot',       label: t('nav.tarot'),   icon: Layers,        glow: '#F472B6' },
+    { id: 'home',        label: navBar.home,    title: t('nav.home'),    icon: Home,          glow: '#DFB76C' },
+    { id: 'mapa',        label: navBar.mapa,    title: t('nav.mapa'),    icon: Map,           glow: '#C4B5FD' },
+    { id: 'tarot',       label: navBar.tarot,   title: t('nav.tarot'),   icon: Layers,        glow: '#F472B6' },
     ...ferramentasNav,
-    { id: 'chat',        label: t('nav.oraculo'), icon: MessageCircle, glow: '#34D399' },
+    { id: 'chat',        label: navBar.oraculo, title: t('nav.oraculo'), icon: MessageCircle, glow: '#34D399' },
   ]
 
   const passosFerramenta = new Set(ferramentasNav.map((f) => f.id))
