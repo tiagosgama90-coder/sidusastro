@@ -55,7 +55,7 @@ import { LeituraGratisDiaria } from './components/LeituraGratisDiaria.jsx'
 import { ShareSigno } from './components/ShareSigno.jsx'
 import { applyRouteSeo } from './lib/routeSeo.js'
 import { ErrorBoundary } from './components/ErrorBoundary.jsx'
-import { auth, db, firebaseDisponivel } from './lib/firebase'
+import { auth, db, firebaseDisponivel, firebaseReady } from './lib/firebase'
 import { enviarEmailVerificacao, enviarEmailRecuperacaoSenha, traduzirErroEmail } from './lib/authEmail'
 import {
   createUserWithEmailAndPassword,
@@ -3339,15 +3339,12 @@ export default function App() {
 
   // ── Escuta o estado de autenticação Firebase + perfil em tempo real ─────────
   useEffect(() => {
-    if (!firebaseDisponivel || !auth) {
-      setAuthCarregando(false)
-      setPerfilCarregando(false)
-      return undefined
-    }
-
+    let cancelled = false
     let unsubPerfil = null
     let authResolvido = false
     let perfilTimeoutId = null
+    let timeoutId = null
+    let unsubscribeAuth = () => {}
 
     const clearPerfilTimeout = () => {
       if (perfilTimeoutId) {
@@ -3356,14 +3353,22 @@ export default function App() {
       }
     }
 
-    const timeoutId = setTimeout(() => {
-      if (authResolvido) return
-      console.warn('[Sidus] Auth demorou demasiado - a continuar sem bloquear a interface')
-      setAuthCarregando(false)
-      setPerfilCarregando(false)
-    }, 10000)
+    firebaseReady.then(() => {
+      if (cancelled) return
+      if (!firebaseDisponivel || !auth) {
+        setAuthCarregando(false)
+        setPerfilCarregando(false)
+        return
+      }
 
-    const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
+      timeoutId = setTimeout(() => {
+        if (authResolvido) return
+        console.warn('[Sidus] Auth demorou demasiado - a continuar sem bloquear a interface')
+        setAuthCarregando(false)
+        setPerfilCarregando(false)
+      }, 10000)
+
+      unsubscribeAuth = onAuthStateChanged(auth, (user) => {
       authResolvido = true
       clearTimeout(timeoutId)
       clearPerfilTimeout()
@@ -3463,9 +3468,11 @@ export default function App() {
       }
       setAuthCarregando(false)
     })
+    })
 
     return () => {
-      clearTimeout(timeoutId)
+      cancelled = true
+      if (timeoutId) clearTimeout(timeoutId)
       clearPerfilTimeout()
       unsubPerfil?.()
       unsubscribeAuth()
@@ -3488,11 +3495,14 @@ export default function App() {
 
   // Firebase email verification (?mode=verifyEmail&oobCode=...) - link abre na app
   useEffect(() => {
-    if (!auth || !firebaseDisponivel || oobCodeTratado.current) return
+    if (oobCodeTratado.current) return
     const params = new URLSearchParams(location.search)
     const mode = params.get('mode')
     const oobCode = params.get('oobCode')
     if (mode !== 'verifyEmail' || !oobCode) return
+
+    firebaseReady.then(() => {
+      if (!auth || !firebaseDisponivel || oobCodeTratado.current) return
 
     oobCodeTratado.current = true
 
@@ -3534,6 +3544,7 @@ export default function App() {
         setPagamentoMsg({ tipo: 'info', texto: t('emailVerify.verifyFailed') })
       }
     })()
+    })
   }, [location.search, navigate, t])
 
   const rotasPublicasSemAuth = new Set(['/login', '/privacidade'])
