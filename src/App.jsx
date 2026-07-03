@@ -3310,7 +3310,6 @@ export default function App() {
   const mapaDesbloqueado = isPremium || mapaCompleto
   const acessoVip = mapaDesbloqueado
   const contaConfigurada = mapaGerado || acessoVip
-    || (mapaNatalValido(mapaNatal) && dadosNataisCompletos(dados))
 
   const irPara = useCallback((novoPasso, { replace = false } = {}) => {
     setFerramentaAberta(null)
@@ -3377,19 +3376,7 @@ export default function App() {
       }
 
       if (user) {
-        const cacheImediato = restaurarCachePerfil(user.uid)
-        if (mapaNatalValido(cacheImediato.mapa)) {
-          setMapaNatal(cacheImediato.mapa)
-          setMapaGerado(true)
-        }
-        if (cacheImediato.dados && dadosNataisMinimos(cacheImediato.dados)) {
-          setDados((prev) => normalizarDadosPerfil({ ...DADOS_VAZIO, ...prev, ...cacheImediato.dados }) || DADOS_VAZIO)
-        }
-        if (mapaNatalValido(cacheImediato.mapa) || (cacheImediato.dados && dadosNataisMinimos(cacheImediato.dados))) {
-          setPerfilCarregando(false)
-        } else {
-          setPerfilCarregando(true)
-        }
+        setPerfilCarregando(true)
         perfilTimeoutId = setTimeout(() => {
           console.warn('[Sidus] Perfil cloud demorou - a continuar sem bloquear a interface')
           setPerfilCarregando(false)
@@ -3428,7 +3415,6 @@ export default function App() {
 
                 if (!emOnboarding && mapaNatalValido(cache.mapa)) {
                   setMapaNatal(cache.mapa)
-                  setMapaGerado(true)
                 }
                 if (!dadosPerfil && cache.dados) dadosPerfil = cache.dados
 
@@ -3550,10 +3536,7 @@ export default function App() {
     })()
   }, [location.search, navigate, t])
 
-  const rotasPublicasSemAuth = (pathname) => {
-    const p = stripLangPrefix(pathname || '/').replace(/\/$/, '') || '/'
-    return p === '/login' || p === '/privacidade'
-  }
+  const rotasPublicasSemAuth = new Set(['/login', '/privacidade'])
 
   // Visitante → /login (exceto privacidade)
   useEffect(() => {
@@ -3561,24 +3544,24 @@ export default function App() {
     if (utilizador) return
     const params = new URLSearchParams(location.search)
     if (params.get('mode') === 'verifyEmail' && params.get('oobCode')) return
-    if (rotasPublicasSemAuth(location.pathname)) return
-    navigate(pathFromPasso('login', langFromPath(location.pathname) || lang), { replace: true })
-  }, [authCarregando, utilizador, location.pathname, location.search, navigate, lang])
+    const path = (location.pathname || '/').replace(/\/$/, '') || '/'
+    if (rotasPublicasSemAuth.has(path)) return
+    navigate('/login', { replace: true })
+  }, [authCarregando, utilizador, location.pathname, location.search, navigate])
 
-  // Após login: contas existentes → home; contas novas → onboarding
+  // Após login: contas existentes → perfil; contas novas → onboarding (1x)
   useEffect(() => {
-    if (authCarregando) return
+    if (authCarregando || perfilCarregando) return
     const hadUser = prevUserRef.current
     prevUserRef.current = utilizador
     if (!utilizador) return
     if (precisaVerificarEmail(utilizador)) return
 
-    const path = stripLangPrefix(location.pathname).replace(/\/$/, '') || '/'
+    const path = (location.pathname || '/').replace(/\/$/, '') || '/'
     if (path === '/login') {
       setPagamentoMsg(null)
-      const destino = contaConfigurada ? 'home' : 'onboarding'
-      setPasso(destino)
-      navigate(pathFromPasso(destino, lang), { replace: true })
+      navigate(contaConfigurada ? '/home' : '/comecar', { replace: true })
+      if (!contaConfigurada) setPasso('onboarding')
       return
     }
 
@@ -3586,17 +3569,16 @@ export default function App() {
     if (!acabouDeEntrar) return
 
     if (!contaConfigurada) {
-      setPasso('onboarding')
-      navigate(pathFromPasso('onboarding', lang), { replace: true })
+      navigate('/comecar', { replace: true })
       return
     }
 
     const irParaHome = ['/login', '/home', '/', '/inicio', '/perfil'].includes(path)
     if (irParaHome) {
+      navigate('/home', { replace: true })
       setPasso('home')
-      navigate(pathFromPasso('home', lang), { replace: true })
     }
-  }, [authCarregando, utilizador, location.pathname, navigate, contaConfigurada, lang])
+  }, [authCarregando, perfilCarregando, utilizador, location.pathname, navigate, contaConfigurada])
 
   // Rascunho da landing → dados do perfil assim que há sessão (sobrevive à verificação de e-mail)
   useEffect(() => {
@@ -3951,8 +3933,8 @@ export default function App() {
     return p.get('mode') === 'verifyEmail' && Boolean(p.get('oobCode'))
   })()
 
-  // Ecrã de carregamento (auth ou link de verificação a processar)
-  if (authCarregando || linkEmailPendente) {
+  // Ecrã de carregamento (auth, perfil Firestore, ou link de verificação a processar)
+  if (authCarregando || linkEmailPendente || (utilizador && perfilCarregando)) {
     return (
       <div style={{ ...estilos.app, display: 'flex', flexDirection: 'column', minHeight: '100svh' }}>
         <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '24px 20px' }}>
