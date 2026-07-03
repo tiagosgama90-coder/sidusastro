@@ -39,18 +39,36 @@ const CARTA_DESKTOP = {
   diaria: 140,
 }
 
-function tamanhoCartas() {
-  if (typeof window === 'undefined') return CARTA_MOBILE
-  return window.innerWidth >= 900 ? CARTA_DESKTOP : CARTA_MOBILE
+const CARTA_LENORMAND_MOBILE = {
+  revelar: 148,
+  revelarMini: 108,
+  embaralhar: 148,
+  distribuir: 118,
+  diaria: 152,
 }
 
-function useTamanhoCartas() {
-  const [cartas, setCartas] = useState(tamanhoCartas)
+const CARTA_LENORMAND_DESKTOP = {
+  revelar: 138,
+  revelarMini: 100,
+  embaralhar: 140,
+  distribuir: 112,
+  diaria: 140,
+}
+
+function tamanhoCartas(deck = 'tarot') {
+  const mobile = deck === 'lenormand' ? CARTA_LENORMAND_MOBILE : CARTA_MOBILE
+  const desktop = deck === 'lenormand' ? CARTA_LENORMAND_DESKTOP : CARTA_DESKTOP
+  if (typeof window === 'undefined') return mobile
+  return window.innerWidth >= 900 ? desktop : mobile
+}
+
+function useTamanhoCartas(deck = 'tarot') {
+  const [cartas, setCartas] = useState(() => tamanhoCartas(deck))
   useEffect(() => {
-    const onResize = () => setCartas(tamanhoCartas())
+    const onResize = () => setCartas(tamanhoCartas(deck))
     window.addEventListener('resize', onResize)
     return () => window.removeEventListener('resize', onResize)
-  }, [])
+  }, [deck])
   return cartas
 }
 
@@ -327,16 +345,17 @@ export function EcraTarot({ mapaNatal, isPremium, userId, leiturasTarotUsadas = 
     />
   )
 
-  if (embaralhando) return <TelaEmbaralhar t={t} cartaVerso={tipoId === 'cigano' ? LENORMAND_VERSO : MAJOR_ARCANA[0]} />
+  if (embaralhando) return <TelaEmbaralhar t={t} deck={tipoId === 'cigano' ? 'lenormand' : 'tarot'} cartaVerso={tipoId === 'cigano' ? LENORMAND_VERSO : MAJOR_ARCANA[0]} />
 
   if (distribuindo>=0) return (
-    <TelaDistribuir cartas={cartas} posicoes={posicoes} distribuindo={distribuindo} t={t} cartaVerso={tipoId === 'cigano' ? LENORMAND_VERSO : MAJOR_ARCANA[0]} />
+    <TelaDistribuir cartas={cartas} posicoes={posicoes} distribuindo={distribuindo} t={t} deck={tipoId === 'cigano' ? 'lenormand' : 'tarot'} cartaVerso={tipoId === 'cigano' ? LENORMAND_VERSO : MAJOR_ARCANA[0]} />
   )
 
   if (fase==='revelar') return (
     <TelaRevelar cartas={cartas.map(c => localizeArcano(c, lang))} reveladas={reveladas} onRevelar={revelarCarta}
       animarCliqueIdx={animarCliqueIdx}
       posicoes={posicoes} tipo={tipoLabel} lang={lang} t={t} pergunta={pergunta} resultado={resultado}
+      deck={tipoId === 'cigano' ? 'lenormand' : 'tarot'}
       onVoltar={voltar} isPremium={isPremium} onPagar={onPagar}/>
   )
 
@@ -543,9 +562,10 @@ function TelaPergunta({ tipo, pergunta, setPergunta, onVoltar, podeLer, isPremiu
   )
 }
 
-function TelaEmbaralhar({ t, cartaVerso = MAJOR_ARCANA[0] }) {
-  const CARTA = useTamanhoCartas()
-  const h = Math.round(CARTA.embaralhar * 1.6)
+function TelaEmbaralhar({ t, deck = 'tarot', cartaVerso = MAJOR_ARCANA[0] }) {
+  const CARTA = useTamanhoCartas(deck)
+  const aspect = deck === 'lenormand' ? 1.5 : 1.6
+  const h = Math.round(CARTA.embaralhar * aspect)
   const stack = Array.from({ length: 8 })
   return (
     <div style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',minHeight:'50vh',padding:20,gap:20,overflow:'visible'}}>
@@ -602,8 +622,8 @@ function TelaEmbaralhar({ t, cartaVerso = MAJOR_ARCANA[0] }) {
   )
 }
 
-function TelaDistribuir({ cartas, posicoes, distribuindo, t, cartaVerso = MAJOR_ARCANA[0] }) {
-  const CARTA = useTamanhoCartas()
+function TelaDistribuir({ cartas, posicoes, distribuindo, t, deck = 'tarot', cartaVerso = MAJOR_ARCANA[0] }) {
+  const CARTA = useTamanhoCartas(deck)
   return (
     <div style={{padding:'30px 20px',textAlign:'center',overflow:'visible'}}>
       <style>{`@keyframes deal{from{transform:translateY(-60px) scale(0.7);opacity:0}to{transform:translateY(0) scale(1);opacity:1}}`}</style>
@@ -623,8 +643,8 @@ function TelaDistribuir({ cartas, posicoes, distribuindo, t, cartaVerso = MAJOR_
   )
 }
 
-function TelaRevelar({ cartas, reveladas = [], onRevelar, animarCliqueIdx = -1, posicoes = [], tipo, pergunta, resultado, onVoltar, t }) {
-  const CARTA = useTamanhoCartas()
+function TelaRevelar({ cartas, reveladas = [], onRevelar, animarCliqueIdx = -1, posicoes = [], tipo, pergunta, resultado, onVoltar, t, deck = 'tarot' }) {
+  const CARTA = useTamanhoCartas(deck)
   const todasReveladas = reveladas.length > 0 && reveladas.length === cartas.length && reveladas.every(Boolean)
 
   return (

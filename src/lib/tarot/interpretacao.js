@@ -50,6 +50,16 @@ function sinteseElementos(contagem, lang) {
   return pack[dominante[0]] || ''
 }
 
+function sanitizarMarcacaoBold(texto) {
+  if (!texto) return texto
+  return texto.replace(/\*\*([^*]+)\*\*/g, (_, inner) => {
+    const t = inner.trim()
+    const sp = t.indexOf(' ')
+    if (sp === -1) return `${t}-`
+    return `${t.slice(0, sp)}-${t.slice(sp)}`
+  })
+}
+
 function sinteseLenormand(cartas, lang) {
   if (!cartas.length) return ''
   const inicio = cartas[0].nome
@@ -114,7 +124,7 @@ export function interpretarLeitura(cartas, tipoId, pergunta, mapaNatal, lang = '
       : ''
     return {
       resposta: positiva ? tr('tarot.yes') : tr('tarot.no'),
-      detalhe: `${aberturaPergunta(pergunta, lang)}${nuance}\n\n${c.invertida ? c.sombra : c.luz}${justTxt}${astro}`,
+      detalhe: sanitizarMarcacaoBold(`${aberturaPergunta(pergunta, lang)}${nuance}\n\n${c.invertida ? c.sombra : c.luz}${justTxt}${astro}`),
       mensagemAnjos: gerarMensagemAnjos(cartasLocalizadas, mapaNatal, lang),
     }
   }
@@ -191,5 +201,5 @@ export function interpretarLeitura(cartas, tipoId, pergunta, mapaNatal, lang = '
     fecho,
   ].filter(Boolean).join('\n\n')
 
-  return { resposta: null, detalhe, mensagemAnjos }
+  return { resposta: null, detalhe: sanitizarMarcacaoBold(detalhe), mensagemAnjos }
 }

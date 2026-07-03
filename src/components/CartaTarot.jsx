@@ -167,8 +167,10 @@ export function CartaTarot({ carta, size = 110, virada = false, animarFlip = fal
   if (animarFlip) ensureFlipCss()
 
   const w = size
-  const h = Math.round(size * 1.6)
-  const src = virada ? imagemVersoUrl() : imagemCartaUrl(carta)
+  const h = Math.round(size * (carta?.tipo === 'lenormand' ? 1.5 : 1.6))
+  const src = virada
+    ? imagemVersoUrl(carta?.tipo === 'lenormand' ? 'lenormand' : 'tarot')
+    : imagemCartaUrl(carta)
   const showImg = src && imgOk
 
   const outerStyle = {
@@ -195,6 +197,16 @@ export function CartaTarot({ carta, size = 110, virada = false, animarFlip = fal
     WebkitBackfaceVisibility: 'hidden',
   }
 
+  const isLenormand = carta.tipo === 'lenormand'
+  const imgStyle = {
+    width: '100%',
+    height: '100%',
+    objectFit: isLenormand ? 'contain' : 'cover',
+    objectPosition: 'center',
+    display: 'block',
+    background: isLenormand ? '#0a0f18' : undefined,
+  }
+
   const renderFace = () => {
     if (virada) {
       if (!showImg) return <VersoSVG w={w} h={h} />
@@ -207,7 +219,7 @@ export function CartaTarot({ carta, size = 110, virada = false, animarFlip = fal
           loading="eager"
           decoding="async"
           onError={() => setImgOk(false)}
-          style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+          style={imgStyle}
         />
       )
     }
@@ -221,7 +233,7 @@ export function CartaTarot({ carta, size = 110, virada = false, animarFlip = fal
         loading="eager"
         decoding="async"
         onError={() => setImgOk(false)}
-        style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+        style={imgStyle}
       />
     )
   }
