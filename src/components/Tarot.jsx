@@ -25,11 +25,11 @@ const CORES = {
 }
 
 const CARTA_MOBILE = {
-  revelar: 118,
-  revelarMini: 84,
-  embaralhar: 128,
-  distribuir: 100,
-  diaria: 152,
+  revelar: 94,
+  revelarMini: 70,
+  embaralhar: 112,
+  distribuir: 94,
+  diaria: 132,
 }
 
 const CARTA_DESKTOP = {
@@ -682,7 +682,7 @@ function TelaDistribuir({ cartas, posicoes, distribuindo, t, cartaVerso = MAJOR_
   return (
     <div style={{padding:'30px 20px',textAlign:'center',overflow:'visible'}}>
       <style>{`
-        @keyframes deal{from{transform:translateY(-70px) rotate(-12deg) scale(0.65);opacity:0}to{transform:translateY(0) rotate(0deg) scale(1);opacity:1}}
+        @keyframes deal{from{transform:translateY(-36px) rotate(-8deg) scale(0.94);opacity:0}to{transform:translateY(0) rotate(0deg) scale(1);opacity:1}}
         @keyframes dealShuffle{0%,100%{transform:rotate(0deg)}25%{transform:rotate(-6deg)}75%{transform:rotate(5deg)}}
       `}</style>
       <p style={{fontSize:13,color:CORES.brancoMuted,marginBottom:20}}>{t('tarot.dealing')}</p>
