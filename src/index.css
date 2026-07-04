@@ -232,6 +232,10 @@ html.sidus-no-ads .google-auto-placed {
   overflow-y: hidden;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
+  display: flex;
+  justify-content: center;
+  padding-left: clamp(28px, 3.2vw, 44px);
+  padding-right: clamp(36px, 4vw, 52px);
 }
 
 .desktop-nav-scroll::-webkit-scrollbar {
@@ -244,8 +248,8 @@ html.sidus-no-ads .google-auto-placed {
   flex-wrap: nowrap;
   gap: 2px;
   width: max-content;
-  min-width: 100%;
-  padding-right: 24px;
+  margin-inline: auto;
+  padding-right: 8px;
 }
 
 .desktop-nav-item {
