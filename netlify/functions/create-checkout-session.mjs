@@ -20,6 +20,12 @@ const corsHeaders = {
 
 const RETURN_PATH = { premium: '/mapaastral', mapa: '/mapaastral', tarot: '/tarot' }
 const CANCEL_PATH = { premium: '/vip', mapa: '/mapaastral', tarot: '/tarot' }
+const SUPPORTED_LANGS = new Set(['pt', 'en', 'es', 'it', 'de', 'fr'])
+
+function pathComIdioma(basePath, lang) {
+  if (!SUPPORTED_LANGS.has(lang)) return basePath
+  return basePath === '/' ? `/${lang}` : `/${lang}${basePath}`
+}
 
 export default async (req) => {
   if (req.method === 'OPTIONS') {
@@ -31,7 +37,7 @@ export default async (req) => {
 
   try {
     const body = await req.json()
-    const { valor, descricao, userId, userEmail, productType: productTypeRaw, paymentMethod } = body
+    const { valor, descricao, userId, userEmail, productType: productTypeRaw, paymentMethod, lang: langRaw } = body
 
     if (!valor || !descricao || !userId) {
       return new Response(JSON.stringify({ error: 'Parâmetros em falta' }), { status: 400, headers: corsHeaders })
@@ -58,8 +64,8 @@ export default async (req) => {
       paymentMethod: metodo,
     }
 
-    const returnPath = RETURN_PATH[productType] || '/tarot'
-    const cancelPath = CANCEL_PATH[productType] || '/tarot'
+    const returnPath = pathComIdioma(RETURN_PATH[productType] || '/tarot', langRaw)
+    const cancelPath = pathComIdioma(CANCEL_PATH[productType] || '/tarot', langRaw)
 
     const nomeProduto = isPremium
       ? (descricao || 'Sidus VIP - Acesso completo')

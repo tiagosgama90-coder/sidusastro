@@ -11,11 +11,11 @@ const CORES = {
   vidroBorda: 'rgba(223,183,108,0.22)',
 }
 
-async function criarSessaoStripe({ valor, descricao, userId, userEmail, productType, paymentMethod }) {
+async function criarSessaoStripe({ valor, descricao, userId, userEmail, productType, paymentMethod, lang }) {
   const res = await fetch('/api/create-checkout-session', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ valor, descricao, userId, userEmail, productType, paymentMethod }),
+    body: JSON.stringify({ valor, descricao, userId, userEmail, productType, paymentMethod, lang }),
   })
   const data = await res.json().catch(() => ({}))
   if (!res.ok) throw new Error(data.error || 'sessionFail')
@@ -24,7 +24,7 @@ async function criarSessaoStripe({ valor, descricao, userId, userEmail, productT
 }
 
 /** Redireciona para o Stripe Checkout com o método escolhido. */
-export async function iniciarCheckoutStripe({ valor, descricao, userId, userEmail, productType, paymentMethod, onBeforeRedirect }) {
+export async function iniciarCheckoutStripe({ valor, descricao, userId, userEmail, productType, paymentMethod, lang, onBeforeRedirect }) {
   if (!userId) throw new Error('needLogin')
   if (!paymentMethod) throw new Error('selectMethod')
   const tipo = inferProductType(valor, descricao, productType)
@@ -35,12 +35,12 @@ export async function iniciarCheckoutStripe({ valor, descricao, userId, userEmai
     ts: Date.now(),
   }))
   onBeforeRedirect?.()
-  const { url } = await criarSessaoStripe({ valor, descricao, userId, userEmail, productType: tipo, paymentMethod })
+  const { url } = await criarSessaoStripe({ valor, descricao, userId, userEmail, productType: tipo, paymentMethod, lang })
   window.location.assign(url)
 }
 
 export function ModalPagamento({ valor, descricao, userId, userEmail, productType: productTypeProp, onSucesso, onFechar }) {
-  const { t } = useLanguage()
+  const { t, lang } = useLanguage()
   const [processando, setProcessando] = useState(false)
   const [erro, setErro] = useState(null)
 
@@ -84,6 +84,7 @@ export function ModalPagamento({ valor, descricao, userId, userEmail, productTyp
         userEmail,
         productType,
         paymentMethod: metodoActivo.stripeType,
+        lang,
         onBeforeRedirect: () => {
           if (onSucesso) sessionStorage.setItem('sidus_payment_callback', '1')
         },

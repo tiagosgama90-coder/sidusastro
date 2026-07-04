@@ -142,7 +142,15 @@ const POSICOES = {
 }
 
 // ── Componente principal ──────────────────────────────────────────────────────
-export function EcraTarot({ mapaNatal, isPremium, userId, leiturasTarotUsadas = 0, onLeituraGratisUsada, onPagar, onVoltar, onPremium }) {
+function consumirCreditoTarotPago() {
+  if (sessionStorage.getItem('sidus_tarot_paid') === '1') {
+    sessionStorage.removeItem('sidus_tarot_paid')
+    return true
+  }
+  return false
+}
+
+export function EcraTarot({ mapaNatal, isPremium, userId, leiturasTarotUsadas = 0, tarotCreditoPago = false, onTarotCreditoConsumido, onLeituraGratisUsada, onPagar, onVoltar, onPremium }) {
   const { lang, t } = useLanguage()
   const [fase, setFase]           = useState('seleccionar')
   const [tipoId, setTipoId]       = useState(null)
@@ -177,11 +185,10 @@ export function EcraTarot({ mapaNatal, isPremium, userId, leiturasTarotUsadas = 
   }, [])
 
   useEffect(() => {
-    if (sessionStorage.getItem('sidus_tarot_paid') === '1') {
-      sessionStorage.removeItem('sidus_tarot_paid')
+    if (tarotCreditoPago || consumirCreditoTarotPago()) {
       setLeituraPaga(true)
     }
-  }, [])
+  }, [tarotCreditoPago])
 
   useEffect(() => {
     if (fase !== 'diaria-bloqueada' && fase !== 'seleccionar') return undefined
@@ -209,7 +216,6 @@ export function EcraTarot({ mapaNatal, isPremium, userId, leiturasTarotUsadas = 
       setFase('diaria-bloqueada')
       return
     }
-    setLeituraPaga(false)
     setTipoId(t.id)
     setPergunta('')
     setCartas([])
@@ -224,7 +230,10 @@ export function EcraTarot({ mapaNatal, isPremium, userId, leiturasTarotUsadas = 
     if (!tipoAtual?.n) return
     setAIniciarLeitura(true)
     const isDiaria = tipoEscolhidoId === 'diaria'
-    if (!isDiaria && !isPremium && !leituraPaga && podeLerGratis(isPremium, userId, leiturasTarotUsadas)) {
+    if (!isDiaria && !isPremium && leituraPaga) {
+      setLeituraPaga(false)
+      onTarotCreditoConsumido?.()
+    } else if (!isDiaria && !isPremium && !leituraPaga && podeLerGratis(isPremium, userId, leiturasTarotUsadas)) {
       const n = registarLeituraGratis(userId)
       onLeituraGratisUsada?.(n)
       refrescar()
@@ -288,7 +297,7 @@ export function EcraTarot({ mapaNatal, isPremium, userId, leiturasTarotUsadas = 
   }
 
   const voltar = () => {
-    setLeituraPaga(false)
+    if (!tarotCreditoPago) setLeituraPaga(false)
     setAIniciarLeitura(false)
     setFase('seleccionar')
     setTipoId(null)
@@ -345,13 +354,12 @@ export function EcraTarot({ mapaNatal, isPremium, userId, leiturasTarotUsadas = 
 
   if (fase==='pergunta') return (
     <TelaPergunta tipo={tipoLabel} lang={lang} t={t} pergunta={pergunta} setPergunta={setPergunta}
-      onVoltar={voltar} podeLer={podeLer} isPremium={isPremium} restantes={restantes}
+      onVoltar={voltar} podeLer={podeLer} leituraPaga={leituraPaga} isPremium={isPremium} restantes={restantes}
       onPagar={onPagar}
       aIniciarLeitura={aIniciarLeitura}
       onComecar={() => {
         if (aIniciarLeitura) return
-        if (isPremium || podeLer) {
-          setLeituraPaga(false)
+        if (isPremium || podeLer || leituraPaga) {
           comecarEmbaralhar(tipoId)
         } else {
           onPagar(t('tarot.payDesc', { tipo: tipo?.nome || '' }), PRECO_TAROT, () => {
@@ -499,7 +507,8 @@ function TelaSeleccionar({ tipos, onSeleccionar, isPremium, gratisEsgotada, rest
   )
 }
 
-function TelaPergunta({ tipo, pergunta, setPergunta, onVoltar, podeLer, isPremium, restantes, onComecar, onPagar, onComecarPago, onPremium, t, aIniciarLeitura = false }) {
+function TelaPergunta({ tipo, pergunta, setPergunta, onVoltar, podeLer, leituraPaga = false, isPremium, restantes, onComecar, onPagar, onComecarPago, onPremium, t, aIniciarLeitura = false }) {
+  const podeIniciar = isPremium || podeLer || leituraPaga
   const [aPagar, setAPagar] = useState(false)
 
   const handlePagarLeitura = async (e) => {
@@ -540,15 +549,15 @@ function TelaPergunta({ tipo, pergunta, setPergunta, onVoltar, podeLer, isPremiu
         <textarea value={pergunta} onChange={e=>setPergunta(e.target.value)} placeholder={t('tarot.questionPlaceholder')} maxLength={200}
           style={{width:'100%',background:'rgba(255,255,255,0.05)',border:`1px solid rgba(223,183,108,0.2)`,borderRadius:10,color:CORES.branco,fontSize:14,padding:12,resize:'none',height:80,boxSizing:'border-box',outline:'none'}}/>
       </div>
-      {isPremium ? (
-        <button type="button" disabled={aIniciarLeitura} onClick={onComecar} style={{...btnDourado,width:'100%',opacity:aIniciarLeitura?0.7:1}}>
-          {aIniciarLeitura ? t('tarot.shuffling') : t('tarot.shuffleReveal')}
-        </button>
-      ) : podeLer ? (
+      {podeIniciar ? (
         <button type="button" disabled={aIniciarLeitura} onClick={onComecar} style={{...btnDourado,width:'100%',opacity:aIniciarLeitura?0.7:1}}>
           {aIniciarLeitura
             ? t('tarot.shuffling')
-            : (restantes === 1 ? t('tarot.shuffleFree', { count: restantes }) : t('tarot.shuffleFreePlural', { count: restantes }))}
+            : isPremium
+              ? t('tarot.shuffleReveal')
+              : leituraPaga
+                ? t('tarot.shuffleReveal')
+                : (restantes === 1 ? t('tarot.shuffleFree', { count: restantes }) : t('tarot.shuffleFreePlural', { count: restantes }))}
         </button>
       ) : (
         <div style={{background:'rgba(223,183,108,0.06)',border:`1px solid ${CORES.dourado}`,borderRadius:14,padding:20,textAlign:'center',position:'relative',zIndex:1}}>

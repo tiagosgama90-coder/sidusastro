@@ -3312,6 +3312,7 @@ export default function App() {
   const [interpretacaoMapa, setInterpretacaoMapa] = useState(null)
   const [mapaGerado, setMapaGerado] = useState(false) // bloqueio: 1 mapa por utilizador
   const [leiturasTarotUsadas, setLeiturasTarotUsadas] = useState(0)
+  const [tarotCreditoPago, setTarotCreditoPago] = useState(false)
   const [oraclePerguntasUsadas, setOraclePerguntasUsadas] = useState(0)
   const [fotoPerfil, setFotoPerfil] = useState(() => {
     try { return localStorage.getItem('sidus_foto') || null } catch { return null }
@@ -3371,6 +3372,24 @@ export default function App() {
   const oobCodeTratado = useRef(false)
   const passoRef = useRef(passo)
   const paymentVerificadoRef = useRef(new Set())
+
+  const destinoAposPagamento = useCallback((productType) => {
+    if (productType === 'tarot') return 'tarot'
+    if (productType === 'premium' || productType === 'mapa') {
+      return dadosNataisMinimos(dados) ? 'mapa' : 'onboarding'
+    }
+    return 'mapa'
+  }, [dados])
+
+  const productTypePagamentoPendente = useCallback(() => {
+    try {
+      const raw = sessionStorage.getItem('sidus_payment_pending')
+      if (!raw) return null
+      return JSON.parse(raw)?.productType || null
+    } catch {
+      return null
+    }
+  }, [])
   useEffect(() => { passoRef.current = passo }, [passo])
 
   // ── Escuta o estado de autenticação Firebase + perfil em tempo real ─────────
@@ -3705,12 +3724,14 @@ export default function App() {
           if (result.pending) {
             sessionStorage.setItem('sidus_stripe_session', sessionId)
             setPagamentoMsg({ tipo: 'info', texto: t('payment.processing') })
-            navigate(pathFromPasso('mapa', lang), { replace: true })
+            const destino = destinoAposPagamento(productTypePagamentoPendente() || 'mapa')
+            navigate(pathFromPasso(destino, lang), { replace: true })
             return
           }
           paymentVerificadoRef.current.delete(verifyKey)
           setPagamentoMsg({ tipo: 'info', texto: t('payment.processing') })
-          navigate(pathFromPasso('mapa', lang), { replace: true })
+          const destino = destinoAposPagamento(productTypePagamentoPendente() || 'mapa')
+          navigate(pathFromPasso(destino, lang), { replace: true })
           return
         }
 
@@ -3719,18 +3740,19 @@ export default function App() {
         if (result.productType === 'premium') {
           setIsPremium(true)
           setMapaCompleto(true)
-          const destino = dadosNataisMinimos(dados) ? 'mapa' : 'onboarding'
+          const destino = destinoAposPagamento('premium')
           setPasso(destino)
           navigate(pathFromPasso(destino, lang), { replace: true })
           setPagamentoMsg({ tipo: 'sucesso', texto: t('payment.premiumWelcome') })
         } else if (result.productType === 'mapa') {
           setMapaCompleto(true)
-          const destino = dadosNataisMinimos(dados) ? 'mapa' : 'onboarding'
+          const destino = destinoAposPagamento('mapa')
           setPasso(destino)
           navigate(pathFromPasso(destino, lang), { replace: true })
           setPagamentoMsg({ tipo: 'sucesso', texto: t('payment.mapaUnlocked') })
         } else if (result.productType === 'tarot') {
           sessionStorage.setItem('sidus_tarot_paid', '1')
+          setTarotCreditoPago(true)
           setPasso('tarot')
           navigate(pathFromPasso('tarot', lang), { replace: true })
           setPagamentoMsg({ tipo: 'sucesso', texto: t('payment.tarotUnlocked') })
@@ -3746,12 +3768,13 @@ export default function App() {
             ? t('payment.verifyFailUser')
             : t('payment.verifyFail')
         setPagamentoMsg({ tipo: 'erro', texto: msg })
-        navigate(pathFromPasso('mapa', lang), { replace: true })
+        const destino = destinoAposPagamento(productTypePagamentoPendente() || 'mapa')
+        navigate(pathFromPasso(destino, lang), { replace: true })
       }
     }
 
     tentarVerificar()
-  }, [utilizador, authCarregando, location.search, location.pathname, navigate, t, lang, dados])
+  }, [utilizador, authCarregando, location.search, location.pathname, navigate, t, lang, dados, destinoAposPagamento, productTypePagamentoPendente])
 
   // ── Guarda dados natais no Firestore quando o onboarding termina (1x por conta) ──
   const guardarPerfil = useCallback(async (dadosNovos) => {
@@ -4053,7 +4076,7 @@ export default function App() {
       case 'mapa':
         return <MapaAstral mapaNatal={mapaNatal} dados={dados} planetasNascimento={planetasNascimento} mapaDesbloqueado={isPremium || mapaCompleto} isPremium={isPremium} onUpgrade={() => irPara('paywall')} onComprarMapa={() => abrirPagamento(t('mapa.buyDesc'), PRECO_MAPA_COMPLETO, null, { productType: 'mapa' })} onMapaGerado={handleMapaGerado} isDesktop={isDesktop} motorAstro={motorAstro} perfilCarregando={perfilCarregando} reparandoDados={reparandoDados} mapaGerado={mapaGerado} onCompletarNatal={() => irPara('home')} obterIdToken={obterIdTokenOracle} interpretacaoPerfil={interpretacaoMapa} />
       case 'tarot':
-        return <EcraTarot mapaNatal={mapaNatal} isPremium={acessoVip} userId={utilizador?.uid} leiturasTarotUsadas={leiturasTarotUsadas} onLeituraGratisUsada={registarLeituraTarotGratis} onPagar={abrirPagamento} onVoltar={() => irPara('home')} onPremium={() => irPara('paywall')} />
+        return <EcraTarot mapaNatal={mapaNatal} isPremium={acessoVip} userId={utilizador?.uid} leiturasTarotUsadas={leiturasTarotUsadas} tarotCreditoPago={tarotCreditoPago} onTarotCreditoConsumido={() => setTarotCreditoPago(false)} onLeituraGratisUsada={registarLeituraTarotGratis} onPagar={abrirPagamento} onVoltar={() => irPara('home')} onPremium={() => irPara('paywall')} />
       case 'bussola':
         return <BussolaCosmica mapaNatal={mapaNatal} onVoltar={() => irPara('home')} />
       case 'sinastria':
