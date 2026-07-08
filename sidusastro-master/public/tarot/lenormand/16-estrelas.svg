@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 450 720" width="450" height="720">
+
+  <defs>
+    <linearGradient id="gold_16estrelas" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F5E6B8"/><stop offset="40%" stop-color="#DFB76C"/><stop offset="100%" stop-color="#B8944F"/>
+    </linearGradient>
+    <radialGradient id="glow_16estrelas" cx="50%" cy="40%" r="65%">
+      <stop offset="0%" stop-color="rgba(255,220,150,0.35)"/><stop offset="100%" stop-color="rgba(0,0,0,0)"/>
+    </radialGradient>
+    <filter id="soft_16estrelas"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  </defs>
+<rect width="450" height="720" rx="24" fill="#1A0508"/>
+<rect width="450" height="720" rx="24" fill="url(#bg_16estrelas)"/>
+<defs><radialGradient id="bg_16estrelas" cx="50%" cy="38%" r="75%"><stop offset="0%" stop-color="#050818"/><stop offset="50%" stop-color="#0a1030"/><stop offset="100%" stop-color="#101850"/></radialGradient></defs>
+<rect width="450" height="720" rx="24" fill="url(#glow_16estrelas)"/>
+<rect x="6" y="6" width="438" height="708" rx="20" fill="none" stroke="url(#gold_16estrelas)" stroke-width="2.5" opacity="0.75"/>
+
+    <g transform="translate(8,8) scale(1,1)" fill="none" stroke="url(#gold_16estrelas)" stroke-width="2.2" opacity="0.9">
+      <path d="M4,4 C18,2 28,12 22,26 C14,18 4,4 4,4Z"/>
+      <path d="M8,8 C14,6 18,12 14,18" stroke-width="1.2" opacity="0.7"/>
+      <circle cx="20" cy="8" r="2.5" fill="url(#gold_16estrelas)" stroke="none"/>
+    </g>
+    <g transform="translate(442,8) scale(-1,1)" fill="none" stroke="url(#gold_16estrelas)" stroke-width="2.2" opacity="0.9">
+      <path d="M4,4 C18,2 28,12 22,26 C14,18 4,4 4,4Z"/>
+      <path d="M8,8 C14,6 18,12 14,18" stroke-width="1.2" opacity="0.7"/>
+      <circle cx="20" cy="8" r="2.5" fill="url(#gold_16estrelas)" stroke="none"/>
+    </g>
+    <g transform="translate(8,712) scale(1,-1)" fill="none" stroke="url(#gold_16estrelas)" stroke-width="2.2" opacity="0.9">
+      <path d="M4,4 C18,2 28,12 22,26 C14,18 4,4 4,4Z"/>
+      <path d="M8,8 C14,6 18,12 14,18" stroke-width="1.2" opacity="0.7"/>
+      <circle cx="20" cy="8" r="2.5" fill="url(#gold_16estrelas)" stroke="none"/>
+    </g>
+    <g transform="translate(442,712) scale(-1,-1)" fill="none" stroke="url(#gold_16estrelas)" stroke-width="2.2" opacity="0.9">
+      <path d="M4,4 C18,2 28,12 22,26 C14,18 4,4 4,4Z"/>
+      <path d="M8,8 C14,6 18,12 14,18" stroke-width="1.2" opacity="0.7"/>
+      <circle cx="20" cy="8" r="2.5" fill="url(#gold_16estrelas)" stroke="none"/>
+    </g>
+
+    <circle cx="58" cy="58" r="36" fill="url(#gold_16estrelas)" stroke="#B8944F" stroke-width="2"/>
+    <circle cx="58" cy="58" r="28" fill="#4A0E12"/>
+    <text x="58" y="70" text-anchor="middle" fill="#DFB76C" font-family="Georgia,serif" font-size="32" font-weight="bold">16</text>
+<g filter="url(#soft_16estrelas)">
+    <circle cx="225" cy="360" r="100" fill="none" stroke="url(#gold_16estrelas)" stroke-width="2" opacity="0.6"/>
+    <line x1="225" y1="360" x2="225" y2="270" stroke="url(#gold_16estrelas)" stroke-width="3"/>
+        <polygon points="225,255 230,265 240,270 230,275 225,285 220,275 210,270 220,265" fill="#DFB76C"/><line x1="225" y1="360" x2="288.6396103067893" y2="296.3603896932107" stroke="url(#gold_16estrelas)" stroke-width="3"/>
+        <polygon points="288.6396103067893,281.3603896932107 293.6396103067893,291.3603896932107 303.6396103067893,296.3603896932107 293.6396103067893,301.3603896932107 288.6396103067893,311.3603896932107 283.6396103067893,301.3603896932107 273.6396103067893,296.3603896932107 283.6396103067893,291.3603896932107" fill="#DFB76C"/><line x1="225" y1="360" x2="315" y2="360" stroke="url(#gold_16estrelas)" stroke-width="3"/>
+        <polygon points="315,345 320,355 330,360 320,365 315,375 310,365 300,360 310,355" fill="#DFB76C"/><line x1="225" y1="360" x2="288.6396103067893" y2="423.6396103067893" stroke="url(#gold_16estrelas)" stroke-width="3"/>
+        <polygon points="288.6396103067893,408.6396103067893 293.6396103067893,418.6396103067893 303.6396103067893,423.6396103067893 293.6396103067893,428.6396103067893 288.6396103067893,438.6396103067893 283.6396103067893,428.6396103067893 273.6396103067893,423.6396103067893 283.6396103067893,418.6396103067893" fill="#DFB76C"/><line x1="225" y1="360" x2="225" y2="450" stroke="url(#gold_16estrelas)" stroke-width="3"/>
+        <polygon points="225,435 230,445 240,450 230,455 225,465 220,455 210,450 220,445" fill="#DFB76C"/><line x1="225" y1="360" x2="161.36038969321072" y2="423.6396103067893" stroke="url(#gold_16estrelas)" stroke-width="3"/>
+        <polygon points="161.36038969321072,408.6396103067893 166.36038969321072,418.6396103067893 176.36038969321072,423.6396103067893 166.36038969321072,428.6396103067893 161.36038969321072,438.6396103067893 156.36038969321072,428.6396103067893 146.36038969321072,423.6396103067893 156.36038969321072,418.6396103067893" fill="#DFB76C"/><line x1="225" y1="360" x2="135" y2="360" stroke="url(#gold_16estrelas)" stroke-width="3"/>
+        <polygon points="135,345 140,355 150,360 140,365 135,375 130,365 120,360 130,355" fill="#DFB76C"/><line x1="225" y1="360" x2="161.36038969321072" y2="296.3603896932107" stroke="url(#gold_16estrelas)" stroke-width="3"/>
+        <polygon points="161.36038969321072,281.3603896932107 166.36038969321072,291.3603896932107 176.36038969321072,296.3603896932107 166.36038969321072,301.3603896932107 161.36038969321072,311.3603896932107 156.36038969321072,301.3603896932107 146.36038969321072,296.3603896932107 156.36038969321072,291.3603896932107" fill="#DFB76C"/>
+    <circle cx="0" cy="0" r="1" fill="white" opacity="0.3"/><circle cx="73" cy="47" r="2" fill="white" opacity="0.4"/><circle cx="146" cy="94" r="1" fill="white" opacity="0.5"/><circle cx="219" cy="141" r="2" fill="white" opacity="0.6000000000000001"/><circle cx="292" cy="188" r="1" fill="white" opacity="0.7"/><circle cx="365" cy="235" r="2" fill="white" opacity="0.3"/><circle cx="438" cy="282" r="1" fill="white" opacity="0.4"/><circle cx="61" cy="329" r="2" fill="white" opacity="0.5"/><circle cx="134" cy="376" r="1" fill="white" opacity="0.6000000000000001"/><circle cx="207" cy="423" r="2" fill="white" opacity="0.7"/><circle cx="280" cy="470" r="1" fill="white" opacity="0.3"/><circle cx="353" cy="17" r="2" fill="white" opacity="0.4"/><circle cx="426" cy="64" r="1" fill="white" opacity="0.5"/><circle cx="49" cy="111" r="2" fill="white" opacity="0.6000000000000001"/><circle cx="122" cy="158" r="1" fill="white" opacity="0.7"/><circle cx="195" cy="205" r="2" fill="white" opacity="0.3"/><circle cx="268" cy="252" r="1" fill="white" opacity="0.4"/><circle cx="341" cy="299" r="2" fill="white" opacity="0.5"/><circle cx="414" cy="346" r="1" fill="white" opacity="0.6000000000000001"/><circle cx="37" cy="393" r="2" fill="white" opacity="0.7"/><circle cx="110" cy="440" r="1" fill="white" opacity="0.3"/><circle cx="183" cy="487" r="2" fill="white" opacity="0.4"/><circle cx="256" cy="34" r="1" fill="white" opacity="0.5"/><circle cx="329" cy="81" r="2" fill="white" opacity="0.6000000000000001"/><circle cx="402" cy="128" r="1" fill="white" opacity="0.7"/><circle cx="25" cy="175" r="2" fill="white" opacity="0.3"/><circle cx="98" cy="222" r="1" fill="white" opacity="0.4"/><circle cx="171" cy="269" r="2" fill="white" opacity="0.5"/><circle cx="244" cy="316" r="1" fill="white" opacity="0.6000000000000001"/><circle cx="317" cy="363" r="2" fill="white" opacity="0.7"/><circle cx="390" cy="410" r="1" fill="white" opacity="0.3"/><circle cx="13" cy="457" r="2" fill="white" opacity="0.4"/><circle cx="86" cy="4" r="1" fill="white" opacity="0.5"/><circle cx="159" cy="51" r="2" fill="white" opacity="0.6000000000000001"/><circle cx="232" cy="98" r="1" fill="white" opacity="0.7"/><circle cx="305" cy="145" r="2" fill="white" opacity="0.3"/><circle cx="378" cy="192" r="1" fill="white" opacity="0.4"/><circle cx="1" cy="239" r="2" fill="white" opacity="0.5"/><circle cx="74" cy="286" r="1" fill="white" opacity="0.6000000000000001"/><circle cx="147" cy="333" r="2" fill="white" opacity="0.7"/><circle cx="220" cy="380" r="1" fill="white" opacity="0.3"/><circle cx="293" cy="427" r="2" fill="white" opacity="0.4"/><circle cx="366" cy="474" r="1" fill="white" opacity="0.5"/><circle cx="439" cy="21" r="2" fill="white" opacity="0.6000000000000001"/><circle cx="62" cy="68" r="1" fill="white" opacity="0.7"/><circle cx="135" cy="115" r="2" fill="white" opacity="0.3"/><circle cx="208" cy="162" r="1" fill="white" opacity="0.4"/><circle cx="281" cy="209" r="2" fill="white" opacity="0.5"/><circle cx="354" cy="256" r="1" fill="white" opacity="0.6000000000000001"/><circle cx="427" cy="303" r="2" fill="white" opacity="0.7"/><circle cx="50" cy="350" r="1" fill="white" opacity="0.3"/><circle cx="123" cy="397" r="2" fill="white" opacity="0.4"/><circle cx="196" cy="444" r="1" fill="white" opacity="0.5"/><circle cx="269" cy="491" r="2" fill="white" opacity="0.6000000000000001"/><circle cx="342" cy="38" r="1" fill="white" opacity="0.7"/><circle cx="415" cy="85" r="2" fill="white" opacity="0.3"/><circle cx="38" cy="132" r="1" fill="white" opacity="0.4"/><circle cx="111" cy="179" r="2" fill="white" opacity="0.5"/><circle cx="184" cy="226" r="1" fill="white" opacity="0.6000000000000001"/><circle cx="257" cy="273" r="2" fill="white" opacity="0.7"/>
+  </g>
+</svg>

@@ -1,0 +1,1125 @@
+import { useState, useEffect, useRef } from 'react'
+import {
+  Sparkles,
+  Moon,
+  Star,
+  Compass,
+  Heart,
+  Layers,
+  Activity,
+  BookOpen,
+  Crown,
+  Check,
+  Send,
+  ChevronLeft,
+  Home,
+  Map,
+  Grid3x3,
+  MessageCircle,
+  Sun,
+  ArrowUp,
+  MapPin,
+  Loader2,
+  Info,
+} from 'lucide-react'
+import { calcularMapaNatal, formatarDataNascimento } from './lib/astrologia'
+import { pesquisarCidades } from './lib/geocoding'
+
+const CORES = {
+  fundo: '#0B071E',
+  dourado: '#DFB76C',
+  douradoClaro: '#F0D49A',
+  douradoEscuro: '#B8944F',
+  branco: '#FFFFFF',
+  brancoSuave: 'rgba(255, 255, 255, 0.85)',
+  brancoMuted: 'rgba(255, 255, 255, 0.55)',
+  vidro: 'rgba(255, 255, 255, 0.06)',
+  vidroBorda: 'rgba(223, 183, 108, 0.22)',
+  vidroHover: 'rgba(255, 255, 255, 0.1)',
+  roxoClaro: 'rgba(139, 92, 246, 0.15)',
+  sombra: '0 8px 32px rgba(0, 0, 0, 0.45)',
+  sombraDourada: '0 4px 24px rgba(223, 183, 108, 0.25)',
+}
+
+const estilos = {
+  app: {
+    minHeight: '100svh',
+    width: '100%',
+    maxWidth: 430,
+    margin: '0 auto',
+    background: `radial-gradient(ellipse at 20% 0%, rgba(88, 28, 135, 0.35) 0%, transparent 55%),
+      radial-gradient(ellipse at 80% 100%, rgba(67, 56, 202, 0.2) 0%, transparent 50%),
+      ${CORES.fundo}`,
+    color: CORES.branco,
+    fontFamily: "'Segoe UI', system-ui, -apple-system, sans-serif",
+    position: 'relative',
+    overflow: 'hidden',
+    display: 'flex',
+    flexDirection: 'column',
+    boxSizing: 'border-box',
+  },
+  estrelas: {
+    position: 'absolute',
+    inset: 0,
+    pointerEvents: 'none',
+    backgroundImage: `
+      radial-gradient(1px 1px at 10% 15%, rgba(255,255,255,0.5) 0%, transparent 100%),
+      radial-gradient(1px 1px at 25% 45%, rgba(255,255,255,0.3) 0%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 45% 8%, rgba(223,183,108,0.6) 0%, transparent 100%),
+      radial-gradient(1px 1px at 60% 70%, rgba(255,255,255,0.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 75% 25%, rgba(255,255,255,0.35) 0%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 90% 55%, rgba(223,183,108,0.5) 0%, transparent 100%),
+      radial-gradient(1px 1px at 15% 80%, rgba(255,255,255,0.25) 0%, transparent 100%),
+      radial-gradient(1px 1px at 85% 90%, rgba(255,255,255,0.3) 0%, transparent 100%)
+    `,
+    zIndex: 0,
+  },
+  conteudo: {
+    flex: 1,
+    overflowY: 'auto',
+    padding: '24px 20px',
+    paddingBottom: 100,
+    position: 'relative',
+    zIndex: 1,
+    textAlign: 'left',
+  },
+  vidro: {
+    background: CORES.vidro,
+    backdropFilter: 'blur(16px)',
+    WebkitBackdropFilter: 'blur(16px)',
+    border: `1px solid ${CORES.vidroBorda}`,
+    borderRadius: 16,
+    boxShadow: CORES.sombra,
+  },
+  input: {
+    width: '100%',
+    padding: '14px 16px',
+    background: 'rgba(255, 255, 255, 0.04)',
+    border: `1px solid ${CORES.vidroBorda}`,
+    borderRadius: 12,
+    color: CORES.branco,
+    fontSize: 15,
+    outline: 'none',
+    boxSizing: 'border-box',
+    transition: 'border-color 0.2s, box-shadow 0.2s',
+  },
+  label: {
+    display: 'block',
+    fontSize: 12,
+    fontWeight: 600,
+    letterSpacing: '0.08em',
+    textTransform: 'uppercase',
+    color: CORES.dourado,
+    marginBottom: 8,
+  },
+  botaoDourado: {
+    width: '100%',
+    padding: '16px 24px',
+    background: `linear-gradient(135deg, ${CORES.dourado} 0%, ${CORES.douradoEscuro} 100%)`,
+    border: 'none',
+    borderRadius: 14,
+    color: CORES.fundo,
+    fontSize: 16,
+    fontWeight: 700,
+    letterSpacing: '0.04em',
+    cursor: 'pointer',
+    boxShadow: CORES.sombraDourada,
+    transition: 'transform 0.15s, box-shadow 0.15s',
+  },
+  titulo: {
+    fontSize: 28,
+    fontWeight: 300,
+    letterSpacing: '0.12em',
+    textTransform: 'uppercase',
+    color: CORES.dourado,
+    margin: 0,
+    textAlign: 'center',
+  },
+  subtitulo: {
+    fontSize: 13,
+    color: CORES.brancoMuted,
+    textAlign: 'center',
+    marginTop: 8,
+    marginBottom: 32,
+    letterSpacing: '0.05em',
+  },
+  navbar: {
+    position: 'fixed',
+    bottom: 0,
+    left: '50%',
+    transform: 'translateX(-50%)',
+    width: '100%',
+    maxWidth: 430,
+    display: 'flex',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    padding: '12px 8px 20px',
+    background: 'rgba(11, 7, 30, 0.92)',
+    backdropFilter: 'blur(20px)',
+    WebkitBackdropFilter: 'blur(20px)',
+    borderTop: `1px solid ${CORES.vidroBorda}`,
+    zIndex: 100,
+    boxSizing: 'border-box',
+  },
+  navBtn: (ativo) => ({
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    gap: 4,
+    background: 'none',
+    border: 'none',
+    cursor: 'pointer',
+    padding: '6px 12px',
+    borderRadius: 12,
+    color: ativo ? CORES.dourado : CORES.brancoMuted,
+    transition: 'color 0.2s',
+  }),
+  navLabel: (ativo) => ({
+    fontSize: 10,
+    fontWeight: ativo ? 700 : 500,
+    letterSpacing: '0.06em',
+    textTransform: 'uppercase',
+  }),
+}
+
+const ASPECTOS_ATIVOS = [
+  { planeta: 'Sol ☉', aspecto: 'Trígono', alvo: 'Júpiter ♃', orbe: '2°' },
+  { planeta: 'Vénus ♀', aspecto: 'Sextil', alvo: 'Marte ♂', orbe: '1.5°' },
+  { planeta: 'Lua ☽', aspecto: 'Conjunção', alvo: 'Plutão ♇', orbe: '0.8°' },
+]
+
+const FERRAMENTAS = [
+  { id: 'bussola', nome: 'Bússola Cósmica 2026', icon: Compass, premium: true },
+  { id: 'sinastria', nome: 'Radar de Afinidades', sub: 'Sinastria', icon: Heart, premium: true },
+  { id: 'tarot', nome: 'Arcanos Virtuais', sub: 'Tarot', icon: Layers, premium: true },
+  { id: 'biorritmo', nome: 'Fluxo Vital', sub: 'Biorritmo', icon: Activity, premium: false },
+  { id: 'diario', nome: 'Diário Astral', icon: BookOpen, premium: false },
+]
+
+const BENEFICIOS_VIP = [
+  'Bússola Cósmica 2026 com previsões mensais',
+  'Radar de Afinidades e Sinastria completa',
+  'Leituras diárias dos Arcanos Virtuais',
+  'Chat ilimitado com o Astrólogo IA',
+  'Alertas de trânsitos planetários em tempo real',
+]
+
+const MENSAGENS_DEMO_CHAT = 'As respostas do chat são simuladas. A IA astróloga completa estará disponível em breve.'
+
+function criarMensagensIniciais(nome, mapaNatal) {
+  const saudacao = nome ? `, ${nome}` : ''
+  const base = [
+    {
+      id: 1,
+      autor: 'ia',
+      texto: `Bem-vindo ao Oráculo Sidus${saudacao}. Sou o teu astrólogo pessoal — as estrelas sussurram segredos apenas a quem sabe ouvir. ✨`,
+    },
+  ]
+
+  if (!mapaNatal) {
+    return [
+      ...base,
+      {
+        id: 2,
+        autor: 'ia',
+        texto: 'Completa o registo com data, hora e cidade reais para eu analisar o teu mapa natal.',
+      },
+    ]
+  }
+
+  const { solar, lunar, ascendente } = mapaNatal
+  return [
+    ...base,
+    {
+      id: 2,
+      autor: 'ia',
+      texto: `Analisei o teu mapa: Sol em ${solar.nome} ${solar.simbolo}, Lua em ${lunar.nome} ${lunar.simbolo}, Ascendente em ${ascendente.nome} ${ascendente.simbolo}. O que desejas explorar?`,
+    },
+    {
+      id: 3,
+      autor: 'user',
+      texto: `O que significa ter o Sol em ${solar.nome} e a Lua em ${lunar.nome}?`,
+    },
+    {
+      id: 4,
+      autor: 'ia',
+      texto: `Com base no teu mapa calculado: o Sol em ${solar.nome} marca a tua essência (${solar.elemento}), e a Lua em ${lunar.nome} colore as tuas emoções. Com Ascendente em ${ascendente.nome}, projetas ${ascendente.elemento} no mundo. 🌟`,
+      demo: true,
+    },
+  ]
+}
+
+const DATA_MAXIMA = new Date().toISOString().slice(0, 10)
+
+function validarHora24(hora) {
+  return /^([01]\d|2[0-3]):([0-5]\d)$/.test(hora)
+}
+
+function validarDataNascimento(data) {
+  if (!data) return false
+  if (data > DATA_MAXIMA) return false
+  const ano = parseInt(data.slice(0, 4), 10)
+  return ano <= 2026
+}
+
+function validarOnboarding(dados) {
+  const erros = {}
+
+  if (!dados.nome.trim()) {
+    erros.nome = 'O nome é obrigatório.'
+  }
+
+  if (!dados.data) {
+    erros.data = 'A data de nascimento é obrigatória.'
+  } else if (!validarDataNascimento(dados.data)) {
+    erros.data = 'A data não pode ser futura nem posterior a 2026.'
+  }
+
+  if (!dados.hora) {
+    erros.hora = 'A hora exata é obrigatória.'
+  } else if (!validarHora24(dados.hora)) {
+    erros.hora = 'Usa o formato de 24 horas (HH:MM).'
+  }
+
+  if (!dados.cidade.trim()) {
+    erros.cidade = 'A cidade de nascimento é obrigatória.'
+  } else if (!dados.localizacao) {
+    erros.cidade = 'Seleciona uma cidade válida na lista de sugestões.'
+  }
+
+  return erros
+}
+
+function Aviso({ tipo = 'demo', children }) {
+  const estilosAviso = {
+    demo: {
+      background: 'rgba(251, 191, 36, 0.08)',
+      border: '1px solid rgba(251, 191, 36, 0.35)',
+      color: '#FCD34D',
+    },
+    calculado: {
+      background: 'rgba(74, 222, 128, 0.08)',
+      border: '1px solid rgba(74, 222, 128, 0.35)',
+      color: '#4ADE80',
+    },
+    info: {
+      background: 'rgba(147, 197, 253, 0.08)',
+      border: '1px solid rgba(147, 197, 253, 0.35)',
+      color: '#93C5FD',
+    },
+  }
+  const s = estilosAviso[tipo] || estilosAviso.demo
+
+  return (
+    <div style={{
+      ...s,
+      borderRadius: 10,
+      padding: '10px 12px',
+      fontSize: 12,
+      lineHeight: 1.5,
+      display: 'flex',
+      gap: 8,
+      alignItems: 'flex-start',
+      marginBottom: 16,
+    }}>
+      <Info size={14} style={{ flexShrink: 0, marginTop: 2 }} />
+      <span>{children}</span>
+    </div>
+  )
+}
+
+function EtiquetaFonte({ fonte }) {
+  const calculado = fonte === 'efemérides'
+  return (
+    <span style={{
+      fontSize: 9,
+      fontWeight: 700,
+      letterSpacing: '0.08em',
+      textTransform: 'uppercase',
+      padding: '3px 8px',
+      borderRadius: 6,
+      background: calculado ? 'rgba(74, 222, 128, 0.12)' : 'rgba(251, 191, 36, 0.12)',
+      color: calculado ? '#4ADE80' : '#FCD34D',
+      border: `1px solid ${calculado ? 'rgba(74, 222, 128, 0.35)' : 'rgba(251, 191, 36, 0.35)'}`,
+    }}>
+      {calculado ? 'Calculado' : 'Ilustrativo'}
+    </span>
+  )
+}
+
+function CampoCidade({ valor, localizacao, onChange, onSelect, erro, onBlur }) {
+  const [sugestoes, setSugestoes] = useState([])
+  const [aPesquisar, setAPesquisar] = useState(false)
+  const [aberto, setAberto] = useState(false)
+  const [erroRede, setErroRede] = useState(null)
+  const containerRef = useRef(null)
+
+  useEffect(() => {
+    if (!valor || valor.length < 2 || localizacao?.nome === valor) {
+      setSugestoes([])
+      return undefined
+    }
+
+    const timer = setTimeout(async () => {
+      setAPesquisar(true)
+      setErroRede(null)
+      try {
+        const resultados = await pesquisarCidades(valor)
+        setSugestoes(resultados)
+        setAberto(resultados.length > 0)
+      } catch {
+        setErroRede('Erro ao pesquisar. Verifica a ligação à internet.')
+        setSugestoes([])
+      } finally {
+        setAPesquisar(false)
+      }
+    }, 450)
+
+    return () => clearTimeout(timer)
+  }, [valor, localizacao])
+
+  useEffect(() => {
+    const fechar = (e) => {
+      if (containerRef.current && !containerRef.current.contains(e.target)) {
+        setAberto(false)
+      }
+    }
+    document.addEventListener('mousedown', fechar)
+    return () => document.removeEventListener('mousedown', fechar)
+  }, [])
+
+  const selecionar = (item) => {
+    onSelect(item)
+    setAberto(false)
+    setSugestoes([])
+  }
+
+  return (
+    <div ref={containerRef} style={{ marginBottom: 20, position: 'relative' }}>
+      <label style={estilos.label}>Cidade de Nascimento</label>
+      <div style={{ position: 'relative' }}>
+        <input
+          type="text"
+          value={valor}
+          onChange={(e) => onChange(e.target.value)}
+          onFocus={() => sugestoes.length > 0 && setAberto(true)}
+          onBlur={onBlur}
+          placeholder="Escreve e seleciona da lista — ex: Lisboa"
+          autoComplete="off"
+          style={{
+            ...estilos.input,
+            paddingRight: 40,
+            borderColor: erro ? 'rgba(248, 113, 113, 0.65)' : localizacao ? 'rgba(74, 222, 128, 0.45)' : CORES.vidroBorda,
+          }}
+        />
+        <div style={{ position: 'absolute', right: 14, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }}>
+          {aPesquisar ? (
+            <Loader2 size={18} color={CORES.dourado} style={{ animation: 'spin 1s linear infinite' }} />
+          ) : localizacao ? (
+            <Check size={18} color="#4ADE80" />
+          ) : (
+            <MapPin size={18} color={CORES.brancoMuted} />
+          )}
+        </div>
+      </div>
+
+      {localizacao && !erro && (
+        <p style={{ margin: '6px 0 0', fontSize: 11, color: '#4ADE80' }}>
+          ✓ {localizacao.lat.toFixed(2)}°, {localizacao.lon.toFixed(2)}°
+        </p>
+      )}
+      {erro && <p style={{ margin: '6px 0 0', fontSize: 12, color: '#F87171' }}>{erro}</p>}
+      {erroRede && <p style={{ margin: '6px 0 0', fontSize: 12, color: '#F87171' }}>{erroRede}</p>}
+
+      {aberto && sugestoes.length > 0 && (
+        <ul style={{
+          position: 'absolute',
+          top: '100%',
+          left: 0,
+          right: 0,
+          margin: '4px 0 0',
+          padding: 4,
+          listStyle: 'none',
+          background: 'rgba(11, 7, 30, 0.98)',
+          border: `1px solid ${CORES.vidroBorda}`,
+          borderRadius: 12,
+          boxShadow: CORES.sombra,
+          zIndex: 50,
+          maxHeight: 200,
+          overflowY: 'auto',
+        }}>
+          {sugestoes.map((s) => (
+            <li key={s.placeId}>
+              <button
+                type="button"
+                onMouseDown={(e) => e.preventDefault()}
+                onClick={() => selecionar(s)}
+                style={{
+                  width: '100%',
+                  padding: '10px 12px',
+                  background: 'none',
+                  border: 'none',
+                  borderRadius: 8,
+                  color: CORES.brancoSuave,
+                  fontSize: 13,
+                  textAlign: 'left',
+                  cursor: 'pointer',
+                }}
+              >
+                <MapPin size={12} color={CORES.dourado} style={{ display: 'inline', marginRight: 6, verticalAlign: 'middle' }} />
+                {s.nome}
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  )
+}
+
+function Campo({ label, tipo = 'text', valor, onChange, placeholder, erro, max, onBlur }) {
+  return (
+    <div style={{ marginBottom: 20 }}>
+      <label style={estilos.label}>{label}</label>
+      <input
+        type={tipo}
+        value={valor}
+        onChange={(e) => onChange(e.target.value)}
+        onBlur={onBlur}
+        placeholder={placeholder}
+        max={max}
+        style={{
+          ...estilos.input,
+          borderColor: erro ? 'rgba(248, 113, 113, 0.65)' : CORES.vidroBorda,
+        }}
+      />
+      {erro && (
+        <p style={{ margin: '6px 0 0', fontSize: 12, color: '#F87171' }}>{erro}</p>
+      )}
+    </div>
+  )
+}
+
+function Onboarding({ dados, setDados, onSubmit }) {
+  const [tocado, setTocado] = useState({})
+
+  const erros = validarOnboarding(dados)
+  const formularioValido = Object.keys(erros).length === 0
+
+  const marcarTocado = (campo) => () => setTocado((t) => ({ ...t, [campo]: true }))
+  const mostrarErro = (campo) => (tocado[campo] ? erros[campo] : null)
+
+  const handleSubmit = () => {
+    setTocado({ nome: true, data: true, hora: true, cidade: true })
+    if (formularioValido) onSubmit()
+  }
+
+  return (
+    <div style={{ ...estilos.conteudo, paddingTop: 48, paddingBottom: 40 }}>
+      <div style={{ textAlign: 'center', marginBottom: 40 }}>
+        <Sparkles size={40} color={CORES.dourado} strokeWidth={1.5} style={{ marginBottom: 16 }} />
+        <h1 style={{ ...estilos.titulo, fontSize: 36, letterSpacing: '0.2em' }}>Sidus</h1>
+        <p style={estilos.subtitulo}>Revela os segredos escritos nas estrelas no momento do teu nascimento</p>
+      </div>
+
+      <Aviso tipo="info">
+        A cidade tem de ser escolhida da lista (coordenadas reais). O mapa astral é calculado com efemérides astronómicas.
+      </Aviso>
+
+      <div style={{ ...estilos.vidro, padding: 24 }}>
+        <Campo
+          label="Nome"
+          valor={dados.nome}
+          onChange={(v) => setDados({ ...dados, nome: v })}
+          onBlur={marcarTocado('nome')}
+          erro={mostrarErro('nome')}
+          placeholder="O teu nome cósmico"
+        />
+        <Campo
+          label="Data de Nascimento"
+          tipo="date"
+          valor={dados.data}
+          onChange={(v) => setDados({ ...dados, data: v })}
+          onBlur={marcarTocado('data')}
+          erro={mostrarErro('data')}
+          max={DATA_MAXIMA}
+        />
+        <Campo
+          label="Hora Exata"
+          tipo="time"
+          valor={dados.hora}
+          onChange={(v) => setDados({ ...dados, hora: v })}
+          onBlur={marcarTocado('hora')}
+          erro={mostrarErro('hora')}
+        />
+        <CampoCidade
+          valor={dados.cidade}
+          localizacao={dados.localizacao}
+          onChange={(v) => setDados({ ...dados, cidade: v, localizacao: null })}
+          onSelect={(loc) => setDados({ ...dados, cidade: loc.nome, localizacao: loc })}
+          onBlur={marcarTocado('cidade')}
+          erro={mostrarErro('cidade')}
+        />
+
+        <button
+          type="button"
+          disabled={!formularioValido}
+          style={{
+            ...estilos.botaoDourado,
+            marginTop: 8,
+            opacity: formularioValido ? 1 : 0.45,
+            cursor: formularioValido ? 'pointer' : 'not-allowed',
+            boxShadow: formularioValido ? CORES.sombraDourada : 'none',
+          }}
+          onClick={handleSubmit}
+        >
+          Calcular o Meu Destino
+        </button>
+      </div>
+    </div>
+  )
+}
+
+function Dashboard({ nome, mapaNatal, dados, onOraculo }) {
+  return (
+    <div style={estilos.conteudo}>
+      <header style={{ textAlign: 'center', marginBottom: 28 }}>
+        <h1 style={estilos.titulo}>Sidus</h1>
+        {nome && (
+          <p style={{ ...estilos.subtitulo, marginBottom: 0, marginTop: 4 }}>
+            Bem-vindo, <span style={{ color: CORES.dourado }}>{nome}</span>
+          </p>
+        )}
+      </header>
+
+      {mapaNatal ? (
+        <div style={{ ...estilos.vidro, padding: 24, marginBottom: 20, border: '1px solid rgba(74, 222, 128, 0.35)' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+              <Sun size={20} color={CORES.dourado} />
+              <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: CORES.dourado }}>
+                O Teu Mapa Natal
+              </span>
+            </div>
+            <EtiquetaFonte fonte="efemérides" />
+          </div>
+          <h2 style={{ margin: '0 0 8px', fontSize: 20, fontWeight: 600, color: CORES.branco }}>
+            Sol em {mapaNatal.solar.nome} {mapaNatal.solar.simbolo} · Lua em {mapaNatal.lunar.nome} {mapaNatal.lunar.simbolo}
+          </h2>
+          <p style={{ margin: 0, fontSize: 13, color: CORES.brancoMuted, lineHeight: 1.5 }}>
+            Nascimento: {formatarDataNascimento(dados.data)} às {dados.hora} · {dados.cidade.split(',')[0]}
+          </p>
+        </div>
+      ) : (
+        <Aviso tipo="info">
+          Completa o registo para ver o teu mapa natal calculado.
+        </Aviso>
+      )}
+
+      <Aviso tipo="demo">
+        O painel «Céu de Hoje» e os aspetos abaixo são dados ilustrativos. O céu em tempo real será ligado numa próxima versão.
+      </Aviso>
+
+      <div style={{ ...estilos.vidro, padding: 24, marginBottom: 20, position: 'relative', overflow: 'hidden', opacity: 0.85 }}>
+        <div style={{
+          position: 'absolute', top: -30, right: -30, width: 120, height: 120,
+          background: 'radial-gradient(circle, rgba(223,183,108,0.15) 0%, transparent 70%)',
+          borderRadius: '50%',
+        }} />
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <Moon size={22} color={CORES.dourado} />
+            <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: CORES.dourado }}>
+              Céu de Hoje
+            </span>
+          </div>
+          <EtiquetaFonte fonte="ilustrativo" />
+        </div>
+        <h2 style={{ margin: '0 0 8px', fontSize: 22, fontWeight: 600, color: CORES.branco }}>
+          Lua Cheia em Escorpião
+        </h2>
+        <p style={{ margin: 0, fontSize: 14, lineHeight: 1.6, color: CORES.brancoMuted }}>
+          Energia transformadora e profunda. Momento ideal para introspeção, cura emocional e revelar verdades ocultas.
+        </p>
+      </div>
+
+      <div style={{ ...estilos.vidro, padding: 20, marginBottom: 20, opacity: 0.85 }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <Star size={18} color={CORES.dourado} />
+            <span style={{ fontSize: 13, fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase', color: CORES.brancoSuave }}>
+              Aspetos Ativos do Momento
+            </span>
+          </div>
+          <EtiquetaFonte fonte="ilustrativo" />
+        </div>
+        {ASPECTOS_ATIVOS.map((a, i) => (
+          <div
+            key={i}
+            style={{
+              display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+              padding: '12px 0',
+              borderBottom: i < ASPECTOS_ATIVOS.length - 1 ? `1px solid ${CORES.vidroBorda}` : 'none',
+            }}
+          >
+            <div>
+              <span style={{ fontSize: 14, color: CORES.branco }}>{a.planeta}</span>
+              <span style={{ fontSize: 13, color: CORES.dourado, margin: '0 6px' }}>{a.aspecto}</span>
+              <span style={{ fontSize: 14, color: CORES.brancoMuted }}>{a.alvo}</span>
+            </div>
+            <span style={{ fontSize: 11, color: CORES.brancoMuted, fontFamily: 'monospace' }}>{a.orbe}</span>
+          </div>
+        ))}
+      </div>
+
+      <button
+        type="button"
+        onClick={onOraculo}
+        style={{
+          ...estilos.vidro,
+          width: '100%',
+          padding: 20,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          cursor: 'pointer',
+          border: `1px solid ${CORES.dourado}`,
+          background: 'rgba(223, 183, 108, 0.08)',
+        }}
+      >
+        <div style={{ textAlign: 'left' }}>
+          <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: CORES.dourado, marginBottom: 4 }}>
+            Oráculo do Dia
+          </div>
+          <div style={{ fontSize: 15, color: CORES.branco }}>Consulta o Astrólogo IA</div>
+        </div>
+        <MessageCircle size={24} color={CORES.dourado} />
+      </button>
+    </div>
+  )
+}
+
+function MapaAstral({ mapaNatal, dados }) {
+  if (!mapaNatal) {
+    return (
+      <div style={estilos.conteudo}>
+        <header style={{ marginBottom: 28 }}>
+          <h1 style={{ ...estilos.titulo, textAlign: 'left', fontSize: 22 }}>Mapa Astral</h1>
+        </header>
+        <Aviso tipo="info">
+          Ainda não há mapa calculado. Volta ao registo e preenche data, hora e uma cidade válida.
+        </Aviso>
+      </div>
+    )
+  }
+
+  const pilares = [
+    { titulo: 'Signo Solar', ...mapaNatal.solar, icon: Sun },
+    { titulo: 'Signo Lunar', ...mapaNatal.lunar, icon: Moon },
+    { titulo: 'Ascendente', ...mapaNatal.ascendente, icon: ArrowUp },
+  ]
+
+  return (
+    <div style={estilos.conteudo}>
+      <header style={{ marginBottom: 28 }}>
+        <h1 style={{ ...estilos.titulo, textAlign: 'left', fontSize: 22 }}>Mapa Astral</h1>
+        <p style={{ ...estilos.subtitulo, textAlign: 'left', marginBottom: 0 }}>
+          Calculado para {formatarDataNascimento(dados.data)} às {dados.hora}
+        </p>
+      </header>
+
+      <Aviso tipo="calculado">
+        Sol, Lua e Ascendente calculados com efemérides (astronomy-engine). A hora local é convertida via longitude do local de nascimento.
+      </Aviso>
+
+      <div style={{
+        ...estilos.vidro,
+        padding: 32,
+        marginBottom: 24,
+        textAlign: 'center',
+        background: 'linear-gradient(180deg, rgba(223,183,108,0.08) 0%, rgba(255,255,255,0.04) 100%)',
+      }}>
+        <div style={{
+          width: 160, height: 160, margin: '0 auto 16px',
+          borderRadius: '50%',
+          border: `2px solid ${CORES.vidroBorda}`,
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          background: 'radial-gradient(circle, rgba(139,92,246,0.2) 0%, transparent 70%)',
+          position: 'relative',
+        }}>
+          <span style={{ fontSize: 64, filter: 'drop-shadow(0 0 12px rgba(223,183,108,0.4))' }}>☉</span>
+          <span style={{ position: 'absolute', top: 12, right: 28, fontSize: 20 }}>{mapaNatal.solar.simbolo}</span>
+          <span style={{ position: 'absolute', bottom: 20, left: 20, fontSize: 18 }}>{mapaNatal.lunar.simbolo}</span>
+          <span style={{ position: 'absolute', top: 50, left: 8, fontSize: 16 }}>{mapaNatal.ascendente.simbolo}</span>
+        </div>
+        <p style={{ margin: 0, fontSize: 12, color: CORES.brancoMuted, letterSpacing: '0.08em', textTransform: 'uppercase' }}>
+          Roda Natal — Dados Reais
+        </p>
+      </div>
+
+      {pilares.map((p, i) => {
+        const Icon = p.icon
+        return (
+          <div key={i} style={{ ...estilos.vidro, padding: 20, marginBottom: 14, display: 'flex', gap: 16, alignItems: 'center' }}>
+            <div style={{
+              width: 52, height: 52, borderRadius: 14,
+              background: CORES.roxoClaro,
+              border: `1px solid ${CORES.vidroBorda}`,
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              fontSize: 24,
+            }}>
+              {p.simbolo}
+            </div>
+            <div style={{ flex: 1 }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <Icon size={14} color={CORES.dourado} />
+                  <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: CORES.dourado }}>
+                    {p.titulo}
+                  </span>
+                </div>
+                <EtiquetaFonte fonte={p.fonte} />
+              </div>
+              <div style={{ fontSize: 20, fontWeight: 600, color: CORES.branco, marginBottom: 4 }}>{p.nome}</div>
+              <div style={{ fontSize: 13, color: CORES.brancoMuted, lineHeight: 1.4 }}>{p.descricao}</div>
+            </div>
+          </div>
+        )
+      })}
+    </div>
+  )
+}
+
+function Ferramentas({ onFerramenta }) {
+  return (
+    <div style={estilos.conteudo}>
+      <header style={{ marginBottom: 28 }}>
+        <h1 style={{ ...estilos.titulo, textAlign: 'left', fontSize: 22 }}>Ferramentas Ocultas</h1>
+        <p style={{ ...estilos.subtitulo, textAlign: 'left', marginBottom: 0 }}>
+          Instrumentos místicos para desvendar o cosmos
+        </p>
+      </header>
+
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+        {FERRAMENTAS.map((f) => {
+          const Icon = f.icon
+          return (
+            <button
+              key={f.id}
+              type="button"
+              onClick={() => onFerramenta(f)}
+              style={{
+                ...estilos.vidro,
+                padding: '18px 20px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 16,
+                cursor: 'pointer',
+                textAlign: 'left',
+                width: '100%',
+                transition: 'background 0.2s',
+              }}
+            >
+              <div style={{
+                width: 48, height: 48, borderRadius: 12,
+                background: f.premium ? 'rgba(223, 183, 108, 0.12)' : CORES.roxoClaro,
+                border: `1px solid ${f.premium ? CORES.dourado : CORES.vidroBorda}`,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+              }}>
+                <Icon size={22} color={f.premium ? CORES.dourado : CORES.brancoSuave} strokeWidth={1.5} />
+              </div>
+              <div style={{ flex: 1 }}>
+                <div style={{ fontSize: 15, fontWeight: 600, color: CORES.branco }}>{f.nome}</div>
+                {f.sub && <div style={{ fontSize: 12, color: CORES.brancoMuted, marginTop: 2 }}>{f.sub}</div>}
+              </div>
+              {f.premium && (
+                <Crown size={16} color={CORES.dourado} style={{ opacity: 0.7 }} />
+              )}
+            </button>
+          )
+        })}
+      </div>
+    </div>
+  )
+}
+
+function Paywall({ onVoltar }) {
+  return (
+    <div style={{ ...estilos.conteudo, paddingTop: 16 }}>
+      <button
+        type="button"
+        onClick={onVoltar}
+        style={{
+          display: 'flex', alignItems: 'center', gap: 6,
+          background: 'none', border: 'none', color: CORES.dourado,
+          cursor: 'pointer', padding: '8px 0', marginBottom: 20, fontSize: 14,
+        }}
+      >
+        <ChevronLeft size={20} />
+        Voltar
+      </button>
+
+      <div style={{ textAlign: 'center', marginBottom: 32 }}>
+        <div style={{
+          width: 72, height: 72, margin: '0 auto 20px', borderRadius: '50%',
+          background: 'linear-gradient(135deg, rgba(223,183,108,0.25) 0%, rgba(223,183,108,0.05) 100%)',
+          border: `2px solid ${CORES.dourado}`,
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+        }}>
+          <Crown size={32} color={CORES.dourado} />
+        </div>
+        <h1 style={{ ...estilos.titulo, fontSize: 24, marginBottom: 8 }}>Sidus VIP</h1>
+        <p style={{ ...estilos.subtitulo, marginBottom: 0 }}>
+          Desbloqueia o poder completo das ferramentas ocultas
+        </p>
+      </div>
+
+      <div style={{ ...estilos.vidro, padding: 24, marginBottom: 24 }}>
+        {BENEFICIOS_VIP.map((b, i) => (
+          <div key={i} style={{ display: 'flex', gap: 12, alignItems: 'flex-start', marginBottom: i < BENEFICIOS_VIP.length - 1 ? 16 : 0 }}>
+            <div style={{
+              width: 22, height: 22, borderRadius: '50%', flexShrink: 0,
+              background: 'rgba(223, 183, 108, 0.15)',
+              border: `1px solid ${CORES.dourado}`,
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+            }}>
+              <Check size={12} color={CORES.dourado} strokeWidth={3} />
+            </div>
+            <span style={{ fontSize: 14, color: CORES.brancoSuave, lineHeight: 1.5 }}>{b}</span>
+          </div>
+        ))}
+      </div>
+
+      <div style={{
+        ...estilos.vidro,
+        padding: 28,
+        textAlign: 'center',
+        border: `1px solid ${CORES.dourado}`,
+        background: 'rgba(223, 183, 108, 0.06)',
+        marginBottom: 20,
+      }}>
+        <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: CORES.dourado, marginBottom: 8 }}>
+          Acesso Ilimitado
+        </div>
+        <div style={{ fontSize: 42, fontWeight: 700, color: CORES.branco, lineHeight: 1 }}>
+          4,99 €
+          <span style={{ fontSize: 16, fontWeight: 400, color: CORES.brancoMuted }}> / mês</span>
+        </div>
+        <p style={{ margin: '12px 0 0', fontSize: 13, color: CORES.brancoMuted }}>
+          Cancela quando quiseres. Sem compromisso.
+        </p>
+      </div>
+
+      <button type="button" style={estilos.botaoDourado}>
+        Tornar-me VIP Agora
+      </button>
+    </div>
+  )
+}
+
+function Chat({ nome, mapaNatal }) {
+  const [mensagens, setMensagens] = useState(() => criarMensagensIniciais(nome, mapaNatal))
+  const [texto, setTexto] = useState('')
+
+  const enviar = () => {
+    if (!texto.trim()) return
+    const nova = { id: Date.now(), autor: 'user', texto: texto.trim() }
+    setMensagens((prev) => [...prev, nova])
+    setTexto('')
+    setTimeout(() => {
+      const resposta = mapaNatal
+        ? `Com o teu Sol em ${mapaNatal.solar.nome} e Lua em ${mapaNatal.lunar.nome}, essa pergunta merece uma análise profunda — mas ainda estou em modo demonstração. A IA completa chegará em breve. 🌙`
+        : 'Completa primeiro o teu registo com dados reais para eu poder analisar o teu mapa. 🌙'
+      setMensagens((prev) => [
+        ...prev,
+        { id: Date.now() + 1, autor: 'ia', texto: resposta, demo: true },
+      ])
+    }, 1200)
+  }
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100svh', maxHeight: '100svh', position: 'relative', zIndex: 1 }}>
+      <header style={{
+        padding: '16px 20px',
+        background: 'rgba(11, 7, 30, 0.95)',
+        backdropFilter: 'blur(12px)',
+        borderBottom: `1px solid ${CORES.vidroBorda}`,
+        display: 'flex',
+        alignItems: 'center',
+        gap: 12,
+        flexShrink: 0,
+      }}>
+        <div style={{
+          width: 42, height: 42, borderRadius: '50%',
+          background: 'linear-gradient(135deg, rgba(223,183,108,0.3) 0%, rgba(139,92,246,0.3) 100%)',
+          border: `1px solid ${CORES.vidroBorda}`,
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+        }}>
+          <Sparkles size={20} color={CORES.dourado} />
+        </div>
+        <div style={{ flex: 1 }}>
+          <div style={{ fontSize: 15, fontWeight: 600, color: CORES.branco }}>Astrólogo IA</div>
+          <div style={{ fontSize: 12, color: '#4ADE80' }}>● Online · Modo demonstração</div>
+        </div>
+      </header>
+
+      <div style={{ padding: '8px 16px 0', flexShrink: 0 }}>
+        <Aviso tipo="demo">{MENSAGENS_DEMO_CHAT}</Aviso>
+      </div>
+
+      <div style={{
+        flex: 1,
+        overflowY: 'auto',
+        padding: '16px 16px 8px',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 8,
+        background: `repeating-linear-gradient(
+          135deg,
+          transparent,
+          transparent 40px,
+          rgba(255,255,255,0.01) 40px,
+          rgba(255,255,255,0.01) 41px
+        ), ${CORES.fundo}`,
+      }}>
+        {mensagens.map((m) => (
+          <div
+            key={m.id}
+            style={{
+              alignSelf: m.autor === 'user' ? 'flex-end' : 'flex-start',
+              maxWidth: '82%',
+              padding: '10px 14px',
+              borderRadius: m.autor === 'user' ? '16px 16px 4px 16px' : '16px 16px 16px 4px',
+              background: m.autor === 'user'
+                ? 'rgba(223, 183, 108, 0.18)'
+                : 'rgba(255, 255, 255, 0.07)',
+              border: `1px solid ${m.autor === 'user' ? 'rgba(223, 183, 108, 0.3)' : CORES.vidroBorda}`,
+              fontSize: 14,
+              lineHeight: 1.5,
+              color: CORES.brancoSuave,
+            }}
+          >
+            {m.texto}
+          </div>
+        ))}
+      </div>
+
+      <div style={{
+        padding: '12px 16px 20px',
+        background: 'rgba(11, 7, 30, 0.95)',
+        borderTop: `1px solid ${CORES.vidroBorda}`,
+        display: 'flex',
+        gap: 10,
+        alignItems: 'center',
+        flexShrink: 0,
+      }}>
+        <input
+          type="text"
+          value={texto}
+          onChange={(e) => setTexto(e.target.value)}
+          onKeyDown={(e) => e.key === 'Enter' && enviar()}
+          placeholder="Escreve a tua pergunta..."
+          style={{ ...estilos.input, flex: 1, borderRadius: 24, padding: '12px 18px' }}
+        />
+        <button
+          type="button"
+          onClick={enviar}
+          style={{
+            width: 44, height: 44, borderRadius: '50%', border: 'none',
+            background: `linear-gradient(135deg, ${CORES.dourado} 0%, ${CORES.douradoEscuro} 100%)`,
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            cursor: 'pointer', flexShrink: 0,
+          }}
+        >
+          <Send size={18} color={CORES.fundo} />
+        </button>
+      </div>
+    </div>
+  )
+}
+
+function Navbar({ passo, setPasso }) {
+  const itens = [
+    { id: 'dashboard', label: 'Início', icon: Home },
+    { id: 'mapa', label: 'Mapa', icon: Map },
+    { id: 'ferramentas', label: 'Ferramentas', icon: Grid3x3 },
+    { id: 'chat', label: 'Chat', icon: MessageCircle },
+  ]
+
+  return (
+    <nav style={estilos.navbar}>
+      {itens.map((item) => {
+        const Icon = item.icon
+        const ativo = passo === item.id
+        return (
+          <button
+            key={item.id}
+            type="button"
+            onClick={() => setPasso(item.id)}
+            style={estilos.navBtn(ativo)}
+          >
+            <Icon size={22} strokeWidth={ativo ? 2.2 : 1.5} />
+            <span style={estilos.navLabel(ativo)}>{item.label}</span>
+          </button>
+        )
+      })}
+    </nav>
+  )
+}
+
+export default function App() {
+  const [passo, setPasso] = useState('onboarding')
+  const [dados, setDados] = useState({ nome: '', data: '', hora: '', cidade: '', localizacao: null })
+  const [mapaNatal, setMapaNatal] = useState(null)
+
+  const handleOnboarding = () => {
+    const erros = validarOnboarding(dados)
+    if (Object.keys(erros).length === 0) {
+      const mapa = calcularMapaNatal(dados)
+      setMapaNatal(mapa)
+      setPasso('dashboard')
+    }
+  }
+
+  const handleFerramenta = (f) => {
+    if (f.premium) {
+      setPasso('paywall')
+    }
+  }
+
+  const mostrarNavbar = passo !== 'onboarding' && passo !== 'paywall'
+  const chatFullScreen = passo === 'chat'
+
+  const renderEcran = () => {
+    switch (passo) {
+      case 'onboarding':
+        return <Onboarding dados={dados} setDados={setDados} onSubmit={handleOnboarding} />
+      case 'dashboard':
+        return <Dashboard nome={dados.nome} mapaNatal={mapaNatal} dados={dados} onOraculo={() => setPasso('chat')} />
+      case 'mapa':
+        return <MapaAstral mapaNatal={mapaNatal} dados={dados} />
+      case 'ferramentas':
+        return <Ferramentas onFerramenta={handleFerramenta} />
+      case 'paywall':
+        return <Paywall onVoltar={() => setPasso('ferramentas')} />
+      case 'chat':
+        return <Chat nome={dados.nome} mapaNatal={mapaNatal} />
+      default:
+        return <Dashboard nome={dados.nome} mapaNatal={mapaNatal} dados={dados} onOraculo={() => setPasso('chat')} />
+    }
+  }
+
+  return (
+    <div style={estilos.app}>
+      <div style={estilos.estrelas} />
+      {chatFullScreen ? (
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', position: 'relative', zIndex: 1, paddingBottom: 72 }}>
+          {renderEcran()}
+        </div>
+      ) : (
+        renderEcran()
+      )}
+      {mostrarNavbar && <Navbar passo={passo} setPasso={setPasso} />}
+    </div>
+  )
+}

@@ -1,0 +1,61 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+  # ca-pub-... é público (index.html + AdSense) - não falhar scan de "secrets"
+  environment = { SECRETS_SCAN_OMIT_KEYS = "VITE_ADSENSE_CLIENT" }
+
+[context.production.environment]
+  VITE_GA_MEASUREMENT_ID = "G-18FPC8HYE8"
+  VITE_ADSENSE_CLIENT = "ca-pub-2807052149540484"
+  VITE_ADSENSE_SLOT = "7205155875"
+
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
+  # firebase-admin usa ficheiros dinâmicos — não pode ser inlined pelo esbuild
+  external_node_modules = ["firebase-admin", "@google-cloud/firestore", "google-auth-library"]
+
+[[headers]]
+  for = "/index.html"
+  [headers.values]
+    Cache-Control = "no-cache, no-store, must-revalidate"
+
+[[headers]]
+  for = "/"
+  [headers.values]
+    Cache-Control = "no-cache, no-store, must-revalidate"
+
+[[headers]]
+  for = "/ads.txt"
+  [headers.values]
+    Content-Type = "text/plain; charset=utf-8"
+    Cache-Control = "public, max-age=86400"
+
+[[headers]]
+  for = "/tarot/mystic/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/tarot/lenormand/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+    X-XSS-Protection = "1; mode=block"
+
+[[headers]]
+  for = "/api/*"
+  [headers.values]
+    Cache-Control = "no-store"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
