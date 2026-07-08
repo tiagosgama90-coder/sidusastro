@@ -1,0 +1,35 @@
+# Imagens Google Ads - Sidus Astro
+
+Pasta para campanhas Google Ads / Meta Ads.
+
+## Ficheiros
+
+| Ficheiro | Uso | Proporção |
+|----------|-----|-----------|
+| `logo-sidus-1200.png` | **Logótipo** da conta / extensões | 1:1 quadrado |
+| `banner-paisagem-1200x628.png` | Imagem **paisagem** (Display, Performance Max) | 1,91:1 |
+| `quadrado-site-1200.png` | Imagem **quadrada** (feed, remarketing) | 1:1 |
+
+## Logótipo SVG (site)
+
+`public/favicon.svg` - estrela dourada + SIDUS (mesmo estilo da navbar).
+
+## Google Ads - onde carregar
+
+1. **Ferramentas → Biblioteca → Logótipo da empresa** → `logo-sidus-1200.png`
+2. **Campanha → Recursos → Imagens** → banner + quadrado
+3. URL final: `https://sidusastro.com`
+
+## Screenshots reais do site (recomendado)
+
+Para anúncios mais autênticos, tira no telemóvel ou PC:
+
+1. Abre https://sidusastro.com
+2. **Win + Shift + S** (Windows) ou screenshot telemóvel
+3. Captura: homepage, mapa natal, chat Oráculo Sidus
+4. Redimensiona em https://www.canva.com (grátis) para 1200×628 e 1200×1200
+
+## Cores da marca
+
+- Fundo: `#0B071E`
+- Dourado: `#DFB76C`
