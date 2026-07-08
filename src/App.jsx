@@ -46,7 +46,6 @@ import { ConteudoDinamicoSidus } from './components/ConteudoDinamicoSidus'
 import { LandingCosmicBackground } from './components/LandingCosmicBackground.jsx'
 import { LandingBirthPortal } from './components/LandingBirthPortal.jsx'
 import { LandingFaq } from './components/LandingFaq.jsx'
-import { LandingGuides } from './components/LandingGuides.jsx'
 import { LandingPortalHero } from './components/LandingPortalHero.jsx'
 import { LandingSkyLive } from './components/LandingSkyLive.jsx'
 import { LandingTestimonials } from './components/LandingTestimonials.jsx'
@@ -1594,7 +1593,6 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
       </div>
       <LandingTestimonials />
       <LandingFaq />
-      <LandingGuides />
     </div>
   )
 }
