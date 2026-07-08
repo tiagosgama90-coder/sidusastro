@@ -3039,9 +3039,6 @@ function RodapeSidus({ isDesktop, mostrarNavbar }) {
         {t('footer.tagline')}
       </p>
       <p style={{ margin: '10px 0 0', fontSize: isDesktop ? 11 : 10 }}>
-        <a href="/guia/mapa-astral.html" style={{ color: 'rgba(255,255,255,0.35)', textDecoration: 'underline', marginRight: 12 }}>
-          {t('footer.guides')}
-        </a>
         <a
           href="/privacidade"
           style={{ color: 'rgba(255,255,255,0.35)', textDecoration: 'underline' }}

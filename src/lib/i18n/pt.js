@@ -423,6 +423,7 @@ export default {
   },
   footer: {
     tagline: '© 2026 Sidus Astro. Portais e caminhos revelados através do Tarot e da Astrologia. Todos os direitos reservados.',
+    guides: 'Guias',
     privacy: 'Política de Privacidade',
   },
   tarot: {

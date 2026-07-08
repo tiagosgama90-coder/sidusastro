@@ -17,18 +17,25 @@ html {
 
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  background: var(--bg);
+  background:
+    radial-gradient(circle at top left, rgba(223, 183, 108, 0.14), transparent 34%),
+    linear-gradient(135deg, #030818 0%, #090b1d 45%, #0b071e 100%);
   color: var(--text);
   line-height: 1.7;
   font-size: 16px;
+  min-height: 100vh;
 }
 
 a { color: var(--gold); }
 
 .guia-wrap {
-  max-width: 720px;
+  max-width: 760px;
   margin: 0 auto;
   padding: 24px 20px 48px;
+  background: rgba(7, 5, 20, 0.8);
+  border: 1px solid rgba(223, 183, 108, 0.16);
+  border-radius: 24px;
+  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.28);
 }
 
 .guia-header {
@@ -44,6 +51,33 @@ a { color: var(--gold); }
   letter-spacing: 0.2em;
   color: var(--gold);
   text-decoration: none;
+}
+
+.guia-lang {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+
+.guia-lang a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(223, 183, 108, 0.18);
+  font-size: 12px;
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.guia-lang a:hover,
+.guia-lang a[aria-current="page"] {
+  color: var(--gold);
+  border-color: rgba(223, 183, 108, 0.4);
 }
 
 .guia-nav {
@@ -149,3 +183,32 @@ h1 {
 }
 
 .guia-footer a { color: rgba(255, 255, 255, 0.5); }
+
+@media (max-width: 640px) {
+  .guia-wrap {
+    padding: 18px 16px 40px;
+  }
+
+  .guia-header {
+    padding-top: 20px;
+  }
+
+  .guia-logo {
+    font-size: 18px;
+  }
+
+  .guia-nav {
+    gap: 8px 12px;
+    font-size: 12px;
+  }
+
+  .guia-lang {
+    margin-top: 10px;
+    gap: 6px;
+  }
+
+  .guia-lang a {
+    padding: 5px 8px;
+    font-size: 11px;
+  }
+}

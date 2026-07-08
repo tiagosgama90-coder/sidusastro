@@ -101,8 +101,25 @@ export default {
         a2: "Es un chat seguro impulsado por inteligencia artificial centrado en la orientación astrológica: amor, carrera, tránsitos et tu carta natal.",
         q3: "¿Están seguros mis datos de nacimiento?",
         a3: "Sí, tus datos se procesan cifrados a través de Firebase.",
-        q4: "¿Cuál es la diferencia entre la carta única et Premium?",
-        a4: "El gráfico único es un pago único: obtiene el informe completo en PDF sin suscripción mensual.Sidus Premium incluye la carta natal completa más oráculo de IA, tarot, sinastría et todas las herramientas.Si quieres algo más que PDF, Premium es la mejor opción."
+        q4: "Quelle est la différence entre le thème unique et Premium ?",
+        a4: "Le thème unique est un paiement unique : vous obtenez le rapport PDF complet sans abonnement mensuel. Sidus Premium inclut le thème natal complet plus oracle IA, tarot, synastrie et tous les outils. Si vous voulez plus que le PDF, Premium est le meilleur choix.",
+        q5: "La mandala astrologique est-elle calculée pour chaque personne ?",
+        a5: "Oui. Chaque roue est générée en temps réel avec Swiss Ephemeris à partir de la date, heure et lieu exacts de naissance - planètes, maisons Placidus, aspects et angles (ASC/MC) avec précision d'éphémérides professionnelles.",
+        q6: "Ai-je besoin de l'heure exacte de naissance ?",
+        a6: "Pour un Ascendant, des maisons et une Lune précis, oui. Sans heure exacte, nous calculons quand même le Soleil et les planètes lentes ; la mandala et le thème complet utilisent l'heure que vous indiquerez."
+      },
+      guides: {
+        ariaLabel: "Guides astrologiques Sidus",
+        title: "Guides pour commencer",
+        lead: "Apprends les bases avant d'explorer ta carte.",
+        mapaTitle: "Qu'est-ce qu'une carte astrale ?",
+        mapaDesc: "Soleil, Lune, Ascendant et les 12 maisons expliqués.",
+        ascendenteTitle: "Ascendant et maisons",
+        ascendenteDesc: "Comment l'heure de naissance façonne la roue.",
+        signosTitle: "Signes du zodiaque",
+        signosDesc: "Éléments, modalités et archétypes.",
+        tarotTitle: "Tarot et carte natale",
+        tarotDesc: "Comment croiser les cartes avec ton ciel de naissance."
       },
       testimonials: {
         ariaLabel: 'Témoignages utilisateurs Sidusastro',
@@ -183,8 +200,8 @@ export default {
     sentManual: "E-mail de confirmación enviado a {email}.Revisa tu bandeja de entrada et carpeta de spam.",
     checkSpam: "¡Cuenta creada!Enviamos un correo electrónico de confirmación a {email}.Revisa tu bandeja de entrada et también tu carpeta de spam ou basura antes de continuar.",
     spamReminder: "📬 Revisa tu bandeja de entrada et carpeta de spam ou basura.El correo electrónico de confirmación puede tardar unos minutos en llegar.",
-    confirmedAuto: "✦ ¡E-mail confirmado!Tu cuenta está activa.",
-    confirmedLogin: "E-mail confirmado.Inicia sesión con tu correo electrónico et contraseña para continuar.",
+    confirmedAuto: "✦ ¡E-mail confirmé!Tu cuenta está activa.",
+    confirmedLogin: "E-mail confirmé.Inicia sesión con tu correo electrónico et contraseña para continuar.",
     confirmBtn: "He confirmado - continuar",
     resendBtn: "Reenviar correo electrónico de confirmación",
     googleNote: "¿Has iniciado sesión con Google?Esta verificación no se aplica; comuníquese con el soporte técnico si ve esta pantalla por error.",
@@ -447,7 +464,8 @@ export default {
     verified: "Verificada"
   },
   footer: {
-    tagline: "© 2026 Sidus Astro.Portales et caminos revelados a través del Tarot et la Astrología.Reservados todos los derechos.",
+    tagline: "© 2026 Sidus Astro. Portes et chemins révélés par le Tarot et l’Astrologie. Tous droits réservés.",
+    guides: "Guides",
     privacy: "Politique de confidentialité"
   },
   tarot: {
@@ -456,11 +474,11 @@ export default {
     desc: "6 barajas · lectura personalizada con tu carta natal",
     freeExhausted: "3 lecturas gratuitas agotadas",
     freeRemaining: "{count} lectura gratuita",
-    freeRemainingPlural: "{count} lecturas gratuitas",
+    freeRemainingPlural: "{count} lecturas gratuites",
     thenPaid: "· 2€ por lectura ou Premium 9,99€/mes",
     thenPaidShort: "· luego 2€ ou Premium",
     paidOption: "✗ Pagado · 2 € ou Premium",
-    includedFree: "✓ Incluido en {max} lecturas gratuitas",
+    includedFree: "✓ Incluido en {max} lecturas gratuites",
     cards: "tarjeta {n}",
     cardsPlural: "{n} tarjetas",
     questionLabel: "¿Cuál es tu pregunta?(opcional)",

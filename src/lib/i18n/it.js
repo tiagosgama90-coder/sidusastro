@@ -102,7 +102,24 @@ export default {
         "q3": "I miei dati di nascita sono al sicuro?",
         "a3": "Sì, i tuoi dati vengono elaborati crittografati tramite Firebase.",
         "q4": "Qual è la differenza tra il grafico One-off e quello Premium?",
-        "a4": "Il grafico una tantum prevede un pagamento unico: riceverai il report PDF completo senza abbonamento mensile.Sidus Premium include la carta natale completa più oracolo AI, tarocchi, sinastria e tutti gli strumenti.Se vuoi qualcosa di più del PDF, Premium è la scelta migliore."
+        "a4": "Il grafico una tantum prevede un pagamento unico: riceverai il report PDF completo senza abbonamento mensile.Sidus Premium include la carta natale completa più oracolo AI, tarocchi, sinastria e tutti gli strumenti.Se vuoi qualcosa di più del PDF, Premium è la scelta migliore.",
+        "q5": "La mandala astrologica viene calcolata per ogni persona?",
+        "a5": "Sì. Ogni ruota viene generata in tempo reale con Swiss Ephemeris a partire dalla data, ora e luogo esatti di nascita - pianeti, case Placidus, aspetti e angoli (ASC/MC) con precisione di efemeridi professionali.",
+        "q6": "Ho bisogno dell'ora esatta di nascita?",
+        "a6": "Per Ascendente, case e Luna precisi, sì. Senza ora esatta calcoliamo comunque Sole e pianeti lenti; la mandala e il tema completo usano l'ora che indicherai."
+      },
+      "guides": {
+        "ariaLabel": "Guide astrologiche Sidus",
+        "title": "Guide per iniziare",
+        "lead": "Impara le basi prima di esplorare la tua carta.",
+        "mapaTitle": "Cos'è la carta astrale?",
+        "mapaDesc": "Sole, Luna, Ascendente e le 12 case spiegate.",
+        "ascendenteTitle": "Ascendente e case",
+        "ascendenteDesc": "Come l'ora di nascita definisce la ruota.",
+        "signosTitle": "Segni zodiacali",
+        "signosDesc": "Elementi, modalità e archetipi.",
+        "tarotTitle": "Tarocchi e carta natale",
+        "tarotDesc": "Come incrociare le carte con il tuo cielo di nascita."
       },
       "testimonials": {
         "ariaLabel": "Testimonianze utenti Sidusastro",

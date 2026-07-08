@@ -102,7 +102,24 @@ export default {
         "q3": "Sind meine Geburtsdaten sicher?",
         "a3": "Ja – Ihre Daten werden verschlüsselt über Firebase verarbeitet.",
         "q4": "Was ist der Unterschied zwischen dem Einmal-Chart und Premium?",
-        "a4": "Das einmalige Diagramm ist eine einmalige Zahlung – Sie erhalten den vollständigen PDF-Bericht ohne monatliches Abonnement.Sidus Premium enthält das vollständige Geburtshoroskop sowie KI-Orakel, Tarot, Synastrie und alle Tools.Wenn Sie mehr als das PDF wollen, ist Premium die beste Wahl."
+        "a4": "Das einmalige Diagramm ist eine einmalige Zahlung – Sie erhalten den vollständigen PDF-Bericht ohne monatliches Abonnement.Sidus Premium enthält das vollständige Geburtshoroskop sowie KI-Orakel, Tarot, Synastrie und alle Tools.Wenn Sie mehr als das PDF wollen, ist Premium die beste Wahl.",
+        "q5": "Wird die astrologische Mandala für jede Person berechnet?",
+        "a5": "Ja. Jedes Rad wird in Echtzeit mit Swiss Ephemeris aus dem genauen Geburtsdatum, der Geburtszeit und dem Geburtsort generiert – Planeten, Placidus-Häuser, Aspekte und Winkel (ASC/MC) mit professioneller Ephemeriden-Präzision.",
+        "q6": "Brauche ich die genaue Geburtszeit?",
+        "a6": "Für genaue Aszendent, Häuser und Mond, ja. Ohne genaue Zeit berechnen wir dennoch Sonne und langsame Planeten; die Mandala und das vollständige Horoskop verwenden die von dir angegebene Zeit."
+      },
+      "guides": {
+        "ariaLabel": "Astrologische Leitfäden von Sidus",
+        "title": "Leitfäden zum Einstieg",
+        "lead": "Lerne die Grundlagen, bevor du dein Chart erkundest.",
+        "mapaTitle": "Was ist eine Sternkarte?",
+        "mapaDesc": "Sonne, Mond, Aszendent und die 12 Häuser erklärt.",
+        "ascendenteTitle": "Aszendent und Häuser",
+        "ascendenteDesc": "Wie die Geburtszeit das Rad formt.",
+        "signosTitle": "Tierkreiszeichen",
+        "signosDesc": "Elemente, Modi und Archetypen.",
+        "tarotTitle": "Tarot und Geburtshoroskop",
+        "tarotDesc": "Wie Karten mit deinem Geburtshimmel verknüpft werden."
       },
       "testimonials": {
         "ariaLabel": "Sidusastro Nutzerstimmen",

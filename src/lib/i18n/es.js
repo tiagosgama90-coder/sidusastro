@@ -102,7 +102,24 @@ export default {
         "q3": "¿Están seguros mis datos de nacimiento?",
         "a3": "Sí, tus datos se procesan cifrados a través de Firebase.",
         "q4": "¿Cuál es la diferencia entre la carta única y Premium?",
-        "a4": "El gráfico único es un pago único: obtiene el informe completo en PDF sin suscripción mensual.Sidus Premium incluye la carta natal completa más oráculo de IA, tarot, sinastría y todas las herramientas.Si quieres algo más que PDF, Premium es la mejor opción."
+        "a4": "El gráfico único es un pago único: obtiene el informe completo en PDF sin suscripción mensual.Sidus Premium incluye la carta natal completa más oráculo de IA, tarot, sinastría y todas las herramientas.Si quieres algo más que PDF, Premium es la mejor opción.",
+        "q5": "¿Se calcula la mandala astrológica para cada persona?",
+        "a5": "Sí. Cada rueda se genera en tiempo real con Swiss Ephemeris a partir de la fecha, hora y lugar exactos de nacimiento - planetas, casas Placidus, aspectos y ángulos (ASC/MC) con precisión de efemérides profesionales.",
+        "q6": "¿Necesito la hora exacta de nacimiento?",
+        "a6": "Para Ascendente, casas y Luna precisos, sí. Sin hora exacta aún calculamos Sol y planetas lentos; la mandala y el mapa completo usan la hora que indiques."
+      },
+      "guides": {
+        "ariaLabel": "Guías astrológicas de Sidus",
+        "title": "Guías para empezar",
+        "lead": "Aprende lo básico antes de explorar tu carta.",
+        "mapaTitle": "¿Qué es la carta astral?",
+        "mapaDesc": "Sol, Luna, Ascendente y las 12 casas explicadas.",
+        "ascendenteTitle": "Ascendente y casas",
+        "ascendenteDesc": "Cómo la hora de nacimiento define la rueda.",
+        "signosTitle": "Signos del zodíaco",
+        "signosDesc": "Elementos, modalidades y arquetipos.",
+        "tarotTitle": "Tarot y carta natal",
+        "tarotDesc": "Cómo cruzar cartas con tu cielo de nacimiento."
       },
       "testimonials": {
         "ariaLabel": "Testimonios de usuarios de Sidusastro",
