@@ -64,6 +64,7 @@ export function CampoCidadeField({ label, valor, localizacao, onChange, onSelect
       <div style={{ position: 'relative' }}>
         <input
           value={valor}
+          translate="no"
           onChange={(e) => onChange(e.target.value)}
           onFocus={() => sugestoes.length > 0 && setAberto(true)}
           placeholder={placeholder}
@@ -88,6 +89,7 @@ export function CampoCidadeField({ label, valor, localizacao, onChange, onSelect
             <li key={s.placeId}>
               <button
                 type="button"
+                translate="no"
                 onPointerDown={(e) => { e.preventDefault(); onSelect(s); setAberto(false) }}
                 style={{
                   width: '100%', background: 'none', border: 'none', color: CORES.brancoSuave,
