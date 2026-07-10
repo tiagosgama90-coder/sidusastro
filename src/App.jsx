@@ -3044,6 +3044,23 @@ function RodapeSidus({ isDesktop, mostrarNavbar }) {
           {t('footer.privacy')}
         </a>
       </p>
+      {/* Badge BuySellStartups - visível no footer para utilizadores */}
+      <div style={{ marginTop: 12 }}>
+        <a
+          href="https://buysellstartups.com/listings/ai-astrology-tarot-saas-swiss-ephemeris-wasm-pre-revenue-asset-sale-mrcn1aua"
+          target="_blank"
+          rel="noopener"
+          style={{ display: 'inline-block', opacity: 0.7 }}
+        >
+          <img
+            src="https://buysellstartups.com/api/badge/ai-astrology-tarot-saas-swiss-ephemeris-wasm-pre-revenue-asset-sale-mrcn1aua"
+            alt="For Sale on Buy Sell Startups"
+            width="280"
+            height="68"
+            style={{ maxWidth: '100%', height: 'auto' }}
+          />
+        </a>
+      </div>
     </footer>
   )
 }
