@@ -93,20 +93,20 @@ function CampoDataPortal({ valor, onChange, onBlur, erro, t }) {
   const mini = { ...inputStyle, borderColor: borda, textAlign: 'center', padding: '13px 6px' }
 
   return (
-    <div className="landing-portal-field">
+    <div className="landing-portal-field notranslate" translate="no">
       <label style={labelStyle}>{t('onboarding.birthDate')}</label>
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 12px 1fr 12px 1.4fr', alignItems: 'center' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 12px 1fr 12px 1.4fr', alignItems: 'center' }} translate="no">
         <input ref={diaRef} inputMode="numeric" maxLength={2} placeholder="DD" value={dia}
           onChange={(e) => { const d = e.target.value.replace(/\D/g, '').slice(0, 2); setDia(d); if (d.length === 2) mesRef.current?.focus() }}
-          onBlur={onBlur} style={mini} className="landing-portal-input" />
+          onBlur={onBlur} style={mini} className="landing-portal-input notranslate" translate="no" />
         <span style={{ textAlign: 'center', color: CORES.brancoMuted, fontSize: 18 }}>/</span>
         <input ref={mesRef} inputMode="numeric" maxLength={2} placeholder="MM" value={mes}
           onChange={(e) => { const m = e.target.value.replace(/\D/g, '').slice(0, 2); setMes(m); if (m.length === 2) anoRef.current?.focus() }}
-          onBlur={onBlur} style={mini} className="landing-portal-input" />
+          onBlur={onBlur} style={mini} className="landing-portal-input notranslate" translate="no" />
         <span style={{ textAlign: 'center', color: CORES.brancoMuted, fontSize: 18 }}>/</span>
         <input ref={anoRef} inputMode="numeric" maxLength={4} placeholder="AAAA" value={ano}
           onChange={(e) => setAno(e.target.value.replace(/\D/g, '').slice(0, 4))}
-          onBlur={onBlur} style={mini} className="landing-portal-input" />
+          onBlur={onBlur} style={mini} className="landing-portal-input notranslate" translate="no" />
       </div>
       {erro && <p style={{ margin: '6px 0 0', fontSize: 12, color: '#F87171' }}>{erro}</p>}
     </div>
@@ -143,21 +143,22 @@ function CampoCidadePortal({ valor, localizacao, onChange, onSelect, erro, onBlu
   }, [])
 
   return (
-    <div ref={containerRef} className="landing-portal-field" style={{ position: 'relative' }}>
+    <div ref={containerRef} className="landing-portal-field notranslate" translate="no" style={{ position: 'relative' }}>
       <label style={labelStyle}>{t('onboarding.birthCity')}</label>
-      <div style={{ position: 'relative' }}>
+      <div style={{ position: 'relative' }} translate="no">
         <input
           value={valor}
           onChange={(e) => onChange(e.target.value)}
           onBlur={onBlur}
           onFocus={() => sugestoes.length > 0 && setAberto(true)}
           placeholder={t('onboarding.citySearchPlaceholder')}
-          className="landing-portal-input"
+          className="landing-portal-input notranslate"
           style={{
             ...inputStyle,
             paddingRight: 40,
             borderColor: erro ? 'rgba(248,113,113,0.7)' : localizacao ? 'rgba(74,222,128,0.5)' : CORES.vidroBorda,
           }}
+          translate="no"
         />
         <div style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)' }}>
           {aPesquisar ? <Loader2 size={18} color={CORES.dourado} style={{ animation: 'spin 1s linear infinite' }} />
@@ -170,7 +171,7 @@ function CampoCidadePortal({ valor, localizacao, onChange, onSelect, erro, onBlu
           position: 'absolute', left: 0, right: 0, top: '100%', listStyle: 'none', margin: '4px 0 0', padding: 4,
           background: 'rgba(11,7,30,0.98)', border: `1px solid ${CORES.vidroBorda}`, borderRadius: 12,
           maxHeight: 180, overflowY: 'auto', zIndex: 40, boxShadow: '0 12px 40px rgba(0,0,0,0.5)',
-        }}>
+        }} translate="no">
           {sugestoes.map((s) => (
             <li key={s.placeId}>
               <button type="button"
@@ -179,6 +180,8 @@ function CampoCidadePortal({ valor, localizacao, onChange, onSelect, erro, onBlu
                   width: '100%', background: 'none', border: 'none', color: CORES.brancoSuave,
                   fontSize: 13, textAlign: 'left', padding: '10px 12px', cursor: 'pointer',
                 }}
+                className="notranslate"
+                translate="no"
               >
                 {s.nome}
               </button>
@@ -352,21 +355,22 @@ export function LandingBirthPortal({ isDesktop, onSaved, onScrollToLogin }) {
             </div>
           ) : (
             <>
-              <div className="landing-portal-field">
+              <div className="landing-portal-field notranslate" translate="no">
                 <label style={labelStyle}>{t('onboarding.name')}</label>
-                <div style={{ position: 'relative' }}>
+                <div style={{ position: 'relative' }} translate="no">
                   <User size={16} color={CORES.brancoMuted} style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)' }} />
                   <input
                     value={nome}
                     onChange={(e) => setNome(e.target.value)}
                     onBlur={tocar('nome')}
                     placeholder={t('onboarding.namePlaceholder')}
-                    className="landing-portal-input"
+                    className="landing-portal-input notranslate"
                     style={{
                       ...inputStyle,
                       paddingLeft: 42,
                       borderColor: tocado.nome && erros.nome ? 'rgba(248,113,113,0.7)' : CORES.vidroBorda,
                     }}
+                    translate="no"
                   />
                 </div>
                 {tocado.nome && erros.nome && <p style={{ margin: '6px 0 0', fontSize: 12, color: '#F87171' }}>{erros.nome}</p>}
@@ -374,21 +378,22 @@ export function LandingBirthPortal({ isDesktop, onSaved, onScrollToLogin }) {
 
               <CampoDataPortal valor={data} onChange={setData} onBlur={tocar('data')} erro={tocado.data ? erros.data : null} t={t} />
 
-              <div className="landing-portal-field">
+              <div className="landing-portal-field notranslate" translate="no">
                 <label style={labelStyle}>{t('onboarding.birthTime')}</label>
-                <div style={{ position: 'relative' }}>
+                <div style={{ position: 'relative' }} translate="no">
                   <Clock size={16} color={CORES.brancoMuted} style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)' }} />
                   <input
                     type="time"
                     value={hora}
                     onChange={(e) => setHora(e.target.value)}
                     onBlur={tocar('hora')}
-                    className="landing-portal-input"
+                    className="landing-portal-input notranslate"
                     style={{
                       ...inputStyle,
                       paddingLeft: 42,
                       borderColor: tocado.hora && erros.hora ? 'rgba(248,113,113,0.7)' : CORES.vidroBorda,
                     }}
+                    translate="no"
                   />
                 </div>
                 {tocado.hora && erros.hora && <p style={{ margin: '6px 0 0', fontSize: 12, color: '#F87171' }}>{erros.hora}</p>}
@@ -406,10 +411,11 @@ export function LandingBirthPortal({ isDesktop, onSaved, onScrollToLogin }) {
 
               {localizacao && (
                 <div
-                  className="landing-portal-field landing-portal-tz-box"
+                  className="landing-portal-field landing-portal-tz-box notranslate"
                   style={{
                     border: `1px solid ${fusoErro ? 'rgba(251,191,36,0.4)' : fuso != null ? 'rgba(52,211,153,0.35)' : CORES.vidroBorda}`,
                   }}
+                  translate="no"
                 >
                   {fusoCarregando && (
                     <p style={{ margin: 0, fontSize: 12, color: CORES.brancoMuted }}>{t('onboarding.detectingTz')}</p>
@@ -426,6 +432,8 @@ export function LandingBirthPortal({ isDesktop, onSaved, onScrollToLogin }) {
                         value={fusoManual}
                         onChange={(e) => { const n = parseFloat(e.target.value); setFusoManual(n); setFuso(n) }}
                         style={{ ...inputStyle, fontSize: 13 }}
+                        className="notranslate"
+                        translate="no"
                       >
                         {FUSOS_FALLBACK.map((f) => <option key={f.value} value={f.value}>{f.label}</option>)}
                       </select>
@@ -438,7 +446,8 @@ export function LandingBirthPortal({ isDesktop, onSaved, onScrollToLogin }) {
                 type="button"
                 disabled={aGuardar || fusoCarregando}
                 onClick={handleGuardar}
-                className="landing-portal-cta"
+                className="landing-portal-cta notranslate"
+                translate="no"
               >
                 {aGuardar || fusoCarregando ? (
                   <>
