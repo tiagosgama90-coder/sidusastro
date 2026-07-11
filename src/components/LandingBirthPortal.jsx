@@ -93,20 +93,20 @@ function CampoDataPortal({ valor, onChange, onBlur, erro, t }) {
   const mini = { ...inputStyle, borderColor: borda, textAlign: 'center', padding: '13px 6px' }
 
   return (
-    <div className="landing-portal-field notranslate" translate="no">
+    <div className="landing-portal-field">
       <label style={labelStyle}>{t('onboarding.birthDate')}</label>
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 12px 1fr 12px 1.4fr', alignItems: 'center' }} translate="no">
-        <input ref={diaRef} inputMode="numeric" maxLength={2} placeholder="DD" value={dia}
-          onChange={(e) => { const d = e.target.value.replace(/\D/g, '').slice(0, 2); setDia(d); if (d.length === 2) mesRef.current?.focus() }}
-          onBlur={onBlur} style={mini} className="landing-portal-input notranslate" translate="no" />
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 12px 1fr 12px 1.4fr', alignItems: 'center' }}>
+        <input ref={diaRef} inputMode="numeric" maxLength={2} placeholder={'DD'} value={dia}
+          onChange={(e) => { if (e.target.tagName !== 'INPUT') return; const d = e.target.value.replace(/\D/g, '').slice(0, 2); setDia(d); if (d.length === 2) mesRef.current?.focus() }}
+          onBlur={onBlur} style={mini} className="landing-portal-input" autoComplete="off" />
         <span style={{ textAlign: 'center', color: CORES.brancoMuted, fontSize: 18 }}>/</span>
-        <input ref={mesRef} inputMode="numeric" maxLength={2} placeholder="MM" value={mes}
-          onChange={(e) => { const m = e.target.value.replace(/\D/g, '').slice(0, 2); setMes(m); if (m.length === 2) anoRef.current?.focus() }}
-          onBlur={onBlur} style={mini} className="landing-portal-input notranslate" translate="no" />
+        <input ref={mesRef} inputMode="numeric" maxLength={2} placeholder={'MM'} value={mes}
+          onChange={(e) => { if (e.target.tagName !== 'INPUT') return; const m = e.target.value.replace(/\D/g, '').slice(0, 2); setMes(m); if (m.length === 2) anoRef.current?.focus() }}
+          onBlur={onBlur} style={mini} className="landing-portal-input" autoComplete="off" />
         <span style={{ textAlign: 'center', color: CORES.brancoMuted, fontSize: 18 }}>/</span>
-        <input ref={anoRef} inputMode="numeric" maxLength={4} placeholder="AAAA" value={ano}
-          onChange={(e) => setAno(e.target.value.replace(/\D/g, '').slice(0, 4))}
-          onBlur={onBlur} style={mini} className="landing-portal-input notranslate" translate="no" />
+        <input ref={anoRef} inputMode="numeric" maxLength={4} placeholder={'AAAA'} value={ano}
+          onChange={(e) => { if (e.target.tagName !== 'INPUT') return; setAno(e.target.value.replace(/\D/g, '').slice(0, 4)) }}
+          onBlur={onBlur} style={mini} className="landing-portal-input" autoComplete="off" />
       </div>
       {erro && <p style={{ margin: '6px 0 0', fontSize: 12, color: '#F87171' }}>{erro}</p>}
     </div>
@@ -355,22 +355,22 @@ export function LandingBirthPortal({ isDesktop, onSaved, onScrollToLogin }) {
             </div>
           ) : (
             <>
-              <div className="landing-portal-field notranslate" translate="no">
+              <div className="landing-portal-field">
                 <label style={labelStyle}>{t('onboarding.name')}</label>
-                <div style={{ position: 'relative' }} translate="no">
+                <div style={{ position: 'relative' }}>
                   <User size={16} color={CORES.brancoMuted} style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)' }} />
                   <input
                     value={nome}
-                    onChange={(e) => setNome(e.target.value)}
+                    onChange={(e) => { if (e.target.tagName !== 'INPUT') return; setNome(e.target.value) }}
                     onBlur={tocar('nome')}
                     placeholder={t('onboarding.namePlaceholder')}
-                    className="landing-portal-input notranslate"
+                    className="landing-portal-input"
                     style={{
                       ...inputStyle,
                       paddingLeft: 42,
                       borderColor: tocado.nome && erros.nome ? 'rgba(248,113,113,0.7)' : CORES.vidroBorda,
                     }}
-                    translate="no"
+                    autoComplete="off"
                   />
                 </div>
                 {tocado.nome && erros.nome && <p style={{ margin: '6px 0 0', fontSize: 12, color: '#F87171' }}>{erros.nome}</p>}
@@ -378,22 +378,22 @@ export function LandingBirthPortal({ isDesktop, onSaved, onScrollToLogin }) {
 
               <CampoDataPortal valor={data} onChange={setData} onBlur={tocar('data')} erro={tocado.data ? erros.data : null} t={t} />
 
-              <div className="landing-portal-field notranslate" translate="no">
+              <div className="landing-portal-field">
                 <label style={labelStyle}>{t('onboarding.birthTime')}</label>
-                <div style={{ position: 'relative' }} translate="no">
+                <div style={{ position: 'relative' }}>
                   <Clock size={16} color={CORES.brancoMuted} style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)' }} />
                   <input
                     type="time"
                     value={hora}
-                    onChange={(e) => setHora(e.target.value)}
+                    onChange={(e) => { if (e.target.tagName !== 'INPUT') return; setHora(e.target.value) }}
                     onBlur={tocar('hora')}
-                    className="landing-portal-input notranslate"
+                    className="landing-portal-input"
                     style={{
                       ...inputStyle,
                       paddingLeft: 42,
                       borderColor: tocado.hora && erros.hora ? 'rgba(248,113,113,0.7)' : CORES.vidroBorda,
                     }}
-                    translate="no"
+                    autoComplete="off"
                   />
                 </div>
                 {tocado.hora && erros.hora && <p style={{ margin: '6px 0 0', fontSize: 12, color: '#F87171' }}>{erros.hora}</p>}
@@ -446,8 +446,7 @@ export function LandingBirthPortal({ isDesktop, onSaved, onScrollToLogin }) {
                 type="button"
                 disabled={aGuardar || fusoCarregando}
                 onClick={handleGuardar}
-                className="landing-portal-cta notranslate"
-                translate="no"
+                className="landing-portal-cta"
               >
                 {aGuardar || fusoCarregando ? (
                   <>
