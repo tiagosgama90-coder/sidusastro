@@ -57,7 +57,7 @@ export function LeituraGratisDiaria({ solar, lunar, compact = false }) {
       className={compact ? 'leitura-gratis leitura-gratis--compact' : 'leitura-gratis'}
       style={{
         background: 'rgba(255, 255, 255, 0.06)',
-        padding: compact ? '14px 16px' : '18px 20px',
+        padding: compact ? '14px 16px' : '22px 24px',
         marginBottom: compact ? 12 : 16,
         background: 'rgba(223,183,108,0.05)',
         border: '1px solid rgba(223,183,108,0.35)',
@@ -69,7 +69,7 @@ export function LeituraGratisDiaria({ solar, lunar, compact = false }) {
       </div>
 
       <div style={{ display: 'flex', alignItems: compact ? 'flex-start' : 'center', gap: compact ? 12 : 16, flexWrap: 'wrap' }}>
-        <CartaTarot carta={carta} size={compact ? 56 : 66} />
+        <CartaTarot carta={carta} size={compact ? 72 : 110} />
 
         <div style={{ flex: 1, minWidth: 180 }}>
           <div style={{ fontSize: compact ? 15 : 17, fontWeight: 700, color: CORES.branco, marginBottom: 4 }}>{carta.nome}</div>

@@ -1,6 +1,29 @@
 /** Notícias astrológicas reais via RSS (Google News) — cache diário. */
 
 import { translatePlaneta, translateAspecto } from './i18n/astro.js'
+
+function limparTextoNoticia(str) {
+  if (!str) return ''
+  return String(str)
+    .replace(/&#(\d+);/g, (_, n) => String.fromCharCode(Number(n)))
+    .replace(/&#x([0-9a-f]+);/gi, (_, h) => String.fromCharCode(parseInt(h, 16)))
+    .replace(/&nbsp;/gi, ' ')
+    .replace(/&amp;/g, '&')
+    .replace(/&quot;/g, '"')
+    .replace(/&apos;/g, "'")
+    .replace(/<[^>]+>/g, '')
+    .replace(/\u00a0/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+}
+
+function sanitizarItem(item) {
+  return {
+    ...item,
+    texto: limparTextoNoticia(item.texto),
+    resumo: limparTextoNoticia(item.resumo),
+  }
+}
 import { localeTag, isPt } from './i18n/langUtil.js'
 import { calcularFaseLua } from './faseLua.js'
 
@@ -76,8 +99,9 @@ export async function gerarNoticiasAstrologia({ aspetos = [], lang = 'pt', max =
     if (res.ok) {
       const data = await res.json()
       if (Array.isArray(data.items) && data.items.length) {
-        cacheNoticias = { date: hoje, lang, items: data.items }
-        return data.items.slice(0, max)
+        const limpos = data.items.map(sanitizarItem)
+        cacheNoticias = { date: hoje, lang, items: limpos }
+        return limpos.slice(0, max)
       }
     }
   } catch { /* fallback local */ }

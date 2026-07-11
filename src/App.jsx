@@ -1947,7 +1947,7 @@ function Dashboard({ nome, mapaNatal, ceuAgora, aspetos, onOraculo, onPrivacidad
         )}
       </div>
 
-      <ConteudoDinamicoSidus mapaNatal={mapaNatal} aspetos={aspetos} isPremium={isPremium} onUpgrade={onUpgrade} onOraculo={onOraculo} userEmail={userEmail} user={user} />
+      <ConteudoDinamicoSidus mapaNatal={mapaNatal} ceuAgora={ceuAgora} aspetos={aspetos} isPremium={isPremium} onUpgrade={onUpgrade} onOraculo={onOraculo} userEmail={userEmail} user={user} />
 
       {onTarot && (
         <button type="button" onClick={onTarot} style={{

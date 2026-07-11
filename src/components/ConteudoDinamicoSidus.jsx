@@ -1,5 +1,5 @@
-import { useEffect, useState, useMemo } from 'react'
-import { Calendar, Sparkles, MessageCircle, Copy, Check } from 'lucide-react'
+import { useEffect, useState, useMemo, useCallback } from 'react'
+import { Calendar, Sparkles, MessageCircle, Copy, Check, ChevronLeft, ChevronRight } from 'lucide-react'
 import { useLanguage } from '../lib/i18n/LanguageContext.jsx'
 import { fetchDailyContent } from '../lib/apiDailyContent.js'
 import { buildLocalDailyContent } from '../lib/dailyContentFallback.js'
@@ -7,11 +7,12 @@ import { calcularFaseLua } from '../lib/faseLua.js'
 import { gerarNoticiasAstrologia } from '../lib/astroNews.js'
 import { emailTemPremiumPrivilegiado } from '../lib/premiumAccess.js'
 import { dateLocale } from '../lib/i18n/langUtil.js'
-import { calcularHoroscopoDiarioRealista } from '../lib/horoscopoDiario.js'
+import { gerarHoroscopoSignoTransito } from '../lib/horoscopoDiarioTransitos.js'
+import { signoHoroscopeKey } from '../lib/dailyContentFallback.js'
 import { HoroscopoDiarioMistico } from './HoroscopoDiarioMistico.jsx'
 import { HoroscopoColunasSignos } from './HoroscopoColunasSignos.jsx'
 import { WidgetNotificacoesDiarias } from './WidgetNotificacoesDiarias.jsx'
-import { normalizeSignoNome } from '../lib/i18n/astro.js'
+import { normalizeSignoNome, SIGNOS_PT } from '../lib/i18n/astro.js'
 
 const CORES = {
   dourado: '#DFB76C',
@@ -32,7 +33,7 @@ function formatarHoje(lang) {
   return new Date().toLocaleDateString(dateLocale(lang), { day: 'numeric', month: 'long', year: 'numeric' })
 }
 
-export function ConteudoDinamicoSidus({ mapaNatal, aspetos = [], isPremium, onUpgrade, onOraculo, userEmail, user }) {
+export function ConteudoDinamicoSidus({ mapaNatal, ceuAgora = [], aspetos = [], isPremium, onUpgrade, onOraculo, userEmail, user }) {
   const { lang, t, ts, tp, ta } = useLanguage()
   const [pack, setPack] = useState(null)
   const [copied, setCopied] = useState(false)
@@ -65,11 +66,31 @@ export function ConteudoDinamicoSidus({ mapaNatal, aspetos = [], isPremium, onUp
     return () => { cancelled = true }
   }, [faseAtual.nome, transitSummary, lang])
 
+  const packHoroscopes = useMemo(() => pack?.horoscopes?.[lang] || {}, [pack, lang])
+
   const horoscopoRealista = useMemo(() => {
     if (!mapaNatal?.solar?.nome) return null
-    const hoje = new Date().toISOString().slice(0, 10)
-    return calcularHoroscopoDiarioRealista(mapaNatal.solar.nome, hoje, mapaNatal, lang)
-  }, [mapaNatal, lang])
+    const signoPt = normalizeSignoNome(mapaNatal.solar.nome)
+    const signoKey = signoHoroscopeKey(signoPt, lang) || mapaNatal.solar.nome
+    const signoIndex = SIGNOS_PT.indexOf(signoPt === 'Áries' ? 'Carneiro' : signoPt)
+    if (signoIndex < 0) return null
+    const apiText = packHoroscopes[signoKey]
+    const signoDisplay = ts(mapaNatal.solar.nome)
+    const texto = gerarHoroscopoSignoTransito({
+      signoIndex,
+      signoNome: signoDisplay,
+      ceuAgora,
+      aspetos,
+      faseLua: faseAtual,
+      lang,
+      apiText,
+    })
+    return {
+      signo: signoDisplay,
+      interpretacao: { resumo: texto, detalhes: [] },
+      aspectos: aspetos.slice(0, 4),
+    }
+  }, [mapaNatal, lang, ceuAgora, aspetos, faseAtual, packHoroscopes, ts])
 
   const social = isAdmin ? pack?.social?.[lang] : null
 
@@ -86,8 +107,16 @@ export function ConteudoDinamicoSidus({ mapaNatal, aspetos = [], isPremium, onUp
     if (noticiasAstro.length <= 1) return undefined
     const id = setInterval(() => {
       setNewsSlide((s) => (s + 1) % noticiasAstro.length)
-    }, 7000)
+    }, 8000)
     return () => clearInterval(id)
+  }, [noticiasAstro.length])
+
+  const newsPrev = useCallback(() => {
+    setNewsSlide((s) => (s - 1 + noticiasAstro.length) % noticiasAstro.length)
+  }, [noticiasAstro.length])
+
+  const newsNext = useCallback(() => {
+    setNewsSlide((s) => (s + 1) % noticiasAstro.length)
   }, [noticiasAstro.length])
 
   const handleCopy = async () => {
@@ -145,6 +174,10 @@ export function ConteudoDinamicoSidus({ mapaNatal, aspetos = [], isPremium, onUp
               isPremium={isPremium}
               onUpgrade={onUpgrade}
               userSignoNome={normalizeSignoNome(mapaNatal?.solar?.nome)}
+              ceuAgora={ceuAgora}
+              aspetos={aspetos}
+              faseLua={faseAtual}
+              packHoroscopes={packHoroscopes}
             />
 
             {onOraculo && (
@@ -165,13 +198,23 @@ export function ConteudoDinamicoSidus({ mapaNatal, aspetos = [], isPremium, onUp
         )}
       </div>
 
-      {/* Carrossel de notícias astrológicas reais */}
+      {/* Widget de notificações diárias — Premium interactivo */}
+      {(userEmail || user?.uid) && (
+        <div style={{ marginBottom: 16 }}>
+          <WidgetNotificacoesDiarias
+            user={user || (userEmail ? { email: userEmail } : null)}
+            isPremium={isPremium}
+            onUpgrade={onUpgrade}
+          />
+        </div>
+      )}
+
+      {/* Carrossel de notícias astrológicas — coluna em baixo com setas */}
       <div style={{
         ...vidro,
         padding: 0,
         marginBottom: 16,
         overflow: 'hidden',
-        position: 'relative',
       }}>
         <div style={{
           display: 'flex',
@@ -189,42 +232,44 @@ export function ConteudoDinamicoSidus({ mapaNatal, aspetos = [], isPremium, onUp
         {noticiasAstro.length === 0 ? (
           <p style={{ padding: '20px 16px', fontSize: 12, color: CORES.brancoMuted, margin: 0 }}>{t('home.loadingContent')}</p>
         ) : (
-          <div style={{ position: 'relative', minHeight: 160 }}>
+          <div style={{ padding: '16px' }}>
             {noticiasAstro.map((n, i) => (
-              <div
+              <article
                 key={`${n.url || n.texto}-${i}`}
                 style={{
                   display: newsSlide === i ? 'flex' : 'none',
-                  gap: 14,
-                  padding: '16px',
-                  alignItems: 'flex-start',
+                  flexDirection: 'column',
+                  gap: 12,
                 }}
               >
-                {n.imagem ? (
-                  <img
-                    src={n.imagem}
-                    alt=""
-                    style={{
-                      width: 88,
-                      height: 88,
-                      objectFit: 'cover',
-                      borderRadius: 10,
-                      border: `1px solid ${CORES.vidroBorda}`,
-                      flexShrink: 0,
-                    }}
-                    loading="lazy"
-                    referrerPolicy="no-referrer"
-                  />
-                ) : (
-                  <div style={{
-                    width: 88, height: 88, borderRadius: 10, flexShrink: 0,
-                    background: 'linear-gradient(135deg, rgba(139,92,246,0.2), rgba(223,183,108,0.15))',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    fontSize: 28, border: `1px solid ${CORES.vidroBorda}`,
-                  }}>✦</div>
-                )}
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
+                <div style={{
+                  width: '100%',
+                  height: 180,
+                  borderRadius: 12,
+                  overflow: 'hidden',
+                  border: `1px solid ${CORES.vidroBorda}`,
+                  background: 'linear-gradient(135deg, rgba(139,92,246,0.15), rgba(223,183,108,0.1))',
+                  position: 'relative',
+                }}>
+                  {n.imagem ? (
+                    <img
+                      src={n.imagem}
+                      alt=""
+                      style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                      loading="lazy"
+                      referrerPolicy="no-referrer"
+                      onError={(e) => { e.currentTarget.style.display = 'none' }}
+                    />
+                  ) : (
+                    <div style={{
+                      width: '100%', height: '100%',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      fontSize: 48, color: CORES.dourado,
+                    }}>✦</div>
+                  )}
+                </div>
+                <div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
                     <span style={{
                       fontSize: 10, fontWeight: 700, color: CORES.dourado,
                       textTransform: 'uppercase', letterSpacing: '0.08em',
@@ -234,49 +279,63 @@ export function ConteudoDinamicoSidus({ mapaNatal, aspetos = [], isPremium, onUp
                   </div>
                   {n.url ? (
                     <a href={n.url} target="_blank" rel="noopener noreferrer" style={{
-                      fontSize: 13, color: CORES.brancoSuave, lineHeight: 1.55, textDecoration: 'none',
-                      display: 'block', fontWeight: 600,
+                      fontSize: 15, color: CORES.branco, lineHeight: 1.55, textDecoration: 'none',
+                      display: 'block', fontWeight: 700,
                     }}>{n.texto}</a>
                   ) : (
-                    <p style={{ fontSize: 13, color: CORES.brancoSuave, lineHeight: 1.55, margin: 0, fontWeight: 600 }}>{n.texto}</p>
+                    <p style={{ fontSize: 15, color: CORES.branco, lineHeight: 1.55, margin: 0, fontWeight: 700 }}>{n.texto}</p>
                   )}
                   {n.resumo && (
-                    <p style={{ fontSize: 11, color: CORES.brancoMuted, lineHeight: 1.5, margin: '6px 0 0' }}>{n.resumo}</p>
+                    <p style={{ fontSize: 12, color: CORES.brancoMuted, lineHeight: 1.6, margin: '8px 0 0' }}>{n.resumo}</p>
                   )}
                 </div>
-              </div>
+              </article>
             ))}
+
             <div style={{
-              display: 'flex', justifyContent: 'center', gap: 6, paddingBottom: 12,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: 16,
+              marginTop: 14,
+              paddingTop: 12,
+              borderTop: `1px solid ${CORES.vidroBorda}`,
             }}>
-              {noticiasAstro.map((_, i) => (
-                <button
-                  key={i}
-                  type="button"
-                  aria-label={`Slide ${i + 1}`}
-                  onClick={() => setNewsSlide(i)}
-                  style={{
-                    width: 8, height: 8, borderRadius: '50%', border: 'none', padding: 0,
-                    background: newsSlide === i ? CORES.dourado : 'rgba(255,255,255,0.2)',
-                    cursor: 'pointer',
-                  }}
-                />
-              ))}
+              <button
+                type="button"
+                onClick={newsPrev}
+                aria-label="Notícia anterior"
+                style={{
+                  width: 36, height: 36, borderRadius: '50%',
+                  border: `1px solid ${CORES.vidroBorda}`,
+                  background: 'rgba(255,255,255,0.05)',
+                  color: CORES.dourado, cursor: 'pointer',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                }}
+              >
+                <ChevronLeft size={20} />
+              </button>
+              <span style={{ fontSize: 11, color: CORES.brancoMuted, minWidth: 48, textAlign: 'center' }}>
+                {newsSlide + 1} / {noticiasAstro.length}
+              </span>
+              <button
+                type="button"
+                onClick={newsNext}
+                aria-label="Próxima notícia"
+                style={{
+                  width: 36, height: 36, borderRadius: '50%',
+                  border: `1px solid ${CORES.vidroBorda}`,
+                  background: 'rgba(255,255,255,0.05)',
+                  color: CORES.dourado, cursor: 'pointer',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                }}
+              >
+                <ChevronRight size={20} />
+              </button>
             </div>
           </div>
         )}
       </div>
-
-      {/* Widget de notificações diárias — Premium interactivo */}
-      {(userEmail || user?.uid) && (
-        <div style={{ marginBottom: isAdmin ? 16 : 0 }}>
-          <WidgetNotificacoesDiarias
-            user={user || (userEmail ? { email: userEmail } : null)}
-            isPremium={isPremium}
-            onUpgrade={onUpgrade}
-          />
-        </div>
-      )}
 
       {isAdmin && social && (
         <div style={{ ...vidro, padding: 16, border: '1px dashed rgba(244,114,182,0.35)' }}>

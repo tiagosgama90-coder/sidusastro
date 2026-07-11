@@ -1,7 +1,7 @@
-import { useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import { SIGNOS } from '../lib/astrologia.js'
 import { SIGNOS_PT, SIGNOS_EN, SIGNOS_ES, SIGNOS_IT, SIGNOS_DE, SIGNOS_FR } from '../lib/i18n/astro.js'
-import { calcularHoroscopoDiarioRealista } from '../lib/horoscopoDiario.js'
+import { gerarHoroscoposTodosSignos } from '../lib/horoscopoDiarioTransitos.js'
 import { useLanguage } from '../lib/i18n/LanguageContext.jsx'
 
 const CORES = {
@@ -10,7 +10,6 @@ const CORES = {
   brancoMuted: 'rgba(255,255,255,0.55)',
   brancoSuave: 'rgba(255,255,255,0.85)',
   vidroBorda: 'rgba(223, 183, 108, 0.22)',
-  roxo: '#8B5CF6',
 }
 
 const SIGN_LISTS = {
@@ -18,87 +17,82 @@ const SIGN_LISTS = {
 }
 
 /**
- * Grelha mágica de 12 signos em colunas com símbolos zodiacais.
+ * Colunas com horóscopo completo por signo — trânsitos reais do céu de hoje.
  */
-export function HoroscopoColunasSignos({ isPremium, onUpgrade, userSignoNome }) {
+export function HoroscopoColunasSignos({
+  isPremium,
+  onUpgrade,
+  userSignoNome,
+  ceuAgora = [],
+  aspetos = [],
+  faseLua,
+  packHoroscopes = {},
+}) {
   const { lang, t } = useLanguage()
-  const [hover, setHover] = useState(null)
-  const [expandido, setExpandido] = useState(null)
 
   const hoje = useMemo(() => new Date().toISOString().slice(0, 10), [])
   const signList = SIGN_LISTS[lang] || SIGNOS_EN
 
   const horoscopos = useMemo(() => {
-    return signList.map((nome, i) => {
-      const simbolo = SIGNOS[i]?.simbolo || '✦'
-      const dados = calcularHoroscopoDiarioRealista(nome, hoje, null, lang)
-      return { nome, simbolo, resumo: dados?.interpretacao?.resumo || '—', dados }
+    const gerados = gerarHoroscoposTodosSignos({
+      signList,
+      ceuAgora,
+      aspetos,
+      faseLua,
+      lang,
+      packHoroscopes,
     })
-  }, [signList, hoje, lang])
+    return gerados.map((h, i) => ({
+      ...h,
+      simbolo: SIGNOS[i]?.simbolo || '✦',
+      resumo: h.texto,
+    }))
+  }, [signList, ceuAgora, aspetos, faseLua, lang, packHoroscopes, hoje])
 
   const visiveis = isPremium ? horoscopos : horoscopos.filter((h) => {
     if (!userSignoNome) return false
-    const idxUser = SIGNOS_PT.indexOf(userSignoNome)
-    const idxList = signList.indexOf(h.nome)
-    return idxUser >= 0 && idxUser === idxList
+    const idxUser = SIGNOS_PT.indexOf(userSignoNome === 'Áries' ? 'Carneiro' : userSignoNome)
+    return idxUser >= 0 && idxUser === h.signoIndex
   })
 
   return (
     <div style={{ marginTop: 16 }}>
       <div style={{
         display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))',
-        gap: 10,
+        gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+        gap: 12,
       }}>
-        {(isPremium ? horoscopos : visiveis).map((h) => {
-          const ativo = hover === h.nome || expandido === h.nome
-          return (
-            <button
-              key={h.nome}
-              type="button"
-              onClick={() => setExpandido(expandido === h.nome ? null : h.nome)}
-              onMouseEnter={() => setHover(h.nome)}
-              onMouseLeave={() => setHover(null)}
-              style={{
-                background: ativo
-                  ? 'linear-gradient(145deg, rgba(139,92,246,0.18), rgba(223,183,108,0.12))'
-                  : 'rgba(255,255,255,0.03)',
-                border: `1px solid ${ativo ? 'rgba(223,183,108,0.45)' : CORES.vidroBorda}`,
-                borderRadius: 14,
-                padding: '14px 12px',
-                cursor: 'pointer',
-                textAlign: 'center',
-                transition: 'all 0.35s cubic-bezier(0.4,0,0.2,1)',
-                transform: ativo ? 'translateY(-3px) scale(1.02)' : 'none',
-                boxShadow: ativo ? '0 8px 24px rgba(139,92,246,0.2)' : 'none',
-              }}
-            >
-              <div style={{
-                fontSize: 28,
+        {(isPremium ? horoscopos : visiveis).map((h) => (
+          <article
+            key={h.nome}
+            style={{
+              background: 'rgba(255,255,255,0.03)',
+              border: `1px solid ${CORES.vidroBorda}`,
+              borderRadius: 14,
+              padding: '16px 14px',
+              textAlign: 'left',
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
+              <span style={{
+                fontSize: 32,
                 lineHeight: 1,
-                marginBottom: 8,
-                filter: ativo ? 'drop-shadow(0 0 8px rgba(223,183,108,0.6))' : 'none',
-                transition: 'filter 0.3s',
+                filter: 'drop-shadow(0 0 6px rgba(223,183,108,0.4))',
               }}>
                 {h.simbolo}
-              </div>
-              <div style={{ fontSize: 12, fontWeight: 700, color: CORES.branco, marginBottom: 6 }}>
-                {h.nome}
-              </div>
-              <div style={{
-                fontSize: 10,
-                color: CORES.brancoMuted,
-                lineHeight: 1.45,
-                display: '-webkit-box',
-                WebkitLineClamp: expandido === h.nome ? 12 : 3,
-                WebkitBoxOrient: 'vertical',
-                overflow: 'hidden',
-              }}>
-                {h.resumo}
-              </div>
-            </button>
-          )
-        })}
+              </span>
+              <div style={{ fontSize: 14, fontWeight: 700, color: CORES.branco }}>{h.nome}</div>
+            </div>
+            <p style={{
+              fontSize: 12,
+              color: CORES.brancoSuave,
+              lineHeight: 1.65,
+              margin: 0,
+            }}>
+              {h.resumo}
+            </p>
+          </article>
+        ))}
       </div>
 
       {!isPremium && (
