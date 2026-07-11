@@ -383,7 +383,7 @@ export default {
     "cta": "Diventa VIP ora",
     "paymentMethods": "Carta · MB Way · Multibanco · PayPal · PIX - tramite Stripe",
     "productName": "Sidus VIP - Accesso a vita",
-    "notificationsPaywall": "Con Premium attivo, attiva il widget notifiche in Profilo o nella home — oroscopo giornaliero sul telefono."
+    "notificationsPaywall": "Widget sul telefono per ricevere l'oroscopo giornaliero personalizzato (attivabile in Profilo dopo Premium)."
   },
   "oracle": {
     "title": "Oracolo astrale",

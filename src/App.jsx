@@ -2659,7 +2659,7 @@ function Ferramentas({ onFerramenta, isDesktop, acessoVip }) {
 }
 
 function Paywall({ onVoltar, onPagar, onSucesso, isDesktop }) {
-  const { t } = useLanguage()
+  const { t, lang } = useLanguage()
   const beneficios = getBeneficiosVip(lang)
   return (
     <div style={layoutConteudo(isDesktop, { paddingTop: 16 })}>
@@ -2689,22 +2689,6 @@ function Paywall({ onVoltar, onPagar, onSucesso, isDesktop }) {
       <p style={{ textAlign: 'center', fontSize: 11, color: CORES.brancoMuted, marginTop: 12 }}>
         {t('vip.paymentMethods')}
       </p>
-
-      <div style={{
-        ...estilos.vidro, marginTop: 24, padding: 20,
-        border: `1px solid rgba(139, 92, 246, 0.35)`,
-        background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.08) 0%, rgba(223, 183, 108, 0.05) 100%)',
-      }}>
-        <p style={{ fontSize: 13, fontWeight: 700, color: CORES.dourado, margin: '0 0 8px' }}>
-          {t('notificacoes.title')}
-        </p>
-        <p style={{ fontSize: 13, color: CORES.brancoSuave, lineHeight: 1.65, margin: '0 0 8px' }}>
-          {t('notificacoes.desc')}
-        </p>
-        <p style={{ fontSize: 12, color: CORES.brancoMuted, lineHeight: 1.6, margin: 0, fontStyle: 'italic' }}>
-          {t('vip.notificationsPaywall')}
-        </p>
-      </div>
     </div>
   )
 }
