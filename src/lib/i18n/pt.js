@@ -356,6 +356,8 @@ export default {
     cancelAnytime: 'Pagamento único · acesso vitalício',
     cta: 'Tornar-me VIP Agora',
     paymentMethods: 'Cartão · MB Way · Multibanco · PayPal · PIX - via Stripe',
+    productName: 'Sidus VIP - Acesso vitalício',
+    notificationsPaywall: 'Com Premium activo, activa o widget de notificações no Perfil ou na página inicial — horóscopo diário no telemóvel.',
   },
   oracle: {
     title: 'Oráculo Astral',

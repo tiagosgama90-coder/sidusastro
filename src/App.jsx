@@ -2658,8 +2658,8 @@ function Ferramentas({ onFerramenta, isDesktop, acessoVip }) {
   )
 }
 
-function Paywall({ onVoltar, onPagar, onSucesso, isDesktop, userEmail, user }) {
-  const { lang, t } = useLanguage()
+function Paywall({ onVoltar, onPagar, onSucesso, isDesktop }) {
+  const { t } = useLanguage()
   const beneficios = getBeneficiosVip(lang)
   return (
     <div style={layoutConteudo(isDesktop, { paddingTop: 16 })}>
@@ -2683,23 +2683,28 @@ function Paywall({ onVoltar, onPagar, onSucesso, isDesktop, userEmail, user }) {
         <div style={{ fontSize: 40, fontWeight: 700, color: CORES.branco }}>{t('vip.price')} <span style={{ fontSize: 16, color: CORES.brancoMuted, fontWeight: 400 }}>{t('common.oneTime')}</span></div>
         <p style={{ fontSize: 12, color: CORES.brancoMuted, marginTop: 6 }}>{t('vip.oneTimeAccess')}</p>
       </div>
-      <button type="button" onClick={() => onPagar(lang === 'en' ? 'Sidus VIP - Lifetime access' : 'Sidus VIP - Acesso vitalício', PRECO_PREMIUM_UNICO, onSucesso, { productType: 'premium' })} style={estilos.botaoDourado}>
+      <button type="button" onClick={() => onPagar(t('vip.productName'), PRECO_PREMIUM_UNICO, onSucesso, { productType: 'premium' })} style={estilos.botaoDourado}>
         {t('vip.cta')}
       </button>
       <p style={{ textAlign: 'center', fontSize: 11, color: CORES.brancoMuted, marginTop: 12 }}>
         {t('vip.paymentMethods')}
       </p>
-      
-      {/* Widget de Notificações no Paywall - destaca o recurso Premium */}
-      {userEmail && (
-        <div style={{ marginTop: 24 }}>
-          <WidgetNotificacoesDiarias 
-            user={user || (userEmail ? { email: userEmail } : null)} 
-            isPremium={false} 
-            onUpgrade={() => onPagar(lang === 'en' ? 'Sidus VIP - Lifetime access' : 'Sidus VIP - Acesso vitalício', PRECO_PREMIUM_UNICO, onSucesso, { productType: 'premium' })}
-          />
-        </div>
-      )}
+
+      <div style={{
+        ...estilos.vidro, marginTop: 24, padding: 20,
+        border: `1px solid rgba(139, 92, 246, 0.35)`,
+        background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.08) 0%, rgba(223, 183, 108, 0.05) 100%)',
+      }}>
+        <p style={{ fontSize: 13, fontWeight: 700, color: CORES.dourado, margin: '0 0 8px' }}>
+          {t('notificacoes.title')}
+        </p>
+        <p style={{ fontSize: 13, color: CORES.brancoSuave, lineHeight: 1.65, margin: '0 0 8px' }}>
+          {t('notificacoes.desc')}
+        </p>
+        <p style={{ fontSize: 12, color: CORES.brancoMuted, lineHeight: 1.6, margin: 0, fontStyle: 'italic' }}>
+          {t('vip.notificationsPaywall')}
+        </p>
+      </div>
     </div>
   )
 }
@@ -4120,7 +4125,7 @@ export default function App() {
       case 'ferramentas':
         return <Ferramentas onFerramenta={handleFerramenta} isDesktop={isDesktop} acessoVip={acessoVip} />
       case 'paywall':
-        return <Paywall onVoltar={() => irPara('ferramentas')} onPagar={abrirPagamento} onSucesso={() => { setIsPremium(true); setMapaCompleto(true); irPara(dadosNataisMinimos(dados) ? 'mapa' : 'onboarding') }} isDesktop={isDesktop} userEmail={utilizador?.email} user={utilizador} />
+        return <Paywall onVoltar={() => irPara('ferramentas')} onPagar={abrirPagamento} onSucesso={() => { setIsPremium(true); setMapaCompleto(true); irPara(dadosNataisMinimos(dados) ? 'mapa' : 'onboarding') }} isDesktop={isDesktop} />
       case 'chat':
         return <Chat mapaNatal={mapaNatal} isPremium={isPremium} userId={utilizador?.uid} oracleRemotas={oraclePerguntasUsadas} onOracleUsada={registarOraclePerguntaUsada} onUpgrade={() => irPara('paywall')} obterIdToken={obterIdTokenOracle} />
       case 'perfil':

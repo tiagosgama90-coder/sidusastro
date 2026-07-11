@@ -356,6 +356,8 @@ export default {
     cancelAnytime: 'One-time payment · lifetime access',
     cta: 'Become VIP Now',
     paymentMethods: 'Card · MB Way · Multibanco · PayPal · PIX - via Stripe',
+    productName: 'Sidus VIP - Lifetime access',
+    notificationsPaywall: 'With Premium active, enable the notification widget in Profile or on the home page — daily horoscope on your phone.',
   },
   oracle: {
     title: 'Astral Oracle',

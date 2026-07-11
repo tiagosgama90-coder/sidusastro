@@ -375,12 +375,15 @@ export default {
     "title": "Versteckte Werkzeuge"
   },
   "vip": {
-    "title": "Star-VIP",
+    "title": "Sidus VIP",
     "subtitle": "Schalte den gesamten Kosmos frei",
     "price": "9,99 €",
-    "cancelAnytime": "Jederzeit kündbar",
-    "cta": "Werden Sie jetzt VIP",
-    "paymentMethods": "Karte · MB Way · Multibanco · PayPal · PIX – über Stripe"
+    "oneTimeAccess": "Einmalzahlung · lebenslanger Zugang",
+    "cancelAnytime": "Einmalzahlung · lebenslanger Zugang",
+    "cta": "Jetzt VIP werden",
+    "paymentMethods": "Karte · MB Way · Multibanco · PayPal · PIX – über Stripe",
+    "productName": "Sidus VIP - Lebenslanger Zugang",
+    "notificationsPaywall": "Mit aktivem Premium aktivierst du das Benachrichtigungs-Widget im Profil oder auf der Startseite — tägliches Horoskop auf dem Handy."
   },
   "oracle": {
     "title": "Astralorakel",

@@ -375,12 +375,15 @@ export default {
     "title": "Strumenti nascosti"
   },
   "vip": {
-    "title": "Stella VIP",
+    "title": "Sidus VIP",
     "subtitle": "Sblocca il cosmo completo",
     "price": "€ 9,99",
-    "cancelAnytime": "Annulla in qualsiasi momento",
+    "oneTimeAccess": "Pagamento unico · accesso a vita",
+    "cancelAnytime": "Pagamento unico · accesso a vita",
     "cta": "Diventa VIP ora",
-    "paymentMethods": "Carta · MB Way · Multibanco · PayPal · PIX - tramite Stripe"
+    "paymentMethods": "Carta · MB Way · Multibanco · PayPal · PIX - tramite Stripe",
+    "productName": "Sidus VIP - Accesso a vita",
+    "notificationsPaywall": "Con Premium attivo, attiva il widget notifiche in Profilo o nella home — oroscopo giornaliero sul telefono."
   },
   "oracle": {
     "title": "Oracolo astrale",

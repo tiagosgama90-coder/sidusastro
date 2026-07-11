@@ -375,12 +375,15 @@ export default {
     title: "Herramientas"
   },
   vip: {
-    title: "estrella vip",
+    title: "Sidus VIP",
     subtitle: "Desbloquea el cosmos completo",
-    price: "9,99€",
-    cancelAnytime: "Cancelar en cualquier momento",
-    cta: "Conviértete en VIP ahora",
-    paymentMethods: "Tarjeta · MB Way · Multibanco · PayPal · PIX - vía Stripe"
+    price: "9,99 €",
+    oneTimeAccess: "Pago único · acceso de por vida",
+    cancelAnytime: "Pago único · acceso de por vida",
+    cta: "Hazte VIP ahora",
+    paymentMethods: "Tarjeta · MB Way · Multibanco · PayPal · PIX - vía Stripe",
+    productName: "Sidus VIP - Acceso de por vida",
+    notificationsPaywall: "Con Premium activo, activa el widget de notificaciones en Perfil o en la página inicial — horóscopo diario en el móvil.",
   },
   oracle: {
     title: "Oráculo Astral",
