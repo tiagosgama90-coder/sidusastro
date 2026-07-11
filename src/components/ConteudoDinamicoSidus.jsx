@@ -74,8 +74,8 @@ export function ConteudoDinamicoSidus({ mapaNatal, aspetos = [], isPremium, onUp
   const horoscopoRealista = useMemo(() => {
     if (!mapaNatal?.solar?.nome) return null
     const hoje = new Date().toISOString().slice(0, 10)
-    return calcularHoroscopoDiarioRealista(mapaNatal.solar.nome, hoje, mapaNatal)
-  }, [mapaNatal])
+    return calcularHoroscopoDiarioRealista(mapaNatal.solar.nome, hoje, mapaNatal, lang)
+  }, [mapaNatal, lang])
   
   const horoMap = pack?.horoscopes?.[lang] || {}
   const userKey = signoHoroscopeKey(mapaNatal?.solar?.nome, lang)
