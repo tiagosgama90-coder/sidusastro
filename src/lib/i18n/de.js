@@ -355,6 +355,16 @@ export default {
     "personal": "Zu deiner Sonne und deinem Mond",
     "returnTomorrow": "Komm morgen wieder - Karte und Satz ändern sich mit dem Himmel."
   },
+  "notificacoes": {
+    "title": "Mystische Tägliche Benachrichtigungen",
+    "premiumBadge": "✦ Premium-Funktion ✦",
+    "desc": "Erhalte personalisierte Tageshoroskope auf dem Handy, basierend auf echten Transiten und deiner Geburtshoroskop.",
+    "howTo": "So geht's: Tippe auf den Button, erlaube Browser-Berechtigungen und erhalte morgens einen magischen Alert.",
+    "unlockCta": "Premium freischalten",
+    "statusOn": "Aktiv", "statusOff": "Deaktiviert", "statusIdle": "Tippen zum Aktivieren",
+    "activate": "Tägliche Benachrichtigungen aktivieren", "deactivate": "Benachrichtigungen deaktivieren",
+    "processing": "Wird verarbeitet…", "blocked": "Benachrichtigungen blockiert. In Browser-Einstellungen aktivieren."
+  },
   "share": {
     "button": "Mein Zeichen teilen",
     "copied": "Kopiert!",

@@ -26,6 +26,13 @@ export function looksPortuguese(str) {
   return /\b(não|nao|tens|estás|estas|estou|estamos|consigo|contigo|para ti|o teu|a tua|os teus|as tuas|no teu|na tua|alguém|alguem|partilhas|reflecte|reflete|expressão|expressao|os anjos pedem|sem ecrãs|sem ecras|pronto\/a|percebido\/a|que desejas|por dentro|através|atraves|consciência|consciencia|cármico|carmico|relacionamento|convida a|busca verdades|A Expressão|A Alma|A Personalidade|O teu|O mundo te|Dentro, desejas|Missão mestra|Missao mestra|Canal de intuição|Protejo a|sabedoria visível|humanitarismo|oferece escuta|reserva \d+ minuto|que verdade interior|padrão cármico|padrao carmico|com coragem para|assumir o|no quotidiano|sem me esquecer|faz algo concreto|organiza um espaço|espaço físico)\b/i.test(str)
 }
 
+/** Detecta texto em inglês quando o UI está noutro idioma. */
+export function looksEnglish(str) {
+  if (!str || typeof str !== 'string') return false
+  if (/\b(the|your|you|and|with|this|that|where|what|how|when|spiritual|practice|reflection|expression|personality|soul|master number|life mission|inside|world sees|desire|mission|today|make one|honour|share something|does the|am i|do i|where am i|who does|your name vibrates|the world sees)\b/i.test(str)) return true
+  return false
+}
+
 /** Se texto estiver em PT e lang≠pt, devolve fallbackEn (ou original em PT). */
 export function narrativeForLang(text, lang, fallbackEn) {
   if (!text) return text

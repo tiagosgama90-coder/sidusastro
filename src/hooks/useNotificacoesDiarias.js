@@ -42,7 +42,7 @@ export function useNotificacoesDiarias(user, isPremium) {
       // Subscrever para notificações push
       const sub = await registration.pushManager.subscribe({
         userVisibleOnly: true,
-        applicationServerKey: process.env.VITE_VAPID_PUBLIC_KEY,
+        applicationServerKey: import.meta.env.VITE_VAPID_PUBLIC_KEY,
       })
 
       setSubscription(sub)

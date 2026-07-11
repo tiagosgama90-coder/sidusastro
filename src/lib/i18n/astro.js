@@ -203,9 +203,9 @@ export function translateModalidade(nome, lang) {
 }
 
 export function translateAspecto(nome, lang) {
-  if (!nome || lang === 'pt') return nome
+  if (!nome) return nome
   const map = ASPECTOS_BY_LANG[lang] || ASPECTOS_BY_LANG.en
-  return map[nome] || nome
+  return map[nome] || (lang === 'pt' ? nome : (ASPECTOS_BY_LANG.en[nome] || nome))
 }
 
 export function localizeSignoObj(signo, lang) {

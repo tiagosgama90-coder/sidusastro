@@ -70,12 +70,19 @@
       ::-webkit-scrollbar { width: 4px; }
       ::-webkit-scrollbar-track { background: transparent; }
       ::-webkit-scrollbar-thumb { background: rgba(223,183,108,0.25); border-radius: 2px; }
-      /* Badge BuySellStartups - visível no HTML para verificação, não ocupa espaço visual */
+      /* Badge BuySellStartups - invisível (verificação HTML, sem ocupar espaço) */
       .bss-badge {
-        display: block;
-        text-align: center;
-        padding: 8px 0;
-        background: #0B071E;
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+        opacity: 0;
+        pointer-events: none;
       }
     </style>
   </head>

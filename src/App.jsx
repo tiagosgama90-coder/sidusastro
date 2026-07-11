@@ -1840,7 +1840,7 @@ function Onboarding({ dados: dadosProp, setDados, onSubmit, isDesktop }) {
   )
 }
 
-function Dashboard({ nome, mapaNatal, ceuAgora, aspetos, onOraculo, onPrivacidade, isDesktop, isPremium, onUpgrade, onTarot, onMapa, userEmail }) {
+function Dashboard({ nome, mapaNatal, ceuAgora, aspetos, onOraculo, onPrivacidade, isDesktop, isPremium, onUpgrade, onTarot, onMapa, userEmail, user }) {
   const { t, ts, te, tp, ta, lang } = useLanguage()
   const faseLua = calcularFaseLua(new Date(), lang)
   return (
@@ -1947,7 +1947,7 @@ function Dashboard({ nome, mapaNatal, ceuAgora, aspetos, onOraculo, onPrivacidad
         )}
       </div>
 
-      <ConteudoDinamicoSidus mapaNatal={mapaNatal} aspetos={aspetos} isPremium={isPremium} onUpgrade={onUpgrade} onOraculo={onOraculo} userEmail={userEmail} />
+      <ConteudoDinamicoSidus mapaNatal={mapaNatal} aspetos={aspetos} isPremium={isPremium} onUpgrade={onUpgrade} onOraculo={onOraculo} userEmail={userEmail} user={user} />
 
       {onTarot && (
         <button type="button" onClick={onTarot} style={{
@@ -2655,7 +2655,7 @@ function Ferramentas({ onFerramenta, isDesktop, acessoVip }) {
   )
 }
 
-function Paywall({ onVoltar, onPagar, onSucesso, isDesktop, userEmail }) {
+function Paywall({ onVoltar, onPagar, onSucesso, isDesktop, userEmail, user }) {
   const { lang, t } = useLanguage()
   const beneficios = getBeneficiosVip(lang)
   return (
@@ -2691,9 +2691,9 @@ function Paywall({ onVoltar, onPagar, onSucesso, isDesktop, userEmail }) {
       {userEmail && (
         <div style={{ marginTop: 24 }}>
           <WidgetNotificacoesDiarias 
-            user={userEmail} 
+            user={user || (userEmail ? { email: userEmail } : null)} 
             isPremium={false} 
-            onUpgrade={onSucesso}
+            onUpgrade={() => onPagar(lang === 'en' ? 'Sidus VIP - Lifetime access' : 'Sidus VIP - Acesso vitalício', PRECO_PREMIUM_UNICO, onSucesso, { productType: 'premium' })}
           />
         </div>
       )}
@@ -4095,7 +4095,7 @@ export default function App() {
     switch (passo) {
       case 'home':
       case 'dashboard':
-        return <Dashboard nome={dados.nome} mapaNatal={mapaNatal} ceuAgora={ceuAgora} aspetos={aspetosAgora} onOraculo={() => irPara('chat')} onPrivacidade={() => irPara('privacidade')} isDesktop={isDesktop} isPremium={isPremium} onUpgrade={() => irPara('paywall')} onTarot={() => irPara('tarot')} onMapa={() => irPara('mapa')} userEmail={utilizador?.email} />
+        return <Dashboard nome={dados.nome} mapaNatal={mapaNatal} ceuAgora={ceuAgora} aspetos={aspetosAgora} onOraculo={() => irPara('chat')} onPrivacidade={() => irPara('privacidade')} isDesktop={isDesktop} isPremium={isPremium} onUpgrade={() => irPara('paywall')} onTarot={() => irPara('tarot')} onMapa={() => irPara('mapa')} userEmail={utilizador?.email} user={utilizador} />
       case 'mapa':
         return <MapaAstral mapaNatal={mapaNatal} dados={dados} planetasNascimento={planetasNascimento} mapaDesbloqueado={isPremium || mapaCompleto} isPremium={isPremium} onUpgrade={() => irPara('paywall')} onComprarMapa={() => abrirPagamento(t('mapa.buyDesc'), PRECO_MAPA_COMPLETO, null, { productType: 'mapa' })} onMapaGerado={handleMapaGerado} isDesktop={isDesktop} motorAstro={motorAstro} perfilCarregando={perfilCarregando} reparandoDados={reparandoDados} mapaGerado={mapaGerado} onCompletarNatal={() => irPara('home')} obterIdToken={obterIdTokenOracle} interpretacaoPerfil={interpretacaoMapa} />
       case 'tarot':
@@ -4117,7 +4117,7 @@ export default function App() {
       case 'ferramentas':
         return <Ferramentas onFerramenta={handleFerramenta} isDesktop={isDesktop} acessoVip={acessoVip} />
       case 'paywall':
-        return <Paywall onVoltar={() => irPara('ferramentas')} onPagar={abrirPagamento} onSucesso={() => { setIsPremium(true); setMapaCompleto(true); irPara(dadosNataisMinimos(dados) ? 'mapa' : 'onboarding') }} isDesktop={isDesktop} userEmail={utilizador?.email} />
+        return <Paywall onVoltar={() => irPara('ferramentas')} onPagar={abrirPagamento} onSucesso={() => { setIsPremium(true); setMapaCompleto(true); irPara(dadosNataisMinimos(dados) ? 'mapa' : 'onboarding') }} isDesktop={isDesktop} userEmail={utilizador?.email} user={utilizador} />
       case 'chat':
         return <Chat mapaNatal={mapaNatal} isPremium={isPremium} userId={utilizador?.uid} oracleRemotas={oraclePerguntasUsadas} onOracleUsada={registarOraclePerguntaUsada} onUpgrade={() => irPara('paywall')} obterIdToken={obterIdTokenOracle} />
       case 'perfil':
@@ -4125,7 +4125,7 @@ export default function App() {
           dadosBloqueados={dadosBloqueados}
           onLogout={handleLogout} />
       default:
-        return <Dashboard nome={dados.nome} mapaNatal={mapaNatal} ceuAgora={ceuAgora} aspetos={aspetosAgora} onOraculo={() => irPara('chat')} onPrivacidade={() => irPara('privacidade')} isDesktop={isDesktop} isPremium={isPremium} onUpgrade={() => irPara('paywall')} onTarot={() => irPara('tarot')} onMapa={() => irPara('mapa')} userEmail={utilizador?.email} />
+        return <Dashboard nome={dados.nome} mapaNatal={mapaNatal} ceuAgora={ceuAgora} aspetos={aspetosAgora} onOraculo={() => irPara('chat')} onPrivacidade={() => irPara('privacidade')} isDesktop={isDesktop} isPremium={isPremium} onUpgrade={() => irPara('paywall')} onTarot={() => irPara('tarot')} onMapa={() => irPara('mapa')} userEmail={utilizador?.email} user={utilizador} />
     }
   }
 

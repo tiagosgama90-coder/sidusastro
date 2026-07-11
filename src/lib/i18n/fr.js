@@ -355,6 +355,16 @@ export default {
     personal: 'À votre Soleil et votre Lune',
     returnTomorrow: 'Revenez demain - la carte et la phrase changent avec le ciel.',
   },
+  notificacoes: {
+    title: 'Notifications Quotidiennes Mystiques',
+    premiumBadge: '✦ Fonction Premium ✦',
+    desc: 'Recevez des horoscopes personnalisés chaque jour sur mobile, basés sur les transits réels et votre thème natal.',
+    howTo: 'Comment utiliser : appuyez sur le bouton, acceptez les permissions du navigateur et recevez une alerte magique le matin.',
+    unlockCta: 'Activer Premium pour Débloquer',
+    statusOn: 'Activé', statusOff: 'Désactivé', statusIdle: 'Appuyez pour activer',
+    activate: 'Activer les Notifications Quotidiennes', deactivate: 'Désactiver les Notifications',
+    processing: 'Traitement…', blocked: 'Notifications bloquées. Activez-les dans les paramètres du navigateur.',
+  },
   share: {
     button: 'Partager mon signe',
     copied: 'Copié !',

@@ -1,5 +1,9 @@
 /** Frases curtas Sol/Lua por signo - leitura grátis memorável (1ª frase da essência). */
 import { contentForLang } from './i18n/langUtil.js'
+import {
+  SIGNOS_PT, SIGNOS_EN, SIGNOS_ES, SIGNOS_IT, SIGNOS_DE, SIGNOS_FR,
+  normalizeSignoNome,
+} from './i18n/astro.js'
 
 const SOL_PT = {
   Carneiro: 'A tua identidade forma-se na acção directa - pensar demasiado paralisa-te; agir cura-te.',
@@ -181,24 +185,12 @@ const LUA_FR = {
   Poissons: 'Tu absorbes les environnements - limites poreuses, rêves vivaces.',
 }
 
-const SIGNO_MAP = {
-  Áries: 'Carneiro', Aries: 'Carneiro',
-  Tauro: 'Touro', Taurus: 'Touro',
-  Géminis: 'Gémeos', Gemini: 'Gémeos',
-  Cáncer: 'Caranguejo', Cancer: 'Caranguejo',
-  Leo: 'Leão', León: 'Leão',
-  Virgo: 'Virgem',
-  Libra: 'Balança',
-  Escorpio: 'Escorpião', Scorpio: 'Escorpião',
-  Sagitario: 'Sagitário', Sagittarius: 'Sagitário',
-  Capricornio: 'Capricórnio', Capricorn: 'Capricórnio',
-  Acuario: 'Aquário', Aquarius: 'Aquário',
-  Piscis: 'Peixes', Pisces: 'Peixes',
-}
-
-function normSigno(nome) {
-  if (!nome) return null
-  return SIGNO_MAP[nome] || nome
+function signoKeyForLang(nome, lang) {
+  const pt = normalizeSignoNome(nome)
+  const idx = SIGNOS_PT.indexOf(pt)
+  if (idx < 0) return nome
+  const lists = { pt: SIGNOS_PT, en: SIGNOS_EN, es: SIGNOS_ES, it: SIGNOS_IT, de: SIGNOS_DE, fr: SIGNOS_FR }
+  return (lists[lang] || SIGNOS_EN)[idx]
 }
 
 function pickPack(lang) {
@@ -210,6 +202,11 @@ function pickPack(lang) {
   return { sol: SOL_EN, lua: LUA_EN }
 }
 
+/** @deprecated use signoKeyForLang */
+function normSigno(nome) {
+  return signoKeyForLang(nome, 'pt')
+}
+
 /** Índice determinístico da carta do dia (0–77, baralho completo). */
 export function indiceCartaDoDia(date = new Date()) {
   const iso = date.toISOString().slice(0, 10)
@@ -218,15 +215,19 @@ export function indiceCartaDoDia(date = new Date()) {
 }
 
 export function fraseSol(signoNome, lang = 'pt') {
-  const key = normSigno(signoNome)
+  const key = signoKeyForLang(signoNome, lang)
   const { sol } = pickPack(lang)
-  return sol[key] || sol.Carneiro || sol.Aries || ''
+  const lists = { pt: SIGNOS_PT, en: SIGNOS_EN, es: SIGNOS_ES, it: SIGNOS_IT, de: SIGNOS_DE, fr: SIGNOS_FR }
+  const fallback = lists[lang]?.[0] || SIGNOS_EN[0]
+  return sol[key] || sol[fallback] || ''
 }
 
 export function fraseLua(signoNome, lang = 'pt') {
-  const key = normSigno(signoNome)
+  const key = signoKeyForLang(signoNome, lang)
   const { lua } = pickPack(lang)
-  return lua[key] || lua.Caranguejo || lua.Cancer || ''
+  const lists = { pt: SIGNOS_PT, en: SIGNOS_EN, es: SIGNOS_ES, it: SIGNOS_IT, de: SIGNOS_DE, fr: SIGNOS_FR }
+  const fallback = lists[lang]?.[3] || SIGNOS_EN[3]
+  return lua[key] || lua[fallback] || ''
 }
 
 /** Frase do dia variável (rotação por data + signo). */

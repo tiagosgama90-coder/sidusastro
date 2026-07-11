@@ -1,60 +1,20 @@
-/**
- * Notícias astrológicas do dia - geradas a partir do céu actual (sem API externa).
- */
+/** Notícias astrológicas reais via RSS (Google News) — cache diário. */
 
-import { calcularFaseLua } from './faseLua.js'
 import { translatePlaneta, translateAspecto } from './i18n/astro.js'
 import { localeTag, isPt } from './i18n/langUtil.js'
+import { calcularFaseLua } from './faseLua.js'
 
-const NOTICIAS_BASE_PT = [
-  { tag: 'Lua', gerar: (ctx) => `Fase ${ctx.fase.nome}: ${ctx.fase.desc?.slice(0, 120)}…` },
-  { tag: 'Energia', gerar: (ctx) => ctx.transito || 'Os trânsitos de hoje pedem presença consciente - consulta o teu mapa para ver como te afectam.' },
-  { tag: 'Mapa', gerar: () => 'O teu mapa astral completo cruza Sol, Lua, Ascendente e casas - a base para todas as leituras Sidus.' },
-  { tag: 'Tarot', gerar: () => 'A carta do dia e o Tarot online complementam a astrologia com símbolos que falam ao inconsciente.' },
-]
+const RSS_QUERIES = {
+  pt: 'astrologia',
+  en: 'astrology',
+  es: 'astrología',
+  it: 'astrologia',
+  de: 'Astrologie',
+  fr: 'astrologie',
+}
 
-const NOTICIAS_BASE_EN = [
-  { tag: 'Moon', gerar: (ctx) => `${ctx.fase.nome} phase: ${ctx.fase.desc?.slice(0, 120)}…` },
-  { tag: 'Energy', gerar: (ctx) => ctx.transito || "Today's transits ask for conscious presence - check your chart to see how they affect you." },
-  { tag: 'Chart', gerar: () => 'Your complete natal chart combines Sun, Moon, Ascendant and houses - the foundation for all Sidus readings.' },
-  { tag: 'Tarot', gerar: () => 'The card of the day and online Tarot complement astrology with symbols that speak to the unconscious.' },
-]
-
-const NOTICIAS_BASE_ES = [
-  { tag: 'Luna', gerar: (ctx) => `Fase ${ctx.fase.nome}: ${ctx.fase.desc?.slice(0, 120)}…` },
-  { tag: 'Energía', gerar: (ctx) => ctx.transito || 'Los tránsitos de hoy piden presencia consciente: consulta tu carta para ver cómo te afectan.' },
-  { tag: 'Carta', gerar: () => 'Tu carta natal completa cruza Sol, Luna, Ascendente y casas: la base de todas las lecturas Sidus.' },
-  { tag: 'Tarot', gerar: () => 'La carta del día y el Tarot online complementan la astrología con símbolos que hablan al inconsciente.' },
-]
-
-const NOTICIAS_BASE_IT = [
-  { tag: 'Luna', gerar: (ctx) => `Fase ${ctx.fase.nome}: ${ctx.fase.desc?.slice(0, 120)}…` },
-  { tag: 'Energia', gerar: (ctx) => ctx.transito || 'I transiti di oggi chiedono presenza consapevole: consulta la tua carta per vedere come ti influenzano.' },
-  { tag: 'Carta', gerar: () => 'La tua carta natale completa unisce Sole, Luna, Ascendente e case: la base di tutte le letture Sidus.' },
-  { tag: 'Tarot', gerar: () => 'La carta del giorno e il Tarot online completano l\'astrologia con simboli che parlano all\'inconscio.' },
-]
-
-const NOTICIAS_BASE_DE = [
-  { tag: 'Mond', gerar: (ctx) => `Phase ${ctx.fase.nome}: ${ctx.fase.desc?.slice(0, 120)}…` },
-  { tag: 'Energie', gerar: (ctx) => ctx.transito || 'Die heutigen Transite verlangen bewusste Präsenz - prüfe dein Horoskop, um zu sehen, wie sie dich beeinflussen.' },
-  { tag: 'Karte', gerar: () => 'Dein vollständiges Geburtshoroskop verbindet Sonne, Mond, Aszendent und Häuser - die Grundlage aller Sidus-Lesungen.' },
-  { tag: 'Tarot', gerar: () => 'Die Tageskarte und Online-Tarot ergänzen die Astrologie mit Symbolen, die das Unbewusste ansprechen.' },
-]
-
-const NOTICIAS_BASE_FR = [
-  { tag: 'Lune', gerar: (ctx) => `Phase ${ctx.fase.nome}: ${ctx.fase.desc?.slice(0, 120)}…` },
-  { tag: 'Énergie', gerar: (ctx) => ctx.transito || "Les transits du jour demandent une présence consciente - consulte ta carte pour voir comment ils t'affectent." },
-  { tag: 'Carte', gerar: () => 'Ta carte natale complète croise Soleil, Lune, Ascendant et maisons - la base de toutes les lectures Sidus.' },
-  { tag: 'Tarot', gerar: () => 'La carte du jour et le Tarot en ligne complètent l\'astrologie avec des symboles qui parlent à l\'inconscient.' },
-]
-
-const NOTICIAS_BY_LANG = {
-  pt: NOTICIAS_BASE_PT,
-  en: NOTICIAS_BASE_EN,
-  es: NOTICIAS_BASE_ES,
-  it: NOTICIAS_BASE_IT,
-  de: NOTICIAS_BASE_DE,
-  fr: NOTICIAS_BASE_FR,
+const RSS_HL = {
+  pt: 'pt-PT', en: 'en-GB', es: 'es-ES', it: 'it-IT', de: 'de-DE', fr: 'fr-FR',
 }
 
 const TRANSITO_FALLBACK = {
@@ -90,19 +50,44 @@ function transitoDestaque(aspetos, lang) {
   return `Active transit: ${pA} ${asp} ${pB} (orb ${a.orbe}) - energy in motion in the sky right now.`
 }
 
-/** @returns {{ tag: string, texto: string, hora: string }[]} */
-export function gerarNoticiasAstrologia({ aspetos = [], lang = 'pt', max = 4 } = {}) {
+function noticiasLocais({ aspetos, lang, max }) {
   const agora = new Date()
   const fase = calcularFaseLua(agora, lang)
   const hora = agora.toLocaleTimeString(localeTag(lang), { hour: '2-digit', minute: '2-digit' })
   const transito = transitoDestaque(aspetos, lang)
-  const ctx = { fase, transito, aspetos }
+  const tag = { pt: 'Céu', en: 'Sky', es: 'Cielo', it: 'Cielo', de: 'Himmel', fr: 'Ciel' }[lang] || 'Sky'
+  return [
+    { tag, texto: transito || TRANSITO_FALLBACK[lang] || TRANSITO_FALLBACK.en, hora, imagem: null, url: null },
+    { tag: { pt: 'Lua', en: 'Moon', es: 'Luna', it: 'Luna', de: 'Mond', fr: 'Lune' }[lang] || 'Moon', texto: `${fase.nome}: ${(fase.desc || '').slice(0, 140)}`, hora: null, imagem: null, url: null },
+  ].slice(0, max)
+}
 
-  const base = NOTICIAS_BY_LANG[lang] || NOTICIAS_BASE_EN
+let cacheNoticias = { date: null, lang: null, items: null }
 
-  return base.slice(0, max).map((item, i) => ({
-    tag: item.tag,
-    texto: item.gerar(ctx) || TRANSITO_FALLBACK[lang] || TRANSITO_FALLBACK.en,
-    hora: i === 0 ? hora : null,
-  }))
+/** @returns {Promise<{ tag: string, texto: string, hora: string|null, imagem: string|null, url: string|null }[]>} */
+export async function gerarNoticiasAstrologia({ aspetos = [], lang = 'pt', max = 4 } = {}) {
+  const hoje = new Date().toISOString().slice(0, 10)
+  if (cacheNoticias.date === hoje && cacheNoticias.lang === lang && cacheNoticias.items?.length) {
+    return cacheNoticias.items.slice(0, max)
+  }
+
+  try {
+    const res = await fetch(`/.netlify/functions/astro-news?lang=${encodeURIComponent(lang)}&max=${max}`)
+    if (res.ok) {
+      const data = await res.json()
+      if (Array.isArray(data.items) && data.items.length) {
+        cacheNoticias = { date: hoje, lang, items: data.items }
+        return data.items.slice(0, max)
+      }
+    }
+  } catch { /* fallback local */ }
+
+  const local = noticiasLocais({ aspetos, lang, max })
+  cacheNoticias = { date: hoje, lang, items: local }
+  return local
+}
+
+/** Versão síncrona para compatibilidade (fallback imediato). */
+export function gerarNoticiasAstrologiaSync({ aspetos = [], lang = 'pt', max = 4 } = {}) {
+  return noticiasLocais({ aspetos, lang, max })
 }

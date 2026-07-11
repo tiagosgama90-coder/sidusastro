@@ -355,6 +355,16 @@ export default {
     personal: 'Para tu Sol y tu Luna',
     returnTomorrow: 'Vuelve mañana - la carta y la frase cambian con el cielo.',
   },
+  notificacoes: {
+    title: 'Notificaciones Diarias Místicas',
+    premiumBadge: '✦ Función Premium ✦',
+    desc: 'Recibe horóscopos personalizados cada día en el móvil, basados en tránsitos reales y tu carta natal.',
+    howTo: 'Cómo usar: pulsa el botón, acepta los permisos del navegador y recibirás una alerta mágica por la mañana.',
+    unlockCta: 'Activar Premium para Desbloquear',
+    statusOn: 'Activado', statusOff: 'Desactivado', statusIdle: 'Pulsa para activar',
+    activate: 'Activar Notificaciones Diarias', deactivate: 'Desactivar Notificaciones',
+    processing: 'Procesando…', blocked: 'Notificaciones bloqueadas. Actívalas en ajustes del navegador.',
+  },
   share: {
     button: 'Compartir mi signo',
     copied: '¡Copiado!',

@@ -355,6 +355,16 @@ export default {
     "personal": "Al tuo Sole e Luna",
     "returnTomorrow": "Torna domani - la carta e la frase cambiano con il cielo."
   },
+  "notificacoes": {
+    "title": "Notifiche Giornaliere Mistiche",
+    "premiumBadge": "✦ Funzione Premium ✦",
+    "desc": "Ricevi oroscopi personalizzati ogni giorno sul telefono, basati su transiti reali e la tua carta natale.",
+    "howTo": "Come usare: tocca il pulsante, accetta i permessi del browser e riceverai un avviso magico al mattino.",
+    "unlockCta": "Attiva Premium per Sbloccare",
+    "statusOn": "Attivo", "statusOff": "Disattivo", "statusIdle": "Tocca per attivare",
+    "activate": "Attiva Notifiche Giornaliere", "deactivate": "Disattiva Notifiche",
+    "processing": "Elaborazione…", "blocked": "Notifiche bloccate. Attivale nelle impostazioni del browser."
+  },
   "share": {
     "button": "Condividi il mio segno",
     "copied": "Copiato!",

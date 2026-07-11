@@ -1,4 +1,4 @@
-import { contentForLang, resolveLocalePack, looksPortuguese } from './i18n/langUtil.js'
+import { contentForLang, looksEnglish } from './i18n/langUtil.js'
 import { translatePlaneta, translateSigno } from './i18n/astro.js'
 import {
   INTERPRETACOES_ES, INTERPRETACOES_IT, INTERPRETACOES_DE, INTERPRETACOES_FR,
@@ -202,47 +202,33 @@ const INTERP_PACKS = {
 }
 
 function mapaInterp(lang) {
-  return resolveLocalePack(
-    lang,
-    INTERP_PACKS,
-    (p) => [
-      p.destino?.[7]?.espiritual,
-      p.destino?.[1]?.espiritual,
-      p.alma?.[7]?.espiritual,
-      p.caminhoVida?.[11]?.espiritual,
-    ].find(Boolean),
-    INTERPRETACOES_EN,
-  )
+  if (lang === 'pt') return INTERPRETACOES_PT
+  if (lang === 'en') return INTERPRETACOES_EN
+  return INTERP_PACKS[lang] || INTERPRETACOES_EN
 }
 
 function mergeInterpBlock(raw, enBlock, lang) {
   if (!raw) return null
 
-  // Se for PT, garantimos 100% que nunca apareçam blocos em inglês por detecção falhada.
-  if (lang === 'pt') {
-    return raw
-  }
+  if (lang === 'pt') return raw
 
-  // Para ES/FR/IT/DE, os packs já estão traduzidos corretamente.
-  // O raw veio do mapaInterp() que já resolveu o locale pack certo.
-  // Não precisamos de detetar inglês - confiamos no pack do idioma.
-  // Apenas se o raw estiver vazio ou inválido é que usamos fallback.
   const fields = ['resumo', 'espiritual', 'pratica', 'reflexao']
   const out = { ...raw }
 
-  // Verifica se o bloco tem conteúdo válido no idioma alvo
-  const hasValidContent = fields.some(f => raw[f] && raw[f].length > 10)
-  
-  // Se o conteúdo for válido, confiamos nele (já veio do pack correto)
-  if (hasValidContent) {
-    return out
+  for (const f of fields) {
+    if (out[f] && lang !== 'en' && looksEnglish(out[f])) {
+      out[f] = null
+    }
   }
 
-  // Fallback: se raw estiver vazio, usa o bloco EN como último recurso
-  for (const f of fields) {
-    if (!out[f] && enBlock?.[f]) {
-      out[f] = enBlock[f]
+  const hasValidContent = fields.some((f) => out[f] && out[f].length > 10)
+  if (hasValidContent) return out
+
+  if (lang === 'en') {
+    for (const f of fields) {
+      if (!out[f] && enBlock?.[f]) out[f] = enBlock[f]
     }
+    return out
   }
 
   return out

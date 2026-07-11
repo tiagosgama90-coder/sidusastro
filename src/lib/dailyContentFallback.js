@@ -1,4 +1,4 @@
-import { SIGNOS_PT, SIGNOS_EN, SIGNO_PT_TO_EN } from './i18n/astro.js'
+import { SIGNOS_PT, SIGNOS_EN, SIGNOS_ES, SIGNOS_IT, SIGNOS_DE, SIGNOS_FR, SIGNO_PT_TO_EN } from './i18n/astro.js'
 
 const SOCIAL_PT = [
   '🌙 {fase} hoje - o céu pede pausa. Pergunta ao Oráculo Sidus (3 grátis) → sidusastro.com',

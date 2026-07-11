@@ -214,7 +214,7 @@ const SIGNIFICADOS_ES = {
 }
 
 const SIGNIFICADOS_IT = {
-  1: 'Leadership, indipendenza e iniziativa. Il cammino chiede coraggio per aprire nuovi cicli.',
+  1: 'Guida, indipendenza e iniziativa. Il cammino chiede coraggio per aprire nuovi cicli.',
   2: 'Cooperazione, sensibilità e diplomazia. L\'armonia nelle relazioni guida la crescita.',
   3: 'Espressione, creatività e comunicazione. La gioia condivisa amplifica lo scopo.',
   4: 'Struttura, disciplina e lavoro costante. Le fondamenta solide sostengono il destino.',
