@@ -217,15 +217,37 @@ function mapaInterp(lang) {
 
 function mergeInterpBlock(raw, enBlock, lang) {
   if (!raw) return null
-  if (lang === 'pt' || !enBlock) return raw
+
+  // Se for PT, garantimos 100% que nunca apareçam blocos em inglês por detecção falhada.
+  if (lang === 'pt') {
+    return raw
+  }
+
+  // Para ES/FR/IT/DE, os packs já estão traduzidos corretamente.
+  // O raw veio do mapaInterp() que já resolveu o locale pack certo.
+  // Não precisamos de detetar inglês - confiamos no pack do idioma.
+  // Apenas se o raw estiver vazio ou inválido é que usamos fallback.
   const fields = ['resumo', 'espiritual', 'pratica', 'reflexao']
   const out = { ...raw }
-  for (const f of fields) {
-    // Se o texto está em inglês, substitui pelo texto do idioma correto
-    if (raw[f] && looksEnglish(raw[f]) && enBlock[f]) out[f] = enBlock[f]
+
+  // Verifica se o bloco tem conteúdo válido no idioma alvo
+  const hasValidContent = fields.some(f => raw[f] && raw[f].length > 10)
+  
+  // Se o conteúdo for válido, confiamos nele (já veio do pack correto)
+  if (hasValidContent) {
+    return out
   }
+
+  // Fallback: se raw estiver vazio, usa o bloco EN como último recurso
+  for (const f of fields) {
+    if (!out[f] && enBlock?.[f]) {
+      out[f] = enBlock[f]
+    }
+  }
+
   return out
 }
+
 
 function interp(tipo, num, lang) {
   const map = mapaInterp(lang)

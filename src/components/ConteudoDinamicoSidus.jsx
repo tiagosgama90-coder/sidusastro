@@ -261,22 +261,83 @@ export function ConteudoDinamicoSidus({ mapaNatal, aspetos = [], isPremium, onUp
         )}
       </div>
 
-      <div style={{ ...vidro, padding: 20, marginBottom: isAdmin ? 16 : 0 }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
+      {/* Carrossel de Notícias Astrológicas - mágico e animado */}
+      <div style={{
+        ...vidro,
+        padding: 0,
+        marginBottom: isAdmin ? 16 : 0,
+        overflow: 'hidden',
+        position: 'relative',
+      }}>
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          padding: '12px 16px',
+          borderBottom: `1px solid ${CORES.vidroBorda}`,
+        }}>
           <span style={{ fontSize: 13, fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase', color: CORES.brancoSuave }}>
             {t('home.astroNewsTitle')}
           </span>
           <span style={{ fontSize: 10, color: '#34D399', fontWeight: 700, textTransform: 'uppercase' }}>{t('home.liveBadge')}</span>
         </div>
-        {noticiasAstro.map((n, i) => (
-          <div key={i} style={{ padding: '10px 0', borderBottom: i < noticiasAstro.length - 1 ? `1px solid ${CORES.vidroBorda}` : 'none' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
-              <span style={{ fontSize: 10, fontWeight: 700, color: CORES.dourado, textTransform: 'uppercase', letterSpacing: '0.06em' }}>{n.tag}</span>
-              {n.hora && <span style={{ fontSize: 10, color: CORES.brancoMuted }}>{n.hora}</span>}
+        
+        {/* Carrossel automático */}
+        <div style={{ position: 'relative', height: 120 }}>
+          {noticiasAstro.map((n, i) => (
+            <div
+              key={i}
+              style={{
+                position: 'absolute',
+                inset: 0,
+                padding: '16px 20px',
+                opacity: 1,
+                animation: `carouselFade 8s infinite`,
+                animationDelay: `${i * 2}s`,
+                pointerEvents: i === 0 ? 'auto' : 'none',
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
+                <span style={{
+                  fontSize: 11,
+                  fontWeight: 700,
+                  color: CORES.dourado,
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.08em',
+                  padding: '2px 8px',
+                  background: 'rgba(223,183,108,0.1)',
+                  borderRadius: 12,
+                }}>{n.tag}</span>
+                {n.hora && <span style={{ fontSize: 10, color: CORES.brancoMuted }}>{n.hora}</span>}
+              </div>
+              <p style={{ fontSize: 13, color: CORES.brancoSuave, lineHeight: 1.6, margin: 0 }}>{n.texto}</p>
             </div>
-            <p style={{ fontSize: 12, color: CORES.brancoSuave, lineHeight: 1.55, margin: 0 }}>{n.texto}</p>
+          ))}
+          
+          {/* Indicadores de carrossel */}
+          <div style={{
+            position: 'absolute',
+            bottom: 12,
+            left: '50%',
+            transform: 'translateX(-50%)',
+            display: 'flex',
+            gap: 6,
+          }}>
+            {noticiasAstro.map((_, i) => (
+              <div
+                key={i}
+                style={{
+                  width: 6,
+                  height: 6,
+                  borderRadius: '50%',
+                  background: i === 0 ? CORES.dourado : 'rgba(255,255,255,0.2)',
+                  animation: `carouselPulse 8s infinite`,
+                  animationDelay: `${i * 2}s`,
+                }}
+              />
+            ))}
           </div>
-        ))}
+        </div>
       </div>
 
       {/* Widget de Notificações Diárias - apenas para utilizadores autenticados */}
