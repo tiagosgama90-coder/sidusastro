@@ -181,7 +181,7 @@ export default {
       },
       numerologia: {
         badge: "Numerología",
-        title: "Vibración espiritual de tu nombre.",
+        title: "Vibración espiritual de tu nombre",
         desc: "Expresión, alma y personalidad: cálculo transparente letra por letra. Cualquier nombre de la A a la Z.",
         pill: "Numerología"
       },
