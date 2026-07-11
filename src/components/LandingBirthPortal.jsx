@@ -94,19 +94,19 @@ function CampoDataPortal({ valor, onChange, onBlur, erro, t }) {
 
   return (
     <div className="landing-portal-field">
-      <label style={labelStyle} className="notranslate">{t('onboarding.birthDate')}</label>
+      <label style={labelStyle}>{t('onboarding.birthDate')}</label>
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 12px 1fr 12px 1.4fr', alignItems: 'center' }}>
         <input ref={diaRef} inputMode="numeric" maxLength={2} placeholder={'DD'} value={dia}
-          onChange={(e) => { const d = String(e.target.value || '').replace(/\D/g, '').slice(0, 2); setDia(d); if (d.length === 2) mesRef.current?.focus() }}
-          onBlur={onBlur} style={mini} className="landing-portal-input" autoComplete="off" />
+          onChange={(e) => { const d = e.target.value.replace(/\D/g, '').slice(0, 2); setDia(d); if (d.length === 2) mesRef.current?.focus() }}
+          onBlur={onBlur} style={mini} className="landing-portal-input" autoComplete="off" translate="no" />
         <span style={{ textAlign: 'center', color: CORES.brancoMuted, fontSize: 18 }}>/</span>
         <input ref={mesRef} inputMode="numeric" maxLength={2} placeholder={'MM'} value={mes}
-          onChange={(e) => { const m = String(e.target.value || '').replace(/\D/g, '').slice(0, 2); setMes(m); if (m.length === 2) anoRef.current?.focus() }}
-          onBlur={onBlur} style={mini} className="landing-portal-input" autoComplete="off" />
+          onChange={(e) => { const m = e.target.value.replace(/\D/g, '').slice(0, 2); setMes(m); if (m.length === 2) anoRef.current?.focus() }}
+          onBlur={onBlur} style={mini} className="landing-portal-input" autoComplete="off" translate="no" />
         <span style={{ textAlign: 'center', color: CORES.brancoMuted, fontSize: 18 }}>/</span>
         <input ref={anoRef} inputMode="numeric" maxLength={4} placeholder={'AAAA'} value={ano}
-          onChange={(e) => { setAno(String(e.target.value || '').replace(/\D/g, '').slice(0, 4)) }}
-          onBlur={onBlur} style={mini} className="landing-portal-input" autoComplete="off" />
+          onChange={(e) => { setAno(e.target.value.replace(/\D/g, '').slice(0, 4)) }}
+          onBlur={onBlur} style={mini} className="landing-portal-input" autoComplete="off" translate="no" />
       </div>
       {erro && <p style={{ margin: '6px 0 0', fontSize: 12, color: '#F87171' }}>{erro}</p>}
     </div>
@@ -371,6 +371,7 @@ export function LandingBirthPortal({ isDesktop, onSaved, onScrollToLogin }) {
                       borderColor: tocado.nome && erros.nome ? 'rgba(248,113,113,0.7)' : CORES.vidroBorda,
                     }}
                     autoComplete="off"
+                    translate="no"
                   />
                 </div>
                 {tocado.nome && erros.nome && <p style={{ margin: '6px 0 0', fontSize: 12, color: '#F87171' }}>{erros.nome}</p>}
@@ -394,6 +395,7 @@ export function LandingBirthPortal({ isDesktop, onSaved, onScrollToLogin }) {
                       borderColor: tocado.hora && erros.hora ? 'rgba(248,113,113,0.7)' : CORES.vidroBorda,
                     }}
                     autoComplete="off"
+                    translate="no"
                   />
                 </div>
                 {tocado.hora && erros.hora && <p style={{ margin: '6px 0 0', fontSize: 12, color: '#F87171' }}>{erros.hora}</p>}
