@@ -121,24 +121,6 @@ function toItemFields(urlToImage) {
   }
 }
 
-async function resolveArticleUrl(url) {
-  if (!url?.startsWith('http')) return url
-  try {
-    const res = await fetch(url, {
-      method: 'GET',
-      redirect: 'follow',
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120.0.0.0 Safari/537.36',
-        Accept: 'text/html,application/xhtml+xml',
-      },
-      signal: AbortSignal.timeout(6000),
-    })
-    return res.url || url
-  } catch {
-    return url
-  }
-}
-
 function extractOgFromHtml(html) {
   const patterns = [
     /<meta[^>]+property=["']og:image(?::secure_url)?["'][^>]+content=["']([^"']+)["']/gi,
@@ -171,24 +153,119 @@ function extractOgFromHtml(html) {
   const articleImg = html.match(/<img[^>]+class=["'][^"']*(?:article|featured|hero|post)[^"']*["'][^>]+src=["'](https?:\/\/[^"']+)["']/i)
   if (articleImg?.[1] && isValidImageUrl(articleImg[1])) return articleImg[1].replace(/&amp;/g, '&')
 
+  const anyImg = html.match(/<img[^>]+src=["'](https?:\/\/[^"']+\.(?:jpg|jpeg|png|webp)[^"']*)["']/i)
+  if (anyImg?.[1] && isValidImageUrl(anyImg[1])) return anyImg[1].replace(/&amp;/g, '&')
+
   return null
 }
 
-async function fetchArticleImage(pageUrl) {
-  const finalUrl = await resolveArticleUrl(pageUrl)
-  if (!finalUrl?.startsWith('http')) return null
+const FETCH_HEADERS = {
+  'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120.0.0.0 Safari/537.36',
+  Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+  'Accept-Language': 'pt-PT,pt;q=0.9,en;q=0.8',
+}
+
+const BATCH_EXECUTE = 'https://news.google.com/_/DotsSplashUi/data/batchexecute'
+
+function isGoogleNewsUrl(url) {
+  return typeof url === 'string' && url.includes('news.google.com') && url.includes('/articles/')
+}
+
+/** Resolve Google News article URL → URL do editor (batchexecute). */
+async function decodeGoogleNewsArticleUrl(articleUrl) {
+  if (!isGoogleNewsUrl(articleUrl)) return articleUrl
   try {
-    const res = await fetch(finalUrl, {
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120.0.0.0 Safari/537.36',
-        Accept: 'text/html,application/xhtml+xml',
-      },
+    const articleId = articleUrl.split('/').pop()?.split('?')[0]
+    if (!articleId) return null
+
+    const pageRes = await fetch(articleUrl, {
+      headers: FETCH_HEADERS,
       redirect: 'follow',
-      signal: AbortSignal.timeout(8000),
+      signal: AbortSignal.timeout(7000),
     })
-    if (!res.ok) return null
-    const html = await res.text()
-    return extractOgFromHtml(html.slice(0, 200000))
+    const pageText = await pageRes.text()
+    const sigMatch = pageText.match(/data-n-a-sg="([^"]+)"/)
+    const tsMatch = pageText.match(/data-n-a-ts="([^"]+)"/)
+    if (!sigMatch || !tsMatch) return null
+
+    const rpcInner = JSON.stringify([
+      'garturlreq',
+      [
+        ['X', 'X', ['X', 'X'], null, null, 1, 1, 'US:en', null, 1,
+          null, null, null, null, null, 0, 1],
+        'X', 'X', 1, [1, 1, 1], 1, 1, null, 0, 0, null, 0,
+      ],
+      articleId,
+      parseInt(tsMatch[1], 10),
+      sigMatch[1],
+    ])
+    const fReq = JSON.stringify([[['Fbv4je', rpcInner, null, 'generic']]])
+
+    const postRes = await fetch(BATCH_EXECUTE, {
+      method: 'POST',
+      headers: {
+        ...FETCH_HEADERS,
+        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+        Referer: 'https://news.google.com/',
+      },
+      body: new URLSearchParams({ 'f.req': fReq }).toString(),
+      signal: AbortSignal.timeout(7000),
+    })
+    let body = await postRes.text()
+    if (body.startsWith(")]}'")) {
+      const lines = body.split('\n')
+      body = lines.slice(1).join('\n').replace(/^\d+\n/, '')
+    }
+    const jsonLine = body.split('\n').find((l) => l.startsWith('[[')) || body.trim()
+    const envelopes = JSON.parse(jsonLine)
+    for (const env of envelopes) {
+      if (Array.isArray(env) && env[0] === 'wrb.fr' && env[1] === 'Fbv4je' && env[2]) {
+        const payload = JSON.parse(env[2])
+        if (payload?.[0] === 'garturlres' && typeof payload[1] === 'string' && payload[1].startsWith('http')) {
+          return payload[1]
+        }
+      }
+    }
+  } catch { /* decode falhou */ }
+  return null
+}
+
+async function fetchHtml(url) {
+  const res = await fetch(url, {
+    headers: FETCH_HEADERS,
+    redirect: 'follow',
+    signal: AbortSignal.timeout(7000),
+  })
+  if (!res.ok) return { html: null, finalUrl: url }
+  return { html: await res.text(), finalUrl: res.url || url }
+}
+
+async function fetchArticleImage(pageUrl) {
+  if (!pageUrl?.startsWith('http')) return null
+  try {
+    let targetUrl = pageUrl
+    if (isGoogleNewsUrl(pageUrl)) {
+      const decoded = await decodeGoogleNewsArticleUrl(pageUrl)
+      if (decoded) targetUrl = decoded
+    }
+
+    const { html, finalUrl } = await fetchHtml(targetUrl)
+    if (html) {
+      const fromPublisher = extractOgFromHtml(html)
+      if (fromPublisher && !fromPublisher.includes('googleusercontent.com')) return fromPublisher
+      if (fromPublisher) return fromPublisher
+    }
+
+    if (isGoogleNewsUrl(pageUrl) && targetUrl === pageUrl) {
+      const { html: gHtml } = await fetchHtml(pageUrl)
+      if (gHtml) return extractOgFromHtml(gHtml)
+    }
+
+    if (finalUrl && finalUrl !== targetUrl && !finalUrl.includes('news.google.com')) {
+      const { html: html2 } = await fetchHtml(finalUrl)
+      if (html2) return extractOgFromHtml(html2)
+    }
+    return null
   } catch {
     return null
   }
@@ -265,20 +342,21 @@ function interleaveByTag(items) {
   return out
 }
 
-/** Preenche urlToImage via og:image/json-ld — nunca inventa stock. */
+async function enrichOne(item) {
+  if (item.urlToImage) return item
+  if (!item.url) return { ...item, ...toItemFields(null) }
+  const fetched = await fetchArticleImage(item.url)
+  return { ...item, ...toItemFields(fetched) }
+}
+
+/** Paralelo (8 de cada vez) — og:image Google News + publisher. */
 async function enrichImages(items) {
-  const out = []
-  for (const item of items) {
-    if (item.urlToImage) {
-      out.push(item)
-      continue
-    }
-    if (!item.url) {
-      out.push({ ...item, ...toItemFields(null) })
-      continue
-    }
-    const fetched = await fetchArticleImage(item.url)
-    out.push({ ...item, ...toItemFields(fetched) })
+  const CONCURRENCY = 4
+  const out = new Array(items.length)
+  for (let i = 0; i < items.length; i += CONCURRENCY) {
+    const batch = items.slice(i, i + CONCURRENCY)
+    const results = await Promise.all(batch.map(enrichOne))
+    results.forEach((r, j) => { out[i + j] = r })
   }
   return out
 }

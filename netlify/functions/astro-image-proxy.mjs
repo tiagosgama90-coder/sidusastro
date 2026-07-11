@@ -2,6 +2,8 @@
 
 const BLOCKED_HOSTS = ['unsplash.com', 'placeholder.com', 'placehold.it', 'via.placeholder.com']
 
+const ALLOWED_CDNS = ['googleusercontent.com', 'ggpht.com', 'gstatic.com']
+
 function isAllowedImageUrl(imgUrl) {
   try {
     const u = new URL(imgUrl)
@@ -20,12 +22,14 @@ export default async (req) => {
   }
 
   try {
-    const origin = new URL(imgUrl).origin
+    const parsed = new URL(imgUrl)
+    const origin = parsed.origin
+    const isGoogleCdn = ALLOWED_CDNS.some((h) => parsed.hostname.includes(h))
     const res = await fetch(imgUrl, {
       headers: {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120.0.0.0 Safari/537.36',
         Accept: 'image/avif,image/webp,image/apng,image/*,*/*',
-        Referer: `${origin}/`,
+        ...(isGoogleCdn ? {} : { Referer: `${origin}/` }),
       },
       redirect: 'follow',
       signal: AbortSignal.timeout(10000),
