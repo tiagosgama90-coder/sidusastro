@@ -76,7 +76,7 @@ function calcularPosicaoPlanetaDia(planeta, data) {
   return (posicaoBase + velocidade * dias_desde_2000) % 360
 }
 
-export function calcularHoroscopoDiarioRealista(signo, data, mapaNatal) {
+export function calcularHoroscopoDiarioRealista(signo, data, mapaNatal, lang = 'pt') {
   const posicoes = {}
   
   const planetas = ['sol', 'lua', 'mercurio', 'venus', 'marte', 'jupiter', 'saturno']
@@ -100,7 +100,7 @@ export function calcularHoroscopoDiarioRealista(signo, data, mapaNatal) {
     }
   }
   
-  const interpretacao = gerarInterpretacaoRealista(signo, aspectos, data)
+  const interpretacao = gerarInterpretacaoRealista(signo, aspectos, data, lang)
   
   return {
     signo,
@@ -111,8 +111,7 @@ export function calcularHoroscopoDiarioRealista(signo, data, mapaNatal) {
   }
 }
 
-function gerarInterpretacaoRealista(signo, aspectos, data) {
-  const lang = 'pt'
+function gerarInterpretacaoRealista(signo, aspectos, data, lang = 'pt') {
   
   const aspectosFavoraveis = aspectos.filter(a => ASPECTOS_FAVORAVEIS.includes(a.tipo))
   const aspectosDesfavoraveis = aspectos.filter(a => ASPECTOS_DESFAVORAVEIS.includes(a.tipo))
@@ -354,6 +353,30 @@ function gerarInterpretacaoRealista(signo, aspectos, data) {
       desfavoravel: (signo) => `Dia de desafios e reflexão para ${signo}. Os trânsitos pedem cautela e paciência. Use esta energia para fortalecer sua resiliência e reavaliar estratégias.`,
       misto: (signo) => `Dia de contrastes para ${signo}. Energias planetárias mistas pedem equilíbrio. Seja estratégico e adapte-se às circunstâncias com flexibilidade.`,
       estavel: (signo) => `Dia estável e produtivo para ${signo}. Trânsitos planetários equilibrados favorecem a rotina. Foco e organização trazem resultados concretos.`,
+    },
+    es: {
+      favoravel: (signo) => `Día de expansión y logros para ${signo}. Los tránsitos planetarios favorecen tus objetivos. Aprovecha las energías cósmicas para avanzar con confianza.`,
+      desfavoravel: (signo) => `Día de desafíos y reflexión para ${signo}. Los tránsitos piden cautela y paciencia. Usa esta energía para fortalecer tu resiliencia y reevaluar estrategias.`,
+      misto: (signo) => `Día de contrastes para ${signo}. Energías planetarias mixtas piden equilibrio. Sé estratégico y adáptate a las circunstancias con flexibilidad.`,
+      estavel: (signo) => `Día estable y productivo para ${signo}. Tránsitos planetarios equilibrados favorecen la rutina. El foco y la organización traen resultados concretos.`,
+    },
+    it: {
+      favoravel: (signo) => `Giorno di espansione e realizzazioni per ${signo}. I transiti planetari favoriscono i tuoi obiettivi. Approfitta delle energie cosmiche per avanzare con fiducia.`,
+      desfavoravel: (signo) => `Giorno di sfide e riflessione per ${signo}. I transiti chiedono cautela e pazienza. Usa questa energia per rafforzare la tua resilienza e rivalutare le strategie.`,
+      misto: (signo) => `Giorno di contrasti per ${signo}. Energie planetarie miste chiedono equilibrio. Sii strategico e adattati alle circostanze con flessibilità.`,
+      estavel: (signo) => `Giorno stabile e produttivo per ${signo}. Transiti planetari equilibrati favoriscono la routine. Focus e organizzazione portano risultati concreti.`,
+    },
+    de: {
+      favoravel: (signo) => `Tag der Expansion und Erfolge für ${signo}. Die Planetentransite begünstigen deine Ziele. Nutze die kosmischen Energien, um selbstbewusst voranzuschreiten.`,
+      desfavoravel: (signo) => `Tag der Herausforderungen und Reflexion für ${signo}. Die Transite verlangen Vorsicht und Geduld. Nutze diese Energie, um deine Widerstandsfähigkeit zu stärken und Strategien zu überdenken.`,
+      misto: (signo) => `Tag der Kontraste für ${signo}. Gemischte Planetenenergien verlangen Gleichgewicht. Sei strategisch und passe dich den Umständen mit Flexibilität an.`,
+      estavel: (signo) => `Stabiler und produktiver Tag für ${signo}. Ausgewogene Planetentransite begünstigen die Routine. Fokus und Organisation bringen konkrete Ergebnisse.`,
+    },
+    fr: {
+      favoravel: (signo) => `Jour d'expansion et de réalisations pour ${signo}. Les transits planétaires favorisent vos objectifs. Profitez des énergies cosmiques pour avancer avec confiance.`,
+      desfavoravel: (signo) => `Jour de défis et de réflexion pour ${signo}. Les transits demandent prudence et patience. Utilisez cette énergie pour renforcer votre résilience et réévaluer vos stratégies.`,
+      misto: (signo) => `Jour de contrastes pour ${signo}. Des énergies planétaires mixtes demandent de l'équilibre. Soyez stratégique et adaptez-vous aux circonstances avec flexibilité.`,
+      estavel: (signo) => `Jour stable et productif pour ${signo}. Des transits planétaires équilibrés favorisent la routine. Concentration et organisation apportent des résultats concrets.`,
     },
   }
   
