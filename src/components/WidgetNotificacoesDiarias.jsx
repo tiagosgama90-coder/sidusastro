@@ -10,14 +10,24 @@ const CORES = {
   fundo: 'rgba(11, 7, 30, 0.6)',
 }
 
-export function WidgetNotificacoesDiarias({ user, isPremium }) {
+export function WidgetNotificacoesDiarias({ user, isPremium, onUpgrade }) {
   const { permission, subscription, loading, inscreverNotificacoes, cancelarNotificacoes, verificarStatus } = useNotificacoesDiarias(user, isPremium)
   const [ativo, setAtivo] = useState(false)
   const [verificado, setVerificado] = useState(false)
+  const [brilho, setBrilho] = useState(false)
 
   useEffect(() => {
     verificarStatus().then(setVerificado)
   }, [verificarStatus])
+
+  // Animação de brilho místico
+  useEffect(() => {
+    if (!isPremium) return
+    const interval = setInterval(() => {
+      setBrilho(v => !v)
+    }, 3000)
+    return () => clearInterval(interval)
+  }, [isPremium])
 
   const handleToggle = async () => {
     if (ativo) {
@@ -32,37 +42,83 @@ export function WidgetNotificacoesDiarias({ user, isPremium }) {
   if (!isPremium) {
     return (
       <div style={{
-        background: CORES.fundo,
-        border: `1px solid ${CORES.vidroBorda}`,
-        borderRadius: 16,
-        padding: '20px 24px',
-        backdropFilter: 'blur(10px)',
+        background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(223, 183, 108, 0.05) 100%)',
+        border: '1px solid rgba(223, 183, 108, 0.3)',
+        borderRadius: 20,
+        padding: '24px 28px',
+        backdropFilter: 'blur(12px)',
+        position: 'relative',
+        overflow: 'hidden',
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12 }}>
+        {/* Efeito de brilho místico */}
+        <div style={{
+          position: 'absolute',
+          top: -40,
+          right: -40,
+          width: 120,
+          height: 120,
+          borderRadius: '50%',
+          background: 'radial-gradient(circle, rgba(139, 92, 246, 0.2) 0%, transparent 70%)',
+          animation: 'pulse 3s ease-in-out infinite',
+          pointerEvents: 'none',
+        }} />
+        
+        <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 14, position: 'relative' }}>
           <div style={{
-            width: 40,
-            height: 40,
+            width: 48,
+            height: 48,
             borderRadius: '50%',
             background: `linear-gradient(135deg, ${CORES.roxo} 0%, ${CORES.dourado} 100%)`,
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            fontSize: 20,
+            fontSize: 24,
+            boxShadow: '0 0 30px rgba(139, 92, 246, 0.4)',
+            animation: 'glow 2s ease-in-out infinite',
           }}>
             ✧
           </div>
           <div>
-            <h3 style={{ margin: 0, fontSize: 16, fontWeight: 700, color: CORES.branco }}>
-              Notificações Diárias
+            <h3 style={{ margin: 0, fontSize: 18, fontWeight: 700, color: CORES.branco, letterSpacing: '0.02em' }}>
+              Notificações Diárias Místicas
             </h3>
-            <p style={{ margin: '4px 0 0', fontSize: 12, color: CORES.brancoMuted }}>
-              Disponível apenas para Premium
+            <p style={{ margin: '4px 0 0', fontSize: 12, color: CORES.dourado, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+              ✦ Recurso Premium ✦
             </p>
           </div>
         </div>
-        <p style={{ fontSize: 13, color: CORES.brancoMuted, lineHeight: 1.6 }}>
-          Ative o Premium para receber horóscopos personalizados todos os dias no seu telemóvel.
+        
+        <p style={{ fontSize: 14, color: CORES.brancoMuted, lineHeight: 1.7, marginBottom: 18 }}>
+          Receba horóscopos personalizados todos os dias no seu telemóvel. 
+          Baseado em trânsitos planetários reais e sua carta natal.
         </p>
+
+        <button
+          onClick={onUpgrade}
+          style={{
+            width: '100%',
+            padding: '14px 20px',
+            background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.3) 0%, rgba(223, 183, 108, 0.2) 100%)',
+            border: '1px solid rgba(223, 183, 108, 0.5)',
+            borderRadius: 14,
+            color: CORES.branco,
+            fontSize: 15,
+            fontWeight: 600,
+            cursor: 'pointer',
+            transition: 'all 0.3s ease',
+            boxShadow: '0 0 20px rgba(139, 92, 246, 0.2)',
+          }}
+          onMouseEnter={(e) => {
+            e.target.style.transform = 'translateY(-2px)'
+            e.target.style.boxShadow = '0 0 30px rgba(139, 92, 246, 0.4)'
+          }}
+          onMouseLeave={(e) => {
+            e.target.style.transform = 'translateY(0)'
+            e.target.style.boxShadow = '0 0 20px rgba(139, 92, 246, 0.2)'
+          }}
+        >
+          ✧ Ativar Premium para Desbloquear ✧
+        </button>
       </div>
     )
   }
