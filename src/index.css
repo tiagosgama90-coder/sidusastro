@@ -185,7 +185,7 @@ code {
   background: var(--code-bg);
 }
 
-/* Premium VIP - ocultar anúncios manuais e Auto ads do Google */
+/* Premium VIP - ocultar anÃºncios manuais e Auto ads do Google */
 html.sidus-no-ads ins.adsbygoogle,
 html.sidus-no-ads .adsbygoogle,
 html.sidus-no-ads iframe[id^="google_ads_iframe"],
@@ -211,7 +211,7 @@ html.sidus-no-ads .google-auto-placed {
   box-shadow: 0 0 16px rgba(223, 183, 108, 0.25);
 }
 
-/* Navbar desktop — marca fixa; nav com scroll horizontal se necessário (texto completo) */
+/* Navbar desktop â marca fixa; nav com scroll horizontal se necessÃ¡rio (texto completo) */
 .desktop-nav-brand {
   display: flex;
   align-items: center;
@@ -311,14 +311,14 @@ html.sidus-no-ads .google-auto-placed {
   }
 }
 
-/* Landing - portal de nascimento (pré-login) */
+/* Landing - portal de nascimento (prÃ©-login) */
 .landing-portal-root {
   position: relative;
   min-width: 0;
   overflow-x: clip;
 }
 
-/* Vidro landing - mesma lógica que navbar (blur 20px + fundo escuro semitransparente) */
+/* Vidro landing - mesma lÃ³gica que navbar (blur 20px + fundo escuro semitransparente) */
 .landing-glass,
 .landing-portal-card,
 .landing-auth-hero,
@@ -663,7 +663,7 @@ html.sidus-no-ads .google-auto-placed {
   }
 }
 
-/* Céu ao vivo - dados reais */
+/* CÃ©u ao vivo - dados reais */
 .landing-portal-sky-live {
   position: relative;
   margin-bottom: 14px;
@@ -733,7 +733,7 @@ html.sidus-no-ads .google-auto-placed {
   margin-top: 1px;
 }
 
-/* Ticker planetas - rodapé do céu ao vivo */
+/* Ticker planetas - rodapÃ© do cÃ©u ao vivo */
 .landing-portal-sky-ticker {
   position: relative;
   margin-top: 6px;
@@ -786,7 +786,7 @@ html.sidus-no-ads .google-auto-placed {
   100% { transform: translateX(-50%); }
 }
 
-/* Céu ao vivo - faixa no topo */
+/* CÃ©u ao vivo - faixa no topo */
 .landing-sky-top {
   width: 100%;
   margin: 0 0 16px;
@@ -840,7 +840,7 @@ html.sidus-no-ads .google-auto-placed {
   letter-spacing: 0.02em;
 }
 
-/* Rodapé místico - ferramentas (ticker) */
+/* RodapÃ© mÃ­stico - ferramentas (ticker) */
 .landing-portal-tools-footer {
   position: relative;
   margin-top: 14px;
@@ -912,7 +912,7 @@ html.sidus-no-ads .google-auto-placed {
   100% { transform: translateX(-50%); }
 }
 
-/* Título e intro - hero centrado acima dos formulários */
+/* TÃ­tulo e intro - hero centrado acima dos formulÃ¡rios */
 .landing-auth-hero {
   width: 100%;
   max-width: 560px;
@@ -983,7 +983,7 @@ html.sidus-no-ads .google-auto-placed {
   background: rgba(255, 255, 255, 0.03);
 }
 
-/* Mobile - hero e welcome iguais ao desktop (abaixo do céu ao vivo / roda) */
+/* Mobile - hero e welcome iguais ao desktop (abaixo do cÃ©u ao vivo / roda) */
 @media (max-width: 639px) {
   .landing-auth-layout,
   .landing-auth-layout--mobile {
@@ -1155,7 +1155,7 @@ html.sidus-no-ads .google-auto-placed {
   overflow-x: clip;
 }
 
-/* Fundo cósmico - estrelas + hendecagrama (fixo atrás do conteúdo) */
+/* Fundo cÃ³smico - estrelas + hendecagrama (fixo atrÃ¡s do conteÃºdo) */
 .cosmic-bg-root {
   position: fixed;
   inset: 0;
@@ -1217,7 +1217,7 @@ html.sidus-no-ads .google-auto-placed {
   display: none;
 }
 
-/* Topo landing fixo - mesma lógica que navbar (conteúdo/cósmico desfoca ao scroll) */
+/* Topo landing fixo - mesma lÃ³gica que navbar (conteÃºdo/cÃ³smico desfoca ao scroll) */
 .landing-auth-sticky-top {
   position: fixed;
   top: 0;
@@ -1237,7 +1237,7 @@ html.sidus-no-ads .google-auto-placed {
   border-bottom: 1px solid rgba(223, 183, 108, 0.22);
 }
 
-/* Mobile login - idioma fixo acima do céu ao vivo */
+/* Mobile login - idioma fixo acima do cÃ©u ao vivo */
 .landing-auth-sticky-top--mobile {
   margin: 0 0 10px;
 }
@@ -1303,7 +1303,7 @@ html.sidus-no-ads .google-auto-placed {
   min-width: 0;
 }
 
-/* Tablet+ - formulários lado a lado */
+/* Tablet+ - formulÃ¡rios lado a lado */
 @media (min-width: 640px) {
   .landing-auth-layout {
     max-width: min(880px, calc(100vw - 48px));
@@ -1345,7 +1345,7 @@ html.sidus-no-ads .google-auto-placed {
   }
 }
 
-/* ── Desktop (md+): compactação above-the-fold ── */
+/* ââ Desktop (md+): compactaÃ§Ã£o above-the-fold ââ */
 @media (min-width: 768px) {
   .landing-auth-sticky-top {
     max-width: min(900px, calc(100vw - 48px));
@@ -1614,7 +1614,7 @@ html.sidus-no-ads .google-auto-placed {
   color: rgba(255, 255, 255, 0.62);
 }
 
-/* Carrossel de Not�cias Astrol�gicas - anima��o m�gica */
+/* Carrossel de Notícias Astrológicas - animação mágica */
 @keyframes carouselFade {
   0%, 100% { opacity: 0; transform: translateY(10px); }
   5%, 95% { opacity: 1; transform: translateY(0); }
