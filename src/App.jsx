@@ -43,6 +43,7 @@ import { InterpretacaoMapa } from './components/InterpretacaoMapa'
 import { MandalaNatal } from './components/MandalaNatal.jsx'
 import { BussolaCosmica, Sinastria, Biorritmo, DiarioAstral, Numerologia, InterpretacaoSonhos, HorasIguais } from './components/FerramentasPremium'
 import { ConteudoDinamicoSidus } from './components/ConteudoDinamicoSidus'
+import { AstroNewsCarousel } from './components/AstroNewsCarousel'
 import { LandingCosmicBackground } from './components/LandingCosmicBackground.jsx'
 import { LandingBirthPortal } from './components/LandingBirthPortal.jsx'
 import { LandingFaq } from './components/LandingFaq.jsx'
@@ -1895,6 +1896,8 @@ function Dashboard({ nome, mapaNatal, ceuAgora, aspetos, onOraculo, onPrivacidad
           </div>
         </div>
       )}
+
+      <AstroNewsCarousel aspetos={aspetos} />
 
       <div style={{ ...estilos.vidro, padding: 24, marginBottom: 20 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>

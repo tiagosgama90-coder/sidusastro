@@ -1,4 +1,4 @@
-import { useMemo, useState, useEffect } from 'react'
+import { useMemo, useState } from 'react'
 import { SIGNOS } from '../lib/astrologia.js'
 import { SIGNOS_PT, SIGNOS_EN, SIGNOS_ES, SIGNOS_IT, SIGNOS_DE, SIGNOS_FR } from '../lib/i18n/astro.js'
 import { gerarHoroscoposTodosSignos } from '../lib/horoscopoDiarioTransitos.js'
@@ -24,7 +24,7 @@ function idxUserSigno(userSignoNome) {
 }
 
 /**
- * Grelha compacta de signos — texto só ao clicar (signo do utilizador destacado).
+ * Grelha compacta — só o signo do utilizador mostra texto ao carregar; restantes ao clicar.
  */
 export function HoroscopoColunasSignos({
   isPremium,
@@ -37,8 +37,8 @@ export function HoroscopoColunasSignos({
 }) {
   const { lang, t } = useLanguage()
   const userIdx = idxUserSigno(userSignoNome)
-
   const signList = SIGN_LISTS[lang] || SIGNOS_EN
+  const userSignName = userIdx >= 0 ? signList[userIdx] : null
 
   const horoscopos = useMemo(() => {
     const gerados = gerarHoroscoposTodosSignos({
@@ -57,19 +57,11 @@ export function HoroscopoColunasSignos({
     }))
   }, [signList, ceuAgora, aspetos, faseLua, lang, packHoroscopes, userIdx])
 
-  const defaultSel = useMemo(() => {
-    if (userIdx >= 0) return signList[userIdx] || null
-    return horoscopos[0]?.nome || null
-  }, [userIdx, signList, horoscopos])
-
-  const [selecionado, setSelecionado] = useState(defaultSel)
-
-  useEffect(() => {
-    setSelecionado(defaultSel)
-  }, [defaultSel])
+  const [panelSign, setPanelSign] = useState(userSignName)
 
   const lista = isPremium ? horoscopos : horoscopos.filter((h) => h.isUser)
-  const activo = horoscopos.find((h) => h.nome === selecionado) || lista[0]
+  const activo = panelSign ? horoscopos.find((h) => h.nome === panelSign) : null
+  const showPanel = Boolean(activo)
 
   return (
     <div style={{ marginTop: 16 }}>
@@ -79,13 +71,13 @@ export function HoroscopoColunasSignos({
         gap: 8,
       }}>
         {lista.map((h) => {
-          const sel = selecionado === h.nome
+          const sel = panelSign === h.nome
           const destaque = h.isUser
           return (
             <button
               key={h.nome}
               type="button"
-              onClick={() => setSelecionado(h.nome)}
+              onClick={() => setPanelSign(h.nome)}
               style={{
                 background: sel || destaque
                   ? 'linear-gradient(145deg, rgba(139,92,246,0.2), rgba(223,183,108,0.12))'
@@ -120,7 +112,7 @@ export function HoroscopoColunasSignos({
         })}
       </div>
 
-      {activo && (
+      {showPanel && (
         <div style={{
           marginTop: 12,
           padding: '14px 16px',

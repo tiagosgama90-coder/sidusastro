@@ -90,9 +90,9 @@ function noticiasLocais({ aspetos, lang, max }) {
 let cacheNoticias = { date: null, lang: null, items: null }
 
 /** @returns {Promise<{ tag: string, texto: string, hora: string|null, imagem: string|null, url: string|null }[]>} */
-export async function gerarNoticiasAstrologia({ aspetos = [], lang = 'pt', max = 4 } = {}) {
+export async function gerarNoticiasAstrologia({ aspetos = [], lang = 'pt', max = 4, forceRefresh = false } = {}) {
   const hoje = new Date().toISOString().slice(0, 10)
-  if (cacheNoticias.date === hoje && cacheNoticias.lang === lang && cacheNoticias.items?.length) {
+  if (!forceRefresh && cacheNoticias.date === hoje && cacheNoticias.lang === lang && cacheNoticias.items?.length) {
     return cacheNoticias.items.slice(0, max)
   }
 

@@ -1,41 +1,61 @@
-/** RSS de notícias astrológicas — SAPO, Google News PT e outras fontes. */
+/** RSS astrologia/horóscopo — fontes PT + internacionais, imagens reais por artigo. */
 
 const RSS_HL = {
   pt: 'pt-PT', en: 'en-GB', es: 'es-ES', it: 'it-IT', de: 'de-DE', fr: 'fr-FR',
 }
 
-const TAG_BY_LANG = {
-  pt: 'Astrologia', en: 'Astrology', es: 'Astrología', it: 'Astrologia', de: 'Astrologie', fr: 'Astrologie',
-}
+/** Título/descrição deve conter astrologia ou horóscopo (estrito). */
+const ASTRO_STRICT = /(?:astrolog|hor[oó]scop|zod[ií]ac|signo\s+solar|previs(?:ão|ões)\s+(?:astrol|diária|semanal)|mapa\s+astral|cart[a]?\s+astral|lua\s+(?:nova|cheia|minguante)|trânsit|transit|mercury\s+retrograde|mercúrio\s+retrógrado)/i
 
-const ASTRO_KEYWORDS = /astrolog|hor[oó]scop|zodi|lua|signo|cosmo|tarot|mapa astral/i
+const REJECT_GENERIC = /(?:futebol|desporto|sport|pol[ií]tica|guerra|elei[cç]|receita\s+de|recipe|bolsa|crypto|bitcoin|crime|morte\s+de|nascimento\s+de\s+beb)/i
 
 const FALLBACK_IMAGES = [
-  'https://images.unsplash.com/photo-1462331940025-496dfbfc7564?w=320&h=200&fit=crop',
-  'https://images.unsplash.com/photo-1419242902214-272b3f66ee7a?w=320&h=200&fit=crop',
-  'https://images.unsplash.com/photo-1444703686981-a3abbc4d4fe3?w=320&h=200&fit=crop',
-  'https://images.unsplash.com/photo-1502134249126-9f3755a50d78?w=320&h=200&fit=crop',
-  'https://images.unsplash.com/photo-1464802686167-b939a6910659?w=320&h=200&fit=crop',
+  'https://images.unsplash.com/photo-1462331940025-496dfbfc7564?w=400&h=240&fit=crop&q=80',
+  'https://images.unsplash.com/photo-1419242902214-272b3f66ee7a?w=400&h=240&fit=crop&q=80',
+  'https://images.unsplash.com/photo-1444703686981-a3abbc4d4fe3?w=400&h=240&fit=crop&q=80',
+  'https://images.unsplash.com/photo-1502134249126-9f3755a50d78?w=400&h=240&fit=crop&q=80',
+  'https://images.unsplash.com/photo-1464802686167-b939a6910659?w=400&h=240&fit=crop&q=80',
+  'https://images.unsplash.com/photo-1519682337058-a94d519337bc?w=400&h=240&fit=crop&q=80',
+  'https://images.unsplash.com/photo-1532692760748-279ddad41a82?w=400&h=240&fit=crop&q=80',
+  'https://images.unsplash.com/photo-1506443432602-ac2fcd6f54e0?w=400&h=240&fit=crop&q=80',
 ]
 
+function hashStr(s) {
+  let h = 0
+  for (let i = 0; i < s.length; i++) h = ((h << 5) - h + s.charCodeAt(i)) | 0
+  return Math.abs(h)
+}
+
+function googleNewsUrl(query, hl, gl) {
+  const ceid = `${gl}:${hl.split('-')[0]}`
+  return `https://news.google.com/rss/search?q=${encodeURIComponent(query)}&hl=${hl}&gl=${gl}&ceid=${ceid}`
+}
+
+/** Fontes mistas PT + internacional (sempre para lang=pt). */
 function feedsForLang(lang) {
   const hl = RSS_HL[lang] || RSS_HL.en
   const gl = lang === 'pt' ? 'PT' : lang === 'es' ? 'ES' : lang === 'de' ? 'DE' : lang === 'fr' ? 'FR' : lang === 'it' ? 'IT' : 'GB'
-  const ceid = `${gl}:${hl.split('-')[0]}`
+
+  const astroQuery = '(astrologia OR horóscopo OR horóscopo+dia OR zodíaco OR "mapa astral")'
+  const intlQuery = '(astrology OR horoscope OR zodiac OR "daily horoscope")'
 
   if (lang === 'pt') {
     return [
-      { url: `https://news.google.com/rss/search?q=astrologia+site:sapo.pt&hl=${hl}&gl=${gl}&ceid=${ceid}`, tag: 'SAPO', filter: false },
-      { url: `https://news.google.com/rss/search?q=horóscopo+site:sapo.pt&hl=${hl}&gl=${gl}&ceid=${ceid}`, tag: 'SAPO', filter: false },
-      { url: `https://news.google.com/rss/search?q=astrologia+site:expresso.pt&hl=${hl}&gl=${gl}&ceid=${ceid}`, tag: 'Expresso', filter: false },
-      { url: `https://news.google.com/rss/search?q=astrologia&hl=${hl}&gl=${gl}&ceid=${ceid}`, tag: 'Astrologia', filter: false },
-      { url: 'https://lifestyle.sapo.pt/rss', tag: 'SAPO', filter: true },
+      { url: googleNewsUrl(`${astroQuery}+when:7d`, 'pt-PT', 'PT'), tag: 'Portugal' },
+      { url: googleNewsUrl(`(${astroQuery})+site:sapo.pt+when:7d`, 'pt-PT', 'PT'), tag: 'SAPO' },
+      { url: googleNewsUrl(`(${astroQuery})+site:expresso.pt+when:7d`, 'pt-PT', 'PT'), tag: 'Expresso' },
+      { url: googleNewsUrl(`(${astroQuery})+site:publico.pt+when:7d`, 'pt-PT', 'PT'), tag: 'Público' },
+      { url: googleNewsUrl(`${intlQuery}+when:7d`, 'en-US', 'US'), tag: 'International' },
+      { url: googleNewsUrl(`${intlQuery}+when:7d`, 'en-GB', 'GB'), tag: 'UK' },
+      { url: googleNewsUrl('(astrología OR horóscopo)+when:7d', 'es-ES', 'ES'), tag: 'España' },
+      { url: googleNewsUrl('(astrologie OR horoscope)+when:7d', 'fr-FR', 'FR'), tag: 'France' },
     ]
   }
 
-  const q = { en: 'astrology', es: 'astrología', it: 'astrologia', de: 'Astrologie', fr: 'astrologie' }[lang] || 'astrology'
+  const q = { en: intlQuery, es: '(astrología OR horóscopo)', it: '(astrologia OR oroscopo)', de: 'Astrologie', fr: '(astrologie OR horoscope)' }[lang] || intlQuery
   return [
-    { url: `https://news.google.com/rss/search?q=${encodeURIComponent(q)}&hl=${hl}&gl=${gl}&ceid=${ceid}`, tag: TAG_BY_LANG[lang], filter: false },
+    { url: googleNewsUrl(`${q}+when:7d`, hl, gl), tag: { en: 'International', es: 'España', it: 'Italia', de: 'Deutschland', fr: 'France' }[lang] || 'News' },
+    { url: googleNewsUrl(`${intlQuery}+when:7d`, 'en-US', 'US'), tag: 'International' },
   ]
 }
 
@@ -50,25 +70,21 @@ function decodeXml(str) {
     .replace(/&gt;/g, '>')
     .replace(/&quot;/g, '"')
     .replace(/&apos;/g, "'")
-    .replace(/&rsquo;/g, "'")
-    .replace(/&ldquo;/g, '"')
-    .replace(/&rdquo;/g, '"')
     .trim()
 }
 
 function cleanText(str) {
-  return decodeXml(str)
-    .replace(/<[^>]+>/g, ' ')
-    .replace(/\u00a0/g, ' ')
-    .replace(/—/g, '-')
-    .replace(/\s+/g, ' ')
-    .trim()
+  return decodeXml(str).replace(/<[^>]+>/g, ' ').replace(/\u00a0/g, ' ').replace(/—/g, '-').replace(/\s+/g, ' ').trim()
 }
 
 function cleanTitle(title) {
-  let t = cleanText(title)
-  t = t.replace(/\s[-–—|]\s+[A-Za-zÀ-ÿ0-9][\wÀ-ÿ\s.&]{1,30}$/, '').trim()
-  return t
+  return cleanText(title).replace(/\s[-–—|]\s+[A-Za-zÀ-ÿ0-9][\wÀ-ÿ\s.&]{1,35}$/, '').trim()
+}
+
+function isAstroNews(title, description) {
+  const blob = `${title} ${description}`.toLowerCase()
+  if (REJECT_GENERIC.test(blob)) return false
+  return ASTRO_STRICT.test(blob)
 }
 
 function extractTag(block, tag) {
@@ -78,49 +94,73 @@ function extractTag(block, tag) {
 }
 
 function extractImage(block, description) {
+  const src = `${block} ${description || ''}`
   const patterns = [
-    /media:thumbnail[^>]+url=["'](https?:\/\/[^"']+)["']/i,
-    /media:content[^>]+url=["'](https?:\/\/[^"']+)["']/i,
-    /<enclosure[^>]+url=["'](https?:\/\/[^"']+)["']/i,
-    /<img[^>]+src=["'](https?:\/\/[^"']+)["']/i,
+    /media:thumbnail[^>]+url=["'](https?:\/\/[^"']+)["']/gi,
+    /media:content[^>]+url=["'](https?:\/\/[^"']+)["']/gi,
+    /<enclosure[^>]+url=["'](https?:\/\/[^"']+)["']/gi,
+    /<img[^>]+src=["'](https?:\/\/[^"']+)["']/gi,
   ]
   for (const re of patterns) {
-    const m = block.match(re) || String(description || '').match(re)
-    if (m?.[1] && !m[1].includes('favicon') && !m[1].includes('pixel')) return m[1]
+    let m
+    while ((m = re.exec(src)) !== null) {
+      const u = m[1]
+      if (u && !u.includes('favicon') && !u.includes('pixel') && !u.includes('1x1') && !u.includes('logo')) {
+        return u.replace(/&amp;/g, '&')
+      }
+    }
   }
   return null
 }
 
-function proxyImage(rawUrl) {
+function proxyImage(rawUrl, seed) {
   if (!rawUrl) return null
-  return `/.netlify/functions/astro-image-proxy?url=${encodeURIComponent(rawUrl)}`
+  return `/.netlify/functions/astro-image-proxy?url=${encodeURIComponent(rawUrl)}&seed=${seed}`
 }
 
-async function fetchOgImage(pageUrl, timeoutMs = 3000) {
-  if (!pageUrl?.startsWith('http')) return null
+async function resolveArticleUrl(url) {
+  if (!url?.startsWith('http')) return url
   try {
-    const ctrl = new AbortController()
-    const timer = setTimeout(() => ctrl.abort(), timeoutMs)
-    const res = await fetch(pageUrl, {
-      signal: ctrl.signal,
+    const res = await fetch(url, {
+      method: 'GET',
+      redirect: 'follow',
       headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120.0.0.0 Safari/537.36',
+        Accept: 'text/html',
+      },
+      signal: AbortSignal.timeout(4000),
+    })
+    return res.url || url
+  } catch {
+    return url
+  }
+}
+
+async function fetchOgImage(pageUrl) {
+  const finalUrl = await resolveArticleUrl(pageUrl)
+  if (!finalUrl?.startsWith('http')) return null
+  try {
+    const res = await fetch(finalUrl, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120.0.0.0 Safari/537.36',
         Accept: 'text/html,application/xhtml+xml',
       },
       redirect: 'follow',
+      signal: AbortSignal.timeout(5000),
     })
-    clearTimeout(timer)
     if (!res.ok) return null
-    const html = (await res.text()).slice(0, 120000)
+    const html = (await res.text()).slice(0, 150000)
     const patterns = [
       /<meta[^>]+property=["']og:image(?::secure_url)?["'][^>]+content=["']([^"']+)["']/i,
       /<meta[^>]+content=["']([^"']+)["'][^>]+property=["']og:image(?::secure_url)?["']/i,
       /<meta[^>]+name=["']twitter:image(?::src)?["'][^>]+content=["']([^"']+)["']/i,
-      /<link[^>]+rel=["']image_src["'][^>]+href=["']([^"']+)["']/i,
+      /<meta[^>]+content=["']([^"']+)["'][^>]+name=["']twitter:image["']/i,
     ]
     for (const re of patterns) {
       const m = html.match(re)
-      if (m?.[1] && !m[1].includes('favicon')) return m[1].replace(/&amp;/g, '&')
+      if (m?.[1] && !m[1].includes('favicon') && !m[1].includes('logo')) {
+        return m[1].replace(/&amp;/g, '&')
+      }
     }
     return null
   } catch {
@@ -128,10 +168,8 @@ async function fetchOgImage(pageUrl, timeoutMs = 3000) {
   }
 }
 
-function parseRssItems(xml, max, lang, tagOverride, filterAstro) {
+function parseRssItems(xml, max, tag, locale) {
   const items = []
-  const locale = RSS_HL[lang] || RSS_HL.en
-  const defaultTag = tagOverride || TAG_BY_LANG[lang] || TAG_BY_LANG.en
   const blocks = xml.split(/<item[\s>]/i).slice(1)
 
   for (const raw of blocks) {
@@ -141,32 +179,33 @@ function parseRssItems(xml, max, lang, tagOverride, filterAstro) {
     const link = extractTag(block, 'link').trim()
     const pubDate = extractTag(block, 'pubDate')
     const descRaw = extractTag(block, 'description')
-    const description = cleanText(descRaw).slice(0, 180)
-    if (!title) continue
-    if (filterAstro && !ASTRO_KEYWORDS.test(`${title} ${description}`)) continue
+    const description = cleanText(descRaw).slice(0, 200)
+    if (!title || !isAstroNews(title, description)) continue
 
     const rawImg = extractImage(block, descRaw)
+    const seed = hashStr(link || title)
     items.push({
-      tag: defaultTag,
+      tag,
       texto: title,
       resumo: description,
       hora: pubDate ? new Date(pubDate).toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' }) : null,
-      imagemRaw: rawImg,
-      imagem: rawImg ? proxyImage(rawImg) : null,
+      imagem: rawImg ? proxyImage(rawImg, seed) : null,
+      imagemOriginal: rawImg,
       url: link || null,
+      seed,
     })
   }
   return items
 }
 
-async function fetchFeed(feed, lang, max) {
+async function fetchFeed(feed, max, locale) {
   try {
     const res = await fetch(feed.url, {
       headers: { 'User-Agent': 'SidusAstro/1.0 (astro-news)' },
+      signal: AbortSignal.timeout(8000),
     })
     if (!res.ok) return []
-    const xml = await res.text()
-    return parseRssItems(xml, max, lang, feed.tag, feed.filter)
+    return parseRssItems(await res.text(), max, feed.tag, locale)
   } catch {
     return []
   }
@@ -175,50 +214,73 @@ async function fetchFeed(feed, lang, max) {
 function dedupeItems(items) {
   const seen = new Set()
   return items.filter((item) => {
-    const key = item.texto.toLowerCase().slice(0, 60)
+    const key = item.texto.toLowerCase().replace(/\W+/g, '').slice(0, 50)
     if (seen.has(key)) return false
     seen.add(key)
     return true
   })
 }
 
+/** Intercalar tags diferentes para misturar fontes. */
+function interleaveByTag(items) {
+  const buckets = {}
+  for (const item of items) {
+    if (!buckets[item.tag]) buckets[item.tag] = []
+    buckets[item.tag].push(item)
+  }
+  const tags = Object.keys(buckets)
+  const out = []
+  let i = 0
+  while (out.length < items.length) {
+    const tag = tags[i % tags.length]
+    const next = buckets[tag]?.shift()
+    if (next) out.push(next)
+    i += 1
+    if (tags.every((t) => !buckets[t]?.length)) break
+  }
+  return out
+}
+
 async function enrichImages(items) {
-  const out = [...items]
-  await Promise.all(
-    out.map(async (item, i) => {
-      if (item.imagem) return
-      const og = await fetchOgImage(item.url)
-      if (og) {
-        out[i] = { ...item, imagemRaw: og, imagem: proxyImage(og) }
-      } else {
-        out[i] = { ...item, imagem: proxyImage(FALLBACK_IMAGES[i % FALLBACK_IMAGES.length]) }
-      }
-    }),
-  )
-  return out.map(({ imagemRaw, ...rest }) => rest)
+  const out = []
+  for (const item of items) {
+    if (item.imagem) {
+      out.push(item)
+      continue
+    }
+    const og = item.url ? await fetchOgImage(item.url) : null
+    if (og) {
+      out.push({ ...item, imagem: proxyImage(og, item.seed) })
+    } else {
+      const fb = FALLBACK_IMAGES[item.seed % FALLBACK_IMAGES.length]
+      out.push({ ...item, imagem: proxyImage(fb, item.seed) })
+    }
+  }
+  return out.map(({ imagemOriginal, seed, ...rest }) => rest)
 }
 
 export default async (req) => {
   const url = new URL(req.url)
   const lang = url.searchParams.get('lang') || 'pt'
-  const max = Math.min(Number(url.searchParams.get('max')) || 20, 30)
+  const max = Math.min(Number(url.searchParams.get('max')) || 25, 30)
   const today = new Date().toISOString().slice(0, 10)
+  const locale = RSS_HL[lang] || RSS_HL.en
 
   try {
     const feeds = feedsForLang(lang)
-    const batches = await Promise.all(feeds.map((f) => fetchFeed(f, lang, max)))
-    let items = dedupeItems(batches.flat()).slice(0, max)
+    const batches = await Promise.all(feeds.map((f) => fetchFeed(f, 12, locale)))
+    let items = interleaveByTag(dedupeItems(batches.flat())).slice(0, max)
     items = await enrichImages(items)
 
     return new Response(JSON.stringify({
       items,
-      source: 'sapo-google-rss',
+      source: 'astro-mixed-rss',
       date: today,
       fetchedAt: new Date().toISOString(),
     }), {
       headers: {
         'Content-Type': 'application/json',
-        'Cache-Control': 'public, max-age=1800, s-maxage=1800',
+        'Cache-Control': 'public, max-age=900, s-maxage=900',
       },
     })
   } catch (err) {
