@@ -3,7 +3,7 @@ import { Calendar, Sparkles, ChevronDown, ChevronUp, Lock, MessageCircle, Copy, 
 import { useLanguage } from '../lib/i18n/LanguageContext.jsx'
 import { fetchDailyContent } from '../lib/apiDailyContent.js'
 import { buildLocalDailyContent, signoHoroscopeKey } from '../lib/dailyContentFallback.js'
-import { SIGNOS_PT, SIGNOS_EN } from '../lib/i18n/astro.js'
+import { SIGNOS_PT, SIGNOS_EN, SIGNOS_ES, SIGNOS_IT, SIGNOS_DE, SIGNOS_FR } from '../lib/i18n/astro.js'
 import { calcularFaseLua } from '../lib/faseLua.js'
 import { gerarNoticiasAstrologia } from '../lib/astroNews.js'
 import { emailTemPremiumPrivilegiado } from '../lib/premiumAccess.js'
@@ -60,7 +60,14 @@ export function ConteudoDinamicoSidus({ mapaNatal, aspetos = [], isPremium, onUp
     return () => { cancelled = true }
   }, [faseAtual.nome, transitSummary, lang])
 
-  const signList = lang !== 'pt' ? SIGNOS_EN : SIGNOS_PT
+  const signList = {
+    pt: SIGNOS_PT,
+    en: SIGNOS_EN,
+    es: SIGNOS_ES,
+    it: SIGNOS_IT,
+    de: SIGNOS_DE,
+    fr: SIGNOS_FR,
+  }[lang] || SIGNOS_EN
   const horoMap = pack?.horoscopes?.[lang] || {}
   const userKey = signoHoroscopeKey(mapaNatal?.solar?.nome, lang)
   const userHoro = userKey ? horoMap[userKey] : null

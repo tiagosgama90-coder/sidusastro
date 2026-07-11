@@ -31,7 +31,36 @@ function templateLine(sign, fase, seed, lang) {
     `${sign}: balance and rest if your body asks.`,
     `Practical focus. ${sign}: consolidate what you started.`,
   ]
-  const msgs = lang !== 'pt' ? msgsEn : msgsPt
+  const msgsEs = [
+    `${fase}: escucha el corazón antes de decidir. ${sign} en foco hoy.`,
+    `Energía mutable en el aire. ${sign}: pequeños pasos traen claridad.`,
+    `Día para alinear intención y acción. ${sign}: conversación honesta abre puertas.`,
+    `${sign}: equilibrio y descanso si el cuerpo lo pide.`,
+    `Enfoque práctico. ${sign}: consolida lo que ya empezaste.`,
+  ]
+  const msgsIt = [
+    `${fase}: ascolta il cuore prima di decidere. ${sign} in primo piano oggi.`,
+    `Energia mutevole nell'aria. ${sign}: piccoli passi portano chiarezza.`,
+    `Giorno per allineare intenzione e azione. ${sign}: conversazione onesta apre porte.`,
+    `${sign}: equilibrio e riposo se il corpo lo chiede.`,
+    `Focus pratico. ${sign}: consolida quello che hai già iniziato.`,
+  ]
+  const msgsDe = [
+    `${fase}: höre auf dein Herz, bevor du entscheidest. ${sign} steht heute im Fokus.`,
+    `Veränderliche Energie liegt in der Luft. ${sign}: kleine Schritte bringen Klarheit.`,
+    `Tag, um Absicht und Handlung in Einklang zu bringen. ${sign}: ehrliches Gespräch öffnet Türen.`,
+    `${sign}: Gleichgewicht und Ruhe, wenn der Körper danach verlangt.`,
+    `Praktischer Fokus. ${sign}: konsolidiere, was du bereits begonnen hast.`,
+  ]
+  const msgsFr = [
+    `${fase}: écoutez votre cœur avant de décider. ${sign} est à l'honneur aujourd'hui.`,
+    `Énergie mutable dans l'air. ${sign}: les petits pas apportent la clarté.`,
+    `Journée pour aligner intention et action. ${sign}: une conversation honnête ouvre des portes.`,
+    `${sign}: équilibre et repos si le corps le demande.`,
+    `Focus pratique. ${sign}: consolidez ce que vous avez déjà commencé.`,
+  ]
+  const map = { pt: msgsPt, en: msgsEn, es: msgsEs, it: msgsIt, de: msgsDe, fr: msgsFr }
+  const msgs = map[lang] || msgsEn
   return msgs[(seed + sign.length) % msgs.length]
 }
 
@@ -44,6 +73,10 @@ export function buildLocalDailyContent({ fasePt, faseEn, lang = 'pt' }) {
   const horoscopes = {
     pt: Object.fromEntries(SIGNOS_PT.map((s) => [s, templateLine(s, fasePt, seed, 'pt')])),
     en: Object.fromEntries(SIGNOS_EN.map((s, i) => [s, templateLine(s, faseEn, seed + i, 'en')])),
+    es: Object.fromEntries(SIGNOS_ES.map((s, i) => [s, templateLine(s, fasePt, seed + i, 'es')])),
+    it: Object.fromEntries(SIGNOS_IT.map((s, i) => [s, templateLine(s, fasePt, seed + i, 'it')])),
+    de: Object.fromEntries(SIGNOS_DE.map((s, i) => [s, templateLine(s, fasePt, seed + i, 'de')])),
+    fr: Object.fromEntries(SIGNOS_FR.map((s, i) => [s, templateLine(s, fasePt, seed + i, 'fr')])),
   }
 
   const social = {
