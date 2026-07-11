@@ -221,7 +221,8 @@ function mergeInterpBlock(raw, enBlock, lang) {
   const fields = ['resumo', 'espiritual', 'pratica', 'reflexao']
   const out = { ...raw }
   for (const f of fields) {
-    if (raw[f] && looksPortuguese(raw[f]) && enBlock[f]) out[f] = enBlock[f]
+    // Se o texto está em inglês, substitui pelo texto do idioma correto
+    if (raw[f] && looksEnglish(raw[f]) && enBlock[f]) out[f] = enBlock[f]
   }
   return out
 }
