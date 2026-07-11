@@ -8,6 +8,7 @@ import { calcularFaseLua } from '../lib/faseLua.js'
 import { gerarNoticiasAstrologia } from '../lib/astroNews.js'
 import { emailTemPremiumPrivilegiado } from '../lib/premiumAccess.js'
 import { dateLocale } from '../lib/i18n/langUtil.js'
+import { calcularHoroscopoDiarioRealista, gerarHoroscopoDiarioTodosSignos } from '../lib/horoscopoDiario.js'
 
 const CORES = {
   dourado: '#DFB76C',
@@ -68,9 +69,17 @@ export function ConteudoDinamicoSidus({ mapaNatal, aspetos = [], isPremium, onUp
     de: SIGNOS_DE,
     fr: SIGNOS_FR,
   }[lang] || SIGNOS_EN
+  
+  // Horóscopo realista baseado em trânsitos planetários
+  const horoscopoRealista = useMemo(() => {
+    if (!mapaNatal?.solar?.nome) return null
+    const hoje = new Date().toISOString().slice(0, 10)
+    return calcularHoroscopoDiarioRealista(mapaNatal.solar.nome, hoje, mapaNatal)
+  }, [mapaNatal])
+  
   const horoMap = pack?.horoscopes?.[lang] || {}
   const userKey = signoHoroscopeKey(mapaNatal?.solar?.nome, lang)
-  const userHoro = userKey ? horoMap[userKey] : null
+  const userHoro = horoscopoRealista?.interpretacao?.resumo || (userKey ? horoMap[userKey] : null)
   const social = isAdmin ? pack?.social?.[lang] : null
   const noticiasAstro = useMemo(
     () => gerarNoticiasAstrologia({ aspetos, lang, max: 4 }),
@@ -111,13 +120,71 @@ export function ConteudoDinamicoSidus({ mapaNatal, aspetos = [], isPremium, onUp
           <>
             {mapaNatal?.solar?.nome && userHoro ? (
               <div style={{
-                background: 'rgba(223,183,108,0.1)', borderRadius: 12, padding: 14, marginBottom: 12,
-                border: '1px solid rgba(223,183,108,0.25)',
+                background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.08) 0%, rgba(223, 183, 108, 0.08) 100%)',
+                borderRadius: 16, padding: 18, marginBottom: 12,
+                border: '1px solid rgba(223, 183, 108, 0.25)',
+                position: 'relative',
+                overflow: 'hidden',
               }}>
-                <div style={{ fontSize: 11, color: CORES.dourado, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 6 }}>
+                {/* Efeito de brilho místico */}
+                <div style={{
+                  position: 'absolute', top: -30, right: -30, width: 100, height: 100,
+                  borderRadius: '50%', background: 'radial-gradient(circle, rgba(139, 92, 246, 0.15) 0%, transparent 70%)',
+                  pointerEvents: 'none',
+                }} />
+                
+                <div style={{ fontSize: 11, color: CORES.dourado, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 8, position: 'relative' }}>
                   {t('home.yourSign')} · {ts(mapaNatal.solar.nome)} {mapaNatal.solar.simbolo}
                 </div>
-                <p style={{ fontSize: 13, color: CORES.brancoSuave, lineHeight: 1.55, margin: 0 }}>{userHoro}</p>
+                
+                {/* Resumo principal */}
+                <div style={{
+                  fontSize: 14, color: CORES.brancoSuave, lineHeight: 1.7, marginBottom: 12,
+                  padding: '12px 16px', background: 'rgba(139, 92, 246, 0.06)',
+                  borderLeft: `2px solid #8B5CF6`, borderRadius: '0 8px 8px 0',
+                  position: 'relative',
+                }}>
+                  {userHoro}
+                </div>
+
+                {/* Aspectos do dia */}
+                {horoscopoRealista?.interpretacao?.detalhes && horoscopoRealista.interpretacao.detalhes.length > 0 && (
+                  <div style={{ marginTop: 12, position: 'relative' }}>
+                    <div style={{
+                      fontSize: 10, color: CORES.dourado, textTransform: 'uppercase',
+                      letterSpacing: '0.08em', marginBottom: 8,
+                      display: 'flex', alignItems: 'center', gap: 8,
+                    }}>
+                      <div style={{ flex: 1, height: 1, background: CORES.vidroBorda }} />
+                      {t('home.activeAspects')}
+                      <div style={{ flex: 1, height: 1, background: CORES.vidroBorda }} />
+                    </div>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                      {horoscopoRealista.interpretacao.detalhes.slice(0, 3).map((detalhe, i) => {
+                        const aspecto = horoscopoRealista.aspectos[i]
+                        const corAspecto = aspecto?.tipo === 'trino' || aspecto?.tipo === 'sextil'
+                          ? 'rgba(52, 211, 153, 0.5)'
+                          : aspecto?.tipo === 'quadratura' || aspecto?.tipo === 'oposicao'
+                          ? 'rgba(248, 113, 113, 0.5)'
+                          : CORES.vidroBorda
+                        
+                        return (
+                          <div key={i} style={{
+                            display: 'flex', alignItems: 'flex-start', gap: 8,
+                            padding: '8px 10px', background: 'rgba(255, 255, 255, 0.02)',
+                            borderRadius: 8, border: `1px solid ${corAspecto}`,
+                            fontSize: 11, color: CORES.brancoMuted, lineHeight: 1.5,
+                          }}>
+                            <span style={{ color: CORES.dourado, fontSize: 14, lineHeight: 1, marginTop: 1 }}>
+                              {aspecto?.tipo === 'trino' ? '△' : aspecto?.tipo === 'sextil' ? '✧' : aspecto?.tipo === 'quadratura' ? '□' : '◇'}
+                            </span>
+                            <span style={{ flex: 1 }}>{detalhe}</span>
+                          </div>
+                        )
+                      })}
+                    </div>
+                  </div>
+                )}
               </div>
             ) : (
               <p style={{ fontSize: 12, color: CORES.brancoMuted, margin: '0 0 12px', lineHeight: 1.5 }}>
@@ -146,12 +213,17 @@ export function ConteudoDinamicoSidus({ mapaNatal, aspetos = [], isPremium, onUp
                 </button>
                 {showAll && (
                   <div style={{ marginTop: 12 }}>
-                    {signList.map((sign) => (
-                      <div key={sign} style={{ padding: '8px 0', borderBottom: `1px solid ${CORES.vidroBorda}` }}>
-                        <div style={{ fontSize: 12, fontWeight: 600, color: CORES.branco, marginBottom: 2 }}>{sign}</div>
-                        <div style={{ fontSize: 12, color: CORES.brancoMuted, lineHeight: 1.45 }}>{horoMap[sign] || '-'}</div>
-                      </div>
-                    ))}
+                    {signList.map((sign) => {
+                      const signoData = gerarHoroscopoDiarioTodosSignos(new Date().toISOString().slice(0, 10), lang)?.horoscopes?.[lang]?.[sign]
+                      const signoHoro = signoData?.interpretacao?.resumo || horoMap[sign] || '-'
+                      
+                      return (
+                        <div key={sign} style={{ padding: '10px 0', borderBottom: `1px solid ${CORES.vidroBorda}` }}>
+                          <div style={{ fontSize: 12, fontWeight: 600, color: CORES.branco, marginBottom: 4 }}>{sign}</div>
+                          <div style={{ fontSize: 12, color: CORES.brancoMuted, lineHeight: 1.5 }}>{signoHoro}</div>
+                        </div>
+                      )
+                    })}
                   </div>
                 )}
               </>
