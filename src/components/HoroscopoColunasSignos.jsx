@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useState, useEffect } from 'react'
 import { SIGNOS } from '../lib/astrologia.js'
 import { SIGNOS_PT, SIGNOS_EN, SIGNOS_ES, SIGNOS_IT, SIGNOS_DE, SIGNOS_FR } from '../lib/i18n/astro.js'
 import { gerarHoroscoposTodosSignos } from '../lib/horoscopoDiarioTransitos.js'
@@ -10,14 +10,21 @@ const CORES = {
   brancoMuted: 'rgba(255,255,255,0.55)',
   brancoSuave: 'rgba(255,255,255,0.85)',
   vidroBorda: 'rgba(223, 183, 108, 0.22)',
+  roxo: '#8B5CF6',
 }
 
 const SIGN_LISTS = {
   pt: SIGNOS_PT, en: SIGNOS_EN, es: SIGNOS_ES, it: SIGNOS_IT, de: SIGNOS_DE, fr: SIGNOS_FR,
 }
 
+function idxUserSigno(userSignoNome) {
+  if (!userSignoNome) return -1
+  const n = userSignoNome === 'Áries' ? 'Carneiro' : userSignoNome
+  return SIGNOS_PT.indexOf(n)
+}
+
 /**
- * Colunas com horóscopo completo por signo — trânsitos reais do céu de hoje.
+ * Grelha compacta de signos — texto só ao clicar (signo do utilizador destacado).
  */
 export function HoroscopoColunasSignos({
   isPremium,
@@ -29,8 +36,8 @@ export function HoroscopoColunasSignos({
   packHoroscopes = {},
 }) {
   const { lang, t } = useLanguage()
+  const userIdx = idxUserSigno(userSignoNome)
 
-  const hoje = useMemo(() => new Date().toISOString().slice(0, 10), [])
   const signList = SIGN_LISTS[lang] || SIGNOS_EN
 
   const horoscopos = useMemo(() => {
@@ -46,54 +53,100 @@ export function HoroscopoColunasSignos({
       ...h,
       simbolo: SIGNOS[i]?.simbolo || '✦',
       resumo: h.texto,
+      isUser: i === userIdx,
     }))
-  }, [signList, ceuAgora, aspetos, faseLua, lang, packHoroscopes, hoje])
+  }, [signList, ceuAgora, aspetos, faseLua, lang, packHoroscopes, userIdx])
 
-  const visiveis = isPremium ? horoscopos : horoscopos.filter((h) => {
-    if (!userSignoNome) return false
-    const idxUser = SIGNOS_PT.indexOf(userSignoNome === 'Áries' ? 'Carneiro' : userSignoNome)
-    return idxUser >= 0 && idxUser === h.signoIndex
-  })
+  const defaultSel = useMemo(() => {
+    if (userIdx >= 0) return signList[userIdx] || null
+    return horoscopos[0]?.nome || null
+  }, [userIdx, signList, horoscopos])
+
+  const [selecionado, setSelecionado] = useState(defaultSel)
+
+  useEffect(() => {
+    setSelecionado(defaultSel)
+  }, [defaultSel])
+
+  const lista = isPremium ? horoscopos : horoscopos.filter((h) => h.isUser)
+  const activo = horoscopos.find((h) => h.nome === selecionado) || lista[0]
 
   return (
     <div style={{ marginTop: 16 }}>
       <div style={{
         display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
-        gap: 12,
+        gridTemplateColumns: 'repeat(auto-fill, minmax(72px, 1fr))',
+        gap: 8,
       }}>
-        {(isPremium ? horoscopos : visiveis).map((h) => (
-          <article
-            key={h.nome}
-            style={{
-              background: 'rgba(255,255,255,0.03)',
-              border: `1px solid ${CORES.vidroBorda}`,
-              borderRadius: 14,
-              padding: '16px 14px',
-              textAlign: 'left',
-            }}
-          >
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
-              <span style={{
-                fontSize: 32,
+        {lista.map((h) => {
+          const sel = selecionado === h.nome
+          const destaque = h.isUser
+          return (
+            <button
+              key={h.nome}
+              type="button"
+              onClick={() => setSelecionado(h.nome)}
+              style={{
+                background: sel || destaque
+                  ? 'linear-gradient(145deg, rgba(139,92,246,0.2), rgba(223,183,108,0.12))'
+                  : 'rgba(255,255,255,0.03)',
+                border: `1px solid ${destaque ? 'rgba(223,183,108,0.55)' : sel ? 'rgba(139,92,246,0.5)' : CORES.vidroBorda}`,
+                borderRadius: 12,
+                padding: '10px 6px',
+                cursor: 'pointer',
+                textAlign: 'center',
+                transition: 'all 0.25s ease',
+                boxShadow: destaque ? '0 0 12px rgba(223,183,108,0.25)' : 'none',
+              }}
+            >
+              <div style={{
+                fontSize: 24,
                 lineHeight: 1,
-                filter: 'drop-shadow(0 0 6px rgba(223,183,108,0.4))',
+                marginBottom: 4,
+                filter: destaque ? 'drop-shadow(0 0 6px rgba(223,183,108,0.5))' : 'none',
               }}>
                 {h.simbolo}
-              </span>
-              <div style={{ fontSize: 14, fontWeight: 700, color: CORES.branco }}>{h.nome}</div>
-            </div>
-            <p style={{
-              fontSize: 12,
-              color: CORES.brancoSuave,
-              lineHeight: 1.65,
-              margin: 0,
-            }}>
-              {h.resumo}
-            </p>
-          </article>
-        ))}
+              </div>
+              <div style={{
+                fontSize: 9,
+                fontWeight: destaque ? 700 : 600,
+                color: destaque ? CORES.dourado : CORES.branco,
+                lineHeight: 1.2,
+              }}>
+                {h.nome}
+              </div>
+            </button>
+          )
+        })}
       </div>
+
+      {activo && (
+        <div style={{
+          marginTop: 12,
+          padding: '14px 16px',
+          background: 'rgba(139,92,246,0.08)',
+          border: `1px solid ${activo.isUser ? 'rgba(223,183,108,0.4)' : 'rgba(139,92,246,0.3)'}`,
+          borderRadius: 12,
+          borderLeft: `3px solid ${activo.isUser ? CORES.dourado : CORES.roxo}`,
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+            <span style={{ fontSize: 22 }}>{activo.simbolo}</span>
+            <span style={{ fontSize: 14, fontWeight: 700, color: CORES.branco }}>{activo.nome}</span>
+            {activo.isUser && (
+              <span style={{
+                fontSize: 9, color: CORES.dourado, textTransform: 'uppercase',
+                letterSpacing: '0.08em', padding: '2px 6px',
+                background: 'rgba(223,183,108,0.12)', borderRadius: 8,
+              }}>
+                {t('home.yourSign')}
+              </span>
+            )}
+          </div>
+          <p style={{ fontSize: 12, color: CORES.brancoSuave, lineHeight: 1.65, margin: 0 }}>
+            {activo.resumo}
+          </p>
+        </div>
+      )}
 
       {!isPremium && (
         <button

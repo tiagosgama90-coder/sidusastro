@@ -1,6 +1,8 @@
-/** Notícias astrológicas reais via RSS (Google News) — cache diário. */
+/** Notícias astrológicas reais via RSS — cache diário. */
 
 import { translatePlaneta, translateAspecto } from './i18n/astro.js'
+import { localeTag, isPt } from './i18n/langUtil.js'
+import { calcularFaseLua } from './faseLua.js'
 
 function limparTextoNoticia(str) {
   if (!str) return ''
@@ -13,6 +15,8 @@ function limparTextoNoticia(str) {
     .replace(/&apos;/g, "'")
     .replace(/<[^>]+>/g, '')
     .replace(/\u00a0/g, ' ')
+    .replace(/—/g, '-')
+    .replace(/–/g, '-')
     .replace(/\s+/g, ' ')
     .trim()
 }
@@ -24,8 +28,6 @@ function sanitizarItem(item) {
     resumo: limparTextoNoticia(item.resumo),
   }
 }
-import { localeTag, isPt } from './i18n/langUtil.js'
-import { calcularFaseLua } from './faseLua.js'
 
 const RSS_QUERIES = {
   pt: 'astrologia',
@@ -56,21 +58,21 @@ function transitoDestaque(aspetos, lang) {
   const pB = translatePlaneta(a.planetaB, lang)
   const asp = translateAspecto(a.aspecto, lang)
   if (isPt(lang)) {
-    return `Trânsito activo: ${pA} ${asp} ${pB} (orbe ${a.orbe}) - energia em movimento no céu neste momento.`
+    return `Trânsito activo: ${pA} ${asp} ${pB} - energia em movimento no céu neste momento.`
   }
   if (lang === 'es') {
-    return `Tránsito activo: ${pA} ${asp} ${pB} (orbe ${a.orbe}) - energía en movimiento en el cielo ahora mismo.`
+    return `Tránsito activo: ${pA} ${asp} ${pB} - energía en movimiento en el cielo ahora mismo.`
   }
   if (lang === 'it') {
-    return `Transito attivo: ${pA} ${asp} ${pB} (orbe ${a.orbe}) - energia in movimento nel cielo in questo momento.`
+    return `Transito attivo: ${pA} ${asp} ${pB} - energia in movimento nel cielo in questo momento.`
   }
   if (lang === 'de') {
-    return `Aktiver Transit: ${pA} ${asp} ${pB} (Orbis ${a.orbe}) - Energie in Bewegung am Himmel jetzt.`
+    return `Aktiver Transit: ${pA} ${asp} ${pB} - Energie in Bewegung am Himmel jetzt.`
   }
   if (lang === 'fr') {
-    return `Transit actif : ${pA} ${asp} ${pB} (orbe ${a.orbe}) - énergie en mouvement dans le ciel en ce moment.`
+    return `Transit actif : ${pA} ${asp} ${pB} - énergie en mouvement dans le ciel en ce moment.`
   }
-  return `Active transit: ${pA} ${asp} ${pB} (orb ${a.orbe}) - energy in motion in the sky right now.`
+  return `Active transit: ${pA} ${asp} ${pB} - energy in motion in the sky right now.`
 }
 
 function noticiasLocais({ aspetos, lang, max }) {

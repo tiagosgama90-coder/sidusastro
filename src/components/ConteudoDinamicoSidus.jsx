@@ -29,16 +29,26 @@ const vidro = {
   border: `1px solid ${CORES.vidroBorda}`,
 }
 
+const newsBtnStyle = {
+  width: 32, height: 32, borderRadius: '50%',
+  border: `1px solid ${CORES.vidroBorda}`,
+  background: 'rgba(255,255,255,0.05)',
+  color: CORES.dourado, cursor: 'pointer',
+  display: 'flex', alignItems: 'center', justifyContent: 'center',
+}
+
 function formatarHoje(lang) {
   return new Date().toLocaleDateString(dateLocale(lang), { day: 'numeric', month: 'long', year: 'numeric' })
 }
+
+const VISIBLE_NEWS = 5
 
 export function ConteudoDinamicoSidus({ mapaNatal, ceuAgora = [], aspetos = [], isPremium, onUpgrade, onOraculo, userEmail, user }) {
   const { lang, t, ts, tp, ta } = useLanguage()
   const [pack, setPack] = useState(null)
   const [copied, setCopied] = useState(false)
   const [noticiasAstro, setNoticiasAstro] = useState([])
-  const [newsSlide, setNewsSlide] = useState(0)
+  const [newsPage, setNewsPage] = useState(0)
 
   const isAdmin = emailTemPremiumPrivilegiado({ email: userEmail })
   const faseAtual = useMemo(() => calcularFaseLua(new Date(), lang), [lang])
@@ -97,27 +107,22 @@ export function ConteudoDinamicoSidus({ mapaNatal, ceuAgora = [], aspetos = [], 
   useEffect(() => {
     let cancelled = false
     ;(async () => {
-      const items = await gerarNoticiasAstrologia({ aspetos, lang, max: 6 })
+      const items = await gerarNoticiasAstrologia({ aspetos, lang, max: 20 })
       if (!cancelled) setNoticiasAstro(items)
     })()
     return () => { cancelled = true }
   }, [aspetos, lang])
 
-  useEffect(() => {
-    if (noticiasAstro.length <= 1) return undefined
-    const id = setInterval(() => {
-      setNewsSlide((s) => (s + 1) % noticiasAstro.length)
-    }, 8000)
-    return () => clearInterval(id)
-  }, [noticiasAstro.length])
+  const newsTotalPages = Math.max(1, Math.ceil(noticiasAstro.length / VISIBLE_NEWS))
+  const newsSlice = noticiasAstro.slice(newsPage * VISIBLE_NEWS, newsPage * VISIBLE_NEWS + VISIBLE_NEWS)
 
   const newsPrev = useCallback(() => {
-    setNewsSlide((s) => (s - 1 + noticiasAstro.length) % noticiasAstro.length)
-  }, [noticiasAstro.length])
+    setNewsPage((p) => (p - 1 + newsTotalPages) % newsTotalPages)
+  }, [newsTotalPages])
 
   const newsNext = useCallback(() => {
-    setNewsSlide((s) => (s + 1) % noticiasAstro.length)
-  }, [noticiasAstro.length])
+    setNewsPage((p) => (p + 1) % newsTotalPages)
+  }, [newsTotalPages])
 
   const handleCopy = async () => {
     if (!social) return
@@ -137,6 +142,92 @@ export function ConteudoDinamicoSidus({ mapaNatal, ceuAgora = [], aspetos = [], 
       }}>
         <Calendar size={14} />
         <span>{t('home.updatedToday')} · {formatarHoje(lang)}</span>
+      </div>
+
+      {/* Notícias — horizontal, visível no topo */}
+      <div style={{ ...vidro, padding: 0, marginBottom: 16, overflow: 'hidden' }}>
+        <div style={{
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          padding: '10px 14px', borderBottom: `1px solid ${CORES.vidroBorda}`,
+        }}>
+          <span style={{ fontSize: 12, fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase', color: CORES.brancoSuave }}>
+            {t('home.astroNewsTitle')}
+          </span>
+          <span style={{ fontSize: 9, color: '#34D399', fontWeight: 700, textTransform: 'uppercase' }}>{t('home.liveBadge')}</span>
+        </div>
+
+        {noticiasAstro.length === 0 ? (
+          <p style={{ padding: '16px 14px', fontSize: 12, color: CORES.brancoMuted, margin: 0 }}>{t('home.loadingContent')}</p>
+        ) : (
+          <div style={{ padding: '12px 10px' }}>
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: `repeat(${Math.min(VISIBLE_NEWS, newsSlice.length)}, minmax(0, 1fr))`,
+              gap: 8,
+            }}>
+              {newsSlice.map((n, i) => (
+                <article key={`${n.url || n.texto}-${newsPage}-${i}`} style={{ minWidth: 0 }}>
+                  <a
+                    href={n.url || '#'}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{ textDecoration: 'none', display: 'block' }}
+                    onClick={(e) => { if (!n.url) e.preventDefault() }}
+                  >
+                    <div style={{
+                      width: '100%',
+                      height: 72,
+                      borderRadius: 8,
+                      overflow: 'hidden',
+                      border: `1px solid ${CORES.vidroBorda}`,
+                      background: 'linear-gradient(135deg, rgba(139,92,246,0.12), rgba(223,183,108,0.08))',
+                      marginBottom: 6,
+                    }}>
+                      <img
+                        src={n.imagem || ''}
+                        alt=""
+                        style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                        loading="lazy"
+                        onError={(e) => {
+                          e.currentTarget.src = '/favicon.svg'
+                          e.currentTarget.style.objectFit = 'contain'
+                          e.currentTarget.style.padding = '12px'
+                        }}
+                      />
+                    </div>
+                    <span style={{
+                      fontSize: 8, fontWeight: 700, color: CORES.dourado,
+                      textTransform: 'uppercase', letterSpacing: '0.06em',
+                    }}>{n.tag}</span>
+                    <p style={{
+                      fontSize: 11, color: CORES.brancoSuave, lineHeight: 1.4,
+                      margin: '3px 0 0', fontWeight: 600,
+                      display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden',
+                    }}>{n.texto}</p>
+                  </a>
+                </article>
+              ))}
+            </div>
+
+            {newsTotalPages > 1 && (
+              <div style={{
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                gap: 12, marginTop: 10, paddingTop: 8,
+                borderTop: `1px solid ${CORES.vidroBorda}`,
+              }}>
+                <button type="button" onClick={newsPrev} aria-label="Anterior" style={newsBtnStyle}>
+                  <ChevronLeft size={18} />
+                </button>
+                <span style={{ fontSize: 10, color: CORES.brancoMuted }}>
+                  {newsPage + 1} / {newsTotalPages}
+                </span>
+                <button type="button" onClick={newsNext} aria-label="Seguinte" style={newsBtnStyle}>
+                  <ChevronRight size={18} />
+                </button>
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       <div style={{ ...vidro, padding: 20, marginBottom: 16 }}>
@@ -198,7 +289,6 @@ export function ConteudoDinamicoSidus({ mapaNatal, ceuAgora = [], aspetos = [], 
         )}
       </div>
 
-      {/* Widget de notificações diárias — Premium interactivo */}
       {(userEmail || user?.uid) && (
         <div style={{ marginBottom: 16 }}>
           <WidgetNotificacoesDiarias
@@ -208,134 +298,6 @@ export function ConteudoDinamicoSidus({ mapaNatal, ceuAgora = [], aspetos = [], 
           />
         </div>
       )}
-
-      {/* Carrossel de notícias astrológicas — coluna em baixo com setas */}
-      <div style={{
-        ...vidro,
-        padding: 0,
-        marginBottom: 16,
-        overflow: 'hidden',
-      }}>
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          padding: '12px 16px',
-          borderBottom: `1px solid ${CORES.vidroBorda}`,
-        }}>
-          <span style={{ fontSize: 13, fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase', color: CORES.brancoSuave }}>
-            {t('home.astroNewsTitle')}
-          </span>
-          <span style={{ fontSize: 10, color: '#34D399', fontWeight: 700, textTransform: 'uppercase' }}>{t('home.liveBadge')}</span>
-        </div>
-
-        {noticiasAstro.length === 0 ? (
-          <p style={{ padding: '20px 16px', fontSize: 12, color: CORES.brancoMuted, margin: 0 }}>{t('home.loadingContent')}</p>
-        ) : (
-          <div style={{ padding: '16px' }}>
-            {noticiasAstro.map((n, i) => (
-              <article
-                key={`${n.url || n.texto}-${i}`}
-                style={{
-                  display: newsSlide === i ? 'flex' : 'none',
-                  flexDirection: 'column',
-                  gap: 12,
-                }}
-              >
-                <div style={{
-                  width: '100%',
-                  height: 180,
-                  borderRadius: 12,
-                  overflow: 'hidden',
-                  border: `1px solid ${CORES.vidroBorda}`,
-                  background: 'linear-gradient(135deg, rgba(139,92,246,0.15), rgba(223,183,108,0.1))',
-                  position: 'relative',
-                }}>
-                  {n.imagem ? (
-                    <img
-                      src={n.imagem}
-                      alt=""
-                      style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
-                      loading="lazy"
-                      referrerPolicy="no-referrer"
-                      onError={(e) => { e.currentTarget.style.display = 'none' }}
-                    />
-                  ) : (
-                    <div style={{
-                      width: '100%', height: '100%',
-                      display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      fontSize: 48, color: CORES.dourado,
-                    }}>✦</div>
-                  )}
-                </div>
-                <div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
-                    <span style={{
-                      fontSize: 10, fontWeight: 700, color: CORES.dourado,
-                      textTransform: 'uppercase', letterSpacing: '0.08em',
-                      padding: '2px 8px', background: 'rgba(223,183,108,0.1)', borderRadius: 12,
-                    }}>{n.tag}</span>
-                    {n.hora && <span style={{ fontSize: 10, color: CORES.brancoMuted }}>{n.hora}</span>}
-                  </div>
-                  {n.url ? (
-                    <a href={n.url} target="_blank" rel="noopener noreferrer" style={{
-                      fontSize: 15, color: CORES.branco, lineHeight: 1.55, textDecoration: 'none',
-                      display: 'block', fontWeight: 700,
-                    }}>{n.texto}</a>
-                  ) : (
-                    <p style={{ fontSize: 15, color: CORES.branco, lineHeight: 1.55, margin: 0, fontWeight: 700 }}>{n.texto}</p>
-                  )}
-                  {n.resumo && (
-                    <p style={{ fontSize: 12, color: CORES.brancoMuted, lineHeight: 1.6, margin: '8px 0 0' }}>{n.resumo}</p>
-                  )}
-                </div>
-              </article>
-            ))}
-
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: 16,
-              marginTop: 14,
-              paddingTop: 12,
-              borderTop: `1px solid ${CORES.vidroBorda}`,
-            }}>
-              <button
-                type="button"
-                onClick={newsPrev}
-                aria-label="Notícia anterior"
-                style={{
-                  width: 36, height: 36, borderRadius: '50%',
-                  border: `1px solid ${CORES.vidroBorda}`,
-                  background: 'rgba(255,255,255,0.05)',
-                  color: CORES.dourado, cursor: 'pointer',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                }}
-              >
-                <ChevronLeft size={20} />
-              </button>
-              <span style={{ fontSize: 11, color: CORES.brancoMuted, minWidth: 48, textAlign: 'center' }}>
-                {newsSlide + 1} / {noticiasAstro.length}
-              </span>
-              <button
-                type="button"
-                onClick={newsNext}
-                aria-label="Próxima notícia"
-                style={{
-                  width: 36, height: 36, borderRadius: '50%',
-                  border: `1px solid ${CORES.vidroBorda}`,
-                  background: 'rgba(255,255,255,0.05)',
-                  color: CORES.dourado, cursor: 'pointer',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                }}
-              >
-                <ChevronRight size={20} />
-              </button>
-            </div>
-          </div>
-        )}
-      </div>
 
       {isAdmin && social && (
         <div style={{ ...vidro, padding: 16, border: '1px dashed rgba(244,114,182,0.35)' }}>
