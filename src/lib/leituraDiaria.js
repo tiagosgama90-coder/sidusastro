@@ -61,6 +61,126 @@ const LUA_EN = {
   Pisces: 'You absorb environments - porous boundaries, vivid dreams.',
 }
 
+const SOL_ES = {
+  Aries: 'Tu identidad se forma en la acción directa - pensar demasiado te paraliza; actuar te cura.',
+  Tauro: 'Te construyes ladrillo a ladrillo - lo que perdura exige tiempo y presencia serena.',
+  Géminis: 'Tu identidad es múltiple - eres una constelación de ideas en movimiento.',
+  Cáncer: 'Proteges lo que amas con tenacidad silenciosa; el hogar interior es sagrado.',
+  Leo: 'Necesitas escenario - el alma se expande cuando te ven con verdad.',
+  Virgo: 'Ves lo que puede mejorarse - en ti y en el mundo - y eso es don, no defecto.',
+  Libra: 'No existes plenamente a solas - el espejo del otro te completa.',
+  Escorpio: 'No toleras superficialidad - el alma exige verdad desnuda.',
+  Sagitario: 'Necesitas horizonte - literal o metafórico - para respirar.',
+  Capricornio: 'Subes montañas paso a paso; el tiempo es aliado, no enemigo.',
+  Acuario: 'Piensas fuera del rebaño porque el futuro te llama.',
+  Piscis: 'Identidad fluida y compasiva - sientes lo que el mundo siente.',
+}
+
+const LUA_ES = {
+  Aries: 'Necesitas actuar cuando sientes - esperar te agota.',
+  Tauro: 'La seguridad sensorial te ancla - ritmo estable, tacto, belleza.',
+  Géminis: 'Procesas emociones a través de la palabra - hablar regula el corazón.',
+  Cáncer: 'Sientes todo intensamente - hogar y memoria son brújula.',
+  Leo: 'El corazón quiere brillar también en la esfera privada.',
+  Virgo: 'Regulas emociones a través del orden - las rutinas devuelven calma.',
+  Libra: 'Equilibras emociones a través de la relación - la armonía te nutre.',
+  Escorpio: 'Sientes con intensidad magnética - lealtad absoluta.',
+  Sagitario: 'Necesitas libertad emocional y sentido para expandirte.',
+  Capricornio: 'La vulnerabilidad cuesta; la estructura y las metas te protegen.',
+  Acuario: 'Procesas emociones intelectualmente - la amistad es base afectiva.',
+  Piscis: 'Absorbes ambientes - límites emocionales porosos, sueños vívidos.',
+}
+
+const SOL_IT = {
+  Ariete: 'La tua identità si forma nell\'azione diretta - pensare troppo ti paralizza; agire ti guarisce.',
+  Toro: 'Ti costruisci mattoncino dopo mattoncino - ciò che dura richiede tempo.',
+  Gemelli: 'La tua identità è multipla - sei una costellazione di idee in movimento.',
+  Cancro: 'Proteggi ciò che ami con tenacia silenziosa; la casa interiore è sacra.',
+  Leone: 'Hai bisogno di palcoscenico - l\'anima si espande quando ti vedono vero.',
+  Vergine: 'Vedi ciò che può migliorare - in te e nel mondo - e questo è dono, non difetto.',
+  Bilancia: 'Non esisti pienamente da solo - lo specchio dell\'altro ti completa.',
+  Scorpione: 'Non tolleri superficialità - l\'anima esige verità nuda.',
+  Sagittario: 'Hai bisogno di orizzonte - letterale o metaforico - per respirare.',
+  Capricorno: 'Scali montagne passo dopo passo; il tempo è alleato, non nemico.',
+  Acquario: 'Pensi fuori dal branco perché il futuro ti chiama.',
+  Pesci: 'Identità fluida e compassionevole - senti ciò che il mondo sente.',
+}
+
+const LUA_IT = {
+  Ariete: 'Devi agire quando senti - aspettare ti esaurisce.',
+  Toro: 'La sicurezza sensoriale ti ancorra - ritmo stabile, tatto, bellezza.',
+  Gemelli: 'Elabori emozioni attraverso le parole - parlare regola il cuore.',
+  Cancro: 'Senti tutto intensamente - casa e memoria sono bussola.',
+  Leone: 'Il cuore vuole brillare anche nella sfera privata.',
+  Vergine: 'Regoli emozioni attraverso l\'ordine - le routine riportano calma.',
+  Bilancia: 'Bilanci emozioni attraverso la relazione - l\'armonia ti nutre.',
+  Scorpione: 'Senti con intensità magnetica - lealtà assoluta.',
+  Sagittario: 'Hai bisogno di libertà emotiva e significato per espanderti.',
+  Capricorno: 'La vulnerabilità costa; struttura e obiettivi ti proteggono.',
+  Acquario: 'Elabori emozioni intellettualmente - l\'amicizia è base affettiva.',
+  Pesci: 'Assorbi ambienti - confini emotivi porosi, sogni vividi.',
+}
+
+const SOL_DE = {
+  Widder: 'Deine Identität bildet sich durch direktes Handeln - zu viel Denken lähmt dich; Handeln heilt dich.',
+  Stier: 'Du baust dich Stein für Stein auf - was Bestand hat, braucht Zeit.',
+  Zwillinge: 'Deine Identität ist vielfältig - du bist ein Sternenhaufen aus Ideen.',
+  Krebs: 'Du schütztzt was du liebst mit stiller Hartnäckigkeit; das innere Zuhause ist heilig.',
+  Löwe: 'Du brauchst eine Bühne - die Seele expandiert wenn du wahrhaft gesehen wirst.',
+  Jungfrau: 'Du siehst was verbessert werden kann - in dir und der Welt - und das ist Gabe.',
+  Waage: 'Du existierst nicht vollständig allein - der Spiegel des anderen vervollständigt dich.',
+  Skorpion: 'Du tolerierst keine Oberflächlichkeit - die Seele verlangt nackte Wahrheit.',
+  Schütze: 'Du brauchst Horizont - buchstäblich oder metaphorisch - zum Atmen.',
+  Steinbock: 'Du bestiegst Berge Schritt für Schritt; die Zeit ist Verbündete.',
+  Wassermann: 'Du denkst außerhalb der Herde weil die Zukunft dich ruft.',
+  Fische: 'Fließende, mitfühlende Identität - du fühlst was die Welt fühlt.',
+}
+
+const LUA_DE = {
+  Widder: 'Du musst handeln wenn du fühlst - warten erschöpft dich.',
+  Stier: 'Sensorische Sicherheit verankert dich - stabiler Rhythmus, Berührung, Schönheit.',
+  Zwillinge: 'Du verarbeitest Emotionen durch Worte - Sprechen reguliert das Herz.',
+  Krebs: 'Du fühlst alles intensiv - Zuhause und Erinnerung sind Kompass.',
+  Löwe: 'Das Herz will auch im privaten Bereich strahlen.',
+  Jungfrau: 'Du regulierst Emotionen durch Ordnung - Routinen geben Ruhe zurück.',
+  Waage: 'Du balancierst Emotionen durch Beziehung - Harmonie nährt dich.',
+  Skorpion: 'Du fühlst mit magnetischer Intensität - absolute Loyalität.',
+  Schütze: 'Du brauchst emotionale Freiheit und Sinn um dich zu entfalten.',
+  Steinbock: 'Verletzlichkeit kostet; Struktur und Ziele schützen dich.',
+  Wassermann: 'Du verarbeitest Emotionen intellektuell - Freundschaft ist affektive Basis.',
+  Fische: 'Du absorbierst Umgebungen - poröse Grenzen, lebendige Träume.',
+}
+
+const SOL_FR = {
+  Bélier: 'Ton identité se forme par l\'action directe - trop penser te paralyse; agir te guérit.',
+  Taureau: 'Tu te construis brique par brique - ce qui dure demande du temps.',
+  Gémeaux: 'Ton identité est multiple - tu es une constellation d\'idées en mouvement.',
+  Cancer: 'Tu protèges ce que tu aimes avec ténacité silencieuse; le foyer intérieur est sacré.',
+  Lion: 'Tu as besoin de scène - l\'âme s\'épanouit quand on te voit tel que tu es.',
+  Vierge: 'Tu vois ce qui peut être amélioré - en toi et dans le monde - et c\'est un don.',
+  Balance: 'Tu n\'existes pas pleinement seul - le miroir de l\'autre te complète.',
+  Scorpion: 'Tu ne tolères pas la superficialité - l\'âme exige la vérité nue.',
+  Sagittaire: 'Tu as besoin d\'horizon - littéral ou métaphorique - pour respirer.',
+  Capricorne: 'Tu gravites les montagnes pas à pas; le temps est allié.',
+  Verseau: 'Tu penses hors du troupeau parce que le futur t\'appelle.',
+  Poissons: 'Identité fluide et compatissante - tu sens ce que le monde sent.',
+}
+
+const LUA_FR = {
+  Bélier: 'Tu dois agir quand tu ressens - attendre t\'épuise.',
+  Taureau: 'La sécurité sensorielle t\'ancre - rythme stable, toucher, beauté.',
+  Gémeaux: 'Tu traites les émotions par les mots - parler régule le cœur.',
+  Cancer: 'Tu ressens tout intensément - foyer et mémoire sont boussole.',
+  Lion: 'Le cœur veut briller aussi dans la sphère privée.',
+  Vierge: 'Tu régules les émotions par l\'ordre - les routines rendent le calme.',
+  Balance: 'Tu équilibres les émotions par la relation - l\'harmonie te nourrit.',
+  Scorpion: 'Tu ressens avec intensité magnétique - loyauté absolue.',
+  Sagittaire: 'Tu as besoin de liberté émotionnelle et de sens pour t\'épanouir.',
+  Capricorne: 'La vulnérabilité coûte; structure et objectifs te protègent.',
+  Verseau: 'Tu traites les émotions intellectuellement - l\'amitié est base affective.',
+  Poissons: 'Tu absorbes les environnements - limites poreuses, rêves vivaces.',
+}
+
 const SIGNO_MAP = {
   Áries: 'Carneiro', Aries: 'Carneiro',
   Tauro: 'Touro', Taurus: 'Touro',
@@ -83,6 +203,10 @@ function normSigno(nome) {
 
 function pickPack(lang) {
   if (lang === 'pt') return { sol: SOL_PT, lua: LUA_PT }
+  if (lang === 'es') return { sol: SOL_ES, lua: LUA_ES }
+  if (lang === 'it') return { sol: SOL_IT, lua: LUA_IT }
+  if (lang === 'de') return { sol: SOL_DE, lua: LUA_DE }
+  if (lang === 'fr') return { sol: SOL_FR, lua: LUA_FR }
   return { sol: SOL_EN, lua: LUA_EN }
 }
 
