@@ -1613,3 +1613,14 @@ html.sidus-no-ads .google-auto-placed {
   border: 1px solid rgba(223, 183, 108, 0.25);
   color: rgba(255, 255, 255, 0.62);
 }
+
+/* Carrossel de Notícias Astrológicas - animação mágica */
+@keyframes carouselFade {
+  0%, 100% { opacity: 0; transform: translateY(10px); }
+  5%, 95% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes carouselPulse {
+  0%, 100% { opacity: 0.3; transform: scale(0.85); }
+  50% { opacity: 1; transform: scale(1.1); }
+}
