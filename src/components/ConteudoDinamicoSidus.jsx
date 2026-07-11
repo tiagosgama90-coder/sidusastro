@@ -9,6 +9,7 @@ import { gerarNoticiasAstrologia } from '../lib/astroNews.js'
 import { emailTemPremiumPrivilegiado } from '../lib/premiumAccess.js'
 import { dateLocale } from '../lib/i18n/langUtil.js'
 import { calcularHoroscopoDiarioRealista, gerarHoroscopoDiarioTodosSignos } from '../lib/horoscopoDiario.js'
+import { WidgetNotificacoesDiarias } from './WidgetNotificacoesDiarias.jsx'
 
 const CORES = {
   dourado: '#DFB76C',
@@ -277,6 +278,15 @@ export function ConteudoDinamicoSidus({ mapaNatal, aspetos = [], isPremium, onUp
           </div>
         ))}
       </div>
+
+      {/* Widget de Notificações Diárias - apenas para utilizadores autenticados */}
+      {userEmail && (
+        <WidgetNotificacoesDiarias 
+          user={userEmail} 
+          isPremium={isPremium} 
+          onUpgrade={onUpgrade}
+        />
+      )}
 
       {isAdmin && social && (
         <div style={{ ...vidro, padding: 16, border: '1px dashed rgba(244,114,182,0.35)' }}>

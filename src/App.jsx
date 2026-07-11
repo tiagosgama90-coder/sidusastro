@@ -2655,7 +2655,7 @@ function Ferramentas({ onFerramenta, isDesktop, acessoVip }) {
   )
 }
 
-function Paywall({ onVoltar, onPagar, onSucesso, isDesktop }) {
+function Paywall({ onVoltar, onPagar, onSucesso, isDesktop, userEmail }) {
   const { lang, t } = useLanguage()
   const beneficios = getBeneficiosVip(lang)
   return (
@@ -2686,6 +2686,17 @@ function Paywall({ onVoltar, onPagar, onSucesso, isDesktop }) {
       <p style={{ textAlign: 'center', fontSize: 11, color: CORES.brancoMuted, marginTop: 12 }}>
         {t('vip.paymentMethods')}
       </p>
+      
+      {/* Widget de Notificações no Paywall - destaca o recurso Premium */}
+      {userEmail && (
+        <div style={{ marginTop: 24 }}>
+          <WidgetNotificacoesDiarias 
+            user={userEmail} 
+            isPremium={false} 
+            onUpgrade={onSucesso}
+          />
+        </div>
+      )}
     </div>
   )
 }
@@ -3044,8 +3055,8 @@ function RodapeSidus({ isDesktop, mostrarNavbar }) {
           {t('footer.privacy')}
         </a>
       </p>
-      {/* Badge BuySellStartups - visível no footer para utilizadores */}
-      <div style={{ marginTop: 12 }}>
+      {/* Badge BuySellStartups - escondido (não visível) */}
+      <div style={{ marginTop: 12, display: 'none' }}>
         <a
           href="https://buysellstartups.com/listings/ai-astrology-tarot-saas-swiss-ephemeris-wasm-pre-revenue-asset-sale-mrcn1aua"
           target="_blank"
@@ -4106,7 +4117,7 @@ export default function App() {
       case 'ferramentas':
         return <Ferramentas onFerramenta={handleFerramenta} isDesktop={isDesktop} acessoVip={acessoVip} />
       case 'paywall':
-        return <Paywall onVoltar={() => irPara('ferramentas')} onPagar={abrirPagamento} onSucesso={() => { setIsPremium(true); setMapaCompleto(true); irPara(dadosNataisMinimos(dados) ? 'mapa' : 'onboarding') }} isDesktop={isDesktop} />
+        return <Paywall onVoltar={() => irPara('ferramentas')} onPagar={abrirPagamento} onSucesso={() => { setIsPremium(true); setMapaCompleto(true); irPara(dadosNataisMinimos(dados) ? 'mapa' : 'onboarding') }} isDesktop={isDesktop} userEmail={utilizador?.email} />
       case 'chat':
         return <Chat mapaNatal={mapaNatal} isPremium={isPremium} userId={utilizador?.uid} oracleRemotas={oraclePerguntasUsadas} onOracleUsada={registarOraclePerguntaUsada} onUpgrade={() => irPara('paywall')} obterIdToken={obterIdTokenOracle} />
       case 'perfil':
