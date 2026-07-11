@@ -198,13 +198,13 @@ export function LandingBirthPortal({ isDesktop, onSaved, onScrollToLogin }) {
   }
 
   return (
-    <section className="landing-portal-root" aria-label={t('auth.portal.ariaLabel')}>
+    <section className="landing-portal-root" aria-label={t('auth.portal.ariaLabel')} translate="no">
       <div className="landing-portal-orb landing-portal-orb--1" aria-hidden />
       <div className="landing-portal-orb landing-portal-orb--2" aria-hidden />
 
-      <div style={{ position: 'relative', zIndex: 1 }}>
+      <div style={{ position: 'relative', zIndex: 1 }} translate="no">
         {!guardado && (
-          <p className="landing-portal-form-lead">{t('auth.portal.formLead')}</p>
+          <p className="landing-portal-form-lead" translate="no">{t('auth.portal.formLead')}</p>
         )}
 
         <div className={`landing-portal-card${guardado ? ' landing-portal-card--saved' : ''}`}>
