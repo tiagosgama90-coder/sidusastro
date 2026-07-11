@@ -1,30 +1,21 @@
-/** Proxy de imagens externas — fallback único por artigo (seed). */
+/** Proxy de imagens externas — sem fallbacks de stock; 404 se falhar. */
 
-const FALLBACKS = [
-  'https://images.unsplash.com/photo-1462331940025-496dfbfc7564?w=400&h=240&fit=crop&q=80',
-  'https://images.unsplash.com/photo-1419242902214-272b3f66ee7a?w=400&h=240&fit=crop&q=80',
-  'https://images.unsplash.com/photo-1444703686981-a3abbc4d4fe3?w=400&h=240&fit=crop&q=80',
-  'https://images.unsplash.com/photo-1502134249126-9f3755a50d78?w=400&h=240&fit=crop&q=80',
-  'https://images.unsplash.com/photo-1464802686167-b939a6910659?w=400&h=240&fit=crop&q=80',
-  'https://images.unsplash.com/photo-1519682337058-a94d519337bc?w=400&h=240&fit=crop&q=80',
-  'https://images.unsplash.com/photo-1532692760748-279ddad41a82?w=400&h=240&fit=crop&q=80',
-  'https://images.unsplash.com/photo-1506443432602-ac2fcd6f54e0?w=400&h=240&fit=crop&q=80',
-]
+const BLOCKED_HOSTS = ['unsplash.com', 'placeholder.com', 'placehold.it', 'via.placeholder.com']
 
-function pickFallback(seed, imgUrl) {
-  const n = Number(seed)
-  if (Number.isFinite(n) && n >= 0) return FALLBACKS[n % FALLBACKS.length]
-  let h = 0
-  const s = imgUrl || '0'
-  for (let i = 0; i < s.length; i++) h = ((h << 5) - h + s.charCodeAt(i)) | 0
-  return FALLBACKS[Math.abs(h) % FALLBACKS.length]
+function isAllowedImageUrl(imgUrl) {
+  try {
+    const u = new URL(imgUrl)
+    if (BLOCKED_HOSTS.some((h) => u.hostname.includes(h))) return false
+    return /^https?:$/i.test(u.protocol)
+  } catch {
+    return false
+  }
 }
 
 export default async (req) => {
   const url = new URL(req.url)
   const imgUrl = url.searchParams.get('url')
-  const seed = url.searchParams.get('seed')
-  if (!imgUrl || !/^https?:\/\//i.test(imgUrl)) {
+  if (!imgUrl || !isAllowedImageUrl(imgUrl)) {
     return new Response('URL inválida', { status: 400 })
   }
 
@@ -37,13 +28,13 @@ export default async (req) => {
         Referer: `${origin}/`,
       },
       redirect: 'follow',
-      signal: AbortSignal.timeout(8000),
+      signal: AbortSignal.timeout(10000),
     })
-    if (!res.ok) throw new Error(`img ${res.status}`)
+    if (!res.ok) return new Response(null, { status: 404 })
     const ct = res.headers.get('content-type') || ''
-    if (!ct.startsWith('image/')) throw new Error('not image')
+    if (!ct.startsWith('image/')) return new Response(null, { status: 404 })
     const buf = await res.arrayBuffer()
-    if (buf.byteLength < 500) throw new Error('too small')
+    if (buf.byteLength < 500) return new Response(null, { status: 404 })
     return new Response(buf, {
       headers: {
         'Content-Type': ct,
@@ -52,19 +43,6 @@ export default async (req) => {
       },
     })
   } catch {
-    const fb = pickFallback(seed, imgUrl)
-    try {
-      const res = await fetch(fb, { signal: AbortSignal.timeout(5000) })
-      if (res.ok) {
-        return new Response(await res.arrayBuffer(), {
-          headers: {
-            'Content-Type': res.headers.get('content-type') || 'image/jpeg',
-            'Cache-Control': 'public, max-age=86400, s-maxage=86400',
-            'Access-Control-Allow-Origin': '*',
-          },
-        })
-      }
-    } catch { /* ignore */ }
     return new Response(null, { status: 404 })
   }
 }

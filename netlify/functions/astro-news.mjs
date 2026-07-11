@@ -1,43 +1,25 @@
-/** RSS astrologia/horóscopo — fontes PT + internacionais, imagens reais por artigo. */
+/** RSS astrologia/horóscopo — imagem real (urlToImage) ou null, sem stock. */
 
 const RSS_HL = {
   pt: 'pt-PT', en: 'en-GB', es: 'es-ES', it: 'it-IT', de: 'de-DE', fr: 'fr-FR',
 }
 
-/** Título/descrição deve conter astrologia ou horóscopo (estrito). */
-const ASTRO_STRICT = /(?:astrolog|hor[oó]scop|zod[ií]ac|signo\s+solar|previs(?:ão|ões)\s+(?:astrol|diária|semanal)|mapa\s+astral|cart[a]?\s+astral|lua\s+(?:nova|cheia|minguante)|trânsit|transit|mercury\s+retrograde|mercúrio\s+retrógrado)/i
+const ASTRO_STRICT = /(?:astrolog|hor[oó]scop|zod[ií]ac|signo\s+solar|previs(?:ão|ões)\s+(?:astrol|diária|semanal)|mapa\s+astral|cart[a]?\s+astral|lua\s+(?:nova|cheia|minguante)|trânsit|transit|mercury\s+retrograde|mercúrio\s+retrógrado|tarot)/i
 
 const REJECT_GENERIC = /(?:futebol|desporto|sport|pol[ií]tica|guerra|elei[cç]|receita\s+de|recipe|bolsa|crypto|bitcoin|crime|morte\s+de|nascimento\s+de\s+beb)/i
 
-const FALLBACK_IMAGES = [
-  'https://images.unsplash.com/photo-1462331940025-496dfbfc7564?w=400&h=240&fit=crop&q=80',
-  'https://images.unsplash.com/photo-1419242902214-272b3f66ee7a?w=400&h=240&fit=crop&q=80',
-  'https://images.unsplash.com/photo-1444703686981-a3abbc4d4fe3?w=400&h=240&fit=crop&q=80',
-  'https://images.unsplash.com/photo-1502134249126-9f3755a50d78?w=400&h=240&fit=crop&q=80',
-  'https://images.unsplash.com/photo-1464802686167-b939a6910659?w=400&h=240&fit=crop&q=80',
-  'https://images.unsplash.com/photo-1519682337058-a94d519337bc?w=400&h=240&fit=crop&q=80',
-  'https://images.unsplash.com/photo-1532692760748-279ddad41a82?w=400&h=240&fit=crop&q=80',
-  'https://images.unsplash.com/photo-1506443432602-ac2fcd6f54e0?w=400&h=240&fit=crop&q=80',
-]
-
-function hashStr(s) {
-  let h = 0
-  for (let i = 0; i < s.length; i++) h = ((h << 5) - h + s.charCodeAt(i)) | 0
-  return Math.abs(h)
-}
+const BLOCKED_IMAGE = /unsplash\.com|placeholder|1x1|pixel\.gif|favicon|gravatar|logo\.(png|svg|jpg)/i
 
 function googleNewsUrl(query, hl, gl) {
   const ceid = `${gl}:${hl.split('-')[0]}`
   return `https://news.google.com/rss/search?q=${encodeURIComponent(query)}&hl=${hl}&gl=${gl}&ceid=${ceid}`
 }
 
-/** Fontes mistas PT + internacional (sempre para lang=pt). */
 function feedsForLang(lang) {
   const hl = RSS_HL[lang] || RSS_HL.en
   const gl = lang === 'pt' ? 'PT' : lang === 'es' ? 'ES' : lang === 'de' ? 'DE' : lang === 'fr' ? 'FR' : lang === 'it' ? 'IT' : 'GB'
-
   const astroQuery = '(astrologia OR horóscopo OR horóscopo+dia OR zodíaco OR "mapa astral")'
-  const intlQuery = '(astrology OR horoscope OR zodiac OR "daily horoscope")'
+  const intlQuery = '(astrology OR horoscope OR zodiac OR "daily horoscope" OR "tarot horoscope")'
 
   if (lang === 'pt') {
     return [
@@ -87,35 +69,56 @@ function isAstroNews(title, description) {
   return ASTRO_STRICT.test(blob)
 }
 
+function isValidImageUrl(url) {
+  if (!url || typeof url !== 'string') return false
+  if (!/^https?:\/\//i.test(url)) return false
+  if (BLOCKED_IMAGE.test(url)) return false
+  return true
+}
+
 function extractTag(block, tag) {
   const re = new RegExp(`<${tag}[^>]*>([\\s\\S]*?)<\\/${tag}>`, 'i')
   const m = block.match(re)
   return m ? decodeXml(m[1]) : ''
 }
 
-function extractImage(block, description) {
+/** Extrai thumbnail/image_url do RSS (media:thumbnail, media:content, enclosure, img). */
+function extractImageFromRss(block, description) {
   const src = `${block} ${description || ''}`
   const patterns = [
     /media:thumbnail[^>]+url=["'](https?:\/\/[^"']+)["']/gi,
+    /media:content[^>]+medium=["']image["'][^>]+url=["'](https?:\/\/[^"']+)["']/gi,
     /media:content[^>]+url=["'](https?:\/\/[^"']+)["']/gi,
-    /<enclosure[^>]+url=["'](https?:\/\/[^"']+)["']/gi,
+    /<enclosure[^>]+type=["']image[^"']*["'][^>]+url=["'](https?:\/\/[^"']+)["']/gi,
+    /<enclosure[^>]+url=["'](https?:\/\/[^"']+\.(?:jpg|jpeg|png|webp|gif)[^"']*)["']/gi,
     /<img[^>]+src=["'](https?:\/\/[^"']+)["']/gi,
   ]
   for (const re of patterns) {
     let m
     while ((m = re.exec(src)) !== null) {
-      const u = m[1]
-      if (u && !u.includes('favicon') && !u.includes('pixel') && !u.includes('1x1') && !u.includes('logo')) {
-        return u.replace(/&amp;/g, '&')
-      }
+      const u = m[1].replace(/&amp;/g, '&')
+      if (isValidImageUrl(u)) return u
     }
   }
   return null
 }
 
-function proxyImage(rawUrl, seed) {
-  if (!rawUrl) return null
-  return `/.netlify/functions/astro-image-proxy?url=${encodeURIComponent(rawUrl)}&seed=${seed}`
+function proxyImage(rawUrl) {
+  if (!isValidImageUrl(rawUrl)) return null
+  return `/.netlify/functions/astro-image-proxy?url=${encodeURIComponent(rawUrl)}`
+}
+
+function toItemFields(urlToImage) {
+  if (!isValidImageUrl(urlToImage)) {
+    return { urlToImage: null, imagem: null, thumbnail: null, image_url: null }
+  }
+  const proxied = proxyImage(urlToImage)
+  return {
+    urlToImage,
+    thumbnail: urlToImage,
+    image_url: urlToImage,
+    imagem: proxied,
+  }
 }
 
 async function resolveArticleUrl(url) {
@@ -126,9 +129,9 @@ async function resolveArticleUrl(url) {
       redirect: 'follow',
       headers: {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120.0.0.0 Safari/537.36',
-        Accept: 'text/html',
+        Accept: 'text/html,application/xhtml+xml',
       },
-      signal: AbortSignal.timeout(4000),
+      signal: AbortSignal.timeout(6000),
     })
     return res.url || url
   } catch {
@@ -136,7 +139,42 @@ async function resolveArticleUrl(url) {
   }
 }
 
-async function fetchOgImage(pageUrl) {
+function extractOgFromHtml(html) {
+  const patterns = [
+    /<meta[^>]+property=["']og:image(?::secure_url)?["'][^>]+content=["']([^"']+)["']/gi,
+    /<meta[^>]+content=["']([^"']+)["'][^>]+property=["']og:image(?::secure_url)?["']/gi,
+    /<meta[^>]+name=["']twitter:image(?::src)?["'][^>]+content=["']([^"']+)["']/gi,
+    /<meta[^>]+content=["']([^"']+)["'][^>]+name=["']twitter:image(?::src)?["']/gi,
+    /<link[^>]+rel=["']image_src["'][^>]+href=["']([^"']+)["']/gi,
+  ]
+  for (const re of patterns) {
+    let m
+    while ((m = re.exec(html)) !== null) {
+      const u = m[1].replace(/&amp;/g, '&')
+      if (isValidImageUrl(u)) return u
+    }
+  }
+
+  const jsonLdBlocks = html.match(/<script[^>]+type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi) || []
+  for (const block of jsonLdBlocks) {
+    const inner = block.replace(/<\/?script[^>]*>/gi, '')
+    try {
+      const data = JSON.parse(inner)
+      const nodes = Array.isArray(data) ? data : [data]
+      for (const node of nodes) {
+        const img = node?.image?.url || node?.image?.[0]?.url || node?.image?.[0] || node?.thumbnailUrl || node?.thumbnail?.url
+        if (typeof img === 'string' && isValidImageUrl(img)) return img
+      }
+    } catch { /* ignore invalid json-ld */ }
+  }
+
+  const articleImg = html.match(/<img[^>]+class=["'][^"']*(?:article|featured|hero|post)[^"']*["'][^>]+src=["'](https?:\/\/[^"']+)["']/i)
+  if (articleImg?.[1] && isValidImageUrl(articleImg[1])) return articleImg[1].replace(/&amp;/g, '&')
+
+  return null
+}
+
+async function fetchArticleImage(pageUrl) {
   const finalUrl = await resolveArticleUrl(pageUrl)
   if (!finalUrl?.startsWith('http')) return null
   try {
@@ -146,23 +184,11 @@ async function fetchOgImage(pageUrl) {
         Accept: 'text/html,application/xhtml+xml',
       },
       redirect: 'follow',
-      signal: AbortSignal.timeout(5000),
+      signal: AbortSignal.timeout(8000),
     })
     if (!res.ok) return null
-    const html = (await res.text()).slice(0, 150000)
-    const patterns = [
-      /<meta[^>]+property=["']og:image(?::secure_url)?["'][^>]+content=["']([^"']+)["']/i,
-      /<meta[^>]+content=["']([^"']+)["'][^>]+property=["']og:image(?::secure_url)?["']/i,
-      /<meta[^>]+name=["']twitter:image(?::src)?["'][^>]+content=["']([^"']+)["']/i,
-      /<meta[^>]+content=["']([^"']+)["'][^>]+name=["']twitter:image["']/i,
-    ]
-    for (const re of patterns) {
-      const m = html.match(re)
-      if (m?.[1] && !m[1].includes('favicon') && !m[1].includes('logo')) {
-        return m[1].replace(/&amp;/g, '&')
-      }
-    }
-    return null
+    const html = await res.text()
+    return extractOgFromHtml(html.slice(0, 200000))
   } catch {
     return null
   }
@@ -182,17 +208,16 @@ function parseRssItems(xml, max, tag, locale) {
     const description = cleanText(descRaw).slice(0, 200)
     if (!title || !isAstroNews(title, description)) continue
 
-    const rawImg = extractImage(block, descRaw)
-    const seed = hashStr(link || title)
+    const rssImage = extractImageFromRss(block, descRaw)
+    const imgFields = toItemFields(rssImage)
+
     items.push({
       tag,
       texto: title,
       resumo: description,
       hora: pubDate ? new Date(pubDate).toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' }) : null,
-      imagem: rawImg ? proxyImage(rawImg, seed) : null,
-      imagemOriginal: rawImg,
       url: link || null,
-      seed,
+      ...imgFields,
     })
   }
   return items
@@ -221,7 +246,6 @@ function dedupeItems(items) {
   })
 }
 
-/** Intercalar tags diferentes para misturar fontes. */
 function interleaveByTag(items) {
   const buckets = {}
   for (const item of items) {
@@ -241,22 +265,22 @@ function interleaveByTag(items) {
   return out
 }
 
+/** Preenche urlToImage via og:image/json-ld — nunca inventa stock. */
 async function enrichImages(items) {
   const out = []
   for (const item of items) {
-    if (item.imagem) {
+    if (item.urlToImage) {
       out.push(item)
       continue
     }
-    const og = item.url ? await fetchOgImage(item.url) : null
-    if (og) {
-      out.push({ ...item, imagem: proxyImage(og, item.seed) })
-    } else {
-      const fb = FALLBACK_IMAGES[item.seed % FALLBACK_IMAGES.length]
-      out.push({ ...item, imagem: proxyImage(fb, item.seed) })
+    if (!item.url) {
+      out.push({ ...item, ...toItemFields(null) })
+      continue
     }
+    const fetched = await fetchArticleImage(item.url)
+    out.push({ ...item, ...toItemFields(fetched) })
   }
-  return out.map(({ imagemOriginal, seed, ...rest }) => rest)
+  return out
 }
 
 export default async (req) => {
@@ -277,6 +301,7 @@ export default async (req) => {
       source: 'astro-mixed-rss',
       date: today,
       fetchedAt: new Date().toISOString(),
+      imageField: 'urlToImage',
     }), {
       headers: {
         'Content-Type': 'application/json',

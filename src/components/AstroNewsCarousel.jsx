@@ -1,4 +1,4 @@
-/** Carrossel horizontal de notícias de astrologia — abaixo do Mapa Natal. */
+/** Carrossel horizontal de notícias — imagem real (urlToImage) ou logo Sidus. */
 import { useEffect, useState, useCallback } from 'react'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { useLanguage } from '../lib/i18n/LanguageContext.jsx'
@@ -6,13 +6,13 @@ import { gerarNoticiasAstrologia } from '../lib/astroNews.js'
 
 const CORES = {
   dourado: '#DFB76C',
-  branco: '#FFFFFF',
   brancoSuave: 'rgba(255,255,255,0.85)',
   brancoMuted: 'rgba(255,255,255,0.55)',
   vidroBorda: 'rgba(223,183,108,0.22)',
 }
 
 const VISIBLE = 5
+const LOGO_SIDUS = '/favicon.svg'
 
 const newsBtnStyle = {
   width: 32, height: 32, borderRadius: '50%',
@@ -20,6 +20,15 @@ const newsBtnStyle = {
   background: 'rgba(255,255,255,0.05)',
   color: CORES.dourado, cursor: 'pointer',
   display: 'flex', alignItems: 'center', justifyContent: 'center',
+}
+
+/** URL de imagem para exibir — prioriza proxy (imagem), fallback urlToImage directo. */
+function resolveImgSrc(noticia) {
+  if (noticia?.imagem) return noticia.imagem
+  if (noticia?.urlToImage) {
+    return `/.netlify/functions/astro-image-proxy?url=${encodeURIComponent(noticia.urlToImage)}`
+  }
+  return null
 }
 
 export function AstroNewsCarousel({ aspetos = [] }) {
@@ -34,7 +43,15 @@ export function AstroNewsCarousel({ aspetos = [] }) {
     setImgErrors({})
     ;(async () => {
       const items = await gerarNoticiasAstrologia({ aspetos, lang, max: 25, forceRefresh: true })
-      if (!cancelled) setNoticias(items)
+      if (cancelled) return
+      console.log('[Sidus AstroNews debug] dados recebidos:', items.map((n) => ({
+        texto: n.texto?.slice(0, 60),
+        urlToImage: n.urlToImage ?? null,
+        imagem: n.imagem ?? null,
+        url: n.url ?? null,
+        tag: n.tag,
+      })))
+      setNoticias(items)
     })()
     return () => { cancelled = true }
   }, [aspetos, lang])
@@ -84,7 +101,10 @@ export function AstroNewsCarousel({ aspetos = [] }) {
         }}>
           {slice.map((n, i) => {
             const key = `${page}-${i}-${n.url || n.texto}`
-            const imgSrc = imgErrors[key] ? null : n.imagem
+            const urlToImage = n.urlToImage || null
+            const imgSrc = !imgErrors[key] ? resolveImgSrc(n) : null
+            const showImg = Boolean(urlToImage && imgSrc && !imgErrors[key])
+
             return (
               <article key={key} style={{ minWidth: 0 }}>
                 <a
@@ -97,24 +117,28 @@ export function AstroNewsCarousel({ aspetos = [] }) {
                   <div style={{
                     width: '100%', height: 68, borderRadius: 8, overflow: 'hidden',
                     border: `1px solid ${CORES.vidroBorda}`,
-                    background: 'linear-gradient(135deg, rgba(139,92,246,0.12), rgba(223,183,108,0.08))',
+                    background: 'rgba(255,255,255,0.03)',
                     marginBottom: 6,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
                   }}>
-                    {imgSrc ? (
+                    {showImg ? (
                       <img
                         key={imgSrc}
                         src={imgSrc}
                         alt=""
                         style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
                         loading="lazy"
-                        onError={() => setImgErrors((prev) => ({ ...prev, [key]: true }))}
+                        onError={() => {
+                          console.warn('[Sidus AstroNews] imagem falhou:', { texto: n.texto?.slice(0, 40), urlToImage, imgSrc })
+                          setImgErrors((prev) => ({ ...prev, [key]: true }))
+                        }}
                       />
                     ) : (
-                      <div style={{
-                        width: '100%', height: '100%', display: 'flex',
-                        alignItems: 'center', justifyContent: 'center',
-                        fontSize: 22, color: CORES.dourado,
-                      }}>✦</div>
+                      <img
+                        src={LOGO_SIDUS}
+                        alt="Sidus"
+                        style={{ width: 36, height: 36, objectFit: 'contain', opacity: 0.85 }}
+                      />
                     )}
                   </div>
                   <span style={{

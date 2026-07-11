@@ -1,8 +1,10 @@
-/** Notícias astrológicas reais via RSS — cache diário. */
+/** Notícias astrológicas — cache diário, campo canónico urlToImage. */
 
 import { translatePlaneta, translateAspecto } from './i18n/astro.js'
 import { localeTag, isPt } from './i18n/langUtil.js'
 import { calcularFaseLua } from './faseLua.js'
+
+const STOCK_IMAGE = /unsplash\.com|placeholder\.com|placehold\.it/i
 
 function limparTextoNoticia(str) {
   if (!str) return ''
@@ -21,25 +23,36 @@ function limparTextoNoticia(str) {
     .trim()
 }
 
-function sanitizarItem(item) {
+/**
+ * Normaliza item da API.
+ * Campo canónico de imagem real: urlToImage (original).
+ * imagem = URL do proxy Netlify (só se urlToImage existir).
+ */
+export function normalizarNoticia(item) {
+  const raw =
+    item.urlToImage ||
+    item.thumbnail ||
+    item.image_url ||
+    item.imagemOriginal ||
+    null
+
+  const urlToImage = raw && !STOCK_IMAGE.test(raw) ? raw : null
+  const imagem =
+    urlToImage && item.imagem && !STOCK_IMAGE.test(decodeURIComponent(item.imagem.split('url=')[1] || ''))
+      ? item.imagem
+      : urlToImage
+        ? `/.netlify/functions/astro-image-proxy?url=${encodeURIComponent(urlToImage)}`
+        : null
+
   return {
-    ...item,
+    tag: item.tag,
     texto: limparTextoNoticia(item.texto),
     resumo: limparTextoNoticia(item.resumo),
+    hora: item.hora ?? null,
+    url: item.url ?? null,
+    urlToImage,
+    imagem,
   }
-}
-
-const RSS_QUERIES = {
-  pt: 'astrologia',
-  en: 'astrology',
-  es: 'astrología',
-  it: 'astrologia',
-  de: 'Astrologie',
-  fr: 'astrologie',
-}
-
-const RSS_HL = {
-  pt: 'pt-PT', en: 'en-GB', es: 'es-ES', it: 'it-IT', de: 'de-DE', fr: 'fr-FR',
 }
 
 const TRANSITO_FALLBACK = {
@@ -82,14 +95,14 @@ function noticiasLocais({ aspetos, lang, max }) {
   const transito = transitoDestaque(aspetos, lang)
   const tag = { pt: 'Céu', en: 'Sky', es: 'Cielo', it: 'Cielo', de: 'Himmel', fr: 'Ciel' }[lang] || 'Sky'
   return [
-    { tag, texto: transito || TRANSITO_FALLBACK[lang] || TRANSITO_FALLBACK.en, hora, imagem: null, url: null },
-    { tag: { pt: 'Lua', en: 'Moon', es: 'Luna', it: 'Luna', de: 'Mond', fr: 'Lune' }[lang] || 'Moon', texto: `${fase.nome}: ${(fase.desc || '').slice(0, 140)}`, hora: null, imagem: null, url: null },
+    { tag, texto: transito || TRANSITO_FALLBACK[lang] || TRANSITO_FALLBACK.en, hora, urlToImage: null, imagem: null, url: null },
+    { tag: { pt: 'Lua', en: 'Moon', es: 'Luna', it: 'Luna', de: 'Mond', fr: 'Lune' }[lang] || 'Moon', texto: `${fase.nome}: ${(fase.desc || '').slice(0, 140)}`, hora: null, urlToImage: null, imagem: null, url: null },
   ].slice(0, max)
 }
 
 let cacheNoticias = { date: null, lang: null, items: null }
 
-/** @returns {Promise<{ tag: string, texto: string, hora: string|null, imagem: string|null, url: string|null }[]>} */
+/** @returns {Promise<Array<{ tag, texto, resumo, hora, url, urlToImage, imagem }>>} */
 export async function gerarNoticiasAstrologia({ aspetos = [], lang = 'pt', max = 4, forceRefresh = false } = {}) {
   const hoje = new Date().toISOString().slice(0, 10)
   if (!forceRefresh && cacheNoticias.date === hoje && cacheNoticias.lang === lang && cacheNoticias.items?.length) {
@@ -101,7 +114,7 @@ export async function gerarNoticiasAstrologia({ aspetos = [], lang = 'pt', max =
     if (res.ok) {
       const data = await res.json()
       if (Array.isArray(data.items) && data.items.length) {
-        const limpos = data.items.map(sanitizarItem)
+        const limpos = data.items.map(normalizarNoticia)
         cacheNoticias = { date: hoje, lang, items: limpos }
         return limpos.slice(0, max)
       }
@@ -113,7 +126,6 @@ export async function gerarNoticiasAstrologia({ aspetos = [], lang = 'pt', max =
   return local
 }
 
-/** Versão síncrona para compatibilidade (fallback imediato). */
 export function gerarNoticiasAstrologiaSync({ aspetos = [], lang = 'pt', max = 4 } = {}) {
   return noticiasLocais({ aspetos, lang, max })
 }
