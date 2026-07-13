@@ -13,28 +13,28 @@ const CORES = {
 
 export function WidgetNotificacoesDiarias({ user, isPremium, onUpgrade }) {
   const { t } = useLanguage()
-  const { permission, subscription, loading, inscreverNotificacoes, cancelarNotificacoes, verificarStatus } = useNotificacoesDiarias(user, isPremium)
+  const { permission, loading, erro, inscreverNotificacoes, cancelarNotificacoes, verificarStatus } = useNotificacoesDiarias(user)
   const [ativo, setAtivo] = useState(false)
-  const [verificado, setVerificado] = useState(false)
+  const [jaVerificado, setJaVerificado] = useState(false)
 
   useEffect(() => {
-    verificarStatus().then(setAtivo)
+    verificarStatus().then((status) => {
+      setAtivo(status)
+      setJaVerificado(true)
+    })
   }, [verificarStatus])
-
-  useEffect(() => {
-    if (subscription) setAtivo(true)
-  }, [subscription])
 
   const handleToggle = async () => {
     if (ativo) {
-      await cancelarNotificacoes()
-      setAtivo(false)
+      const ok = await cancelarNotificacoes()
+      if (ok) setAtivo(false)
     } else {
       const sucesso = await inscreverNotificacoes()
-      setAtivo(sucesso)
+      if (sucesso) setAtivo(true)
     }
   }
 
+  // ─── Bloqueado (não Premium) ─────────────────────────────────────────────
   if (!isPremium) {
     return (
       <div style={{
@@ -87,6 +87,15 @@ export function WidgetNotificacoesDiarias({ user, isPremium, onUpgrade }) {
     )
   }
 
+  // ─── Premium: toggle ligar/desligar ──────────────────────────────────────
+  const statusTexto = loading
+    ? t('notificacoes.processing')
+    : ativo
+      ? t('notificacoes.statusOn')
+      : jaVerificado
+        ? t('notificacoes.statusOff')
+        : t('notificacoes.statusIdle')
+
   return (
     <div style={{
       background: CORES.fundo,
@@ -104,7 +113,7 @@ export function WidgetNotificacoesDiarias({ user, isPremium, onUpgrade }) {
         <div>
           <h3 style={{ margin: 0, fontSize: 16, fontWeight: 700, color: CORES.branco }}>{t('notificacoes.title')}</h3>
           <p style={{ margin: '4px 0 0', fontSize: 12, color: CORES.brancoMuted }}>
-            {ativo ? t('notificacoes.statusOn') : verificado ? t('notificacoes.statusOff') : t('notificacoes.statusIdle')}
+            {statusTexto}
           </p>
         </div>
       </div>
@@ -129,9 +138,17 @@ export function WidgetNotificacoesDiarias({ user, isPremium, onUpgrade }) {
         {loading ? t('notificacoes.processing') : ativo ? t('notificacoes.deactivate') : t('notificacoes.activate')}
       </button>
 
-      {permission === 'denied' && (
+      {/* Mensagem de bloqueio (permission denied) */}
+      {permission === 'denied' && !ativo && (
         <p style={{ fontSize: 11, color: 'rgba(248, 113, 113, 0.8)', marginTop: 10, lineHeight: 1.5 }}>
           {t('notificacoes.blocked')}
+        </p>
+      )}
+
+      {/* Mensagem de erro genérico do hook */}
+      {erro && !ativo && (
+        <p style={{ fontSize: 11, color: 'rgba(248, 113, 113, 0.8)', marginTop: 10, lineHeight: 1.5 }}>
+          ⚠ {erro}
         </p>
       )}
     </div>
