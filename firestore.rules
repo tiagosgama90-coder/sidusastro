@@ -24,6 +24,13 @@ service cloud.firestore {
         || dadosNataisCoreIguais(antigos, request.resource.data.get('dados'));
     }
 
+    function isPremiumUser(userId) {
+      let d = get(/databases/$(database)/documents/users/$(userId)).data;
+      return d.get('isPremium', false) == true
+        || d.get('mapaCompleto', false) == true
+        || d.keys().hasAny(['stripeSubscriptionId']);
+    }
+
     match /users/{userId} {
       allow read: if request.auth != null && request.auth.uid == userId;
 
@@ -44,6 +51,17 @@ service cloud.firestore {
           podeActualizarDadosNatais()
           || request.resource.data.diff(resource.data).affectedKeys().hasOnly(['tarotLeiturasUsadas'])
         );
+
+      // Notificações diárias (Premium) — subcoleção gerida pelo próprio utilizador
+      match /notifications/{notificationId} {
+        allow read, delete: if request.auth != null && request.auth.uid == userId;
+
+        allow create, update: if request.auth != null
+          && request.auth.uid == userId
+          && isPremiumUser(userId)
+          && request.resource.data.keys().hasOnly(['signo', 'createdAt', 'ativo', 'lang'])
+          && request.resource.data.ativo == true;
+      }
     }
   }
 }

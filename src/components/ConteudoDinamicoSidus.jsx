@@ -124,6 +124,7 @@ export function ConteudoDinamicoSidus({ mapaNatal, ceuAgora = [], aspetos = [], 
         <div style={{ marginBottom: 0 }}>
           <WidgetNotificacoesDiarias
             user={user || (userEmail ? { email: userEmail } : null)}
+            mapaNatal={mapaNatal}
             isPremium={isPremium}
             onUpgrade={onUpgrade}
           />

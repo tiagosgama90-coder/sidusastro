@@ -328,7 +328,7 @@ export default {
     title: 'Notificações Diárias Místicas',
     premiumBadge: '✦ Recurso Premium ✦',
     desc: 'Recebe horóscopos personalizados todos os dias no telemóvel, baseados em trânsitos reais e no teu mapa natal.',
-    howTo: 'Como usar: activa o botão abaixo, aceita as permissões do browser e receberás um alerta mágico de manhã com a energia do teu signo.',
+    howTo: 'Como usar: activa o botão abaixo, aceita as permissões do browser e receberás um alerta todos os dias às 12h com o horóscopo do teu signo solar.',
     unlockCta: 'Activar Premium para Desbloquear',
     statusOn: 'Activado',
     statusOff: 'Desactivado',

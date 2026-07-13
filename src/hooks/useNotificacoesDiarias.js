@@ -1,19 +1,77 @@
 import { useState, useEffect, useCallback } from 'react'
 import { fetchDailyContent } from '../lib/apiDailyContent.js'
-import { buildLocalDailyContent } from '../lib/dailyContentFallback.js'
+import { buildLocalDailyContent, signoHoroscopeKey } from '../lib/dailyContentFallback.js'
 import { calcularFaseLua } from '../lib/faseLua.js'
 
+const PREFS_KEY = 'sidus_notif_prefs'
+
+const SIGNO_EMOJI = {
+  'Áries': '♈', 'Carneiro': '♈', 'Touro': '♉', 'Gémeos': '♊', 'Caranguejo': '♋',
+  'Leão': '♌', 'Virgem': '♍', 'Balança': '♎', 'Escorpião': '♏', 'Sagitário': '♐',
+  'Capricórnio': '♑', 'Aquário': '♒', 'Peixes': '♓',
+}
+
+function resolveHoroscopoDoPack(pack, signoSolar, lang) {
+  if (!pack?.horoscopes || !signoSolar) return null
+
+  const keyPt = signoHoroscopeKey(signoSolar, 'pt')
+  const keyLang = lang === 'pt' ? keyPt : (signoHoroscopeKey(signoSolar, lang) || signoSolar)
+
+  const hLang = pack.horoscopes[lang]?.[keyLang]
+  if (hLang) return hLang
+
+  const hPt = pack.horoscopes.pt?.[keyPt]
+  if (hPt) return hPt
+
+  const keyEn = signoHoroscopeKey(signoSolar, 'en')
+  return pack.horoscopes.en?.[keyEn] || null
+}
+
+function guardarPrefsLocal({ uid, signo, lang, ativo }) {
+  try {
+    localStorage.setItem(PREFS_KEY, JSON.stringify({ uid, signo, lang, ativo }))
+  } catch { /* quota */ }
+}
+
+function limparPrefsLocal() {
+  try {
+    localStorage.removeItem(PREFS_KEY)
+  } catch { /* ignore */ }
+}
+
+function lerPrefsLocal(uid) {
+  try {
+    const raw = localStorage.getItem(PREFS_KEY)
+    if (!raw) return null
+    const prefs = JSON.parse(raw)
+    if (uid && prefs.uid !== uid) return null
+    return prefs
+  } catch {
+    return null
+  }
+}
+
+function syncServiceWorker(enabled, signo, lang) {
+  const payload = { type: 'SET_LOCAL_TIMER', enabled, signo, lang }
+  if (navigator.serviceWorker?.controller) {
+    navigator.serviceWorker.controller.postMessage(payload)
+    return
+  }
+  navigator.serviceWorker?.ready?.then((reg) => {
+    reg.active?.postMessage(payload)
+  }).catch(() => {})
+}
+
 /**
- * Hook para Notificações Diárias - 100% gratuito, sem servidor.
- * 
+ * Hook para Notificações Diárias Místicas (Premium).
+ *
  * Fluxo:
- * 1. Utilizador ativa → pede permissão de notificação
- * 2. Guarda preferência no Firestore
- * 3. Busca horóscopo do signo principal e mostra notificação personalizada
- * 4. Service Worker faz check às 12:00 e mostra notificação personalizada
- * 5. Se abrir depois das 12:00, mostra automaticamente
+ * 1. Utilizador Premium activa → pede permissão de notificação
+ * 2. Guarda preferência no Firestore + localStorage
+ * 3. Service Worker envia horóscopo do signo solar às 12:00
+ * 4. Se abrir depois das 12:00, mostra automaticamente
  */
-export function useNotificacoesDiarias(user) {
+export function useNotificacoesDiarias({ user, signoSolar, lang = 'pt', isPremium = false }) {
   const [permission, setPermission] = useState('default')
   const [loading, setLoading] = useState(false)
   const [erro, setErro] = useState(null)
@@ -24,10 +82,8 @@ export function useNotificacoesDiarias(user) {
     }
   }, [])
 
-  /**
-   * Busca o horóscopo do signo principal do usuário
-   */
   const buscarHoroscopoSigno = useCallback(async (signoNome) => {
+    if (!signoNome) return null
     try {
       const faseAtual = calcularFaseLua(new Date())
       const pack = await fetchDailyContent({
@@ -35,41 +91,27 @@ export function useNotificacoesDiarias(user) {
         faseEn: faseAtual.nome,
         transit: '',
       })
-
-      // Procurar horóscopo para o signo em português
-      const horoscopo = pack?.horoscopes?.pt?.[signoNome?.toLowerCase()]
-      if (horoscopo) return horoscopo
-
-      // Fallback: tentar noutros idiomas
-      const langs = ['en', 'es', 'fr', 'it', 'de']
-      for (const lang of langs) {
-        const h = pack?.horoscopes?.[lang]?.[signoNome?.toLowerCase()]
-        if (h) return h
-      }
-      return null
+      return resolveHoroscopoDoPack(pack, signoNome, lang)
     } catch {
-      // Fallback local
       const faseAtual = calcularFaseLua(new Date())
-      const local = buildLocalDailyContent({ fasePt: faseAtual.nome, faseEn: faseAtual.nome })
-      return local?.horoscopes?.pt?.[signoNome?.toLowerCase()] || null
+      const local = buildLocalDailyContent({ fasePt: faseAtual.nome, faseEn: faseAtual.nome, lang })
+      return resolveHoroscopoDoPack(local, signoNome, lang)
     }
-  }, [])
+  }, [lang])
 
-  /**
-   * Mostra notificação com o horóscopo personalizado
-   */
   const mostrarNotificacaoPersonalizada = useCallback(async (signoNome) => {
     if (!('Notification' in window)) return
     if (Notification.permission !== 'granted') return
 
+    const emoji = SIGNO_EMOJI[signoNome] || '♈'
     let titulo = '🔮 Sidus Astro'
     let corpo = 'O teu horóscopo diário já está disponível!'
 
     if (signoNome) {
-      titulo = `♈ ${signoNome} - A tua leitura diária`
+      titulo = `${emoji} ${signoNome} - Horóscopo diário`
       const horoscopo = await buscarHoroscopoSigno(signoNome)
       if (horoscopo) {
-        corpo = horoscopo.length > 100 ? horoscopo.slice(0, 97) + '…' : horoscopo
+        corpo = horoscopo.length > 120 ? horoscopo.slice(0, 117) + '…' : horoscopo
       }
     }
 
@@ -80,11 +122,7 @@ export function useNotificacoesDiarias(user) {
         badge: '/favicon.svg',
         tag: 'daily-horoscope',
       })
-
-      // Ao clicar na notificação, abre o site
-      notif.onclick = () => {
-        window.focus()
-      }
+      notif.onclick = () => window.focus()
     } catch (e) {
       console.warn('[Notificacoes] Erro ao mostrar notificação:', e)
     }
@@ -113,7 +151,8 @@ export function useNotificacoesDiarias(user) {
     if (resultado === 'granted') {
       setErro(null)
       return true
-    } else if (resultado === 'denied') {
+    }
+    if (resultado === 'denied') {
       setErro('Notificações bloqueadas. Activa nas definições do browser.')
     } else {
       setErro('Permissão de notificações não concedida.')
@@ -123,6 +162,17 @@ export function useNotificacoesDiarias(user) {
 
   const inscreverNotificacoes = useCallback(async () => {
     setErro(null)
+
+    if (!isPremium) {
+      setErro('Recurso exclusivo Premium.')
+      return false
+    }
+
+    if (!signoSolar) {
+      setErro('Completa o teu mapa natal para receber o horóscopo do teu signo.')
+      return false
+    }
+
     setLoading(true)
     try {
       const granted = await solicitarPermissao()
@@ -131,33 +181,26 @@ export function useNotificacoesDiarias(user) {
         return false
       }
 
-      // Determinar o signo solar do utilizador
-      const signoNome = user?.signo || null
-
-      // Guardar preferência no Firestore
       if (user?.uid) {
-        const { getFirestore, doc, setDoc } = await import('firebase/firestore')
-        const db = getFirestore()
-        await setDoc(doc(db, 'users', user.uid, 'notifications', 'dailyHoroscope'), {
-          signo: signoNome,
-          createdAt: new Date().toISOString(),
-          ativo: true,
-        })
+        try {
+          const { getFirestore, doc, setDoc } = await import('firebase/firestore')
+          const db = getFirestore()
+          await setDoc(doc(db, 'users', user.uid, 'notifications', 'dailyHoroscope'), {
+            signo: signoSolar,
+            lang,
+            createdAt: new Date().toISOString(),
+            ativo: true,
+          })
+        } catch (firestoreErr) {
+          console.warn('[Notificacoes] Firestore indisponível, a usar prefs locais:', firestoreErr)
+        }
       }
 
-      // Dizer ao Service Worker para iniciar o timer diário
-      if (navigator.serviceWorker?.controller) {
-        navigator.serviceWorker.controller.postMessage({
-          type: 'SET_LOCAL_TIMER',
-          enabled: true,
-        })
-      }
+      guardarPrefsLocal({ uid: user?.uid, signo: signoSolar, lang, ativo: true })
+      syncServiceWorker(true, signoSolar, lang)
 
-      // Mostrar notificação personalizada imediatamente
-      await mostrarNotificacaoPersonalizada(signoNome)
-
-      // Verificar se já passou das 12:00 hoje
-      await verificarNotificacaoAtrasada(signoNome)
+      await mostrarNotificacaoPersonalizada(signoSolar)
+      await verificarNotificacaoAtrasada(signoSolar)
 
       setLoading(false)
       setErro(null)
@@ -168,26 +211,20 @@ export function useNotificacoesDiarias(user) {
       setLoading(false)
       return false
     }
-  }, [user, solicitarPermissao, mostrarNotificacaoPersonalizada, verificarNotificacaoAtrasada])
+  }, [user, signoSolar, lang, isPremium, solicitarPermissao, mostrarNotificacaoPersonalizada, verificarNotificacaoAtrasada])
 
   const cancelarNotificacoes = useCallback(async () => {
     setErro(null)
     setLoading(true)
     try {
-      // Remover do Firestore
       if (user?.uid) {
         const { getFirestore, doc, deleteDoc } = await import('firebase/firestore')
         const db = getFirestore()
         await deleteDoc(doc(db, 'users', user.uid, 'notifications', 'dailyHoroscope'))
       }
 
-      // Dizer ao Service Worker para parar o timer
-      if (navigator.serviceWorker?.controller) {
-        navigator.serviceWorker.controller.postMessage({
-          type: 'SET_LOCAL_TIMER',
-          enabled: false,
-        })
-      }
+      limparPrefsLocal()
+      syncServiceWorker(false, null, null)
 
       setLoading(false)
       return true
@@ -200,7 +237,10 @@ export function useNotificacoesDiarias(user) {
   }, [user])
 
   const verificarStatus = useCallback(async () => {
-    if (!user?.uid) return false
+    if (!user?.uid) {
+      const prefs = lerPrefsLocal()
+      return prefs?.ativo === true
+    }
 
     try {
       const { getFirestore, doc, getDoc } = await import('firebase/firestore')
@@ -210,14 +250,33 @@ export function useNotificacoesDiarias(user) {
 
       if (docSnap.exists()) {
         const data = docSnap.data()
-        return data.ativo === true
+        if (data.ativo === true) {
+          const signo = data.signo || signoSolar
+          const idioma = data.lang || lang
+          guardarPrefsLocal({ uid: user.uid, signo, lang: idioma, ativo: true })
+          syncServiceWorker(true, signo, idioma)
+          return true
+        }
       }
       return false
     } catch (error) {
       console.error('Erro ao verificar status:', error)
+      const prefs = lerPrefsLocal(user.uid)
+      if (prefs?.ativo) {
+        syncServiceWorker(true, prefs.signo, prefs.lang || lang)
+        return true
+      }
       return false
     }
-  }, [user])
+  }, [user, signoSolar, lang])
+
+  // Re-sincronizar SW quando o signo ou idioma mudam com notificações activas
+  useEffect(() => {
+    if (!signoSolar || !isPremium) return
+    verificarStatus().then((ativo) => {
+      if (ativo) syncServiceWorker(true, signoSolar, lang)
+    })
+  }, [signoSolar, lang, isPremium, verificarStatus])
 
   return {
     permission,

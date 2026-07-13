@@ -328,7 +328,7 @@ export default {
     title: 'Mystical Daily Notifications',
     premiumBadge: '✦ Premium Feature ✦',
     desc: 'Receive personalised daily horoscopes on your phone, based on real transits and your natal chart.',
-    howTo: 'How to use: tap the button below, allow browser permissions, and receive a magical morning alert with your sign\'s energy.',
+    howTo: 'How to use: tap the button below, allow browser permissions, and receive a daily alert at 12:00 with your Sun sign horoscope.',
     unlockCta: 'Unlock with Premium',
     statusOn: 'Enabled',
     statusOff: 'Disabled',

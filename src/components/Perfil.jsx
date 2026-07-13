@@ -139,7 +139,7 @@ export function Perfil({ utilizador, dados, mapaNatal, isPremium, dadosBloqueado
       )}
 
       <div style={{display:'flex',flexDirection:'column',gap:10,marginTop:10}}>
-        <WidgetNotificacoesDiarias user={utilizador} isPremium={isPremium} />
+        <WidgetNotificacoesDiarias user={utilizador} mapaNatal={mapaNatal} isPremium={isPremium} />
         <button type="button" onClick={onLogout} style={{
           background:'rgba(239,68,68,0.08)', border:'1px solid rgba(239,68,68,0.3)',
           borderRadius:12, color:'#EF4444', fontSize:14, padding:'13px', cursor:'pointer',

@@ -11,9 +11,15 @@ const CORES = {
   fundo: 'rgba(11, 7, 30, 0.6)',
 }
 
-export function WidgetNotificacoesDiarias({ user, isPremium, onUpgrade }) {
-  const { t } = useLanguage()
-  const { permission, loading, erro, inscreverNotificacoes, cancelarNotificacoes, verificarStatus } = useNotificacoesDiarias(user)
+export function WidgetNotificacoesDiarias({ user, mapaNatal, isPremium, onUpgrade }) {
+  const { t, lang } = useLanguage()
+  const signoSolar = mapaNatal?.solar?.nome || null
+  const { permission, loading, erro, inscreverNotificacoes, cancelarNotificacoes, verificarStatus } = useNotificacoesDiarias({
+    user,
+    signoSolar,
+    lang,
+    isPremium,
+  })
   const [ativo, setAtivo] = useState(false)
   const [jaVerificado, setJaVerificado] = useState(false)
 
