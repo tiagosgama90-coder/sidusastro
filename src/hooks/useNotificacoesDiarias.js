@@ -1,9 +1,10 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { fetchDailyContent } from '../lib/apiDailyContent.js'
 import { buildLocalDailyContent, signoHoroscopeKey } from '../lib/dailyContentFallback.js'
 import { calcularFaseLua } from '../lib/faseLua.js'
 
 const PREFS_KEY = 'sidus_notif_prefs'
+const DISABLED_KEY = 'sidus_notif_desactivado'
 
 const SIGNO_EMOJI = {
   'Áries': '♈', 'Carneiro': '♈', 'Touro': '♉', 'Gémeos': '♊', 'Caranguejo': '♋',
@@ -17,69 +18,127 @@ function resolveHoroscopoDoPack(pack, signoSolar, lang) {
   const keyPt = signoHoroscopeKey(signoSolar, 'pt')
   const keyLang = lang === 'pt' ? keyPt : (signoHoroscopeKey(signoSolar, lang) || signoSolar)
 
-  const hLang = pack.horoscopes[lang]?.[keyLang]
-  if (hLang) return hLang
-
-  const hPt = pack.horoscopes.pt?.[keyPt]
-  if (hPt) return hPt
-
-  const keyEn = signoHoroscopeKey(signoSolar, 'en')
-  return pack.horoscopes.en?.[keyEn] || null
+  return pack.horoscopes[lang]?.[keyLang]
+    || pack.horoscopes.pt?.[keyPt]
+    || pack.horoscopes.en?.[signoHoroscopeKey(signoSolar, 'en')]
+    || null
 }
 
-function guardarPrefsLocal({ uid, signo, lang, ativo }) {
-  try {
-    localStorage.setItem(PREFS_KEY, JSON.stringify({ uid, signo, lang, ativo }))
-  } catch { /* quota */ }
-}
-
-function limparPrefsLocal() {
-  try {
-    localStorage.removeItem(PREFS_KEY)
-  } catch { /* ignore */ }
-}
-
-function lerPrefsLocal(uid) {
+function lerPrefs(uid) {
   try {
     const raw = localStorage.getItem(PREFS_KEY)
     if (!raw) return null
     const prefs = JSON.parse(raw)
-    if (uid && prefs.uid !== uid) return null
+    if (uid && prefs.uid && prefs.uid !== uid) return null
     return prefs
   } catch {
     return null
   }
 }
 
+function guardarPrefs({ uid, signo, lang, ativo }) {
+  try {
+    localStorage.setItem(PREFS_KEY, JSON.stringify({ uid, signo, lang, ativo }))
+  } catch { /* quota */ }
+}
+
+function limparPrefs() {
+  try {
+    localStorage.removeItem(PREFS_KEY)
+    localStorage.removeItem('sidus_notif_vista_hoje')
+  } catch { /* ignore */ }
+}
+
+function marcarDesactivado(uid) {
+  try {
+    if (uid) localStorage.setItem(DISABLED_KEY, uid)
+  } catch { /* ignore */ }
+}
+
+function estaDesactivado(uid) {
+  if (!uid) return false
+  try {
+    return localStorage.getItem(DISABLED_KEY) === uid
+  } catch {
+    return false
+  }
+}
+
+function limparDesactivado() {
+  try {
+    localStorage.removeItem(DISABLED_KEY)
+  } catch { /* ignore */ }
+}
+
 function syncServiceWorker(enabled, signo, lang) {
   const payload = { type: 'SET_LOCAL_TIMER', enabled, signo, lang }
+  const enviar = (sw) => sw?.postMessage(payload)
   if (navigator.serviceWorker?.controller) {
-    navigator.serviceWorker.controller.postMessage(payload)
+    enviar(navigator.serviceWorker.controller)
     return
   }
+  navigator.serviceWorker?.ready?.then((reg) => enviar(reg.active)).catch(() => {})
+}
+
+function desactivarServiceWorker() {
+  syncServiceWorker(false, null, null)
   navigator.serviceWorker?.ready?.then((reg) => {
-    reg.active?.postMessage(payload)
+    reg.active?.postMessage({ type: 'DISABLE_NOTIFICATIONS' })
   }).catch(() => {})
 }
 
+async function mostrarNotificacaoViaSW(signoNome, lang, buscarHoroscopoSigno) {
+  if (!('Notification' in window) || Notification.permission !== 'granted') return false
+
+  const emoji = SIGNO_EMOJI[signoNome] || '♈'
+  let titulo = signoNome
+    ? `${emoji} ${signoNome} - Horóscopo diário`
+    : '🔮 Sidus Astro - Horóscopo diário'
+  let corpo = 'O teu horóscopo diário já está disponível!'
+
+  if (signoNome) {
+    const horoscopo = await buscarHoroscopoSigno(signoNome)
+    if (horoscopo) {
+      corpo = horoscopo.length > 120 ? horoscopo.slice(0, 117) + '…' : horoscopo
+    }
+  }
+
+  const options = {
+    body: corpo,
+    icon: '/favicon.svg',
+    badge: '/favicon.svg',
+    tag: 'daily-horoscope',
+    data: { url: '/' },
+  }
+
+  try {
+    const reg = await navigator.serviceWorker.ready
+    await reg.showNotification(titulo, options)
+    return true
+  } catch {
+    try {
+      const notif = new Notification(titulo, options)
+      notif.onclick = () => window.focus()
+      return true
+    } catch {
+      return false
+    }
+  }
+}
+
 /**
- * Hook para Notificações Diárias Místicas (Premium).
- *
- * Fluxo:
- * 1. Utilizador Premium activa → pede permissão de notificação
- * 2. Guarda preferência no Firestore + localStorage
- * 3. Service Worker envia horóscopo do signo solar às 12:00
- * 4. Se abrir depois das 12:00, mostra automaticamente
+ * Notificações diárias Premium — horóscopo do signo solar às 12:00.
+ * Estado on/off: localStorage (prioridade) + Firestore (sync entre dispositivos).
  */
 export function useNotificacoesDiarias({ user, signoSolar, lang = 'pt', isPremium = false }) {
   const [permission, setPermission] = useState('default')
   const [loading, setLoading] = useState(false)
   const [erro, setErro] = useState(null)
+  const uid = user?.uid || null
+  const desactivadoRef = useRef(false)
 
   useEffect(() => {
-    if ('Notification' in window) {
-      setPermission(Notification.permission)
-    }
+    if ('Notification' in window) setPermission(Notification.permission)
   }, [])
 
   const buscarHoroscopoSigno = useCallback(async (signoNome) => {
@@ -99,184 +158,123 @@ export function useNotificacoesDiarias({ user, signoSolar, lang = 'pt', isPremiu
     }
   }, [lang])
 
-  const mostrarNotificacaoPersonalizada = useCallback(async (signoNome) => {
-    if (!('Notification' in window)) return
-    if (Notification.permission !== 'granted') return
+  const verificarStatus = useCallback(async () => {
+    if (desactivadoRef.current || estaDesactivado(uid)) return false
 
-    const emoji = SIGNO_EMOJI[signoNome] || '♈'
-    let titulo = '🔮 Sidus Astro'
-    let corpo = 'O teu horóscopo diário já está disponível!'
-
-    if (signoNome) {
-      titulo = `${emoji} ${signoNome} - Horóscopo diário`
-      const horoscopo = await buscarHoroscopoSigno(signoNome)
-      if (horoscopo) {
-        corpo = horoscopo.length > 120 ? horoscopo.slice(0, 117) + '…' : horoscopo
-      }
+    const local = lerPrefs(uid)
+    if (local?.ativo === true) {
+      syncServiceWorker(true, local.signo || signoSolar, local.lang || lang)
+      return true
     }
+
+    if (!uid) return false
 
     try {
-      const notif = new Notification(titulo, {
-        body: corpo,
-        icon: '/favicon.svg',
-        badge: '/favicon.svg',
-        tag: 'daily-horoscope',
-      })
-      notif.onclick = () => window.focus()
+      const { getFirestore, doc, getDoc } = await import('firebase/firestore')
+      const db = getFirestore()
+      const snap = await getDoc(doc(db, 'users', uid, 'notifications', 'dailyHoroscope'))
+      if (snap.exists() && snap.data()?.ativo === true) {
+        const data = snap.data()
+        guardarPrefs({ uid, signo: data.signo || signoSolar, lang: data.lang || lang, ativo: true })
+        syncServiceWorker(true, data.signo || signoSolar, data.lang || lang)
+        return true
+      }
     } catch (e) {
-      console.warn('[Notificacoes] Erro ao mostrar notificação:', e)
+      console.warn('[Notificacoes] Firestore indisponível:', e)
     }
-  }, [buscarHoroscopoSigno])
 
-  const verificarNotificacaoAtrasada = useCallback(async (signoNome) => {
-    const agora = new Date()
-    const hora = agora.getHours()
-    const hojeMeiaNoite = new Date(agora.getFullYear(), agora.getMonth(), agora.getDate()).getTime()
-    const jaViuNotifHoje = localStorage.getItem('sidus_notif_vista_hoje')
-
-    if (hora >= 12 && jaViuNotifHoje !== String(hojeMeiaNoite)) {
-      await mostrarNotificacaoPersonalizada(signoNome)
-      localStorage.setItem('sidus_notif_vista_hoje', String(hojeMeiaNoite))
-    }
-  }, [mostrarNotificacaoPersonalizada])
+    return false
+  }, [uid, signoSolar, lang])
 
   const solicitarPermissao = useCallback(async () => {
     if (!('Notification' in window)) {
       setErro('Este navegador não suporta notificações')
       return false
     }
-
     const resultado = await Notification.requestPermission()
     setPermission(resultado)
     if (resultado === 'granted') {
       setErro(null)
       return true
     }
-    if (resultado === 'denied') {
-      setErro('Notificações bloqueadas. Activa nas definições do browser.')
-    } else {
-      setErro('Permissão de notificações não concedida.')
-    }
+    setErro(resultado === 'denied'
+      ? 'Notificações bloqueadas. Activa nas definições do browser.'
+      : 'Permissão de notificações não concedida.')
     return false
   }, [])
 
   const inscreverNotificacoes = useCallback(async () => {
     setErro(null)
-
-    if (!isPremium) {
-      setErro('Recurso exclusivo Premium.')
-      return false
-    }
-
-    if (!signoSolar) {
-      setErro('Completa o teu mapa natal para receber o horóscopo do teu signo.')
-      return false
-    }
+    if (!isPremium) { setErro('Recurso exclusivo Premium.'); return false }
+    if (!signoSolar) { setErro('Completa o teu mapa natal para receber o horóscopo do teu signo.'); return false }
 
     setLoading(true)
     try {
       const granted = await solicitarPermissao()
-      if (!granted) {
-        setLoading(false)
-        return false
-      }
+      if (!granted) { setLoading(false); return false }
 
-      if (user?.uid) {
+      desactivadoRef.current = false
+      limparDesactivado()
+
+      if (uid) {
         try {
           const { getFirestore, doc, setDoc } = await import('firebase/firestore')
-          const db = getFirestore()
-          await setDoc(doc(db, 'users', user.uid, 'notifications', 'dailyHoroscope'), {
+          await setDoc(doc(getFirestore(), 'users', uid, 'notifications', 'dailyHoroscope'), {
             signo: signoSolar,
             lang,
             createdAt: new Date().toISOString(),
             ativo: true,
           })
-        } catch (firestoreErr) {
-          console.warn('[Notificacoes] Firestore indisponível, a usar prefs locais:', firestoreErr)
+        } catch (e) {
+          console.warn('[Notificacoes] Firestore write falhou (continua local):', e)
         }
       }
 
-      guardarPrefsLocal({ uid: user?.uid, signo: signoSolar, lang, ativo: true })
+      guardarPrefs({ uid, signo: signoSolar, lang, ativo: true })
       syncServiceWorker(true, signoSolar, lang)
 
-      await mostrarNotificacaoPersonalizada(signoSolar)
-      await verificarNotificacaoAtrasada(signoSolar)
+      const mostrada = await mostrarNotificacaoViaSW(signoSolar, lang, buscarHoroscopoSigno)
+      if (!mostrada) {
+        setErro('Permissão OK, mas o browser bloqueou a notificação. Verifica Definições → Notificações.')
+      }
 
       setLoading(false)
-      setErro(null)
       return true
     } catch (error) {
-      console.error('Erro ao inscrever notificações:', error)
       setErro(`Erro: ${error.message || 'Erro desconhecido'}`)
       setLoading(false)
       return false
     }
-  }, [user, signoSolar, lang, isPremium, solicitarPermissao, mostrarNotificacaoPersonalizada, verificarNotificacaoAtrasada])
+  }, [uid, signoSolar, lang, isPremium, solicitarPermissao, buscarHoroscopoSigno])
 
   const cancelarNotificacoes = useCallback(async () => {
     setErro(null)
     setLoading(true)
-    try {
-      if (user?.uid) {
+
+    // Marcar desactivado ANTES de tudo — impede reactivação por race conditions
+    desactivadoRef.current = true
+    if (uid) marcarDesactivado(uid)
+    limparPrefs()
+    desactivarServiceWorker()
+
+    if (uid) {
+      try {
         const { getFirestore, doc, deleteDoc } = await import('firebase/firestore')
-        const db = getFirestore()
-        await deleteDoc(doc(db, 'users', user.uid, 'notifications', 'dailyHoroscope'))
+        await deleteDoc(doc(getFirestore(), 'users', uid, 'notifications', 'dailyHoroscope'))
+      } catch (e) {
+        console.warn('[Notificacoes] Firestore delete falhou (desactivado localmente):', e)
       }
-
-      limparPrefsLocal()
-      syncServiceWorker(false, null, null)
-
-      setLoading(false)
-      return true
-    } catch (error) {
-      console.error('Erro ao cancelar notificações:', error)
-      setErro(`Erro ao desativar: ${error.message}`)
-      setLoading(false)
-      return false
-    }
-  }, [user])
-
-  const verificarStatus = useCallback(async () => {
-    if (!user?.uid) {
-      const prefs = lerPrefsLocal()
-      return prefs?.ativo === true
     }
 
-    try {
-      const { getFirestore, doc, getDoc } = await import('firebase/firestore')
-      const db = getFirestore()
-      const docRef = doc(db, 'users', user.uid, 'notifications', 'dailyHoroscope')
-      const docSnap = await getDoc(docRef)
+    setLoading(false)
+    return true
+  }, [uid])
 
-      if (docSnap.exists()) {
-        const data = docSnap.data()
-        if (data.ativo === true) {
-          const signo = data.signo || signoSolar
-          const idioma = data.lang || lang
-          guardarPrefsLocal({ uid: user.uid, signo, lang: idioma, ativo: true })
-          syncServiceWorker(true, signo, idioma)
-          return true
-        }
-      }
-      return false
-    } catch (error) {
-      console.error('Erro ao verificar status:', error)
-      const prefs = lerPrefsLocal(user.uid)
-      if (prefs?.ativo) {
-        syncServiceWorker(true, prefs.signo, prefs.lang || lang)
-        return true
-      }
-      return false
-    }
-  }, [user, signoSolar, lang])
-
-  // Re-sincronizar SW quando o signo ou idioma mudam com notificações activas
-  useEffect(() => {
-    if (!signoSolar || !isPremium) return
-    verificarStatus().then((ativo) => {
-      if (ativo) syncServiceWorker(true, signoSolar, lang)
-    })
-  }, [signoSolar, lang, isPremium, verificarStatus])
+  const testarNotificacao = useCallback(async () => {
+    if (!signoSolar) return false
+    setErro(null)
+    return mostrarNotificacaoViaSW(signoSolar, lang, buscarHoroscopoSigno)
+  }, [signoSolar, lang, buscarHoroscopoSigno])
 
   return {
     permission,
@@ -285,6 +283,7 @@ export function useNotificacoesDiarias({ user, signoSolar, lang = 'pt', isPremiu
     inscreverNotificacoes,
     cancelarNotificacoes,
     verificarStatus,
+    testarNotificacao,
     solicitarPermissao,
   }
 }

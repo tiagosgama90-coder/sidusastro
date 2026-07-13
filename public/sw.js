@@ -1,5 +1,5 @@
 // Service Worker para notificações PWA - Sidus Astro
-const CACHE_NAME = 'sidusastro-v2'
+const CACHE_NAME = 'sidusastro-v3'
 const urlsToCache = ['/', '/index.html', '/manifest.json']
 
 const SIGNO_EMOJI = {
@@ -216,9 +216,26 @@ function pararTimer() {
   }
 }
 
+async function desactivarCompletamente() {
+  notifPrefs = { enabled: false, signo: null, lang: 'pt' }
+  await clearPrefs()
+  pararTimer()
+  try {
+    const notifs = await self.registration.getNotifications({ tag: 'daily-horoscope' })
+    notifs.forEach((n) => n.close())
+  } catch { /* ignore */ }
+}
+
 // ─── Mensagens da página ─────────────────────────────────────────────────
 self.addEventListener('message', async (event) => {
-  if (event.data?.type !== 'SET_LOCAL_TIMER') return
+  const type = event.data?.type
+
+  if (type === 'DISABLE_NOTIFICATIONS') {
+    await desactivarCompletamente()
+    return
+  }
+
+  if (type !== 'SET_LOCAL_TIMER') return
 
   if (event.data?.enabled) {
     notifPrefs = {
@@ -234,9 +251,7 @@ self.addEventListener('message', async (event) => {
     await savePrefs(notifPrefs)
     iniciarTimer()
   } else {
-    notifPrefs = { enabled: false, signo: null, lang: 'pt' }
-    await clearPrefs()
-    pararTimer()
+    await desactivarCompletamente()
   }
 })
 
