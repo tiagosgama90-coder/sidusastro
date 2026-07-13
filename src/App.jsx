@@ -80,6 +80,7 @@ import { LanguageSwitcher } from './components/LanguageSwitcher.jsx'
 import { useLanguage } from './lib/i18n/LanguageContext.jsx'
 import { readLandingDraft, clearLandingDraft, mergeLandingDraft, hasLandingDraft, flushLandingDraft } from './lib/landingDraft.js'
 import { getFerramentas, getBeneficiosVip } from './lib/i18n/ferramentasData.js'
+import { useSocialBar, usePopunder } from './components/AdsterraAds.jsx'
 import { validarOnboarding } from './lib/i18n/validation.js'
 import { traduzirErroAuth } from './lib/i18n/authErrors.js'
 import { labelBarraCurto, tituloSecaoMapa } from './lib/i18n/labelUtil.js'
@@ -4009,6 +4010,18 @@ export default function App() {
   const dadosBloqueados = mapaGerado
 
   const isDev = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+
+  // ── Anúncios Adsterra (Social Bar + Popunder) ─────────────────────────
+  // Social Bar: controla visibilidade baseado em Premium
+  useSocialBar(isPremium)
+
+  // Popunder estratégico: ativa após interação do utilizador (não intrusivo)
+  // Ativado em: Home (após scroll), Tarot (após revelar cartas), Mapa Astral (após ver resultado)
+  usePopunder({
+    enabled: !isPremium && allowsAds(),
+    trigger: 'scroll',
+    scrollThreshold: 60,
+  })
 
   const mostrarNavbar = utilizador && contaConfigurada && passo !== 'paywall'
 
