@@ -4122,7 +4122,7 @@ export default function App() {
       case 'ferramentas':
         return <Ferramentas onFerramenta={handleFerramenta} isDesktop={isDesktop} acessoVip={acessoVip} />
       case 'paywall':
-        return <Paywall onVoltar={() => irPara('ferramentas')} onPagar={abrirPagamento} onSucesso={() => { setIsPremium(true); setMapaCompleto(true); irPara(dadosNataisMinimos(dados) ? 'mapa' : 'onboarding') }} isDesktop={isDesktop} />
+        return <Paywall onVoltar={() => irPara('home')} onPagar={abrirPagamento} onSucesso={() => { setIsPremium(true); setMapaCompleto(true); irPara(dadosNataisMinimos(dados) ? 'mapa' : 'onboarding') }} isDesktop={isDesktop} />
       case 'chat':
         return <Chat mapaNatal={mapaNatal} isPremium={isPremium} userId={utilizador?.uid} oracleRemotas={oraclePerguntasUsadas} onOracleUsada={registarOraclePerguntaUsada} onUpgrade={() => irPara('paywall')} obterIdToken={obterIdTokenOracle} />
       case 'perfil':

@@ -55,6 +55,13 @@ export function usePopunder(options = {}) {
   const timerRef = useRef(null)
 
   useEffect(() => {
+    // Verificar se já ativou nesta sessão (persiste entre navegações)
+    const sessionKey = 'adsterra_popunder_activated'
+    if (sessionStorage.getItem(sessionKey)) {
+      jaAtivou.current = true
+      return
+    }
+
     if (!enabled || jaAtivou.current) return
 
     let popunderScript = null
@@ -62,8 +69,9 @@ export function usePopunder(options = {}) {
     const ativarPopunder = () => {
       if (jaAtivou.current) return
       jaAtivou.current = true
+      sessionStorage.setItem(sessionKey, '1')
 
-      // Injetar o script Popunder dinamicamente (só uma vez por sessão em cada página)
+      // Injetar o script Popunder dinamicamente (só uma vez por sessão)
       if (!document.getElementById('adsterra-popunder')) {
         popunderScript = document.createElement('script')
         popunderScript.id = 'adsterra-popunder'
@@ -107,7 +115,7 @@ export function usePopunder(options = {}) {
     return () => {
       if (timerRef.current) clearTimeout(timerRef.current)
     }
-  }, [enabled, trigger, scrollThreshold, options.delayMs])
+  }, [enabled, trigger, scrollThreshold, options.delayMs, sessionKey])
 }
 
 /**
