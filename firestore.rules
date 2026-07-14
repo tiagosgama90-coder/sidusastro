@@ -28,7 +28,8 @@ service cloud.firestore {
       let d = get(/databases/$(database)/documents/users/$(userId)).data;
       return d.get('isPremium', false) == true
         || d.get('mapaCompleto', false) == true
-        || d.keys().hasAny(['stripeSubscriptionId']);
+        || d.keys().hasAny(['stripeSubscriptionId'])
+        || (d.keys().hasAny(['premiumUntil']) && d.premiumUntil > request.time);
     }
 
     match /users/{userId} {

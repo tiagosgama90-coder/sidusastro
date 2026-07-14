@@ -23,8 +23,8 @@ const NAIPES_COR = {
 
 const FLIP_CSS = `
 @keyframes cartaFlipIn {
-  0% { transform: rotateY(180deg); }
-  100% { transform: rotateY(0deg); }
+  0% { transform: rotateY(90deg); opacity: 0.6; }
+  100% { transform: rotateY(0deg); opacity: 1; }
 }
 @keyframes cartaGlow {
   0%, 100% { box-shadow: 0 4px 24px rgba(223,183,108,0.2); }
@@ -187,8 +187,9 @@ export function CartaTarot({ carta, size = 110, virada = false, animarFlip = fal
     display: 'inline-block',
     verticalAlign: 'top',
     perspective: animarFlip ? 800 : undefined,
-    boxShadow: virada ? '0 4px 20px rgba(0,0,0,0.4)' : '0 4px 24px rgba(223,183,108,0.2)',
-    animation: animarFlip && !virada ? 'cartaGlow 2s ease-in-out 0.6s 3' : undefined,
+    transformStyle: animarFlip ? 'preserve-3d' : undefined,
+    boxShadow: virada ? '0 4px 16px rgba(223,183,108,0.22)' : '0 4px 24px rgba(223,183,108,0.2)',
+    animation: animarFlip && !virada ? 'cartaGlow 2s ease-in-out 0.35s 2' : undefined,
     ...style,
   }
 
@@ -197,7 +198,8 @@ export function CartaTarot({ carta, size = 110, virada = false, animarFlip = fal
     height: '100%',
     transform: carta.invertida && !virada && carta.tipo !== 'lenormand' ? 'rotate(180deg)' : undefined,
     transformOrigin: 'center center',
-    animation: animarFlip && !virada ? 'cartaFlipIn 0.65s ease-out forwards' : undefined,
+    transformStyle: animarFlip ? 'preserve-3d' : undefined,
+    animation: animarFlip && !virada ? 'cartaFlipIn 0.35s ease-out forwards' : undefined,
     backfaceVisibility: 'hidden',
     WebkitBackfaceVisibility: 'hidden',
   }

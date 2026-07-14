@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { useLanguage } from '../lib/i18n/LanguageContext.jsx'
 import { useNotificacoesDiarias } from '../hooks/useNotificacoesDiarias.js'
 import { emailTemPremiumPrivilegiado } from '../lib/premiumAccess.js'
+import { normalizeSignoNome } from '../lib/i18n/astro.js'
 
 const CORES = {
   dourado: '#DFB76C',
@@ -14,7 +15,7 @@ const CORES = {
 
 export function WidgetNotificacoesDiarias({ user, mapaNatal, isPremium, onUpgrade }) {
   const { t, lang } = useLanguage()
-  const signoSolar = mapaNatal?.solar?.nome || null
+  const signoSolar = normalizeSignoNome(mapaNatal?.solar?.nome) || null
   const isCriador = emailTemPremiumPrivilegiado(user)
 
   const {
@@ -27,7 +28,7 @@ export function WidgetNotificacoesDiarias({ user, mapaNatal, isPremium, onUpgrad
   const [jaVerificado, setJaVerificado] = useState(false)
   const [aTestar, setATestar] = useState(false)
 
-  // Só verificar estado ao montar ou quando muda de utilizador — nunca reactivar após desactivar
+  // Verificar estado ao montar, quando muda de utilizador ou quando o signo solar fica disponível
   useEffect(() => {
     let cancelado = false
     verificarStatus().then((status) => {
@@ -37,7 +38,16 @@ export function WidgetNotificacoesDiarias({ user, mapaNatal, isPremium, onUpgrad
       }
     })
     return () => { cancelado = true }
-  }, [user?.uid]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [user?.uid, signoSolar, verificarStatus])
+
+  useEffect(() => {
+    if (!('serviceWorker' in navigator)) return undefined
+    const onControllerChange = () => {
+      if (ativo) verificarStatus()
+    }
+    navigator.serviceWorker.addEventListener('controllerchange', onControllerChange)
+    return () => navigator.serviceWorker.removeEventListener('controllerchange', onControllerChange)
+  }, [ativo, verificarStatus])
 
   const handleToggle = useCallback(async () => {
     if (loading) return
@@ -133,16 +143,20 @@ export function WidgetNotificacoesDiarias({ user, mapaNatal, isPremium, onUpgrad
       <p style={{ fontSize: 13, color: CORES.brancoMuted, lineHeight: 1.6, marginBottom: 10 }}>{t('notificacoes.desc')}</p>
       <p style={{ fontSize: 11, color: CORES.dourado, lineHeight: 1.55, marginBottom: 16 }}>{t('notificacoes.howTo')}</p>
 
-      {signoSolar && (
+      {signoSolar ? (
         <p style={{ fontSize: 11, color: CORES.brancoMuted, marginBottom: 12 }}>
           {t('notificacoes.signoLabel', { signo: signoSolar })}
+        </p>
+      ) : (
+        <p style={{ fontSize: 11, color: 'rgba(248, 113, 113, 0.8)', marginBottom: 12, lineHeight: 1.5 }}>
+          {t('home.horoscopeNoMap')}
         </p>
       )}
 
       <button
         type="button"
         onClick={handleToggle}
-        disabled={loading}
+        disabled={loading || (!ativo && !signoSolar)}
         style={{
           width: '100%', padding: '12px 20px',
           background: ativo
@@ -150,7 +164,8 @@ export function WidgetNotificacoesDiarias({ user, mapaNatal, isPremium, onUpgrad
             : 'linear-gradient(135deg, rgba(139, 92, 246, 0.2) 0%, rgba(223, 183, 108, 0.1) 100%)',
           border: `1px solid ${ativo ? 'rgba(248, 113, 113, 0.4)' : CORES.vidroBorda}`,
           borderRadius: 12, color: CORES.branco, fontSize: 14, fontWeight: 600,
-          cursor: loading ? 'not-allowed' : 'pointer', opacity: loading ? 0.6 : 1,
+          cursor: loading || (!ativo && !signoSolar) ? 'not-allowed' : 'pointer',
+          opacity: loading || (!ativo && !signoSolar) ? 0.6 : 1,
         }}
       >
         {loading ? t('notificacoes.processing') : ativo ? t('notificacoes.deactivate') : t('notificacoes.activate')}
