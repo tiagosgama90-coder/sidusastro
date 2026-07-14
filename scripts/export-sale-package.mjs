@@ -9,13 +9,16 @@ import { dirname, join, relative } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..')
-const OUT = join(ROOT, '..', 'sidusastro-sale')
+const OUT = process.env.SALE_OUT_DIR
+  ? join(process.env.SALE_OUT_DIR)
+  : join(ROOT, '..', 'sidusastro-sale')
 
 const SKIP_DIRS = new Set([
-  'node_modules', 'dist', 'dist-ssr', '.netlify', '.git', 'sidusastro',
+  'node_modules', 'dist', 'dist-ssr', '.netlify', '.git', 'sidusastro', 'sidusastro_clean', 'sidusastro-sale',
 ])
 const SKIP_FILES = new Set([
   'App.jsx.bak', 'test-swe.mjs', 'test-vite-swe.jsx', '.env', '.env.example.remote', 'export-sale-package.mjs',
+  'REPOS-AND-DEPLOY.md', 'GOOGLE-ADS-SETUP.md', 'firebase-service-account-oneline.txt',
 ])
 
 function shouldSkip(rel) {
@@ -76,6 +79,46 @@ function writeOut(relPath, content) {
   writeFileSync(full, content, 'utf8')
 }
 
+function patchAllGuiaHtml() {
+  const guiaDir = join(OUT, 'public', 'guia')
+  if (!existsSync(guiaDir)) return
+  for (const file of readdirSafe(guiaDir)) {
+    if (!file.endsWith('.html')) continue
+    patchFile(join('public', 'guia', file), [
+      ['ca-pub-2807052149540484', 'ca-pub-XXXXXXXXXXXXXXXX'],
+      ['7205155875', '0000000000'],
+      ['<meta name="google-adsense-account" content="ca-pub-XXXXXXXXXXXXXXXX" />\n', '  <!-- AdSense: set your publisher ID in each /guia/ page after approval -->\n'],
+    ])
+  }
+}
+
+function patchAllI18nSupportEmail() {
+  const i18nDir = join(OUT, 'src', 'lib', 'i18n')
+  if (!existsSync(i18nDir)) return
+  for (const file of readdirSafe(i18nDir)) {
+    if (!/\.(js|jsx)$/.test(file)) continue
+    patchFile(join('src', 'lib', 'i18n', file), [['suporte.sidusapp@gmail.com', SUPPORT_EMAIL]])
+  }
+}
+
+function writeBuyerDeployInventory() {
+  writeOut('DEPLOY-INVENTORY.md', `# Deploy inventory (buyer)
+
+Use your own accounts. **No seller secrets** are included in this repository.
+
+| Service | What to configure |
+|---------|-------------------|
+| **Netlify** | Hosting, build \`npm run build\`, env vars from \`.env.example\` |
+| **Firebase** | Auth + Firestore — project ID in \`.firebaserc\` and \`VITE_FIREBASE_*\` |
+| **Stripe** | Checkout + webhook — \`STRIPE_SECRET_KEY\`, \`STRIPE_WEBHOOK_SECRET\` |
+| **Google Analytics** | Optional — \`VITE_GA_MEASUREMENT_ID\` |
+| **Google AdSense** | Optional — \`VITE_ADSENSE_CLIENT\`, \`VITE_ADSENSE_SLOT\`, \`/guia/*.html\` |
+| **reCAPTCHA v2** | \`VITE_RECAPTCHA_SITE_KEY\` |
+
+See [SETUP.md](./SETUP.md) for step-by-step deployment.
+`)
+}
+
 // ── Sanitização ─────────────────────────────────────────────────────────────
 
 const SUPPORT_EMAIL = 'support@yourdomain.com'
@@ -91,27 +134,21 @@ const EMAILS_PREMIUM_PRIVILEGIADOS = [
     .replace(/const FALLBACK_GA_ID = 'G-18FPC8HYE8'\r?\n\r?\n/, '')
     .replace('return FALLBACK_GA_ID', "return ''"))
 
-  patchFile('src/lib/adsense.js', [
-    [`/** Publisher ID público - igual ao index.html (AdSense sidusastro.com). */
-export const ADSENSE_PUBLISHER = 'ca-pub-2807052149540484'
-/** Bloco Display horizontal - sidusastro.com */
-export const ADSENSE_SLOT_DEFAULT = '7205155875'`, `/** Set via VITE_ADSENSE_CLIENT / VITE_ADSENSE_SLOT in Netlify (no hardcoded IDs). */
-export const ADSENSE_PUBLISHER = ''
-export const ADSENSE_SLOT_DEFAULT = ''`],
-  ])
+  writeOut('src/lib/adsense.js', readFileSync(join(ROOT, 'src/lib/adsense.js'), 'utf8')
+    .replace(/export const ADSENSE_PUBLISHER = 'ca-pub-[^']+'/, "export const ADSENSE_PUBLISHER = ''")
+    .replace(/export const ADSENSE_SLOT_DEFAULT = '[^']+'/, "export const ADSENSE_SLOT_DEFAULT = ''")
+    .replace(/\/\*\* Publisher ID[\s\S]*?\*\/\r?\n/, '/** Set via VITE_ADSENSE_CLIENT / VITE_ADSENSE_SLOT (no hardcoded IDs). */\n'))
 
-  patchFile('index.html', [
-    ['    <meta name="google-adsense-account" content="ca-pub-2807052149540484" />\n\n', ''],
-  ])
+  let indexHtml = readFileSync(join(OUT, 'index.html'), 'utf8')
+  indexHtml = indexHtml
+    .replace(/\r?\n\s*<!-- Google AdSense[\s\S]*?google-adsense-account[^\n]+\r?\n\r?\n?/g, '\n')
+    .replace(/\r?\n\s*<script async src="https:\/\/www\.googletagmanager\.com\/gtag\/js\?id=G-[^"]+"><\/script>/g, '')
+    .replace(/\r?\n\s*gtag\('config', 'G-[^']+', \{ anonymize_ip: true \}\);/g, "\n      // GA4 loads at runtime when VITE_GA_MEASUREMENT_ID is set")
+  writeOut('index.html', indexHtml)
 
-  patchFile('netlify.toml', [
-    [`[context.production.environment]
-  VITE_GA_MEASUREMENT_ID = "G-18FPC8HYE8"
-  VITE_ADSENSE_CLIENT = "ca-pub-2807052149540484"
-  VITE_ADSENSE_SLOT = "7205155875"
-
-`, ''],
-  ])
+  let netlifyToml = readFileSync(join(OUT, 'netlify.toml'), 'utf8')
+  netlifyToml = netlifyToml.replace(/\r?\n\[context\.production\.environment\][\s\S]*?(?=\r?\n\[functions\])/, '')
+  writeOut('netlify.toml', netlifyToml)
 
   writeOut('.env.example', readFileSync(join(ROOT, 'scripts', 'sale-env.example'), 'utf8'))
 
@@ -122,29 +159,27 @@ export const ADSENSE_SLOT_DEFAULT = ''`],
   patchFile('scripts/add-firebase-auth-domains.mjs', [
     ['projeto sidus-app', 'your Firebase project'],
     ["const PROJECT_ID = 'sidus-app'", "const PROJECT_ID = process.env.FIREBASE_PROJECT_ID || 'your-firebase-project-id'"],
-    [`const DOMAINS_TO_ADD = [
-  'sidusastro.com',
-  'www.sidusastro.com',
-  'sidusastro.netlify.app',
-]`, `const DOMAINS_TO_ADD = [
-  'yourdomain.com',
-  'www.yourdomain.com',
-  'your-site.netlify.app',
-]`],
   ])
+  patchFile('scripts/add-firebase-auth-domains.mjs', [
+    [/sidusastro\.com/g, 'yourdomain.com'],
+  ])
+  let authDomains = readFileSync(join(OUT, 'scripts/add-firebase-auth-domains.mjs'), 'utf8')
+  authDomains = authDomains
+    .replace(/'www\.sidusastro\.com'/g, "'www.yourdomain.com'")
+    .replace(/'sidusastro\.netlify\.app'/g, "'your-site.netlify.app'")
+  writeOut('scripts/add-firebase-auth-domains.mjs', authDomains)
 
   patchFile('public/ads.txt', [
-    ['google.com, pub-2807052149540484, DIRECT, f08c47fec0942fa0\n', `# Replace with your AdSense ads.txt line after approval:\n# google.com, pub-XXXXXXXXXXXXXXXX, DIRECT, f08c47fec0942fa0\n`],
+    [/google\.com, pub-[^\n]+\n/g, '# Replace with your AdSense ads.txt line after approval:\n# google.com, pub-XXXXXXXXXXXXXXXX, DIRECT, f08c47fec0942fa0\n'],
   ])
 
-  for (const f of ['src/lib/i18n/pt.js', 'src/lib/i18n/en.js', 'src/lib/i18n/privacy.js']) {
-    patchFile(f, [['suporte.sidusapp@gmail.com', SUPPORT_EMAIL]])
-  }
+  patchAllI18nSupportEmail()
 
   patchFile('public/privacy.html', [['suporte.sidusapp@gmail.com', SUPPORT_EMAIL]])
 
   patchFile('netlify/functions/geocode-city.mjs', [
-    ["const USER_AGENT = 'SidusAstro/1.0 (https://sidusastro.com; support@sidusastro.com)'", "const USER_AGENT = 'SidusAstro/1.0 (https://yourdomain.com; support@yourdomain.com)'"],
+    [/https:\/\/sidusastro\.com/g, 'https://yourdomain.com'],
+    [/support@sidusastro\.com/g, 'support@yourdomain.com'],
   ])
 
   patchFile('package.json', [
@@ -155,6 +190,11 @@ export const ADSENSE_SLOT_DEFAULT = ''`],
   patchFile('package-lock.json', [
     ['"name": "sidus-app"', '"name": "sidusastro"'],
   ])
+
+  patchAllGuiaHtml()
+
+  const sellerDeploy = join(OUT, 'scripts', 'DEPLOY-INVENTORY.md')
+  if (existsSync(sellerDeploy)) rmSync(sellerDeploy)
 }
 
 // ── Documentação para o comprador ───────────────────────────────────────────
@@ -164,10 +204,7 @@ function writeDocs() {
   writeOut('SETUP.md', readFileSync(join(ROOT, 'scripts', 'sale-SETUP.md'), 'utf8'))
   writeOut('DOMAIN-TRANSFER.md', readFileSync(join(ROOT, 'scripts', 'sale-DOMAIN-TRANSFER.md'), 'utf8'))
   writeOut('SALE-NOTES.md', readFileSync(join(ROOT, 'scripts', 'sale-NOTES.md'), 'utf8'))
-  const inventory = join(ROOT, 'scripts', 'DEPLOY-INVENTORY.md')
-  if (existsSync(inventory)) {
-    writeOut('DEPLOY-INVENTORY.md', readFileSync(inventory, 'utf8'))
-  }
+  writeBuyerDeployInventory()
 }
 
 // ── Main ──────────────────────────────────────────────────────────────────────
@@ -187,5 +224,5 @@ writeDocs()
 
 console.log('')
 console.log('✓ Pacote pronto em:', OUT)
-console.log('  Próximo passo: cd ../sidusastro-sale && git init && git add . && git commit')
-console.log('  O teu sidus-app em produção não foi alterado (excepto este script).')
+console.log('  Próximo passo: sincronizar com sidusastro_clean e git push')
+console.log('  O teu sidusastro em produção não foi alterado.')

@@ -7,9 +7,10 @@ This folder was generated from the seller's private development repo for **hando
 | Item | In sale package |
 |------|-----------------|
 | Seller personal emails (premium whitelist) | Empty list in `premiumAccess.js` |
-| Seller AdSense publisher ID | Env vars only - no hardcoded IDs |
+| Seller AdSense / GA4 IDs | Env vars only — no hardcoded IDs |
 | Seller Firebase project ID in `.firebaserc` | Placeholder `your-firebase-project-id` |
 | Seller support email | `support@yourdomain.com` (replace after purchase) |
+| Internal seller docs (`REPOS-AND-DEPLOY.md`, `GOOGLE-ADS-SETUP.md`) | Not included |
 | `.env` / secrets | Not included - use `.env.example` |
 | `node_modules`, `dist`, `.netlify` | Not included - run `npm install` |
 
