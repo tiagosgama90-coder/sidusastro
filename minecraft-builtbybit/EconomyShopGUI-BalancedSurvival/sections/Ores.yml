@@ -1,0 +1,17 @@
+enable: true
+slot: 12
+title: "&8» &6Ores & Minerals &8«"
+hidden: false
+sub-section: false
+economy: VAULT
+fill-item:
+  material: GRAY_STAINED_GLASS_PANE
+  name: ' '
+nav-bar:
+  mode: INHERIT
+item:
+  material: DIAMOND
+  name: '&6&lOres & Minerals'
+  lore:
+    - '&7Raw materials and ingots'
+    - '&eClick to open'

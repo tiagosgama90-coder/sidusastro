@@ -1,0 +1,133 @@
+pages:
+  page1:
+    gui-rows: 6
+    title: "&bTools & Armor"
+    items:
+      '1':
+        material: WOODEN_PICKAXE
+        buy: 15
+        sell: 4.5
+      '2':
+        material: STONE_PICKAXE
+        buy: 25
+        sell: 7.5
+      '3':
+        material: IRON_PICKAXE
+        buy: 120
+        sell: 36
+      '4':
+        material: DIAMOND_PICKAXE
+        buy: 1800
+        sell: 540
+      '5':
+        material: WOODEN_AXE
+        buy: 12
+        sell: 3.6
+      '6':
+        material: STONE_AXE
+        buy: 20
+        sell: 6
+      '7':
+        material: IRON_AXE
+        buy: 100
+        sell: 30
+      '8':
+        material: DIAMOND_AXE
+        buy: 1500
+        sell: 450
+      '9':
+        material: WOODEN_SHOVEL
+        buy: 8
+        sell: 2.4
+      '10':
+        material: STONE_SHOVEL
+        buy: 15
+        sell: 4.5
+      '11':
+        material: IRON_SHOVEL
+        buy: 60
+        sell: 18
+      '12':
+        material: DIAMOND_SHOVEL
+        buy: 900
+        sell: 270
+      '13':
+        material: SHEARS
+        buy: 35
+        sell: 10.5
+      '14':
+        material: FISHING_ROD
+        buy: 25
+        sell: 7.5
+      '15':
+        material: FLINT_AND_STEEL
+        buy: 30
+        sell: 9
+      '16':
+        material: LEATHER_HELMET
+        buy: 40
+        sell: 12
+      '17':
+        material: LEATHER_CHESTPLATE
+        buy: 65
+        sell: 19.5
+      '18':
+        material: LEATHER_LEGGINGS
+        buy: 55
+        sell: 16.5
+      '19':
+        material: LEATHER_BOOTS
+        buy: 35
+        sell: 10.5
+      '20':
+        material: IRON_HELMET
+        buy: 200
+        sell: 60
+      '21':
+        material: IRON_CHESTPLATE
+        buy: 320
+        sell: 96
+      '22':
+        material: IRON_LEGGINGS
+        buy: 280
+        sell: 84
+      '23':
+        material: IRON_BOOTS
+        buy: 160
+        sell: 48
+      '24':
+        material: DIAMOND_HELMET
+        buy: 2200
+        sell: 660
+      '25':
+        material: DIAMOND_CHESTPLATE
+        buy: 3600
+        sell: 1080
+      '26':
+        material: DIAMOND_LEGGINGS
+        buy: 3200
+        sell: 960
+      '27':
+        material: DIAMOND_BOOTS
+        buy: 1800
+        sell: 540
+      '28':
+        material: SHIELD
+        buy: 80
+        sell: 24
+      '29':
+        material: BOW
+        buy: 45
+        sell: 13.5
+      '30':
+        material: ARROW
+        buy: 3
+        sell: 0.9
+      '31':
+        material: TORCH
+        buy: 2
+        sell: 0.5
+      '32':
+        material: LADDER
+        buy: 4
+        sell: 1.2

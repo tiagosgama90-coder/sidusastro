@@ -1,0 +1,17 @@
+enable: true
+slot: 14
+title: "&8» &aFarming & Food &8«"
+hidden: false
+sub-section: false
+economy: VAULT
+fill-item:
+  material: GRAY_STAINED_GLASS_PANE
+  name: ' '
+nav-bar:
+  mode: INHERIT
+item:
+  material: WHEAT
+  name: '&a&lFarming & Food'
+  lore:
+    - '&7Seeds, crops and food'
+    - '&eClick to open'

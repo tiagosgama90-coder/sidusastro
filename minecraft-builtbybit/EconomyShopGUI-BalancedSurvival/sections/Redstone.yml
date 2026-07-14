@@ -1,0 +1,17 @@
+enable: true
+slot: 22
+title: "&8» &cRedstone & Misc &8«"
+hidden: false
+sub-section: false
+economy: VAULT
+fill-item:
+  material: GRAY_STAINED_GLASS_PANE
+  name: ' '
+nav-bar:
+  mode: INHERIT
+item:
+  material: REDSTONE
+  name: '&c&lRedstone & Misc'
+  lore:
+    - '&7Redstone components and utilities'
+    - '&eClick to open'

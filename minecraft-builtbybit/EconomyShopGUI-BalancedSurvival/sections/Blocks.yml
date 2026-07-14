@@ -1,0 +1,17 @@
+enable: true
+slot: 10
+title: "&8» &fBlocks &8«"
+hidden: false
+sub-section: false
+economy: VAULT
+fill-item:
+  material: GRAY_STAINED_GLASS_PANE
+  name: ' '
+nav-bar:
+  mode: INHERIT
+item:
+  material: STONE
+  name: '&f&lBlocks'
+  lore:
+    - '&7Building blocks for survival'
+    - '&eClick to open'

@@ -1,0 +1,93 @@
+pages:
+  page1:
+    gui-rows: 6
+    title: "&6Ores & Minerals"
+    items:
+      '1':
+        material: COAL
+        buy: 12
+        sell: 3.6
+      '2':
+        material: CHARCOAL
+        buy: 10
+        sell: 3
+      '3':
+        material: RAW_IRON
+        buy: 25
+        sell: 7.5
+      '4':
+        material: IRON_INGOT
+        buy: 45
+        sell: 13.5
+      '5':
+        material: RAW_COPPER
+        buy: 15
+        sell: 4.5
+      '6':
+        material: COPPER_INGOT
+        buy: 28
+        sell: 8.4
+      '7':
+        material: RAW_GOLD
+        buy: 55
+        sell: 16.5
+      '8':
+        material: GOLD_INGOT
+        buy: 95
+        sell: 28.5
+      '9':
+        material: DIAMOND
+        buy: 450
+        sell: 135
+      '10':
+        material: EMERALD
+        buy: 380
+        sell: 114
+      '11':
+        material: LAPIS_LAZULI
+        buy: 18
+        sell: 5.4
+      '12':
+        material: REDSTONE
+        buy: 15
+        sell: 4.5
+      '13':
+        material: QUARTZ
+        buy: 22
+        sell: 6.6
+      '14':
+        material: AMETHYST_SHARD
+        buy: 30
+        sell: 9
+      '15':
+        material: COAL_BLOCK
+        buy: 108
+        sell: 32.4
+      '16':
+        material: IRON_BLOCK
+        buy: 405
+        sell: 121.5
+      '17':
+        material: GOLD_BLOCK
+        buy: 855
+        sell: 256.5
+      '18':
+        material: DIAMOND_BLOCK
+        buy: 4050
+        sell: 1215
+      '19':
+        material: EMERALD_BLOCK
+        buy: 3420
+        sell: 1026
+      '20':
+        material: NETHERITE_SCRAP
+        buy: 1200
+        sell: 360
+      '21':
+        material: NETHERITE_INGOT
+        buy: 5200
+        sell: 1560
+      '22':
+        material: ANCIENT_DEBRIS
+        buy: 800
+        sell: 240

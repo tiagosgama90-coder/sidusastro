@@ -1,0 +1,113 @@
+pages:
+  page1:
+    gui-rows: 6
+    title: "&aFarming & Food"
+    items:
+      '1':
+        material: WHEAT_SEEDS
+        buy: 3
+        sell: 0.9
+      '2':
+        material: WHEAT
+        buy: 5
+        sell: 1.5
+      '3':
+        material: CARROT
+        buy: 6
+        sell: 1.8
+      '4':
+        material: POTATO
+        buy: 6
+        sell: 1.8
+      '5':
+        material: BEETROOT_SEEDS
+        buy: 3
+        sell: 0.9
+      '6':
+        material: BEETROOT
+        buy: 5
+        sell: 1.5
+      '7':
+        material: MELON_SLICE
+        buy: 4
+        sell: 1.2
+      '8':
+        material: PUMPKIN
+        buy: 12
+        sell: 3.6
+      '9':
+        material: SUGAR_CANE
+        buy: 5
+        sell: 1.5
+      '10':
+        material: CACTUS
+        buy: 6
+        sell: 1.8
+      '11':
+        material: BAMBOO
+        buy: 4
+        sell: 1.2
+      '12':
+        material: SWEET_BERRIES
+        buy: 5
+        sell: 1.5
+      '13':
+        material: APPLE
+        buy: 8
+        sell: 2.4
+      '14':
+        material: BREAD
+        buy: 12
+        sell: 3.6
+      '15':
+        material: COOKED_BEEF
+        buy: 18
+        sell: 5.4
+      '16':
+        material: COOKED_PORKCHOP
+        buy: 18
+        sell: 5.4
+      '17':
+        material: COOKED_CHICKEN
+        buy: 15
+        sell: 4.5
+      '18':
+        material: COOKED_MUTTON
+        buy: 16
+        sell: 4.8
+      '19':
+        material: COOKED_SALMON
+        buy: 14
+        sell: 4.2
+      '20':
+        material: COOKED_COD
+        buy: 12
+        sell: 3.6
+      '21':
+        material: GOLDEN_CARROT
+        buy: 45
+        sell: 13.5
+      '22':
+        material: GOLDEN_APPLE
+        buy: 250
+        sell: 75
+      '23':
+        material: HAY_BLOCK
+        buy: 45
+        sell: 13.5
+      '24':
+        material: EGG
+        buy: 5
+        sell: 1.5
+      '25':
+        material: MILK_BUCKET
+        buy: 25
+        sell: 7.5
+      '26':
+        material: NETHER_WART
+        buy: 20
+        sell: 6
+      '27':
+        material: COCOA_BEANS
+        buy: 8
+        sell: 2.4
