@@ -22,13 +22,9 @@ const NAIPES_COR = {
 }
 
 const FLIP_CSS = `
-@keyframes cartaFlipIn {
-  0% { transform: rotateY(90deg); opacity: 0.6; }
-  100% { transform: rotateY(0deg); opacity: 1; }
-}
-@keyframes cartaGlow {
-  0%, 100% { box-shadow: 0 4px 24px rgba(223,183,108,0.2); }
-  50% { box-shadow: 0 4px 32px rgba(223,183,108,0.55); }
+@keyframes cartaRevealPop {
+  0% { transform: scale(0.96); }
+  100% { transform: scale(1); }
 }
 `
 
@@ -164,19 +160,19 @@ export function dimensoesCarta(size) {
 
 /**
  * Carta de tarot profissional - ilustração Mystic com fallback SVG ornamentado.
- * animarFlip: animação 3D ao revelar (sem conflito com rotação invertida).
+ * animarFlip: pop suave ao revelar (sem 3D — evita cartas invisíveis).
  */
 export function CartaTarot({ carta, size = 110, virada = false, animarFlip = false, className, style }) {
   const [imgOk, setImgOk] = useState(true)
   if (!carta) return null
   if (animarFlip) ensureFlipCss()
 
-  const isLenormand = carta?.tipo === 'lenormand'
   const { w, h } = dimensoesCarta(size)
   const src = virada
     ? imagemVersoUrl(carta?.tipo === 'lenormand' ? 'lenormand' : 'tarot')
     : imagemCartaUrl(carta)
   const showImg = src && imgOk
+  const invertida = carta.invertida && !virada && carta.tipo !== 'lenormand'
 
   const outerStyle = {
     width: w,
@@ -186,22 +182,16 @@ export function CartaTarot({ carta, size = 110, virada = false, animarFlip = fal
     flexShrink: 0,
     display: 'inline-block',
     verticalAlign: 'top',
-    perspective: animarFlip ? 800 : undefined,
-    transformStyle: animarFlip ? 'preserve-3d' : undefined,
     boxShadow: virada ? '0 4px 16px rgba(223,183,108,0.22)' : '0 4px 24px rgba(223,183,108,0.2)',
-    animation: animarFlip && !virada ? 'cartaGlow 2s ease-in-out 0.35s 2' : undefined,
     ...style,
   }
 
   const faceStyle = {
     width: '100%',
     height: '100%',
-    transform: carta.invertida && !virada && carta.tipo !== 'lenormand' ? 'rotate(180deg)' : undefined,
+    transform: invertida ? 'rotate(180deg)' : undefined,
     transformOrigin: 'center center',
-    transformStyle: animarFlip ? 'preserve-3d' : undefined,
-    animation: animarFlip && !virada ? 'cartaFlipIn 0.35s ease-out forwards' : undefined,
-    backfaceVisibility: 'hidden',
-    WebkitBackfaceVisibility: 'hidden',
+    animation: animarFlip && !virada ? 'cartaRevealPop 0.15s ease-out forwards' : undefined,
   }
 
   const imgStyle = {
