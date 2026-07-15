@@ -1,8 +1,8 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { useLanguage } from '../lib/i18n/LanguageContext.jsx'
-import { inferProductType } from '../lib/pricing.js'
-import { metodosParaProduto } from '../lib/paymentMethods.js'
+import { inferProductType, precoPremiumEfetivo, formatPrecoEuro, PRECO_PREMIUM_UNICO, PRECO_PREMIUM_BR_PIX } from '../lib/pricing.js'
+import { metodosParaProduto, metodoPadraoParaPais } from '../lib/paymentMethods.js'
 
 const CORES = {
   fundo: '#0B071E', dourado: '#DFB76C', douradoEscuro: '#B8944F',
@@ -39,25 +39,55 @@ export async function iniciarCheckoutStripe({ valor, descricao, userId, userEmai
   window.location.assign(url)
 }
 
-export function ModalPagamento({ valor, descricao, userId, userEmail, productType: productTypeProp, onSucesso, onFechar }) {
+export function ModalPagamento({
+  valor,
+  descricao,
+  userId,
+  userEmail,
+  productType: productTypeProp,
+  country = '',
+  onSucesso,
+  onFechar,
+}) {
   const { t, lang } = useLanguage()
   const [processando, setProcessando] = useState(false)
   const [erro, setErro] = useState(null)
 
   const productType = inferProductType(valor, descricao, productTypeProp)
   const isVip = productType === 'premium'
+  const isBrasil = String(country).toUpperCase() === 'BR'
 
   const metodosDisponiveis = useMemo(
-    () => metodosParaProduto().map((m) => ({
+    () => metodosParaProduto(country).map((m) => ({
       ...m,
       nome: t(`pagamento.methods.${m.i18nKey}.nome`),
-      desc: isVip ? t('pagamento.vipMethodDesc') : t(`pagamento.methods.${m.i18nKey}.desc`),
     })),
-    [t, isVip],
+    [t, country],
   )
 
-  const [metodoSelecionado, setMetodoSelecionado] = useState('card')
+  const [metodoSelecionado, setMetodoSelecionado] = useState(() => metodoPadraoParaPais(country))
+
+  useEffect(() => {
+    setMetodoSelecionado(metodoPadraoParaPais(country))
+  }, [country])
+
   const metodoActivo = metodosDisponiveis.find((m) => m.stripeType === metodoSelecionado) || metodosDisponiveis[0]
+
+  const valorEfetivo = useMemo(() => {
+    if (isVip) return precoPremiumEfetivo(metodoActivo?.stripeType || 'card')
+    return valor
+  }, [isVip, metodoActivo?.stripeType, valor])
+
+  const descricaoMetodo = (m) => {
+    if (isVip && isBrasil && m.stripeType === 'pix') {
+      return t('pagamento.pixBrOffer', { valor: formatPrecoEuro(PRECO_PREMIUM_BR_PIX) })
+    }
+    if (isVip && isBrasil && m.stripeType !== 'pix') {
+      return t('pagamento.premiumFullPrice', { valor: formatPrecoEuro(PRECO_PREMIUM_UNICO) })
+    }
+    if (isVip) return t('pagamento.vipMethodDesc')
+    return t(`pagamento.methods.${m.i18nKey}.desc`)
+  }
 
   const msgErro = (code) => {
     const map = {
@@ -78,7 +108,7 @@ export function ModalPagamento({ valor, descricao, userId, userEmail, productTyp
     setProcessando(true)
     try {
       await iniciarCheckoutStripe({
-        valor,
+        valor: valorEfetivo,
         descricao,
         userId,
         userEmail,
@@ -103,9 +133,19 @@ export function ModalPagamento({ valor, descricao, userId, userEmail, productTyp
           <p style={{ margin: 0, color: CORES.brancoMuted, fontSize: 13 }}>{descricao}</p>
         </div>
         <div style={{ fontSize: 24, fontWeight: 700, color: CORES.dourado }}>
-          {valor.toFixed(2)} €{isVip ? <span style={{ fontSize: 12, fontWeight: 400 }}> {t('common.oneTime')}</span> : null}
+          {formatPrecoEuro(valorEfetivo)} €{isVip ? <span style={{ fontSize: 12, fontWeight: 400 }}> {t('common.oneTime')}</span> : null}
         </div>
       </div>
+
+      {isVip && isBrasil && (
+        <div style={{
+          background: 'rgba(52, 211, 153, 0.12)', border: '1px solid rgba(52, 211, 153, 0.45)',
+          borderRadius: 12, padding: '12px 14px', marginBottom: 16, fontSize: 12,
+          color: CORES.brancoSuave, lineHeight: 1.55,
+        }}>
+          {t('pagamento.brPixBanner')}
+        </div>
+      )}
 
       <div style={{
         background: 'rgba(223,183,108,0.12)', border: '1px solid rgba(223,183,108,0.45)',
@@ -124,6 +164,7 @@ export function ModalPagamento({ valor, descricao, userId, userEmail, productTyp
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 20 }}>
         {metodosDisponiveis.map((m) => {
           const seleccionado = metodoActivo?.stripeType === m.stripeType
+          const destaquePix = isVip && isBrasil && m.stripeType === 'pix'
           return (
             <button
               key={m.stripeType}
@@ -132,7 +173,9 @@ export function ModalPagamento({ valor, descricao, userId, userEmail, productTyp
               aria-pressed={seleccionado}
               style={{
                 background: seleccionado ? 'rgba(223,183,108,0.14)' : 'rgba(255,255,255,0.03)',
-                border: seleccionado ? `2px solid ${CORES.dourado}` : '1px solid rgba(255,255,255,0.08)',
+                border: seleccionado
+                  ? `2px solid ${destaquePix ? '#34D399' : CORES.dourado}`
+                  : `1px solid ${destaquePix ? 'rgba(52,211,153,0.35)' : 'rgba(255,255,255,0.08)'}`,
                 borderRadius: 10,
                 padding: '10px 12px',
                 cursor: 'pointer',
@@ -141,8 +184,13 @@ export function ModalPagamento({ valor, descricao, userId, userEmail, productTyp
               }}
             >
               <div style={{ fontSize: 18, marginBottom: 4 }}>{m.icone}</div>
-              <div style={{ fontSize: 12, fontWeight: 600, color: seleccionado ? CORES.dourado : CORES.branco }}>{m.nome}</div>
-              <div style={{ fontSize: 10, color: CORES.brancoMuted, lineHeight: 1.4 }}>{m.desc}</div>
+              <div style={{ fontSize: 12, fontWeight: 600, color: seleccionado ? (destaquePix ? '#34D399' : CORES.dourado) : CORES.branco }}>
+                {m.nome}
+                {destaquePix ? <span style={{ marginLeft: 4, fontSize: 9 }}>🇧🇷</span> : null}
+              </div>
+              <div style={{ fontSize: 10, color: destaquePix ? 'rgba(52,211,153,0.9)' : CORES.brancoMuted, lineHeight: 1.4 }}>
+                {descricaoMetodo(m)}
+              </div>
             </button>
           )
         })}
@@ -163,11 +211,11 @@ export function ModalPagamento({ valor, descricao, userId, userEmail, productTyp
       }}>
         {processando
           ? t('pagamento.redirecting')
-          : t('pagamento.payBtnWithMethod', { valor: valor.toFixed(2), method: metodoActivo?.nome || '' })}
+          : t('pagamento.payBtnWithMethod', { valor: formatPrecoEuro(valorEfetivo), method: metodoActivo?.nome || '' })}
       </button>
 
       <p style={{ textAlign: 'center', fontSize: 10, color: CORES.brancoMuted, marginTop: 12, lineHeight: 1.5 }}>
-        {isVip ? t('pagamento.vipMethodsFootnote') : t('pagamento.methodsFootnote')}
+        {isVip && isBrasil ? t('pagamento.vipBrMethodsFootnote') : (isVip ? t('pagamento.vipMethodsFootnote') : t('pagamento.methodsFootnote'))}
       </p>
     </Overlay>
   )
