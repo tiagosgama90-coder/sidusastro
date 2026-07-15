@@ -35,7 +35,8 @@ import { Body, GeoVector, Ecliptic, MakeTime, SiderealTime } from 'astronomy-eng
 import { pesquisarCidades, pesquisarFusoHorario, geocodificarCidade } from './lib/geocoding'
 import { EcraTarot } from './components/Tarot'
 import { ModalPagamento, verificarSessaoPagamento } from './components/Pagamento'
-import { PRECO_MAPA_COMPLETO, PRECO_PREMIUM_UNICO } from './lib/pricing.js'
+import { PRECO_MAPA_COMPLETO, precoPremiumVitrine, formatPrecoEuro } from './lib/pricing.js'
+import { useGeoCountry } from './hooks/useGeoCountry.js'
 import { RecaptchaCheckbox } from './components/Recaptcha'
 import { Perfil } from './components/Perfil'
 import { PoliticaPrivacidade } from './components/PoliticaPrivacidade'
@@ -2658,9 +2659,11 @@ function Ferramentas({ onFerramenta, isDesktop, acessoVip }) {
   )
 }
 
-function Paywall({ onVoltar, onPagar, onSucesso, isDesktop }) {
+function Paywall({ onVoltar, onPagar, onSucesso, isDesktop, isBrasil }) {
   const { t, lang } = useLanguage()
   const beneficios = getBeneficiosVip(lang)
+  const precoVitrine = precoPremiumVitrine(isBrasil)
+  const precoLabel = formatPrecoEuro(precoVitrine)
   return (
     <div style={layoutConteudo(isDesktop, { paddingTop: 16 })}>
       <button type="button" onClick={onVoltar} style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'none', border: 'none', color: CORES.dourado, cursor: 'pointer', marginBottom: 20 }}>
@@ -2680,22 +2683,28 @@ function Paywall({ onVoltar, onPagar, onSucesso, isDesktop }) {
         ))}
       </div>
       <div style={{ ...estilos.vidro, padding: 24, textAlign: 'center', border: `1px solid ${CORES.dourado}`, marginBottom: 20 }}>
-        <div style={{ fontSize: 40, fontWeight: 700, color: CORES.branco }}>{t('vip.price')} <span style={{ fontSize: 16, color: CORES.brancoMuted, fontWeight: 400 }}>{t('common.oneTime')}</span></div>
+        <div style={{ fontSize: 40, fontWeight: 700, color: CORES.branco }}>
+          {precoLabel} € <span style={{ fontSize: 16, color: CORES.brancoMuted, fontWeight: 400 }}>{t('common.oneTime')}</span>
+        </div>
+        {isBrasil ? (
+          <p style={{ fontSize: 12, color: '#34D399', marginTop: 8, fontWeight: 600 }}>{t('vip.priceBrPixNote')}</p>
+        ) : null}
         <p style={{ fontSize: 12, color: CORES.brancoMuted, marginTop: 6 }}>{t('vip.oneTimeAccess')}</p>
       </div>
-      <button type="button" onClick={() => onPagar(t('vip.productName'), PRECO_PREMIUM_UNICO, onSucesso, { productType: 'premium' })} style={estilos.botaoDourado}>
-        {t('vip.cta')}
+      <button type="button" onClick={() => onPagar(t('vip.productName'), precoVitrine, onSucesso, { productType: 'premium' })} style={estilos.botaoDourado}>
+        {isBrasil ? t('vip.ctaBr') : t('vip.cta')}
       </button>
       <p style={{ textAlign: 'center', fontSize: 11, color: CORES.brancoMuted, marginTop: 12 }}>
-        {t('vip.paymentMethods')}
+        {isBrasil ? t('vip.paymentMethodsBr') : t('vip.paymentMethods')}
       </p>
     </div>
   )
 }
 
-function OraclePremiumUpsell({ onUpgrade, compact = false }) {
+function OraclePremiumUpsell({ onUpgrade, compact = false, isBrasil = false }) {
   const { lang, t } = useLanguage()
   const beneficios = getBeneficiosVip(lang)
+  const precoLabel = formatPrecoEuro(precoPremiumVitrine(isBrasil))
 
   return (
     <div style={{
@@ -2728,8 +2737,11 @@ function OraclePremiumUpsell({ onUpgrade, compact = false }) {
         background: 'rgba(0,0,0,0.2)', borderRadius: 10,
         border: '1px solid rgba(223,183,108,0.25)',
       }}>
-        <span style={{ fontSize: 22, fontWeight: 700, color: CORES.branco }}>{t('vip.price')}</span>
+        <span style={{ fontSize: 22, fontWeight: 700, color: CORES.branco }}>{precoLabel} €</span>
         <span style={{ fontSize: 12, color: CORES.brancoMuted }}> {t('common.oneTime')}</span>
+        {isBrasil ? (
+          <div style={{ fontSize: 11, color: '#34D399', marginTop: 4, fontWeight: 600 }}>{t('vip.priceBrPixNote')}</div>
+        ) : null}
         <div style={{ fontSize: 11, color: CORES.brancoMuted, marginTop: 4 }}>{t('vip.oneTimeAccess')}</div>
       </div>
       <button
@@ -2741,7 +2753,7 @@ function OraclePremiumUpsell({ onUpgrade, compact = false }) {
           color: CORES.fundo, fontSize: 15, fontWeight: 700,
         }}
       >
-        {t('oracle.upsellCta')}
+        {isBrasil ? t('vip.ctaBr') : t('oracle.upsellCta')}
       </button>
     </div>
   )
@@ -2752,7 +2764,7 @@ async function consultarSidus(pergunta, mapaNatal, historico, lang, idToken, cli
   return consultarOracleServidor(pergunta, mapaNatal, historico, lang, idToken, clientPremium)
 }
 
-function Chat({ mapaNatal, isPremium, userId, oracleRemotas, onOracleUsada, onUpgrade, obterIdToken }) {
+function Chat({ mapaNatal, isPremium, userId, oracleRemotas, onOracleUsada, onUpgrade, obterIdToken, isBrasil = false }) {
   const { lang, t } = useLanguage()
   const [perguntasUsadas, setPerguntasUsadas] = useState(() => contarOraclePerguntas(userId, oracleRemotas))
 
@@ -2939,7 +2951,7 @@ function Chat({ mapaNatal, isPremium, userId, oracleRemotas, onOracleUsada, onUp
       <div style={{ flex: 1, overflowY: 'auto', padding: '16px 14px 10px', display: 'flex', flexDirection: 'column', gap: 12 }}>
         {mensagens.map((m) => (
           m.tipo === 'upsell' ? (
-            <OraclePremiumUpsell key={m.id} onUpgrade={onUpgrade} compact />
+            <OraclePremiumUpsell key={m.id} onUpgrade={onUpgrade} compact isBrasil={isBrasil} />
           ) : (
             <div key={m.id} style={{
               alignSelf: m.autor === 'user' ? 'flex-end' : 'flex-start',
@@ -2964,7 +2976,7 @@ function Chat({ mapaNatal, isPremium, userId, oracleRemotas, onOracleUsada, onUp
           )
         ))}
         {limiteAtingido && !mensagens.some((m) => m.tipo === 'upsell') && (
-          <OraclePremiumUpsell onUpgrade={onUpgrade} />
+          <OraclePremiumUpsell onUpgrade={onUpgrade} isBrasil={isBrasil} />
         )}
         {digitando && (
           <div style={{ alignSelf: 'flex-start', padding: '13px 18px', borderRadius: '4px 18px 18px 18px', background: 'rgba(255,255,255,0.055)', border: `1px solid rgba(255,255,255,0.09)` }}>
@@ -3319,6 +3331,7 @@ function dadosComRascunhoLanding(dados) {
 export default function App() {
   const isDesktop = useIsDesktop()
   const { t, lang, setLang } = useLanguage()
+  const { country, isBrasil } = useGeoCountry()
   const [utilizador, setUtilizador] = useState(null)
   const [authCarregando, setAuthCarregando] = useState(true)
   const [tipoAuth, setTipoAuth] = useState('login') // 'login' | 'register'
@@ -4109,9 +4122,9 @@ export default function App() {
       case 'ferramentas':
         return <Ferramentas onFerramenta={handleFerramenta} isDesktop={isDesktop} acessoVip={acessoVip} />
       case 'paywall':
-        return <Paywall onVoltar={() => irPara('home')} onPagar={abrirPagamento} onSucesso={() => { setIsPremium(true); setMapaCompleto(true); irPara(dadosNataisMinimos(dados) ? 'mapa' : 'onboarding') }} isDesktop={isDesktop} />
+        return <Paywall onVoltar={() => irPara('home')} onPagar={abrirPagamento} onSucesso={() => { setIsPremium(true); setMapaCompleto(true); irPara(dadosNataisMinimos(dados) ? 'mapa' : 'onboarding') }} isDesktop={isDesktop} isBrasil={isBrasil} />
       case 'chat':
-        return <Chat mapaNatal={mapaNatal} isPremium={isPremium} userId={utilizador?.uid} oracleRemotas={oraclePerguntasUsadas} onOracleUsada={registarOraclePerguntaUsada} onUpgrade={() => irPara('paywall')} obterIdToken={obterIdTokenOracle} />
+        return <Chat mapaNatal={mapaNatal} isPremium={isPremium} userId={utilizador?.uid} oracleRemotas={oraclePerguntasUsadas} onOracleUsada={registarOraclePerguntaUsada} onUpgrade={() => irPara('paywall')} obterIdToken={obterIdTokenOracle} isBrasil={isBrasil} />
       case 'perfil':
         return <Perfil utilizador={utilizador} dados={dados} mapaNatal={mapaNatal} isPremium={isPremium}
           dadosBloqueados={dadosBloqueados}
@@ -4224,6 +4237,7 @@ export default function App() {
           userId={utilizador?.uid}
           userEmail={utilizador?.email}
           productType={modalPagamento.productType}
+          country={country}
           onSucesso={() => { modalPagamento.onSucesso?.(); setModalPagamento(null) }}
           onFechar={() => setModalPagamento(null)}
         />

@@ -10,8 +10,17 @@ export const METODOS_PAGAMENTO = [
 
 const STRIPE_TYPES = new Set(METODOS_PAGAMENTO.map((m) => m.stripeType))
 
-export function metodosParaProduto() {
+const METODOS_APENAS_PT = new Set(['mb_way', 'multibanco'])
+
+export function metodosParaProduto(country = '') {
+  if (String(country).toUpperCase() === 'BR') {
+    return METODOS_PAGAMENTO.filter((m) => !METODOS_APENAS_PT.has(m.stripeType))
+  }
   return METODOS_PAGAMENTO
+}
+
+export function metodoPadraoParaPais(country = '') {
+  return String(country).toUpperCase() === 'BR' ? 'pix' : 'card'
 }
 
 export function metodoUsaSubscricaoRecorrente() {

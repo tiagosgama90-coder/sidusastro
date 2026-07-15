@@ -21,6 +21,15 @@ const corsHeaders = {
 const RETURN_PATH = { premium: '/mapaastral', mapa: '/mapaastral', tarot: '/tarot' }
 const CANCEL_PATH = { premium: '/vip', mapa: '/mapaastral', tarot: '/tarot' }
 const SUPPORTED_LANGS = new Set(['pt', 'en', 'es', 'it', 'de', 'fr'])
+const PRECO_PREMIUM_EUR = 9.99
+const PRECO_PREMIUM_PIX_EUR = 5
+
+function resolverValorCobranca({ productType, metodo, valorCliente }) {
+  if (productType === 'premium') {
+    return metodo === 'pix' ? PRECO_PREMIUM_PIX_EUR : PRECO_PREMIUM_EUR
+  }
+  return Number(valorCliente)
+}
 
 function pathComIdioma(basePath, lang) {
   if (!SUPPORTED_LANGS.has(lang)) return basePath
@@ -45,13 +54,14 @@ export default async (req) => {
 
     const stripe = getStripe()
     const origin = siteOrigin(req)
-    const v = Number(valor)
+    const valorCliente = Number(valor)
     const productType = productTypeRaw
-      || (v >= 9.99 || /vip|premium|subscri/i.test(descricao || '') ? 'premium'
-        : v >= 10 || /mapa.*completo|natal chart/i.test(descricao || '') ? 'mapa'
+      || (valorCliente >= PRECO_PREMIUM_EUR - 0.01 || /vip|premium|subscri/i.test(descricao || '') ? 'premium'
+        : valorCliente >= 10 || /mapa.*completo|natal chart/i.test(descricao || '') ? 'mapa'
           : 'tarot')
     const isPremium = productType === 'premium'
     const metodo = resolverMetodoPagamento(paymentMethod)
+    const v = resolverValorCobranca({ productType, metodo, valorCliente })
 
     // VIP: pagamento único — acesso permanente (todos os métodos)
     const billingType = isPremium ? 'lifetime' : 'one_time'
