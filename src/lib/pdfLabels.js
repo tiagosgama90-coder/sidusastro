@@ -22,6 +22,33 @@ const TECHNICAL = {
   fr: { title: '>> DONNÉES TECHNIQUES', system: 'Système :', systemVal: 'Zodiaque tropical · Maisons Placidus', ut: 'Date UT :', coords: 'Coordonnées :' },
 }
 
+const FILE_STEM = {
+  pt: { prefix: 'MapaNatal', fallback: 'perfil' },
+  en: { prefix: 'NatalChart', fallback: 'profile' },
+  es: { prefix: 'CartaNatal', fallback: 'perfil' },
+  it: { prefix: 'CartaNatale', fallback: 'profilo' },
+  de: { prefix: 'Geburtshoroskop', fallback: 'Profil' },
+  fr: { prefix: 'CarteNatale', fallback: 'profil' },
+}
+
+function sanitizarNomeFicheiro(nome) {
+  return String(nome || '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/\s+/g, '_')
+    .replace(/[^\w.-]/g, '')
+    .replace(/_+/g, '_')
+    .replace(/^_|_$/g, '')
+}
+
+/** Nome do ficheiro PDF descarregado, por idioma do utilizador. */
+export function getPdfFileName(lang = 'pt', nome) {
+  const code = LOCALES[lang] ? lang : 'en'
+  const { prefix, fallback } = FILE_STEM[code] || FILE_STEM.en
+  const base = sanitizarNomeFicheiro(nome) || fallback
+  return `Sidus_${prefix}_${base}.pdf`
+}
+
 export function getPdfLabels(lang = 'pt') {
   const code = LOCALES[lang] ? lang : 'en'
   const m = LOCALES[code].mapa || {}
