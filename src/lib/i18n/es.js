@@ -346,6 +346,9 @@ export default {
     aiFallbackNote: 'Interpretación profesional (modo clásico)',
     freeTasteHint: 'Ves una muestra gratuita. El resto de la carta - interpretación completa, posiciones, aspectos y PDF - está reservado para Premium.',
     freeBlurTeaser: 'Interpretación profesional, esferas de vida, export PDF y mucho más…',
+    mandalaTitle: '✦ Mandala Astrológica',
+    mandalaSubtitle: 'Rueda calculada con Swiss Ephemeris para tu momento de nacimiento: planetas, casas Placidus, aspectos y ángulos con precisión profesional.',
+    mandalaUnavailable: 'La mandala se generará cuando las posiciones planetarias estén disponibles.',
   },
   cartaoDia: {
     title: "✦ Carta del día · {date}"
