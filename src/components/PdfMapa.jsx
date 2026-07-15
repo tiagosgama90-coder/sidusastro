@@ -6,6 +6,8 @@
 import { gerarAnaliseCompleta } from '../lib/mapaInterpretacao.js'
 import { sidusLogoParaPdf, SIDUS_COPYRIGHT_PT, SIDUS_COPYRIGHT_EN } from '../lib/sidusLogoPdf.js'
 import { getPdfLabels } from '../lib/pdfLabels.js'
+import { translateSigno, translatePlaneta } from '../lib/i18n/astro.js'
+import { formatCasaMeta } from '../lib/i18n/langUtil.js'
 import {
   wrapPdfText,
   alturaTextoPdf,
@@ -107,7 +109,7 @@ export async function gerarPdfMapaAstral(mapaNatal, dados, planetas = [], analis
   doc.setFontSize(9)
   doc.setTextColor(...MUTED)
   const localDt = [
-    formatarData(dados.data),
+    formatarData(dados.data, lang),
     dados.hora ? `${labels.atTime} ${dados.hora}` : '',
     dados.cidade ? `- ${dados.cidade}` : '',
   ].filter(Boolean).join(' ')
@@ -118,12 +120,13 @@ export async function gerarPdfMapaAstral(mapaNatal, dados, planetas = [], analis
   yRef.value = secaoTitulo(doc, yRef.value, labels.fourPillars, DOURADO, ROXO, L, W, TEXT_X, TEXT_W)
   yRef.value += 4
 
+  const ts = (nome) => translateSigno(nome, lang) || nome || '-'
   const pilares = [
-    { label: labels.labels.sun, valor: mapaNatal?.solar?.nome || '-', grau: mapaNatal?.solar?.graus },
-    { label: labels.labels.moon, valor: mapaNatal?.lunar?.nome || '-', grau: mapaNatal?.lunar?.graus },
-    { label: labels.labels.asc, valor: mapaNatal?.ascendente?.nome || '-', grau: mapaNatal?.ascendente?.graus },
-    { label: labels.labels.desc, valor: mapaNatal?.descendente?.nome || '-', grau: mapaNatal?.descendente?.graus },
-    { label: labels.labels.mc, valor: mapaNatal?.mc?.nome || '-', grau: mapaNatal?.mc?.graus },
+    { label: labels.labels.sun, valor: ts(mapaNatal?.solar?.nome), grau: mapaNatal?.solar?.graus },
+    { label: labels.labels.moon, valor: ts(mapaNatal?.lunar?.nome), grau: mapaNatal?.lunar?.graus },
+    { label: labels.labels.asc, valor: ts(mapaNatal?.ascendente?.nome), grau: mapaNatal?.ascendente?.graus },
+    { label: labels.labels.desc, valor: ts(mapaNatal?.descendente?.nome), grau: mapaNatal?.descendente?.graus },
+    { label: labels.labels.mc, valor: ts(mapaNatal?.mc?.nome), grau: mapaNatal?.mc?.graus },
   ]
 
   pilares.forEach((p, i) => {
@@ -205,11 +208,13 @@ export async function gerarPdfMapaAstral(mapaNatal, dados, planetas = [], analis
       doc.setTextColor(...DOURADO)
       doc.setFontSize(8)
       doc.setFont('helvetica', 'bold')
-      doc.text(sanitizarTextoPdf(`${pl.simbolo || ''} ${pl.nome || ''}`.trim()), x + 4, yRef.value + 7)
+      const nomePl = translatePlaneta(pl.nome, lang) || pl.nome || ''
+      doc.text(sanitizarTextoPdf(`${pl.simbolo || ''} ${nomePl}`.trim()), x + 4, yRef.value + 7)
       doc.setTextColor(...BRANCO)
       doc.setFont('helvetica', 'normal')
       doc.setFontSize(7)
-      const signoCasa = sanitizarTextoPdf(`${pl.signo?.nome || '-'}${pl.casa ? ` · C${pl.casa}` : ''}`)
+      const signoTr = translateSigno(pl.signo?.nome, lang) || pl.signo?.nome || '-'
+      const signoCasa = sanitizarTextoPdf(formatCasaMeta(lang, signoTr, pl.casa))
       doc.text(signoCasa, x + 28, yRef.value + 7, { maxWidth: boxW - 32 })
       doc.setTextColor(...MUTED)
       doc.text(`${(pl.longitude ?? 0).toFixed(1)}°${pl.retrograde ? ' R' : ''}`, x + boxW - 18, yRef.value + 7)
@@ -332,8 +337,10 @@ function secaoTitulo(doc, y, texto, DOURADO, ROXO, L, W, textX, textW) {
   return y + 11
 }
 
-function formatarData(iso) {
+function formatarData(iso, lang = 'pt') {
   if (!iso) return '-'
   const [a, m, d] = iso.split('-')
+  if (!a || !m || !d) return iso
+  if (lang === 'en') return `${m}/${d}/${a}`
   return `${d}/${m}/${a}`
 }

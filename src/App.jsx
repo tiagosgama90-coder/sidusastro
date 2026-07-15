@@ -2099,12 +2099,13 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
       mapaCompletoDesbloqueado
       && analiseIA?.seccoes?.length
       && analiseMapaValida(analiseIA)
+      && analiseIA.lang === lang
       && contarPalavrasAnalise(analiseIA) >= lexPalavras
     ) {
       return analiseIA
     }
     return analiseLexicon
-  }, [mapaCompletoDesbloqueado, analiseIA, analiseLexicon])
+  }, [mapaCompletoDesbloqueado, analiseIA, analiseLexicon, lang])
 
   useEffect(() => {
     if (!mapaCompletoDesbloqueado || !mapaNatal || !analiseLexicon) {

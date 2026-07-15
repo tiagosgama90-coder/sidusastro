@@ -72,7 +72,6 @@ const BENEFICIOS_VIP_PT = [
   'Alertas de trânsitos planetários em tempo real',
   'Widget no telemóvel para receber o horóscopo diário personalizado (só Premium)',
   'Notificações diárias com horóscopo do teu signo',
-  'Experiência 100% sem anúncios - navega sem interrupções',
 ]
 
 const BENEFICIOS_VIP_EN = [
@@ -86,7 +85,6 @@ const BENEFICIOS_VIP_EN = [
   'Real-time planetary transit alerts',
   'Phone widget for your personalised daily horoscope (Premium only)',
   'Daily notifications with your sign\'s horoscope',
-  '100% ad-free experience - browse without interruptions',
 ]
 
 const BENEFICIOS_VIP_ES = [
@@ -100,7 +98,6 @@ const BENEFICIOS_VIP_ES = [
   'Alertas de tránsitos planetarios en tiempo real',
   'Widget en el móvil para recibir el horóscopo diario personalizado (solo Premium)',
   'Notificaciones diarias con el horóscopo de tu signo',
-  'Experiencia 100% sin anuncios - navega sin interrupciones',
 ]
 
 const BENEFICIOS_VIP_IT = [
@@ -114,7 +111,6 @@ const BENEFICIOS_VIP_IT = [
   'Avvisi sui transiti planetari in tempo reale',
   'Widget sul telefono per l\'oroscopo giornaliero personalizzato (solo Premium)',
   'Notifiche giornaliere con l\'oroscopo del tuo segno',
-  'Esperienza 100% senza pubblicità - naviga senza interruzioni',
 ]
 
 const BENEFICIOS_VIP_DE = [
@@ -128,7 +124,6 @@ const BENEFICIOS_VIP_DE = [
   'Echtzeit-Warnungen bei Planetentransiten',
   'Handy-Widget für dein personalisiertes Tageshoroskop (nur Premium)',
   'Tägliche Benachrichtigungen mit deinem Sternzeichen-Horoskop',
-  '100% werbefreie Erfahrung – unterbrechungsfrei navigieren',
 ]
 
 const BENEFICIOS_VIP_FR = [
@@ -142,7 +137,6 @@ const BENEFICIOS_VIP_FR = [
   'Alertes de transits planétaires en temps réel',
   'Widget mobile pour l\'horoscope quotidien personnalisé (Premium uniquement)',
   'Notifications quotidiennes avec l\'horoscope de ton signe',
-  'Expérience 100% sans publicité - navigue sans interruptions',
 ]
 
 export function getFerramentas(lang) {

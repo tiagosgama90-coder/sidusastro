@@ -345,7 +345,10 @@ export default {
     "aiUpgrading": "Bereiten Sie im Hintergrund Ihre vollständige Lektüre vor …",
     "aiFallbackNote": "Professionelles Dolmetschen (klassischer Modus)",
     "freeTasteHint": "Sie sehen sich ein kostenloses Muster an.Der Rest der Tabelle – vollständige Interpretation, Positionen, Aspekte und PDF – ist Premium vorbehalten.",
-    "freeBlurTeaser": "Professionelles Dolmetschen, Lebenswelten, PDF-Export und vieles mehr…"
+    "freeBlurTeaser": "Professionelles Dolmetschen, Lebenswelten, PDF-Export und vieles mehr…",
+    "mandalaTitle": "✦ Astrologische Mandala",
+    "mandalaSubtitle": "Rad berechnet mit Swiss Ephemeris für deinen Geburtsmoment – Planeten, Placidus-Häuser, Aspekte und Winkel mit professioneller Präzision.",
+    "mandalaUnavailable": "Die Mandala wird generiert, sobald die Planetenpositionen verfügbar sind."
   },
   "cartaoDia": {
     "title": "✦ Karte des Tages · {date}"

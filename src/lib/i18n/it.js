@@ -345,7 +345,10 @@ export default {
     "aiUpgrading": "Preparare la lettura completa in background...",
     "aiFallbackNote": "Interpretazione professionale (modalità classica)",
     "freeTasteHint": "Stai visualizzando un campione gratuito.Il resto della tabella - interpretazione completa, posizioni, aspetti e PDF - è riservata a Premium.",
-    "freeBlurTeaser": "Interpretazione professionale, sfere della vita, esportazione in PDF e molto altro…"
+    "freeBlurTeaser": "Interpretazione professionale, sfere della vita, esportazione in PDF e molto altro…",
+    "mandalaTitle": "✦ Mandala Astrologica",
+    "mandalaSubtitle": "Ruota calcolata con Swiss Ephemeris per il tuo momento di nascita: pianeti, case Placidus, aspetti e angoli con precisione professionale.",
+    "mandalaUnavailable": "La mandala verrà generata quando le posizioni planetarie saranno disponibili."
   },
   "cartaoDia": {
     "title": "✦ Carta del giorno · {date}"
