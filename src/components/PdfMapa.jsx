@@ -5,7 +5,7 @@
 
 import { gerarAnaliseCompleta } from '../lib/mapaInterpretacao.js'
 import { sidusLogoParaPdf, SIDUS_COPYRIGHT_PT, SIDUS_COPYRIGHT_EN } from '../lib/sidusLogoPdf.js'
-import { getPdfLabels } from '../lib/pdfLabels.js'
+import { getPdfLabels, getPdfFileName } from '../lib/pdfLabels.js'
 import { translateSigno, translatePlaneta } from '../lib/i18n/astro.js'
 import { formatCasaMeta } from '../lib/i18n/langUtil.js'
 import {
@@ -320,7 +320,7 @@ export async function gerarPdfMapaAstral(mapaNatal, dados, planetas = [], analis
     })
   }
 
-  doc.save(`Sidus_MapaNatal_${(dados.nome || 'perfil').replace(/\s+/g, '_')}.pdf`)
+  doc.save(getPdfFileName(lang, dados.nome))
 }
 
 function secaoTitulo(doc, y, texto, DOURADO, ROXO, L, W, textX, textW) {
