@@ -15,61 +15,85 @@ ASSETS = ROOT / "assets"
 BUILD = ROOT / "build"
 OUT = ROOT / "output"
 FONT = Path("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf")
-VOICE = "pt-PT-RaquelNeural"
+VOICE = "pt-PT-DuarteNeural"
+TTS_RATE = "-12%"
+TTS_PITCH = "-1Hz"
 FPS = 30
 W, H = 1080, 1920
 
+# Each voice line describes ONLY what is on screen in that asset.
 SEGMENTS = [
     {
         "id": "01-tarot",
         "image": "01-tarot.png",
-        "voice": "Todos os dias uma leitura de tarot grátis, personalizada ao teu Sol e Lua.",
-        "top": "Leitura grátis de hoje",
-        "bottom": "Tarot · Sol e Lua",
+        "voice": (
+            "No Sidus Astro, cada dia começa com uma mensagem do cosmos. "
+            "Tarot gratuito, cruzado com o teu Sol e a tua Lua — uma leitura feita só para ti."
+        ),
+        "top": "Sidus Astro",
+        "bottom": "Leitura grátis diária",
     },
     {
         "id": "02-horoscopo",
         "image": "02-horoscopo.png",
-        "voice": "Horóscopo diário para o teu signo — não é genérico.",
+        "voice": (
+            "Consulta o horóscopo diário do teu signo. Trânsitos reais, linguagem clara — "
+            "numa interface simples e elegante, pensada para o telemóvel."
+        ),
         "top": "Horóscopo diário",
-        "bottom": "Para o teu signo",
+        "bottom": "Interface amigável",
     },
     {
         "id": "03-sonho-input",
         "image": "03-sonho-input.png",
-        "voice": "Escreve o teu sonho e carrega em Revelar significado.",
+        "voice": (
+            "Relata o teu sonho em poucas palavras. Escolhe símbolos e emoções — "
+            "a porta simbólica abre-se com um toque."
+        ),
         "top": "Interpretação de sonhos",
-        "bottom": "Revelar significado",
+        "bottom": "Relata · Revela",
     },
     {
         "id": "04-sonho-cura",
         "image": "04-sonho-cura.png",
-        "voice": "Recebes análise profunda, cura espiritual e pergunta para meditar.",
-        "top": "Análise profunda",
-        "bottom": "Cura + meditação",
+        "voice": (
+            "Recebes análise da alma, caminho de cura espiritual, e uma pergunta para meditar. "
+            "Simbolismo e astrologia, reunidos num só lugar."
+        ),
+        "top": "Análise da alma",
+        "bottom": "Cura espiritual",
     },
     {
         "id": "05-horas",
         "image": "05-horas-1111.png",
-        "voice": "Viste onze onze? Descobre o significado das horas iguais.",
-        "top": "Viste 11:11?",
-        "bottom": "Horas iguais",
+        "voice": (
+            "Quando o relógio marca onze e onze, o universo fala. "
+            "Descobre o significado das horas iguais e as mensagens angélicas do momento."
+        ),
+        "top": "Horas Iguais · 11:11",
+        "bottom": "Portal de Despertar",
     },
 ]
 
 ORACLE = {
     "id": "06-oraculo",
     "video": "06-oraculo.mp4",
-    "voice": "E o melhor: pergunta ao Oráculo de inteligência artificial. Três perguntas grátis, baseadas no teu mapa.",
+    "voice": (
+        "E quando precisares de orientação, o Oráculo inteligente responde com base no teu mapa natal. "
+        "Três perguntas de oferta — o teu astrólogo de bolso, disponível agora."
+    ),
     "top": "Oráculo IA",
     "bottom": "3 perguntas grátis",
 }
 
 CTA = {
     "id": "07-cta",
-    "voice": "Sidus Astro. Ponto com. Link na bio. Começa grátis.",
+    "voice": (
+        "Sidus Astro. O teu guia cósmico, claro e próximo. "
+        "Visita sidusastro.com — começa grátis hoje."
+    ),
     "top": "sidusastro.com",
-    "bottom": "Link na bio",
+    "bottom": "O teu guia cósmico",
 }
 
 
@@ -89,7 +113,21 @@ def esc(text: str) -> str:
 
 async def tts(text: str, out_mp3: Path) -> float:
     edge = shutil.which("edge-tts") or str(Path.home() / ".local/bin/edge-tts")
-    run([edge, "--voice", VOICE, "--text", text, "--write-media", str(out_mp3)])
+    run(
+        [
+            edge,
+            "--voice",
+            VOICE,
+            "--rate",
+            TTS_RATE,
+            "--pitch",
+            TTS_PITCH,
+            "--text",
+            text,
+            "--write-media",
+            str(out_mp3),
+        ]
+    )
     probe = subprocess.check_output(
         ["ffprobe", "-v", "quiet", "-show_entries", "format=duration", "-of", "json", str(out_mp3)],
         text=True,
@@ -112,7 +150,7 @@ def drawtext_filters(top: str, bottom: str) -> str:
 def image_clip(image: Path, duration: float, top: str, bottom: str, out_mp4: Path) -> None:
     vf = (
         f"scale={W}:{H}:force_original_aspect_ratio=increase,crop={W}:{H},"
-        f"zoompan=z='min(zoom+0.0012,1.12)':d={max(int(duration * FPS), 1)}:"
+        f"zoompan=z='min(zoom+0.0008,1.08)':d={max(int(duration * FPS), 1)}:"
         f"x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':s={W}x{H}:fps={FPS},"
         f"{drawtext_filters(top, bottom)}"
     )
