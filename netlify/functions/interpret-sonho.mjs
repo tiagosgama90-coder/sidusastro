@@ -50,7 +50,7 @@ export default async (req) => {
       system: retry ? `${system}\n\n${reforcoInstrucaoSonhosIA(lang, true)}` : system,
       messages: [{ role: 'user', content: userPrompt }],
       maxTokens: 720,
-      temperature: retry ? 0.65 : 0.82,
+      temperature: retry ? 0.55 : 0.68,
       tier: 'free',
       escopo: 'sonhos',
       lang,

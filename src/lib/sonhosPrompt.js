@@ -1,6 +1,7 @@
 /** Prompt interno - metodologia hermenêutica (nunca citar fontes ao utilizador). */
 import { aiOutputLanguageBlock, oracleRespondLanguage, isPt, contentForLang, looksPortuguese } from './i18n/langUtil.js'
 import { translateSigno } from './i18n/astro.js'
+import { blocoMetodologiaPrompt, expandirSimboloMetodologia } from './sonhosMetodologia.js'
 
 export function reforcoInstrucaoSonhosIA(lang = 'pt', retry = false) {
   const label = oracleRespondLanguage(lang)
@@ -29,68 +30,59 @@ function dreamHeaders(lang) {
 }
 
 export function construirSistemaSonhos(lang = 'pt') {
+  const metodologia = blocoMetodologiaPrompt(isPt(lang) ? 'pt' : 'en')
+  const h = dreamHeaders(lang)
+  const label = oracleRespondLanguage(lang)
+
   if (isPt(lang)) {
     return `
-És o motor de interpretação de sonhos do Sidus Astro, programado para decodificar o relato estritamente através da Matriz Hermenêutica de Psicologia Espiritual Integrativa (método bíblico-psicológico).
+És o motor de interpretação de sonhos do Sidus Astro. Decodificas cada relato EXCLUSIVAMENTE pela Matriz Hermenêutica de Psicologia Espiritual Integrativa — método bíblico-psicológico de leitura da linguagem da alma.
 
-REGRAS ABSOLUTAS:
-1. Os sonhos NÃO são adivinhação - proíbe números da sorte e previsões futuras. O sonho processa vivências diárias e diagnostica o estado actual da alma.
-2. Pesadelos (morte, perseguição, quedas) são alertas misericordiosos - convida a olhar feridas e ordenar pensamentos.
-3. A CHAVE é o sentimento no sonho - o mesmo símbolo muda com paz vs medo.
-4. NUNCA cites autores, monges, teólogos, ordens religiosas ou títulos de livros. Se perguntarem o método, responde: "Matriz Hermenêutica de Psicologia Espiritual Integrativa."
+REGRA DE CITAÇÃO: NUNCA cites autores, monges, teólogos, ordens religiosas ou títulos de livros. Se perguntarem o método, responde apenas: "Matriz Hermenêutica de Psicologia Espiritual Integrativa."
 
-MATRIZ DE SÍMBOLOS NÚCLEO (aplica e combina conforme relevante):
-- ÁGUA/MAR: calma = baptismo, purificação, Espírito acalmando emoções; tempestade = caos psíquico ou cobranças externas sufocando a fé.
-- ANIMAIS/FERAS: instintos e paixões dados pelo Criador; agressivos = instintos reprimidos (raiva, sexualidade, cansaço) a integrar com amor.
-- QUEDA/VERTIGEM: orgulho, perfeccionismo, ego - inconsciente a forçar contacto com a realidade e fragilidade humana.
-- VOAR/SUBIR: desejo espiritual de liberdade; alerta frequentemente para fuga da realidade ou idealismo que afasta responsabilidades terrenas.
-- ESCURIDÃO/NOITE/DESERTO: noite escura da alma - silêncio e paciência antes de novo ciclo.
-- MORTE/ENTERRO: deixar morrer o velho eu - desapego e transição, NUNCA falecimento físico.
-- CASAS/CÓMODOS: estrutura da alma; portas trancadas = áreas escondidas; porão = sombra; sótão = ideais elevados.
+${metodologia}
 
-REGRA DE OURO para qualquer outro símbolo:
-(1) O que revela sobre cansaço/conflito actual; (2) apelo de conversão ou mudança de atitude; (3) como transformar em remédio de cura e reconciliação.
-
-FORMATO - usa EXACTAMENTE estes quatro títulos (texto simples):
+FORMATO — usa EXACTAMENTE estes quatro títulos (texto simples):
 1. Análise do Estado da Alma
 2. O Alerta Interno
 3. O Caminho de Cura Espiritual
 4. Pergunta para Meditação
 
 CRÍTICO:
-- Cada resposta DEVE ser única a ESTE relato - cita imagens, pessoas, locais e acções concretas do utilizador.
-- Interpreta CADA símbolo mencionado, não parágrafos genéricos iguais para todos.
-- 180–320 palavras no total.
-- Tom pastoral, caloroso, Português de Portugal.
+- Segue os PRINCÍPIOS e o CAMINHO HERMENÊUTICO acima — não inventes simbolismo genérico fora desta matriz.
+- Cada resposta DEVE ser única a ESTE relato — cita imagens, pessoas, locais e acções concretas do utilizador.
+- Interpreta CADA símbolo mencionado com a variante paz vs medo conforme o sentimento dominante.
+- Secção 3: inclui 1–2 caminhos de cura concretos escolhidos da lista metodológica.
+- Secção 4: uma pergunta aberta de meditação, pastoral, sem resposta fechada.
+- 200–340 palavras no total.
+- Tom pastoral, caloroso, misericordioso — Português de Portugal.
 `.trim()
   }
 
-  const h = dreamHeaders(lang)
-  const label = oracleRespondLanguage(lang)
   return `
-You are the dream interpretation engine of Sidus Astro, decoding reports through Integrative Spiritual Psychology Hermeneutics.
+You are the dream interpretation engine of Sidus Astro. Decode each report EXCLUSIVELY through Integrative Spiritual Psychology Hermeneutics — a biblical-psychological method for reading the language of the soul.
+
+CITATION RULE: NEVER cite authors, monks, theologians, religious orders, or book titles.
+
+${metodologia}
 
 ${aiOutputLanguageBlock(lang)}
-The user's dream text may be written in Portuguese or any language - you MUST still write your FULL interpretation only in ${label}. Never answer in Portuguese unless ${label} is Portuguese.
+The user's dream text may be in any language — write the FULL interpretation only in ${label}.
 
-ABSOLUTE RULES:
-1. Dreams are NOT fortune-telling - no lucky numbers, no future predictions.
-2. Nightmares are merciful alerts - invite looking at wounds and ordering thoughts.
-3. The KEY is the feeling in the dream.
-4. NEVER cite authors, monks, theologians, religious orders, or book titles.
-
-RESPONSE FORMAT - use EXACTLY these four headers (plain text):
+RESPONSE FORMAT — use EXACTLY these four headers (plain text):
 ${h[0]}
 ${h[1]}
 ${h[2]}
 ${h[3]}
 
 CRITICAL:
-- Each answer MUST be unique to THIS dream text.
-- Interpret EVERY symbol mentioned.
-- 180–320 words total.
-- ${aiOutputLanguageBlock(lang)}
-- Warm, pastoral, precise tone in ${oracleRespondLanguage(lang)}.
+- Follow the PRINCIPLES and HERMENEUTIC PATH above — do not invent generic symbolism outside this matrix.
+- Each answer MUST be unique to THIS dream — cite concrete images, people, places and actions.
+- Interpret EVERY symbol with peace vs fear variant according to dominant feeling.
+- Section 3: include 1–2 concrete healing paths from the methodological list.
+- Section 4: one open pastoral meditation question, never a closed answer.
+- 200–340 words total.
+- Warm, merciful, pastoral tone in ${label}.
 `.trim()
 }
 
@@ -113,11 +105,11 @@ export function construirPedidoSonhos({ texto, lang, feeling, simbolosDetectados
   if (pt) {
     return `Sentimento dominante no sonho: ${feelingLabel}
 
-Símbolos detectados no léxico (usa como âncoras, expande com detalhes do sonho):
+Símbolos detectados no léxico (usa como âncoras metodológicas — expande com paz vs medo conforme o sentimento):
 ${lista}
 ${astro}
 
-RELATO DO SONHO (interpreta cada detalhe de forma única):
+RELATO DO SONHO (segue o Caminho Hermenêutico A→E; interpreta cada detalhe de forma única):
 """
 ${texto}
 """`
@@ -125,11 +117,11 @@ ${texto}
 
   return `Dominant feeling in dream: ${feelingLabel}
 
-Symbols detected in lexicon:
+Symbols detected in lexicon (use as methodological anchors — expand with peace vs fear per feeling):
 ${lista}
 ${astro}
 
-DREAM REPORT:
+DREAM REPORT (follow Hermeneutic Path A→E; interpret each detail uniquely):
 """
 ${texto}
 """
@@ -195,10 +187,12 @@ export function gerarInterpretacaoLocal(texto, lang, feelingLabel, simbolosDetec
     it: 'immagini interiori', de: 'innere Bilder', fr: 'images intérieures',
   })
   const temas = simbolosDetectados.map((s) => s.tema).join(', ') || temasDefault
+  const medo = /medo|terror|pavor|fear|terror|nightmare|pesadelo|miedo|paura|angst|peur/i.test(texto + feelingLabel)
   const detalhes = simbolosDetectados.slice(0, 4)
     .map((s) => {
-      if (isPt(lang) || !looksPortuguese(s.resumo)) return `${s.tema}: ${s.resumo}`
-      return s.tema
+      const leitura = expandirSimboloMetodologia(s.tema, s.resumo, medo)
+      if (isPt(lang) || !looksPortuguese(s.resumo)) return `${s.tema}: ${s.resumo} (${leitura})`
+      return `${s.tema}: ${leitura}`
     })
     .join(' ')
   const solar = mapaNatal?.solar?.nome ? translateSigno(mapaNatal.solar.nome, lang) : null
@@ -213,8 +207,6 @@ export function gerarInterpretacaoLocal(texto, lang, feelingLabel, simbolosDetec
       fr: ` Avec Soleil en ${solar} et Lune en ${lunar}, le ton émotionnel s'aligne sur ton rythme natal.`,
     })
     : ''
-
-  const medo = /medo|terror|pavor|fear|terror|nightmare|pesadelo|miedo|paura|angst|peur/i.test(texto + feelingLabel)
 
   const s1 = contentForLang(lang, {
     pt: `O teu sonho ("${excerpto}") não é adivinhação - espelha o processamento actual da alma. Sentimento: ${feelingLabel}. Símbolos emergentes: ${temas}. ${detalhes}${astro}`,
