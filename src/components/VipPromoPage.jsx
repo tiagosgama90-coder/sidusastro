@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import { Check, ChevronLeft, Crown, ExternalLink, Globe, Loader2, Send, Sparkles } from 'lucide-react'
+import { Check, ChevronLeft, Crown, ExternalLink, Loader2, Send, Sparkles } from 'lucide-react'
 import { useLanguage } from '../lib/i18n/LanguageContext.jsx'
 import { getBeneficiosVip } from '../lib/i18n/ferramentasData.js'
 import { SIDUS_SOCIAL_LIST } from '../lib/sidusSocial.js'
@@ -234,7 +234,7 @@ export function VipPromoPage({
           <h2>{t('vipPromo.formTitle')}</h2>
 
           <div className="vip-promo-form-notice" role="note">
-            <Globe size={20} aria-hidden />
+            <Sparkles size={20} aria-hidden />
             <div>
               <strong>{t('vipPromo.formNoticeTitle')}</strong>
               <p>{t('vipPromo.formNoticeText')}</p>

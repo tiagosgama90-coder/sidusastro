@@ -2698,20 +2698,20 @@ html.sidus-no-ads .google-auto-placed {
   margin: 12px 0 16px;
   padding: 14px 16px;
   border-radius: 12px;
-  background: rgba(52, 211, 153, 0.1);
-  border: 1px solid rgba(52, 211, 153, 0.35);
+  background: rgba(223, 183, 108, 0.1);
+  border: 1px solid rgba(223, 183, 108, 0.28);
   color: rgba(255, 255, 255, 0.9);
 }
 .vip-promo-form-notice svg {
   flex-shrink: 0;
   margin-top: 2px;
-  color: #34D399;
+  color: #DFB76C;
 }
 .vip-promo-form-notice strong {
   display: block;
   margin-bottom: 6px;
   font-size: 14px;
-  color: #34D399;
+  color: #DFB76C;
 }
 .vip-promo-form-notice p {
   margin: 0;
