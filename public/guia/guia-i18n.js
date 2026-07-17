@@ -67,6 +67,38 @@ window.SIDUS_GUIA_I18N = {
       "de": "← Zurück zu den Leitfäden",
       "fr": "← Retour aux guides"
     },
+    "navPrev": {
+      "pt": "Guia anterior",
+      "en": "Previous guide",
+      "es": "Guía anterior",
+      "it": "Guida precedente",
+      "de": "Vorheriger Leitfaden",
+      "fr": "Guide précédent"
+    },
+    "navNext": {
+      "pt": "Próximo guia",
+      "en": "Next guide",
+      "es": "Siguiente guía",
+      "it": "Prossima guida",
+      "de": "Nächster Leitfaden",
+      "fr": "Guide suivant"
+    },
+    "pagerAria": {
+      "pt": "Navegação entre guias",
+      "en": "Guide navigation",
+      "es": "Navegación entre guías",
+      "it": "Navigazione tra le guide",
+      "de": "Navigation zwischen Leitfäden",
+      "fr": "Navigation entre les guides"
+    },
+    "pagerPosition": {
+      "pt": "{current} / {total}",
+      "en": "{current} / {total}",
+      "es": "{current} / {total}",
+      "it": "{current} / {total}",
+      "de": "{current} / {total}",
+      "fr": "{current} / {total}"
+    },
     "footerHtml": {
       "pt": "© Sidus · <a href=\"/privacidade\">Política de privacidade</a> · <a href=\"/login\">Mapa astral grátis</a>",
       "en": "© Sidus · <a href=\"/privacidade\">Privacy policy</a> · <a href=\"/login\">Free birth chart</a>",
