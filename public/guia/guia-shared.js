@@ -527,21 +527,14 @@
       <nav class="guia-related-links" aria-label="${title}">${links}</nav>`
   }
 
-  function buildGuidePagerHtml(prev, next, prevLabel, nextLabel, prevDir, nextDir, position, lang) {
+  function buildGuidePagerHtml(prev, next, prevLabel, nextLabel, prevDir, nextDir, lang) {
+    const prevTitle = `${prevDir}: ${prevLabel}`
+    const nextTitle = `${nextDir}: ${nextLabel}`
     return `
-      <a class="guia-pager-btn guia-pager-prev" href="${guideHref(prev.href, lang)}">
+      <a class="guia-pager-btn guia-pager-prev" href="${guideHref(prev.href, lang)}" aria-label="${prevTitle}" title="${prevTitle}">
         <span class="guia-pager-arrow" aria-hidden="true">←</span>
-        <span class="guia-pager-text">
-          <span class="guia-pager-dir">${prevDir}</span>
-          <span class="guia-pager-name">${prevLabel}</span>
-        </span>
       </a>
-      <span class="guia-pager-position">${position}</span>
-      <a class="guia-pager-btn guia-pager-next" href="${guideHref(next.href, lang)}">
-        <span class="guia-pager-text guia-pager-text--next">
-          <span class="guia-pager-dir">${nextDir}</span>
-          <span class="guia-pager-name">${nextLabel}</span>
-        </span>
+      <a class="guia-pager-btn guia-pager-next" href="${guideHref(next.href, lang)}" aria-label="${nextTitle}" title="${nextTitle}">
         <span class="guia-pager-arrow" aria-hidden="true">→</span>
       </a>`
   }
@@ -559,32 +552,20 @@
     const prevDir = common.navPrev?.[lang] || common.navPrev?.pt || 'Anterior'
     const nextDir = common.navNext?.[lang] || common.navNext?.pt || 'Seguinte'
     const pagerAria = common.pagerAria?.[lang] || common.pagerAria?.pt || 'Navegação entre guias'
-    const positionTpl = common.pagerPosition?.[lang] || common.pagerPosition?.pt || '{current} / {total}'
-    const position = positionTpl.replace('{current}', String(idx + 1)).replace('{total}', String(GUIDE_SEQUENCE.length))
-    const html = buildGuidePagerHtml(prev, next, prevLabel, nextLabel, prevDir, nextDir, position, lang)
+    const html = buildGuidePagerHtml(prev, next, prevLabel, nextLabel, prevDir, nextDir, lang)
 
-    const ensurePager = (selector, className, insert) => {
-      let block = document.querySelector(selector)
-      if (!block) {
-        block = document.createElement('nav')
-        block.className = className
-        insert(block)
-      }
-      block.setAttribute('aria-label', pagerAria)
-      block.innerHTML = html
-    }
+    document.querySelector('.guia-pager--top')?.remove()
 
-    const meta = document.querySelector('.guia-meta')
-    if (meta) {
-      ensurePager('.guia-pager--top', 'guia-pager guia-pager--top', (block) => {
-        meta.insertAdjacentElement('afterend', block)
-      })
-    }
-
-    ensurePager('.guia-pager--bottom', 'guia-pager guia-pager--bottom', (block) => {
+    let block = document.querySelector('.guia-pager--bottom')
+    if (!block) {
+      block = document.createElement('nav')
+      block.className = 'guia-pager guia-pager--bottom'
       const article = document.querySelector('.guia-article')
       if (article) article.insertAdjacentElement('afterend', block)
-    })
+    }
+
+    block.setAttribute('aria-label', pagerAria)
+    block.innerHTML = html
   }
 
   function init() {
