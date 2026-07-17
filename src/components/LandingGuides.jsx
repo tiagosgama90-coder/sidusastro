@@ -1,5 +1,5 @@
 import { useLanguage } from '../lib/i18n/LanguageContext.jsx'
-import { BookOpen, Sparkles } from 'lucide-react'
+import { BookOpen } from 'lucide-react'
 import { LandingGuideArt } from './LandingGuideArt.jsx'
 
 const GUIDES = [
@@ -43,12 +43,9 @@ export function LandingGuides() {
   return (
     <section id="guias" className="landing-guides landing-guides--featured" aria-label={t('auth.portal.guides.ariaLabel')} key={lang}>
       <div className="landing-guides-header">
-        <div className="landing-guides-header-icon" aria-hidden="true">
-          <BookOpen size={20} color="#DFB76C" />
-        </div>
         <p className="landing-guides-eyebrow">
-          <Sparkles size={12} aria-hidden="true" />
-          {t('auth.portal.guides.eyebrow')}
+          <BookOpen size={14} strokeWidth={2} aria-hidden="true" />
+          <span>{t('auth.portal.guides.eyebrow')}</span>
         </p>
         <h2 className="landing-guides-title">{t('auth.portal.guides.title')}</h2>
         <p className="landing-guides-lead">{t('auth.portal.guides.lead')}</p>
