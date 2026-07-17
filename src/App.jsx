@@ -1335,15 +1335,6 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
         } catch (emailErr) {
           console.warn('[Sidus Auth] Email verificação:', emailErr?.code, emailErr?.message)
         }
-        try {
-          await fetch('/api/post-register-hooks', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email: cred.user.email, lang, uid: cred.user.uid }),
-          })
-        } catch (hookErr) {
-          console.warn('[Sidus Auth] post-register-hooks:', hookErr?.message)
-        }
         setInfo(t('auth.accountCreated'))
       } else {
         const cred = await signInWithEmailAndPassword(auth, email, senha)

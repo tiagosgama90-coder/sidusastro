@@ -52,7 +52,7 @@ export default {
     fillAll: 'Fill in all fields.', confirmRobot: 'Please confirm you are not a robot.',
     passwordsMismatch: 'Passwords do not match.', passwordMin: 'Password must be at least 6 characters.',
     firebaseMissing: 'Firebase not configured. Contact the administrator.',
-    accountCreated: 'Account created! We sent a confirmation email and a welcome note - your chart is almost ready. Check your inbox (and spam) before continuing.',
+    accountCreated: 'Account created! We sent a confirmation email — check your inbox (and spam) before continuing.',
     notRobot: 'I am not a robot', verification: '✓ Verified',
     firebaseNotConfigured: 'Firebase is not configured in this environment. Set the VITE_FIREBASE_* variables in Netlify or in your local .env file.',
     portal: {

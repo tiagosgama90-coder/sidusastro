@@ -52,7 +52,7 @@ export default {
     fillAll: 'Preenche todos os campos.', confirmRobot: 'Confirma que não és um robot.',
     passwordsMismatch: 'As senhas não coincidem.', passwordMin: 'A senha deve ter pelo menos 6 caracteres.',
     firebaseMissing: 'Firebase não configurado. Contacta o administrador.',
-    accountCreated: 'Conta criada! Enviámos um e-mail de confirmação e outro de boas-vindas - o teu mapa está quase pronto. Verifica a caixa de entrada e a pasta de spam antes de continuar.',
+    accountCreated: 'Conta criada! Enviámos um e-mail de confirmação — verifica a caixa de entrada e a pasta de spam antes de continuar.',
     notRobot: 'Não sou um robot', verification: '✓ Verificação',
     firebaseNotConfigured: 'Firebase não está configurado neste ambiente. Define as variáveis VITE_FIREBASE_* no Netlify ou no ficheiro .env local.',
     portal: {
@@ -796,7 +796,7 @@ export default {
     cta: 'Subscrever',
     sending: 'A guardar…',
     done: 'Subscrito',
-    success: '✦ Estás na lista. O próximo horóscopo semanal chega em breve.',
+    success: '✦ Estás na lista. Guardámos o teu e-mail — quando activarmos envios, receberás o horóscopo semanal.',
     already: 'Este e-mail já está subscrito.',
     error: 'Não foi possível subscrever. Tenta outra vez.',
     privacy: 'Sem spam. Podes cancelar a qualquer momento.',
