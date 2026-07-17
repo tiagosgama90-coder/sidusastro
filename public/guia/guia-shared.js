@@ -5,7 +5,9 @@
     pt: 'Português', en: 'English', es: 'Español', it: 'Italiano', de: 'Deutsch', fr: 'Français',
   }
   const STORAGE_KEY = 'sidus_lang'
+  const GUIA_VERSION = '20260717'
   const ZODIAC = ['♈', '♉', '♊', '♋', '♌', '♍', '♎', '♏', '♐', '♑', '♒', '♓']
+  const NAV_KEYS = ['mapa', 'ascendente', 'signos', 'tarot', 'login']
   const RELATED_GUIDES = {
     'mapa-astral': [
       { href: '/guia/ascendente.html', navKey: 'ascendente' },
@@ -51,6 +53,16 @@
       else url.searchParams.set('lang', code)
       window.history.replaceState({}, '', url)
     } catch { /* ignore */ }
+  }
+
+  function loginHref(lang) {
+    if (!lang || lang === 'pt') return '/login'
+    return `/${lang}/login`
+  }
+
+  function guideHref(path, lang) {
+    if (!lang || lang === 'pt') return path
+    return `${path}?lang=${lang}`
   }
 
   function setLang(code) {
@@ -114,7 +126,7 @@
     })
 
     const pathEls = paths.map((d) =>
-      `<path d="${d}" fill="none" stroke="rgba(223,183,108,0.28)" stroke-width="0.9" stroke-linecap="round" />`
+      `<path d="${d}" fill="none" stroke="rgba(223,183,108,0.32)" stroke-width="0.9" stroke-linecap="round" />`
     ).join('')
     const zodiacEls = zodiacNodes.map(({ sym, x, y, i }) =>
       `<text x="${x.toFixed(1)}" y="${y.toFixed(1)}" text-anchor="middle" dominant-baseline="central" class="guia-cosmic-zodiac" style="animation-delay:${i * 0.35}s">${sym}</text>`
@@ -124,14 +136,14 @@
       <svg class="guia-cosmic-hendecagram" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
         <defs>
           <radialGradient id="guiaHendecGlow" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stop-color="rgba(223,183,108,0.18)" />
-            <stop offset="55%" stop-color="rgba(139,92,246,0.12)" />
+            <stop offset="0%" stop-color="rgba(223,183,108,0.22)" />
+            <stop offset="55%" stop-color="rgba(139,92,246,0.16)" />
             <stop offset="100%" stop-color="rgba(3,8,24,0)" />
           </radialGradient>
         </defs>
         <circle cx="200" cy="200" r="175" fill="url(#guiaHendecGlow)" />
         <g class="guia-cosmic-star-lines">${pathEls}</g>
-        <circle cx="200" cy="200" r="42" fill="none" stroke="rgba(223,183,108,0.16)" stroke-width="0.6" />
+        <circle cx="200" cy="200" r="42" fill="none" stroke="rgba(223,183,108,0.2)" stroke-width="0.6" />
         ${zodiacEls}
       </svg>`
 
@@ -139,6 +151,7 @@
     root.appendChild(nebula)
     root.appendChild(wrap)
     document.body.insertBefore(root, document.body.firstChild)
+    document.body.classList.add('guia-has-cosmic-bg')
 
     const ctx = canvas.getContext('2d')
     let stars = []
@@ -153,7 +166,7 @@
       canvas.style.width = `${w}px`
       canvas.style.height = `${h}px`
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
-      stars = seedStars(Math.floor((w * h) / 4200), w, h)
+      stars = seedStars(Math.floor((w * h) / 3800), w, h)
     }
 
     const draw = (t) => {
@@ -234,6 +247,37 @@
     }
   }
 
+  function updateCommonChrome(lang, common) {
+    const backBtn = document.querySelector('.guia-back')
+    if (backBtn && common?.backToLanding) {
+      backBtn.textContent = common.backToLanding[lang] || common.backToLanding.pt
+      backBtn.setAttribute('href', loginHref(lang))
+    }
+
+    const nav = document.querySelector('.guia-nav')
+    if (nav && common?.nav) {
+      nav.setAttribute('aria-label', common.navAria[lang] || common.navAria.pt)
+      const links = nav.querySelectorAll('a')
+      links.forEach((a, i) => {
+        const key = NAV_KEYS[i]
+        if (!key || !common.nav[key]) return
+        a.textContent = common.nav[key][lang] || common.nav[key].pt
+        if (key === 'login') {
+          a.setAttribute('href', loginHref(lang))
+        } else {
+          const path = a.getAttribute('href')?.split('?')[0] || a.pathname
+          a.setAttribute('href', guideHref(path, lang))
+        }
+      })
+    }
+
+    const adLabel = document.querySelector('.guia-ad-label')
+    if (adLabel && common?.adLabel) adLabel.textContent = common.adLabel[lang] || common.adLabel.pt
+
+    const footer = document.querySelector('.guia-footer p')
+    if (footer && common?.footerHtml) footer.innerHTML = common.footerHtml[lang] || common.footerHtml.pt
+  }
+
   function applyLang(lang) {
     const pageId = getPageId()
     const pack = window.SIDUS_GUIA_I18N
@@ -241,41 +285,27 @@
 
     const page = pack.pages[pageId]
     const common = pack.common
-    const data = page?.[lang] || (lang === 'pt' ? null : page?.pt)
-    if (!data && lang !== 'pt') return
+    const data = page?.[lang] || null
 
-    document.documentElement.lang = lang
+    document.documentElement.lang = lang === 'pt' ? 'pt' : lang
+    updateCommonChrome(lang, common)
 
-    if (data?.title) document.title = data.title
-    else if (lang === 'pt' && window.__GUIA_PT_META__?.title) document.title = window.__GUIA_PT_META__.title
-
-    const metaDesc = document.querySelector('meta[name="description"]')
-    if (metaDesc && data?.description) metaDesc.setAttribute('content', data.description)
-    else if (lang === 'pt' && window.__GUIA_PT_META__?.description && metaDesc) {
-      metaDesc.setAttribute('content', window.__GUIA_PT_META__.description)
-    }
-
-    const nav = document.querySelector('.guia-nav')
-    if (nav && common?.nav) {
-      nav.setAttribute('aria-label', common.navAria[lang] || common.navAria.pt)
-      const links = nav.querySelectorAll('a')
-      const keys = ['mapa', 'ascendente', 'signos', 'tarot', 'login']
-      links.forEach((a, i) => {
-        const key = keys[i]
-        if (key && common.nav[key]) a.textContent = common.nav[key][lang] || common.nav[key].pt
-      })
-    }
-
-    const h1 = document.querySelector('.guia-article h1')
-    if (h1) {
-      if (data?.h1) h1.textContent = data.h1
-      else if (lang === 'pt' && window.__GUIA_PT_META__?.h1) h1.textContent = window.__GUIA_PT_META__.h1
-    }
-
-    const meta = document.querySelector('.guia-meta')
-    if (meta) {
-      if (data?.meta) meta.textContent = data.meta
-      else if (lang === 'pt' && window.__GUIA_PT_META__?.meta) meta.textContent = window.__GUIA_PT_META__.meta
+    if (lang === 'pt' && window.__GUIA_PT_META__) {
+      document.title = window.__GUIA_PT_META__.title
+      const metaDesc = document.querySelector('meta[name="description"]')
+      if (metaDesc) metaDesc.setAttribute('content', window.__GUIA_PT_META__.description)
+      const h1 = document.querySelector('.guia-article h1')
+      if (h1) h1.textContent = window.__GUIA_PT_META__.h1
+      const meta = document.querySelector('.guia-meta')
+      if (meta) meta.textContent = window.__GUIA_PT_META__.meta
+    } else if (data) {
+      if (data.title) document.title = data.title
+      const metaDesc = document.querySelector('meta[name="description"]')
+      if (metaDesc && data.description) metaDesc.setAttribute('content', data.description)
+      const h1 = document.querySelector('.guia-article h1')
+      if (h1 && data.h1) h1.textContent = data.h1
+      const meta = document.querySelector('.guia-meta')
+      if (meta && data.meta) meta.textContent = data.meta
     }
 
     const body = document.querySelector('.guia-article-body')
@@ -287,22 +317,15 @@
       }
     }
 
-    const adLabel = document.querySelector('.guia-ad-label')
-    if (adLabel && common?.adLabel) adLabel.textContent = common.adLabel[lang] || common.adLabel.pt
-
-    const backBtn = document.querySelector('.guia-back')
-    if (backBtn && common?.backToLanding) backBtn.textContent = common.backToLanding[lang] || common.backToLanding.pt
-
-    const footer = document.querySelector('.guia-footer p')
-    if (footer && common?.footerHtml) footer.innerHTML = common.footerHtml[lang] || common.footerHtml.pt
+    document.querySelectorAll('.guia-article-body .guia-btn, .guia-related-cta').forEach((btn) => {
+      if (btn.getAttribute('href') === '/login' || btn.getAttribute('href')?.endsWith('/login')) {
+        btn.setAttribute('href', loginHref(lang))
+      }
+    })
 
     window.__guiaRefreshLangSwitcher?.(lang)
     updateSeoMeta(lang)
     renderRelatedGuides(lang)
-  }
-
-  function guideHref(path, lang) {
-    return lang === 'pt' ? path : `${path}?lang=${lang}`
   }
 
   function upsertMeta(attr, key, content) {
@@ -320,7 +343,7 @@
     const pageId = getPageId()
     const pack = window.SIDUS_GUIA_I18N
     const page = pack?.pages?.[pageId]
-    const data = page?.[lang] || (lang === 'pt' ? null : page?.pt)
+    const data = page?.[lang] || null
     const title = lang === 'pt' ? window.__GUIA_PT_META__?.title : data?.title
     const description = lang === 'pt' ? window.__GUIA_PT_META__?.description : data?.description
     const h1 = document.querySelector('.guia-article h1')?.textContent || data?.h1 || ''
@@ -357,7 +380,7 @@
       '@context': 'https://schema.org',
       '@type': 'BreadcrumbList',
       itemListElement: [
-        { '@type': 'ListItem', position: 1, name: 'Sidus', item: `${window.location.origin}/login` },
+        { '@type': 'ListItem', position: 1, name: 'Sidus', item: `${window.location.origin}${loginHref(lang)}` },
         { '@type': 'ListItem', position: 2, name: h1, item: canonical },
       ],
     }
@@ -405,7 +428,7 @@
       <h2 class="guia-related-title">${title}</h2>
       <p class="guia-related-lead">${lead}</p>
       <nav class="guia-related-links" aria-label="${title}">${links}</nav>
-      <a class="guia-btn guia-related-cta" href="/login">${common.nav?.login?.[lang] || common.nav?.login?.pt || 'Calcular mapa'}</a>`
+      <a class="guia-btn guia-related-cta" href="${loginHref(lang)}">${common.nav?.login?.[lang] || common.nav?.login?.pt || 'Calcular mapa'}</a>`
   }
 
   function init() {
@@ -435,10 +458,10 @@
     const lang = getLang()
     if (lang !== 'pt') syncLangUrl(lang)
     initLanguageSwitcher(lang)
-    renderRelatedGuides(lang)
-    updateSeoMeta(lang)
-    if (lang !== 'pt') applyLang(lang)
+    applyLang(lang)
   }
+
+  window.SIDUS_GUIA_VERSION = GUIA_VERSION
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init)

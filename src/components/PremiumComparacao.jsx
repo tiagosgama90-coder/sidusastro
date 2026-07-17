@@ -18,13 +18,6 @@ export function PremiumComparacao({ isPremium, oracleUsadas = 0, tarotUsadas = 0
 
   return (
     <div className={`premium-comparacao${compact ? ' premium-comparacao--compact' : ''}`}>
-      {!isPremium && (
-        <div className="premium-urgency">
-          <Crown size={14} color="#DFB76C" />
-          <span>{t('premium.lifetimeNote')}</span>
-        </div>
-      )}
-
       {!isPremium && (oracleUsadas > 0 || tarotUsadas > 0) && (
         <div className="premium-usage">
           {tarotUsadas > 0 && (
