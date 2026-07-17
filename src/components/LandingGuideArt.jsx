@@ -122,15 +122,17 @@ function ArtAscendente({ accent }) {
 /** Banner ilustrado dourado - 12 signos em grelha (imagem de alta qualidade). */
 function ArtSignos() {
   return (
-    <img
-      src="/landing/zodiac-signs-golden-banner.png"
-      alt=""
-      className="landing-guide-art-photo"
-      loading="lazy"
-      decoding="async"
-      width={640}
-      height={360}
-    />
+    <div className="landing-guide-art-photo-wrap">
+      <img
+        src="/landing/zodiac-signs-golden-banner.png"
+        alt=""
+        className="landing-guide-art-photo landing-guide-art-photo--signos"
+        loading="lazy"
+        decoding="async"
+        width={640}
+        height={360}
+      />
+    </div>
   )
 }
 
