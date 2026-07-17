@@ -1412,10 +1412,10 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
           <div className="landing-lang-bar landing-lang-bar--standalone">
             <LanguageSwitcher variant="landing-bar" />
           </div>
-          <LandingPortalHero />
           <div className="landing-sky-mobile-wrap">
             <LandingSkyLive />
           </div>
+          <LandingPortalHero />
         </>
       )}
       <section className="landing-conversion-zone" aria-label={t('auth.portal.conversionAria')}>

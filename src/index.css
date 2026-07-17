@@ -1497,11 +1497,19 @@ html.sidus-no-ads .google-auto-placed {
 
   .landing-sky-mobile-wrap {
     width: 100%;
-    margin: 0 0 14px;
+    margin: 0 0 12px;
   }
 
   .landing-sky-mobile-wrap .landing-sky-top {
     margin-bottom: 0;
+  }
+
+  .landing-auth-hero {
+    margin-top: 0;
+    margin-bottom: 14px;
+    scroll-margin-top: 8px;
+    position: relative;
+    z-index: 1;
   }
 
   .landing-portal-sky-live--top {
@@ -1530,12 +1538,6 @@ html.sidus-no-ads .google-auto-placed {
   .landing-conversion-lead {
     font-size: 12px;
     line-height: 1.45;
-  }
-
-  .landing-auth-hero {
-    margin-top: 0;
-    margin-bottom: 14px;
-    scroll-margin-top: 8px;
   }
 
   .landing-portal-brand-row {
