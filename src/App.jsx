@@ -53,7 +53,6 @@ import { BannerBrasil } from './components/BannerBrasil.jsx'
 import { HeroHomeSidus } from './components/HeroHomeSidus.jsx'
 import { LeituraGratisDiaria } from './components/LeituraGratisDiaria.jsx'
 import { ShareSigno } from './components/ShareSigno.jsx'
-import { HomeTour } from './components/HomeTour.jsx'
 import { EnergiaDoDia, TransitoSemanal } from './components/EnergiaDoDia.jsx'
 import { PremiumComparacao } from './components/PremiumComparacao.jsx'
 import { PremiumHomeTeaser } from './components/PremiumHomeTeaser.jsx'
@@ -78,6 +77,8 @@ import { calcularFaseLua } from './lib/faseLua.js'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { passoFromPath, pathFromPasso, langFromPath, stripLangPrefix } from './lib/routes.js'
 import { initGoogleAnalytics } from './lib/googleAnalytics.js'
+import { initAdSense, shouldShowAdsOnPasso } from './lib/adsense.js'
+import { AdSenseBanner } from './components/AdSenseBanner.jsx'
 import { CookieConsent } from './components/CookieConsent.jsx'
 import { allowsAds, getCookieConsent } from './lib/cookieConsent.js'
 import { LanguageSwitcher } from './components/LanguageSwitcher.jsx'
@@ -1639,6 +1640,7 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
       </div>
       </section>
       <LandingGuides />
+      <AdSenseBanner />
       <LandingReviews />
       <LandingFaq />
     </div>
@@ -1897,7 +1899,6 @@ function Dashboard({ nome, mapaNatal, ceuAgora, aspetos, onOraculo, onPrivacidad
   const faseLua = calcularFaseLua(new Date(), lang)
   return (
     <div style={layoutConteudo(isDesktop)}>
-      <HomeTour />
       <header style={{ textAlign: 'center', marginBottom: 20 }}>
         <h1 className="notranslate" translate="no" style={estilos.titulo}>Sidus</h1>
         <p style={{ ...estilos.subtitulo, marginBottom: 0 }}>{nome ? t('home.welcome', { name: nome }) : t('home.skyRealtime')}</p>
@@ -2014,12 +2015,10 @@ function Dashboard({ nome, mapaNatal, ceuAgora, aspetos, onOraculo, onPrivacidad
         )}
       </div>
 
-      <div data-tour="horoscope">
       <ConteudoDinamicoSidus mapaNatal={mapaNatal} ceuAgora={ceuAgora} aspetos={aspetos} isPremium={isPremium} onUpgrade={onUpgrade} onOraculo={onOraculo} userEmail={userEmail} user={user} />
-      </div>
 
       {onTarot && (
-        <button type="button" data-tour="tarot" onClick={onTarot} style={{
+        <button type="button" onClick={onTarot} style={{
           ...estilos.vidro, width: '100%', padding: 18, marginBottom: 16, cursor: 'pointer',
           border: '1px solid rgba(244,114,182,0.35)', background: 'rgba(244,114,182,0.08)',
           display: 'flex', alignItems: 'center', gap: 14, textAlign: 'left',
@@ -2034,7 +2033,7 @@ function Dashboard({ nome, mapaNatal, ceuAgora, aspetos, onOraculo, onPrivacidad
         </button>
       )}
 
-      <button type="button" data-tour="oracle" onClick={onOraculo} style={{ ...estilos.vidro, width: '100%', padding: 18, display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer', border: `1px solid ${CORES.dourado}`, background: 'rgba(223,183,108,0.08)', marginTop: 14, marginBottom: 14 }}>
+      <button type="button" onClick={onOraculo} style={{ ...estilos.vidro, width: '100%', padding: 18, display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer', border: `1px solid ${CORES.dourado}`, background: 'rgba(223,183,108,0.08)', marginTop: 14, marginBottom: 14 }}>
         <div>
           <div style={{ fontSize: 11, color: CORES.dourado, textTransform: 'uppercase' }}>{t('home.oracleDay')}</div>
           <div style={{ fontSize: 15, color: CORES.branco }}>{t('home.consultAI')}</div>
@@ -3650,6 +3649,7 @@ export default function App() {
   useEffect(() => {
     if (!allowsAds()) return
     initGoogleAnalytics()
+    initAdSense()
   }, [cookieConsent])
 
   // Firebase email verification (?mode=verifyEmail&oobCode=...) - link abre na app
@@ -4327,6 +4327,9 @@ export default function App() {
           {renderEcran()}
         </ErrorBoundary>
       </div>
+      {!isPremium && allowsAds() && shouldShowAdsOnPasso(passo) && (
+        <AdSenseBanner key={passo} isPremium={isPremium} />
+      )}
       <RodapeSidus isDesktop={isDesktop} mostrarNavbar={mostrarNavbar} />
       {mostrarNavbar && (
         <Navbar

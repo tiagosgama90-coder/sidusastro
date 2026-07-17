@@ -3,8 +3,11 @@ export const ADSENSE_PUBLISHER = 'ca-pub-2807052149540484'
 /** Bloco Display horizontal - sidusastro.com */
 export const ADSENSE_SLOT_DEFAULT = '7205155875'
 
-/** Páginas estáticas com conteúdo editorial onde AdSense é permitido (política Google). */
+/** Páginas estáticas com conteúdo editorial. */
 export const ADSENSE_CONTENT_PATH_PREFIX = '/guia/'
+
+/** Ecrãs da app onde não mostramos anúncios (paywall, chat, onboarding, login). */
+const ADS_BLOCKED_PASSOS = new Set(['paywall', 'onboarding', 'chat', 'perfil', 'privacidade', 'login'])
 
 export function getAdsenseClient() {
   const fromEnv = import.meta.env.VITE_ADSENSE_CLIENT
@@ -18,10 +21,15 @@ export function getAdsenseSlot() {
   return String(slot).trim()
 }
 
-/** Activar bloco quando existir unidade (slot). Na SPA da app os anúncios estão desactivados — só em /guia/*.html. */
+/** Activar bloco quando existir unidade (slot) e utilizador não for VIP. */
 export function adsenseEnabled(isPremium = false) {
   if (isPremium) return false
   return /^\d+$/.test(getAdsenseSlot())
+}
+
+/** Anúncios na app principal (home, tarot, mapa, ferramentas…) — não em paywall/chat/login. */
+export function shouldShowAdsOnPasso(passo) {
+  return !ADS_BLOCKED_PASSOS.has(passo)
 }
 
 export function initAdSense() {

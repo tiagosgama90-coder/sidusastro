@@ -1,29 +1,32 @@
 import { useEffect, useRef } from 'react'
 import { adsenseEnabled, getAdsenseClient, getAdsenseSlot } from '../lib/adsense'
-import { allowsAds } from '../lib/cookieConsent'
+import { allowsAds, getCookieConsent } from '../lib/cookieConsent'
 
 const CORES = { brancoMuted: 'rgba(255,255,255,0.35)' }
 
-/** Anúncio manual - só utilizadores grátis com consentimento cookies. */
+/** Anúncio manual — utilizadores grátis com consentimento de cookies. */
 export function AdSenseBanner({ isPremium = false }) {
   const ref = useRef(null)
   const client = getAdsenseClient()
   const slot = getAdsenseSlot()
+  const consent = getCookieConsent()
+  const canShow = !isPremium && allowsAds() && adsenseEnabled(isPremium)
 
   useEffect(() => {
-    if (isPremium || !allowsAds() || !adsenseEnabled(isPremium) || !ref.current) return
+    if (!canShow || !ref.current) return
     try {
       // eslint-disable-next-line no-undef
       ;(window.adsbygoogle = window.adsbygoogle || []).push({})
     } catch {
       /* bloqueador de anúncios */
     }
-  }, [client, slot, isPremium])
+  }, [client, slot, canShow, consent])
 
-  if (isPremium || !adsenseEnabled(isPremium)) return null
+  if (!canShow) return null
 
   return (
     <div
+      className="sidus-adsense-banner"
       style={{
         maxWidth: 728,
         margin: '0 auto',
