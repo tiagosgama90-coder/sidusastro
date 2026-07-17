@@ -39,6 +39,8 @@ export class ErrorBoundary extends Component {
   render() {
     if (!this.state.hasError) return this.props.children
 
+    const isTranslateCrash = /insertBefore|removeChild|not a child of this node/i.test(this.state.error?.message || '')
+
     return (
       <div style={{
         minHeight: this.props.compact ? '40vh' : '100svh',
@@ -69,6 +71,11 @@ export class ErrorBoundary extends Component {
           <p style={{ margin: '0 0 20px', fontSize: 14, lineHeight: 1.6, color: CORES.brancoMuted }}>
             A interface encontrou um erro inesperado. Podes tentar de novo ou recarregar a página.
           </p>
+          {isTranslateCrash && (
+            <p style={{ margin: '0 0 16px', fontSize: 13, lineHeight: 1.55, color: 'rgba(223,183,108,0.9)' }}>
+              Se estás a usar o Google Tradutor, desactiva a tradução desta página — ela interfere com os formulários de nascimento.
+            </p>
+          )}
           {this.state.error?.message && (
             <p style={{
               margin: '0 0 20px', fontSize: 11, lineHeight: 1.5, color: 'rgba(248,113,113,0.9)',

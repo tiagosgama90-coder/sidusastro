@@ -823,6 +823,12 @@ export default {
     urgency: 'Oferta vitalícia — restam {count} lugares neste ciclo',
     tarotUsed: 'Tarot: {used} de {max} leituras grátis · restam {left}',
     oracleUsed: 'Oráculo: {used} de {max} perguntas grátis · restam {left}',
+    homeTeaser: {
+      ariaLabel: 'Comparar planos Sidus',
+      title: 'Desbloqueia o cosmos completo',
+      lead: 'Tarot e oráculo ilimitados, sinastria, notificações diárias e PDF profissional.',
+      cta: 'Sidus VIP — {price} € vitalício',
+    },
     table: {
       feature: 'Portal',
       free: 'Explorador',
@@ -842,5 +848,17 @@ export default {
     bannerAria: 'Oferta Brasil',
     banner: '🇧🇷 Brasileiros: Sidus VIP por 5 € com PIX — acesso vitalício ao cosmos completo.',
     premiumNote: 'Oferta especial Brasil: 5 € com PIX. Cartão e PayPal: 9,99 €.',
+  },
+  referral: {
+    ariaLabel: 'Programa de referência Sidus',
+    title: 'Convida um amigo',
+    lead: 'Partilha o teu link — quando o amigo criar o mapa, ganhas 1 leitura de tarot extra.',
+    bonusActive: 'Tens {n} leitura(s) bónus de referência disponíveis',
+    share: 'Partilhar link',
+    copy: 'Copiar link',
+    copyLink: 'Copiar',
+    copied: 'Copiado!',
+    foot: 'O bónus é creditado quando o convidado completa o mapa astral.',
+    shareText: 'Descobre o teu mapa astral grátis no Sidus — {link}',
   },
 }

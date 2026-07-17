@@ -328,10 +328,10 @@ export function LandingBirthPortal({ isDesktop, onSaved, onScrollToLogin }) {
 
       <div style={{ position: 'relative', zIndex: 1 }}>
         {!guardado && (
-          <p className="landing-portal-form-lead">{t('auth.portal.formLead')}</p>
+          <p className="landing-portal-form-lead notranslate" translate="no">{t('auth.portal.formLead')}</p>
         )}
 
-        <div className={`landing-portal-card${guardado ? ' landing-portal-card--saved' : ''}`}>
+        <div className={`landing-portal-card notranslate${guardado ? ' landing-portal-card--saved' : ''}`} translate="no">
           <div className="landing-portal-card-shimmer" aria-hidden />
 
           {guardado ? (
