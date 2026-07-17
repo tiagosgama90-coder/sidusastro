@@ -182,7 +182,7 @@
       `<path d="${d}" fill="none" stroke="rgba(240,210,150,0.72)" stroke-width="1.5" stroke-linecap="round" filter="url(#guiaStarGlow)" />`
     ).join('')
     const zodiacEls = zodiacNodes.map(({ sym, x, y, i }) =>
-      `<text x="${x.toFixed(1)}" y="${y.toFixed(1)}" text-anchor="middle" dominant-baseline="central" class="guia-cosmic-zodiac" style="animation-delay:${i * 0.35}s" filter="url(#guiaZodiacGlow)">${sym}</text>`
+      `<g transform="translate(${x.toFixed(1)} ${y.toFixed(1)})"><g class="guia-cosmic-zodiac-upright"><text x="0" y="0" text-anchor="middle" dominant-baseline="central" class="guia-cosmic-zodiac" style="animation-delay:${i * 0.35}s" filter="url(#guiaZodiacGlow)">${sym}</text></g></g>`
     ).join('')
 
     wrap.innerHTML = `
@@ -213,7 +213,7 @@
         <g class="guia-cosmic-star-lines">${pathEls}</g>
         <circle cx="200" cy="200" r="48" fill="none" stroke="rgba(223,183,108,0.42)" stroke-width="1.1" />
         <circle cx="200" cy="200" r="8" fill="rgba(223,183,108,0.35)" />
-        ${zodiacEls}
+        <g class="guia-cosmic-zodiac-ring">${zodiacEls}</g>
       </svg>`
 
     root.appendChild(canvas)
@@ -527,32 +527,8 @@
       <nav class="guia-related-links" aria-label="${title}">${links}</nav>`
   }
 
-  function renderGuidePager(lang) {
-    const pageId = getPageId()
-    const common = window.SIDUS_GUIA_I18N?.common
-    const idx = GUIDE_SEQUENCE.findIndex((g) => g.id === pageId)
-    if (idx < 0 || !common) return
-
-    const prev = GUIDE_SEQUENCE[(idx - 1 + GUIDE_SEQUENCE.length) % GUIDE_SEQUENCE.length]
-    const next = GUIDE_SEQUENCE[(idx + 1) % GUIDE_SEQUENCE.length]
-    const prevLabel = common.nav?.[prev.navKey]?.[lang] || common.nav?.[prev.navKey]?.pt || prev.navKey
-    const nextLabel = common.nav?.[next.navKey]?.[lang] || common.nav?.[next.navKey]?.pt || next.navKey
-    const prevDir = common.navPrev?.[lang] || common.navPrev?.pt || 'Anterior'
-    const nextDir = common.navNext?.[lang] || common.navNext?.pt || 'Seguinte'
-    const pagerAria = common.pagerAria?.[lang] || common.pagerAria?.pt || 'Navegação entre guias'
-    const positionTpl = common.pagerPosition?.[lang] || common.pagerPosition?.pt || '{current} / {total}'
-    const position = positionTpl.replace('{current}', String(idx + 1)).replace('{total}', String(GUIDE_SEQUENCE.length))
-
-    let block = document.querySelector('.guia-pager')
-    if (!block) {
-      block = document.createElement('nav')
-      block.className = 'guia-pager'
-      const article = document.querySelector('.guia-article')
-      if (article) article.insertAdjacentElement('afterend', block)
-    }
-
-    block.setAttribute('aria-label', pagerAria)
-    block.innerHTML = `
+  function buildGuidePagerHtml(prev, next, prevLabel, nextLabel, prevDir, nextDir, position, lang) {
+    return `
       <a class="guia-pager-btn guia-pager-prev" href="${guideHref(prev.href, lang)}">
         <span class="guia-pager-arrow" aria-hidden="true">←</span>
         <span class="guia-pager-text">
@@ -568,6 +544,47 @@
         </span>
         <span class="guia-pager-arrow" aria-hidden="true">→</span>
       </a>`
+  }
+
+  function renderGuidePager(lang) {
+    const pageId = getPageId()
+    const common = window.SIDUS_GUIA_I18N?.common
+    const idx = GUIDE_SEQUENCE.findIndex((g) => g.id === pageId)
+    if (idx < 0 || !common) return
+
+    const prev = GUIDE_SEQUENCE[(idx - 1 + GUIDE_SEQUENCE.length) % GUIDE_SEQUENCE.length]
+    const next = GUIDE_SEQUENCE[(idx + 1) % GUIDE_SEQUENCE.length]
+    const prevLabel = common.nav?.[prev.navKey]?.[lang] || common.nav?.[prev.navKey]?.pt || prev.navKey
+    const nextLabel = common.nav?.[next.navKey]?.[lang] || common.nav?.[next.navKey]?.pt || next.navKey
+    const prevDir = common.navPrev?.[lang] || common.navPrev?.pt || 'Anterior'
+    const nextDir = common.navNext?.[lang] || common.navNext?.pt || 'Seguinte'
+    const pagerAria = common.pagerAria?.[lang] || common.pagerAria?.pt || 'Navegação entre guias'
+    const positionTpl = common.pagerPosition?.[lang] || common.pagerPosition?.pt || '{current} / {total}'
+    const position = positionTpl.replace('{current}', String(idx + 1)).replace('{total}', String(GUIDE_SEQUENCE.length))
+    const html = buildGuidePagerHtml(prev, next, prevLabel, nextLabel, prevDir, nextDir, position, lang)
+
+    const ensurePager = (selector, className, insert) => {
+      let block = document.querySelector(selector)
+      if (!block) {
+        block = document.createElement('nav')
+        block.className = className
+        insert(block)
+      }
+      block.setAttribute('aria-label', pagerAria)
+      block.innerHTML = html
+    }
+
+    const meta = document.querySelector('.guia-meta')
+    if (meta) {
+      ensurePager('.guia-pager--top', 'guia-pager guia-pager--top', (block) => {
+        meta.insertAdjacentElement('afterend', block)
+      })
+    }
+
+    ensurePager('.guia-pager--bottom', 'guia-pager guia-pager--bottom', (block) => {
+      const article = document.querySelector('.guia-article')
+      if (article) article.insertAdjacentElement('afterend', block)
+    })
   }
 
   function init() {

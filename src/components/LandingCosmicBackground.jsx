@@ -127,20 +127,25 @@ export function LandingCosmicBackground() {
             ))}
           </g>
           <circle cx="200" cy="200" r="42" fill="none" stroke="rgba(223,183,108,0.16)" strokeWidth="0.6" />
-          {zodiacNodes.map(({ sym, x, y, i }) => (
-            <text
-              key={sym}
-              x={x}
-              y={y}
-              textAnchor="middle"
-              dominantBaseline="central"
-              className="landing-cosmic-zodiac"
-              style={{ animationDelay: `${i * 0.35}s` }}
-              filter="url(#landingZodiacGlow)"
-            >
-              {sym}
-            </text>
-          ))}
+          <g className="landing-cosmic-zodiac-ring">
+            {zodiacNodes.map(({ sym, x, y, i }) => (
+              <g key={sym} transform={`translate(${x.toFixed(1)} ${y.toFixed(1)})`}>
+                <g className="landing-cosmic-zodiac-upright">
+                  <text
+                    x={0}
+                    y={0}
+                    textAnchor="middle"
+                    dominantBaseline="central"
+                    className="landing-cosmic-zodiac"
+                    style={{ animationDelay: `${i * 0.35}s` }}
+                    filter="url(#landingZodiacGlow)"
+                  >
+                    {sym}
+                  </text>
+                </g>
+              </g>
+            ))}
+          </g>
         </svg>
       </div>
     </div>

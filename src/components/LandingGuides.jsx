@@ -1,5 +1,6 @@
 import { useLanguage } from '../lib/i18n/LanguageContext.jsx'
-import { ArrowUpRight, BookOpen, Sparkles } from 'lucide-react'
+import { BookOpen, Sparkles } from 'lucide-react'
+import { LandingGuideArt } from './LandingGuideArt.jsx'
 
 const GUIDES = [
   {
@@ -8,7 +9,6 @@ const GUIDES = [
     titleKey: 'auth.portal.guides.mapaTitle',
     descKey: 'auth.portal.guides.mapaDesc',
     readKey: 'auth.portal.guides.mapaRead',
-    glyph: '☉',
     accent: '#DFB76C',
   },
   {
@@ -17,7 +17,6 @@ const GUIDES = [
     titleKey: 'auth.portal.guides.ascendenteTitle',
     descKey: 'auth.portal.guides.ascendenteDesc',
     readKey: 'auth.portal.guides.ascendenteRead',
-    glyph: '↑',
     accent: '#C4B5FD',
   },
   {
@@ -26,7 +25,6 @@ const GUIDES = [
     titleKey: 'auth.portal.guides.signosTitle',
     descKey: 'auth.portal.guides.signosDesc',
     readKey: 'auth.portal.guides.signosRead',
-    glyph: '♈',
     accent: '#F472B6',
   },
   {
@@ -35,7 +33,6 @@ const GUIDES = [
     titleKey: 'auth.portal.guides.tarotTitle',
     descKey: 'auth.portal.guides.tarotDesc',
     readKey: 'auth.portal.guides.tarotRead',
-    glyph: '✦',
     accent: '#34D399',
   },
 ]
@@ -62,24 +59,16 @@ export function LandingGuides() {
           <a
             key={guide.id}
             href={lang === 'pt' ? guide.href : `${guide.href}?lang=${lang}`}
-            className="landing-guide-card landing-glass"
+            className="landing-guide-card landing-guide-card--with-art landing-glass"
             style={{ '--guide-accent': guide.accent }}
           >
-            <div className="landing-guide-card-top">
-              <div className="landing-guide-visual">
-                <span className="landing-guide-glyph" aria-hidden="true">{guide.glyph}</span>
-              </div>
-              <ArrowUpRight size={18} className="landing-guide-arrow-featured" aria-hidden="true" />
-            </div>
+            <LandingGuideArt id={guide.id} accent={guide.accent} />
             <div className="landing-guide-body">
               <h3 className="landing-guide-card-title">{t(guide.titleKey)}</h3>
               <p className="landing-guide-card-desc">{t(guide.descKey)}</p>
               <div className="landing-guide-meta">
                 <span className="landing-guide-read">{t(guide.readKey)}</span>
-                <span className="landing-guide-link">
-                  {t('auth.portal.guides.readMore')}
-                  <ArrowUpRight size={13} aria-hidden="true" />
-                </span>
+                <span className="landing-guide-link">{t('auth.portal.guides.readMore')}</span>
               </div>
             </div>
           </a>

@@ -649,15 +649,34 @@ html.sidus-no-ads .google-auto-placed {
 }
 
 .landing-guide-arrow-featured {
-  color: #DFB76C;
-  opacity: 0.75;
-  flex-shrink: 0;
-  transition: transform 0.2s ease, opacity 0.2s ease;
+  display: none;
 }
 
-.landing-guide-card:hover .landing-guide-arrow-featured {
-  opacity: 1;
-  transform: translate(2px, -2px);
+.landing-guide-card--with-art {
+  padding: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.landing-guide-art {
+  width: 100%;
+  height: 112px;
+  overflow: hidden;
+  border-bottom: 1px solid rgba(223, 183, 108, 0.14);
+  background:
+    radial-gradient(ellipse 90% 80% at 50% 20%, color-mix(in srgb, var(--guide-accent, #DFB76C) 22%, transparent), transparent 70%),
+    rgba(0, 0, 0, 0.28);
+}
+
+.landing-guide-art-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.landing-guides--featured .landing-guide-body {
+  padding: 16px 16px 18px;
 }
 
 .landing-guides--featured .landing-guide-card {
@@ -1632,12 +1651,25 @@ html.sidus-no-ads .google-auto-placed {
   transform-origin: 200px 200px;
   animation: landingHendecSpin 140s linear infinite, landingHendecPulse 8s ease-in-out infinite;
 }
+.landing-cosmic-zodiac-ring {
+  transform-origin: 200px 200px;
+  animation: landingZodiacRingSpin 96s linear infinite;
+}
+.landing-cosmic-zodiac-upright {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: landingZodiacRingSpin 96s linear infinite reverse;
+}
 .landing-cosmic-zodiac {
   font-size: 15px;
   fill: rgba(223, 183, 108, 0.55);
   animation: landingZodiacShine 4.5s ease-in-out infinite;
 }
 @keyframes landingHendecSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+@keyframes landingZodiacRingSpin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }

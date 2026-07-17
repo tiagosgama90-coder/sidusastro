@@ -78,6 +78,17 @@ body.guia-has-cosmic-bg {
   animation: guiaHendecSpin 120s linear infinite, guiaHendecPulse 6s ease-in-out infinite;
 }
 
+.guia-cosmic-zodiac-ring {
+  transform-origin: 200px 200px;
+  animation: guiaZodiacRingSpin 88s linear infinite;
+}
+
+.guia-cosmic-zodiac-upright {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: guiaZodiacRingSpin 88s linear infinite reverse;
+}
+
 .guia-cosmic-zodiac {
   font-size: 17px;
   fill: rgba(240, 210, 150, 0.82);
@@ -85,6 +96,11 @@ body.guia-has-cosmic-bg {
 }
 
 @keyframes guiaHendecSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes guiaZodiacRingSpin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
@@ -385,6 +401,10 @@ h1 {
   border: 1px solid rgba(223, 183, 108, 0.28);
   background: rgba(12, 8, 32, 0.72);
   box-shadow: 0 12px 36px rgba(0, 0, 0, 0.28);
+}
+
+.guia-pager--top {
+  margin: 20px 0 24px;
 }
 
 .guia-pager-btn {

@@ -183,7 +183,7 @@ async function networkFirst(request, { allowCacheFallback = true } = {}) {
 
 function offlineHtml() {
   return new Response(
-    '<!doctype html><html lang="pt"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Sidusastro — offline</title></head><body style="margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:#0B071E;color:#fff;font-family:system-ui,sans-serif;text-align:center;padding:24px"><div><p>Sem ligação à internet.</p><p><a href="/" style="color:#DFB76C">Tentar de novo</a></p></div></body></html>',
+    '<!doctype html><html lang="pt"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Sidusastro - offline</title></head><body style="margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:#0B071E;color:#fff;font-family:system-ui,sans-serif;text-align:center;padding:24px"><div><p>Sem ligação à internet.</p><p><a href="/" style="color:#DFB76C">Tentar de novo</a></p></div></body></html>',
     { headers: { 'Content-Type': 'text/html; charset=utf-8' } },
   )
 }
