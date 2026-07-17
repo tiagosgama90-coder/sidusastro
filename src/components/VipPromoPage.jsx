@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { Check, ChevronLeft, Crown, ExternalLink, Loader2, Send, Sparkles, Video } from 'lucide-react'
 import { useLanguage } from '../lib/i18n/LanguageContext.jsx'
 import { getBeneficiosVip } from '../lib/i18n/ferramentasData.js'
+import { SIDUS_SOCIAL_LIST } from '../lib/sidusSocial.js'
 
 const CORES = {
   fundo: '#0B071E',
@@ -17,10 +18,18 @@ const PLATFORMS = [
   { id: 'tiktok', label: 'TikTok' },
   { id: 'youtube', label: 'YouTube' },
   { id: 'facebook', label: 'Facebook' },
-  { id: 'twitter', label: 'X / Twitter' },
   { id: 'blog', label: 'Blog / Site' },
   { id: 'outro', label: 'Outro' },
 ]
+
+const POST_URL_PLACEHOLDER = {
+  instagram: 'https://www.instagram.com/p/...',
+  tiktok: 'https://www.tiktok.com/@teu_perfil/video/...',
+  youtube: 'https://www.youtube.com/watch?v=...',
+  facebook: 'https://www.facebook.com/...',
+  blog: 'https://...',
+  outro: 'https://...',
+}
 
 export function VipPromoPage({
   user,
@@ -177,6 +186,23 @@ export function VipPromoPage({
         </ol>
       </section>
 
+      <section className="vip-promo-official" aria-label={t('vipPromo.officialTitle')}>
+        <h2>{t('vipPromo.officialTitle')}</h2>
+        <p className="vip-promo-official-lead">{t('vipPromo.officialLead')}</p>
+        <ul className="vip-promo-official-list">
+          {SIDUS_SOCIAL_LIST.map((conta) => (
+            <li key={conta.id}>
+              <a href={conta.url} target="_blank" rel="noopener noreferrer" className="vip-promo-official-link">
+                <strong>{conta.label}</strong>
+                <span>{conta.handle}</span>
+                <ExternalLink size={14} />
+              </a>
+            </li>
+          ))}
+        </ul>
+        <p className="vip-promo-official-note">{t('vipPromo.officialNote')}</p>
+      </section>
+
       <section className="vip-promo-video-guide">
         <button type="button" className="vip-promo-video-toggle" onClick={() => setMostrarGuiaVideo((v) => !v)}>
           <Video size={18} />
@@ -239,6 +265,7 @@ export function VipPromoPage({
 
           <label>
             {t('vipPromo.handle')}
+            <span className="vip-promo-field-hint">{t('vipPromo.handleHint')}</span>
             <input
               type="text"
               value={handle}
@@ -262,11 +289,12 @@ export function VipPromoPage({
 
           <label>
             {t('vipPromo.postUrl')}
+            <span className="vip-promo-field-hint">{t('vipPromo.postUrlHint')}</span>
             <input
               type="url"
               value={postUrl}
               onChange={(e) => setPostUrl(e.target.value)}
-              placeholder="https://..."
+              placeholder={POST_URL_PLACEHOLDER[platform] || 'https://...'}
               required
             />
           </label>
