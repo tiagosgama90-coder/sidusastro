@@ -1,6 +1,8 @@
 import { useState, useRef } from 'react'
 import { useLanguage } from '../lib/i18n/LanguageContext.jsx'
 import { WidgetNotificacoesDiarias } from './WidgetNotificacoesDiarias.jsx'
+import { ReviewsAdminPanel } from './ReviewsAdminPanel.jsx'
+import { emailTemPremiumPrivilegiado } from '../lib/premiumAccess.js'
 
 const CORES = {
   fundo:'#0B071E', dourado:'#DFB76C', douradoEscuro:'#B8944F',
@@ -21,7 +23,7 @@ function formatarData(iso) {
   return `${d}/${m}/${a}`
 }
 
-export function Perfil({ utilizador, dados, mapaNatal, isPremium, dadosBloqueados, onLogout }) {
+export function Perfil({ utilizador, dados, mapaNatal, isPremium, dadosBloqueados, onLogout, obterIdToken }) {
   const { t, ts, te } = useLanguage()
   const [foto, setFoto] = useState(() => {
     try { return localStorage.getItem('sidus_foto') || null } catch { return null }
@@ -140,6 +142,9 @@ export function Perfil({ utilizador, dados, mapaNatal, isPremium, dadosBloqueado
 
       <div style={{display:'flex',flexDirection:'column',gap:10,marginTop:10}}>
         <WidgetNotificacoesDiarias user={utilizador} mapaNatal={mapaNatal} isPremium={isPremium} />
+        {emailTemPremiumPrivilegiado(utilizador) && (
+          <ReviewsAdminPanel user={utilizador} obterIdToken={obterIdToken} />
+        )}
         <button type="button" onClick={onLogout} style={{
           background:'rgba(239,68,68,0.08)', border:'1px solid rgba(239,68,68,0.3)',
           borderRadius:12, color:'#EF4444', fontSize:14, padding:'13px', cursor:'pointer',

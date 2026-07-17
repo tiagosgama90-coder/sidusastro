@@ -27,7 +27,7 @@ function formatarHoje(lang) {
   return new Date().toLocaleDateString(dateLocale(lang), { day: 'numeric', month: 'long', year: 'numeric' })
 }
 
-export function ConteudoDinamicoSidus({ mapaNatal, ceuAgora = [], aspetos = [], isPremium, onUpgrade, onOraculo, userEmail, user }) {
+export function ConteudoDinamicoSidus({ mapaNatal, ceuAgora = [], aspetos = [], isPremium, onUpgrade, onOraculo, userEmail, user, hideNotifications = false }) {
   const { lang, t, tp, ta } = useLanguage()
   const [pack, setPack] = useState(null)
 
@@ -120,13 +120,15 @@ export function ConteudoDinamicoSidus({ mapaNatal, ceuAgora = [], aspetos = [], 
         )}
       </div>
 
-      {(userEmail || user?.uid) && (
+      {(userEmail || user?.uid) && !hideNotifications && (
         <div style={{ marginBottom: 0 }}>
           <WidgetNotificacoesDiarias
             user={user || (userEmail ? { email: userEmail } : null)}
             mapaNatal={mapaNatal}
             isPremium={isPremium}
             onUpgrade={onUpgrade}
+            ceuAgora={ceuAgora}
+            aspetos={aspetos}
           />
         </div>
       )}

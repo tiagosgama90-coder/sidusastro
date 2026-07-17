@@ -1,8 +1,11 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useEffect, useState, useCallback, useMemo } from 'react'
 import { useLanguage } from '../lib/i18n/LanguageContext.jsx'
 import { useNotificacoesDiarias } from '../hooks/useNotificacoesDiarias.js'
 import { emailTemPremiumPrivilegiado } from '../lib/premiumAccess.js'
 import { normalizeSignoNome } from '../lib/i18n/astro.js'
+import { gerarHoroscopoSignoTransito } from '../lib/horoscopoDiarioTransitos.js'
+import { SIGNOS_PT } from '../lib/i18n/astro.js'
+import { calcularFaseLua } from '../lib/faseLua.js'
 
 const CORES = {
   dourado: '#DFB76C',
@@ -13,10 +16,25 @@ const CORES = {
   fundo: 'rgba(11, 7, 30, 0.6)',
 }
 
-export function WidgetNotificacoesDiarias({ user, mapaNatal, isPremium, onUpgrade }) {
-  const { t, lang } = useLanguage()
+export function WidgetNotificacoesDiarias({ user, mapaNatal, isPremium, onUpgrade, ceuAgora = [], aspetos = [] }) {
+  const { t, lang, ts } = useLanguage()
   const signoSolar = normalizeSignoNome(mapaNatal?.solar?.nome) || null
   const isCriador = emailTemPremiumPrivilegiado(user)
+  const faseLua = useMemo(() => calcularFaseLua(new Date(), lang), [lang])
+
+  const previewHoroscopo = useMemo(() => {
+    if (!signoSolar || !ceuAgora?.length) return null
+    const idx = SIGNOS_PT.indexOf(signoSolar === 'Áries' ? 'Carneiro' : signoSolar)
+    if (idx < 0) return null
+    return gerarHoroscopoSignoTransito({
+      signoIndex: idx,
+      signoNome: ts(mapaNatal.solar.nome),
+      ceuAgora,
+      aspetos,
+      faseLua,
+      lang,
+    })
+  }, [signoSolar, ceuAgora, aspetos, faseLua, lang, mapaNatal, ts])
 
   const {
     permission, loading, erro,
@@ -100,6 +118,20 @@ export function WidgetNotificacoesDiarias({ user, mapaNatal, isPremium, onUpgrad
           </div>
         </div>
         <p style={{ fontSize: 14, color: CORES.brancoMuted, lineHeight: 1.7, marginBottom: 12 }}>{t('notificacoes.desc')}</p>
+        <p style={{ fontSize: 12, color: CORES.dourado, fontWeight: 600, marginBottom: 10 }}>{t('notificacoes.dailyAt8')}</p>
+        {previewHoroscopo && (
+          <div style={{
+            background: 'rgba(0,0,0,0.25)', borderRadius: 12, padding: '12px 14px', marginBottom: 14,
+            border: '1px solid rgba(223,183,108,0.15)',
+          }}>
+            <p style={{ fontSize: 10, color: CORES.dourado, textTransform: 'uppercase', letterSpacing: '0.08em', margin: '0 0 6px' }}>
+              {t('notificacoes.previewLabel')}
+            </p>
+            <p style={{ fontSize: 12, color: CORES.brancoMuted, lineHeight: 1.55, margin: 0 }}>
+              {previewHoroscopo.slice(0, 180)}{previewHoroscopo.length > 180 ? '…' : ''}
+            </p>
+          </div>
+        )}
         <button type="button" onClick={onUpgrade} style={{
           width: '100%', padding: '14px 20px',
           background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.3) 0%, rgba(223, 183, 108, 0.2) 100%)',
@@ -141,6 +173,20 @@ export function WidgetNotificacoesDiarias({ user, mapaNatal, isPremium, onUpgrad
       </div>
 
       <p style={{ fontSize: 13, color: CORES.brancoMuted, lineHeight: 1.6, marginBottom: 10 }}>{t('notificacoes.desc')}</p>
+      <p style={{ fontSize: 12, color: CORES.dourado, fontWeight: 600, marginBottom: 10 }}>{t('notificacoes.dailyAt8')}</p>
+      {previewHoroscopo && (
+        <div style={{
+          background: 'rgba(0,0,0,0.2)', borderRadius: 12, padding: '12px 14px', marginBottom: 14,
+          border: '1px solid rgba(223,183,108,0.15)',
+        }}>
+          <p style={{ fontSize: 10, color: CORES.dourado, textTransform: 'uppercase', letterSpacing: '0.08em', margin: '0 0 6px' }}>
+            {t('notificacoes.previewLabel')}
+          </p>
+          <p style={{ fontSize: 12, color: CORES.brancoMuted, lineHeight: 1.55, margin: 0 }}>
+            {previewHoroscopo.slice(0, 200)}{previewHoroscopo.length > 200 ? '…' : ''}
+          </p>
+        </div>
+      )}
       <p style={{ fontSize: 11, color: CORES.dourado, lineHeight: 1.55, marginBottom: 16 }}>{t('notificacoes.howTo')}</p>
 
       {signoSolar ? (

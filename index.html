@@ -70,20 +70,6 @@
       ::-webkit-scrollbar { width: 4px; }
       ::-webkit-scrollbar-track { background: transparent; }
       ::-webkit-scrollbar-thumb { background: rgba(223,183,108,0.25); border-radius: 2px; }
-      /* Badge BuySellStartups - invisível (verificação HTML, sem ocupar espaço) */
-      .bss-badge {
-        position: absolute;
-        width: 1px;
-        height: 1px;
-        padding: 0;
-        margin: -1px;
-        overflow: hidden;
-        clip: rect(0, 0, 0, 0);
-        white-space: nowrap;
-        border: 0;
-        opacity: 0;
-        pointer-events: none;
-      }
       /* Social Bar - escondido por padrão, visível quando classe 'ads-visible' */
       .adsterra-social-bar {
         display: none;
@@ -99,11 +85,6 @@
     </style>
   </head>
   <body>
-    <!-- Badge BuySellStartups - verificação de listing -->
-    <a class="bss-badge" href="https://buysellstartups.com/listings/ai-astrology-tarot-saas-swiss-ephemeris-wasm-pre-revenue-asset-sale-mrcn1aua" target="_blank" rel="noopener">
-      <img src="https://buysellstartups.com/api/badge/ai-astrology-tarot-saas-swiss-ephemeris-wasm-pre-revenue-asset-sale-mrcn1aua" alt="For Sale on Buy Sell Startups" width="280" height="68">
-    </a>
-    
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>

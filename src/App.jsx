@@ -50,10 +50,16 @@ import { LandingBirthPortal } from './components/LandingBirthPortal.jsx'
 import { LandingFaq } from './components/LandingFaq.jsx'
 import { LandingPortalHero } from './components/LandingPortalHero.jsx'
 import { LandingSkyLive } from './components/LandingSkyLive.jsx'
-import { LandingTestimonials } from './components/LandingTestimonials.jsx'
+import { LandingReviews } from './components/LandingReviews.jsx'
+import { LandingNewsletter } from './components/LandingNewsletter.jsx'
+import { BannerBrasil } from './components/BannerBrasil.jsx'
 import { HeroHomeSidus } from './components/HeroHomeSidus.jsx'
 import { LeituraGratisDiaria } from './components/LeituraGratisDiaria.jsx'
 import { ShareSigno } from './components/ShareSigno.jsx'
+import { HomeTour } from './components/HomeTour.jsx'
+import { EnergiaDoDia, TransitoSemanal } from './components/EnergiaDoDia.jsx'
+import { PremiumComparacao } from './components/PremiumComparacao.jsx'
+import { WidgetNotificacoesDiarias } from './components/WidgetNotificacoesDiarias.jsx'
 import { applyRouteSeo } from './lib/routeSeo.js'
 import { ErrorBoundary } from './components/ErrorBoundary.jsx'
 import { auth, db, firebaseDisponivel, firebaseReady } from './lib/firebase'
@@ -1329,6 +1335,15 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
         } catch (emailErr) {
           console.warn('[Sidus Auth] Email verificação:', emailErr?.code, emailErr?.message)
         }
+        try {
+          await fetch('/api/post-register-hooks', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: cred.user.email, lang, uid: cred.user.uid }),
+          })
+        } catch (hookErr) {
+          console.warn('[Sidus Auth] post-register-hooks:', hookErr?.message)
+        }
         setInfo(t('auth.accountCreated'))
       } else {
         const cred = await signInWithEmailAndPassword(auth, email, senha)
@@ -1352,6 +1367,7 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
 
   return (
     <div className={`landing-auth-layout${isDesktop ? ' landing-auth-layout--desktop' : ' landing-auth-layout--mobile'}`}>
+      <BannerBrasil />
       <div className={`landing-auth-sticky-top${!isDesktop ? ' landing-auth-sticky-top--mobile' : ''}`}>
         {!isDesktop && (
           <div className="landing-lang-bar">
@@ -1593,7 +1609,8 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
           </div>
         </div>
       </div>
-      <LandingTestimonials />
+      <LandingReviews />
+      <LandingNewsletter />
       <LandingFaq />
     </div>
   )
@@ -1842,17 +1859,34 @@ function Onboarding({ dados: dadosProp, setDados, onSubmit, isDesktop }) {
   )
 }
 
-function Dashboard({ nome, mapaNatal, ceuAgora, aspetos, onOraculo, onPrivacidade, isDesktop, isPremium, onUpgrade, onTarot, onMapa, userEmail, user }) {
+function Dashboard({ nome, mapaNatal, ceuAgora, aspetos, onOraculo, onPrivacidade, isDesktop, isPremium, onUpgrade, onTarot, onMapa, userEmail, user, oraclePerguntasUsadas, leiturasTarotUsadas }) {
   const { t, ts, te, tp, ta, lang } = useLanguage()
   const faseLua = calcularFaseLua(new Date(), lang)
   return (
     <div style={layoutConteudo(isDesktop)}>
+      <HomeTour />
       <header style={{ textAlign: 'center', marginBottom: 20 }}>
         <h1 style={estilos.titulo}>Sidus</h1>
         <p style={{ ...estilos.subtitulo, marginBottom: 0 }}>{nome ? t('home.welcome', { name: nome }) : t('home.skyRealtime')}</p>
       </header>
 
       <HeroHomeSidus mapaNatal={mapaNatal} onMapa={onMapa} isPremium={isPremium} />
+
+      {(userEmail || user?.uid) && (
+        <div style={{ marginBottom: 18 }}>
+          <WidgetNotificacoesDiarias
+            user={user || (userEmail ? { email: userEmail } : null)}
+            mapaNatal={mapaNatal}
+            isPremium={isPremium}
+            onUpgrade={onUpgrade}
+            ceuAgora={ceuAgora}
+            aspetos={aspetos}
+          />
+        </div>
+      )}
+
+      <EnergiaDoDia mapaNatal={mapaNatal} ceuAgora={ceuAgora} aspetos={aspetos} />
+      <TransitoSemanal ceuAgora={ceuAgora} aspetos={aspetos} />
 
       <LeituraGratisDiaria solar={mapaNatal?.solar} lunar={mapaNatal?.lunar} />
 
@@ -1874,7 +1908,7 @@ function Dashboard({ nome, mapaNatal, ceuAgora, aspetos, onOraculo, onPrivacidad
               <div style={{ fontSize: 11, color: CORES.brancoMuted, marginTop: 2 }}>
                 {mapaNatal.solar.graus}° · {te(mapaNatal.solar.elemento)}
               </div>
-              <ShareSigno mapaNatal={mapaNatal} nome={nome} />
+              <ShareSigno mapaNatal={mapaNatal} nome={nome} variant="prominent" />
             </div>
 
             <div style={{ flex: 1, background: 'rgba(139,92,246,0.12)', borderRadius: 12, padding: '10px 14px', border: `1px solid rgba(139,92,246,0.3)` }}>
@@ -1951,10 +1985,12 @@ function Dashboard({ nome, mapaNatal, ceuAgora, aspetos, onOraculo, onPrivacidad
         )}
       </div>
 
-      <ConteudoDinamicoSidus mapaNatal={mapaNatal} ceuAgora={ceuAgora} aspetos={aspetos} isPremium={isPremium} onUpgrade={onUpgrade} onOraculo={onOraculo} userEmail={userEmail} user={user} />
+      <div data-tour="horoscope">
+      <ConteudoDinamicoSidus mapaNatal={mapaNatal} ceuAgora={ceuAgora} aspetos={aspetos} isPremium={isPremium} onUpgrade={onUpgrade} onOraculo={onOraculo} userEmail={userEmail} user={user} hideNotifications />
+      </div>
 
       {onTarot && (
-        <button type="button" onClick={onTarot} style={{
+        <button type="button" data-tour="tarot" onClick={onTarot} style={{
           ...estilos.vidro, width: '100%', padding: 18, marginBottom: 16, cursor: 'pointer',
           border: '1px solid rgba(244,114,182,0.35)', background: 'rgba(244,114,182,0.08)',
           display: 'flex', alignItems: 'center', gap: 14, textAlign: 'left',
@@ -1969,7 +2005,7 @@ function Dashboard({ nome, mapaNatal, ceuAgora, aspetos, onOraculo, onPrivacidad
         </button>
       )}
 
-      <button type="button" onClick={onOraculo} style={{ ...estilos.vidro, width: '100%', padding: 18, display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer', border: `1px solid ${CORES.dourado}`, background: 'rgba(223,183,108,0.08)', marginTop: 14, marginBottom: 14 }}>
+      <button type="button" data-tour="oracle" onClick={onOraculo} style={{ ...estilos.vidro, width: '100%', padding: 18, display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer', border: `1px solid ${CORES.dourado}`, background: 'rgba(223,183,108,0.08)', marginTop: 14, marginBottom: 14 }}>
         <div>
           <div style={{ fontSize: 11, color: CORES.dourado, textTransform: 'uppercase' }}>{t('home.oracleDay')}</div>
           <div style={{ fontSize: 15, color: CORES.branco }}>{t('home.consultAI')}</div>
@@ -2660,7 +2696,7 @@ function Ferramentas({ onFerramenta, isDesktop, acessoVip }) {
   )
 }
 
-function Paywall({ onVoltar, onPagar, onSucesso, isDesktop, isBrasil }) {
+function Paywall({ onVoltar, onPagar, onSucesso, isDesktop, isBrasil, oraclePerguntasUsadas = 0, leiturasTarotUsadas = 0 }) {
   const { t, lang } = useLanguage()
   const beneficios = getBeneficiosVip(lang)
   const precoVitrine = precoPremiumVitrine(isBrasil)
@@ -2675,7 +2711,15 @@ function Paywall({ onVoltar, onPagar, onSucesso, isDesktop, isBrasil }) {
         <h1 style={{ ...estilos.titulo, fontSize: 24 }}>{t('vip.title')}</h1>
         <p style={{ color: CORES.brancoMuted, fontSize: 13 }}>{t('vip.subtitle')}</p>
       </div>
-      <div style={{ ...estilos.vidro, padding: 24, marginBottom: 20 }}>
+
+      <PremiumComparacao
+        isPremium={false}
+        oracleUsadas={oraclePerguntasUsadas}
+        tarotUsadas={leiturasTarotUsadas}
+        isBrasil={isBrasil}
+      />
+
+      <div style={{ ...estilos.vidro, padding: 24, marginBottom: 20, marginTop: 16 }}>
         {beneficios.map((b) => (
           <div key={b} style={{ display: 'flex', gap: 10, marginBottom: 12 }}>
             <Check size={14} color={CORES.dourado} />
@@ -3060,23 +3104,6 @@ function RodapeSidus({ isDesktop, mostrarNavbar }) {
           {t('footer.privacy')}
         </a>
       </p>
-      {/* Badge BuySellStartups - escondido (não visível) */}
-      <div style={{ marginTop: 12, display: 'none' }}>
-        <a
-          href="https://buysellstartups.com/listings/ai-astrology-tarot-saas-swiss-ephemeris-wasm-pre-revenue-asset-sale-mrcn1aua"
-          target="_blank"
-          rel="noopener"
-          style={{ display: 'inline-block', opacity: 0.7 }}
-        >
-          <img
-            src="https://buysellstartups.com/api/badge/ai-astrology-tarot-saas-swiss-ephemeris-wasm-pre-revenue-asset-sale-mrcn1aua"
-            alt="For Sale on Buy Sell Startups"
-            width="280"
-            height="68"
-            style={{ maxWidth: '100%', height: 'auto' }}
-          />
-        </a>
-      </div>
     </footer>
   )
 }
@@ -4101,7 +4128,7 @@ export default function App() {
     switch (passo) {
       case 'home':
       case 'dashboard':
-        return <Dashboard nome={dados.nome} mapaNatal={mapaNatal} ceuAgora={ceuAgora} aspetos={aspetosAgora} onOraculo={() => irPara('chat')} onPrivacidade={() => irPara('privacidade')} isDesktop={isDesktop} isPremium={isPremium} onUpgrade={() => irPara('paywall')} onTarot={() => irPara('tarot')} onMapa={() => irPara('mapa')} userEmail={utilizador?.email} user={utilizador} />
+        return <Dashboard nome={dados.nome} mapaNatal={mapaNatal} ceuAgora={ceuAgora} aspetos={aspetosAgora} onOraculo={() => irPara('chat')} onPrivacidade={() => irPara('privacidade')} isDesktop={isDesktop} isPremium={isPremium} onUpgrade={() => irPara('paywall')} onTarot={() => irPara('tarot')} onMapa={() => irPara('mapa')} userEmail={utilizador?.email} user={utilizador} oraclePerguntasUsadas={oraclePerguntasUsadas} leiturasTarotUsadas={leiturasTarotUsadas} />
       case 'mapa':
         return <MapaAstral mapaNatal={mapaNatal} dados={dados} planetasNascimento={planetasNascimento} mapaDesbloqueado={isPremium || mapaCompleto} isPremium={isPremium} onUpgrade={() => irPara('paywall')} onComprarMapa={() => abrirPagamento(t('mapa.buyDesc'), PRECO_MAPA_COMPLETO, null, { productType: 'mapa' })} onMapaGerado={handleMapaGerado} isDesktop={isDesktop} motorAstro={motorAstro} perfilCarregando={perfilCarregando} reparandoDados={reparandoDados} mapaGerado={mapaGerado} onCompletarNatal={() => irPara('home')} obterIdToken={obterIdTokenOracle} interpretacaoPerfil={interpretacaoMapa} />
       case 'tarot':
@@ -4123,15 +4150,16 @@ export default function App() {
       case 'ferramentas':
         return <Ferramentas onFerramenta={handleFerramenta} isDesktop={isDesktop} acessoVip={acessoVip} />
       case 'paywall':
-        return <Paywall onVoltar={() => irPara('home')} onPagar={abrirPagamento} onSucesso={() => { setIsPremium(true); setMapaCompleto(true); irPara(dadosNataisMinimos(dados) ? 'mapa' : 'onboarding') }} isDesktop={isDesktop} isBrasil={isBrasil} />
+        return <Paywall onVoltar={() => irPara('home')} onPagar={abrirPagamento} onSucesso={() => { setIsPremium(true); setMapaCompleto(true); irPara(dadosNataisMinimos(dados) ? 'mapa' : 'onboarding') }} isDesktop={isDesktop} isBrasil={isBrasil} oraclePerguntasUsadas={oraclePerguntasUsadas} leiturasTarotUsadas={leiturasTarotUsadas} />
       case 'chat':
         return <Chat mapaNatal={mapaNatal} isPremium={isPremium} userId={utilizador?.uid} oracleRemotas={oraclePerguntasUsadas} onOracleUsada={registarOraclePerguntaUsada} onUpgrade={() => irPara('paywall')} obterIdToken={obterIdTokenOracle} isBrasil={isBrasil} />
       case 'perfil':
         return <Perfil utilizador={utilizador} dados={dados} mapaNatal={mapaNatal} isPremium={isPremium}
           dadosBloqueados={dadosBloqueados}
-          onLogout={handleLogout} />
+          onLogout={handleLogout}
+          obterIdToken={obterIdTokenOracle} />
       default:
-        return <Dashboard nome={dados.nome} mapaNatal={mapaNatal} ceuAgora={ceuAgora} aspetos={aspetosAgora} onOraculo={() => irPara('chat')} onPrivacidade={() => irPara('privacidade')} isDesktop={isDesktop} isPremium={isPremium} onUpgrade={() => irPara('paywall')} onTarot={() => irPara('tarot')} onMapa={() => irPara('mapa')} userEmail={utilizador?.email} user={utilizador} />
+        return <Dashboard nome={dados.nome} mapaNatal={mapaNatal} ceuAgora={ceuAgora} aspetos={aspetosAgora} onOraculo={() => irPara('chat')} onPrivacidade={() => irPara('privacidade')} isDesktop={isDesktop} isPremium={isPremium} onUpgrade={() => irPara('paywall')} onTarot={() => irPara('tarot')} onMapa={() => irPara('mapa')} userEmail={utilizador?.email} user={utilizador} oraclePerguntasUsadas={oraclePerguntasUsadas} leiturasTarotUsadas={leiturasTarotUsadas} />
     }
   }
 
