@@ -669,9 +669,23 @@ html.sidus-no-ads .google-auto-placed {
     rgba(0, 0, 0, 0.28);
 }
 
-.landing-guide-art--signos,
+.landing-guide-art--signos {
+  height: 168px;
+  padding: 0;
+  background: #12082a;
+  border-bottom-color: rgba(223, 183, 108, 0.22);
+}
+
 .landing-guide-art--mapa {
   height: 150px;
+}
+
+.landing-guide-art-photo {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 42%;
 }
 
 .landing-guide-art-svg {

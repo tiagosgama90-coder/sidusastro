@@ -1,5 +1,3 @@
-import { ZODIAC_FIGURE_PATHS, ZODIAC_LABELS } from './zodiacFigurePaths.js'
-
 function GoldDefs({ id }) {
   return (
     <defs>
@@ -9,38 +7,13 @@ function GoldDefs({ id }) {
         <stop offset="70%" stopColor="#D4A84B" />
         <stop offset="100%" stopColor="#9A6B1A" />
       </linearGradient>
-      <linearGradient id={`${id}-gold-shine`} x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.55" />
-        <stop offset="100%" stopColor="#FFFFFF" stopOpacity="0" />
-      </linearGradient>
       <linearGradient id={`${id}-sky`} x1="0" y1="0" x2="1" y2="1">
         <stop offset="0%" stopColor="#1e0a3c" />
         <stop offset="40%" stopColor="#4c1d95" />
         <stop offset="75%" stopColor="#6b21a8" />
         <stop offset="100%" stopColor="#9a3412" stopOpacity="0.65" />
       </linearGradient>
-      <filter id={`${id}-emboss`} x="-30%" y="-30%" width="160%" height="160%">
-        <feDropShadow dx="0" dy="1.2" stdDeviation="1" floodColor="#000" floodOpacity="0.45" />
-        <feDropShadow dx="0" dy="-0.5" stdDeviation="0.4" floodColor="#FFF8E0" floodOpacity="0.35" />
-      </filter>
     </defs>
-  )
-}
-
-function ZodiacFigure({ index, x, y, scale = 1.35 }) {
-  const d = ZODIAC_FIGURE_PATHS[index]
-  return (
-    <g transform={`translate(${x} ${y}) scale(${scale}) translate(-12 -12)`} filter="url(#guideSignos-emboss)">
-      <path
-        d={d}
-        fill="url(#guideSignos-gold)"
-        stroke="#7A5518"
-        strokeWidth="0.35"
-        strokeLinejoin="round"
-        strokeLinecap="round"
-      />
-      <path d={d} fill="url(#guideSignos-gold-shine)" stroke="none" opacity="0.35" />
-    </g>
   )
 }
 
@@ -146,57 +119,18 @@ function ArtAscendente({ accent }) {
   )
 }
 
-/** Grelha 6×2 com figuras douradas estilo cartaz zodiacal. */
+/** Banner ilustrado dourado - 12 signos em grelha (imagem de alta qualidade). */
 function ArtSignos() {
-  const cols = 6
-  const rows = 2
-  const padX = 6
-  const padY = 6
-  const gapX = 3
-  const gapY = 3
-  const cellW = (320 - padX * 2 - gapX * (cols - 1)) / cols
-  const cellH = (150 - padY * 2 - gapY * (rows - 1)) / rows
-
   return (
-    <svg viewBox="0 0 320 150" className="landing-guide-art-svg landing-guide-art-svg--signos" aria-hidden>
-      <GoldDefs id="guideSignos" />
-      <rect width="320" height="150" fill="url(#guideSignos-sky)" />
-      {ZODIAC_FIGURE_PATHS.map((_, i) => {
-        const col = i % cols
-        const row = Math.floor(i / cols)
-        const x = padX + col * (cellW + gapX)
-        const y = padY + row * (cellH + gapY)
-        const figX = x + cellW / 2
-        const figY = y + cellH * 0.4
-        const label = ZODIAC_LABELS[i]
-        return (
-          <g key={label}>
-            <rect
-              x={x}
-              y={y}
-              width={cellW}
-              height={cellH}
-              rx="5"
-              fill="rgba(0,0,0,0.35)"
-              stroke="url(#guideSignos-gold)"
-              strokeWidth="0.75"
-            />
-            <ZodiacFigure index={i} x={figX} y={figY} scale={1.55} />
-            <text
-              x={x + cellW / 2}
-              y={y + cellH - 4}
-              textAnchor="middle"
-              fill="rgba(255,248,225,0.92)"
-              fontSize="6.5"
-              fontFamily="Georgia, 'Times New Roman', serif"
-              letterSpacing="0.03em"
-            >
-              {label}
-            </text>
-          </g>
-        )
-      })}
-    </svg>
+    <img
+      src="/landing/zodiac-signs-golden-banner.png"
+      alt=""
+      className="landing-guide-art-photo"
+      loading="lazy"
+      decoding="async"
+      width={640}
+      height={360}
+    />
   )
 }
 
