@@ -1,4 +1,4 @@
-/** Carrossel de notícias — desktop 5 cards / mobile 1 card com auto-rotação. */
+/** Carrossel de notícias — desktop 5 cards / mobile 3 cards com auto-rotação. */
 import { useEffect, useState, useCallback, useRef } from 'react'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { useLanguage } from '../lib/i18n/LanguageContext.jsx'
@@ -12,7 +12,7 @@ const CORES = {
 }
 
 const DESKTOP_VISIBLE = 5
-const MOBILE_VISIBLE = 1
+const MOBILE_VISIBLE = 3
 const AUTO_MS = 5500
 const LOGO_SIDUS = '/favicon.svg'
 
@@ -54,7 +54,7 @@ export function AstroNewsCarousel({ aspetos = [] }) {
   const { lang, t } = useLanguage()
   const isMobile = useIsMobile()
   const visible = isMobile ? MOBILE_VISIBLE : DESKTOP_VISIBLE
-  const imgHeight = isMobile ? 200 : 120
+  const imgHeight = isMobile ? 72 : 120
 
   const [noticias, setNoticias] = useState([])
   const [page, setPage] = useState(0)
@@ -129,6 +129,7 @@ export function AstroNewsCarousel({ aspetos = [] }) {
     const idx = imgState[key] ?? 0
     const failed = idx === -1
     const imgSrc = !failed && candidates.length ? candidates[idx] : null
+    const mobileCompact = isMobile && visible >= 3
 
     return (
       <article key={key} style={{ minWidth: 0, display: 'flex', flexDirection: 'column' }}>
@@ -140,7 +141,7 @@ export function AstroNewsCarousel({ aspetos = [] }) {
           onClick={(e) => { if (!n.url) e.preventDefault() }}
         >
           <div style={{
-            width: '100%', height: imgHeight, borderRadius: isMobile ? 12 : 10,
+            width: '100%', height: imgHeight, borderRadius: mobileCompact ? 8 : (isMobile ? 12 : 10),
             overflow: 'hidden', border: `1px solid ${CORES.vidroBorda}`,
             background: 'rgba(255,255,255,0.04)',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -158,20 +159,21 @@ export function AstroNewsCarousel({ aspetos = [] }) {
               <img
                 src={LOGO_SIDUS}
                 alt="Sidus"
-                style={{ width: isMobile ? 48 : 40, height: isMobile ? 48 : 40, objectFit: 'contain', opacity: 0.7 }}
+                style={{ width: mobileCompact ? 28 : (isMobile ? 48 : 40), height: mobileCompact ? 28 : (isMobile ? 48 : 40), objectFit: 'contain', opacity: 0.7 }}
               />
             )}
           </div>
           <span style={{
-            display: 'block', marginTop: isMobile ? 12 : 8,
-            fontSize: isMobile ? 10 : 8, fontWeight: 700, color: CORES.dourado,
-            textTransform: 'uppercase', letterSpacing: '0.08em',
+            display: 'block', marginTop: mobileCompact ? 6 : (isMobile ? 12 : 8),
+            fontSize: mobileCompact ? 7 : (isMobile ? 10 : 8), fontWeight: 700, color: CORES.dourado,
+            textTransform: 'uppercase', letterSpacing: '0.06em',
+            whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
           }}>{n.tag}</span>
           <p style={{
-            fontSize: isMobile ? 14 : 11, color: CORES.brancoSuave,
-            lineHeight: isMobile ? 1.55 : 1.45, margin: isMobile ? '8px 0 0' : '5px 0 0',
+            fontSize: mobileCompact ? 10 : (isMobile ? 14 : 11), color: CORES.brancoSuave,
+            lineHeight: mobileCompact ? 1.4 : (isMobile ? 1.55 : 1.45), margin: mobileCompact ? '4px 0 0' : (isMobile ? '8px 0 0' : '5px 0 0'),
             fontWeight: 600, flex: 1,
-            display: '-webkit-box', WebkitLineClamp: isMobile ? 4 : 3,
+            display: '-webkit-box', WebkitLineClamp: mobileCompact ? 3 : (isMobile ? 4 : 3),
             WebkitBoxOrient: 'vertical', overflow: 'hidden',
           }}>{n.texto}</p>
         </a>
@@ -200,61 +202,44 @@ export function AstroNewsCarousel({ aspetos = [] }) {
         </span>
       </div>
 
-      <div style={{ padding: isMobile ? '16px 14px' : '14px 12px' }}>
-        {isMobile ? (
-          <div style={{ position: 'relative' }}>
-            <div style={{ display: 'flex', alignItems: 'stretch', gap: 10 }}>
-              <button type="button" onClick={prev} aria-label="Anterior" style={newsBtnStyle}>
-                <ChevronLeft size={20} />
-              </button>
-              <div style={{ flex: 1, minWidth: 0 }}>{slice.map((n, i) => cardBody(n, i))}</div>
-              <button type="button" onClick={next} aria-label="Seguinte" style={newsBtnStyle}>
-                <ChevronRight size={20} />
-              </button>
-            </div>
-            {totalPages > 1 && (
-              <div style={{
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                gap: 6, marginTop: 14,
-              }}>
+      <div style={{ padding: isMobile ? '14px 12px' : '14px 12px' }}>
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: `repeat(${Math.min(visible, slice.length)}, minmax(0, 1fr))`,
+          gap: isMobile ? 8 : 12,
+        }}>
+          {slice.map((n, i) => cardBody(n, i))}
+        </div>
+        {totalPages > 1 && (
+          <div style={{
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            gap: isMobile ? 10 : 14, marginTop: isMobile ? 12 : 12,
+            paddingTop: isMobile ? 10 : 10,
+            borderTop: `1px solid ${CORES.vidroBorda}`,
+          }}>
+            <button type="button" onClick={prev} aria-label="Anterior" style={newsBtnStyle}>
+              <ChevronLeft size={isMobile ? 18 : 18} />
+            </button>
+            {isMobile ? (
+              <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
                 {Array.from({ length: totalPages }, (_, dot) => (
                   <span
                     key={dot}
                     style={{
-                      width: dot === page ? 18 : 6, height: 6, borderRadius: 3,
+                      width: dot === page ? 16 : 5, height: 5, borderRadius: 3,
                       background: dot === page ? CORES.dourado : 'rgba(255,255,255,0.2)',
                       transition: 'width 0.2s',
                     }}
                   />
                 ))}
               </div>
+            ) : (
+              <span style={{ fontSize: 11, color: CORES.brancoMuted }}>{page + 1} / {totalPages}</span>
             )}
+            <button type="button" onClick={next} aria-label="Seguinte" style={newsBtnStyle}>
+              <ChevronRight size={isMobile ? 18 : 18} />
+            </button>
           </div>
-        ) : (
-          <>
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: `repeat(${Math.min(DESKTOP_VISIBLE, slice.length)}, minmax(0, 1fr))`,
-              gap: 12,
-            }}>
-              {slice.map((n, i) => cardBody(n, i))}
-            </div>
-            {totalPages > 1 && (
-              <div style={{
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                gap: 14, marginTop: 12, paddingTop: 10,
-                borderTop: `1px solid ${CORES.vidroBorda}`,
-              }}>
-                <button type="button" onClick={prev} aria-label="Anterior" style={newsBtnStyle}>
-                  <ChevronLeft size={18} />
-                </button>
-                <span style={{ fontSize: 11, color: CORES.brancoMuted }}>{page + 1} / {totalPages}</span>
-                <button type="button" onClick={next} aria-label="Seguinte" style={newsBtnStyle}>
-                  <ChevronRight size={18} />
-                </button>
-              </div>
-            )}
-          </>
         )}
       </div>
     </div>
