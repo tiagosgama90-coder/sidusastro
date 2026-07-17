@@ -38,6 +38,7 @@ import { PRECO_MAPA_COMPLETO, precoPremiumVitrine, formatPrecoEuro } from './lib
 import { useGeoCountry } from './hooks/useGeoCountry.js'
 import { RecaptchaCheckbox } from './components/Recaptcha'
 import { Perfil } from './components/Perfil'
+import { VipPromoPage } from './components/VipPromoPage.jsx'
 import { PoliticaPrivacidade } from './components/PoliticaPrivacidade'
 import { InterpretacaoMapa } from './components/InterpretacaoMapa'
 import { ConteudoDinamicoSidus } from './components/ConteudoDinamicoSidus'
@@ -2728,7 +2729,7 @@ function Ferramentas({ onFerramenta, isDesktop, acessoVip }) {
   )
 }
 
-function Paywall({ onVoltar, onPagar, onSucesso, isDesktop, isBrasil, oraclePerguntasUsadas = 0, leiturasTarotUsadas = 0 }) {
+function Paywall({ onVoltar, onPagar, onSucesso, onPromo, isDesktop, isBrasil, oraclePerguntasUsadas = 0, leiturasTarotUsadas = 0 }) {
   const { t, lang } = useLanguage()
   const beneficios = getBeneficiosVip(lang)
   const precoVitrine = precoPremiumVitrine(isBrasil)
@@ -2779,6 +2780,17 @@ function Paywall({ onVoltar, onPagar, onSucesso, isDesktop, isBrasil, oraclePerg
           {t('vip.continueFree')}
         </button>
       </p>
+      {onPromo ? (
+        <p style={{ textAlign: 'center', marginTop: 14 }}>
+          <button type="button" onClick={onPromo} style={{
+            background: 'rgba(223,183,108,0.1)', border: `1px solid ${CORES.vidroBorda}`,
+            borderRadius: 12, color: CORES.dourado, fontSize: 13, fontWeight: 600,
+            padding: '12px 16px', cursor: 'pointer', lineHeight: 1.45, maxWidth: '100%',
+          }}>
+            {t('vip.promoLink')}
+          </button>
+        </p>
+      ) : null}
     </div>
   )
 }
@@ -3706,15 +3718,15 @@ export default function App() {
     })
   }, [location.search, navigate, t])
 
-  const rotasPublicasSemAuth = new Set(['/login', '/privacidade'])
+  const rotasPublicasSemAuth = new Set(['/login', '/privacidade', '/divulgacao-vip'])
 
-  // Visitante → /login (exceto privacidade)
+  // Visitante → /login (exceto rotas públicas)
   useEffect(() => {
     if (authCarregando) return
     if (utilizador) return
     const params = new URLSearchParams(location.search)
     if (params.get('mode') === 'verifyEmail' && params.get('oobCode')) return
-    const path = (location.pathname || '/').replace(/\/$/, '') || '/'
+    const path = stripLangPrefix(location.pathname)
     if (rotasPublicasSemAuth.has(path)) return
     navigate('/login', { replace: true })
   }, [authCarregando, utilizador, location.pathname, location.search, navigate])
@@ -3739,6 +3751,8 @@ export default function App() {
     if (!acabouDeEntrar) return
 
     if (!contaConfigurada) {
+      const pathSemLang = stripLangPrefix(location.pathname)
+      if (pathSemLang === '/divulgacao-vip') return
       navigate('/comecar', { replace: true })
       return
     }
@@ -4099,7 +4113,7 @@ export default function App() {
 
   const isDev = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
 
-  const mostrarNavbar = utilizador && contaConfigurada && passo !== 'paywall'
+  const mostrarNavbar = utilizador && contaConfigurada && passo !== 'paywall' && passo !== 'vipPromo'
 
   const chatFullScreen = passo === 'chat'
   const linkEmailPendente = (() => {
@@ -4131,6 +4145,18 @@ export default function App() {
       if (passo === 'privacidade') {
         return <PoliticaPrivacidade onVoltar={() => navigate('/login', { replace: true })} />
       }
+      if (passo === 'vipPromo') {
+        return (
+          <VipPromoPage
+            user={null}
+            isPremium={false}
+            isDesktop={isDesktop}
+            obterIdToken={null}
+            onVoltar={() => navigate('/login', { replace: true })}
+            onLogin={() => navigate('/login')}
+          />
+        )
+      }
       return <EcraAuth tipo={tipoAuth} onMudar={setTipoAuth} isDesktop={isDesktop} firebaseOk={firebaseDisponivel} />
     }
     if (precisaVerificarEmail(utilizador)) {
@@ -4159,6 +4185,18 @@ export default function App() {
           setDados={setDados}
           onSubmit={handleOnboarding}
           isDesktop={isDesktop}
+        />
+      )
+    }
+    if (passo === 'vipPromo') {
+      return (
+        <VipPromoPage
+          user={utilizador}
+          isPremium={isPremium}
+          isDesktop={isDesktop}
+          obterIdToken={obterIdTokenOracle}
+          onVoltar={() => irPara(isPremium ? 'perfil' : (contaConfigurada ? 'home' : 'paywall'))}
+          onLogin={() => irPara('login')}
         />
       )
     }
@@ -4230,13 +4268,14 @@ export default function App() {
       case 'ferramentas':
         return <Ferramentas onFerramenta={handleFerramenta} isDesktop={isDesktop} acessoVip={acessoVip} />
       case 'paywall':
-        return <Paywall onVoltar={() => irPara('home')} onPagar={abrirPagamento} onSucesso={() => { setIsPremium(true); setMapaCompleto(true); irPara(dadosNataisMinimos(dados) ? 'mapa' : 'onboarding') }} isDesktop={isDesktop} isBrasil={isBrasil} oraclePerguntasUsadas={oraclePerguntasUsadas} leiturasTarotUsadas={leiturasTarotUsadas} />
+        return <Paywall onVoltar={() => irPara('home')} onPagar={abrirPagamento} onPromo={() => irPara('vipPromo')} onSucesso={() => { setIsPremium(true); setMapaCompleto(true); irPara(dadosNataisMinimos(dados) ? 'mapa' : 'onboarding') }} isDesktop={isDesktop} isBrasil={isBrasil} oraclePerguntasUsadas={oraclePerguntasUsadas} leiturasTarotUsadas={leiturasTarotUsadas} />
       case 'chat':
         return <Chat mapaNatal={mapaNatal} isPremium={isPremium} userId={utilizador?.uid} oracleRemotas={oraclePerguntasUsadas} onOracleUsada={registarOraclePerguntaUsada} onUpgrade={() => irPara('paywall')} obterIdToken={obterIdTokenOracle} isBrasil={isBrasil} />
       case 'perfil':
         return <Perfil utilizador={utilizador} dados={dados} mapaNatal={mapaNatal} isPremium={isPremium}
           dadosBloqueados={dadosBloqueados}
           onLogout={handleLogout}
+          onVipPromo={() => irPara('vipPromo')}
           obterIdToken={obterIdTokenOracle} />
       default:
         return <Dashboard nome={dados.nome} mapaNatal={mapaNatal} ceuAgora={ceuAgora} aspetos={aspetosAgora} onOraculo={() => irPara('chat')} onPrivacidade={() => irPara('privacidade')} isDesktop={isDesktop} isPremium={isPremium} onUpgrade={() => irPara('paywall')} onTarot={() => irPara('tarot')} onMapa={() => irPara('mapa')} userEmail={utilizador?.email} user={utilizador} oraclePerguntasUsadas={oraclePerguntasUsadas} leiturasTarotUsadas={leiturasTarotUsadas} isBrasil={isBrasil} />

@@ -187,6 +187,10 @@ export async function activarPremium(userId, extra = {}) {
     updates.stripeCustomerId = extra.stripeCustomerId
   }
 
+  if (extra.premiumSource) {
+    updates.premiumSource = extra.premiumSource
+  }
+
   try {
     await db.collection('users').doc(userId).set(updates, { merge: true })
     return true

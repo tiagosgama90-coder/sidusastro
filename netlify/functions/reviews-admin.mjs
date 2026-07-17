@@ -1,16 +1,12 @@
 import { FieldValue, getFirestore } from './_shared/firebase-admin.mjs'
 import { verifyIdToken } from './_shared/firebase-admin.mjs'
+import { ADMIN_EMAILS } from '../../src/lib/adminEmails.js'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'Content-Type, Authorization',
   'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
 }
-
-const ADMIN_EMAILS = [
-  'tiagosgama90@gmail.com',
-  'helenaccprieto@gmail.com',
-]
 
 async function requireAdmin(req) {
   const authHeader = req.headers.get('authorization') || ''

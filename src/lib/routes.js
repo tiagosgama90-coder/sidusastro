@@ -16,6 +16,7 @@ export const PASSO_TO_PATH = {
   perfil: '/perfil',
   privacidade: '/privacidade',
   paywall: '/vip',
+  vipPromo: '/divulgacao-vip',
   onboarding: '/comecar',
 }
 
@@ -29,6 +30,7 @@ PATH_TO_PASSO['/inicio'] = 'home'
 PATH_TO_PASSO['/mapa'] = 'mapa'
 PATH_TO_PASSO['/chat'] = 'chat'
 PATH_TO_PASSO['/premium'] = 'paywall'
+PATH_TO_PASSO['/divulgacao'] = 'vipPromo'
 PATH_TO_PASSO['/horoscopo'] = 'home'
 PATH_TO_PASSO['/horoscope'] = 'home'
 

@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react'
 import { useLanguage } from '../lib/i18n/LanguageContext.jsx'
 import { ReviewsAdminPanel } from './ReviewsAdminPanel.jsx'
+import { VipPromoAdminPanel } from './VipPromoAdminPanel.jsx'
 import { emailTemPremiumPrivilegiado } from '../lib/premiumAccess.js'
 
 const CORES = {
@@ -22,7 +23,7 @@ function formatarData(iso) {
   return `${d}/${m}/${a}`
 }
 
-export function Perfil({ utilizador, dados, mapaNatal, isPremium, dadosBloqueados, onLogout, obterIdToken }) {
+export function Perfil({ utilizador, dados, mapaNatal, isPremium, dadosBloqueados, onLogout, onVipPromo, obterIdToken }) {
   const { t, ts, te } = useLanguage()
   const [foto, setFoto] = useState(() => {
     try { return localStorage.getItem('sidus_foto') || null } catch { return null }
@@ -140,8 +141,20 @@ export function Perfil({ utilizador, dados, mapaNatal, isPremium, dadosBloqueado
       )}
 
       <div style={{display:'flex',flexDirection:'column',gap:10,marginTop:10}}>
+        {!isPremium && onVipPromo && (
+          <button type="button" onClick={onVipPromo} style={{
+            background:'rgba(223,183,108,0.1)', border:`1px solid ${CORES.vidroBorda}`,
+            borderRadius:12, color:CORES.dourado, fontSize:13, fontWeight:600,
+            padding:'13px 16px', cursor:'pointer', textAlign:'left', lineHeight:1.5,
+          }}>
+            ✦ {t('vip.promoLink')}
+          </button>
+        )}
         {emailTemPremiumPrivilegiado(utilizador) && (
-          <ReviewsAdminPanel user={utilizador} obterIdToken={obterIdToken} />
+          <>
+            <VipPromoAdminPanel user={utilizador} obterIdToken={obterIdToken} />
+            <ReviewsAdminPanel user={utilizador} obterIdToken={obterIdToken} />
+          </>
         )}
         <button type="button" onClick={onLogout} style={{
           background:'rgba(239,68,68,0.08)', border:'1px solid rgba(239,68,68,0.3)',
