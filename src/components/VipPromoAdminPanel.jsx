@@ -54,7 +54,7 @@ export function VipPromoAdminPanel({ user, obterIdToken }) {
     }
   }, [isAdmin, obterIdToken])
 
-  useEffect(() { carregar() }, [carregar])
+  useEffect(() => { carregar() }, [carregar])
 
   const chamarAdmin = useCallback(async (payload) => {
     const token = await obterIdToken?.()
