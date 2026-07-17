@@ -323,6 +323,7 @@ html.sidus-no-ads .google-auto-placed {
 .landing-portal-card,
 .landing-auth-hero,
 .landing-faq,
+.landing-guide-card,
 .landing-portal-sky-live {
   background: rgba(11, 7, 30, 0.96) !important;
   backdrop-filter: blur(20px);
@@ -560,6 +561,156 @@ html.sidus-no-ads .google-auto-placed {
   text-align: center;
   color: rgba(223, 183, 108, 0.88);
   font-weight: 600;
+}
+
+/* Guias editoriais — landing */
+.landing-guides {
+  max-width: 1100px;
+  margin: 28px auto 8px;
+  padding: 0 16px 8px;
+}
+.landing-guides-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+.landing-guides-header-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  margin-bottom: 10px;
+  border-radius: 12px;
+  background: rgba(223, 183, 108, 0.1);
+  border: 1px solid rgba(223, 183, 108, 0.22);
+}
+.landing-guides-title {
+  margin: 0 0 8px;
+  font-size: 18px;
+  font-weight: 700;
+  color: #DFB76C;
+  letter-spacing: 0.04em;
+}
+.landing-guides-lead {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.62);
+  max-width: 480px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.landing-guides-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+}
+.landing-guide-card {
+  display: flex;
+  flex-direction: column;
+  padding: 18px 18px 16px;
+  border-radius: 16px;
+  border: 1px solid rgba(223, 183, 108, 0.18);
+  text-decoration: none;
+  color: inherit;
+  transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  overflow: hidden;
+  position: relative;
+}
+.landing-guide-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at top right, var(--guide-accent, rgba(223,183,108,0.12)), transparent 55%);
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  pointer-events: none;
+}
+.landing-guide-card:hover {
+  border-color: rgba(223, 183, 108, 0.38);
+  transform: translateY(-2px);
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.28);
+}
+.landing-guide-card:hover::before {
+  opacity: 1;
+}
+.landing-guide-card-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 14px;
+  position: relative;
+  z-index: 1;
+}
+.landing-guide-visual {
+  width: 72px;
+  height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+.landing-guide-visual-svg {
+  width: 64px;
+  height: 64px;
+}
+.landing-guide-zodiac-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2px;
+  font-size: 11px;
+  line-height: 1.2;
+  padding: 4px;
+}
+.landing-guide-glyph {
+  font-size: 20px;
+  color: var(--guide-accent, #DFB76C);
+  opacity: 0.7;
+  line-height: 1;
+}
+.landing-guide-body {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+.landing-guide-card-title {
+  margin: 0 0 6px;
+  font-size: 15px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.94);
+  line-height: 1.35;
+}
+.landing-guide-card-desc {
+  margin: 0 0 12px;
+  font-size: 12px;
+  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.58);
+  flex: 1;
+}
+.landing-guide-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(223, 183, 108, 0.12);
+}
+.landing-guide-read {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.4);
+  letter-spacing: 0.04em;
+}
+.landing-guide-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #DFB76C;
 }
 
 /* Testemunhos + preview mapa */
@@ -2024,6 +2175,9 @@ html.sidus-no-ads .google-auto-placed {
 }
 
 @media (max-width: 640px) {
+  .landing-guides-grid {
+    grid-template-columns: 1fr;
+  }
   .landing-newsletter-row {
     flex-direction: column;
     align-items: stretch;
