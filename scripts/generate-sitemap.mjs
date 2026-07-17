@@ -68,6 +68,20 @@ function locForRoute(path, lang) {
   return lang ? `${BASE}${langPath(path, lang)}` : `${BASE}${path}`
 }
 
+function locForGuide(path, lang) {
+  const base = `${BASE}${path}`
+  if (!lang || lang === 'pt') return base
+  return `${base}?lang=${lang}`
+}
+
+function guideAlternateLinks(path) {
+  const lines = LANGS.map(({ code, hreflang }) =>
+    `    <xhtml:link rel="alternate" hreflang="${hreflang}" href="${escapeXml(locForGuide(path, code))}"/>`
+  )
+  lines.push(`    <xhtml:link rel="alternate" hreflang="x-default" href="${escapeXml(locForGuide(path, 'pt'))}"/>`)
+  return lines.join('\n')
+}
+
 function alternateLinks(path) {
   const lines = LANGS.map(({ code, hreflang }) =>
     `    <xhtml:link rel="alternate" hreflang="${hreflang}" href="${escapeXml(locForRoute(path, code))}"/>`
@@ -114,11 +128,20 @@ for (const page of STATIC_PAGES) {
 }
 
 for (const guide of GUIDES) {
-  const loc = `${BASE}${guide.path}`
-  entries.push(urlEntry(loc, {
+  const alts = guideAlternateLinks(guide.path)
+  entries.push(urlEntry(locForGuide(guide.path, 'pt'), {
     priority: guide.priority,
     changefreq: guide.changefreq,
+    alternates: alts,
   }))
+  for (const { code } of LANGS) {
+    if (code === 'pt') continue
+    entries.push(urlEntry(locForGuide(guide.path, code), {
+      priority: Math.max(0.4, guide.priority - 0.04),
+      changefreq: guide.changefreq,
+      alternates: alts,
+    }))
+  }
 }
 
 const xml = `<?xml version="1.0" encoding="UTF-8"?>
