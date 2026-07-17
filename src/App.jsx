@@ -61,7 +61,6 @@ import { EnergiaDoDia, TransitoSemanal } from './components/EnergiaDoDia.jsx'
 import { PremiumComparacao } from './components/PremiumComparacao.jsx'
 import { PremiumHomeTeaser } from './components/PremiumHomeTeaser.jsx'
 import { ReferralCard } from './components/ReferralCard.jsx'
-import { WidgetNotificacoesDiarias } from './components/WidgetNotificacoesDiarias.jsx'
 import { captureReferralFromUrl, referralCodeFromUid, getPendingReferralCode, clearPendingReferral } from './lib/referral.js'
 import { applyRouteSeo } from './lib/routeSeo.js'
 import { ErrorBoundary } from './components/ErrorBoundary.jsx'
@@ -1409,8 +1408,13 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
         <LandingSkyLive />
       </div>
       <LandingPortalHero />
-      <LandingGuides />
-      <div className="landing-auth-grid">
+      <section className="landing-conversion-zone" aria-label={t('auth.portal.conversionAria')}>
+        <div className="landing-conversion-zone-head">
+          <p className="landing-conversion-eyebrow">{t('auth.portal.conversionEyebrow')}</p>
+          <h2 className="landing-conversion-title">{t('auth.portal.conversionTitle')}</h2>
+          <p className="landing-conversion-lead">{t('auth.portal.conversionLead')}</p>
+        </div>
+        <div className="landing-auth-grid">
         <LandingBirthPortal isDesktop={isDesktop} onSaved={scrollParaAuth} onScrollToLogin={scrollParaAuth} />
 
         <div className="landing-auth-column">
@@ -1421,7 +1425,7 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
           <div
             id="sidus-auth-panel"
             ref={authPanelRef}
-            className="landing-auth-panel landing-glass"
+            className="landing-auth-panel landing-auth-panel--prominent landing-glass"
             style={{
               padding: isDesktop ? 24 : undefined,
               ...(isDesktop ? { position: 'sticky', top: 24, borderRadius: 16, boxShadow: CORES.sombra } : { borderRadius: 16, boxShadow: CORES.sombra }),
@@ -1642,6 +1646,8 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
           </div>
         </div>
       </div>
+      </section>
+      <LandingGuides />
       <LandingReviews />
       <LandingFaq />
     </div>
@@ -1908,19 +1914,6 @@ function Dashboard({ nome, mapaNatal, ceuAgora, aspetos, onOraculo, onPrivacidad
 
       <HeroHomeSidus mapaNatal={mapaNatal} onMapa={onMapa} isPremium={isPremium} />
 
-      {(userEmail || user?.uid) && (
-        <div style={{ marginBottom: 18 }}>
-          <WidgetNotificacoesDiarias
-            user={user || (userEmail ? { email: userEmail } : null)}
-            mapaNatal={mapaNatal}
-            isPremium={isPremium}
-            onUpgrade={onUpgrade}
-            ceuAgora={ceuAgora}
-            aspetos={aspetos}
-          />
-        </div>
-      )}
-
       <EnergiaDoDia mapaNatal={mapaNatal} ceuAgora={ceuAgora} aspetos={aspetos} />
       <TransitoSemanal ceuAgora={ceuAgora} aspetos={aspetos} />
 
@@ -2032,7 +2025,7 @@ function Dashboard({ nome, mapaNatal, ceuAgora, aspetos, onOraculo, onPrivacidad
       </div>
 
       <div data-tour="horoscope">
-      <ConteudoDinamicoSidus mapaNatal={mapaNatal} ceuAgora={ceuAgora} aspetos={aspetos} isPremium={isPremium} onUpgrade={onUpgrade} onOraculo={onOraculo} userEmail={userEmail} user={user} hideNotifications />
+      <ConteudoDinamicoSidus mapaNatal={mapaNatal} ceuAgora={ceuAgora} aspetos={aspetos} isPremium={isPremium} onUpgrade={onUpgrade} onOraculo={onOraculo} userEmail={userEmail} user={user} />
       </div>
 
       {onTarot && (

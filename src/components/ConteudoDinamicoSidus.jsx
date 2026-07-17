@@ -6,7 +6,6 @@ import { buildLocalDailyContent } from '../lib/dailyContentFallback.js'
 import { calcularFaseLua } from '../lib/faseLua.js'
 import { dateLocale } from '../lib/i18n/langUtil.js'
 import { HoroscopoColunasSignos } from './HoroscopoColunasSignos.jsx'
-import { WidgetNotificacoesDiarias } from './WidgetNotificacoesDiarias.jsx'
 import { normalizeSignoNome } from '../lib/i18n/astro.js'
 
 const CORES = {
@@ -27,7 +26,7 @@ function formatarHoje(lang) {
   return new Date().toLocaleDateString(dateLocale(lang), { day: 'numeric', month: 'long', year: 'numeric' })
 }
 
-export function ConteudoDinamicoSidus({ mapaNatal, ceuAgora = [], aspetos = [], isPremium, onUpgrade, onOraculo, userEmail, user, hideNotifications = false }) {
+export function ConteudoDinamicoSidus({ mapaNatal, ceuAgora = [], aspetos = [], isPremium, onUpgrade, onOraculo, userEmail, user }) {
   const { lang, t, tp, ta } = useLanguage()
   const [pack, setPack] = useState(null)
 
@@ -120,18 +119,6 @@ export function ConteudoDinamicoSidus({ mapaNatal, ceuAgora = [], aspetos = [], 
         )}
       </div>
 
-      {(userEmail || user?.uid) && !hideNotifications && (
-        <div style={{ marginBottom: 0 }}>
-          <WidgetNotificacoesDiarias
-            user={user || (userEmail ? { email: userEmail } : null)}
-            mapaNatal={mapaNatal}
-            isPremium={isPremium}
-            onUpgrade={onUpgrade}
-            ceuAgora={ceuAgora}
-            aspetos={aspetos}
-          />
-        </div>
-      )}
     </div>
   )
 }

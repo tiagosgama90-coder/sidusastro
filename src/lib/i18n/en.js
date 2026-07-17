@@ -76,6 +76,10 @@ export default {
       savedTitle: '✦ Data saved to the cosmos',
       savedHint: 'Now create an account or sign in below - your chart form will be pre-filled automatically.',
       authDivider: 'Continue to sign in',
+      conversionAria: 'Get started on Sidus — free birth chart',
+      conversionEyebrow: '✦ Your personal cosmos',
+      conversionTitle: 'Your chart starts here',
+      conversionLead: 'Enter your birth details and sign in — it takes less than a minute.',
       faq: {
         ariaLabel: 'Frequently asked questions about Sidus Astro',
         title: 'Frequently Asked Questions',
@@ -96,6 +100,7 @@ export default {
         ariaLabel: 'Sidus astrological guides',
         title: 'Guides to get started',
         lead: 'Learn the basics before exploring your chart.',
+        leadCompact: 'Browse the guides — whenever you like.',
         readMore: 'Read guide',
         mapaTitle: 'What is a birth chart?',
         mapaDesc: 'Sun, Moon, Ascendant, Placidus houses and aspects explained with rigor.',

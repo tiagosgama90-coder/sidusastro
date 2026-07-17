@@ -1,6 +1,5 @@
 import { useState, useRef } from 'react'
 import { useLanguage } from '../lib/i18n/LanguageContext.jsx'
-import { WidgetNotificacoesDiarias } from './WidgetNotificacoesDiarias.jsx'
 import { ReviewsAdminPanel } from './ReviewsAdminPanel.jsx'
 import { ReferralCard } from './ReferralCard.jsx'
 import { emailTemPremiumPrivilegiado } from '../lib/premiumAccess.js'
@@ -143,7 +142,6 @@ export function Perfil({ utilizador, dados, mapaNatal, isPremium, dadosBloqueado
 
       <div style={{display:'flex',flexDirection:'column',gap:10,marginTop:10}}>
         <ReferralCard referralCode={referralCode} bonusLeituras={tarotBonusLeituras} />
-        <WidgetNotificacoesDiarias user={utilizador} mapaNatal={mapaNatal} isPremium={isPremium} />
         {emailTemPremiumPrivilegiado(utilizador) && (
           <ReviewsAdminPanel user={utilizador} obterIdToken={obterIdToken} />
         )}

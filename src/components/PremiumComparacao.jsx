@@ -22,7 +22,6 @@ export function PremiumComparacao({ isPremium, oracleUsadas = 0, tarotUsadas = 0
     { feature: t('premium.table.tarot'), free: t('premium.table.tarotFree', { n: MAX_LEITURAS_GRATIS }), vip: '∞' },
     { feature: t('premium.table.oracle'), free: t('premium.table.oracleFree', { n: MAX_ORACLE_GRATIS }), vip: '∞' },
     { feature: t('premium.table.sinastria'), free: t('premium.table.preview'), vip: '✓' },
-    { feature: t('premium.table.notif'), free: '—', vip: '✓' },
   ]
 
   return (

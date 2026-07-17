@@ -59,6 +59,14 @@ window.SIDUS_GUIA_I18N = {
       "de": "WERBUNG",
       "fr": "PUBLICITÉ"
     },
+    "backToLanding": {
+      "pt": "← Voltar ao início",
+      "en": "← Back to home",
+      "es": "← Volver al inicio",
+      "it": "← Torna all'inizio",
+      "de": "← Zur Startseite",
+      "fr": "← Retour à l'accueil"
+    },
     "footerHtml": {
       "pt": "© Sidus · <a href=\"/privacidade\">Política de privacidade</a> · <a href=\"/login\">Mapa astral grátis</a>",
       "en": "© Sidus · <a href=\"/privacidade\">Privacy policy</a> · <a href=\"/login\">Free birth chart</a>",

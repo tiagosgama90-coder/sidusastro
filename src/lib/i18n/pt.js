@@ -76,6 +76,10 @@ export default {
       savedTitle: '✦ Dados guardados no cosmos',
       savedHint: 'Agora cria conta ou entra abaixo - o teu mapa será pré-preenchido automaticamente.',
       authDivider: 'Continua para entrar',
+      conversionAria: 'Começar no Sidus — mapa astral grátis',
+      conversionEyebrow: '✦ O teu cosmos pessoal',
+      conversionTitle: 'O teu mapa começa aqui',
+      conversionLead: 'Introduz os dados de nascimento e entra — levas menos de um minuto.',
       faq: {
         ariaLabel: 'Perguntas frequentes sobre Sidus Astro',
         title: 'Perguntas Frequentes',
@@ -96,6 +100,7 @@ export default {
         ariaLabel: 'Guias astrológicos Sidus',
         title: 'Guias para começar',
         lead: 'Aprende os fundamentos antes de explorar o teu mapa.',
+        leadCompact: 'Explora os guias — quando quiseres.',
         readMore: 'Ler guia',
         mapaTitle: 'O que é o mapa astral?',
         mapaDesc: 'Sol, Lua, Ascendente, casas Placidus e aspectos explicados com rigor.',

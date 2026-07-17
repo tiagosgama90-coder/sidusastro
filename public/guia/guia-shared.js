@@ -244,6 +244,9 @@
     const adLabel = document.querySelector('.guia-ad-label')
     if (adLabel && common?.adLabel) adLabel.textContent = common.adLabel[lang] || common.adLabel.pt
 
+    const backBtn = document.querySelector('.guia-back')
+    if (backBtn && common?.backToLanding) backBtn.textContent = common.backToLanding[lang] || common.backToLanding.pt
+
     const footer = document.querySelector('.guia-footer p')
     if (footer && common?.footerHtml) footer.innerHTML = common.footerHtml[lang] || common.footerHtml.pt
 
