@@ -54,6 +54,7 @@ if ('serviceWorker' in navigator) {
       })
 
       setInterval(() => reg.update().catch(() => {}), 60 * 60 * 1000)
+      reg.update().catch(() => {})
     }).catch((err) => {
       console.warn('[Sidus] Service Worker falhou ao registar:', err)
     })

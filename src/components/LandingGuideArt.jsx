@@ -47,9 +47,9 @@ function ZodiacFigure({ index, x, y, scale = 1.35 }) {
 /** Mapa natal simplificado - roda clássica com casas e planetas. */
 function ArtMapa({ accent }) {
   const cx = 160
-  const cy = 66
-  const rOut = 50
-  const rIn = 32
+  const cy = 72
+  const rOut = 54
+  const rIn = 34
   const houses = Array.from({ length: 12 }, (_, i) => {
     const a = (i * 30 - 90) * (Math.PI / 180)
     return {
@@ -70,11 +70,11 @@ function ArtMapa({ accent }) {
   ]
 
   return (
-    <svg viewBox="0 0 320 132" className="landing-guide-art-svg" aria-hidden>
+    <svg viewBox="0 0 320 150" className="landing-guide-art-svg" aria-hidden>
       <GoldDefs id="guideMapa" />
-      <rect width="320" height="132" fill="url(#guideMapa-sky)" opacity="0.9" />
-      <circle cx={cx} cy={cy} r={rOut + 2} fill="rgba(8,5,24,0.5)" stroke={accent} strokeWidth="1.3" />
-      <circle cx={cx} cy={cy} r={rIn} fill="rgba(11,7,30,0.75)" stroke="rgba(223,183,108,0.35)" strokeWidth="0.8" />
+      <rect width="320" height="150" fill="url(#guideMapa-sky)" opacity="0.9" />
+      <circle cx={cx} cy={cy} r={rOut + 3} fill="rgba(8,5,24,0.55)" stroke={accent} strokeWidth="1.6" />
+      <circle cx={cx} cy={cy} r={rIn} fill="rgba(11,7,30,0.8)" stroke="rgba(223,183,108,0.45)" strokeWidth="1" />
       {houses.map(({ x1, y1, x2, y2, major }, i) => (
         <line
           key={i}
@@ -99,8 +99,8 @@ function ArtMapa({ accent }) {
             y={y}
             textAnchor="middle"
             dominantBaseline="middle"
-            fill="rgba(223,183,108,0.75)"
-            fontSize="7"
+            fill="rgba(223,183,108,0.88)"
+            fontSize="8"
           >
             {sym}
           </text>
@@ -150,24 +150,24 @@ function ArtAscendente({ accent }) {
 function ArtSignos() {
   const cols = 6
   const rows = 2
-  const padX = 8
-  const padY = 8
-  const gapX = 4
-  const gapY = 4
+  const padX = 6
+  const padY = 6
+  const gapX = 3
+  const gapY = 3
   const cellW = (320 - padX * 2 - gapX * (cols - 1)) / cols
-  const cellH = (132 - padY * 2 - gapY * (rows - 1)) / rows
+  const cellH = (150 - padY * 2 - gapY * (rows - 1)) / rows
 
   return (
-    <svg viewBox="0 0 320 132" className="landing-guide-art-svg landing-guide-art-svg--signos" aria-hidden>
+    <svg viewBox="0 0 320 150" className="landing-guide-art-svg landing-guide-art-svg--signos" aria-hidden>
       <GoldDefs id="guideSignos" />
-      <rect width="320" height="132" fill="url(#guideSignos-sky)" />
+      <rect width="320" height="150" fill="url(#guideSignos-sky)" />
       {ZODIAC_FIGURE_PATHS.map((_, i) => {
         const col = i % cols
         const row = Math.floor(i / cols)
         const x = padX + col * (cellW + gapX)
         const y = padY + row * (cellH + gapY)
         const figX = x + cellW / 2
-        const figY = y + cellH * 0.42
+        const figY = y + cellH * 0.4
         const label = ZODIAC_LABELS[i]
         return (
           <g key={label}>
@@ -176,20 +176,20 @@ function ArtSignos() {
               y={y}
               width={cellW}
               height={cellH}
-              rx="4"
-              fill="rgba(0,0,0,0.22)"
-              stroke="rgba(223,183,108,0.18)"
-              strokeWidth="0.5"
+              rx="5"
+              fill="rgba(0,0,0,0.35)"
+              stroke="url(#guideSignos-gold)"
+              strokeWidth="0.75"
             />
-            <ZodiacFigure index={i} x={figX} y={figY} scale={1.15} />
+            <ZodiacFigure index={i} x={figX} y={figY} scale={1.55} />
             <text
               x={x + cellW / 2}
-              y={y + cellH - 5}
+              y={y + cellH - 4}
               textAnchor="middle"
-              fill="rgba(255,240,210,0.82)"
-              fontSize="5.2"
+              fill="rgba(255,248,225,0.92)"
+              fontSize="6.5"
               fontFamily="Georgia, 'Times New Roman', serif"
-              letterSpacing="0.04em"
+              letterSpacing="0.03em"
             >
               {label}
             </text>
