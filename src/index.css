@@ -1478,17 +1478,8 @@ html.sidus-no-ads .google-auto-placed {
   background: rgba(255, 255, 255, 0.03);
 }
 
-/* Mobile - hero abaixo do céu ao vivo (sticky no fluxo, sem tapar welcome) */
-@media (max-width: 639px) {
-  .landing-auth-sticky-top {
-    position: sticky;
-    top: 0;
-    left: auto;
-    transform: none;
-    width: 100%;
-    max-width: 100%;
-  }
-
+/* Mobile - welcome no topo, céu ao vivo abaixo (sem overlap) */
+@media (max-width: 767px) {
   .landing-auth-layout,
   .landing-auth-layout--mobile {
     padding-top: max(6px, env(safe-area-inset-top, 0px)) !important;
@@ -1497,7 +1488,19 @@ html.sidus-no-ads .google-auto-placed {
     padding-bottom: 16px !important;
   }
 
-  .landing-sky-top {
+  .landing-lang-bar--standalone {
+    display: flex;
+    justify-content: flex-end;
+    padding: 2px 2px 8px;
+    margin: 0;
+  }
+
+  .landing-sky-mobile-wrap {
+    width: 100%;
+    margin: 0 0 14px;
+  }
+
+  .landing-sky-mobile-wrap .landing-sky-top {
     margin-bottom: 0;
   }
 
@@ -1760,7 +1763,7 @@ html.sidus-no-ads .google-auto-placed {
   display: none;
 }
 
-/* Topo landing fixo - mesma lÃ³gica que navbar (conteÃºdo/cÃ³smico desfoca ao scroll) */
+/* Topo landing fixo - desktop/tablet; mobile usa fluxo normal em App.jsx */
 .landing-auth-sticky-top {
   position: fixed;
   top: 0;
@@ -1780,10 +1783,12 @@ html.sidus-no-ads .google-auto-placed {
   border-bottom: 1px solid rgba(223, 183, 108, 0.22);
 }
 
-/* Mobile login - idioma fixo acima do cÃ©u ao vivo */
-.landing-auth-sticky-top--mobile {
-  margin: 0 0 10px;
+@media (max-width: 767px) {
+  .landing-auth-sticky-top {
+    display: none;
+  }
 }
+
 .landing-lang-bar {
   display: flex;
   justify-content: flex-end;
@@ -3026,14 +3031,26 @@ html.sidus-no-ads .google-auto-placed {
   gap: 8px;
 }
 
-@media (max-width: 640px) {
+@media (max-width: 767px) {
   .landing-guides-grid:not(.landing-guides-grid--featured) {
     grid-template-columns: 1fr;
   }
 
   .landing-guides-grid--featured {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 10px;
+    display: flex;
+    flex-direction: row;
+    overflow-x: auto;
+    gap: 12px;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 6px;
+    scrollbar-width: thin;
+  }
+
+  .landing-guides-grid--featured .landing-guide-card {
+    flex: 0 0 min(268px, 78vw);
+    scroll-snap-align: start;
+    min-width: 0;
   }
 
   .landing-guides--featured .landing-guide-body {

@@ -1400,15 +1400,24 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
   return (
     <div className={`landing-auth-layout${isDesktop ? ' landing-auth-layout--desktop' : ' landing-auth-layout--mobile'}`}>
       <BannerBrasil />
-      <div className={`landing-auth-sticky-top${!isDesktop ? ' landing-auth-sticky-top--mobile' : ''}`}>
-        {!isDesktop && (
-          <div className="landing-lang-bar">
+      {isDesktop ? (
+        <>
+          <div className="landing-auth-sticky-top">
+            <LandingSkyLive />
+          </div>
+          <LandingPortalHero />
+        </>
+      ) : (
+        <>
+          <div className="landing-lang-bar landing-lang-bar--standalone">
             <LanguageSwitcher variant="landing-bar" />
           </div>
-        )}
-        <LandingSkyLive />
-      </div>
-      <LandingPortalHero />
+          <LandingPortalHero />
+          <div className="landing-sky-mobile-wrap">
+            <LandingSkyLive />
+          </div>
+        </>
+      )}
       <section className="landing-conversion-zone" aria-label={t('auth.portal.conversionAria')}>
         <div className="landing-conversion-zone-head">
           <p className="landing-conversion-eyebrow">{t('auth.portal.conversionEyebrow')}</p>
