@@ -1,28 +1,92 @@
 const ZODIAC = ['♈', '♉', '♊', '♋', '♌', '♍', '♎', '♏', '♐', '♑', '♒', '♓']
 
+const SIGNO_COLORS = [
+  '#F472B6', '#FB923C', '#FBBF24', '#4ADE80', '#34D399', '#2DD4BF',
+  '#60A5FA', '#818CF8', '#A78BFA', '#C084FC', '#E879F9', '#DFB76C',
+]
+
+function GoldDefs({ id }) {
+  return (
+    <defs>
+      <linearGradient id={`${id}-gold`} x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stopColor="#FFF3D4" />
+        <stop offset="45%" stopColor="#E8C97A" />
+        <stop offset="100%" stopColor="#B8860B" />
+      </linearGradient>
+      <linearGradient id={`${id}-sky`} x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stopColor="#2e1065" />
+        <stop offset="45%" stopColor="#4c1d95" />
+        <stop offset="100%" stopColor="#7c2d12" stopOpacity="0.55" />
+      </linearGradient>
+      <filter id={`${id}-glow`} x="-40%" y="-40%" width="180%" height="180%">
+        <feGaussianBlur stdDeviation="1.2" result="blur" />
+        <feMerge>
+          <feMergeNode in="blur" />
+          <feMergeNode in="SourceGraphic" />
+        </feMerge>
+      </filter>
+    </defs>
+  )
+}
+
+/** Mandala em losango - sem círculo exterior, estilo carta simplificada. */
 function ArtMapa({ accent }) {
+  const cx = 160
+  const cy = 62
+  const houses = Array.from({ length: 12 }, (_, i) => {
+    const a = (i * 30 - 90) * (Math.PI / 180)
+    return { a, i }
+  })
+  const planets = [
+    { sym: '☉', x: cx, y: cy - 4, c: '#FBBF24' },
+    { sym: '☽', x: cx - 28, y: cy + 10, c: '#C4B5FD' },
+    { sym: '☿', x: cx + 22, y: cy - 14, c: '#93C5FD' },
+    { sym: '♀', x: cx - 12, y: cy + 18, c: '#F9A8D4' },
+    { sym: '♂', x: cx + 30, y: cy + 8, c: '#FCA5A5' },
+  ]
+
   return (
     <svg viewBox="0 0 320 120" className="landing-guide-art-svg" aria-hidden>
-      <defs>
-        <radialGradient id="guideMapaGlow" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stopColor={accent} stopOpacity="0.35" />
-          <stop offset="100%" stopColor={accent} stopOpacity="0" />
-        </radialGradient>
-      </defs>
-      <rect width="320" height="120" fill="url(#guideMapaGlow)" />
-      <circle cx="160" cy="62" r="44" fill="none" stroke={accent} strokeWidth="1.5" opacity="0.85" />
-      <circle cx="160" cy="62" r="30" fill="rgba(0,0,0,0.25)" stroke="rgba(255,255,255,0.12)" />
-      {ZODIAC.map((sym, i) => {
-        const a = (i * 2 * Math.PI) / 12 - Math.PI / 2
-        const x = 160 + Math.cos(a) * 44
-        const y = 62 + Math.sin(a) * 44
-        return <text key={sym} x={x} y={y} textAnchor="middle" dominantBaseline="central" fill={accent} fontSize="11" opacity="0.9">{sym}</text>
+      <GoldDefs id="guideMapa" />
+      <rect width="320" height="120" fill="url(#guideMapa-sky)" opacity="0.85" />
+      <polygon
+        points={`${cx},14 ${286},${cy} ${cx},110 ${34},${cy}`}
+        fill="rgba(8,5,24,0.55)"
+        stroke={accent}
+        strokeWidth="1.2"
+        opacity="0.9"
+      />
+      <polygon
+        points={`${cx},32 ${252},${cy} ${cx},92 ${68},${cy}`}
+        fill="none"
+        stroke="rgba(255,255,255,0.1)"
+        strokeWidth="0.7"
+      />
+      {houses.map(({ a, i }) => {
+        const x2 = cx + Math.cos(a) * 72
+        const y2 = cy + Math.sin(a) * 48
+        return (
+          <line
+            key={i}
+            x1={cx}
+            y1={cy}
+            x2={x2}
+            y2={y2}
+            stroke="rgba(223,183,108,0.22)"
+            strokeWidth={i % 3 === 0 ? 0.9 : 0.5}
+          />
+        )
       })}
-      <line x1="118" y1="62" x2="202" y2="62" stroke={accent} strokeWidth="1.2" opacity="0.5" />
-      <circle cx="128" cy="52" r="5" fill="#FBBF24" />
-      <circle cx="175" cy="70" r="4" fill="#93C5FD" />
-      <circle cx="148" cy="78" r="3.5" fill="#F472B6" />
-      <text x="160" y="64" textAnchor="middle" fill="#fff" fontSize="16" opacity="0.9">☉</text>
+      <line x1={34} y1={cy} x2={286} y2={cy} stroke={accent} strokeWidth="1" opacity="0.45" />
+      <line x1={cx} y1={14} x2={cx} y2={110} stroke={accent} strokeWidth="1" opacity="0.35" />
+      {planets.map(({ sym, x, y, c }) => (
+        <g key={sym} filter="url(#guideMapa-glow)">
+          <rect x={x - 9} y={y - 9} width="18" height="18" rx="4" fill="rgba(0,0,0,0.45)" stroke={c} strokeWidth="0.8" />
+          <text x={x} y={y + 1} textAnchor="middle" dominantBaseline="middle" fill={c} fontSize="10">{sym}</text>
+        </g>
+      ))}
+      <text x={cx} y={104} textAnchor="middle" fill="rgba(223,183,108,0.7)" fontSize="7" letterSpacing="0.12em">ASC</text>
+      <text x={286} y={cy + 3} textAnchor="middle" fill="rgba(223,183,108,0.55)" fontSize="7">MC</text>
     </svg>
   )
 }
@@ -50,26 +114,63 @@ function ArtAscendente({ accent }) {
   )
 }
 
+/** Grelha 6×2 de signos dourados - sem roda circular. */
 function ArtSignos({ accent }) {
+  const cols = 6
+  const rows = 2
+  const padX = 10
+  const padY = 10
+  const gapX = 5
+  const gapY = 6
+  const cellW = (320 - padX * 2 - gapX * (cols - 1)) / cols
+  const cellH = (120 - padY * 2 - gapY * (rows - 1)) / rows
+
   return (
     <svg viewBox="0 0 320 120" className="landing-guide-art-svg" aria-hidden>
-      <rect width="320" height="120" fill="rgba(0,0,0,0.2)" />
-      <g transform="translate(160 60)">
-        {ZODIAC.map((sym, i) => {
-          const a = (i * 2 * Math.PI) / 12 - Math.PI / 2
-          const x = Math.cos(a) * 46
-          const y = Math.sin(a) * 46
-          const colors = ['#F472B6', '#FB923C', '#FBBF24', '#4ADE80', '#34D399', '#2DD4BF', '#60A5FA', '#818CF8', '#A78BFA', '#C084FC', '#E879F9', accent]
-          return (
-            <g key={sym} transform={`translate(${x} ${y})`}>
-              <circle r="14" fill="rgba(0,0,0,0.35)" stroke={colors[i]} strokeWidth="1" opacity="0.95" />
-              <text textAnchor="middle" dominantBaseline="central" fill={colors[i]} fontSize="12">{sym}</text>
-            </g>
-          )
-        })}
-        <circle r="18" fill="rgba(11,7,30,0.9)" stroke={accent} strokeWidth="1.2" />
-        <text textAnchor="middle" dominantBaseline="central" fill={accent} fontSize="11" fontWeight="700">12</text>
-      </g>
+      <GoldDefs id="guideSignos" />
+      <rect width="320" height="120" fill="url(#guideSignos-sky)" />
+      {ZODIAC.map((sym, i) => {
+        const col = i % cols
+        const row = Math.floor(i / cols)
+        const x = padX + col * (cellW + gapX)
+        const y = padY + row * (cellH + gapY)
+        const tint = SIGNO_COLORS[i]
+        return (
+          <g key={sym}>
+            <rect
+              x={x}
+              y={y}
+              width={cellW}
+              height={cellH}
+              rx="5"
+              fill="rgba(0,0,0,0.35)"
+              stroke="url(#guideSignos-gold)"
+              strokeWidth="0.9"
+            />
+            <rect
+              x={x + 2}
+              y={y + 2}
+              width={cellW - 4}
+              height={cellH - 4}
+              rx="4"
+              fill={`${tint}18`}
+              stroke="none"
+            />
+            <text
+              x={x + cellW / 2}
+              y={y + cellH / 2 + 1}
+              textAnchor="middle"
+              dominantBaseline="middle"
+              fill="url(#guideSignos-gold)"
+              fontSize="13"
+              fontWeight="600"
+              filter="url(#guideSignos-glow)"
+            >
+              {sym}
+            </text>
+          </g>
+        )
+      })}
     </svg>
   )
 }
