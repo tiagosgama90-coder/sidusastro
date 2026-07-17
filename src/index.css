@@ -2651,6 +2651,79 @@ html.sidus-no-ads .google-auto-placed {
   gap: 8px;
 }
 
+.vip-promo-grant-form {
+  margin-bottom: 16px;
+  padding: 14px;
+  border-radius: 12px;
+  background: rgba(223, 183, 108, 0.08);
+  border: 1px solid rgba(223, 183, 108, 0.22);
+}
+.vip-promo-grant-form label {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #DFB76C;
+}
+.vip-promo-grant-form label svg {
+  vertical-align: middle;
+  margin-right: 6px;
+}
+.vip-promo-grant-form input {
+  display: block;
+  width: 100%;
+  margin-top: 8px;
+  padding: 11px 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(0, 0, 0, 0.25);
+  color: #fff;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+.vip-promo-grant-btn {
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 11px 14px;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #DFB76C, #B8944F);
+  color: #0B071E;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.vip-promo-grant-btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+.vip-promo-grant-hint {
+  margin: 10px 0 0;
+  font-size: 11px;
+  line-height: 1.45;
+  color: rgba(255, 255, 255, 0.5);
+}
+.vip-promo-admin-feedback {
+  margin: 0 0 14px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  font-size: 13px;
+  line-height: 1.5;
+}
+.vip-promo-admin-feedback.sucesso {
+  background: rgba(52, 211, 153, 0.12);
+  border: 1px solid rgba(52, 211, 153, 0.35);
+  color: #6EE7B7;
+}
+.vip-promo-admin-feedback.erro {
+  background: rgba(248, 113, 113, 0.12);
+  border: 1px solid rgba(248, 113, 113, 0.35);
+  color: #FCA5A5;
+}
+
 /* VIP promo admin */
 .vip-promo-admin-panel {
   padding: 16px;

@@ -1,4 +1,11 @@
-import { FieldValue, getFirestore, verifyIdToken, activarPremium } from './_shared/firebase-admin.mjs'
+import {
+  FieldValue,
+  getFirestore,
+  verifyIdToken,
+  activarPremium,
+  findUidByEmail,
+  grantPremiumByEmail,
+} from './_shared/firebase-admin.mjs'
 import { ADMIN_EMAILS } from '../../src/lib/adminEmails.js'
 
 const corsHeaders = {
@@ -16,6 +23,27 @@ async function requireAdmin(req) {
   const email = user.email.trim().toLowerCase()
   if (!ADMIN_EMAILS.includes(email)) return null
   return user
+}
+
+async function activarVipParaPedido(data) {
+  const email = data.email?.trim()?.toLowerCase()
+  let uid = data.uid || null
+
+  if (uid) {
+    const first = await activarPremium(uid, { premiumSource: 'promo', email })
+    if (first.ok) return first
+  }
+
+  if (email) {
+    const resolvedUid = await findUidByEmail(email)
+    if (resolvedUid) {
+      const second = await activarPremium(resolvedUid, { premiumSource: 'promo', email })
+      if (second.ok) return second
+    }
+    return grantPremiumByEmail(email, { premiumSource: 'promo' })
+  }
+
+  return { ok: false, error: 'user_not_found', uid }
 }
 
 export default async (req) => {
@@ -73,7 +101,37 @@ export default async (req) => {
     }
 
     if (req.method === 'POST') {
-      const { action, requestId } = await req.json()
+      const body = await req.json()
+      const { action, requestId, email: grantEmail } = body
+
+      if (action === 'grant_email') {
+        const email = grantEmail?.trim()?.toLowerCase()
+        if (!email || !email.includes('@')) {
+          return new Response(JSON.stringify({ error: 'email_invalid' }), {
+            status: 400,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          })
+        }
+
+        const result = await grantPremiumByEmail(email, { premiumSource: 'admin' })
+        if (!result.ok) {
+          return new Response(JSON.stringify({ error: result.error || 'activation_failed' }), {
+            status: result.error === 'user_not_found' ? 404 : 500,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          })
+        }
+
+        return new Response(JSON.stringify({
+          ok: true,
+          activated: true,
+          uid: result.uid,
+          email,
+        }), {
+          status: 200,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        })
+      }
+
       if (!requestId || !['approve', 'reject'].includes(action)) {
         return new Response(JSON.stringify({ error: 'invalid_action' }), {
           status: 400,
@@ -110,9 +168,17 @@ export default async (req) => {
         })
       }
 
-      const activado = await activarPremium(data.uid, { premiumSource: 'promo' })
-      if (!activado) {
-        return new Response(JSON.stringify({ error: 'activation_failed' }), {
+      const result = await activarVipParaPedido(data)
+      if (!result.ok) {
+        await ref.set({
+          lastActivationError: result.error || 'activation_failed',
+          lastActivationAttempt: FieldValue.serverTimestamp(),
+          reviewedBy: admin.email,
+        }, { merge: true })
+        return new Response(JSON.stringify({
+          error: result.error || 'activation_failed',
+          uid: result.uid || data.uid || null,
+        }), {
           status: 500,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         })
@@ -120,12 +186,19 @@ export default async (req) => {
 
       await ref.set({
         status: 'approved',
+        uid: result.uid,
         reviewedAt: FieldValue.serverTimestamp(),
         reviewedBy: admin.email,
         premiumGrantedAt: FieldValue.serverTimestamp(),
+        lastActivationError: FieldValue.delete(),
       }, { merge: true })
 
-      return new Response(JSON.stringify({ ok: true, activated: true }), {
+      return new Response(JSON.stringify({
+        ok: true,
+        activated: true,
+        uid: result.uid,
+        email: result.email || data.email,
+      }), {
         status: 200,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       })

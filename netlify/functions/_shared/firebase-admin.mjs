@@ -159,13 +159,41 @@ export async function verifyIdToken(idToken) {
   return verifyIdTokenViaRest(idToken)
 }
 
+function firebaseWebApiKey() {
+  return env('VITE_FIREBASE_API_KEY') || env('FIREBASE_API_KEY') || env('FIREBASE_WEB_API_KEY')
+}
+
+/** Resolve UID pelo email de login Firebase Auth (mais fiável que Firestore). */
+export async function findUidByEmail(email) {
+  const apiKey = firebaseWebApiKey()
+  const normalized = email?.trim()?.toLowerCase()
+  if (!apiKey || !normalized) return null
+  try {
+    const res = await fetch(
+      `https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=${apiKey}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: [normalized] }),
+      },
+    )
+    if (!res.ok) return null
+    const data = await res.json()
+    return data.users?.[0]?.localId || null
+  } catch (e) {
+    console.error('[findUidByEmail]', e?.message)
+    return null
+  }
+}
+
 export async function activarPremium(userId, extra = {}) {
   const db = getFirestore()
   if (!db || !userId) {
-    console.error('[activarPremium] Firestore indisponível — confirma FIREBASE_SERVICE_ACCOUNT no Netlify')
-    return false
+    console.error('[activarPremium] Firestore indisponível ou uid em falta')
+    return { ok: false, error: 'no_db_or_uid' }
   }
 
+  const ref = db.collection('users').doc(userId)
   const updates = {
     isPremium: true,
     mapaCompleto: true,
@@ -191,13 +219,39 @@ export async function activarPremium(userId, extra = {}) {
     updates.premiumSource = extra.premiumSource
   }
 
+  if (extra.email) {
+    updates.email = extra.email.trim().toLowerCase()
+  }
+
   try {
-    await db.collection('users').doc(userId).set(updates, { merge: true })
-    return true
+    const snap = await ref.get()
+    if (snap.exists) {
+      await ref.update(updates)
+    } else {
+      const { premiumUntil, stripeSubscriptionId, ...createFields } = updates
+      await ref.set(createFields)
+    }
+
+    const verify = await ref.get()
+    const data = verify.data()
+    if (data?.isPremium !== true || data?.mapaCompleto !== true) {
+      console.error('[activarPremium] verificação falhou após escrita', userId, data)
+      return { ok: false, error: 'verify_failed', uid: userId }
+    }
+
+    return { ok: true, uid: userId, email: data.email || extra.email || null }
   } catch (e) {
     console.error('[activarPremium] escrita Firestore falhou:', e?.message)
-    return false
+    return { ok: false, error: e?.message || 'write_failed', uid: userId }
   }
+}
+
+export async function grantPremiumByEmail(email, extra = {}) {
+  const normalized = email?.trim()?.toLowerCase()
+  if (!normalized) return { ok: false, error: 'email_invalid' }
+  const uid = await findUidByEmail(normalized)
+  if (!uid) return { ok: false, error: 'user_not_found' }
+  return activarPremium(uid, { ...extra, email: normalized })
 }
 
 export async function activarMapaCompleto(userId) {

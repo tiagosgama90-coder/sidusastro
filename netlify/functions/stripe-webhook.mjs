@@ -45,7 +45,7 @@ export default async (req) => {
             stripeSubscriptionId: isRecurring ? (session.subscription || null) : null,
             billingType: isRecurring ? 'recurring' : 'lifetime',
           })
-          if (!activado) console.error('[stripe-webhook] activarPremium falhou para', userId)
+          if (!activado.ok) console.error('[stripe-webhook] activarPremium falhou para', userId, activado.error)
         } else if (userId && productType === 'mapa') {
           const activado = await activarMapaCompleto(userId)
           if (!activado) console.error('[stripe-webhook] activarMapaCompleto falhou para', userId)
