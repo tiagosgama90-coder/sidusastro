@@ -1025,6 +1025,19 @@ html.sidus-no-ads .google-auto-placed {
   display: block;
   margin: 0 auto;
 }
+.landing-testimonial-zodiac-ring {
+  transform-origin: 100px 100px;
+  animation: landingTestimonialZodiacSpin 52s linear infinite;
+}
+.landing-testimonial-zodiac-upright {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: landingTestimonialZodiacSpin 52s linear infinite reverse;
+}
+@keyframes landingTestimonialZodiacSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
 .landing-testimonial-pdf-badge {
   position: absolute;
   top: 8px;
