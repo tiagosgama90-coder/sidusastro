@@ -1077,12 +1077,12 @@ html.sidus-no-ads .google-auto-placed {
 }
 .landing-testimonial-zodiac-ring {
   transform-origin: 100px 100px;
-  animation: landingTestimonialZodiacSpin 52s linear infinite;
+  animation: landingTestimonialZodiacSpin 52s linear infinite reverse;
 }
 .landing-testimonial-zodiac-upright {
   transform-box: fill-box;
   transform-origin: center;
-  animation: landingTestimonialZodiacSpin 52s linear infinite reverse;
+  animation: landingTestimonialZodiacSpin 52s linear infinite;
 }
 @keyframes landingTestimonialZodiacSpin {
   from { transform: rotate(0deg); }
