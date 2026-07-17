@@ -2554,6 +2554,44 @@ html.sidus-no-ads .google-auto-placed {
   font-size: 18px;
   color: #fff;
 }
+.vip-promo-form-notice {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  margin: 12px 0 16px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: rgba(52, 211, 153, 0.1);
+  border: 1px solid rgba(52, 211, 153, 0.35);
+  color: rgba(255, 255, 255, 0.9);
+}
+.vip-promo-form-notice svg {
+  flex-shrink: 0;
+  margin-top: 2px;
+  color: #34D399;
+}
+.vip-promo-form-notice strong {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 14px;
+  color: #34D399;
+}
+.vip-promo-form-notice p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.78);
+}
+.vip-promo-form-section {
+  margin: 18px 0 12px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(223, 183, 108, 0.2);
+  font-size: 13px;
+  font-weight: 700;
+  color: #DFB76C;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
 .vip-promo-form-hint {
   margin: 0 0 18px;
   font-size: 12px;
