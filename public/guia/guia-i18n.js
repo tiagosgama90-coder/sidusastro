@@ -74,6 +74,22 @@ window.SIDUS_GUIA_I18N = {
       "it": "© Sidus · <a href=\"/privacidade\">Informativa sulla privacy</a> · <a href=\"/login\">Tema natale gratis</a>",
       "de": "© Sidus · <a href=\"/privacidade\">Datenschutz</a> · <a href=\"/login\">Gratis Geburtshoroskop</a>",
       "fr": "© Sidus · <a href=\"/privacidade\">Politique de confidentialité</a> · <a href=\"/login\">Thème natal gratuit</a>"
+    },
+    "relatedTitle": {
+      "pt": "Mais guias Sidus",
+      "en": "More Sidus guides",
+      "es": "Más guías Sidus",
+      "it": "Altre guide Sidus",
+      "de": "Weitere Sidus-Leitfäden",
+      "fr": "Plus de guides Sidus"
+    },
+    "relatedLead": {
+      "pt": "Aprofunda o teu conhecimento e calcula o teu mapa com Swiss Ephemeris.",
+      "en": "Go deeper and calculate your chart with Swiss Ephemeris.",
+      "es": "Profundiza y calcula tu carta con Swiss Ephemeris.",
+      "it": "Approfondisci e calcola il tuo tema con Swiss Ephemeris.",
+      "de": "Vertiefe dein Wissen und berechne dein Horoskop mit Swiss Ephemeris.",
+      "fr": "Approfondis tes connaissances et calcule ton thème avec Swiss Ephemeris."
     }
   },
   "pages": {

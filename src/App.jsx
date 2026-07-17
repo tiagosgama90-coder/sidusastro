@@ -1,4 +1,4 @@
-﻿import { useState, useEffect, useRef, useCallback, useMemo } from 'react'
+﻿import { useState, useEffect, useRef, useCallback, useMemo, lazy, Suspense } from 'react'
 import {
   Sparkles,
   Moon,
@@ -33,7 +33,6 @@ import {
 } from 'lucide-react'
 import { Body, GeoVector, Ecliptic, MakeTime, SiderealTime } from 'astronomy-engine'
 import { pesquisarCidades, pesquisarFusoHorario, geocodificarCidade } from './lib/geocoding'
-import { EcraTarot } from './components/Tarot'
 import { ModalPagamento, verificarSessaoPagamento } from './components/Pagamento'
 import { PRECO_MAPA_COMPLETO, precoPremiumVitrine, formatPrecoEuro } from './lib/pricing.js'
 import { useGeoCountry } from './hooks/useGeoCountry.js'
@@ -41,8 +40,6 @@ import { RecaptchaCheckbox } from './components/Recaptcha'
 import { Perfil } from './components/Perfil'
 import { PoliticaPrivacidade } from './components/PoliticaPrivacidade'
 import { InterpretacaoMapa } from './components/InterpretacaoMapa'
-import { MandalaNatal } from './components/MandalaNatal.jsx'
-import { BussolaCosmica, Sinastria, Biorritmo, DiarioAstral, Numerologia, InterpretacaoSonhos, HorasIguais } from './components/FerramentasPremium'
 import { ConteudoDinamicoSidus } from './components/ConteudoDinamicoSidus'
 import { AstroNewsCarousel } from './components/AstroNewsCarousel'
 import { LandingCosmicBackground } from './components/LandingCosmicBackground.jsx'
@@ -87,6 +84,24 @@ import { LanguageSwitcher } from './components/LanguageSwitcher.jsx'
 import { useLanguage } from './lib/i18n/LanguageContext.jsx'
 import { readLandingDraft, clearLandingDraft, mergeLandingDraft, hasLandingDraft, flushLandingDraft } from './lib/landingDraft.js'
 import { getFerramentas, getBeneficiosVip } from './lib/i18n/ferramentasData.js'
+
+const EcraTarotLazy = lazy(() => import('./components/Tarot.jsx').then((m) => ({ default: m.EcraTarot })))
+const MandalaNatalLazy = lazy(() => import('./components/MandalaNatal.jsx').then((m) => ({ default: m.MandalaNatal })))
+const BussolaCosmicaLazy = lazy(() => import('./components/FerramentasPremium.jsx').then((m) => ({ default: m.BussolaCosmica })))
+const SinastriaLazy = lazy(() => import('./components/FerramentasPremium.jsx').then((m) => ({ default: m.Sinastria })))
+const BiorritmoLazy = lazy(() => import('./components/FerramentasPremium.jsx').then((m) => ({ default: m.Biorritmo })))
+const DiarioAstralLazy = lazy(() => import('./components/FerramentasPremium.jsx').then((m) => ({ default: m.DiarioAstral })))
+const NumerologiaLazy = lazy(() => import('./components/FerramentasPremium.jsx').then((m) => ({ default: m.Numerologia })))
+const InterpretacaoSonhosLazy = lazy(() => import('./components/FerramentasPremium.jsx').then((m) => ({ default: m.InterpretacaoSonhos })))
+const HorasIguaisLazy = lazy(() => import('./components/FerramentasPremium.jsx').then((m) => ({ default: m.HorasIguais })))
+
+function RouteLoader() {
+  return (
+    <div style={{ display: 'flex', justifyContent: 'center', padding: '48px 20px' }}>
+      <Loader2 size={28} color="#DFB76C" className="spin-icon" />
+    </div>
+  )
+}
 import { validarOnboarding } from './lib/i18n/validation.js'
 import { traduzirErroAuth } from './lib/i18n/authErrors.js'
 import { labelBarraCurto, tituloSecaoMapa } from './lib/i18n/labelUtil.js'
@@ -2463,14 +2478,16 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
                   {t('mapa.mandalaTitle')}
                 </div>
               </div>
-              <MandalaNatal
-                chartOnly
-                mapaNatal={mapaNatal}
-                planetas={planetasComCasa}
-                aspectos={aspetosNatais}
-                translateSign={ts}
-                size={isDesktop ? 480 : 360}
-              />
+              <Suspense fallback={<RouteLoader />}>
+                <MandalaNatalLazy
+                  chartOnly
+                  mapaNatal={mapaNatal}
+                  planetas={planetasComCasa}
+                  aspectos={aspetosNatais}
+                  translateSign={ts}
+                  size={isDesktop ? 480 : 300}
+                />
+              </Suspense>
             </div>
           )}
         </>
@@ -2533,18 +2550,20 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
                   {t('mapa.mandalaSubtitle')}
                 </p>
               </div>
-              <MandalaNatal
-                mapaNatal={mapaNatal}
-                planetas={planetasComCasa}
-                aspectos={aspetosCompletos}
-                nome={dados.nome}
-                dataNascimento={formatarData(dados.data)}
-                horaNascimento={dados.hora}
-                translateSign={ts}
-                motorAstro={motorAstro}
-                size={isDesktop ? 480 : 360}
-                unavailableLabel={t('mapa.mandalaUnavailable')}
-              />
+              <Suspense fallback={<RouteLoader />}>
+                <MandalaNatalLazy
+                  mapaNatal={mapaNatal}
+                  planetas={planetasComCasa}
+                  aspectos={aspetosCompletos}
+                  nome={dados.nome}
+                  dataNascimento={formatarData(dados.data)}
+                  horaNascimento={dados.hora}
+                  translateSign={ts}
+                  motorAstro={motorAstro}
+                  size={isDesktop ? 480 : 300}
+                  unavailableLabel={t('mapa.mandalaUnavailable')}
+                />
+              </Suspense>
             </div>
           )}
 
@@ -4154,21 +4173,53 @@ export default function App() {
       case 'mapa':
         return <MapaAstral mapaNatal={mapaNatal} dados={dados} planetasNascimento={planetasNascimento} mapaDesbloqueado={isPremium || mapaCompleto} isPremium={isPremium} onUpgrade={() => irPara('paywall')} onComprarMapa={() => abrirPagamento(t('mapa.buyDesc'), PRECO_MAPA_COMPLETO, null, { productType: 'mapa' })} onMapaGerado={handleMapaGerado} isDesktop={isDesktop} motorAstro={motorAstro} perfilCarregando={perfilCarregando} reparandoDados={reparandoDados} mapaGerado={mapaGerado} onCompletarNatal={() => irPara('home')} obterIdToken={obterIdTokenOracle} interpretacaoPerfil={interpretacaoMapa} />
       case 'tarot':
-        return <EcraTarot mapaNatal={mapaNatal} isPremium={acessoVip} userId={utilizador?.uid} leiturasTarotUsadas={leiturasTarotUsadas} tarotCreditoPago={tarotCreditoPago} onTarotCreditoConsumido={() => setTarotCreditoPago(false)} onLeituraGratisUsada={registarLeituraTarotGratis} onPagar={abrirPagamento} onVoltar={() => irPara('home')} onPremium={() => irPara('paywall')} />
+        return (
+          <Suspense fallback={<RouteLoader />}>
+            <EcraTarotLazy mapaNatal={mapaNatal} isPremium={acessoVip} userId={utilizador?.uid} leiturasTarotUsadas={leiturasTarotUsadas} tarotCreditoPago={tarotCreditoPago} onTarotCreditoConsumido={() => setTarotCreditoPago(false)} onLeituraGratisUsada={registarLeituraTarotGratis} onPagar={abrirPagamento} onVoltar={() => irPara('home')} onPremium={() => irPara('paywall')} />
+          </Suspense>
+        )
       case 'bussola':
-        return <BussolaCosmica mapaNatal={mapaNatal} onVoltar={() => irPara('home')} />
+        return (
+          <Suspense fallback={<RouteLoader />}>
+            <BussolaCosmicaLazy mapaNatal={mapaNatal} onVoltar={() => irPara('home')} />
+          </Suspense>
+        )
       case 'sinastria':
-        return <Sinastria mapaNatal={mapaNatal} dadosUtilizador={dados} isPremium={acessoVip} onUpgrade={() => irPara('paywall')} onVoltar={() => irPara('home')} />
+        return (
+          <Suspense fallback={<RouteLoader />}>
+            <SinastriaLazy mapaNatal={mapaNatal} dadosUtilizador={dados} isPremium={acessoVip} onUpgrade={() => irPara('paywall')} onVoltar={() => irPara('home')} />
+          </Suspense>
+        )
       case 'biorritmo':
-        return <Biorritmo dados={dados} utilizador={utilizador} mapaNatal={mapaNatal} onVoltar={() => irPara('home')} />
+        return (
+          <Suspense fallback={<RouteLoader />}>
+            <BiorritmoLazy dados={dados} utilizador={utilizador} mapaNatal={mapaNatal} onVoltar={() => irPara('home')} />
+          </Suspense>
+        )
       case 'horasIguais':
-        return <HorasIguais onVoltar={() => irPara('home')} />
+        return (
+          <Suspense fallback={<RouteLoader />}>
+            <HorasIguaisLazy onVoltar={() => irPara('home')} />
+          </Suspense>
+        )
       case 'numerologia':
-        return <Numerologia dados={dados} utilizador={utilizador} mapaNatal={mapaNatal} onVoltar={() => irPara('home')} />
+        return (
+          <Suspense fallback={<RouteLoader />}>
+            <NumerologiaLazy dados={dados} utilizador={utilizador} mapaNatal={mapaNatal} onVoltar={() => irPara('home')} />
+          </Suspense>
+        )
       case 'sonhos':
-        return <InterpretacaoSonhos mapaNatal={mapaNatal} onVoltar={() => irPara('home')} />
+        return (
+          <Suspense fallback={<RouteLoader />}>
+            <InterpretacaoSonhosLazy mapaNatal={mapaNatal} onVoltar={() => irPara('home')} />
+          </Suspense>
+        )
       case 'diario':
-        return <DiarioAstral mapaNatal={mapaNatal} onVoltar={() => irPara('home')} />
+        return (
+          <Suspense fallback={<RouteLoader />}>
+            <DiarioAstralLazy mapaNatal={mapaNatal} onVoltar={() => irPara('home')} />
+          </Suspense>
+        )
       case 'ferramentas':
         return <Ferramentas onFerramenta={handleFerramenta} isDesktop={isDesktop} acessoVip={acessoVip} />
       case 'paywall':

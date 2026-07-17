@@ -6,6 +6,28 @@
   }
   const STORAGE_KEY = 'sidus_lang'
   const ZODIAC = ['♈', '♉', '♊', '♋', '♌', '♍', '♎', '♏', '♐', '♑', '♒', '♓']
+  const RELATED_GUIDES = {
+    'mapa-astral': [
+      { href: '/guia/ascendente.html', navKey: 'ascendente' },
+      { href: '/guia/signos-zodiaco.html', navKey: 'signos' },
+      { href: '/guia/tarot-guia.html', navKey: 'tarot' },
+    ],
+    'ascendente': [
+      { href: '/guia/mapa-astral.html', navKey: 'mapa' },
+      { href: '/guia/signos-zodiaco.html', navKey: 'signos' },
+      { href: '/guia/tarot-guia.html', navKey: 'tarot' },
+    ],
+    'signos-zodiaco': [
+      { href: '/guia/mapa-astral.html', navKey: 'mapa' },
+      { href: '/guia/ascendente.html', navKey: 'ascendente' },
+      { href: '/guia/tarot-guia.html', navKey: 'tarot' },
+    ],
+    'tarot-guia': [
+      { href: '/guia/mapa-astral.html', navKey: 'mapa' },
+      { href: '/guia/ascendente.html', navKey: 'ascendente' },
+      { href: '/guia/signos-zodiaco.html', navKey: 'signos' },
+    ],
+  }
 
   function getPageId() {
     return document.body.getAttribute('data-guia-page') || ''
@@ -275,6 +297,115 @@
     if (footer && common?.footerHtml) footer.innerHTML = common.footerHtml[lang] || common.footerHtml.pt
 
     window.__guiaRefreshLangSwitcher?.(lang)
+    updateSeoMeta(lang)
+    renderRelatedGuides(lang)
+  }
+
+  function guideHref(path, lang) {
+    return lang === 'pt' ? path : `${path}?lang=${lang}`
+  }
+
+  function upsertMeta(attr, key, content) {
+    if (!content) return
+    let el = document.querySelector(`meta[${attr}="${key}"]`)
+    if (!el) {
+      el = document.createElement('meta')
+      el.setAttribute(attr, key)
+      document.head.appendChild(el)
+    }
+    el.setAttribute('content', content)
+  }
+
+  function updateSeoMeta(lang) {
+    const pageId = getPageId()
+    const pack = window.SIDUS_GUIA_I18N
+    const page = pack?.pages?.[pageId]
+    const data = page?.[lang] || (lang === 'pt' ? null : page?.pt)
+    const title = lang === 'pt' ? window.__GUIA_PT_META__?.title : data?.title
+    const description = lang === 'pt' ? window.__GUIA_PT_META__?.description : data?.description
+    const h1 = document.querySelector('.guia-article h1')?.textContent || data?.h1 || ''
+    const canonical = `${window.location.origin}${window.location.pathname}`
+
+    let link = document.querySelector('link[rel="canonical"]')
+    if (!link) {
+      link = document.createElement('link')
+      link.rel = 'canonical'
+      document.head.appendChild(link)
+    }
+    link.href = canonical
+
+    upsertMeta('property', 'og:type', 'article')
+    upsertMeta('property', 'og:site_name', 'Sidusastro')
+    upsertMeta('property', 'og:locale', lang === 'pt' ? 'pt_PT' : lang)
+    upsertMeta('property', 'og:url', canonical)
+    upsertMeta('property', 'og:title', title || h1)
+    upsertMeta('property', 'og:description', description || '')
+    upsertMeta('name', 'twitter:card', 'summary')
+    upsertMeta('name', 'twitter:title', title || h1)
+    upsertMeta('name', 'twitter:description', description || '')
+
+    const jsonId = 'guia-jsonld'
+    let script = document.getElementById(jsonId)
+    if (!script) {
+      script = document.createElement('script')
+      script.id = jsonId
+      script.type = 'application/ld+json'
+      document.head.appendChild(script)
+    }
+
+    const breadcrumb = {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Sidus', item: `${window.location.origin}/login` },
+        { '@type': 'ListItem', position: 2, name: h1, item: canonical },
+      ],
+    }
+
+    const article = {
+      '@context': 'https://schema.org',
+      '@type': 'Article',
+      headline: h1,
+      description: description || '',
+      inLanguage: lang,
+      author: { '@type': 'Organization', name: 'Sidus' },
+      publisher: {
+        '@type': 'Organization',
+        name: 'Sidusastro',
+        logo: { '@type': 'ImageObject', url: `${window.location.origin}/favicon.svg` },
+      },
+      mainEntityOfPage: canonical,
+    }
+
+    script.textContent = JSON.stringify([breadcrumb, article])
+  }
+
+  function renderRelatedGuides(lang) {
+    const pageId = getPageId()
+    const related = RELATED_GUIDES[pageId]
+    const common = window.SIDUS_GUIA_I18N?.common
+    if (!related || !common) return
+
+    let block = document.querySelector('.guia-related')
+    if (!block) {
+      block = document.createElement('section')
+      block.className = 'guia-related'
+      const article = document.querySelector('.guia-article')
+      if (article) article.insertAdjacentElement('afterend', block)
+    }
+
+    const title = common.relatedTitle?.[lang] || common.relatedTitle?.pt || 'Mais guias'
+    const lead = common.relatedLead?.[lang] || common.relatedLead?.pt || ''
+    const links = related.map(({ href, navKey }) => {
+      const label = common.nav?.[navKey]?.[lang] || common.nav?.[navKey]?.pt || navKey
+      return `<a href="${guideHref(href, lang)}">${label}</a>`
+    }).join('')
+
+    block.innerHTML = `
+      <h2 class="guia-related-title">${title}</h2>
+      <p class="guia-related-lead">${lead}</p>
+      <nav class="guia-related-links" aria-label="${title}">${links}</nav>
+      <a class="guia-btn guia-related-cta" href="/login">${common.nav?.login?.[lang] || common.nav?.login?.pt || 'Calcular mapa'}</a>`
   }
 
   function init() {
@@ -304,6 +435,8 @@
     const lang = getLang()
     if (lang !== 'pt') syncLangUrl(lang)
     initLanguageSwitcher(lang)
+    renderRelatedGuides(lang)
+    updateSeoMeta(lang)
     if (lang !== 'pt') applyLang(lang)
   }
 

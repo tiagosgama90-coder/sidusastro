@@ -1,0 +1,11 @@
+# Ficheiros estáticos SEO (antes do fallback SPA)
+/sitemap.xml      /sitemap.xml      200
+/sitemap-app.xml  /sitemap-app.xml  200
+/sitemap-guides.xml /sitemap-guides.xml 200
+/robots.txt       /robots.txt       200
+/ads.txt          /ads.txt          200
+/privacy.html     /privacy.html     200
+/guia/*           /guia/:splat      200
+
+# App React (SPA)
+/*                /index.html       200

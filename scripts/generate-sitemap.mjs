@@ -3,6 +3,7 @@ import { fileURLToPath } from 'node:url'
 import { dirname, join } from 'node:path'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
+const PUBLIC = join(__dirname, '..', 'public')
 const BASE = 'https://sidusastro.com'
 const LASTMOD = new Date().toISOString().slice(0, 10)
 
@@ -15,7 +16,6 @@ const LANGS = [
   { code: 'fr', hreflang: 'fr' },
 ]
 
-/** Rotas públicas indexáveis (SPA + estáticas). */
 const SPA_ROUTES = [
   { path: '/', priority: 1.0, changefreq: 'weekly' },
   { path: '/login', priority: 0.98, changefreq: 'weekly' },
@@ -48,52 +48,67 @@ const GUIDES = [
   { path: '/guia/tarot-guia.html', priority: 0.88, changefreq: 'monthly' },
 ]
 
+function escapeXml(value) {
+  return String(value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&apos;')
+}
+
 function langPath(path, lang) {
   if (path === '/') return `/${lang}/`
   return `/${lang}${path}`
 }
 
-function alternateLinks(path, { includeEnHoroscope = false } = {}) {
-  const lines = LANGS.map(({ code, hreflang }) => {
-    let href = `${BASE}${langPath(path, code)}`
-    if (includeEnHoroscope && code === 'en' && path === '/horoscopo') {
-      href = `${BASE}/en/horoscope`
-    }
-    return `    <xhtml:link rel="alternate" hreflang="${hreflang}" href="${href}"/>`
-  })
-  const xDefault = path === '/horoscopo'
-    ? `${BASE}/horoscopo`
-    : `${BASE}${path === '/' ? '/' : path}`
-  lines.push(`    <xhtml:link rel="alternate" hreflang="x-default" href="${xDefault}"/>`)
+function locForRoute(path, lang) {
+  if (path === '/horoscopo' && lang === 'en') return `${BASE}/en/horoscope`
+  if (path === '/') return lang ? `${BASE}${langPath(path, lang)}` : `${BASE}/`
+  return lang ? `${BASE}${langPath(path, lang)}` : `${BASE}${path}`
+}
+
+function alternateLinks(path) {
+  const lines = LANGS.map(({ code, hreflang }) =>
+    `    <xhtml:link rel="alternate" hreflang="${hreflang}" href="${escapeXml(locForRoute(path, code))}"/>`
+  )
+  const xDefault = path === '/horoscopo' ? `${BASE}/horoscopo` : locForRoute(path, null)
+  lines.push(`    <xhtml:link rel="alternate" hreflang="x-default" href="${escapeXml(xDefault)}"/>`)
   return lines.join('\n')
 }
 
 function urlEntry(loc, { priority, changefreq, alternates = '' }) {
+  const altBlock = alternates ? `\n${alternates}` : ''
   return `  <url>
-    <loc>${loc}</loc>
+    <loc>${escapeXml(loc)}</loc>
     <lastmod>${LASTMOD}</lastmod>
     <changefreq>${changefreq}</changefreq>
-    <priority>${priority}</priority>
-${alternates}
+    <priority>${priority}</priority>${altBlock}
   </url>`
 }
 
-const entries = []
+function writeUrlset(filename, entries) {
+  const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+${entries.join('\n')}
+</urlset>
+`
+  writeFileSync(join(PUBLIC, filename), xml, 'utf8')
+}
+
+const appEntries = []
 
 for (const route of SPA_ROUTES) {
-  const alts = alternateLinks(route.path, { includeEnHoroscope: true })
-  entries.push(urlEntry(`${BASE}${route.path === '/' ? '/' : route.path}`, {
+  const alts = alternateLinks(route.path)
+  appEntries.push(urlEntry(locForRoute(route.path, null), {
     priority: route.priority,
     changefreq: route.changefreq,
     alternates: alts,
   }))
 
   for (const { code } of LANGS) {
-    let loc = `${BASE}${langPath(route.path, code)}`
-    if (route.path === '/horoscopo' && code === 'en') {
-      loc = `${BASE}/en/horoscope`
-    }
-    entries.push(urlEntry(loc, {
+    appEntries.push(urlEntry(locForRoute(route.path, code), {
       priority: Math.max(0.4, route.priority - 0.05),
       changefreq: route.changefreq,
       alternates: alts,
@@ -102,41 +117,42 @@ for (const route of SPA_ROUTES) {
 }
 
 for (const page of STATIC_PAGES) {
-  entries.push(urlEntry(`${BASE}${page.path}`, {
+  appEntries.push(urlEntry(`${BASE}${page.path}`, {
     priority: page.priority,
     changefreq: page.changefreq,
   }))
 }
 
-for (const guide of GUIDES) {
+const guideEntries = GUIDES.map((guide) => {
   const loc = `${BASE}${guide.path}`
-  const guideAlts = LANGS.map(({ code, hreflang }) =>
-    `    <xhtml:link rel="alternate" hreflang="${hreflang}" href="${loc}${code === 'pt' ? '' : `?lang=${code}`}"/>`
-  ).join('\n') + `\n    <xhtml:link rel="alternate" hreflang="x-default" href="${loc}"/>`
+  const guideAlts = LANGS.map(({ code, hreflang }) => {
+    const href = code === 'pt' ? loc : `${loc}?lang=${code}`
+    return `    <xhtml:link rel="alternate" hreflang="${hreflang}" href="${escapeXml(href)}"/>`
+  }).join('\n') + `\n    <xhtml:link rel="alternate" hreflang="x-default" href="${escapeXml(loc)}"/>`
 
-  entries.push(urlEntry(loc, {
+  return urlEntry(loc, {
     priority: guide.priority,
     changefreq: guide.changefreq,
     alternates: guideAlts,
-  }))
+  })
+})
 
-  for (const { code } of LANGS) {
-    if (code === 'pt') continue
-    entries.push(urlEntry(`${loc}?lang=${code}`, {
-      priority: guide.priority - 0.03,
-      changefreq: guide.changefreq,
-      alternates: guideAlts,
-    }))
-  }
-}
+writeUrlset('sitemap-app.xml', appEntries)
+writeUrlset('sitemap-guides.xml', guideEntries)
 
-const xml = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-        xmlns:xhtml="http://www.w3.org/1999/xhtml">
-${entries.join('\n')}
-</urlset>
+const indexXml = `<?xml version="1.0" encoding="UTF-8"?>
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <sitemap>
+    <loc>${BASE}/sitemap-app.xml</loc>
+    <lastmod>${LASTMOD}</lastmod>
+  </sitemap>
+  <sitemap>
+    <loc>${BASE}/sitemap-guides.xml</loc>
+    <lastmod>${LASTMOD}</lastmod>
+  </sitemap>
+</sitemapindex>
 `
 
-const out = join(__dirname, '..', 'public', 'sitemap.xml')
-writeFileSync(out, xml, 'utf8')
-console.log(`Wrote ${entries.length} URLs to public/sitemap.xml`)
+writeFileSync(join(PUBLIC, 'sitemap.xml'), indexXml, 'utf8')
+
+console.log(`Sitemaps: index + app (${appEntries.length} URLs) + guides (${guideEntries.length} URLs)`)

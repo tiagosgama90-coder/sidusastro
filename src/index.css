@@ -1283,7 +1283,7 @@ html.sidus-no-ads .google-auto-placed {
 @media (max-width: 639px) {
   .landing-auth-layout,
   .landing-auth-layout--mobile {
-    padding-top: calc(172px + env(safe-area-inset-top, 0px)) !important;
+    padding-top: calc(108px + env(safe-area-inset-top, 0px)) !important;
     padding-left: 12px !important;
     padding-right: 12px !important;
     padding-bottom: 16px !important;
@@ -1297,9 +1297,33 @@ html.sidus-no-ads .google-auto-placed {
     padding: 6px 10px;
   }
 
+  .landing-conversion-zone {
+    margin-bottom: 14px;
+    padding: 16px 14px 14px;
+  }
+
+  .landing-conversion-zone-head {
+    margin-bottom: 12px;
+  }
+
+  .landing-conversion-eyebrow {
+    font-size: 10px;
+    margin-bottom: 4px;
+  }
+
+  .landing-conversion-title {
+    font-size: 17px;
+    margin-bottom: 6px;
+  }
+
+  .landing-conversion-lead {
+    font-size: 12px;
+    line-height: 1.45;
+  }
+
   .landing-auth-hero {
-    margin-top: 8px;
-    margin-bottom: 20px;
+    margin-top: 4px;
+    margin-bottom: 14px;
   }
 
   .landing-portal-brand-row {
@@ -1577,6 +1601,16 @@ html.sidus-no-ads .google-auto-placed {
 
 .landing-auth-layout--mobile {
   max-width: min(480px, calc(100vw - 24px));
+  display: flex;
+  flex-direction: column;
+}
+
+.landing-auth-layout--mobile .landing-conversion-zone {
+  order: -3;
+}
+
+.landing-auth-layout--mobile .landing-auth-hero {
+  order: -2;
 }
 
 .landing-auth-grid {
