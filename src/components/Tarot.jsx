@@ -1,13 +1,13 @@
 /**
  * Sistema de Tarot Sidus - baralho profissional de 78 cartas (Mystic Marchetti)
  * ─ Ilustrações + interpretações profissionais
- * ─ 3 leituras gratuitas por conta · depois 2 € por leitura ou Premium
+ * ─ 3 leituras gratuitas por conta · depois 2 € por leitura (BR: 1 € PIX) ou Premium
  * ─ 9 tipos de leitura · interpretações personalizadas com mapa natal
  */
 import { useState, useEffect, useRef } from 'react'
 import { useLanguage } from '../lib/i18n/LanguageContext.jsx'
 import { localizeArcano, getTiposTarot, getPosicoesTarot } from '../lib/i18n/tarotArcana.js'
-import { PRECO_TAROT } from '../lib/pricing.js'
+import { PRECO_TAROT, precoTarotVitrine, precoPremiumVitrine, formatPrecoEuro } from '../lib/pricing.js'
 import { sortearCartas, getCartaById, MAJOR_ARCANA } from '../lib/tarot/deck.js'
 import { sortearLenormand, LENORMAND_VERSO } from '../lib/tarot/lenormand.js'
 import { interpretarLeitura } from '../lib/tarot/interpretacao.js'
@@ -154,7 +154,7 @@ function consumirCreditoTarotPago() {
   return false
 }
 
-export function EcraTarot({ mapaNatal, isPremium, userId, leiturasTarotUsadas = 0, tarotCreditoPago = false, onTarotCreditoConsumido, onLeituraGratisUsada, onPagar, onVoltar, onPremium }) {
+export function EcraTarot({ mapaNatal, isPremium, userId, leiturasTarotUsadas = 0, tarotCreditoPago = false, onTarotCreditoConsumido, onLeituraGratisUsada, onPagar, onVoltar, onPremium, isBrasil = false }) {
   const { lang, t } = useLanguage()
   const [fase, setFase]           = useState('seleccionar')
   const [tipoId, setTipoId]       = useState(null)
@@ -210,6 +210,9 @@ export function EcraTarot({ mapaNatal, isPremium, userId, leiturasTarotUsadas = 
   const restantes = leiturasGratisRestantes(isPremium, userId, leiturasTarotUsadas)
   const podeLer = podeLerGratis(isPremium, userId, leiturasTarotUsadas)
   const gratisEsgotada = !isPremium && usadas >= maxLeiturasGratis()
+  const precoLeitura = precoTarotVitrine(isBrasil)
+  const precoLeituraFmt = formatPrecoEuro(precoLeitura)
+  const vipPrecoFmt = formatPrecoEuro(precoPremiumVitrine(isBrasil))
 
   const refrescar = () => setTick(n => n + 1)
 
@@ -346,7 +349,7 @@ export function EcraTarot({ mapaNatal, isPremium, userId, leiturasTarotUsadas = 
         nome: nome && !String(nome).startsWith('tarot.types.') ? nome : tp.nome,
         desc: desc && !String(desc).startsWith('tarot.types.') ? desc : tp.desc,
       }
-    })} lang={lang} t={t} userId={userId} onSeleccionar={iniciarLeitura} isPremium={isPremium} gratisEsgotada={gratisEsgotada} restantes={restantes} tick={tick} onVoltar={onVoltar}/>
+    })} lang={lang} t={t} userId={userId} onSeleccionar={iniciarLeitura} isPremium={isPremium} gratisEsgotada={gratisEsgotada} restantes={restantes} tick={tick} onVoltar={onVoltar} isBrasil={isBrasil} precoLeituraFmt={precoLeituraFmt} vipPrecoFmt={vipPrecoFmt}/>
   )
 
   if (embaralhando) return (
@@ -366,12 +369,16 @@ export function EcraTarot({ mapaNatal, isPremium, userId, leiturasTarotUsadas = 
       onVoltar={voltar} podeLer={podeLer} leituraPaga={leituraPaga} isPremium={isPremium} restantes={restantes}
       onPagar={onPagar}
       aIniciarLeitura={aIniciarLeitura}
+      isBrasil={isBrasil}
+      precoLeitura={precoLeitura}
+      precoLeituraFmt={precoLeituraFmt}
+      vipPrecoFmt={vipPrecoFmt}
       onComecar={() => {
         if (aIniciarLeitura) return
         if (isPremium || podeLer || leituraPaga) {
           comecarEmbaralhar(tipoId)
         } else {
-          onPagar(t('tarot.payDesc', { tipo: tipo?.nome || '' }), PRECO_TAROT, () => {
+          onPagar(t('tarot.payDesc', { tipo: tipo?.nome || '' }), precoLeitura, () => {
             setLeituraPaga(true)
             comecarEmbaralhar(tipoId)
           }, { productType: 'tarot' })
@@ -440,7 +447,7 @@ function TelaDiariaBloqueada({ t, lang, ativa, msRestante, onVoltar }) {
   )
 }
 
-function TelaSeleccionar({ tipos, onSeleccionar, isPremium, gratisEsgotada, restantes, tick, onVoltar, userId, lang, t }) {
+function TelaSeleccionar({ tipos, onSeleccionar, isPremium, gratisEsgotada, restantes, tick, onVoltar, userId, lang, t, isBrasil = false, precoLeituraFmt = '2,00', vipPrecoFmt = '9,99' }) {
   void tick
   const diariaAtiva = !podeFazerLeituraDiaria(userId)
   return (
@@ -465,8 +472,8 @@ function TelaSeleccionar({ tipos, onSeleccionar, isPremium, gratisEsgotada, rest
           <span style={{fontSize:16}}>✦</span>
           <span style={{fontSize:12,color:CORES.brancoMuted}}>
             {gratisEsgotada
-              ? <><b style={{color:'#EF4444'}}>{t('tarot.freeExhausted')}</b>{t('tarot.thenPaid')}</>
-              : <><b style={{color:CORES.dourado}}>{restantes === 1 ? t('tarot.freeRemaining', { count: restantes }) : t('tarot.freeRemainingPlural', { count: restantes })}</b>{t('tarot.thenPaidShort')}</>}
+              ? <><b style={{color:'#EF4444'}}>{t('tarot.freeExhausted')}</b>{isBrasil ? t('tarot.thenPaidBr', { price: precoLeituraFmt, vipPrice: vipPrecoFmt }) : t('tarot.thenPaid', { price: precoLeituraFmt, vipPrice: vipPrecoFmt })}</>
+              : <><b style={{color:CORES.dourado}}>{restantes === 1 ? t('tarot.freeRemaining', { count: restantes }) : t('tarot.freeRemainingPlural', { count: restantes })}</b>{isBrasil ? t('tarot.thenPaidShortBr', { price: precoLeituraFmt }) : t('tarot.thenPaidShort', { price: precoLeituraFmt })}</>}
           </span>
         </div>
       )}
@@ -501,7 +508,7 @@ function TelaSeleccionar({ tipos, onSeleccionar, isPremium, gratisEsgotada, rest
                 </div>
               ) : !isPremium && (
                 <div style={{fontSize:10,marginTop:4,color: gratisEsgotada ? '#F87171' : '#34D399'}}>
-                  {gratisEsgotada ? t('tarot.paidOption') : t('tarot.includedFree', { max: MAX_LEITURAS_GRATIS })}
+                  {gratisEsgotada ? t('tarot.paidOption', { price: precoLeituraFmt }) : t('tarot.includedFree', { max: MAX_LEITURAS_GRATIS })}
                 </div>
               )}
             </div>
@@ -515,7 +522,7 @@ function TelaSeleccionar({ tipos, onSeleccionar, isPremium, gratisEsgotada, rest
   )
 }
 
-function TelaPergunta({ tipo, pergunta, setPergunta, onVoltar, podeLer, leituraPaga = false, isPremium, restantes, onComecar, onPagar, onComecarPago, onPremium, t, aIniciarLeitura = false }) {
+function TelaPergunta({ tipo, pergunta, setPergunta, onVoltar, podeLer, leituraPaga = false, isPremium, restantes, onComecar, onPagar, onComecarPago, onPremium, t, aIniciarLeitura = false, isBrasil = false, precoLeitura = PRECO_TAROT, precoLeituraFmt = '2,00', vipPrecoFmt = '9,99' }) {
   const podeIniciar = isPremium || podeLer || leituraPaga
   const [aPagar, setAPagar] = useState(false)
 
@@ -527,7 +534,7 @@ function TelaPergunta({ tipo, pergunta, setPergunta, onVoltar, podeLer, leituraP
     try {
       await onPagar(
         t('tarot.payDesc', { tipo: tipo?.nome || '' }),
-        PRECO_TAROT,
+        precoLeitura,
         onComecarPago,
         { productType: 'tarot' },
       )
@@ -569,12 +576,14 @@ function TelaPergunta({ tipo, pergunta, setPergunta, onVoltar, podeLer, leituraP
         </button>
       ) : (
         <div style={{background:'rgba(223,183,108,0.06)',border:`1px solid ${CORES.dourado}`,borderRadius:14,padding:20,textAlign:'center',position:'relative',zIndex:1}}>
-          <div style={{fontSize:28,fontWeight:700,color:CORES.dourado,marginBottom:8}}>{t('tarot.price')}</div>
+          <div style={{fontSize:28,fontWeight:700,color:CORES.dourado,marginBottom:8}}>{precoLeituraFmt} €</div>
           <p style={{fontSize:13,color:CORES.brancoMuted,marginBottom:16,lineHeight:1.5}}>
-            {t('tarot.paywallText', { max: MAX_LEITURAS_GRATIS })}
+            {isBrasil
+              ? t('tarot.paywallTextBr', { max: MAX_LEITURAS_GRATIS, price: precoLeituraFmt, vipPrice: vipPrecoFmt })
+              : t('tarot.paywallText', { max: MAX_LEITURAS_GRATIS, price: precoLeituraFmt, vipPrice: vipPrecoFmt })}
           </p>
           <button type="button" disabled={aPagar} onClick={handlePagarLeitura} style={{...btnDourado,width:'100%',marginBottom:10,opacity:aPagar?0.6:1}}>
-            {aPagar ? t('pagamento.redirecting') : t('tarot.payOne')}
+            {aPagar ? t('pagamento.redirecting') : (isBrasil ? t('tarot.payOneBr', { price: precoLeituraFmt }) : t('tarot.payOne', { price: precoLeituraFmt }))}
           </button>
           {onPremium && (
             <button type="button" onClick={onPremium} style={{
@@ -582,7 +591,7 @@ function TelaPergunta({ tipo, pergunta, setPergunta, onVoltar, podeLer, leituraP
               background:'rgba(139,92,246,0.15)',border:`1px solid rgba(139,92,246,0.4)`,
               color:CORES.dourado,fontSize:14,fontWeight:700,cursor:'pointer',
             }}>
-              {t('tarot.premiumBtn')}
+              {isBrasil ? t('tarot.premiumBtnBr', { price: vipPrecoFmt }) : t('tarot.premiumBtn', { price: vipPrecoFmt })}
             </button>
           )}
           <p style={{fontSize:11,color:CORES.brancoMuted}}>{t('tarot.paymentMethods')}</p>

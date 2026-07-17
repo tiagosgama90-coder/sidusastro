@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { useLanguage } from '../lib/i18n/LanguageContext.jsx'
-import { inferProductType, precoPremiumEfetivo, formatPrecoEuro, PRECO_PREMIUM_UNICO, PRECO_PREMIUM_BR_PIX } from '../lib/pricing.js'
+import { inferProductType, precoPremiumEfetivo, precoTarotEfetivo, formatPrecoEuro, PRECO_PREMIUM_UNICO, PRECO_PREMIUM_BR_PIX, PRECO_TAROT_BR_PIX } from '../lib/pricing.js'
 import { metodosParaProduto, metodoPadraoParaPais } from '../lib/paymentMethods.js'
 
 const CORES = {
@@ -11,11 +11,11 @@ const CORES = {
   vidroBorda: 'rgba(223,183,108,0.22)',
 }
 
-async function criarSessaoStripe({ valor, descricao, userId, userEmail, productType, paymentMethod, lang }) {
+async function criarSessaoStripe({ valor, descricao, userId, userEmail, productType, paymentMethod, lang, country }) {
   const res = await fetch('/api/create-checkout-session', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ valor, descricao, userId, userEmail, productType, paymentMethod, lang }),
+    body: JSON.stringify({ valor, descricao, userId, userEmail, productType, paymentMethod, lang, country }),
   })
   const data = await res.json().catch(() => ({}))
   if (!res.ok) throw new Error(data.error || 'sessionFail')
@@ -24,7 +24,7 @@ async function criarSessaoStripe({ valor, descricao, userId, userEmail, productT
 }
 
 /** Redireciona para o Stripe Checkout com o método escolhido. */
-export async function iniciarCheckoutStripe({ valor, descricao, userId, userEmail, productType, paymentMethod, lang, onBeforeRedirect }) {
+export async function iniciarCheckoutStripe({ valor, descricao, userId, userEmail, productType, paymentMethod, lang, country, onBeforeRedirect }) {
   if (!userId) throw new Error('needLogin')
   if (!paymentMethod) throw new Error('selectMethod')
   const tipo = inferProductType(valor, descricao, productType)
@@ -35,7 +35,7 @@ export async function iniciarCheckoutStripe({ valor, descricao, userId, userEmai
     ts: Date.now(),
   }))
   onBeforeRedirect?.()
-  const { url } = await criarSessaoStripe({ valor, descricao, userId, userEmail, productType: tipo, paymentMethod, lang })
+  const { url } = await criarSessaoStripe({ valor, descricao, userId, userEmail, productType: tipo, paymentMethod, lang, country })
   window.location.assign(url)
 }
 
@@ -55,6 +55,7 @@ export function ModalPagamento({
 
   const productType = inferProductType(valor, descricao, productTypeProp)
   const isVip = productType === 'premium'
+  const isTarot = productType === 'tarot'
   const isBrasil = String(country).toUpperCase() === 'BR'
 
   const metodosDisponiveis = useMemo(
@@ -75,8 +76,9 @@ export function ModalPagamento({
 
   const valorEfetivo = useMemo(() => {
     if (isVip) return precoPremiumEfetivo(metodoActivo?.stripeType || 'card')
+    if (isTarot) return precoTarotEfetivo(metodoActivo?.stripeType || 'card', isBrasil)
     return valor
-  }, [isVip, metodoActivo?.stripeType, valor])
+  }, [isVip, isTarot, isBrasil, metodoActivo?.stripeType, valor])
 
   const descricaoMetodo = (m) => {
     if (isVip && isBrasil && m.stripeType === 'pix') {
@@ -84,6 +86,9 @@ export function ModalPagamento({
     }
     if (isVip && isBrasil && m.stripeType !== 'pix') {
       return t('pagamento.premiumFullPrice', { valor: formatPrecoEuro(PRECO_PREMIUM_UNICO) })
+    }
+    if (isTarot && isBrasil && m.stripeType === 'pix') {
+      return t('pagamento.tarotPixBrOffer', { valor: formatPrecoEuro(PRECO_TAROT_BR_PIX) })
     }
     if (isVip) return t('pagamento.vipMethodDesc')
     return t(`pagamento.methods.${m.i18nKey}.desc`)
@@ -115,6 +120,7 @@ export function ModalPagamento({
         productType,
         paymentMethod: metodoActivo.stripeType,
         lang,
+        country,
         onBeforeRedirect: () => {
           if (onSucesso) sessionStorage.setItem('sidus_payment_callback', '1')
         },
@@ -164,7 +170,7 @@ export function ModalPagamento({
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 20 }}>
         {metodosDisponiveis.map((m) => {
           const seleccionado = metodoActivo?.stripeType === m.stripeType
-          const destaquePix = isVip && isBrasil && m.stripeType === 'pix'
+          const destaquePix = (isVip || isTarot) && isBrasil && m.stripeType === 'pix'
           return (
             <button
               key={m.stripeType}

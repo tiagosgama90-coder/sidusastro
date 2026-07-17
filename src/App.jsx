@@ -4182,7 +4182,7 @@ export default function App() {
       case 'tarot':
         return (
           <Suspense fallback={<RouteLoader />}>
-            <EcraTarotLazy mapaNatal={mapaNatal} isPremium={acessoVip} userId={utilizador?.uid} leiturasTarotUsadas={leiturasTarotUsadas} tarotCreditoPago={tarotCreditoPago} onTarotCreditoConsumido={() => setTarotCreditoPago(false)} onLeituraGratisUsada={registarLeituraTarotGratis} onPagar={abrirPagamento} onVoltar={() => irPara('home')} onPremium={() => irPara('paywall')} />
+            <EcraTarotLazy mapaNatal={mapaNatal} isPremium={acessoVip} userId={utilizador?.uid} leiturasTarotUsadas={leiturasTarotUsadas} tarotCreditoPago={tarotCreditoPago} onTarotCreditoConsumido={() => setTarotCreditoPago(false)} onLeituraGratisUsada={registarLeituraTarotGratis} onPagar={abrirPagamento} onVoltar={() => irPara('home')} onPremium={() => irPara('paywall')} isBrasil={isBrasil} />
           </Suspense>
         )
       case 'bussola':

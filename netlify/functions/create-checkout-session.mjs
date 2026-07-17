@@ -23,10 +23,15 @@ const CANCEL_PATH = { premium: '/vip', mapa: '/mapaastral', tarot: '/tarot' }
 const SUPPORTED_LANGS = new Set(['pt', 'en', 'es', 'it', 'de', 'fr'])
 const PRECO_PREMIUM_EUR = 9.99
 const PRECO_PREMIUM_PIX_EUR = 5
+const PRECO_TAROT_PIX_EUR = 1
 
-function resolverValorCobranca({ productType, metodo, valorCliente }) {
+function resolverValorCobranca({ productType, metodo, valorCliente, country }) {
+  const isBr = String(country || '').toUpperCase() === 'BR'
   if (productType === 'premium') {
     return metodo === 'pix' ? PRECO_PREMIUM_PIX_EUR : PRECO_PREMIUM_EUR
+  }
+  if (productType === 'tarot' && isBr && metodo === 'pix') {
+    return PRECO_TAROT_PIX_EUR
   }
   return Number(valorCliente)
 }
@@ -46,7 +51,7 @@ export default async (req) => {
 
   try {
     const body = await req.json()
-    const { valor, descricao, userId, userEmail, productType: productTypeRaw, paymentMethod, lang: langRaw } = body
+    const { valor, descricao, userId, userEmail, productType: productTypeRaw, paymentMethod, lang: langRaw, country } = body
 
     if (!valor || !descricao || !userId) {
       return new Response(JSON.stringify({ error: 'Parâmetros em falta' }), { status: 400, headers: corsHeaders })
@@ -61,7 +66,7 @@ export default async (req) => {
           : 'tarot')
     const isPremium = productType === 'premium'
     const metodo = resolverMetodoPagamento(paymentMethod)
-    const v = resolverValorCobranca({ productType, metodo, valorCliente })
+    const v = resolverValorCobranca({ productType, metodo, valorCliente, country })
 
     // VIP: pagamento único — acesso permanente (todos os métodos)
     const billingType = isPremium ? 'lifetime' : 'one_time'
