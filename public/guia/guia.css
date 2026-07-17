@@ -17,22 +17,161 @@ html {
 
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  background:
-    radial-gradient(circle at top left, rgba(223, 183, 108, 0.14), transparent 34%),
-    linear-gradient(135deg, #030818 0%, #090b1d 45%, #0b071e 100%);
+  background: #030818;
   color: var(--text);
   line-height: 1.7;
   font-size: 16px;
   min-height: 100vh;
+  position: relative;
+}
+
+/* Fundo cósmico dinâmico (espelha LandingCosmicBackground) */
+.guia-cosmic-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+  background: radial-gradient(ellipse 85% 70% at 50% 42%, rgba(12, 28, 68, 0.55) 0%, transparent 62%), #030818;
+}
+
+.guia-cosmic-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.guia-cosmic-nebula {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 50% 40% at 50% 45%, rgba(223, 183, 108, 0.04) 0%, transparent 55%),
+    radial-gradient(ellipse 35% 30% at 30% 60%, rgba(67, 56, 202, 0.07) 0%, transparent 50%),
+    radial-gradient(ellipse 35% 30% at 70% 35%, rgba(88, 28, 135, 0.06) 0%, transparent 50%);
+}
+
+.guia-cosmic-hendecagram-wrap {
+  position: absolute;
+  left: 50%;
+  top: 46%;
+  transform: translate(-50%, -50%);
+  width: min(92vw, 520px);
+  height: min(92vw, 520px);
+  opacity: 0.58;
+}
+
+.guia-cosmic-hendecagram {
+  width: 100%;
+  height: 100%;
+}
+
+.guia-cosmic-star-lines {
+  transform-origin: 200px 200px;
+  animation: guiaHendecSpin 140s linear infinite, guiaHendecPulse 8s ease-in-out infinite;
+}
+
+.guia-cosmic-zodiac {
+  font-size: 15px;
+  fill: rgba(223, 183, 108, 0.55);
+  animation: guiaZodiacShine 4.5s ease-in-out infinite;
+}
+
+@keyframes guiaHendecSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes guiaHendecPulse {
+  0%, 100% { opacity: 0.65; }
+  50% { opacity: 1; }
+}
+
+@keyframes guiaZodiacShine {
+  0%, 100% { fill: rgba(223, 183, 108, 0.45); opacity: 0.7; }
+  50% { fill: rgba(240, 207, 138, 0.95); opacity: 1; }
+}
+
+/* Seletor de idiomas — canto superior direito (como no site) */
+.guia-lang-switcher-root {
+  position: fixed !important;
+  top: max(8px, env(safe-area-inset-top, 8px));
+  right: max(8px, env(safe-area-inset-right, 8px));
+  z-index: 120;
+  pointer-events: auto;
+}
+
+.guia-lang-switcher {
+  position: relative;
+}
+
+.guia-lang-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  padding: 4px 6px;
+  border-radius: 5px;
+  border: 1px solid rgba(223, 183, 108, 0.22);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--gold);
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 1;
+}
+
+.guia-lang-flag { font-size: 18px; }
+
+.guia-lang-caret {
+  font-size: 8px;
+  opacity: 0.8;
+}
+
+.guia-lang-menu {
+  position: absolute;
+  top: 32px;
+  right: 0;
+  width: 38px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 4px;
+  border-radius: 6px;
+  background: rgba(11, 7, 30, 0.98);
+  border: 1px solid rgba(223, 183, 108, 0.22);
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.45);
+}
+
+.guia-lang-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 5px;
+  border-radius: 5px;
+  border: 1px solid rgba(223, 183, 108, 0.22);
+  background: rgba(255, 255, 255, 0.04);
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 1;
+}
+
+.guia-lang-item--active {
+  border-color: var(--gold);
+  background: rgba(223, 183, 108, 0.18);
 }
 
 a { color: var(--gold); }
 
 .guia-wrap {
+  position: relative;
+  z-index: 2;
   max-width: 760px;
   margin: 0 auto;
   padding: 24px 20px 48px;
-  background: rgba(7, 5, 20, 0.8);
+  background: rgba(7, 5, 20, 0.72);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(223, 183, 108, 0.16);
   border-radius: 24px;
   box-shadow: 0 18px 60px rgba(0, 0, 0, 0.28);
@@ -173,5 +312,11 @@ h1 {
   .guia-nav {
     gap: 8px 12px;
     font-size: 12px;
+  }
+
+  .guia-cosmic-hendecagram-wrap {
+    opacity: 0.52;
+    width: min(110vw, 420px);
+    height: min(110vw, 420px);
   }
 }

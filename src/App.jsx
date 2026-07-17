@@ -52,7 +52,6 @@ import { LandingPortalHero } from './components/LandingPortalHero.jsx'
 import { LandingSkyLive } from './components/LandingSkyLive.jsx'
 import { LandingReviews } from './components/LandingReviews.jsx'
 import { LandingGuides } from './components/LandingGuides.jsx'
-import { LandingNewsletter } from './components/LandingNewsletter.jsx'
 import { BannerBrasil } from './components/BannerBrasil.jsx'
 import { HeroHomeSidus } from './components/HeroHomeSidus.jsx'
 import { LeituraGratisDiaria } from './components/LeituraGratisDiaria.jsx'
@@ -1644,7 +1643,6 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
         </div>
       </div>
       <LandingReviews />
-      <LandingNewsletter />
       <LandingFaq />
     </div>
   )

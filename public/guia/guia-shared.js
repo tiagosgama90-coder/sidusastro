@@ -1,0 +1,270 @@
+(function () {
+  const LANGS = ['pt', 'en', 'es', 'it', 'de', 'fr']
+  const FLAGS = { pt: '🇵🇹', en: '🇬🇧', es: '🇪🇸', it: '🇮🇹', de: '🇩🇪', fr: '🇫🇷' }
+  const TITLES = {
+    pt: 'Português', en: 'English', es: 'Español', it: 'Italiano', de: 'Deutsch', fr: 'Français',
+  }
+  const STORAGE_KEY = 'sidus_lang'
+  const ZODIAC = ['♈', '♉', '♊', '♋', '♌', '♍', '♎', '♏', '♐', '♑', '♒', '♓']
+
+  function getPageId() {
+    return document.body.getAttribute('data-guia-page') || ''
+  }
+
+  function getLang() {
+    const params = new URLSearchParams(window.location.search)
+    const fromUrl = params.get('lang')
+    if (fromUrl && LANGS.includes(fromUrl)) return fromUrl
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY)
+      if (stored && LANGS.includes(stored)) return stored
+    } catch { /* private mode */ }
+    return 'pt'
+  }
+
+  function setLang(code) {
+    if (!LANGS.includes(code)) return
+    try { localStorage.setItem(STORAGE_KEY, code) } catch { /* ignore */ }
+    applyLang(code)
+  }
+
+  function hendecagramPaths(cx, cy, outerR) {
+    const pts = []
+    for (let i = 0; i < 11; i++) {
+      const a = (i * 2 * Math.PI) / 11 - Math.PI / 2
+      pts.push([cx + outerR * Math.cos(a), cy + outerR * Math.sin(a)])
+    }
+    return Array.from({ length: 11 }, (_, i) => {
+      const j = (i + 5) % 11
+      return `M ${pts[i][0].toFixed(1)} ${pts[i][1].toFixed(1)} L ${pts[j][0].toFixed(1)} ${pts[j][1].toFixed(1)}`
+    })
+  }
+
+  function seedStars(count, w, h) {
+    const stars = []
+    for (let i = 0; i < count; i++) {
+      const r = Math.random()
+      stars.push({
+        x: Math.random() * w,
+        y: Math.random() * h,
+        rad: r > 0.97 ? 1.4 : r > 0.88 ? 0.9 : r > 0.6 ? 0.55 : 0.35,
+        a: 0.25 + Math.random() * 0.75,
+        tw: 0.003 + Math.random() * 0.008,
+        ph: Math.random() * Math.PI * 2,
+        tint: r > 0.92 ? 'gold' : r > 0.85 ? 'blue' : 'white',
+      })
+    }
+    return stars
+  }
+
+  function initCosmicBackground() {
+    if (document.querySelector('.guia-cosmic-bg')) return
+
+    const root = document.createElement('div')
+    root.className = 'guia-cosmic-bg'
+    root.setAttribute('aria-hidden', 'true')
+
+    const canvas = document.createElement('canvas')
+    canvas.className = 'guia-cosmic-canvas'
+
+    const nebula = document.createElement('div')
+    nebula.className = 'guia-cosmic-nebula'
+
+    const wrap = document.createElement('div')
+    wrap.className = 'guia-cosmic-hendecagram-wrap'
+
+    const paths = hendecagramPaths(200, 200, 118)
+    const zodiacNodes = ZODIAC.map((sym, i) => {
+      const a = (i * 2 * Math.PI) / 12 - Math.PI / 2
+      const r = 158
+      return { sym, x: 200 + r * Math.cos(a), y: 200 + r * Math.sin(a), i }
+    })
+
+    const pathEls = paths.map((d, idx) =>
+      `<path d="${d}" fill="none" stroke="rgba(223,183,108,0.28)" stroke-width="0.9" stroke-linecap="round" />`
+    ).join('')
+    const zodiacEls = zodiacNodes.map(({ sym, x, y, i }) =>
+      `<text x="${x.toFixed(1)}" y="${y.toFixed(1)}" text-anchor="middle" dominant-baseline="central" class="guia-cosmic-zodiac" style="animation-delay:${i * 0.35}s">${sym}</text>`
+    ).join('')
+
+    wrap.innerHTML = `
+      <svg class="guia-cosmic-hendecagram" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="guiaHendecGlow" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="rgba(223,183,108,0.18)" />
+            <stop offset="55%" stop-color="rgba(139,92,246,0.12)" />
+            <stop offset="100%" stop-color="rgba(3,8,24,0)" />
+          </radialGradient>
+        </defs>
+        <circle cx="200" cy="200" r="175" fill="url(#guiaHendecGlow)" />
+        <g class="guia-cosmic-star-lines">${pathEls}</g>
+        <circle cx="200" cy="200" r="42" fill="none" stroke="rgba(223,183,108,0.16)" stroke-width="0.6" />
+        ${zodiacEls}
+      </svg>`
+
+    root.appendChild(canvas)
+    root.appendChild(nebula)
+    root.appendChild(wrap)
+    document.body.insertBefore(root, document.body.firstChild)
+
+    const ctx = canvas.getContext('2d')
+    let stars = []
+    let raf = 0
+
+    const resize = () => {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2)
+      const w = window.innerWidth
+      const h = window.innerHeight
+      canvas.width = w * dpr
+      canvas.height = h * dpr
+      canvas.style.width = `${w}px`
+      canvas.style.height = `${h}px`
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
+      stars = seedStars(Math.floor((w * h) / 4200), w, h)
+    }
+
+    const draw = (t) => {
+      const w = canvas.clientWidth
+      const h = canvas.clientHeight
+      ctx.clearRect(0, 0, w, h)
+      for (const s of stars) {
+        const twinkle = 0.55 + 0.45 * Math.sin(t * s.tw + s.ph)
+        const alpha = s.a * twinkle
+        if (s.tint === 'gold') ctx.fillStyle = `rgba(223,183,108,${alpha * 0.85})`
+        else if (s.tint === 'blue') ctx.fillStyle = `rgba(180,210,255,${alpha * 0.9})`
+        else ctx.fillStyle = `rgba(255,255,255,${alpha})`
+        ctx.beginPath()
+        ctx.arc(s.x, s.y, s.rad, 0, Math.PI * 2)
+        ctx.fill()
+      }
+      raf = requestAnimationFrame(draw)
+    }
+
+    resize()
+    window.addEventListener('resize', resize)
+    raf = requestAnimationFrame(draw)
+  }
+
+  function initLanguageSwitcher(currentLang) {
+    let root = document.getElementById('guia-lang-switcher')
+    if (!root) {
+      root = document.createElement('div')
+      root.id = 'guia-lang-switcher'
+      root.className = 'guia-lang-switcher-root'
+      document.body.appendChild(root)
+    }
+
+    let open = false
+    const render = () => {
+      root.innerHTML = `
+        <div class="guia-lang-switcher">
+          <button type="button" class="guia-lang-trigger" aria-label="${TITLES[currentLang]} - change language" aria-expanded="${open}">
+            <span class="guia-lang-flag">${FLAGS[currentLang]}</span>
+            <span class="guia-lang-caret">▾</span>
+          </button>
+          ${open ? `<div class="guia-lang-menu" role="menu">${LANGS.map((code) => `
+            <button type="button" role="menuitem" class="guia-lang-item${code === currentLang ? ' guia-lang-item--active' : ''}" data-lang="${code}" title="${TITLES[code]}" aria-label="${TITLES[code]}">
+              <span>${FLAGS[code]}</span>
+            </button>`).join('')}</div>` : ''}
+        </div>`
+      root.querySelector('.guia-lang-trigger')?.addEventListener('click', () => {
+        open = !open
+        render()
+      })
+      root.querySelectorAll('.guia-lang-item').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const code = btn.getAttribute('data-lang')
+          if (code && code !== currentLang) {
+            currentLang = code
+            setLang(code)
+          }
+          open = false
+          render()
+        })
+      })
+    }
+
+    document.addEventListener('click', (e) => {
+      if (!root.contains(e.target)) {
+        open = false
+        render()
+      }
+    })
+
+    render()
+    window.__guiaRefreshLangSwitcher = (lang) => {
+      currentLang = lang
+      open = false
+      render()
+    }
+  }
+
+  function applyLang(lang) {
+    const pageId = getPageId()
+    const pack = window.SIDUS_GUIA_I18N
+    if (!pack || !pageId) return
+
+    const page = pack.pages[pageId]
+    const common = pack.common
+    const data = page?.[lang] || page?.pt
+    if (!data && lang !== 'pt') return
+
+    document.documentElement.lang = lang
+
+    if (data?.title) document.title = data.title
+    const metaDesc = document.querySelector('meta[name="description"]')
+    if (metaDesc && data?.description) metaDesc.setAttribute('content', data.description)
+
+    const nav = document.querySelector('.guia-nav')
+    if (nav && common?.nav) {
+      nav.setAttribute('aria-label', common.navAria[lang] || common.navAria.pt)
+      const links = nav.querySelectorAll('a')
+      const keys = ['mapa', 'ascendente', 'signos', 'tarot', 'login']
+      links.forEach((a, i) => {
+        const key = keys[i]
+        if (key && common.nav[key]) a.textContent = common.nav[key][lang] || common.nav[key].pt
+      })
+    }
+
+    const h1 = document.querySelector('.guia-article h1')
+    if (h1 && data?.h1) h1.textContent = data.h1
+
+    const meta = document.querySelector('.guia-meta')
+    if (meta && data?.meta) meta.textContent = data.meta
+
+    const article = document.querySelector('.guia-article')
+    if (article) {
+      if (lang === 'pt' && window.__GUIA_PT_ARTICLE__) {
+        article.innerHTML = window.__GUIA_PT_ARTICLE__
+      } else if (data?.article) {
+        article.innerHTML = data.article
+      }
+    }
+
+    const adLabel = document.querySelector('.guia-ad-label')
+    if (adLabel && common?.adLabel) adLabel.textContent = common.adLabel[lang] || common.adLabel.pt
+
+    const footer = document.querySelector('.guia-footer p')
+    if (footer && common?.footerHtml) footer.innerHTML = common.footerHtml[lang] || common.footerHtml.pt
+
+    window.__guiaRefreshLangSwitcher?.(lang)
+  }
+
+  function init() {
+    const article = document.querySelector('.guia-article')
+    if (article && !window.__GUIA_PT_ARTICLE__) {
+      window.__GUIA_PT_ARTICLE__ = article.innerHTML
+    }
+
+    initCosmicBackground()
+    const lang = getLang()
+    initLanguageSwitcher(lang)
+    if (lang !== 'pt') applyLang(lang)
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init)
+  } else {
+    init()
+  }
+})()
