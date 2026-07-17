@@ -483,8 +483,45 @@ h1 {
   }
 
   .guia-nav {
-    gap: 8px 12px;
-    font-size: 12px;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    margin-top: 14px;
+    padding: 10px;
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(223, 183, 108, 0.18);
+  }
+
+  .guia-nav a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 10px 8px;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.25;
+    min-height: 44px;
+    border-radius: 12px;
+    word-break: break-word;
+    hyphens: auto;
+  }
+
+  .guia-related-links {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .guia-related-links a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    min-height: 44px;
+    padding: 10px 8px;
+    line-height: 1.25;
   }
 
   .guia-cosmic-hendecagram-wrap {

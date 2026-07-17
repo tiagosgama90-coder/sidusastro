@@ -5,7 +5,7 @@
     pt: 'Português', en: 'English', es: 'Español', it: 'Italiano', de: 'Deutsch', fr: 'Français',
   }
   const STORAGE_KEY = 'sidus_lang'
-  const GUIA_VERSION = '20260717c'
+  const GUIA_VERSION = '20260717f'
   const ZODIAC = ['♈', '♉', '♊', '♋', '♌', '♍', '♎', '♏', '♐', '♑', '♒', '♓']
   const NAV_KEYS = ['mapa', 'ascendente', 'signos', 'tarot']
   const GUIDE_SEQUENCE = [
