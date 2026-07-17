@@ -1,6 +1,6 @@
 // Service Worker para notificações PWA - Sidus Astro
-// v4: HTML sempre pela rede (evita ecrã azul após deploy com chunks antigos em cache)
-const CACHE_NAME = 'sidusastro-v4'
+// v5: purge total de caches em deploy (guias/landing actualizados)
+const CACHE_NAME = 'sidusastro-v5'
 const OFFLINE_URLS = ['/manifest.json', '/favicon.svg']
 
 const SIGNO_EMOJI = {
@@ -200,8 +200,9 @@ self.addEventListener('install', (event) => {
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((cacheNames) =>
-      Promise.all(cacheNames.filter((n) => n !== CACHE_NAME).map((n) => caches.delete(n)))
-    ).then(async () => {
+      Promise.all(cacheNames.map((n) => caches.delete(n)))
+    ).then(() => caches.open(CACHE_NAME).then((cache) => cache.addAll(OFFLINE_URLS)))
+      .then(async () => {
       const prefs = await getPrefs()
       if (prefs?.enabled) iniciarTimer()
       return self.clients.claim()
