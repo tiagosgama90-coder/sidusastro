@@ -1884,7 +1884,7 @@ function Dashboard({ nome, mapaNatal, ceuAgora, aspetos, onOraculo, onPrivacidad
     <div style={layoutConteudo(isDesktop)}>
       <HomeTour />
       <header style={{ textAlign: 'center', marginBottom: 20 }}>
-        <h1 style={estilos.titulo}>Sidus</h1>
+        <h1 className="notranslate" translate="no" style={estilos.titulo}>Sidus</h1>
         <p style={{ ...estilos.subtitulo, marginBottom: 0 }}>{nome ? t('home.welcome', { name: nome }) : t('home.skyRealtime')}</p>
       </header>
 
@@ -1904,14 +1904,13 @@ function Dashboard({ nome, mapaNatal, ceuAgora, aspetos, onOraculo, onPrivacidad
       <LeituraGratisDiaria solar={mapaNatal?.solar} lunar={mapaNatal?.lunar} />
 
       {mapaNatalValido(mapaNatal) && (
-        <div style={{ ...estilos.vidro, padding: 20, marginBottom: 18 }}>
+        <div className="home-natal-block" style={{ ...estilos.vidro, padding: 20, marginBottom: 18 }}>
           <div style={{ fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.09em', color: CORES.dourado, marginBottom: 12 }}>
             {t('home.natalChart')}
           </div>
 
-          {/* Linha principal: Sol + Ascendente em destaque */}
-          <div style={{ display: 'flex', gap: 10, marginBottom: 10 }}>
-            <div style={{ flex: 1, background: 'rgba(223,183,108,0.08)', borderRadius: 12, padding: '10px 14px', border: `1px solid rgba(223,183,108,0.2)` }}>
+          <div className="home-natal-signs-row" style={{ display: 'flex', gap: 10, marginBottom: 10 }}>
+            <div className="home-natal-sun-card" style={{ flex: 1, background: 'rgba(223,183,108,0.08)', borderRadius: 12, padding: '10px 14px', border: `1px solid rgba(223,183,108,0.2)` }}>
               <div style={{ fontSize: 10, color: CORES.dourado, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 4 }}>
                 {t('home.sunSign')}
               </div>
@@ -1921,10 +1920,9 @@ function Dashboard({ nome, mapaNatal, ceuAgora, aspetos, onOraculo, onPrivacidad
               <div style={{ fontSize: 11, color: CORES.brancoMuted, marginTop: 2 }}>
                 {mapaNatal.solar.graus}° · {te(mapaNatal.solar.elemento)}
               </div>
-              <ShareSigno mapaNatal={mapaNatal} nome={nome} variant="prominent" />
             </div>
 
-            <div style={{ flex: 1, background: 'rgba(139,92,246,0.12)', borderRadius: 12, padding: '10px 14px', border: `1px solid rgba(139,92,246,0.3)` }}>
+            <div className="home-natal-asc-card" style={{ flex: 1, background: 'rgba(139,92,246,0.12)', borderRadius: 12, padding: '10px 14px', border: `1px solid rgba(139,92,246,0.3)` }}>
               <div style={{ fontSize: 10, color: '#C4B5FD', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 4 }}>
                 {t('home.ascendant')}
               </div>
@@ -1937,11 +1935,12 @@ function Dashboard({ nome, mapaNatal, ceuAgora, aspetos, onOraculo, onPrivacidad
             </div>
           </div>
 
-          {/* Lua */}
-          <div style={{ fontSize: 14, color: CORES.brancoMuted }}>
+          <div style={{ fontSize: 14, color: CORES.brancoMuted, marginBottom: 12 }}>
             {t('home.moonIn')} <span style={{ color: CORES.brancoSuave }}>{ts(mapaNatal.lunar.nome)} {mapaNatal.lunar.simbolo}</span>
             <span style={{ marginLeft: 6, fontSize: 12 }}>{mapaNatal.lunar.graus}° · {te(mapaNatal.lunar.elemento)}</span>
           </div>
+
+          <ShareSigno mapaNatal={mapaNatal} nome={nome} variant="prominent" />
         </div>
       )}
 
@@ -3127,6 +3126,8 @@ function LogoSidus({ onClick, compact = false }) {
       type="button"
       onClick={onClick}
       aria-label="Sidus - Home"
+      className="notranslate"
+      translate="no"
       style={{
         background: 'none',
         border: 'none',
@@ -3139,7 +3140,7 @@ function LogoSidus({ onClick, compact = false }) {
       }}
     >
       <Sparkles size={compact ? 18 : 20} color={CORES.dourado} strokeWidth={1.5} />
-      <span style={{ fontSize: compact ? 17 : 20, fontWeight: 300, letterSpacing: compact ? '0.18em' : '0.2em', color: CORES.dourado }}>SIDUS</span>
+      <span className="notranslate" translate="no" style={{ fontSize: compact ? 17 : 20, fontWeight: 300, letterSpacing: compact ? '0.18em' : '0.2em', color: CORES.dourado }}>SIDUS</span>
     </button>
   )
 }

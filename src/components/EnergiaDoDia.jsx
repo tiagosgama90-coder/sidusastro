@@ -47,12 +47,13 @@ export function EnergiaDoDia({ mapaNatal, ceuAgora = [], aspetos = [] }) {
       padding: '18px 20px',
       marginBottom: 18,
     }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6 }}>
         <Sparkles size={18} color={CORES.dourado} />
         <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: CORES.dourado }}>
           {t('home.energyTitle')}
         </span>
       </div>
+      <p style={{ margin: '0 0 10px', fontSize: 11, color: CORES.brancoMuted, lineHeight: 1.5 }}>{t('home.energySubtitle')}</p>
       <p style={{ margin: 0, fontSize: 14, color: CORES.brancoSuave, lineHeight: 1.65 }}>{energia}</p>
     </div>
   )

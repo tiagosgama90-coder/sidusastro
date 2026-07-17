@@ -50,7 +50,7 @@ export function LandingGuides() {
         {GUIDES.map((guide) => (
           <a
             key={guide.id}
-            href={guide.href}
+            href={lang === 'pt' ? guide.href : `${guide.href}?lang=${lang}`}
             className="landing-guide-card landing-guide-card--compact landing-glass"
             style={{ '--guide-accent': guide.accent }}
           >

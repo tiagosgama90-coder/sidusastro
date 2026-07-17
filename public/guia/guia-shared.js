@@ -22,20 +22,31 @@
     return 'pt'
   }
 
+  function syncLangUrl(code) {
+    try {
+      const url = new URL(window.location.href)
+      if (code === 'pt') url.searchParams.delete('lang')
+      else url.searchParams.set('lang', code)
+      window.history.replaceState({}, '', url)
+    } catch { /* ignore */ }
+  }
+
   function setLang(code) {
     if (!LANGS.includes(code)) return
     try { localStorage.setItem(STORAGE_KEY, code) } catch { /* ignore */ }
+    syncLangUrl(code)
     applyLang(code)
   }
 
-  function hendecagramPaths(cx, cy, outerR) {
+  /** Estrela de 12 pontas ({12/5}) — um vértice por signo. */
+  function dodecagramPaths(cx, cy, outerR) {
     const pts = []
-    for (let i = 0; i < 11; i++) {
-      const a = (i * 2 * Math.PI) / 11 - Math.PI / 2
+    for (let i = 0; i < 12; i++) {
+      const a = (i * 2 * Math.PI) / 12 - Math.PI / 2
       pts.push([cx + outerR * Math.cos(a), cy + outerR * Math.sin(a)])
     }
-    return Array.from({ length: 11 }, (_, i) => {
-      const j = (i + 5) % 11
+    return Array.from({ length: 12 }, (_, i) => {
+      const j = (i + 5) % 12
       return `M ${pts[i][0].toFixed(1)} ${pts[i][1].toFixed(1)} L ${pts[j][0].toFixed(1)} ${pts[j][1].toFixed(1)}`
     })
   }
@@ -73,14 +84,14 @@
     const wrap = document.createElement('div')
     wrap.className = 'guia-cosmic-hendecagram-wrap'
 
-    const paths = hendecagramPaths(200, 200, 118)
+    const paths = dodecagramPaths(200, 200, 118)
     const zodiacNodes = ZODIAC.map((sym, i) => {
       const a = (i * 2 * Math.PI) / 12 - Math.PI / 2
       const r = 158
       return { sym, x: 200 + r * Math.cos(a), y: 200 + r * Math.sin(a), i }
     })
 
-    const pathEls = paths.map((d, idx) =>
+    const pathEls = paths.map((d) =>
       `<path d="${d}" fill="none" stroke="rgba(223,183,108,0.28)" stroke-width="0.9" stroke-linecap="round" />`
     ).join('')
     const zodiacEls = zodiacNodes.map(({ sym, x, y, i }) =>
@@ -167,12 +178,14 @@
               <span>${FLAGS[code]}</span>
             </button>`).join('')}</div>` : ''}
         </div>`
-      root.querySelector('.guia-lang-trigger')?.addEventListener('click', () => {
+      root.querySelector('.guia-lang-trigger')?.addEventListener('click', (e) => {
+        e.stopPropagation()
         open = !open
         render()
       })
       root.querySelectorAll('.guia-lang-item').forEach((btn) => {
-        btn.addEventListener('click', () => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation()
           const code = btn.getAttribute('data-lang')
           if (code && code !== currentLang) {
             currentLang = code
@@ -206,14 +219,19 @@
 
     const page = pack.pages[pageId]
     const common = pack.common
-    const data = page?.[lang] || page?.pt
+    const data = page?.[lang] || (lang === 'pt' ? null : page?.pt)
     if (!data && lang !== 'pt') return
 
     document.documentElement.lang = lang
 
     if (data?.title) document.title = data.title
+    else if (lang === 'pt' && window.__GUIA_PT_META__?.title) document.title = window.__GUIA_PT_META__.title
+
     const metaDesc = document.querySelector('meta[name="description"]')
     if (metaDesc && data?.description) metaDesc.setAttribute('content', data.description)
+    else if (lang === 'pt' && window.__GUIA_PT_META__?.description && metaDesc) {
+      metaDesc.setAttribute('content', window.__GUIA_PT_META__.description)
+    }
 
     const nav = document.querySelector('.guia-nav')
     if (nav && common?.nav) {
@@ -227,17 +245,23 @@
     }
 
     const h1 = document.querySelector('.guia-article h1')
-    if (h1 && data?.h1) h1.textContent = data.h1
+    if (h1) {
+      if (data?.h1) h1.textContent = data.h1
+      else if (lang === 'pt' && window.__GUIA_PT_META__?.h1) h1.textContent = window.__GUIA_PT_META__.h1
+    }
 
     const meta = document.querySelector('.guia-meta')
-    if (meta && data?.meta) meta.textContent = data.meta
+    if (meta) {
+      if (data?.meta) meta.textContent = data.meta
+      else if (lang === 'pt' && window.__GUIA_PT_META__?.meta) meta.textContent = window.__GUIA_PT_META__.meta
+    }
 
-    const article = document.querySelector('.guia-article')
-    if (article) {
-      if (lang === 'pt' && window.__GUIA_PT_ARTICLE__) {
-        article.innerHTML = window.__GUIA_PT_ARTICLE__
+    const body = document.querySelector('.guia-article-body')
+    if (body) {
+      if (lang === 'pt' && window.__GUIA_PT_BODY__) {
+        body.innerHTML = window.__GUIA_PT_BODY__
       } else if (data?.article) {
-        article.innerHTML = data.article
+        body.innerHTML = data.article
       }
     }
 
@@ -254,13 +278,31 @@
   }
 
   function init() {
-    const article = document.querySelector('.guia-article')
-    if (article && !window.__GUIA_PT_ARTICLE__) {
-      window.__GUIA_PT_ARTICLE__ = article.innerHTML
+    const h1 = document.querySelector('.guia-article h1')
+    const meta = document.querySelector('.guia-meta')
+    const metaDesc = document.querySelector('meta[name="description"]')
+    if (!window.__GUIA_PT_META__) {
+      window.__GUIA_PT_META__ = {
+        title: document.title,
+        description: metaDesc?.getAttribute('content') || '',
+        h1: h1?.textContent || '',
+        meta: meta?.textContent || '',
+      }
     }
+
+    const body = document.querySelector('.guia-article-body')
+    if (body && !window.__GUIA_PT_BODY__) {
+      window.__GUIA_PT_BODY__ = body.innerHTML
+    }
+
+    document.querySelectorAll('.guia-logo').forEach((el) => {
+      el.classList.add('notranslate')
+      el.setAttribute('translate', 'no')
+    })
 
     initCosmicBackground()
     const lang = getLang()
+    if (lang !== 'pt') syncLangUrl(lang)
     initLanguageSwitcher(lang)
     if (lang !== 'pt') applyLang(lang)
   }

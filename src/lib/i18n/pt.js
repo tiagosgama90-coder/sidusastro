@@ -275,6 +275,7 @@ export default {
     askOracleToday: 'Perguntar ao Oráculo Sidus (3 grátis)',
     adminSocialOnly: 'Só admin · sugestão redes sociais',
     energyTitle: 'Energia do dia · ao teu mapa',
+    energySubtitle: 'Trânsitos de hoje cruzados com o teu signo solar, fase lunar e aspectos activos no céu — um resumo rápido para orientar o dia.',
     weeklyTransitTitle: 'Trânsito da semana',
     weeklyTransitCalm: 'Céu estável esta semana — bom momento para consolidar rotinas e honrar o teu ritmo natural.',
     weeklyTransitAspects: 'Trânsitos activos: {aspects}. Observa como estas energias se cruzam com o teu mapa natal.',

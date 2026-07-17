@@ -288,7 +288,14 @@ export default {
     horoscopePremiumAll: "Horóscopo de los 12 signos - Premium",
     horoscopeNoMap: "Tu carta natal personaliza el horóscopo. Completa el registro para ver tu signo.",
     askOracleToday: "Pregunta a Sidus Oracle (3 gratis)",
-    adminSocialOnly: "Solo administrador · borrador de publicación social"
+    adminSocialOnly: "Solo administrador · borrador de publicación social",
+    energyTitle: 'Energía del día · para tu carta',
+    energySubtitle: 'Tránsitos de hoy cruzados con tu signo solar, fase lunar y aspectos activos en el cielo — un resumen rápido para orientar el día.',
+    weeklyTransitTitle: 'Tránsito de la semana',
+    weeklyTransitCalm: 'Cielo estable esta semana — buen momento para consolidar rutinas.',
+    weeklyTransitAspects: 'Tránsitos activos: {aspects}. Observa cómo se cruzan con tu carta natal.',
+    weeklyTransitWithSign: 'El Sol transita {sign}. Tránsitos de la semana: {aspects}.',
+    weeklyTransitSolOnly: 'El Sol transita {sign} — la energía solar de la semana activa temas de este signo en tu carta.',
   },
   mapa: {
     title: 'Carta natal',

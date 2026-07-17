@@ -1,8 +1,9 @@
 /** Marca Sidus - estrela de quatro pontas + detalhes (como logotipo original). */
-export function SidusLogoMark({ size = 22, className }) {
+export function SidusLogoMark({ size = 22, className = '' }) {
   return (
     <svg
-      className={className}
+      className={`notranslate ${className}`.trim()}
+      translate="no"
       width={size}
       height={size}
       viewBox="0 0 32 32"

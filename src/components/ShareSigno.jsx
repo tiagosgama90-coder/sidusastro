@@ -13,6 +13,43 @@ function dispositivoMovel() {
   return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent)
 }
 
+function isIOS() {
+  if (typeof navigator === 'undefined') return false
+  return /iPhone|iPad|iPod/i.test(navigator.userAgent)
+}
+
+function abrirWhatsApp(texto) {
+  const encoded = encodeURIComponent(texto)
+  const url = `https://api.whatsapp.com/send?text=${encoded}`
+  if (dispositivoMovel()) {
+    window.location.href = url
+    return
+  }
+  window.open(url, '_blank', 'noopener,noreferrer')
+}
+
+async function partilharInstagramStories(blob, texto, titulo) {
+  const file = new File([blob], 'sidusastro-stories.png', { type: 'image/png' })
+  const payload = { title: titulo, text: texto, files: [file] }
+  if (navigator.share && (!navigator.canShare || navigator.canShare(payload))) {
+    await navigator.share(payload)
+    return 'shared'
+  }
+  if (dispositivoMovel()) {
+    descarregarBlob(blob, 'sidusastro-stories.png')
+    await copiarTexto(texto)
+    if (isIOS()) {
+      window.location.href = 'instagram-stories://share'
+      return 'opened'
+    }
+    window.location.href = 'instagram://story-camera'
+    return 'opened'
+  }
+  descarregarBlob(blob, 'sidusastro-stories.png')
+  await copiarTexto(texto)
+  return 'desktop'
+}
+
 function criarCanvasPartilha({ signoSol, signoLua, signoAsc, nome, lang }) {
   const W = 600
   const H = 315
@@ -200,8 +237,7 @@ export function ShareSigno({ mapaNatal, nome, variant = 'default' }) {
     setEstado('loading')
     try {
       const { texto } = await prepararPartilha()
-      const waUrl = `https://wa.me/?text=${encodeURIComponent(texto)}`
-      window.open(waUrl, '_blank', 'noopener,noreferrer')
+      abrirWhatsApp(texto)
       setEstado('done')
       setTimeout(() => setEstado('idle'), 2000)
     } catch {
@@ -215,12 +251,7 @@ export function ShareSigno({ mapaNatal, nome, variant = 'default' }) {
     setEstado('loading')
     try {
       const { blob, texto } = await prepararPartilha()
-      await copiarTexto(texto)
-      if (!dispositivoMovel()) descarregarBlob(blob, 'sidusastro-stories.png')
-      if (dispositivoMovel() && navigator.share) {
-        const file = new File([blob], 'sidusastro-stories.png', { type: 'image/png' })
-        await partilharNativo({ files: [file] })
-      }
+      await partilharInstagramStories(blob, texto, t('share.title'))
       setEstado('done')
       setTimeout(() => setEstado('idle'), 2500)
     } catch (e) {
@@ -231,7 +262,7 @@ export function ShareSigno({ mapaNatal, nome, variant = 'default' }) {
       setEstado('error')
       setTimeout(() => setEstado('idle'), 3000)
     }
-  }, [signoSol, prepararPartilha])
+  }, [signoSol, prepararPartilha, t])
 
   if (!signoSol) return null
 

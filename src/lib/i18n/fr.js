@@ -288,7 +288,14 @@ export default {
     horoscopePremiumAll: "Horoscope des 12 signes - Premium",
     horoscopeNoMap: "Votre carte natale personnalise l'horoscope. Complétez l'inscription pour voir votre signe.",
     askOracleToday: "Demandez à Sidus Oracle (3 gratuits)",
-    adminSocialOnly: "Admin uniquement · brouillon de publication sociale"
+    adminSocialOnly: "Admin uniquement · brouillon de publication sociale",
+    energyTitle: 'Énergie du jour · pour votre thème',
+    energySubtitle: 'Transits du jour croisés avec votre signe solaire, phase lunaire et aspects actifs — un résumé rapide pour guider la journée.',
+    weeklyTransitTitle: 'Transit de la semaine',
+    weeklyTransitCalm: 'Ciel stable cette semaine — bon moment pour consolider vos routines.',
+    weeklyTransitAspects: 'Transits actifs : {aspects}. Observez comment ils croisent votre thème natal.',
+    weeklyTransitWithSign: 'Le Soleil transite {sign}. Transits de la semaine : {aspects}.',
+    weeklyTransitSolOnly: 'Le Soleil transite {sign} — l\'énergie solaire de la semaine active les thèmes de ce signe dans votre thème.',
   },
   mapa: {
     title: 'Carte natale',

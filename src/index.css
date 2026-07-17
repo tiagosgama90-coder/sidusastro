@@ -2081,7 +2081,7 @@ html.sidus-no-ads .google-auto-placed {
 
 /* Share prominente */
 .share-signo-prominent {
-  margin-top: 12px;
+  margin-top: 0;
   padding-top: 12px;
   border-top: 1px solid rgba(223, 183, 108, 0.15);
 }
@@ -2091,6 +2091,33 @@ html.sidus-no-ads .google-auto-placed {
   font-weight: 600;
   color: rgba(255, 255, 255, 0.85);
   line-height: 1.45;
+}
+
+@media (max-width: 640px) {
+  .home-natal-block {
+    padding: 14px 14px !important;
+  }
+  .home-natal-signs-row {
+    flex-direction: column;
+    gap: 8px !important;
+  }
+  .home-natal-sun-card,
+  .home-natal-asc-card {
+    padding: 8px 12px !important;
+  }
+  .home-natal-sun-card div:nth-child(2),
+  .home-natal-asc-card div:nth-child(2) {
+    font-size: 15px !important;
+  }
+  .share-signo-prominent .share-signo-lead {
+    font-size: 12px;
+  }
+  .share-signo-prominent button {
+    flex: 1 1 calc(50% - 4px);
+    min-width: 0;
+    font-size: 11px !important;
+    padding: 8px 10px !important;
+  }
 }
 
 /* Premium comparação */

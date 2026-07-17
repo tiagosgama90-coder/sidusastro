@@ -1,15 +1,16 @@
 import { useEffect, useRef, useMemo } from 'react'
 
-const ZODIAC = ['♈', '♉', '♊', '♋', '♌', '♎', '♏', '♐', '♑', '♒', '♓']
+const ZODIAC = ['♈', '♉', '♊', '♋', '♌', '♍', '♎', '♏', '♐', '♑', '♒', '♓']
 
-function hendecagramPaths(cx, cy, outerR) {
+/** Estrela de 12 pontas ({12/5}) — um vértice por signo. */
+function dodecagramPaths(cx, cy, outerR) {
   const pts = []
-  for (let i = 0; i < 11; i++) {
-    const a = (i * 2 * Math.PI) / 11 - Math.PI / 2
+  for (let i = 0; i < 12; i++) {
+    const a = (i * 2 * Math.PI) / 12 - Math.PI / 2
     pts.push([cx + outerR * Math.cos(a), cy + outerR * Math.sin(a)])
   }
-  return Array.from({ length: 11 }, (_, i) => {
-    const j = (i + 5) % 11
+  return Array.from({ length: 12 }, (_, i) => {
+    const j = (i + 5) % 12
     return `M ${pts[i][0].toFixed(1)} ${pts[i][1].toFixed(1)} L ${pts[j][0].toFixed(1)} ${pts[j][1].toFixed(1)}`
   })
 }
@@ -36,7 +37,7 @@ export function LandingCosmicBackground() {
   const starsRef = useRef(null)
   const rafRef = useRef(0)
 
-  const starPaths = useMemo(() => hendecagramPaths(200, 200, 118), [])
+  const starPaths = useMemo(() => dodecagramPaths(200, 200, 118), [])
   const zodiacNodes = useMemo(() => ZODIAC.map((sym, i) => {
     const a = (i * 2 * Math.PI) / 12 - Math.PI / 2
     const r = 158
