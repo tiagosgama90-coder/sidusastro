@@ -88,6 +88,11 @@
 
 # Ficheiros estáticos e guias editoriais ANTES do fallback SPA
 [[redirects]]
+  from = "/landing/*"
+  to = "/landing/:splat"
+  status = 200
+
+[[redirects]]
   from = "/guia/*"
   to = "/guia/:splat"
   status = 200
