@@ -2337,8 +2337,11 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
     } else if (prontosParaMapa) {
       mostrarCalculando = true
       mensagem = t('mapa.calculating')
-    } else if ((isPremium || mapaGerado) && !temDadosMinimos) {
+    } else if (isPremium && !temDadosMinimos) {
       mensagem = t('mapa.premiumCompleteNatal')
+      mostrarCtaPremium = true
+    } else if (mapaGerado && !temDadosMinimos) {
+      mensagem = t('mapa.fillNatal')
       mostrarCtaPremium = true
     } else if (temDadosMinimos && (mapaGerado || isPremium)) {
       mensagem = t('mapa.repairNatal')
