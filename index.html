@@ -86,6 +86,53 @@
   </head>
   <body>
     <div id="root"></div>
+    <script>
+      (function () {
+        var mostrado = false
+        function limparCachesSidus() {
+          var tarefas = []
+          if ('caches' in window) {
+            tarefas.push(caches.keys().then(function (keys) {
+              return Promise.all(keys.map(function (k) { return caches.delete(k) }))
+            }))
+          }
+          if ('serviceWorker' in navigator) {
+            tarefas.push(navigator.serviceWorker.getRegistrations().then(function (regs) {
+              return Promise.all(regs.map(function (r) { return r.unregister() }))
+            }))
+          }
+          return Promise.all(tarefas)
+        }
+        function mostrarRecuperacao() {
+          if (mostrado) return
+          var root = document.getElementById('root')
+          if (!root || root.childNodes.length) return
+          mostrado = true
+          root.innerHTML = '<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;background:#0B071E;color:#fff;font-family:system-ui,sans-serif;text-align:center"><div style="max-width:360px"><p style="margin:0 0 8px;font-size:18px;color:#DFB76C">Nova versão disponível</p><p style="margin:0 0 20px;font-size:14px;line-height:1.5;color:rgba(255,255,255,0.75)">O site foi actualizado mas o teu browser ainda tinha ficheiros antigos em cache.</p><button type="button" id="sidus-cache-reload" style="background:linear-gradient(135deg,#DFB76C,#B8944F);border:none;border-radius:12px;color:#0B071E;font-size:15px;font-weight:700;padding:12px 20px;cursor:pointer">Recarregar agora</button></div></div>'
+          var btn = document.getElementById('sidus-cache-reload')
+          if (btn) {
+            btn.addEventListener('click', function () {
+              btn.disabled = true
+              btn.textContent = 'A actualizar…'
+              limparCachesSidus().finally(function () {
+                sessionStorage.removeItem('sidus_sw_reload')
+                window.location.reload()
+              })
+            })
+          }
+        }
+        window.addEventListener('error', function (e) {
+          var t = e.target
+          if (t && (t.tagName === 'SCRIPT' || t.tagName === 'LINK')) mostrarRecuperacao()
+        }, true)
+        window.addEventListener('unhandledrejection', function (e) {
+          var msg = String((e.reason && e.reason.message) || e.reason || '')
+          if (/Failed to fetch dynamically imported module|Importing a module script failed|Loading chunk|error loading dynamically imported module/i.test(msg)) {
+            mostrarRecuperacao()
+          }
+        })
+      })()
+    </script>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

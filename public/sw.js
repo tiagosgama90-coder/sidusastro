@@ -1,6 +1,7 @@
 // Service Worker para notificações PWA - Sidus Astro
-const CACHE_NAME = 'sidusastro-v3'
-const urlsToCache = ['/', '/index.html', '/manifest.json']
+// v4: HTML sempre pela rede (evita ecrã azul após deploy com chunks antigos em cache)
+const CACHE_NAME = 'sidusastro-v4'
+const OFFLINE_URLS = ['/manifest.json', '/favicon.svg']
 
 const SIGNO_EMOJI = {
   'Áries': '♈', 'Carneiro': '♈', 'Touro': '♉', 'Gémeos': '♊', 'Caranguejo': '♋',
@@ -136,11 +137,62 @@ async function clearPrefs() {
   } catch { /* ignore */ }
 }
 
+function isNavigationRequest(request) {
+  return request.mode === 'navigate' || request.destination === 'document'
+}
+
+function isHtmlShell(url) {
+  return url.pathname === '/' || url.pathname === '/index.html'
+}
+
+function isImmutableAsset(url) {
+  return url.pathname.startsWith('/assets/')
+    || url.pathname.startsWith('/tarot/mystic/')
+    || url.pathname.startsWith('/tarot/lenormand/')
+}
+
+async function cacheFirst(request) {
+  const cached = await caches.match(request)
+  if (cached) return cached
+  const response = await fetch(request)
+  if (response.ok) {
+    const cache = await caches.open(CACHE_NAME)
+    await cache.put(request, response.clone())
+  }
+  return response
+}
+
+async function networkFirst(request, { allowCacheFallback = true } = {}) {
+  try {
+    const response = await fetch(request)
+    if (response.ok) {
+      const url = new URL(request.url)
+      if (isImmutableAsset(url)) {
+        const cache = await caches.open(CACHE_NAME)
+        await cache.put(request, response.clone())
+      }
+    }
+    return response
+  } catch (err) {
+    if (!allowCacheFallback) throw err
+    const cached = await caches.match(request)
+    if (cached) return cached
+    throw err
+  }
+}
+
+function offlineHtml() {
+  return new Response(
+    '<!doctype html><html lang="pt"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Sidusastro — offline</title></head><body style="margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:#0B071E;color:#fff;font-family:system-ui,sans-serif;text-align:center;padding:24px"><div><p>Sem ligação à internet.</p><p><a href="/" style="color:#DFB76C">Tentar de novo</a></p></div></body></html>',
+    { headers: { 'Content-Type': 'text/html; charset=utf-8' } },
+  )
+}
+
 // ─── Instalar / Activar ────────────────────────────────────────────────────
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME)
-      .then((cache) => cache.addAll(urlsToCache))
+      .then((cache) => cache.addAll(OFFLINE_URLS))
       .then(() => self.skipWaiting())
   )
 })
@@ -158,14 +210,27 @@ self.addEventListener('activate', (event) => {
 })
 
 self.addEventListener('fetch', (event) => {
+  if (event.request.method !== 'GET') return
+
+  const url = new URL(event.request.url)
+  if (url.origin !== self.location.origin) return
+  if (url.pathname.startsWith('/api/')) return
+
+  if (isNavigationRequest(event.request) || isHtmlShell(url)) {
+    event.respondWith(
+      networkFirst(event.request, { allowCacheFallback: false })
+        .catch(() => offlineHtml())
+    )
+    return
+  }
+
+  if (isImmutableAsset(url)) {
+    event.respondWith(cacheFirst(event.request))
+    return
+  }
+
   event.respondWith(
-    caches.match(event.request).then((response) => {
-      if (response) return response
-      return fetch(event.request).catch(() => {
-        if (event.request.mode === 'navigate') return caches.match('/index.html')
-        return new Response('Offline', { status: 503 })
-      })
-    })
+    networkFirst(event.request).catch(() => new Response('Offline', { status: 503 }))
   )
 })
 
@@ -232,6 +297,20 @@ self.addEventListener('message', async (event) => {
 
   if (type === 'DISABLE_NOTIFICATIONS') {
     await desactivarCompletamente()
+    return
+  }
+
+  if (type === 'SKIP_WAITING') {
+    self.skipWaiting()
+    return
+  }
+
+  if (type === 'CLEAR_HTML_CACHE') {
+    try {
+      const cache = await caches.open(CACHE_NAME)
+      await cache.delete('/')
+      await cache.delete('/index.html')
+    } catch { /* ignore */ }
     return
   }
 

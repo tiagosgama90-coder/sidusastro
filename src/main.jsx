@@ -20,16 +20,55 @@ if ('serviceWorker' in navigator) {
     } catch { /* ignore */ }
   }
 
+  const pedirReloadPorUpdateSW = () => {
+    if (sessionStorage.getItem('sidus_sw_reload')) return
+    sessionStorage.setItem('sidus_sw_reload', '1')
+    window.location.reload()
+  }
+
+  let swUpdatePendente = false
+
+  const activarNovoServiceWorker = (worker) => {
+    if (!worker || !navigator.serviceWorker.controller) return
+    swUpdatePendente = true
+    worker.postMessage({ type: 'SKIP_WAITING' })
+  }
+
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/sw.js').then((reg) => {
       console.info('[Sidus] Service Worker registado ✓', reg.scope)
       syncNotifPrefsComSW()
+
+      if (reg.waiting && navigator.serviceWorker.controller) {
+        activarNovoServiceWorker(reg.waiting)
+      }
+
+      reg.addEventListener('updatefound', () => {
+        const novo = reg.installing
+        if (!novo) return
+        novo.addEventListener('statechange', () => {
+          if (novo.state === 'installed' && navigator.serviceWorker.controller) {
+            activarNovoServiceWorker(novo)
+          }
+        })
+      })
+
+      setInterval(() => reg.update().catch(() => {}), 60 * 60 * 1000)
     }).catch((err) => {
       console.warn('[Sidus] Service Worker falhou ao registar:', err)
     })
   })
 
-  navigator.serviceWorker.addEventListener('controllerchange', syncNotifPrefsComSW)
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    syncNotifPrefsComSW()
+    if (!swUpdatePendente) return
+    swUpdatePendente = false
+    pedirReloadPorUpdateSW()
+  })
+}
+
+if (sessionStorage.getItem('sidus_sw_reload')) {
+  sessionStorage.removeItem('sidus_sw_reload')
 }
 
 createRoot(document.getElementById('root')).render(
