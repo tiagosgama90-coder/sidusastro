@@ -16,6 +16,7 @@ on:
       - firestore.rules
       - firebase.json
       - .firebaserc
+  workflow_dispatch:
 
 jobs:
   deploy-rules:
