@@ -1257,6 +1257,14 @@ html.sidus-no-ads .google-auto-placed {
   letter-spacing: 0.02em;
   text-align: center;
 }
+.landing-trust-bar {
+  margin: 10px 0 0;
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(223, 183, 108, 0.88);
+  text-align: center;
+  letter-spacing: 0.03em;
+}
 .landing-portal-form-lead {
   margin: 0 0 14px;
   padding: 0 4px;
@@ -1839,8 +1847,8 @@ html.sidus-no-ads .google-auto-placed {
 
 /* Mapa astral - preview desfocado + paywall inline (utilizador gratuito) */
 .mapa-preview-blurred {
-  filter: blur(14px);
-  opacity: 0.72;
+  filter: blur(8px);
+  opacity: 0.82;
   pointer-events: none;
   user-select: none;
   -webkit-user-select: none;

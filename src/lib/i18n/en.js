@@ -61,6 +61,7 @@ export default {
       eyebrowBrand: 'SIDUS',
       logoAlt: 'Sidus',
       title: 'When you were born, the sky drew your astral chart',
+      trustBar: 'Free to start · VIP €9.99 one-time payment',
       formLead: 'Read your personalized horoscope',
       mobileLoginPrompt: 'Already have an account?',
       mobileLoginLink: 'Sign in here',
@@ -383,6 +384,7 @@ export default {
     paymentMethodsBr: 'PIX · €5 (recommended) · Card / PayPal · €9.99',
     priceBrPixNote: 'Brazil offer · €5 with PIX (~R$28)',
     productName: 'Sidus VIP - Lifetime access',
+    continueFree: 'Continue free — explore without paying',
     notificationsPaywall: '',
   },
   oracle: {

@@ -77,6 +77,7 @@ export default {
       eyebrowBrand: "SIDUS",
       logoAlt: "Sidus",
       title: "Cuando naciste, el cielo trazó tu carta astral",
+      trustBar: "Gratis para empezar · VIP 9,99 € pago único",
       formLead: "Lee tu horóscopo personalizado",
       mobileLoginPrompt: "¿Ya tienes cuenta?",
       mobileLoginLink: "Conéctate aquí",
@@ -396,6 +397,7 @@ export default {
     paymentMethodsBr: "PIX · 5 € (recomendado) · Tarjeta / PayPal · 9,99 €",
     priceBrPixNote: "Oferta Brasil · 5 € con PIX (~R$ 28)",
     productName: "Sidus VIP - Acceso de por vida",
+    continueFree: "Continuar gratis — explorar sin pagar",
     notificationsPaywall: "",
   },
   oracle: {

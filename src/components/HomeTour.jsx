@@ -18,7 +18,7 @@ export function HomeTour() {
   useEffect(() => {
     try {
       if (localStorage.getItem(STORAGE_KEY) === '1') return
-      const timer = setTimeout(() => setAtivo(true), 1200)
+      const timer = setTimeout(() => setAtivo(true), 6000)
       return () => clearTimeout(timer)
     } catch {
       /* private mode */

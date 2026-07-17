@@ -1908,14 +1908,6 @@ function Dashboard({ nome, mapaNatal, ceuAgora, aspetos, onOraculo, onPrivacidad
       <EnergiaDoDia mapaNatal={mapaNatal} ceuAgora={ceuAgora} aspetos={aspetos} />
       <TransitoSemanal ceuAgora={ceuAgora} aspetos={aspetos} />
 
-      <PremiumHomeTeaser
-        isPremium={isPremium}
-        onUpgrade={onUpgrade}
-        oracleUsadas={oraclePerguntasUsadas}
-        tarotUsadas={leiturasTarotUsadas}
-        isBrasil={isBrasil}
-      />
-
       <LeituraGratisDiaria solar={mapaNatal?.solar} lunar={mapaNatal?.lunar} />
 
       {mapaNatalValido(mapaNatal) && (
@@ -1957,6 +1949,16 @@ function Dashboard({ nome, mapaNatal, ceuAgora, aspetos, onOraculo, onPrivacidad
 
           <ShareSigno mapaNatal={mapaNatal} nome={nome} variant="prominent" />
         </div>
+      )}
+
+      {!isPremium && (
+        <PremiumHomeTeaser
+          isPremium={isPremium}
+          onUpgrade={onUpgrade}
+          oracleUsadas={oraclePerguntasUsadas}
+          tarotUsadas={leiturasTarotUsadas}
+          isBrasil={isBrasil}
+        />
       )}
 
       <AstroNewsCarousel aspetos={aspetos} />
@@ -2772,6 +2774,11 @@ function Paywall({ onVoltar, onPagar, onSucesso, isDesktop, isBrasil, oraclePerg
       </button>
       <p style={{ textAlign: 'center', fontSize: 11, color: CORES.brancoMuted, marginTop: 12 }}>
         {isBrasil ? t('vip.paymentMethodsBr') : t('vip.paymentMethods')}
+      </p>
+      <p style={{ textAlign: 'center', marginTop: 16 }}>
+        <button type="button" onClick={onVoltar} style={{ background: 'none', border: 'none', color: CORES.brancoMuted, fontSize: 13, cursor: 'pointer', textDecoration: 'underline', textUnderlineOffset: 3 }}>
+          {t('vip.continueFree')}
+        </button>
       </p>
     </div>
   )

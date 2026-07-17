@@ -54,7 +54,6 @@ function escapeXml(value) {
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
-    .replace(/'/g, '&apos;')
 }
 
 function langPath(path, lang) {
@@ -87,28 +86,18 @@ function urlEntry(loc, { priority, changefreq, alternates = '' }) {
   </url>`
 }
 
-function writeUrlset(filename, entries) {
-  const xml = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-        xmlns:xhtml="http://www.w3.org/1999/xhtml">
-${entries.join('\n')}
-</urlset>
-`
-  writeFileSync(join(PUBLIC, filename), xml, 'utf8')
-}
-
-const appEntries = []
+const entries = []
 
 for (const route of SPA_ROUTES) {
   const alts = alternateLinks(route.path)
-  appEntries.push(urlEntry(locForRoute(route.path, null), {
+  entries.push(urlEntry(locForRoute(route.path, null), {
     priority: route.priority,
     changefreq: route.changefreq,
     alternates: alts,
   }))
 
   for (const { code } of LANGS) {
-    appEntries.push(urlEntry(locForRoute(route.path, code), {
+    entries.push(urlEntry(locForRoute(route.path, code), {
       priority: Math.max(0.4, route.priority - 0.05),
       changefreq: route.changefreq,
       alternates: alts,
@@ -117,42 +106,26 @@ for (const route of SPA_ROUTES) {
 }
 
 for (const page of STATIC_PAGES) {
-  appEntries.push(urlEntry(`${BASE}${page.path}`, {
+  entries.push(urlEntry(`${BASE}${page.path}`, {
     priority: page.priority,
     changefreq: page.changefreq,
   }))
 }
 
-const guideEntries = GUIDES.map((guide) => {
+for (const guide of GUIDES) {
   const loc = `${BASE}${guide.path}`
-  const guideAlts = LANGS.map(({ code, hreflang }) => {
-    const href = code === 'pt' ? loc : `${loc}?lang=${code}`
-    return `    <xhtml:link rel="alternate" hreflang="${hreflang}" href="${escapeXml(href)}"/>`
-  }).join('\n') + `\n    <xhtml:link rel="alternate" hreflang="x-default" href="${escapeXml(loc)}"/>`
-
-  return urlEntry(loc, {
+  entries.push(urlEntry(loc, {
     priority: guide.priority,
     changefreq: guide.changefreq,
-    alternates: guideAlts,
-  })
-})
+  }))
+}
 
-writeUrlset('sitemap-app.xml', appEntries)
-writeUrlset('sitemap-guides.xml', guideEntries)
-
-const indexXml = `<?xml version="1.0" encoding="UTF-8"?>
-<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <sitemap>
-    <loc>${BASE}/sitemap-app.xml</loc>
-    <lastmod>${LASTMOD}</lastmod>
-  </sitemap>
-  <sitemap>
-    <loc>${BASE}/sitemap-guides.xml</loc>
-    <lastmod>${LASTMOD}</lastmod>
-  </sitemap>
-</sitemapindex>
+const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+${entries.join('\n')}
+</urlset>
 `
 
-writeFileSync(join(PUBLIC, 'sitemap.xml'), indexXml, 'utf8')
-
-console.log(`Sitemaps: index + app (${appEntries.length} URLs) + guides (${guideEntries.length} URLs)`)
+writeFileSync(join(PUBLIC, 'sitemap.xml'), xml, 'utf8')
+console.log(`Wrote sitemap.xml with ${entries.length} URLs`)

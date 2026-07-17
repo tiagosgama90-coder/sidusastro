@@ -12,6 +12,7 @@ export function LandingPortalHero() {
         <span className="landing-portal-brand-text notranslate" translate="no">SIDUS</span>
       </div>
       <h1 className="landing-portal-title">{t('auth.portal.title')}</h1>
+      <p className="landing-trust-bar">{t('auth.portal.trustBar')}</p>
     </header>
   )
 }
