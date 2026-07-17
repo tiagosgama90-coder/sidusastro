@@ -854,16 +854,4 @@ export default {
     banner: '🇧🇷 Brasileiros: Sidus VIP por 5 € com PIX — acesso vitalício ao cosmos completo.',
     premiumNote: 'Oferta especial Brasil: 5 € com PIX. Cartão e PayPal: 9,99 €.',
   },
-  referral: {
-    ariaLabel: 'Programa de referência Sidus',
-    title: 'Convida um amigo',
-    lead: 'Partilha o teu link — quando o amigo criar o mapa, ganhas 1 leitura de tarot extra.',
-    bonusActive: 'Tens {n} leitura(s) bónus de referência disponíveis',
-    share: 'Partilhar link',
-    copy: 'Copiar link',
-    copyLink: 'Copiar',
-    copied: 'Copiado!',
-    foot: 'O bónus é creditado quando o convidado completa o mapa astral.',
-    shareText: 'Descobre o teu mapa astral grátis no Sidus — {link}',
-  },
 }

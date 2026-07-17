@@ -105,19 +105,18 @@ function registarLeituraGratis(userId) {
   }
 }
 
-function maxLeiturasGratis(bonus = 0) {
-  const extra = Number(bonus) || 0
-  return MAX_LEITURAS_GRATIS + Math.max(0, extra)
+function maxLeiturasGratis() {
+  return MAX_LEITURAS_GRATIS
 }
 
-function leiturasGratisRestantes(isPremium, userId, leiturasRemotas = 0, bonus = 0) {
+function leiturasGratisRestantes(isPremium, userId, leiturasRemotas = 0) {
   if (isPremium === true) return Infinity
-  return Math.max(0, maxLeiturasGratis(bonus) - leiturasGratisUsadas(userId, leiturasRemotas))
+  return Math.max(0, maxLeiturasGratis() - leiturasGratisUsadas(userId, leiturasRemotas))
 }
 
-function podeLerGratis(isPremium, userId, leiturasRemotas = 0, bonus = 0) {
+function podeLerGratis(isPremium, userId, leiturasRemotas = 0) {
   if (isPremium === true) return true
-  return leiturasGratisUsadas(userId, leiturasRemotas) < maxLeiturasGratis(bonus)
+  return leiturasGratisUsadas(userId, leiturasRemotas) < maxLeiturasGratis()
 }
 
 const TIPOS = [
@@ -155,7 +154,7 @@ function consumirCreditoTarotPago() {
   return false
 }
 
-export function EcraTarot({ mapaNatal, isPremium, userId, leiturasTarotUsadas = 0, tarotBonusLeituras = 0, tarotCreditoPago = false, onTarotCreditoConsumido, onLeituraGratisUsada, onPagar, onVoltar, onPremium }) {
+export function EcraTarot({ mapaNatal, isPremium, userId, leiturasTarotUsadas = 0, tarotCreditoPago = false, onTarotCreditoConsumido, onLeituraGratisUsada, onPagar, onVoltar, onPremium }) {
   const { lang, t } = useLanguage()
   const [fase, setFase]           = useState('seleccionar')
   const [tipoId, setTipoId]       = useState(null)
@@ -208,9 +207,9 @@ export function EcraTarot({ mapaNatal, isPremium, userId, leiturasTarotUsadas = 
     : tipo
   const posicoes = (mapaPosicoes?.[tipoId]) || POSICOES[tipoId] || []
   const usadas = leiturasGratisUsadas(userId, leiturasTarotUsadas)
-  const restantes = leiturasGratisRestantes(isPremium, userId, leiturasTarotUsadas, tarotBonusLeituras)
-  const podeLer = podeLerGratis(isPremium, userId, leiturasTarotUsadas, tarotBonusLeituras)
-  const gratisEsgotada = !isPremium && usadas >= maxLeiturasGratis(tarotBonusLeituras)
+  const restantes = leiturasGratisRestantes(isPremium, userId, leiturasTarotUsadas)
+  const podeLer = podeLerGratis(isPremium, userId, leiturasTarotUsadas)
+  const gratisEsgotada = !isPremium && usadas >= maxLeiturasGratis()
 
   const refrescar = () => setTick(n => n + 1)
 
@@ -237,7 +236,7 @@ export function EcraTarot({ mapaNatal, isPremium, userId, leiturasTarotUsadas = 
     if (!isDiaria && !isPremium && leituraPaga) {
       setLeituraPaga(false)
       onTarotCreditoConsumido?.()
-    } else if (!isDiaria && !isPremium && !leituraPaga && podeLerGratis(isPremium, userId, leiturasTarotUsadas, tarotBonusLeituras)) {
+    } else if (!isDiaria && !isPremium && !leituraPaga && podeLerGratis(isPremium, userId, leiturasTarotUsadas)) {
       const n = registarLeituraGratis(userId)
       onLeituraGratisUsada?.(n)
       refrescar()

@@ -60,8 +60,6 @@ import { HomeTour } from './components/HomeTour.jsx'
 import { EnergiaDoDia, TransitoSemanal } from './components/EnergiaDoDia.jsx'
 import { PremiumComparacao } from './components/PremiumComparacao.jsx'
 import { PremiumHomeTeaser } from './components/PremiumHomeTeaser.jsx'
-import { ReferralCard } from './components/ReferralCard.jsx'
-import { captureReferralFromUrl, referralCodeFromUid, getPendingReferralCode, clearPendingReferral } from './lib/referral.js'
 import { applyRouteSeo } from './lib/routeSeo.js'
 import { ErrorBoundary } from './components/ErrorBoundary.jsx'
 import { auth, db, firebaseDisponivel, firebaseReady } from './lib/firebase'
@@ -902,33 +900,11 @@ function precisaVerificarEmail(user) {
 async function inicializarPerfilUsuario(user) {
   if (!db || !firebaseDisponivel || !user?.uid) return
 
-  const uid = user.uid
-  const code = referralCodeFromUid(uid)
-  const pending = getPendingReferralCode()
-  let referredByUid = null
-  let referredByCode = null
-
-  if (pending && pending !== code) {
-    try {
-      const refSnap = await getDoc(doc(db, 'referral_codes', pending))
-      if (refSnap.exists() && refSnap.data()?.uid && refSnap.data().uid !== uid) {
-        referredByUid = refSnap.data().uid
-        referredByCode = pending
-      }
-    } catch { /* offline */ }
-  }
-
-  await setDoc(doc(db, 'users', uid), {
-    referralCode: code,
+  await setDoc(doc(db, 'users', user.uid), {
     email: user.email || null,
-    tarotBonusLeituras: 0,
     tarotLeiturasUsadas: 0,
     oraclePerguntasUsadas: 0,
-    ...(referredByUid ? { referredByUid, referredByCode } : {}),
   }, { merge: true })
-
-  await setDoc(doc(db, 'referral_codes', code), { uid }, { merge: true })
-  clearPendingReferral()
 }
 
 function Campo({ label, tipo = 'text', valor, onChange, placeholder, erro, onBlur, noTranslate = false }) {
@@ -1901,7 +1877,7 @@ function Onboarding({ dados: dadosProp, setDados, onSubmit, isDesktop }) {
   )
 }
 
-function Dashboard({ nome, mapaNatal, ceuAgora, aspetos, onOraculo, onPrivacidade, isDesktop, isPremium, onUpgrade, onTarot, onMapa, userEmail, user, oraclePerguntasUsadas, leiturasTarotUsadas, referralCode, tarotBonusLeituras, isBrasil }) {
+function Dashboard({ nome, mapaNatal, ceuAgora, aspetos, onOraculo, onPrivacidade, isDesktop, isPremium, onUpgrade, onTarot, onMapa, userEmail, user, oraclePerguntasUsadas, leiturasTarotUsadas, isBrasil }) {
   const { t, ts, te, tp, ta, lang } = useLanguage()
   const faseLua = calcularFaseLua(new Date(), lang)
   return (
@@ -1924,8 +1900,6 @@ function Dashboard({ nome, mapaNatal, ceuAgora, aspetos, onOraculo, onPrivacidad
         tarotUsadas={leiturasTarotUsadas}
         isBrasil={isBrasil}
       />
-
-      <ReferralCard referralCode={referralCode} bonusLeituras={tarotBonusLeituras} compact />
 
       <LeituraGratisDiaria solar={mapaNatal?.solar} lunar={mapaNatal?.lunar} />
 
@@ -3407,8 +3381,6 @@ export default function App() {
   const [interpretacaoMapa, setInterpretacaoMapa] = useState(null)
   const [mapaGerado, setMapaGerado] = useState(false) // bloqueio: 1 mapa por utilizador
   const [leiturasTarotUsadas, setLeiturasTarotUsadas] = useState(0)
-  const [tarotBonusLeituras, setTarotBonusLeituras] = useState(0)
-  const [referralCode, setReferralCode] = useState('')
   const [tarotCreditoPago, setTarotCreditoPago] = useState(false)
   const [oraclePerguntasUsadas, setOraclePerguntasUsadas] = useState(0)
   const [fotoPerfil, setFotoPerfil] = useState(() => {
@@ -3440,10 +3412,6 @@ export default function App() {
   useEffect(() => {
     try { setFotoPerfil(localStorage.getItem('sidus_foto') || null) } catch { /* quota */ }
   }, [passo])
-
-  useEffect(() => {
-    captureReferralFromUrl()
-  }, [location.search])
 
   const mapaDesbloqueado = isPremium || mapaCompleto
   const acessoVip = mapaDesbloqueado
@@ -3570,11 +3538,6 @@ export default function App() {
                 if (typeof perfil.tarotLeiturasUsadas === 'number') {
                   setLeiturasTarotUsadas(perfil.tarotLeiturasUsadas)
                 }
-                if (typeof perfil.tarotBonusLeituras === 'number') {
-                  setTarotBonusLeituras(perfil.tarotBonusLeituras)
-                }
-                const code = perfil.referralCode || referralCodeFromUid(user.uid)
-                setReferralCode(code)
                 if (typeof perfil.oraclePerguntasUsadas === 'number') {
                   setOraclePerguntasUsadas(perfil.oraclePerguntasUsadas)
                 }
@@ -3633,8 +3596,6 @@ export default function App() {
         setMapaGerado(false)
         setInterpretacaoMapa(null)
         setLeiturasTarotUsadas(0)
-        setTarotBonusLeituras(0)
-        setReferralCode('')
         setPerfilCarregando(false)
       }
       setAuthCarregando(false)
@@ -4103,14 +4064,6 @@ export default function App() {
           dadosTravados: true,
           mapaGerado: true,
         }, { merge: true })
-        try {
-          const token = await utilizador.getIdToken()
-          await fetch('/api/referral-reward', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ idToken: token }),
-          })
-        } catch { /* referral opcional */ }
       } catch { /* offline */ }
     }
   }, [mapaGerado, utilizador])
@@ -4196,11 +4149,11 @@ export default function App() {
     switch (passo) {
       case 'home':
       case 'dashboard':
-        return <Dashboard nome={dados.nome} mapaNatal={mapaNatal} ceuAgora={ceuAgora} aspetos={aspetosAgora} onOraculo={() => irPara('chat')} onPrivacidade={() => irPara('privacidade')} isDesktop={isDesktop} isPremium={isPremium} onUpgrade={() => irPara('paywall')} onTarot={() => irPara('tarot')} onMapa={() => irPara('mapa')} userEmail={utilizador?.email} user={utilizador} oraclePerguntasUsadas={oraclePerguntasUsadas} leiturasTarotUsadas={leiturasTarotUsadas} referralCode={referralCode} tarotBonusLeituras={tarotBonusLeituras} isBrasil={isBrasil} />
+        return <Dashboard nome={dados.nome} mapaNatal={mapaNatal} ceuAgora={ceuAgora} aspetos={aspetosAgora} onOraculo={() => irPara('chat')} onPrivacidade={() => irPara('privacidade')} isDesktop={isDesktop} isPremium={isPremium} onUpgrade={() => irPara('paywall')} onTarot={() => irPara('tarot')} onMapa={() => irPara('mapa')} userEmail={utilizador?.email} user={utilizador} oraclePerguntasUsadas={oraclePerguntasUsadas} leiturasTarotUsadas={leiturasTarotUsadas} isBrasil={isBrasil} />
       case 'mapa':
         return <MapaAstral mapaNatal={mapaNatal} dados={dados} planetasNascimento={planetasNascimento} mapaDesbloqueado={isPremium || mapaCompleto} isPremium={isPremium} onUpgrade={() => irPara('paywall')} onComprarMapa={() => abrirPagamento(t('mapa.buyDesc'), PRECO_MAPA_COMPLETO, null, { productType: 'mapa' })} onMapaGerado={handleMapaGerado} isDesktop={isDesktop} motorAstro={motorAstro} perfilCarregando={perfilCarregando} reparandoDados={reparandoDados} mapaGerado={mapaGerado} onCompletarNatal={() => irPara('home')} obterIdToken={obterIdTokenOracle} interpretacaoPerfil={interpretacaoMapa} />
       case 'tarot':
-        return <EcraTarot mapaNatal={mapaNatal} isPremium={acessoVip} userId={utilizador?.uid} leiturasTarotUsadas={leiturasTarotUsadas} tarotBonusLeituras={tarotBonusLeituras} tarotCreditoPago={tarotCreditoPago} onTarotCreditoConsumido={() => setTarotCreditoPago(false)} onLeituraGratisUsada={registarLeituraTarotGratis} onPagar={abrirPagamento} onVoltar={() => irPara('home')} onPremium={() => irPara('paywall')} />
+        return <EcraTarot mapaNatal={mapaNatal} isPremium={acessoVip} userId={utilizador?.uid} leiturasTarotUsadas={leiturasTarotUsadas} tarotCreditoPago={tarotCreditoPago} onTarotCreditoConsumido={() => setTarotCreditoPago(false)} onLeituraGratisUsada={registarLeituraTarotGratis} onPagar={abrirPagamento} onVoltar={() => irPara('home')} onPremium={() => irPara('paywall')} />
       case 'bussola':
         return <BussolaCosmica mapaNatal={mapaNatal} onVoltar={() => irPara('home')} />
       case 'sinastria':
@@ -4224,12 +4177,10 @@ export default function App() {
       case 'perfil':
         return <Perfil utilizador={utilizador} dados={dados} mapaNatal={mapaNatal} isPremium={isPremium}
           dadosBloqueados={dadosBloqueados}
-          referralCode={referralCode}
-          tarotBonusLeituras={tarotBonusLeituras}
           onLogout={handleLogout}
           obterIdToken={obterIdTokenOracle} />
       default:
-        return <Dashboard nome={dados.nome} mapaNatal={mapaNatal} ceuAgora={ceuAgora} aspetos={aspetosAgora} onOraculo={() => irPara('chat')} onPrivacidade={() => irPara('privacidade')} isDesktop={isDesktop} isPremium={isPremium} onUpgrade={() => irPara('paywall')} onTarot={() => irPara('tarot')} onMapa={() => irPara('mapa')} userEmail={utilizador?.email} user={utilizador} oraclePerguntasUsadas={oraclePerguntasUsadas} leiturasTarotUsadas={leiturasTarotUsadas} referralCode={referralCode} tarotBonusLeituras={tarotBonusLeituras} isBrasil={isBrasil} />
+        return <Dashboard nome={dados.nome} mapaNatal={mapaNatal} ceuAgora={ceuAgora} aspetos={aspetosAgora} onOraculo={() => irPara('chat')} onPrivacidade={() => irPara('privacidade')} isDesktop={isDesktop} isPremium={isPremium} onUpgrade={() => irPara('paywall')} onTarot={() => irPara('tarot')} onMapa={() => irPara('mapa')} userEmail={utilizador?.email} user={utilizador} oraclePerguntasUsadas={oraclePerguntasUsadas} leiturasTarotUsadas={leiturasTarotUsadas} isBrasil={isBrasil} />
     }
   }
 

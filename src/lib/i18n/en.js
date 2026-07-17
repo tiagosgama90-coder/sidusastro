@@ -755,16 +755,4 @@ export default {
       horoscope: 'Daily horoscope',
     },
   },
-  referral: {
-    ariaLabel: 'Sidus referral program',
-    title: 'Invite a friend',
-    lead: 'Share your link — when they create their chart, you earn 1 extra tarot reading.',
-    bonusActive: 'You have {n} bonus referral reading(s) available',
-    share: 'Share link',
-    copy: 'Copy link',
-    copyLink: 'Copy',
-    copied: 'Copied!',
-    foot: 'Bonus is credited when your invite completes their natal chart.',
-    shareText: 'Discover your free birth chart on Sidus — {link}',
-  },
 }
