@@ -1,12 +1,12 @@
-/** Templates de aspectos por planeta — chaves canónicas (sol, lua, …) e tipos (trino, sextil, …). */
+/** Templates de aspectos por planeta - chaves canónicas (sol, lua, …) e tipos (trino, sextil, …). */
 
 const CONJ = {
-  pt: (p) => `${p} em conjunção intensifica o dia — foco e presença consciente.`,
-  en: (p) => `${p} conjunct energy intensifies the day — focus with conscious presence.`,
-  es: (p) => `${p} en conjunción intensifica el día — enfoque y presencia consciente.`,
-  it: (p) => `${p} in congiunzione intensifica la giornata — focus e presenza consapevole.`,
-  de: (p) => `${p} in Konjunktion verstärkt den Tag — Fokus und bewusste Präsenz.`,
-  fr: (p) => `${p} en conjonction intensifie la journée — focus et présence consciente.`,
+  pt: (p) => `${p} em conjunção intensifica o dia - foco e presença consciente.`,
+  en: (p) => `${p} conjunct energy intensifies the day - focus with conscious presence.`,
+  es: (p) => `${p} en conjunción intensifica el día - enfoque y presencia consciente.`,
+  it: (p) => `${p} in congiunzione intensifica la giornata - focus e presenza consapevole.`,
+  de: (p) => `${p} in Konjunktion verstärkt den Tag - Fokus und bewusste Präsenz.`,
+  fr: (p) => `${p} en conjonction intensifie la journée - focus et présence consciente.`,
 }
 
 function pack(lang, planets) {
@@ -22,43 +22,43 @@ const EN = pack('en', {
   sol: {
     trino: 'The Sun trine illuminates identity and vitality. A day to shine and express authenticity.',
     sextil: 'The Sun sextile brings opportunities for personal growth and recognition.',
-    quadratura: 'The Sun square asks attention to ego — avoid unnecessary conflict; build confidence through constructive challenges.',
-    oposicao: 'The Sun opposition reveals tension between your needs and others — seek balance.',
+    quadratura: 'The Sun square asks attention to ego - avoid unnecessary conflict; build confidence through constructive challenges.',
+    oposicao: 'The Sun opposition reveals tension between your needs and others - seek balance.',
   },
   lua: {
-    trino: 'The Moon trine harmonises emotions and intuition — trust your feelings.',
+    trino: 'The Moon trine harmonises emotions and intuition - trust your feelings.',
     sextil: 'The Moon sextile eases emotional communication and strengthens bonds.',
-    quadratura: 'The Moon square brings emotional instability — be patient with yourself.',
-    oposicao: 'The Moon opposition amplifies sensitivity — balance inner and outer worlds.',
+    quadratura: 'The Moon square brings emotional instability - be patient with yourself.',
+    oposicao: 'The Moon opposition amplifies sensitivity - balance inner and outer worlds.',
   },
   mercurio: {
     trino: 'Mercury trine favours clear communication and lucid thinking.',
     sextil: 'Mercury sextile stimulates curiosity and learning.',
-    quadratura: 'Mercury square warns of misunderstandings — pause before speaking.',
-    oposicao: 'Mercury opposition brings communication challenges — listen more than you speak.',
+    quadratura: 'Mercury square warns of misunderstandings - pause before speaking.',
+    oposicao: 'Mercury opposition brings communication challenges - listen more than you speak.',
   },
   venus: {
-    trino: 'Venus trine harmonises love and beauty — relationships flow smoothly.',
+    trino: 'Venus trine harmonises love and beauty - relationships flow smoothly.',
     sextil: 'Venus sextile brings romantic and social opportunities.',
     quadratura: 'Venus square asks for adjustments in relationships.',
     oposicao: 'Venus opposition reveals imbalance between giving and receiving.',
   },
   marte: {
-    trino: 'Mars trine channels energy productively — determination is high.',
+    trino: 'Mars trine channels energy productively - determination is high.',
     sextil: 'Mars sextile offers controlled energy for concrete action.',
-    quadratura: 'Mars square warns against impulsiveness — patience is your ally.',
+    quadratura: 'Mars square warns against impulsiveness - patience is your ally.',
     oposicao: 'Mars opposition brings tension between action and patience.',
   },
   jupiter: {
     trino: 'Jupiter trine expands opportunities and optimism.',
     sextil: 'Jupiter sextile brings learning and expansion chances.',
-    quadratura: 'Jupiter square warns against excess — moderation avoids disappointment.',
+    quadratura: 'Jupiter square warns against excess - moderation avoids disappointment.',
     oposicao: 'Jupiter opposition reveals conflict between optimism and reality.',
   },
   saturno: {
-    trino: 'Saturn trine brings structure — past efforts are rewarded.',
+    trino: 'Saturn trine brings structure - past efforts are rewarded.',
     sextil: 'Saturn sextile favours methodical work and solid foundations.',
-    quadratura: 'Saturn square tests resilience — face obstacles as growth.',
+    quadratura: 'Saturn square tests resilience - face obstacles as growth.',
     oposicao: 'Saturn opposition reveals tension between freedom and duty.',
   },
 })
@@ -67,19 +67,19 @@ const PT = pack('pt', {
   sol: {
     trino: 'O Sol em trino ilumina a identidade e vitalidade. Dia para brilhar e expressar autenticidade.',
     sextil: 'O Sol em sextil traz oportunidades de crescimento pessoal.',
-    quadratura: 'O Sol em quadratura pede atenção ao ego — evita conflitos desnecessários.',
+    quadratura: 'O Sol em quadratura pede atenção ao ego - evita conflitos desnecessários.',
     oposicao: 'O Sol em oposição revela tensão entre as tuas necessidades e as dos outros.',
   },
   lua: {
-    trino: 'A Lua em trino harmoniza emoções e intuição — confia nos sentimentos.',
+    trino: 'A Lua em trino harmoniza emoções e intuição - confia nos sentimentos.',
     sextil: 'A Lua em sextil facilita comunicação emocional.',
-    quadratura: 'A Lua em quadratura traz instabilidade emocional — sê paciente.',
-    oposicao: 'A Lua em oposição amplifica sensibilidades — equilibra mundos interior e exterior.',
+    quadratura: 'A Lua em quadratura traz instabilidade emocional - sê paciente.',
+    oposicao: 'A Lua em oposição amplifica sensibilidades - equilibra mundos interior e exterior.',
   },
   mercurio: {
     trino: 'Mercúrio em trino favorece comunicação clara e pensamento lúcido.',
     sextil: 'Mercúrio em sextil estimula curiosidade e aprendizagem.',
-    quadratura: 'Mercúrio em quadratura alerta para mal-entendidos — pausa antes de falar.',
+    quadratura: 'Mercúrio em quadratura alerta para mal-entendidos - pausa antes de falar.',
     oposicao: 'Mercúrio em oposição traz desafios na comunicação.',
   },
   venus: {
@@ -101,7 +101,7 @@ const PT = pack('pt', {
     oposicao: 'Júpiter em oposição revela conflito entre optimismo e realidade.',
   },
   saturno: {
-    trino: 'Saturno em trino traz estrutura — esforços passados são recompensados.',
+    trino: 'Saturno em trino traz estrutura - esforços passados são recompensados.',
     sextil: 'Saturno em sextil favorece trabalho metódico.',
     quadratura: 'Saturno em quadratura traz desafios que testam resiliência.',
     oposicao: 'Saturno em oposição revela tensões entre liberdade e responsabilidade.',
@@ -112,7 +112,7 @@ const ES = pack('es', {
   sol: {
     trino: 'El Sol en trino ilumina identidad y vitalidad. Día para brillar y expresar autenticidad.',
     sextil: 'El Sol en sextil trae oportunidades de crecimiento personal.',
-    quadratura: 'El Sol en cuadratura pide atención al ego — evita conflictos innecesarios.',
+    quadratura: 'El Sol en cuadratura pide atención al ego - evita conflictos innecesarios.',
     oposicao: 'El Sol en oposición revela tensiones entre tus necesidades y las de los demás.',
   },
   lua: {

@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useState } from 'react'
-import { Check, ChevronLeft, Crown, ExternalLink, Loader2, Send, Sparkles, Video } from 'lucide-react'
+import { Check, ChevronLeft, Crown, ExternalLink, Globe, Loader2, Send, Sparkles } from 'lucide-react'
 import { useLanguage } from '../lib/i18n/LanguageContext.jsx'
 import { getBeneficiosVip } from '../lib/i18n/ferramentasData.js'
 import { SIDUS_SOCIAL_LIST } from '../lib/sidusSocial.js'
+import { LanguageSwitcher } from './LanguageSwitcher.jsx'
 
 const CORES = {
   fundo: '#0B071E',
@@ -13,14 +14,7 @@ const CORES = {
   vidroBorda: 'rgba(223,183,108,0.22)',
 }
 
-const PLATFORMS = [
-  { id: 'instagram', label: 'Instagram' },
-  { id: 'tiktok', label: 'TikTok' },
-  { id: 'youtube', label: 'YouTube' },
-  { id: 'facebook', label: 'Facebook' },
-  { id: 'blog', label: 'Blog / Site' },
-  { id: 'outro', label: 'Outro' },
-]
+const PLATFORM_IDS = ['instagram', 'tiktok', 'youtube', 'facebook', 'blog', 'outro']
 
 const POST_URL_PLACEHOLDER = {
   instagram: 'https://www.instagram.com/p/...',
@@ -52,7 +46,6 @@ export function VipPromoPage({
   const [estado, setEstado] = useState('idle')
   const [pedidoStatus, setPedidoStatus] = useState(null)
   const [carregandoStatus, setCarregandoStatus] = useState(true)
-  const [mostrarGuiaVideo, setMostrarGuiaVideo] = useState(false)
 
   const carregarStatus = useCallback(async () => {
     if (!user || !obterIdToken) {
@@ -121,14 +114,16 @@ export function VipPromoPage({
   const maxW = isDesktop ? 720 : '100%'
 
   return (
-    <div style={{ padding, maxWidth: maxW, margin: '0 auto' }}>
-      <button
-        type="button"
-        onClick={onVoltar}
-        style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'none', border: 'none', color: CORES.dourado, cursor: 'pointer', marginBottom: 20 }}
-      >
-        <ChevronLeft size={20} /> {t('common.back')}
-      </button>
+    <>
+      <LanguageSwitcher />
+      <div style={{ padding, maxWidth: maxW, margin: '0 auto' }}>
+        <button
+          type="button"
+          onClick={onVoltar}
+          style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'none', border: 'none', color: CORES.dourado, cursor: 'pointer', marginBottom: 20 }}
+        >
+          <ChevronLeft size={20} /> {t('common.back')}
+        </button>
 
       <header style={{ textAlign: 'center', marginBottom: 28 }}>
         <div style={{
@@ -203,21 +198,6 @@ export function VipPromoPage({
         <p className="vip-promo-official-note">{t('vipPromo.officialNote')}</p>
       </section>
 
-      <section className="vip-promo-video-guide">
-        <button type="button" className="vip-promo-video-toggle" onClick={() => setMostrarGuiaVideo((v) => !v)}>
-          <Video size={18} />
-          {t('vipPromo.videoGuideTitle')}
-        </button>
-        {mostrarGuiaVideo && (
-          <div className="vip-promo-video-body">
-            <p>{t('vipPromo.videoGuideIntro')}</p>
-            <blockquote>{t('vipPromo.videoScript')}</blockquote>
-            <p className="vip-promo-caption-hint">{t('vipPromo.captionHint')}</p>
-            <p className="vip-promo-hashtags">{t('vipPromo.hashtags')}</p>
-          </div>
-        )}
-      </section>
-
       {!user ? (
         <div className="vip-promo-card vip-promo-login">
           <p>{t('vipPromo.loginRequired')}</p>
@@ -252,13 +232,24 @@ export function VipPromoPage({
       ) : (
         <form className="vip-promo-card vip-promo-form" onSubmit={handleSubmit}>
           <h2>{t('vipPromo.formTitle')}</h2>
+
+          <div className="vip-promo-form-notice" role="note">
+            <Globe size={20} aria-hidden />
+            <div>
+              <strong>{t('vipPromo.formNoticeTitle')}</strong>
+              <p>{t('vipPromo.formNoticeText')}</p>
+            </div>
+          </div>
+
           <p className="vip-promo-form-hint">{t('vipPromo.formHint')}</p>
+
+          <h3 className="vip-promo-form-section">{t('vipPromo.formSectionYourPost')}</h3>
 
           <label>
             {t('vipPromo.platform')}
             <select value={platform} onChange={(e) => setPlatform(e.target.value)} required>
-              {PLATFORMS.map((p) => (
-                <option key={p.id} value={p.id}>{p.label}</option>
+              {PLATFORM_IDS.map((id) => (
+                <option key={id} value={id}>{t(`vipPromo.platforms.${id}`)}</option>
               ))}
             </select>
           </label>
@@ -328,5 +319,6 @@ export function VipPromoPage({
         </a>
       </p>
     </div>
+    </>
   )
 }

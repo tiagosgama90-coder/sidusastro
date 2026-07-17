@@ -73,7 +73,7 @@ export class ErrorBoundary extends Component {
           </p>
           {isTranslateCrash && (
             <p style={{ margin: '0 0 16px', fontSize: 13, lineHeight: 1.55, color: 'rgba(223,183,108,0.9)' }}>
-              Se estás a usar o Google Tradutor, desactiva a tradução desta página — ela interfere com os formulários de nascimento.
+              Se estás a usar o Google Tradutor, desactiva a tradução desta página - ela interfere com os formulários de nascimento.
             </p>
           )}
           {this.state.error?.message && (

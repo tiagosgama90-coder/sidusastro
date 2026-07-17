@@ -82,7 +82,7 @@ export function WidgetNotificacoesDiarias({ user, mapaNatal, isPremium, onUpgrad
     setATestar(true)
     const ok = await testarNotificacao()
     if (!ok) {
-      // erro já tratado no hook via setErro indirectamente — mostrar inline
+      // erro já tratado no hook via setErro indirectamente - mostrar inline
     }
     setATestar(false)
   }, [testarNotificacao])

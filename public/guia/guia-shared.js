@@ -1,13 +1,19 @@
 (function () {
   const LANGS = ['pt', 'en', 'es', 'it', 'de', 'fr']
-  const FLAGS = { pt: '🇵🇹', en: '🇬🇧', es: '🇪🇸', it: '🇮🇹', de: '🇩🇪', fr: '🇫🇷' }
+  const FLAG_CODES = { pt: 'PT', en: 'GB', es: 'ES', it: 'IT', de: 'DE', fr: 'FR' }
   const TITLES = {
     pt: 'Português', en: 'English', es: 'Español', it: 'Italiano', de: 'Deutsch', fr: 'Français',
   }
   const STORAGE_KEY = 'sidus_lang'
-  const GUIA_VERSION = '20260717'
+  const GUIA_VERSION = '20260717c'
   const ZODIAC = ['♈', '♉', '♊', '♋', '♌', '♍', '♎', '♏', '♐', '♑', '♒', '♓']
-  const NAV_KEYS = ['mapa', 'ascendente', 'signos', 'tarot', 'login']
+  const NAV_KEYS = ['mapa', 'ascendente', 'signos', 'tarot']
+  const GUIDE_SEQUENCE = [
+    { id: 'mapa-astral', href: '/guia/mapa-astral.html', navKey: 'mapa' },
+    { id: 'ascendente', href: '/guia/ascendente.html', navKey: 'ascendente' },
+    { id: 'signos-zodiaco', href: '/guia/signos-zodiaco.html', navKey: 'signos' },
+    { id: 'tarot-guia', href: '/guia/tarot-guia.html', navKey: 'tarot' },
+  ]
   const RELATED_GUIDES = {
     'mapa-astral': [
       { href: '/guia/ascendente.html', navKey: 'ascendente' },
@@ -60,6 +66,18 @@
     return `/${lang}/login`
   }
 
+  function landingHref(lang) {
+    if (!lang || lang === 'pt') return '/login#guias'
+    return `/${lang}/login#guias`
+  }
+
+  function flagImg(code, width) {
+    const cc = FLAG_CODES[code] || 'PT'
+    const w = width || 20
+    const h = Math.round((w * 2) / 3)
+    return `<img src="/flags/${cc}.svg" width="${w}" height="${h}" alt="" aria-hidden="true" class="guia-lang-flag-img" />`
+  }
+
   function guideHref(path, lang) {
     if (!lang || lang === 'pt') return path
     return `${path}?lang=${lang}`
@@ -72,7 +90,7 @@
     applyLang(code)
   }
 
-  /** Estrela de 12 pontas ({12/5}) — um vértice por signo. */
+  /** Estrela de 12 pontas ({12/5}) - um vértice por signo. */
   function dodecagramPaths(cx, cy, outerR) {
     const pts = []
     for (let i = 0; i < 12; i++) {
@@ -92,14 +110,49 @@
       stars.push({
         x: Math.random() * w,
         y: Math.random() * h,
-        rad: r > 0.97 ? 1.4 : r > 0.88 ? 0.9 : r > 0.6 ? 0.55 : 0.35,
-        a: 0.25 + Math.random() * 0.75,
+        rad: r > 0.97 ? 1.5 : r > 0.88 ? 1 : r > 0.6 ? 0.6 : 0.4,
+        a: 0.3 + Math.random() * 0.7,
         tw: 0.003 + Math.random() * 0.008,
         ph: Math.random() * Math.PI * 2,
+        drift: 0.06 + Math.random() * 0.22,
         tint: r > 0.92 ? 'gold' : r > 0.85 ? 'blue' : 'white',
       })
     }
     return stars
+  }
+
+  function spawnShootingStar(w, h) {
+    const angle = Math.PI * 0.58 + (Math.random() - 0.5) * 0.22
+    return {
+      x: Math.random() * w * 1.15 - w * 0.05,
+      y: -30 - Math.random() * h * 0.35,
+      speed: 7 + Math.random() * 11,
+      len: 70 + Math.random() * 130,
+      angle,
+      alpha: 0.9 + Math.random() * 0.1,
+      width: 1.4 + Math.random() * 1.4,
+    }
+  }
+
+  function drawShootingStar(ctx, meteor) {
+    const tailX = meteor.x - Math.cos(meteor.angle) * meteor.len
+    const tailY = meteor.y - Math.sin(meteor.angle) * meteor.len
+    const grad = ctx.createLinearGradient(tailX, tailY, meteor.x, meteor.y)
+    grad.addColorStop(0, 'rgba(255,255,255,0)')
+    grad.addColorStop(0.55, `rgba(200,215,255,${meteor.alpha * 0.35})`)
+    grad.addColorStop(0.85, `rgba(240,225,180,${meteor.alpha * 0.75})`)
+    grad.addColorStop(1, `rgba(255,252,240,${meteor.alpha})`)
+    ctx.strokeStyle = grad
+    ctx.lineWidth = meteor.width
+    ctx.lineCap = 'round'
+    ctx.beginPath()
+    ctx.moveTo(tailX, tailY)
+    ctx.lineTo(meteor.x, meteor.y)
+    ctx.stroke()
+    ctx.fillStyle = `rgba(255,255,255,${meteor.alpha})`
+    ctx.beginPath()
+    ctx.arc(meteor.x, meteor.y, meteor.width * 1.1, 0, Math.PI * 2)
+    ctx.fill()
   }
 
   function initCosmicBackground() {
@@ -126,25 +179,41 @@
     })
 
     const pathEls = paths.map((d) =>
-      `<path d="${d}" fill="none" stroke="rgba(223,183,108,0.32)" stroke-width="0.9" stroke-linecap="round" />`
+      `<path d="${d}" fill="none" stroke="rgba(240,210,150,0.72)" stroke-width="1.5" stroke-linecap="round" filter="url(#guiaStarGlow)" />`
     ).join('')
     const zodiacEls = zodiacNodes.map(({ sym, x, y, i }) =>
-      `<text x="${x.toFixed(1)}" y="${y.toFixed(1)}" text-anchor="middle" dominant-baseline="central" class="guia-cosmic-zodiac" style="animation-delay:${i * 0.35}s">${sym}</text>`
+      `<g transform="translate(${x.toFixed(1)} ${y.toFixed(1)})"><g class="guia-cosmic-zodiac-upright"><text x="0" y="0" text-anchor="middle" dominant-baseline="central" class="guia-cosmic-zodiac" style="animation-delay:${i * 0.35}s" filter="url(#guiaZodiacGlow)">${sym}</text></g></g>`
     ).join('')
 
     wrap.innerHTML = `
       <svg class="guia-cosmic-hendecagram" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
         <defs>
           <radialGradient id="guiaHendecGlow" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stop-color="rgba(223,183,108,0.22)" />
-            <stop offset="55%" stop-color="rgba(139,92,246,0.16)" />
+            <stop offset="0%" stop-color="rgba(223,183,108,0.38)" />
+            <stop offset="45%" stop-color="rgba(167,139,250,0.22)" />
             <stop offset="100%" stop-color="rgba(3,8,24,0)" />
           </radialGradient>
+          <filter id="guiaStarGlow" x="-40%" y="-40%" width="180%" height="180%">
+            <feGaussianBlur stdDeviation="2.2" result="blur" />
+            <feMerge>
+              <feMergeNode in="blur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+          <filter id="guiaZodiacGlow" x="-80%" y="-80%" width="260%" height="260%">
+            <feGaussianBlur stdDeviation="2" result="blur" />
+            <feMerge>
+              <feMergeNode in="blur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
         </defs>
-        <circle cx="200" cy="200" r="175" fill="url(#guiaHendecGlow)" />
+        <circle cx="200" cy="200" r="185" fill="url(#guiaHendecGlow)" />
+        <circle cx="200" cy="200" r="128" fill="none" stroke="rgba(223,183,108,0.18)" stroke-width="1" />
         <g class="guia-cosmic-star-lines">${pathEls}</g>
-        <circle cx="200" cy="200" r="42" fill="none" stroke="rgba(223,183,108,0.2)" stroke-width="0.6" />
-        ${zodiacEls}
+        <circle cx="200" cy="200" r="48" fill="none" stroke="rgba(223,183,108,0.42)" stroke-width="1.1" />
+        <circle cx="200" cy="200" r="8" fill="rgba(223,183,108,0.35)" />
+        <g class="guia-cosmic-zodiac-ring">${zodiacEls}</g>
       </svg>`
 
     root.appendChild(canvas)
@@ -155,6 +224,8 @@
 
     const ctx = canvas.getContext('2d')
     let stars = []
+    let shooters = []
+    let spawnCooldown = 40 + Math.floor(Math.random() * 80)
     let raf = 0
 
     const resize = () => {
@@ -166,23 +237,46 @@
       canvas.style.width = `${w}px`
       canvas.style.height = `${h}px`
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
-      stars = seedStars(Math.floor((w * h) / 3800), w, h)
+      stars = seedStars(Math.floor((w * h) / 3200), w, h)
+      shooters = []
     }
 
     const draw = (t) => {
       const w = canvas.clientWidth
       const h = canvas.clientHeight
       ctx.clearRect(0, 0, w, h)
+
       for (const s of stars) {
+        s.y += s.drift
+        if (s.y > h + 3) {
+          s.y = -3
+          s.x = Math.random() * w
+        }
         const twinkle = 0.55 + 0.45 * Math.sin(t * s.tw + s.ph)
         const alpha = s.a * twinkle
-        if (s.tint === 'gold') ctx.fillStyle = `rgba(223,183,108,${alpha * 0.85})`
-        else if (s.tint === 'blue') ctx.fillStyle = `rgba(180,210,255,${alpha * 0.9})`
+        if (s.tint === 'gold') ctx.fillStyle = `rgba(223,183,108,${alpha * 0.9})`
+        else if (s.tint === 'blue') ctx.fillStyle = `rgba(180,210,255,${alpha * 0.95})`
         else ctx.fillStyle = `rgba(255,255,255,${alpha})`
         ctx.beginPath()
         ctx.arc(s.x, s.y, s.rad, 0, Math.PI * 2)
         ctx.fill()
       }
+
+      spawnCooldown -= 1
+      if (spawnCooldown <= 0) {
+        shooters.push(spawnShootingStar(w, h))
+        spawnCooldown = 70 + Math.floor(Math.random() * 140)
+      }
+
+      shooters = shooters.filter((meteor) => {
+        meteor.x += Math.cos(meteor.angle) * meteor.speed
+        meteor.y += Math.sin(meteor.angle) * meteor.speed
+        meteor.alpha *= 0.988
+        if (meteor.y > h + 80 || meteor.x > w + 120 || meteor.alpha < 0.04) return false
+        drawShootingStar(ctx, meteor)
+        return true
+      })
+
       raf = requestAnimationFrame(draw)
     }
 
@@ -203,15 +297,17 @@
     let open = false
     const render = () => {
       root.innerHTML = `
-        <div class="guia-lang-switcher">
-          <button type="button" class="guia-lang-trigger" aria-label="${TITLES[currentLang]} - change language" aria-expanded="${open}">
-            <span class="guia-lang-flag">${FLAGS[currentLang]}</span>
-            <span class="guia-lang-caret">▾</span>
-          </button>
-          ${open ? `<div class="guia-lang-menu" role="menu">${LANGS.map((code) => `
-            <button type="button" role="menuitem" class="guia-lang-item${code === currentLang ? ' guia-lang-item--active' : ''}" data-lang="${code}" title="${TITLES[code]}" aria-label="${TITLES[code]}">
-              <span>${FLAGS[code]}</span>
-            </button>`).join('')}</div>` : ''}
+        <div class="guia-lang-switcher-outer">
+          <div class="guia-lang-switcher">
+            <button type="button" class="guia-lang-trigger" aria-label="${TITLES[currentLang]} - change language" aria-expanded="${open}">
+              ${flagImg(currentLang, 20)}
+              <span class="guia-lang-caret">▾</span>
+            </button>
+            ${open ? `<div class="guia-lang-menu" role="menu">${LANGS.map((code) => `
+              <button type="button" role="menuitem" class="guia-lang-item${code === currentLang ? ' guia-lang-item--active' : ''}" data-lang="${code}" title="${TITLES[code]}" aria-label="${TITLES[code]}">
+                ${flagImg(code, 20)}
+              </button>`).join('')}</div>` : ''}
+          </div>
         </div>`
       root.querySelector('.guia-lang-trigger')?.addEventListener('click', (e) => {
         e.stopPropagation()
@@ -251,8 +347,12 @@
     const backBtn = document.querySelector('.guia-back')
     if (backBtn && common?.backToLanding) {
       backBtn.textContent = common.backToLanding[lang] || common.backToLanding.pt
-      backBtn.setAttribute('href', loginHref(lang))
+      backBtn.setAttribute('href', landingHref(lang))
     }
+
+    document.querySelectorAll('.guia-logo').forEach((el) => {
+      el.setAttribute('href', landingHref(lang))
+    })
 
     const nav = document.querySelector('.guia-nav')
     if (nav && common?.nav) {
@@ -262,12 +362,8 @@
         const key = NAV_KEYS[i]
         if (!key || !common.nav[key]) return
         a.textContent = common.nav[key][lang] || common.nav[key].pt
-        if (key === 'login') {
-          a.setAttribute('href', loginHref(lang))
-        } else {
-          const path = a.getAttribute('href')?.split('?')[0] || a.pathname
-          a.setAttribute('href', guideHref(path, lang))
-        }
+        const path = a.getAttribute('href')?.split('?')[0] || a.pathname
+        a.setAttribute('href', guideHref(path, lang))
       })
     }
 
@@ -326,6 +422,7 @@
     window.__guiaRefreshLangSwitcher?.(lang)
     updateSeoMeta(lang)
     renderRelatedGuides(lang)
+    renderGuidePager(lang)
   }
 
   function upsertMeta(attr, key, content) {
@@ -427,8 +524,67 @@
     block.innerHTML = `
       <h2 class="guia-related-title">${title}</h2>
       <p class="guia-related-lead">${lead}</p>
-      <nav class="guia-related-links" aria-label="${title}">${links}</nav>
-      <a class="guia-btn guia-related-cta" href="${loginHref(lang)}">${common.nav?.login?.[lang] || common.nav?.login?.pt || 'Calcular mapa'}</a>`
+      <nav class="guia-related-links" aria-label="${title}">${links}</nav>`
+  }
+
+  function buildGuidePagerHtml(prev, next, prevLabel, nextLabel, prevDir, nextDir, position, lang) {
+    return `
+      <a class="guia-pager-btn guia-pager-prev" href="${guideHref(prev.href, lang)}">
+        <span class="guia-pager-arrow" aria-hidden="true">←</span>
+        <span class="guia-pager-text">
+          <span class="guia-pager-dir">${prevDir}</span>
+          <span class="guia-pager-name">${prevLabel}</span>
+        </span>
+      </a>
+      <span class="guia-pager-position">${position}</span>
+      <a class="guia-pager-btn guia-pager-next" href="${guideHref(next.href, lang)}">
+        <span class="guia-pager-text guia-pager-text--next">
+          <span class="guia-pager-dir">${nextDir}</span>
+          <span class="guia-pager-name">${nextLabel}</span>
+        </span>
+        <span class="guia-pager-arrow" aria-hidden="true">→</span>
+      </a>`
+  }
+
+  function renderGuidePager(lang) {
+    const pageId = getPageId()
+    const common = window.SIDUS_GUIA_I18N?.common
+    const idx = GUIDE_SEQUENCE.findIndex((g) => g.id === pageId)
+    if (idx < 0 || !common) return
+
+    const prev = GUIDE_SEQUENCE[(idx - 1 + GUIDE_SEQUENCE.length) % GUIDE_SEQUENCE.length]
+    const next = GUIDE_SEQUENCE[(idx + 1) % GUIDE_SEQUENCE.length]
+    const prevLabel = common.nav?.[prev.navKey]?.[lang] || common.nav?.[prev.navKey]?.pt || prev.navKey
+    const nextLabel = common.nav?.[next.navKey]?.[lang] || common.nav?.[next.navKey]?.pt || next.navKey
+    const prevDir = common.navPrev?.[lang] || common.navPrev?.pt || 'Anterior'
+    const nextDir = common.navNext?.[lang] || common.navNext?.pt || 'Seguinte'
+    const pagerAria = common.pagerAria?.[lang] || common.pagerAria?.pt || 'Navegação entre guias'
+    const positionTpl = common.pagerPosition?.[lang] || common.pagerPosition?.pt || '{current} / {total}'
+    const position = positionTpl.replace('{current}', String(idx + 1)).replace('{total}', String(GUIDE_SEQUENCE.length))
+    const html = buildGuidePagerHtml(prev, next, prevLabel, nextLabel, prevDir, nextDir, position, lang)
+
+    const ensurePager = (selector, className, insert) => {
+      let block = document.querySelector(selector)
+      if (!block) {
+        block = document.createElement('nav')
+        block.className = className
+        insert(block)
+      }
+      block.setAttribute('aria-label', pagerAria)
+      block.innerHTML = html
+    }
+
+    const meta = document.querySelector('.guia-meta')
+    if (meta) {
+      ensurePager('.guia-pager--top', 'guia-pager guia-pager--top', (block) => {
+        meta.insertAdjacentElement('afterend', block)
+      })
+    }
+
+    ensurePager('.guia-pager--bottom', 'guia-pager guia-pager--bottom', (block) => {
+      const article = document.querySelector('.guia-article')
+      if (article) article.insertAdjacentElement('afterend', block)
+    })
   }
 
   function init() {
