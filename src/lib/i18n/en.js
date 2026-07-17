@@ -383,7 +383,7 @@ export default {
     paymentMethodsBr: 'PIX · €5 (recommended) · Card / PayPal · €9.99',
     priceBrPixNote: 'Brazil offer · €5 with PIX (~R$28)',
     productName: 'Sidus VIP - Lifetime access',
-    notificationsPaywall: 'Phone widget to receive your personalised daily horoscope (enable in Profile after Premium).',
+    notificationsPaywall: '',
   },
   oracle: {
     title: 'Astral Oracle',
@@ -740,13 +740,13 @@ export default {
     close: 'Close',
   },
   premium: {
-    urgency: 'Lifetime offer — {count} spots left this cycle',
+    lifetimeNote: 'One-time payment · lifetime access, no renewals',
     tarotUsed: 'Tarot: {used} of {max} free readings · {left} left',
     oracleUsed: 'Oracle: {used} of {max} free questions · {left} left',
     homeTeaser: {
       ariaLabel: 'Compare Sidus plans',
       title: 'Unlock the full cosmos',
-      lead: 'Unlimited tarot and oracle, synastry, daily notifications and professional PDF.',
+      lead: 'Unlimited tarot and oracle, synastry, premium tools and professional PDF.',
       cta: 'Sidus VIP — {price} € lifetime',
     },
     table: {

@@ -396,7 +396,7 @@ export default {
     paymentMethodsBr: "PIX · 5 € (recomendado) · Tarjeta / PayPal · 9,99 €",
     priceBrPixNote: "Oferta Brasil · 5 € con PIX (~R$ 28)",
     productName: "Sidus VIP - Acceso de por vida",
-    notificationsPaywall: "Widget en el móvil para recibir el horóscopo diario personalizado (activable en Perfil tras Premium).",
+    notificationsPaywall: "",
   },
   oracle: {
     title: "Oráculo Astral",

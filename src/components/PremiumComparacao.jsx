@@ -1,18 +1,10 @@
-import { Crown, Sparkles, Check, X } from 'lucide-react'
+import { Crown, Check, X } from 'lucide-react'
 import { useLanguage } from '../lib/i18n/LanguageContext.jsx'
 import { MAX_ORACLE_GRATIS } from '../lib/oracleLimit.js'
 import { MAX_LEITURAS_GRATIS } from '../components/Tarot.jsx'
 
-function lugaresRestantes() {
-  const now = new Date()
-  const base = 487
-  const variacao = (now.getUTCDate() * 7 + now.getUTCMonth() * 13) % 89
-  return Math.max(42, base - variacao)
-}
-
 export function PremiumComparacao({ isPremium, oracleUsadas = 0, tarotUsadas = 0, isBrasil = false, compact = false }) {
   const { t } = useLanguage()
-  const restantes = lugaresRestantes()
   const oracleRestantes = Math.max(0, MAX_ORACLE_GRATIS - oracleUsadas)
   const tarotRestantes = Math.max(0, MAX_LEITURAS_GRATIS - tarotUsadas)
 
@@ -28,8 +20,8 @@ export function PremiumComparacao({ isPremium, oracleUsadas = 0, tarotUsadas = 0
     <div className={`premium-comparacao${compact ? ' premium-comparacao--compact' : ''}`}>
       {!isPremium && (
         <div className="premium-urgency">
-          <Sparkles size={14} color="#DFB76C" />
-          <span>{t('premium.urgency', { count: restantes })}</span>
+          <Crown size={14} color="#DFB76C" />
+          <span>{t('premium.lifetimeNote')}</span>
         </div>
       )}
 

@@ -70,8 +70,6 @@ const BENEFICIOS_VIP_PT = [
   'Radar de Afinidades e Sinastria completa',
   'Chat ilimitado com o Oráculo Sidus - astrólogo profissional',
   'Alertas de trânsitos planetários em tempo real',
-  'Widget no telemóvel para receber o horóscopo diário personalizado (só Premium)',
-  'Notificações diárias com horóscopo do teu signo',
 ]
 
 const BENEFICIOS_VIP_EN = [
@@ -83,8 +81,6 @@ const BENEFICIOS_VIP_EN = [
   'Affinity Radar and full Synastry',
   'Unlimited chat with Oracle Sidus - professional astrologer',
   'Real-time planetary transit alerts',
-  'Phone widget for your personalised daily horoscope (Premium only)',
-  'Daily notifications with your sign\'s horoscope',
 ]
 
 const BENEFICIOS_VIP_ES = [
@@ -96,8 +92,6 @@ const BENEFICIOS_VIP_ES = [
   'Radar de Afinidades y Sinastría completa',
   'Chat ilimitado con el Oráculo Sidus - astrólogo profesional',
   'Alertas de tránsitos planetarios en tiempo real',
-  'Widget en el móvil para recibir el horóscopo diario personalizado (solo Premium)',
-  'Notificaciones diarias con el horóscopo de tu signo',
 ]
 
 const BENEFICIOS_VIP_IT = [
@@ -109,8 +103,6 @@ const BENEFICIOS_VIP_IT = [
   'Radar delle Affinità e Sinastria completa',
   'Chat illimitata con l\'Oracolo Sidus - astrologo professionista',
   'Avvisi sui transiti planetari in tempo reale',
-  'Widget sul telefono per l\'oroscopo giornaliero personalizzato (solo Premium)',
-  'Notifiche giornaliere con l\'oroscopo del tuo segno',
 ]
 
 const BENEFICIOS_VIP_DE = [
@@ -122,8 +114,6 @@ const BENEFICIOS_VIP_DE = [
   'Affinitäts-Radar und vollständige Synastrie',
   'Unbegrenzter Chat mit Orakel Sidus – professioneller Astrologe',
   'Echtzeit-Warnungen bei Planetentransiten',
-  'Handy-Widget für dein personalisiertes Tageshoroskop (nur Premium)',
-  'Tägliche Benachrichtigungen mit deinem Sternzeichen-Horoskop',
 ]
 
 const BENEFICIOS_VIP_FR = [
@@ -135,8 +125,6 @@ const BENEFICIOS_VIP_FR = [
   'Radar d\'Affinités et Synastrie complète',
   'Chat illimité avec l\'Oracle Sidus – astrologue professionnel',
   'Alertes de transits planétaires en temps réel',
-  'Widget mobile pour l\'horoscope quotidien personnalisé (Premium uniquement)',
-  'Notifications quotidiennes avec l\'horoscope de ton signe',
 ]
 
 export function getFerramentas(lang) {

@@ -385,7 +385,7 @@ export default {
     paymentMethodsBr: 'PIX · 5 € (recomendado) · Cartão / PayPal · 9,99 €',
     priceBrPixNote: 'Oferta Brasil · 5 € com PIX (~R$ 28)',
     productName: 'Sidus VIP - Acesso vitalício',
-    notificationsPaywall: 'Widget no telemóvel para receber o horóscopo diário personalizado (activável no Perfil após Premium).',
+    notificationsPaywall: '',
   },
   oracle: {
     title: 'Oráculo Astral',
@@ -826,13 +826,13 @@ export default {
     oracleText: 'Pergunta o que quiseres — amor, carreira, trânsitos. Respostas fundamentadas no teu mapa natal.',
   },
   premium: {
-    urgency: 'Oferta vitalícia — restam {count} lugares neste ciclo',
+    lifetimeNote: 'Pagamento único · acesso vitalício sem renovações',
     tarotUsed: 'Tarot: {used} de {max} leituras grátis · restam {left}',
     oracleUsed: 'Oráculo: {used} de {max} perguntas grátis · restam {left}',
     homeTeaser: {
       ariaLabel: 'Comparar planos Sidus',
       title: 'Desbloqueia o cosmos completo',
-      lead: 'Tarot e oráculo ilimitados, sinastria, notificações diárias e PDF profissional.',
+      lead: 'Tarot e oráculo ilimitados, sinastria, ferramentas premium e PDF profissional.',
       cta: 'Sidus VIP — {price} € vitalício',
     },
     table: {

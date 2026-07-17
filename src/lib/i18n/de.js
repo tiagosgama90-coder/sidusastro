@@ -389,7 +389,7 @@ export default {
     "paymentMethodsBr": "PIX · 5 € (empfohlen) · Karte / PayPal · 9,99 €",
     "priceBrPixNote": "Brasilien-Angebot · 5 € mit PIX (~R$ 28)",
     "productName": "Sidus VIP - Lebenslanger Zugang",
-    "notificationsPaywall": "Widget auf dem Handy für dein personalisiertes Tageshoroskop (im Profil nach Premium aktivierbar)."
+    "notificationsPaywall": ""
   },
   "oracle": {
     "title": "Astralorakel",
