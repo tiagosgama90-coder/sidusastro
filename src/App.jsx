@@ -1383,6 +1383,14 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
     }
   }
 
+  useEffect(() => {
+    if (window.location.hash !== '#guias') return
+    const scroll = () => document.getElementById('guias')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    requestAnimationFrame(scroll)
+    const t = window.setTimeout(scroll, 400)
+    return () => window.clearTimeout(t)
+  }, [])
+
   const scrollParaAuth = useCallback(() => {
     requestAnimationFrame(() => {
       authPanelRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })

@@ -1,4 +1,4 @@
-/** Carrossel de notícias — desktop 5 cards / mobile 3 cards com auto-rotação. */
+/** Carrossel de notícias - desktop 5 cards / mobile 3 cards com auto-rotação. */
 import { useEffect, useState, useCallback, useRef } from 'react'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { useLanguage } from '../lib/i18n/LanguageContext.jsx'

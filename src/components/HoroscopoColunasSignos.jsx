@@ -24,7 +24,7 @@ function idxUserSigno(userSignoNome) {
 }
 
 /**
- * Grelha compacta — só o signo do utilizador mostra texto ao carregar; restantes ao clicar.
+ * Grelha compacta - só o signo do utilizador mostra texto ao carregar; restantes ao clicar.
  */
 export function HoroscopoColunasSignos({
   isPremium,

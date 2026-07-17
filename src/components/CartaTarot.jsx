@@ -160,7 +160,7 @@ export function dimensoesCarta(size) {
 
 /**
  * Carta de tarot profissional - ilustração Mystic com fallback SVG ornamentado.
- * animarFlip: pop suave ao revelar (sem 3D — evita cartas invisíveis).
+ * animarFlip: pop suave ao revelar (sem 3D - evita cartas invisíveis).
  */
 export function CartaTarot({ carta, size = 110, virada = false, animarFlip = false, className, style }) {
   const [imgOk, setImgOk] = useState(true)

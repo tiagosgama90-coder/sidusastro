@@ -114,17 +114,16 @@ export function VipPromoPage({
   const maxW = isDesktop ? 720 : '100%'
 
   return (
-    <div style={{ padding, maxWidth: maxW, margin: '0 auto' }}>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, marginBottom: 20 }}>
+    <>
+      <LanguageSwitcher />
+      <div style={{ padding, maxWidth: maxW, margin: '0 auto' }}>
         <button
           type="button"
           onClick={onVoltar}
-          style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'none', border: 'none', color: CORES.dourado, cursor: 'pointer' }}
+          style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'none', border: 'none', color: CORES.dourado, cursor: 'pointer', marginBottom: 20 }}
         >
           <ChevronLeft size={20} /> {t('common.back')}
         </button>
-        <LanguageSwitcher variant="compact" />
-      </div>
 
       <header style={{ textAlign: 'center', marginBottom: 28 }}>
         <div style={{
@@ -320,5 +319,6 @@ export function VipPromoPage({
         </a>
       </p>
     </div>
+    </>
   )
 }

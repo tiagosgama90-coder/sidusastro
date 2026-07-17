@@ -1,13 +1,13 @@
 (function () {
   const LANGS = ['pt', 'en', 'es', 'it', 'de', 'fr']
-  const FLAGS = { pt: '🇵🇹', en: '🇬🇧', es: '🇪🇸', it: '🇮🇹', de: '🇩🇪', fr: '🇫🇷' }
+  const FLAG_CODES = { pt: 'PT', en: 'GB', es: 'ES', it: 'IT', de: 'DE', fr: 'FR' }
   const TITLES = {
     pt: 'Português', en: 'English', es: 'Español', it: 'Italiano', de: 'Deutsch', fr: 'Français',
   }
   const STORAGE_KEY = 'sidus_lang'
-  const GUIA_VERSION = '20260717'
+  const GUIA_VERSION = '20260717b'
   const ZODIAC = ['♈', '♉', '♊', '♋', '♌', '♍', '♎', '♏', '♐', '♑', '♒', '♓']
-  const NAV_KEYS = ['mapa', 'ascendente', 'signos', 'tarot', 'login']
+  const NAV_KEYS = ['mapa', 'ascendente', 'signos', 'tarot']
   const RELATED_GUIDES = {
     'mapa-astral': [
       { href: '/guia/ascendente.html', navKey: 'ascendente' },
@@ -60,6 +60,18 @@
     return `/${lang}/login`
   }
 
+  function landingHref(lang) {
+    if (!lang || lang === 'pt') return '/login#guias'
+    return `/${lang}/login#guias`
+  }
+
+  function flagImg(code, width) {
+    const cc = FLAG_CODES[code] || 'PT'
+    const w = width || 20
+    const h = Math.round((w * 2) / 3)
+    return `<img src="/flags/${cc}.svg" width="${w}" height="${h}" alt="" aria-hidden="true" class="guia-lang-flag-img" />`
+  }
+
   function guideHref(path, lang) {
     if (!lang || lang === 'pt') return path
     return `${path}?lang=${lang}`
@@ -72,7 +84,7 @@
     applyLang(code)
   }
 
-  /** Estrela de 12 pontas ({12/5}) — um vértice por signo. */
+  /** Estrela de 12 pontas ({12/5}) - um vértice por signo. */
   function dodecagramPaths(cx, cy, outerR) {
     const pts = []
     for (let i = 0; i < 12; i++) {
@@ -203,15 +215,17 @@
     let open = false
     const render = () => {
       root.innerHTML = `
-        <div class="guia-lang-switcher">
-          <button type="button" class="guia-lang-trigger" aria-label="${TITLES[currentLang]} - change language" aria-expanded="${open}">
-            <span class="guia-lang-flag">${FLAGS[currentLang]}</span>
-            <span class="guia-lang-caret">▾</span>
-          </button>
-          ${open ? `<div class="guia-lang-menu" role="menu">${LANGS.map((code) => `
-            <button type="button" role="menuitem" class="guia-lang-item${code === currentLang ? ' guia-lang-item--active' : ''}" data-lang="${code}" title="${TITLES[code]}" aria-label="${TITLES[code]}">
-              <span>${FLAGS[code]}</span>
-            </button>`).join('')}</div>` : ''}
+        <div class="guia-lang-switcher-outer">
+          <div class="guia-lang-switcher">
+            <button type="button" class="guia-lang-trigger" aria-label="${TITLES[currentLang]} - change language" aria-expanded="${open}">
+              ${flagImg(currentLang, 20)}
+              <span class="guia-lang-caret">▾</span>
+            </button>
+            ${open ? `<div class="guia-lang-menu" role="menu">${LANGS.map((code) => `
+              <button type="button" role="menuitem" class="guia-lang-item${code === currentLang ? ' guia-lang-item--active' : ''}" data-lang="${code}" title="${TITLES[code]}" aria-label="${TITLES[code]}">
+                ${flagImg(code, 20)}
+              </button>`).join('')}</div>` : ''}
+          </div>
         </div>`
       root.querySelector('.guia-lang-trigger')?.addEventListener('click', (e) => {
         e.stopPropagation()
@@ -251,8 +265,12 @@
     const backBtn = document.querySelector('.guia-back')
     if (backBtn && common?.backToLanding) {
       backBtn.textContent = common.backToLanding[lang] || common.backToLanding.pt
-      backBtn.setAttribute('href', loginHref(lang))
+      backBtn.setAttribute('href', landingHref(lang))
     }
+
+    document.querySelectorAll('.guia-logo').forEach((el) => {
+      el.setAttribute('href', landingHref(lang))
+    })
 
     const nav = document.querySelector('.guia-nav')
     if (nav && common?.nav) {
@@ -262,12 +280,8 @@
         const key = NAV_KEYS[i]
         if (!key || !common.nav[key]) return
         a.textContent = common.nav[key][lang] || common.nav[key].pt
-        if (key === 'login') {
-          a.setAttribute('href', loginHref(lang))
-        } else {
-          const path = a.getAttribute('href')?.split('?')[0] || a.pathname
-          a.setAttribute('href', guideHref(path, lang))
-        }
+        const path = a.getAttribute('href')?.split('?')[0] || a.pathname
+        a.setAttribute('href', guideHref(path, lang))
       })
     }
 
@@ -427,8 +441,7 @@
     block.innerHTML = `
       <h2 class="guia-related-title">${title}</h2>
       <p class="guia-related-lead">${lead}</p>
-      <nav class="guia-related-links" aria-label="${title}">${links}</nav>
-      <a class="guia-btn guia-related-cta" href="${loginHref(lang)}">${common.nav?.login?.[lang] || common.nav?.login?.pt || 'Calcular mapa'}</a>`
+      <nav class="guia-related-links" aria-label="${title}">${links}</nav>`
   }
 
   function init() {

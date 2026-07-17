@@ -1,4 +1,4 @@
-/** Nomes, descrições, prazo e foco dos tipos de leitura Tarot — todos os idiomas UI. */
+/** Nomes, descrições, prazo e foco dos tipos de leitura Tarot - todos os idiomas UI. */
 
 export const TAROT_TYPES_PT = {
   diaria: { nome: 'Leitura Diária', desc: 'Energia do dia · Alerta · Conselho', prazo: '24 Horas', foco: 'Válido estritamente para o dia em que a carta é tirada (até à meia-noite ou próximas 24h).' },

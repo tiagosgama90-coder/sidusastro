@@ -2,7 +2,7 @@ import { useEffect, useRef, useMemo } from 'react'
 
 const ZODIAC = ['♈', '♉', '♊', '♋', '♌', '♍', '♎', '♏', '♐', '♑', '♒', '♓']
 
-/** Estrela de 12 pontas ({12/5}) — um vértice por signo. */
+/** Estrela de 12 pontas ({12/5}) - um vértice por signo. */
 function dodecagramPaths(cx, cy, outerR) {
   const pts = []
   for (let i = 0; i < 12; i++) {

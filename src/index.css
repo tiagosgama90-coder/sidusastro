@@ -564,7 +564,7 @@ html.sidus-no-ads .google-auto-placed {
   font-weight: 600;
 }
 
-/* Guias editoriais — landing */
+/* Guias editoriais - landing */
 .landing-guides {
   max-width: 1100px;
   margin: 28px auto 8px;
@@ -574,6 +574,115 @@ html.sidus-no-ads .google-auto-placed {
 .landing-guides--compact {
   margin: 20px auto 12px;
   padding: 0 16px 4px;
+}
+
+.landing-guides--featured {
+  max-width: min(1100px, calc(100vw - 24px));
+  margin: 36px auto 28px;
+  padding: 28px 22px 26px;
+  border-radius: 24px;
+  border: 1px solid rgba(223, 183, 108, 0.32);
+  background:
+    radial-gradient(ellipse 90% 70% at 50% -10%, rgba(223, 183, 108, 0.14), transparent 58%),
+    radial-gradient(ellipse 60% 50% at 100% 100%, rgba(139, 92, 246, 0.1), transparent 55%),
+    rgba(8, 5, 24, 0.78);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.04) inset,
+    0 28px 72px rgba(0, 0, 0, 0.38);
+}
+
+.landing-guides-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin: 0 0 10px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(223, 183, 108, 0.92);
+  background: rgba(223, 183, 108, 0.1);
+  border: 1px solid rgba(223, 183, 108, 0.24);
+}
+
+.landing-guides--featured .landing-guides-header {
+  margin-bottom: 24px;
+}
+
+.landing-guides--featured .landing-guides-title {
+  font-size: clamp(1.35rem, 4.5vw, 1.75rem);
+  margin-bottom: 10px;
+}
+
+.landing-guides--featured .landing-guides-lead {
+  font-size: 14px;
+  max-width: 560px;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.landing-guides-grid--featured {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+}
+
+@media (min-width: 640px) {
+  .landing-guides-grid--featured {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .landing-guides-grid--featured {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .landing-guides--featured {
+    padding: 32px 28px 30px;
+  }
+}
+
+.landing-guide-arrow-featured {
+  color: #DFB76C;
+  opacity: 0.75;
+  flex-shrink: 0;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.landing-guide-card:hover .landing-guide-arrow-featured {
+  opacity: 1;
+  transform: translate(2px, -2px);
+}
+
+.landing-guides--featured .landing-guide-card {
+  min-height: 100%;
+  border-color: rgba(223, 183, 108, 0.24);
+  background: rgba(0, 0, 0, 0.22);
+}
+
+.landing-guides--featured .landing-guide-card:hover {
+  border-color: rgba(223, 183, 108, 0.48);
+  transform: translateY(-3px);
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.35);
+}
+
+.landing-guides--featured .landing-guide-visual {
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.landing-guides--featured .landing-guide-glyph {
+  font-size: 26px;
+  opacity: 1;
 }
 
 .landing-conversion-zone {
@@ -2506,41 +2615,6 @@ html.sidus-no-ads .google-auto-placed {
   font-size: 12px;
   line-height: 1.55;
   color: rgba(255, 255, 255, 0.62);
-}
-.vip-promo-video-toggle {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  background: rgba(139, 92, 246, 0.12);
-  border: 1px solid rgba(223, 183, 108, 0.25);
-  border-radius: 12px;
-  color: #DFB76C;
-  font-size: 13px;
-  font-weight: 600;
-  padding: 12px 16px;
-  cursor: pointer;
-}
-.vip-promo-video-body {
-  margin-top: 14px;
-  font-size: 13px;
-  line-height: 1.6;
-  color: rgba(255, 255, 255, 0.75);
-}
-.vip-promo-video-body blockquote {
-  margin: 12px 0;
-  padding: 14px 16px;
-  border-left: 3px solid #DFB76C;
-  background: rgba(0, 0, 0, 0.22);
-  border-radius: 0 10px 10px 0;
-  font-style: italic;
-  color: rgba(255, 255, 255, 0.88);
-}
-.vip-promo-caption-hint,
-.vip-promo-hashtags {
-  font-size: 12px;
-  color: rgba(255, 255, 255, 0.55);
 }
 .vip-promo-card {
   padding: 22px 20px;

@@ -1,4 +1,4 @@
-/* Guias editoriais Sidusastro — páginas estáticas para SEO e AdSense */
+/* Guias editoriais Sidusastro - páginas estáticas para SEO e AdSense */
 :root {
   --bg: #0B071E;
   --gold: #DFB76C;
@@ -97,13 +97,25 @@ body.guia-has-cosmic-bg {
   50% { fill: rgba(240, 207, 138, 0.95); opacity: 1; }
 }
 
-/* Seletor de idiomas — canto superior direito (como no site) */
+/* Seletor de idiomas - igual ao site React (bandeiras SVG) */
 .guia-lang-switcher-root {
   position: fixed !important;
   top: max(8px, env(safe-area-inset-top, 8px));
   right: max(8px, env(safe-area-inset-right, 8px));
   z-index: 120;
   pointer-events: auto;
+  touch-action: manipulation;
+}
+
+.guia-lang-switcher-outer {
+  display: flex;
+  padding: 2px;
+  border-radius: 6px;
+  background: rgba(11, 7, 30, 0.94);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(223, 183, 108, 0.22);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
 }
 
 .guia-lang-switcher {
@@ -121,15 +133,19 @@ body.guia-has-cosmic-bg {
   background: rgba(255, 255, 255, 0.04);
   color: var(--gold);
   cursor: pointer;
-  font-size: 16px;
-  line-height: 1;
+  line-height: 0;
 }
 
-.guia-lang-flag { font-size: 18px; }
+.guia-lang-flag-img {
+  display: block;
+  border-radius: 2px;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.15);
+}
 
 .guia-lang-caret {
   font-size: 8px;
   opacity: 0.8;
+  line-height: 1;
 }
 
 .guia-lang-menu {
@@ -145,6 +161,7 @@ body.guia-has-cosmic-bg {
   background: rgba(11, 7, 30, 0.98);
   border: 1px solid rgba(223, 183, 108, 0.22);
   box-shadow: 0 8px 22px rgba(0, 0, 0, 0.45);
+  z-index: 180;
 }
 
 .guia-lang-item {
@@ -157,8 +174,7 @@ body.guia-has-cosmic-bg {
   border: 1px solid rgba(223, 183, 108, 0.22);
   background: rgba(255, 255, 255, 0.04);
   cursor: pointer;
-  font-size: 16px;
-  line-height: 1;
+  line-height: 0;
 }
 
 .guia-lang-item--active {
