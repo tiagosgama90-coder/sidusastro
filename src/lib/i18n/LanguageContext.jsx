@@ -12,6 +12,7 @@ import {
 import {
   translateSigno, translatePlaneta, translateElemento,
   translateModalidade, translateAspecto, localizeSignoObj,
+  translatePontoNatal, translateHouseLabel,
 } from './astro.js'
 
 const STORAGE_KEY = 'sidus_lang'
@@ -70,6 +71,8 @@ export function LanguageProvider({ children }) {
     t,
     ts: (nome) => translateSigno(nome, lang),
     tp: (nome) => translatePlaneta(nome, lang),
+    tpo: (nome) => translatePontoNatal(nome, lang),
+    th: (num) => translateHouseLabel(num, lang),
     te: (nome) => translateElemento(nome, lang),
     tm: (nome) => translateModalidade(nome, lang),
     ta: (nome) => translateAspecto(nome, lang),

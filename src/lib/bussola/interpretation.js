@@ -1,4 +1,4 @@
-import { translatePlaneta, translateAspecto } from '../i18n/astro.js'
+import { translatePlaneta, translatePontoNatal, translateHouseLabel, translateAspecto } from '../i18n/astro.js'
 import { getTemaCasa } from '../casasPlacidus.js'
 
 const ASP_LABEL = {
@@ -10,23 +10,9 @@ const ASP_LABEL = {
   fr: { conjuncao: 'en conjonction', sextil: 'en sextile', quadratura: 'en carré', trino: 'en trigone', oposicao: 'en opposition' },
 }
 
-const PONTO_NATAL = {
-  pt: { Ascendente: 'Ascendente', 'Meio-Céu': 'Meio-Céu', Descendente: 'Descendente', 'Fundo do Céu': 'Fundo do Céu' },
-  en: { Ascendente: 'Ascendant', 'Meio-Céu': 'Midheaven', Descendente: 'Descendant', 'Fundo do Céu': 'IC' },
-  es: { Ascendente: 'Ascendente', 'Meio-Céu': 'Medio Cielo', Descendente: 'Descendente', 'Fundo do Céu': 'Fondo del Cielo' },
-  it: { Ascendente: 'Ascendente', 'Meio-Céu': 'Medio Cielo', Descendente: 'Discendente', 'Fundo do Céu': 'Fondo del Cielo' },
-  de: { Ascendente: 'Aszendent', 'Meio-Céu': 'MC', Descendente: 'Deszendent', 'Fundo do Céu': 'IC' },
-  fr: { Ascendente: 'Ascendant', 'Meio-Céu': 'Milieu du Ciel', Descendente: 'Descendant', 'Fundo do Céu': 'Fond du Ciel' },
-}
-
-function labelPonto(nome, lang) {
-  const map = PONTO_NATAL[lang] || PONTO_NATAL.en
-  return map[nome] || translatePlaneta(nome, lang) || nome
-}
-
 function geometria(transito, lang) {
   const tp = translatePlaneta(transito.planetaTransito, lang)
-  const np = labelPonto(transito.pontoNatal, lang)
+  const np = translatePontoNatal(transito.pontoNatal, lang)
   const asp = (ASP_LABEL[lang] || ASP_LABEL.en)[transito.aspecto] || translateAspecto(transito.aspecto, lang)
   const retro = transito.retrogrado ? (lang === 'pt' ? ' (retrógrado)' : lang === 'es' ? ' (retrógrado)' : lang === 'fr' ? ' (rétrograde)' : lang === 'de' ? ' (rückläufig)' : lang === 'it' ? ' (retrogrado)' : ' (retrograde)') : ''
 
@@ -45,14 +31,17 @@ function activacaoCasa(transito, lang) {
   const temaT = getTemaCasa(transito.casaTransit, lang)
   const temaN = getTemaCasa(transito.casaNatal, lang)
   const tp = translatePlaneta(transito.planetaTransito, lang)
+  const casaT = translateHouseLabel(transito.casaTransit, lang)
+  const casaN = translateHouseLabel(transito.casaNatal, lang)
+  const ponto = translatePontoNatal(transito.pontoNatal, lang)
 
   const templates = {
-    pt: `A energia de ${tp} manifesta-se na Casa ${transito.casaTransit} (${temaT?.nome}: ${temaT?.foco}). Simultaneamente activa a Casa ${transito.casaNatal} ligada ao ${labelPonto(transito.pontoNatal, lang)} (${temaN?.nome}: ${temaN?.foco}).`,
-    en: `${tp}'s energy manifests in House ${transito.casaTransit} (${temaT?.nome}: ${temaT?.foco}). It simultaneously activates House ${transito.casaNatal} linked to natal ${labelPonto(transito.pontoNatal, lang)} (${temaN?.nome}: ${temaN?.foco}).`,
-    es: `La energía de ${tp} se manifiesta en la Casa ${transito.casaTransit} (${temaT?.nome}: ${temaT?.foco}). Activa simultáneamente la Casa ${transito.casaNatal} ligada al ${labelPonto(transito.pontoNatal, lang)} (${temaN?.nome}: ${temaN?.foco}).`,
-    it: `L'energia di ${tp} si manifesta nella Casa ${transito.casaTransit} (${temaT?.nome}: ${temaT?.foco}). Attiva simultaneamente la Casa ${transito.casaNatal} legata al ${labelPonto(transito.pontoNatal, lang)} (${temaN?.nome}: ${temaN?.foco}).`,
-    de: `Die Energie von ${tp} zeigt sich im ${transito.casaTransit}. Haus (${temaT?.nome}: ${temaT?.foco}). Gleichzeitig aktiviert sie das ${transito.casaNatal}. Haus des natalen ${labelPonto(transito.pontoNatal, lang)} (${temaN?.nome}: ${temaN?.foco}).`,
-    fr: `L'énergie de ${tp} se manifeste en Maison ${transito.casaTransit} (${temaT?.nome}: ${temaT?.foco}). Elle active simultanément la Maison ${transito.casaNatal} liée au ${labelPonto(transito.pontoNatal, lang)} (${temaN?.nome}: ${temaN?.foco}).`,
+    pt: `A energia de ${tp} manifesta-se na ${casaT} (${temaT?.nome}: ${temaT?.foco}). Simultaneamente activa a ${casaN} ligada ao ${ponto} (${temaN?.nome}: ${temaN?.foco}).`,
+    en: `${tp}'s energy manifests in the ${casaT} (${temaT?.nome}: ${temaT?.foco}). It simultaneously activates the ${casaN} linked to natal ${ponto} (${temaN?.nome}: ${temaN?.foco}).`,
+    es: `La energía de ${tp} se manifiesta en la ${casaT} (${temaT?.nome}: ${temaT?.foco}). Activa simultáneamente la ${casaN} ligada al ${ponto} (${temaN?.nome}: ${temaN?.foco}).`,
+    it: `L'energia di ${tp} si manifesta nella ${casaT} (${temaT?.nome}: ${temaT?.foco}). Attiva simultaneamente la ${casaN} legata al ${ponto} (${temaN?.nome}: ${temaN?.foco}).`,
+    de: `Die Energie von ${tp} zeigt sich im ${casaT} (${temaT?.nome}: ${temaT?.foco}). Gleichzeitig aktiviert sie das ${casaN} des natalen ${ponto} (${temaN?.nome}: ${temaN?.foco}).`,
+    fr: `L'énergie de ${tp} se manifeste en ${casaT} (${temaT?.nome}: ${temaT?.foco}). Elle active simultanément la ${casaN} liée au ${ponto} (${temaN?.nome}: ${temaN?.foco}).`,
   }
   return templates[lang] || templates.en
 }
@@ -251,21 +240,27 @@ export function textoAlertaEclipse(eclipse, lang) {
     : { pt: 'Eclipse Lunar', en: 'Lunar Eclipse', es: 'Eclipse Lunar', it: 'Eclissi Lunare', de: 'Mondfinsternis', fr: 'Éclipse Lunaire' }
   const titulo = (tipo[lang] || tipo.en) + ` ${eclipse.kindLabel}`
 
+  const casaLabel = eclipse.casa ? translateHouseLabel(eclipse.casa, lang) : null
+
   if (!eclipse.casa) {
     const fallback = {
       pt: `${titulo} a ${eclipse.graus}° em ${eclipse.signo}. Marco cósmico de aceleração - observa decisões e acontecimentos nas semanas adjacentes.`,
       en: `${titulo} at ${eclipse.graus}° in ${eclipse.signo}. Cosmic acceleration marker - watch decisions and events in adjacent weeks.`,
+      es: `${titulo} a ${eclipse.graus}° en ${eclipse.signo}. Hito cósmico de aceleración: observa decisiones y acontecimientos en las semanas adyacentes.`,
+      it: `${titulo} a ${eclipse.graus}° in ${eclipse.signo}. Segno cosmico di accelerazione: osserva decisioni ed eventi nelle settimane adiacenti.`,
+      de: `${titulo} bei ${eclipse.graus}° in ${eclipse.signo}. Kosmisches Beschleunigungszeichen - beobachte Entscheidungen und Ereignisse in den angrenzenden Wochen.`,
+      fr: `${titulo} à ${eclipse.graus}° en ${eclipse.signo}. Marqueur d'accélération cosmique - observe les décisions et événements des semaines adjacentes.`,
     }
     return fallback[lang] || fallback.en
   }
 
   const templates = {
-    pt: `${titulo} a ${eclipse.graus}° em ${eclipse.signo} na tua Casa ${eclipse.casa} (${eclipse.temaNome}). Área activada: ${eclipse.temaFoco}. Capítulo acelerado - mudanças neste domínio podem desenrolar-se nos 6 a 18 meses seguintes.`,
-    en: `${titulo} at ${eclipse.graus}° in ${eclipse.signo} in your House ${eclipse.casa} (${eclipse.temaNome}). Activated area: ${eclipse.temaFoco}. Accelerated chapter - changes in this domain may unfold over the next 6 to 18 months.`,
-    es: `${titulo} a ${eclipse.graus}° en ${eclipse.signo} en tu Casa ${eclipse.casa} (${eclipse.temaNome}). Área activada: ${eclipse.temaFoco}. Capítulo acelerado: los cambios en este dominio pueden desplegarse en los próximos 6 a 18 meses.`,
-    it: `${titulo} a ${eclipse.graus}° in ${eclipse.signo} nella tua Casa ${eclipse.casa} (${eclipse.temaNome}). Area attivata: ${eclipse.temaFoco}. Capitolo accelerato: i cambiamenti in questo dominio possono svilupparsi nei prossimi 6-18 mesi.`,
-    de: `${titulo} bei ${eclipse.graus}° in ${eclipse.signo} in deinem ${eclipse.casa}. Haus (${eclipse.temaNome}). Aktivierter Bereich: ${eclipse.temaFoco}. Beschleunigtes Kapitel - Veränderungen können sich in 6-18 Monaten entfalten.`,
-    fr: `${titulo} à ${eclipse.graus}° en ${eclipse.signo} dans ta Maison ${eclipse.casa} (${eclipse.temaNome}). Domaine activé : ${eclipse.temaFoco}. Chapitre accéléré - les changements peuvent se déployer sur 6 à 18 mois.`,
+    pt: `${titulo} a ${eclipse.graus}° em ${eclipse.signo} na tua ${casaLabel} (${eclipse.temaNome}). Área activada: ${eclipse.temaFoco}. Capítulo acelerado - mudanças neste domínio podem desenrolar-se nos 6 a 18 meses seguintes.`,
+    en: `${titulo} at ${eclipse.graus}° in ${eclipse.signo} in your ${casaLabel} (${eclipse.temaNome}). Activated area: ${eclipse.temaFoco}. Accelerated chapter - changes in this domain may unfold over the next 6 to 18 months.`,
+    es: `${titulo} a ${eclipse.graus}° en ${eclipse.signo} en tu ${casaLabel} (${eclipse.temaNome}). Área activada: ${eclipse.temaFoco}. Capítulo acelerado: los cambios en este dominio pueden desplegarse en los próximos 6 a 18 meses.`,
+    it: `${titulo} a ${eclipse.graus}° in ${eclipse.signo} nella tua ${casaLabel} (${eclipse.temaNome}). Area attivata: ${eclipse.temaFoco}. Capitolo accelerato: i cambiamenti in questo dominio possono svilupparsi nei prossimi 6-18 mesi.`,
+    de: `${titulo} bei ${eclipse.graus}° in ${eclipse.signo} in deinem ${casaLabel} (${eclipse.temaNome}). Aktivierter Bereich: ${eclipse.temaFoco}. Beschleunigtes Kapitel - Veränderungen können sich in 6-18 Monaten entfalten.`,
+    fr: `${titulo} à ${eclipse.graus}° en ${eclipse.signo} dans ta ${casaLabel} (${eclipse.temaNome}). Domaine activé : ${eclipse.temaFoco}. Chapitre accéléré - les changements peuvent se déployer sur 6 à 18 mois.`,
   }
   return templates[lang] || templates.en
 }

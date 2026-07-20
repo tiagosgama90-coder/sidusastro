@@ -54,7 +54,7 @@ const CORES = {
 }
 
 export function BussolaCosmica({ mapaNatal, planetasNatal, onVoltar }) {
-  const { lang, t, ts, tp } = useLanguage()
+  const { lang, t, ts, tp, tpo, th } = useLanguage()
   const agora = new Date()
   const [ano, setAno] = useState(agora.getFullYear())
   const [mesAberto, setMesAberto] = useState(agora.getMonth())
@@ -79,6 +79,22 @@ export function BussolaCosmica({ mapaNatal, planetasNatal, onVoltar }) {
     return [y - 1, y, y + 1, y + 2]
   }, [agora])
 
+  const estiloSelect = {
+    background: '#1a1030',
+    border: '1px solid rgba(223,183,108,0.35)',
+    borderRadius: 8,
+    color: CORES.branco,
+    padding: '8px 32px 8px 12px',
+    fontSize: 13,
+    cursor: 'pointer',
+    colorScheme: 'dark',
+    WebkitAppearance: 'none',
+    appearance: 'none',
+    minWidth: 88,
+  }
+
+  const estiloOption = { background: '#1a1030', color: '#fff' }
+
   return (
     <div style={{padding:'20px 20px 110px'}}>
       <BotaoVoltar onVoltar={onVoltar} t={t} />
@@ -99,9 +115,9 @@ export function BussolaCosmica({ mapaNatal, planetasNatal, onVoltar }) {
           <select
             value={ano}
             onChange={(e) => { setAno(Number(e.target.value)); setTransitoAberto(null) }}
-            style={{background:'rgba(255,255,255,0.06)',border:'1px solid rgba(223,183,108,0.25)',borderRadius:8,color:CORES.branco,padding:'6px 10px',fontSize:13}}
+            style={estiloSelect}
           >
-            {anosDisponiveis.map((y) => <option key={y} value={y}>{y}</option>)}
+            {anosDisponiveis.map((y) => <option key={y} value={y} style={estiloOption}>{y}</option>)}
           </select>
         </label>
       </div>
@@ -209,10 +225,10 @@ export function BussolaCosmica({ mapaNatal, planetasNatal, onVoltar }) {
                       <span style={{fontSize:18}}>{tr.icone || tr.simbolo}</span>
                       <div style={{flex:1}}>
                         <div style={{fontSize:13,fontWeight:700,color:CORES.branco}}>
-                          {tp(tr.planetaTransito)} {ts(tr.signoTransito)} → {tr.pontoNatal}
+                          {tp(tr.planetaTransito)} {ts(tr.signoTransito)} → {tpo(tr.pontoNatal)}
                         </div>
                         <div style={{fontSize:11,color:CORES.brancoMuted,marginTop:2}}>
-                          {t('ferramentasPremium.bussola.houseActivation')}: Casa {tr.casaTransit} · Casa {tr.casaNatal}
+                          {t('ferramentasPremium.bussola.houseActivation')}: {th(tr.casaTransit)} · {th(tr.casaNatal)}
                         </div>
                       </div>
                       <span style={{
