@@ -79,22 +79,6 @@ export function BussolaCosmica({ mapaNatal, planetasNatal, onVoltar }) {
     return [y - 1, y, y + 1, y + 2]
   }, [agora])
 
-  const estiloSelect = {
-    background: '#1a1030',
-    border: '1px solid rgba(223,183,108,0.35)',
-    borderRadius: 8,
-    color: CORES.branco,
-    padding: '8px 32px 8px 12px',
-    fontSize: 13,
-    cursor: 'pointer',
-    colorScheme: 'dark',
-    WebkitAppearance: 'none',
-    appearance: 'none',
-    minWidth: 88,
-  }
-
-  const estiloOption = { background: '#1a1030', color: '#fff' }
-
   return (
     <div style={{padding:'20px 20px 110px'}}>
       <BotaoVoltar onVoltar={onVoltar} t={t} />
@@ -109,17 +93,34 @@ export function BussolaCosmica({ mapaNatal, planetasNatal, onVoltar }) {
         </p>
       </div>
 
-      <div style={{display:'flex',gap:10,marginBottom:20,flexWrap:'wrap'}}>
-        <label style={{fontSize:12,color:CORES.brancoMuted,display:'flex',alignItems:'center',gap:6}}>
+      <div style={{marginBottom:20}}>
+        <div style={{fontSize:12,color:CORES.brancoMuted,marginBottom:8}}>
           {t('ferramentasPremium.bussola.yearLabel')}
-          <select
-            value={ano}
-            onChange={(e) => { setAno(Number(e.target.value)); setTransitoAberto(null) }}
-            style={estiloSelect}
-          >
-            {anosDisponiveis.map((y) => <option key={y} value={y} style={estiloOption}>{y}</option>)}
-          </select>
-        </label>
+        </div>
+        <div style={{display:'flex',gap:6,flexWrap:'wrap'}}>
+          {anosDisponiveis.map((y) => {
+            const activo = ano === y
+            return (
+              <button
+                key={y}
+                type="button"
+                onClick={() => { setAno(y); setTransitoAberto(null) }}
+                style={{
+                  padding:'6px 12px',
+                  borderRadius:8,
+                  fontSize:12,
+                  fontWeight:600,
+                  cursor:'pointer',
+                  background:activo?'rgba(223,183,108,0.2)':'rgba(255,255,255,0.04)',
+                  border:`1px solid ${activo?CORES.dourado:'rgba(255,255,255,0.1)'}`,
+                  color:activo?CORES.dourado:CORES.brancoMuted,
+                }}
+              >
+                {y}
+              </button>
+            )
+          })}
+        </div>
       </div>
 
       {mapaNatal && !carregando && (
