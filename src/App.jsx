@@ -4246,7 +4246,7 @@ export default function App() {
       case 'bussola':
         return (
           <Suspense fallback={<RouteLoader />}>
-            <BussolaCosmicaLazy mapaNatal={mapaNatal} onVoltar={() => irPara('home')} />
+            <BussolaCosmicaLazy mapaNatal={mapaNatal} planetasNatal={planetasNascimento} onVoltar={() => irPara('home')} />
           </Suspense>
         )
       case 'sinastria':
