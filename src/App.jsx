@@ -3047,14 +3047,34 @@ function Chat({ mapaNatal, isPremium, userId, oracleRemotas, onOracleUsada, onUp
       </div>
 
       {/* Input */}
-      <div style={{ padding: '10px 14px 22px', background: 'rgba(11,7,30,0.97)', borderTop: `1px solid ${CORES.vidroBorda}`, display: 'flex', gap: 10, flexShrink: 0 }}>
+      <div style={{ padding: '10px 14px 22px', background: 'rgba(11,7,30,0.97)', borderTop: `1px solid ${CORES.vidroBorda}`, flexShrink: 0 }}>
+        {!isPremium && (
+          <p style={{
+            fontSize: 11,
+            color: limiteAtingido ? CORES.dourado : CORES.brancoMuted,
+            textAlign: 'center',
+            margin: '0 0 10px',
+            lineHeight: 1.55,
+            padding: limiteAtingido ? '8px 10px' : 0,
+            borderRadius: limiteAtingido ? 10 : 0,
+            background: limiteAtingido ? 'rgba(223,183,108,0.08)' : 'transparent',
+            border: limiteAtingido ? `1px solid rgba(223,183,108,0.25)` : 'none',
+          }}>
+            {limiteAtingido
+              ? t('oracle.limitReachedHint', { max: MAX_ORACLE_GRATIS })
+              : (restantes === 1
+                ? t('oracle.freeRemainingHint', { count: restantes, max: MAX_ORACLE_GRATIS })
+                : t('oracle.freeRemainingHintPlural', { count: restantes, max: MAX_ORACLE_GRATIS }))}
+          </p>
+        )}
+        <div style={{ display: 'flex', gap: 10 }}>
         <input
           value={texto}
           onChange={e => setTexto(e.target.value)}
           onKeyDown={e => e.key === 'Enter' && !e.shiftKey && enviar()}
           placeholder={
             limiteAtingido
-              ? t('oracle.placeholderLocked')
+              ? t('oracle.placeholderLocked', { max: MAX_ORACLE_GRATIS })
               : t('oracle.placeholder')
           }
           style={{
@@ -3080,6 +3100,7 @@ function Chat({ mapaNatal, isPremium, userId, oracleRemotas, onOracleUsada, onUp
         >
           <Send size={18} color={CORES.fundo} />
         </button>
+        </div>
       </div>
     </div>
   )
