@@ -1,6 +1,6 @@
 /**
  * Ferramentas Premium Sidus
- * ─ Bússola Cósmica 2026 (trânsitos planetários para o ano)
+ * ─ Bússola Cósmica (trânsitos mensais com efemérides reais)
  * ─ Sinastria (comparação de dois mapas natais)
  * ─ Biorritmo (ciclos físico/emocional/intelectual)
  * ─ Diário Astral (registo pessoal)
@@ -9,7 +9,7 @@ import { useState, useEffect, useMemo, useCallback, useRef } from 'react'
 import { useLanguage } from '../lib/i18n/LanguageContext.jsx'
 import { dateLocale, isPt } from '../lib/i18n/langUtil.js'
 import {
-  calcularBussola2026Async, relevanciaParaMapa, TIPO_ICO, IMPACTO_COR,
+  calcularBussolaAsync, TIPO_ICO, IMPACTO_COR,
 } from '../lib/bussolaCosmica.js'
 import { calcularSinastriaCompleta } from '../lib/sinastriaEngine.js'
 import { montarRelatorioSinastria, montarResumoGratis, montarSecoesPremium, EIXOS } from '../lib/sinastriaInterpretacao.js'
@@ -53,67 +53,61 @@ const CORES = {
   brancoMuted:'rgba(255,255,255,0.55)', vidroBorda:'rgba(223,183,108,0.22)',
 }
 
-export function BussolaCosmica({ mapaNatal, onVoltar }) {
+export function BussolaCosmica({ mapaNatal, planetasNatal, onVoltar }) {
   const { lang, t, ts, tp } = useLanguage()
-  const [mesAberto, setMesAberto] = useState(null)
+  const agora = new Date()
+  const [ano, setAno] = useState(agora.getFullYear())
+  const [mesAberto, setMesAberto] = useState(agora.getMonth())
+  const [transitoAberto, setTransitoAberto] = useState(null)
   const [dados, setDados] = useState(null)
   const [carregando, setCarregando] = useState(true)
-  const locale = dateLocale(lang)
-  const mesAtual = new Date().toLocaleString(locale, { month: 'long' })
 
   useEffect(() => {
     let cancelado = false
     setCarregando(true)
-    calcularBussola2026Async(lang)
+    calcularBussolaAsync({ lang, year: ano, mapaNatal, planetasNatal: planetasNatal })
       .then((r) => { if (!cancelado) setDados(r) })
       .catch(() => { if (!cancelado) setDados(null) })
       .finally(() => { if (!cancelado) setCarregando(false) })
     return () => { cancelado = true }
-  }, [lang])
+  }, [lang, ano, mapaNatal, planetasNatal])
 
-  const transitos = dados?.transitos || []
-  const conceitos = dados?.conceitos || []
+  const meses = dados?.meses || []
+  const mesSel = meses[mesAberto]
+  const anosDisponiveis = useMemo(() => {
+    const y = agora.getFullYear()
+    return [y - 1, y, y + 1, y + 2]
+  }, [agora])
 
   return (
     <div style={{padding:'20px 20px 110px'}}>
       <BotaoVoltar onVoltar={onVoltar} t={t} />
 
-      <div style={{marginBottom:24}}>
+      <div style={{marginBottom:20}}>
         <h2 style={{fontSize:20,fontWeight:700,color:CORES.dourado,margin:'0 0 4px'}}>{t('ferramentasPremium.bussola.title')}</h2>
-        <p style={{fontSize:13,color:CORES.brancoMuted,margin:0}}>
+        <p style={{fontSize:13,color:CORES.brancoMuted,margin:'0 0 8px'}}>
           {t('ferramentasPremium.bussola.subtitle')}
+        </p>
+        <p style={{fontSize:11,color:CORES.brancoMuted,margin:0,lineHeight:1.5}}>
+          {t('ferramentasPremium.bussola.methodology')}
         </p>
       </div>
 
-      {carregando && (
-        <div style={{textAlign:'center',padding:'40px 20px',color:CORES.brancoMuted,fontSize:14}}>
-          {t('ferramentasPremium.bussola.calculating')}
-        </div>
-      )}
-
-      {!carregando && conceitos.length > 0 && (
-        <div style={{marginBottom:24}}>
-          <h3 style={{fontSize:14,fontWeight:700,color:CORES.dourado,margin:'0 0 12px'}}>
-            {t('ferramentasPremium.bussola.conceptsTitle')}
-          </h3>
-          <div style={{display:'flex',flexDirection:'column',gap:10}}>
-            {conceitos.map((c, i) => (
-              <div key={i} style={{
-                background:'rgba(255,255,255,0.04)',border:'1px solid rgba(223,183,108,0.15)',
-                borderRadius:12,padding:'12px 14px',
-              }}>
-                <div style={{fontSize:13,fontWeight:700,color:CORES.branco,marginBottom:6}}>
-                  {c.icon} {c.titulo}
-                </div>
-                <p style={{fontSize:12,color:CORES.brancoSuave,margin:0,lineHeight:1.65}}>{c.texto}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
+      <div style={{display:'flex',gap:10,marginBottom:20,flexWrap:'wrap'}}>
+        <label style={{fontSize:12,color:CORES.brancoMuted,display:'flex',alignItems:'center',gap:6}}>
+          {t('ferramentasPremium.bussola.yearLabel')}
+          <select
+            value={ano}
+            onChange={(e) => { setAno(Number(e.target.value)); setTransitoAberto(null) }}
+            style={{background:'rgba(255,255,255,0.06)',border:'1px solid rgba(223,183,108,0.25)',borderRadius:8,color:CORES.branco,padding:'6px 10px',fontSize:13}}
+          >
+            {anosDisponiveis.map((y) => <option key={y} value={y}>{y}</option>)}
+          </select>
+        </label>
+      </div>
 
       {mapaNatal && !carregando && (
-        <div style={{background:'rgba(223,183,108,0.07)',border:`1px solid rgba(223,183,108,0.25)`,borderRadius:12,padding:'12px 16px',marginBottom:20,fontSize:12,color:CORES.brancoSuave}}>
+        <div style={{background:'rgba(223,183,108,0.07)',border:'1px solid rgba(223,183,108,0.25)',borderRadius:12,padding:'12px 16px',marginBottom:20,fontSize:12,color:CORES.brancoSuave}}>
           {t('ferramentasPremium.bussola.personalized', {
             solar: ts(mapaNatal.solar?.nome),
             lunar: ts(mapaNatal.lunar?.nome),
@@ -122,55 +116,140 @@ export function BussolaCosmica({ mapaNatal, onVoltar }) {
         </div>
       )}
 
-      {!carregando && (
-      <div style={{display:'flex',flexDirection:'column',gap:10}}>
-        {transitos.map((transito,i)=>{
-          const esteMs = transito.mes.toLowerCase()===mesAtual.toLowerCase()
-          const relevante = mapaNatal && relevanciaParaMapa(transito, mapaNatal)
-            ? t('ferramentasPremium.bussola.relevant')
-            : ''
-          const aberto = mesAberto===i
-          return (
-            <div key={i} onClick={()=>setMesAberto(aberto?null:i)} style={{
-              background:esteMs?'rgba(223,183,108,0.08)':'rgba(255,255,255,0.03)',
-              border:`1px solid ${esteMs?CORES.dourado:'rgba(255,255,255,0.08)'}`,
-              borderRadius:12,padding:'14px 16px',cursor:'pointer',
-              transition:'all 0.2s',
+      {!mapaNatal && !carregando && (
+        <div style={{background:'rgba(248,113,113,0.08)',border:'1px solid rgba(248,113,113,0.25)',borderRadius:12,padding:'12px 16px',marginBottom:20,fontSize:12,color:'#FCA5A5'}}>
+          {t('ferramentasPremium.bussola.noNatal')}
+        </div>
+      )}
+
+      {carregando && (
+        <div style={{textAlign:'center',padding:'40px 20px',color:CORES.brancoMuted,fontSize:14}}>
+          {t('ferramentasPremium.bussola.calculating')}
+        </div>
+      )}
+
+      {!carregando && meses.length > 0 && (
+        <div style={{display:'flex',gap:6,flexWrap:'wrap',marginBottom:16}}>
+          {meses.map((m, i) => {
+            const activo = mesAberto === i
+            const temEclipse = m.eclipses?.length > 0
+            return (
+              <button
+                key={m.mes}
+                type="button"
+                onClick={() => { setMesAberto(i); setTransitoAberto(null) }}
+                style={{
+                  padding:'6px 10px',borderRadius:8,fontSize:11,fontWeight:600,cursor:'pointer',
+                  background:activo?'rgba(223,183,108,0.2)':'rgba(255,255,255,0.04)',
+                  border:`1px solid ${activo?CORES.dourado:'rgba(255,255,255,0.1)'}`,
+                  color:activo?CORES.dourado:CORES.brancoMuted,
+                }}
+              >
+                {m.mes.slice(0, 3)}{temEclipse ? ' 🌑' : ''}
+              </button>
+            )
+          })}
+        </div>
+      )}
+
+      {!carregando && mesSel?.eclipses?.length > 0 && (
+        <div style={{marginBottom:20}}>
+          <h3 style={{fontSize:14,fontWeight:700,color:'#F87171',margin:'0 0 10px'}}>
+            {t('ferramentasPremium.bussola.eclipseAlert')}
+          </h3>
+          {mesSel.eclipses.map((e, i) => (
+            <div key={i} style={{
+              background:'rgba(248,113,113,0.08)',border:'1px solid rgba(248,113,113,0.3)',
+              borderRadius:12,padding:'12px 14px',marginBottom:8,
             }}>
-              <div style={{display:'flex',alignItems:'center',gap:10}}>
-                <span style={{fontSize:20,width:28,textAlign:'center'}}>{TIPO_ICO[transito.tipo]||'•'}</span>
-                <div style={{flex:1}}>
-                  <div style={{display:'flex',alignItems:'center',gap:8}}>
-                    <span style={{fontSize:13,fontWeight:700,color:CORES.branco}}>{transito.mes}</span>
-                    {esteMs && <span style={{fontSize:10,padding:'2px 8px',borderRadius:10,background:'rgba(223,183,108,0.2)',color:CORES.dourado,fontWeight:700}}>{t('common.now')}</span>}
-                    {relevante && <span style={{fontSize:10,color:'#34D399'}}>{relevante}</span>}
-                  </div>
-                  <div style={{fontSize:12,color:CORES.brancoMuted,marginTop:2}}>
-                    {tp(transito.planeta)} {isPt(lang) ? 'em' : (lang === 'es' || lang === 'fr' ? 'en' : 'in')} {ts(transito.signo)}
-                  </div>
-                </div>
-                <span style={{
-                  fontSize:10,padding:'3px 8px',borderRadius:8,fontWeight:700,
-                  background:`${IMPACTO_COR[transito.impacto]}18`,
-                  color:IMPACTO_COR[transito.impacto],
-                  border:`1px solid ${IMPACTO_COR[transito.impacto]}30`,
-                }}>{transito.impactoLabel}</span>
+              <div style={{fontSize:13,fontWeight:700,color:CORES.branco,marginBottom:6}}>
+                {e.icone} {e.tipo === 'solar' ? t('ferramentasPremium.bussola.eclipseSolar') : t('ferramentasPremium.bussola.eclipseLunar')} {e.kindLabel}
               </div>
-              {aberto && (
-                <div style={{marginTop:12,paddingTop:12,borderTop:`1px solid rgba(255,255,255,0.07)`,fontSize:13,color:CORES.brancoSuave,lineHeight:1.7}}>
-                  {transito.desc}
-                  {mapaNatal && relevante && (
-                    <div style={{marginTop:10,padding:'8px 12px',background:'rgba(52,211,153,0.07)',borderRadius:8,borderLeft:'2px solid #34D399',fontSize:12,color:'#34D399'}}>
-                      {t('ferramentasPremium.bussola.affinity', { signo: ts(mapaNatal.solar?.nome) })}
+              <p style={{fontSize:12,color:CORES.brancoSuave,margin:0,lineHeight:1.65}}>{e.texto}</p>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {!carregando && mesSel && (
+        <div>
+          <h3 style={{fontSize:15,fontWeight:700,color:CORES.branco,margin:'0 0 12px'}}>
+            {mesSel.mes} {ano}
+          </h3>
+
+          {mesSel.eventos?.length > 0 && (
+            <div style={{display:'flex',flexWrap:'wrap',gap:8,marginBottom:16}}>
+              {mesSel.eventos.map((ev, i) => (
+                <span key={i} style={{fontSize:11,padding:'4px 10px',borderRadius:8,background:'rgba(255,255,255,0.05)',border:'1px solid rgba(255,255,255,0.1)',color:CORES.brancoMuted}}>
+                  {TIPO_ICO[ev.tipo] || '•'} {tp(ev.planeta)} {ev.tipo === 'ingresso' ? t('ferramentasPremium.bussola.ingress', { signo: ts(ev.signo) }) : t('ferramentasPremium.bussola.retrograde')} {ev.tipo === 'retrogrado' ? `· ${ts(ev.signo)}` : ''}
+                </span>
+              ))}
+            </div>
+          )}
+
+          {mesSel.transitos?.length === 0 && (
+            <p style={{fontSize:13,color:CORES.brancoMuted,marginBottom:16}}>{t('ferramentasPremium.bussola.noTransits')}</p>
+          )}
+
+          <div style={{display:'flex',flexDirection:'column',gap:10}}>
+            {mesSel.transitos?.map((tr, i) => {
+              const aberto = transitoAberto === `${mesAberto}-${i}`
+              return (
+                <div key={tr.id || i} style={{
+                  background:'rgba(255,255,255,0.03)',
+                  border:'1px solid rgba(255,255,255,0.08)',
+                  borderRadius:12,padding:'14px 16px',
+                }}>
+                  <button
+                    type="button"
+                    onClick={() => setTransitoAberto(aberto ? null : `${mesAberto}-${i}`)}
+                    style={{background:'none',border:'none',padding:0,width:'100%',textAlign:'left',cursor:'pointer'}}
+                  >
+                    <div style={{display:'flex',alignItems:'center',gap:10}}>
+                      <span style={{fontSize:18}}>{tr.icone || tr.simbolo}</span>
+                      <div style={{flex:1}}>
+                        <div style={{fontSize:13,fontWeight:700,color:CORES.branco}}>
+                          {tp(tr.planetaTransito)} {ts(tr.signoTransito)} → {tr.pontoNatal}
+                        </div>
+                        <div style={{fontSize:11,color:CORES.brancoMuted,marginTop:2}}>
+                          {t('ferramentasPremium.bussola.houseActivation')}: Casa {tr.casaTransit} · Casa {tr.casaNatal}
+                        </div>
+                      </div>
+                      <span style={{
+                        fontSize:10,padding:'3px 8px',borderRadius:8,fontWeight:700,
+                        background:`${IMPACTO_COR[tr.impacto] || IMPACTO_COR.padrão}18`,
+                        color:IMPACTO_COR[tr.impacto] || IMPACTO_COR.padrão,
+                      }}>{tr.impactoLabel}</span>
+                    </div>
+                  </button>
+                  {aberto && (
+                    <div style={{marginTop:14,paddingTop:14,borderTop:'1px solid rgba(255,255,255,0.07)',display:'flex',flexDirection:'column',gap:12}}>
+                      <SecaoTransito titulo={t('ferramentasPremium.bussola.transitGeometry')} texto={tr.geometria} />
+                      <SecaoTransito titulo={t('ferramentasPremium.bussola.houseActivation')} texto={tr.activacaoCasa} cor="#60A5FA" />
+                      <SecaoTransito titulo={t('ferramentasPremium.bussola.counsel')} texto={tr.conselho} cor="#34D399" />
                     </div>
                   )}
                 </div>
-              )}
-            </div>
-          )
-        })}
-      </div>
+              )
+            })}
+          </div>
+        </div>
       )}
+
+      {!carregando && dados?.motor && (
+        <p style={{fontSize:10,color:CORES.brancoMuted,marginTop:24,textAlign:'center'}}>
+          {t('ferramentasPremium.bussola.motor', { motor: dados.motor })}
+        </p>
+      )}
+    </div>
+  )
+}
+
+function SecaoTransito({ titulo, texto, cor = CORES.dourado }) {
+  return (
+    <div style={{padding:'10px 12px',background:'rgba(255,255,255,0.03)',borderRadius:8,borderLeft:`2px solid ${cor}`}}>
+      <div style={{fontSize:11,fontWeight:700,color:cor,marginBottom:6,textTransform:'uppercase',letterSpacing:'0.04em'}}>{titulo}</div>
+      <p style={{fontSize:12,color:CORES.brancoSuave,margin:0,lineHeight:1.7}}>{texto}</p>
     </div>
   )
 }
