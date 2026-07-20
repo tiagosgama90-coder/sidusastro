@@ -54,7 +54,7 @@ const CORES = {
 }
 
 export function BussolaCosmica({ mapaNatal, planetasNatal, onVoltar }) {
-  const { lang, t, ts, tp } = useLanguage()
+  const { lang, t, ts, tp, tpo, th } = useLanguage()
   const agora = new Date()
   const [ano, setAno] = useState(agora.getFullYear())
   const [mesAberto, setMesAberto] = useState(agora.getMonth())
@@ -93,17 +93,34 @@ export function BussolaCosmica({ mapaNatal, planetasNatal, onVoltar }) {
         </p>
       </div>
 
-      <div style={{display:'flex',gap:10,marginBottom:20,flexWrap:'wrap'}}>
-        <label style={{fontSize:12,color:CORES.brancoMuted,display:'flex',alignItems:'center',gap:6}}>
+      <div style={{marginBottom:20}}>
+        <div style={{fontSize:12,color:CORES.brancoMuted,marginBottom:8}}>
           {t('ferramentasPremium.bussola.yearLabel')}
-          <select
-            value={ano}
-            onChange={(e) => { setAno(Number(e.target.value)); setTransitoAberto(null) }}
-            style={{background:'rgba(255,255,255,0.06)',border:'1px solid rgba(223,183,108,0.25)',borderRadius:8,color:CORES.branco,padding:'6px 10px',fontSize:13}}
-          >
-            {anosDisponiveis.map((y) => <option key={y} value={y}>{y}</option>)}
-          </select>
-        </label>
+        </div>
+        <div style={{display:'flex',gap:6,flexWrap:'wrap'}}>
+          {anosDisponiveis.map((y) => {
+            const activo = ano === y
+            return (
+              <button
+                key={y}
+                type="button"
+                onClick={() => { setAno(y); setTransitoAberto(null) }}
+                style={{
+                  padding:'6px 12px',
+                  borderRadius:8,
+                  fontSize:12,
+                  fontWeight:600,
+                  cursor:'pointer',
+                  background:activo?'rgba(223,183,108,0.2)':'rgba(255,255,255,0.04)',
+                  border:`1px solid ${activo?CORES.dourado:'rgba(255,255,255,0.1)'}`,
+                  color:activo?CORES.dourado:CORES.brancoMuted,
+                }}
+              >
+                {y}
+              </button>
+            )
+          })}
+        </div>
       </div>
 
       {mapaNatal && !carregando && (
@@ -209,10 +226,10 @@ export function BussolaCosmica({ mapaNatal, planetasNatal, onVoltar }) {
                       <span style={{fontSize:18}}>{tr.icone || tr.simbolo}</span>
                       <div style={{flex:1}}>
                         <div style={{fontSize:13,fontWeight:700,color:CORES.branco}}>
-                          {tp(tr.planetaTransito)} {ts(tr.signoTransito)} → {tr.pontoNatal}
+                          {tp(tr.planetaTransito)} {ts(tr.signoTransito)} → {tpo(tr.pontoNatal)}
                         </div>
                         <div style={{fontSize:11,color:CORES.brancoMuted,marginTop:2}}>
-                          {t('ferramentasPremium.bussola.houseActivation')}: Casa {tr.casaTransit} · Casa {tr.casaNatal}
+                          {t('ferramentasPremium.bussola.houseActivation')}: {th(tr.casaTransit)} · {th(tr.casaNatal)}
                         </div>
                       </div>
                       <span style={{
