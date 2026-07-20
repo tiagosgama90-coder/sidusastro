@@ -55,7 +55,7 @@ import { HeroHomeSidus } from './components/HeroHomeSidus.jsx'
 import { LeituraGratisDiaria } from './components/LeituraGratisDiaria.jsx'
 import { ShareSigno } from './components/ShareSigno.jsx'
 import { EnergiaDoDia, TransitoSemanal } from './components/EnergiaDoDia.jsx'
-import { PremiumComparacao } from './components/PremiumComparacao.jsx'
+import { VipPaywallBody } from './components/VipPaywallBody.jsx'
 import { PremiumHomeTeaser } from './components/PremiumHomeTeaser.jsx'
 import { applyRouteSeo } from './lib/routeSeo.js'
 import { ErrorBoundary } from './components/ErrorBoundary.jsx'
@@ -85,7 +85,7 @@ import { allowsAds, getCookieConsent } from './lib/cookieConsent.js'
 import { LanguageSwitcher } from './components/LanguageSwitcher.jsx'
 import { useLanguage } from './lib/i18n/LanguageContext.jsx'
 import { readLandingDraft, clearLandingDraft, mergeLandingDraft, hasLandingDraft, flushLandingDraft } from './lib/landingDraft.js'
-import { getFerramentas, getBeneficiosVip } from './lib/i18n/ferramentasData.js'
+import { getFerramentas } from './lib/i18n/ferramentasData.js'
 
 const EcraTarotLazy = lazy(() => import('./components/Tarot.jsx').then((m) => ({ default: m.EcraTarot })))
 const MandalaNatalLazy = lazy(() => import('./components/MandalaNatal.jsx').then((m) => ({ default: m.MandalaNatal })))
@@ -2750,76 +2750,35 @@ function Ferramentas({ onFerramenta, isDesktop, acessoVip }) {
 }
 
 function Paywall({ onVoltar, onPagar, onSucesso, onPromo, isDesktop, isBrasil, oraclePerguntasUsadas = 0, leiturasTarotUsadas = 0 }) {
-  const { t, lang } = useLanguage()
-  const beneficios = getBeneficiosVip(lang)
+  const { t } = useLanguage()
   const precoVitrine = precoPremiumVitrine(isBrasil)
-  const precoLabel = formatPrecoEuro(precoVitrine)
   return (
     <div style={layoutConteudo(isDesktop, { paddingTop: 16 })}>
       <button type="button" onClick={onVoltar} style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'none', border: 'none', color: CORES.dourado, cursor: 'pointer', marginBottom: 20 }}>
         <ChevronLeft size={20} /> {t('common.back')}
       </button>
-      <div style={{ textAlign: 'center', marginBottom: 24 }}>
-        <div style={{ fontSize: 40, marginBottom: 8 }}>✨</div>
-        <h1 style={{ ...estilos.titulo, fontSize: 24 }}>{t('vip.title')}</h1>
-        <p style={{ color: CORES.brancoMuted, fontSize: 13 }}>{t('vip.subtitle')}</p>
-      </div>
 
-      <PremiumComparacao
-        isPremium={false}
-        oracleUsadas={oraclePerguntasUsadas}
-        tarotUsadas={leiturasTarotUsadas}
+      <VipPaywallBody
+        onCta={() => onPagar(t('vip.productName'), precoVitrine, onSucesso, { productType: 'premium' })}
+        onPromo={onPromo}
         isBrasil={isBrasil}
+        oraclePerguntasUsadas={oraclePerguntasUsadas}
+        leiturasTarotUsadas={leiturasTarotUsadas}
+        titleKey="vip.title"
+        subtitleKey="vip.subtitle"
       />
 
-      <div style={{ ...estilos.vidro, padding: 24, marginBottom: 20, marginTop: 16 }}>
-        {beneficios.map((b) => (
-          <div key={b} style={{ display: 'flex', gap: 10, marginBottom: 12 }}>
-            <Check size={14} color={CORES.dourado} />
-            <span style={{ fontSize: 14, color: CORES.brancoSuave }}>{b}</span>
-          </div>
-        ))}
-      </div>
-      <div style={{ ...estilos.vidro, padding: 24, textAlign: 'center', border: `1px solid ${CORES.dourado}`, marginBottom: 20 }}>
-        <div style={{ fontSize: 40, fontWeight: 700, color: CORES.branco }}>
-          {precoLabel} € <span style={{ fontSize: 16, color: CORES.brancoMuted, fontWeight: 400 }}>{t('common.oneTime')}</span>
-        </div>
-        {isBrasil ? (
-          <p style={{ fontSize: 12, color: '#34D399', marginTop: 8, fontWeight: 600 }}>{t('vip.priceBrPixNote')}</p>
-        ) : null}
-        <p style={{ fontSize: 12, color: CORES.brancoMuted, marginTop: 6 }}>{t('vip.oneTimeAccess')}</p>
-      </div>
-      <button type="button" onClick={() => onPagar(t('vip.productName'), precoVitrine, onSucesso, { productType: 'premium' })} style={estilos.botaoDourado}>
-        {isBrasil ? t('vip.ctaBr') : t('vip.cta')}
-      </button>
-      <p style={{ textAlign: 'center', fontSize: 11, color: CORES.brancoMuted, marginTop: 12 }}>
-        {isBrasil ? t('vip.paymentMethodsBr') : t('vip.paymentMethods')}
-      </p>
       <p style={{ textAlign: 'center', marginTop: 16 }}>
         <button type="button" onClick={onVoltar} style={{ background: 'none', border: 'none', color: CORES.brancoMuted, fontSize: 13, cursor: 'pointer', textDecoration: 'underline', textUnderlineOffset: 3 }}>
           {t('vip.continueFree')}
         </button>
       </p>
-      {onPromo ? (
-        <p style={{ textAlign: 'center', marginTop: 14 }}>
-          <button type="button" onClick={onPromo} style={{
-            background: 'rgba(223,183,108,0.1)', border: `1px solid ${CORES.vidroBorda}`,
-            borderRadius: 12, color: CORES.dourado, fontSize: 13, fontWeight: 600,
-            padding: '12px 16px', cursor: 'pointer', lineHeight: 1.45, maxWidth: '100%',
-          }}>
-            {t('vip.promoLink')}
-          </button>
-        </p>
-      ) : null}
     </div>
   )
 }
 
-function OraclePremiumUpsell({ onUpgrade, compact = false, isBrasil = false }) {
-  const { lang, t } = useLanguage()
-  const beneficios = getBeneficiosVip(lang)
-  const precoLabel = formatPrecoEuro(precoPremiumVitrine(isBrasil))
-
+function OraclePremiumUpsell({ onUpgrade, onPromo, isBrasil = false, oraclePerguntasUsadas = 0, leiturasTarotUsadas = 0, compact = false }) {
+  const { t } = useLanguage()
   return (
     <div style={{
       alignSelf: 'stretch',
@@ -2831,44 +2790,17 @@ function OraclePremiumUpsell({ onUpgrade, compact = false, isBrasil = false }) {
       border: `1px solid ${CORES.dourado}`,
       boxShadow: '0 8px 32px rgba(223,183,108,0.12)',
     }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
-        <Crown size={18} color={CORES.dourado} />
-        <span style={{ fontSize: 14, fontWeight: 700, color: CORES.dourado }}>{t('oracle.upsellTitle')}</span>
-      </div>
-      <p style={{ fontSize: 13, color: CORES.brancoSuave, lineHeight: 1.65, margin: '0 0 14px' }}>
-        {t('oracle.upsellLead')}
-      </p>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 16 }}>
-        {beneficios.slice(0, 6).map((b) => (
-          <div key={b} style={{ display: 'flex', gap: 8, alignItems: 'flex-start' }}>
-            <Check size={14} color={CORES.dourado} style={{ flexShrink: 0, marginTop: 2 }} />
-            <span style={{ fontSize: 12, color: CORES.brancoSuave, lineHeight: 1.5 }}>{b}</span>
-          </div>
-        ))}
-      </div>
-      <div style={{
-        textAlign: 'center', padding: '10px 12px', marginBottom: 14,
-        background: 'rgba(0,0,0,0.2)', borderRadius: 10,
-        border: '1px solid rgba(223,183,108,0.25)',
-      }}>
-        <span style={{ fontSize: 22, fontWeight: 700, color: CORES.branco }}>{precoLabel} €</span>
-        <span style={{ fontSize: 12, color: CORES.brancoMuted }}> {t('common.oneTime')}</span>
-        {isBrasil ? (
-          <div style={{ fontSize: 11, color: '#34D399', marginTop: 4, fontWeight: 600 }}>{t('vip.priceBrPixNote')}</div>
-        ) : null}
-        <div style={{ fontSize: 11, color: CORES.brancoMuted, marginTop: 4 }}>{t('vip.oneTimeAccess')}</div>
-      </div>
-      <button
-        type="button"
-        onClick={onUpgrade}
-        style={{
-          width: '100%', padding: '14px 20px', border: 'none', borderRadius: 12, cursor: 'pointer',
-          background: `linear-gradient(135deg, ${CORES.dourado}, ${CORES.douradoEscuro})`,
-          color: CORES.fundo, fontSize: 15, fontWeight: 700,
-        }}
-      >
-        {isBrasil ? t('vip.ctaBr') : t('oracle.upsellCta')}
-      </button>
+      <VipPaywallBody
+        onCta={onUpgrade}
+        onPromo={onPromo}
+        isBrasil={isBrasil}
+        oraclePerguntasUsadas={oraclePerguntasUsadas}
+        leiturasTarotUsadas={leiturasTarotUsadas}
+        titleKey="oracle.upsellTitle"
+        subtitleKey="oracle.upsellLead"
+        ctaText={isBrasil ? t('vip.ctaBr') : t('oracle.upsellCta')}
+        compact
+      />
     </div>
   )
 }
@@ -2878,7 +2810,7 @@ async function consultarSidus(pergunta, mapaNatal, historico, lang, idToken, cli
   return consultarOracleServidor(pergunta, mapaNatal, historico, lang, idToken, clientPremium)
 }
 
-function Chat({ mapaNatal, isPremium, userId, oracleRemotas, onOracleUsada, onUpgrade, obterIdToken, isBrasil = false }) {
+function Chat({ mapaNatal, isPremium, userId, oracleRemotas, onOracleUsada, onUpgrade, onPromo, leiturasTarotUsadas = 0, obterIdToken, isBrasil = false }) {
   const { lang, t } = useLanguage()
   const [perguntasUsadas, setPerguntasUsadas] = useState(() => contarOraclePerguntas(userId, oracleRemotas))
 
@@ -3065,7 +2997,15 @@ function Chat({ mapaNatal, isPremium, userId, oracleRemotas, onOracleUsada, onUp
       <div style={{ flex: 1, overflowY: 'auto', padding: '16px 14px 10px', display: 'flex', flexDirection: 'column', gap: 12 }}>
         {mensagens.map((m) => (
           m.tipo === 'upsell' ? (
-            <OraclePremiumUpsell key={m.id} onUpgrade={onUpgrade} compact isBrasil={isBrasil} />
+            <OraclePremiumUpsell
+              key={m.id}
+              onUpgrade={onUpgrade}
+              onPromo={onPromo}
+              compact
+              isBrasil={isBrasil}
+              oraclePerguntasUsadas={perguntasUsadas}
+              leiturasTarotUsadas={leiturasTarotUsadas}
+            />
           ) : (
             <div key={m.id} style={{
               alignSelf: m.autor === 'user' ? 'flex-end' : 'flex-start',
@@ -3090,7 +3030,13 @@ function Chat({ mapaNatal, isPremium, userId, oracleRemotas, onOracleUsada, onUp
           )
         ))}
         {limiteAtingido && !mensagens.some((m) => m.tipo === 'upsell') && (
-          <OraclePremiumUpsell onUpgrade={onUpgrade} isBrasil={isBrasil} />
+          <OraclePremiumUpsell
+            onUpgrade={onUpgrade}
+            onPromo={onPromo}
+            isBrasil={isBrasil}
+            oraclePerguntasUsadas={perguntasUsadas}
+            leiturasTarotUsadas={leiturasTarotUsadas}
+          />
         )}
         {digitando && (
           <div style={{ alignSelf: 'flex-start', padding: '13px 18px', borderRadius: '4px 18px 18px 18px', background: 'rgba(255,255,255,0.055)', border: `1px solid rgba(255,255,255,0.09)` }}>
@@ -4290,7 +4236,7 @@ export default function App() {
       case 'paywall':
         return <Paywall onVoltar={() => irPara('home')} onPagar={abrirPagamento} onPromo={() => irPara('vipPromo')} onSucesso={() => { setIsPremium(true); setMapaCompleto(true); irPara(dadosNataisMinimos(dados) ? 'mapa' : 'onboarding') }} isDesktop={isDesktop} isBrasil={isBrasil} oraclePerguntasUsadas={oraclePerguntasUsadas} leiturasTarotUsadas={leiturasTarotUsadas} />
       case 'chat':
-        return <Chat mapaNatal={mapaNatal} isPremium={isPremium} userId={utilizador?.uid} oracleRemotas={oraclePerguntasUsadas} onOracleUsada={registarOraclePerguntaUsada} onUpgrade={() => irPara('paywall')} obterIdToken={obterIdTokenOracle} isBrasil={isBrasil} />
+        return <Chat mapaNatal={mapaNatal} isPremium={isPremium} userId={utilizador?.uid} oracleRemotas={oraclePerguntasUsadas} onOracleUsada={registarOraclePerguntaUsada} onUpgrade={() => irPara('paywall')} onPromo={() => irPara('vipPromo')} leiturasTarotUsadas={leiturasTarotUsadas} obterIdToken={obterIdTokenOracle} isBrasil={isBrasil} />
       case 'perfil':
         return <Perfil utilizador={utilizador} dados={dados} mapaNatal={mapaNatal} isPremium={isPremium}
           dadosBloqueados={dadosBloqueados}
