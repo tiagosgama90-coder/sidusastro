@@ -3991,7 +3991,7 @@ export default function App() {
     if (urlLang && urlLang !== lang) setLang(urlLang)
   }, [location.pathname, authCarregando, lang, setLang])
 
-  // URL ↔ passo (voltar atrás no browser, links directos)
+  // URL ↔ passo (voltar atrás no browser, links directos) — só reage a mudanças de URL
   useEffect(() => {
     if (authCarregando) return
     const path = stripLangPrefix(location.pathname)
@@ -3999,15 +3999,17 @@ export default function App() {
 
     // Conta já configurada: nunca ficar preso em /comecar (evita loop URL↔redirect)
     if (utilizador && contaConfigurada && (path === '/comecar' || fromUrl === 'onboarding')) {
-      if (path !== '/home' || passo !== 'home') {
+      if (path !== '/home' || passoRef.current !== 'home') {
         setPasso('home')
         navigate('/home', { replace: true })
       }
       return
     }
 
-    if (fromUrl !== passo) setPasso(fromUrl)
-  }, [location.pathname, authCarregando, passo, utilizador, contaConfigurada, navigate])
+    if (fromUrl !== passoRef.current) {
+      setPasso(fromUrl)
+    }
+  }, [location.pathname, authCarregando, utilizador, contaConfigurada, navigate])
 
   // ── Retorno Stripe Checkout (?payment=success&session_id=...) ─────────────
   useEffect(() => {
