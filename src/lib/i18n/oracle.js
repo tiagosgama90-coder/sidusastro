@@ -92,7 +92,7 @@ MANDATORY IN EACH RESPONSE:
 - Offer actionable insight: what to observe, what to avoid, what inner work to do.` : 'The client has not completed birth registration. Gently invite them to register before deep chart work.'}
 
 PREMIUM CHAT RULES:
-1. 250–400 words - depth over brevity, like a real session.
+1. 250-400 words - depth over brevity, like a real session.
 2. Maintain conversational continuity; remember prior messages in the thread.
 3. End with one precise reflective question tailored to their chart and situation.
 4. Never predict death, lottery, or guaranteed outcomes. Guide inner growth.
@@ -116,7 +116,7 @@ OBRIGATÓRIO EM CADA RESPOSTA:
 - Oferecer insight accionável: o que observar, o que evitar, que trabalho interior fazer.` : 'O cliente ainda não completou o registo natal. Convida-o gentilmente a registar-se antes de trabalho profundo com o mapa.'}
 
 REGRAS DO CHAT PREMIUM:
-1. 250–400 palavras - profundidade como numa sessão real.
+1. 250-400 palavras - profundidade como numa sessão real.
 2. Manter continuidade conversacional; lembrar mensagens anteriores do fio.
 3. Terminar com uma pergunta reflexiva precisa, adaptada ao mapa e à situação.
 4. Nunca prever morte, lotaria ou resultados garantidos. Orientar crescimento interior.
@@ -137,7 +137,7 @@ ${sol ? `Natal data: Sun ${sol}, Moon ${lua}, Ascendant ${asc}.
 Always tie your answer to these placements. Mention how Sun (identity), Moon (emotions) and Ascendant (approach to life) colour this specific question.` : 'Birth data missing - give general but thoughtful guidance and suggest completing registration.'}
 
 FREE TIER RULES:
-1. 120–180 words - insightful, structured, personal.
+1. 120-180 words - insightful, structured, personal.
 2. One concrete observation + one practical suggestion + one reflective question.
 3. No generic filler. No robotic lists. Write like a wise friend who knows astrology.
 4. Refuse harmful content gracefully.
@@ -152,7 +152,7 @@ ${sol ? `Dados natais: Sol ${sol}, Lua ${lua}, Ascendente ${asc}.
 Liga SEMPRE a resposta a estes posicionamentos. Menciona como o Sol (identidade), a Lua (emoções) e o Ascendente (modo de viver) colorem esta questão concreta.` : 'Dados de nascimento em falta - orienta com profundidade geral e sugere completar o registo.'}
 
 REGRAS VERSÃO GRATUITA:
-1. 120–180 palavras - perspicaz, estruturado, personalizado.
+1. 120-180 palavras - perspicaz, estruturado, personalizado.
 2. Uma observação concreta + uma sugestão prática + uma pergunta reflexiva.
 3. Sem enchimento genérico. Sem listas robóticas. Escreve como um amigo sábio que conhece astrologia.
 4. Recusa conteúdo nocivo com elegância.
@@ -189,17 +189,17 @@ export function validarPerguntaOracle(texto, lang = 'pt') {
       },
       de: {
         short: '✦ Erzähle mehr über deine Situation, damit ich dich präzise führen kann.',
-        detail: '✦ Formuliere deine Frage etwas ausführlicher – gib mir den Kontext.',
+        detail: '✦ Formuliere deine Frage etwas ausführlicher - gib mir den Kontext.',
         command: '✦ Das klingt wie ein Befehl, keine Frage. Teile eine echte Lebenssituation.',
         noise: '✦ Das Orakel wartet auf eine echte Frage zu Leben, Liebe, Karriere oder spirituellem Weg.',
-        empty: '✦ Stelle mir eine echte Frage – zu Liebe, Karriere, Sinn oder einer aktuellen Herausforderung.',
+        empty: '✦ Stelle mir eine echte Frage - zu Liebe, Karriere, Sinn oder einer aktuellen Herausforderung.',
       },
       fr: {
         short: '✦ Partage davantage sur ta situation pour que je puisse te guider avec précision.',
-        detail: '✦ Formule ta question avec un peu plus de détail – donne-moi le contexte.',
+        detail: '✦ Formule ta question avec un peu plus de détail - donne-moi le contexte.',
         command: '✦ Cela ressemble à un ordre, pas à une question. Partage une situation réelle de ta vie.',
         noise: '✦ L\'Oracle attend une question sincère sur ta vie, ton amour, ta carrière ou ton chemin spirituel.',
-        empty: '✦ Pose-moi une vraie question – sur ton amour, ta carrière, ton but ou un défi actuel.',
+        empty: '✦ Pose-moi une vraie question - sur ton amour, ta carrière, ton but ou un défi actuel.',
       },
     }) || {}
     if (t.length < 10) return msgs.short

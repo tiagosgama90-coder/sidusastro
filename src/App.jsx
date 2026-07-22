@@ -214,7 +214,7 @@ function sweEphemerisPronta() {
 
 // Efemérides Swiss servidas localmente (public/ephe/) - sem CORS, sem CDN externo
 // Ficheiros: sepl_18.se1 (planetas), semo_18.se1 (Lua), seas_18.se1 (asteróides)
-// Cobertura 1800–2400, precisão ≤ 1 arco-segundo (equivalente Astro.com / Astrolink)
+// Cobertura 1800-2400, precisão ≤ 1 arco-segundo (equivalente Astro.com / Astrolink)
 const _EPHE_FILES = [
   { name: 'sepl_18.se1', url: '/ephe/sepl_18.se1' },
   { name: 'semo_18.se1', url: '/ephe/semo_18.se1' },

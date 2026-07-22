@@ -106,24 +106,24 @@ const BENEFICIOS_VIP_IT = [
 ]
 
 const BENEFICIOS_VIP_DE = [
-  'Vollständiges Geburtshoroskop – Ephemeriden, Placidus, professionelles PDF + E-Mail',
+  'Vollständiges Geburtshoroskop - Ephemeriden, Placidus, professionelles PDF + E-Mail',
   'Mondphasen in Echtzeit im Himmel von Heute',
   'Numerologie-Karte mit spiritueller Namensschwingung',
   'Unbegrenzte Tarot-Lesungen in allen Decks',
   'Kosmischer Kompass mit echten Transiten, Haus-Finsternissen und Robert-Hand-Deutung',
   'Affinitäts-Radar und vollständige Synastrie',
-  'Unbegrenzter Chat mit Orakel Sidus – professioneller Astrologe',
+  'Unbegrenzter Chat mit Orakel Sidus - professioneller Astrologe',
   'Echtzeit-Warnungen bei Planetentransiten',
 ]
 
 const BENEFICIOS_VIP_FR = [
-  'Carte Astrale complète – éphémérides, Placidus, PDF professionnel + email',
+  'Carte Astrale complète - éphémérides, Placidus, PDF professionnel + email',
   'Phases lunaires en temps réel dans le Ciel d\'Aujourd\'hui',
   'Carte de Numérologie avec vibration spirituelle du nom',
   'Lectures Tarot illimitées sur tous les jeux',
   'Boussole Cosmique avec transits réels, éclipses par maison et interprétation Robert Hand',
   'Radar d\'Affinités et Synastrie complète',
-  'Chat illimité avec l\'Oracle Sidus – astrologue professionnel',
+  'Chat illimité avec l\'Oracle Sidus - astrologue professionnel',
   'Alertes de transits planétaires en temps réel',
 ]
 

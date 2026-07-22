@@ -1,4 +1,4 @@
-/** RSS astrologia/horóscopo — imagem real (urlToImage) ou null, sem stock. */
+/** RSS astrologia/horóscopo - imagem real (urlToImage) ou null, sem stock. */
 
 const RSS_HL = {
   pt: 'pt-PT', en: 'en-GB', es: 'es-ES', it: 'it-IT', de: 'de-DE', fr: 'fr-FR',
@@ -56,11 +56,11 @@ function decodeXml(str) {
 }
 
 function cleanText(str) {
-  return decodeXml(str).replace(/<[^>]+>/g, ' ').replace(/\u00a0/g, ' ').replace(/—/g, '-').replace(/\s+/g, ' ').trim()
+  return decodeXml(str).replace(/<[^>]+>/g, ' ').replace(/\u00a0/g, ' ').replace(/-/g, '-').replace(/\s+/g, ' ').trim()
 }
 
 function cleanTitle(title) {
-  return cleanText(title).replace(/\s[-–—|]\s+[A-Za-zÀ-ÿ0-9][\wÀ-ÿ\s.&]{1,35}$/, '').trim()
+  return cleanText(title).replace(/\s[---|]\s+[A-Za-zÀ-ÿ0-9][\wÀ-ÿ\s.&]{1,35}$/, '').trim()
 }
 
 function isAstroNews(title, description) {
@@ -349,7 +349,7 @@ async function enrichOne(item) {
   return { ...item, ...toItemFields(fetched) }
 }
 
-/** Paralelo (8 de cada vez) — og:image Google News + publisher. */
+/** Paralelo (8 de cada vez) - og:image Google News + publisher. */
 async function enrichImages(items) {
   const CONCURRENCY = 4
   const out = new Array(items.length)

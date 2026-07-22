@@ -31,7 +31,7 @@ const ASPETO_NUCLEO_EN = {
 }
 
 const PAR_DINAMICA_PT = {
-  'Sol-Lua': 'O eixo identidade–emoção: o que queres ser e o que precisas de sentir para estar inteiro/a.',
+  'Sol-Lua': 'O eixo identidade-emoção: o que queres ser e o que precisas de sentir para estar inteiro/a.',
   'Sol-Saturno': 'O encontro entre vontade e limite: autoridade interior versus medo de falhar.',
   'Sol-Júpiter': 'Expansão da identidade: fé em ti mesmo/a e excesso de promessas.',
   'Lua-Saturno': 'Emoção contida: necessidade de segurança versus medo de vulnerabilidade.',
@@ -43,7 +43,7 @@ const PAR_DINAMICA_PT = {
 }
 
 const PAR_DINAMICA_EN = {
-  'Sun-Moon': 'The identity–emotion axis: who you want to be and what you need to feel whole.',
+  'Sun-Moon': 'The identity-emotion axis: who you want to be and what you need to feel whole.',
   'Sun-Saturn': 'Will meets limit: inner authority versus fear of failure.',
   'Sun-Jupiter': 'Identity expansion: faith in yourself and excess of promises.',
   'Moon-Saturn': 'Contained emotion: need for security versus fear of vulnerability.',
@@ -66,7 +66,7 @@ const ASPETO_NUCLEO_ES = {
 }
 
 const PAR_DINAMICA_ES = {
-  'Sol-Lua': 'El eje identidad–emoción: quién quieres ser y qué necesitas sentir para estar entero/a.',
+  'Sol-Lua': 'El eje identidad-emoción: quién quieres ser y qué necesitas sentir para estar entero/a.',
   'Sol-Saturno': 'El encuentro entre voluntad y límite: autoridad interior frente al miedo a fallar.',
   'Sol-Júpiter': 'Expansión de la identidad: fe en ti mismo/a y exceso de promesas.',
   'Lua-Saturno': 'Emoción contenida: necesidad de seguridad frente al miedo a la vulnerabilidad.',
@@ -89,7 +89,7 @@ const ASPETO_NUCLEO_IT = {
 }
 
 const PAR_DINAMICA_IT = {
-  'Sol-Lua': 'L\'asse identità–emozione: chi vuoi essere e cosa hai bisogno di sentire per essere intero/a.',
+  'Sol-Lua': 'L\'asse identità-emozione: chi vuoi essere e cosa hai bisogno di sentire per essere intero/a.',
   'Sol-Saturno': 'L\'incontro tra volontà e limite: autorità interiore contro paura di fallire.',
   'Sol-Júpiter': 'Espansione dell\'identità: fede in te stesso/a ed eccesso di promesse.',
   'Lua-Saturno': 'Emozione contenuta: bisogno di sicurezza contro paura della vulnerabilità.',
@@ -112,7 +112,7 @@ const ASPETO_NUCLEO_DE = {
 }
 
 const PAR_DINAMICA_DE = {
-  'Sol-Lua': 'Die Identitäts–Emotions-Achse: wer du sein willst und was du fühlen musst, um ganz zu sein.',
+  'Sol-Lua': 'Die Identitäts-Emotions-Achse: wer du sein willst und was du fühlen musst, um ganz zu sein.',
   'Sol-Saturno': 'Die Begegnung von Wille und Grenze: innere Autorität versus Angst zu scheitern.',
   'Sol-Júpiter': 'Identitätsexpansion: Vertrauen in dich und Überschuss an Versprechen.',
   'Lua-Saturno': 'Gezügelte Emotion: Sicherheitsbedürfnis versus Angst vor Verletzlichkeit.',
@@ -135,7 +135,7 @@ const ASPETO_NUCLEO_FR = {
 }
 
 const PAR_DINAMICA_FR = {
-  'Sol-Lua': 'L\'axe identité–émotion : qui tu veux être et ce dont tu as besoin pour te sentir entier(ère).',
+  'Sol-Lua': 'L\'axe identité-émotion : qui tu veux être et ce dont tu as besoin pour te sentir entier(ère).',
   'Sol-Saturno': 'La rencontre entre volonté et limite : autorité intérieure face à la peur d\'échouer.',
   'Sol-Júpiter': 'Expansion de l\'identité : foi en toi et excès de promesses.',
   'Lua-Saturno': 'Émotion contenue : besoin de sécurité face à la peur de la vulnérabilité.',
@@ -253,7 +253,7 @@ export function interpretarAspectosNatais(aspetos, planetas, lang = 'pt') {
       en: 'No major tight aspects dominate this chart - your story unfolds through sign and house emphasis rather than planetary dialogue. This grants flexibility but asks you to choose consciously rather than being propelled by inner tension.',
       es: 'Ningún aspecto mayor ajustado domina esta carta: tu historia se despliega sobre todo por énfasis de signos y casas, no por diálogo planetario. Esto concede flexibilidad pero pide elección consciente en vez de impulso por tensión interior.',
       it: 'Nessun aspetto maggiore stretto domina questa carta: la tua storia si dispiega soprattutto per enfasi di segni e case, non per dialogo planetario. Questo concede flessibilità ma chiede scelta consapevole invece di spinta da tensione interiore.',
-      de: 'Kein enger Hauptaspekt dominiert dieses Horoskop – deine Geschichte entfaltet sich vor allem durch Zeichen- und Hausbetonung, nicht planetaren Dialog. Das gibt Flexibilität, verlangt aber bewusste Wahl statt innerer Spannungsantrieb.',
+      de: 'Kein enger Hauptaspekt dominiert dieses Horoskop - deine Geschichte entfaltet sich vor allem durch Zeichen- und Hausbetonung, nicht planetaren Dialog. Das gibt Flexibilität, verlangt aber bewusste Wahl statt innerer Spannungsantrieb.',
       fr: 'Aucun aspect majeur serré ne domine cette carte - ton histoire se déploie surtout par l\'emphase des signes et maisons, pas par dialogue planétaire. Cela accorde de la flexibilité mais demande un choix conscient plutôt qu\'une poussée de tension intérieure.',
     })
   }

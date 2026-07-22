@@ -1,4 +1,4 @@
-/** Notícias astrológicas — cache diário, campo canónico urlToImage. */
+/** Notícias astrológicas - cache diário, campo canónico urlToImage. */
 
 import { translatePlaneta, translateAspecto } from './i18n/astro.js'
 import { localeTag, isPt } from './i18n/langUtil.js'
@@ -17,8 +17,8 @@ function limparTextoNoticia(str) {
     .replace(/&apos;/g, "'")
     .replace(/<[^>]+>/g, '')
     .replace(/\u00a0/g, ' ')
-    .replace(/—/g, '-')
-    .replace(/–/g, '-')
+    .replace(/-/g, '-')
+    .replace(/-/g, '-')
     .replace(/\s+/g, ' ')
     .trim()
 }

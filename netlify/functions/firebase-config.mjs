@@ -5,7 +5,7 @@ function limpar(val) {
   return val.trim().replace(/^["']+|["']+$/g, '').replace(/,$/, '')
 }
 
-/** Config web pública do Firebase — GET /api/firebase-config */
+/** Config web pública do Firebase - GET /api/firebase-config */
 export default async () => {
   const apiKey = limpar(env('VITE_FIREBASE_API_KEY') || env('FIREBASE_WEB_API_KEY'))
   const body = {

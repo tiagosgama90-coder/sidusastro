@@ -207,7 +207,7 @@ function normSigno(nome) {
   return signoKeyForLang(nome, 'pt')
 }
 
-/** Índice determinístico da carta do dia (0–77, baralho completo). */
+/** Índice determinístico da carta do dia (0-77, baralho completo). */
 export function indiceCartaDoDia(date = new Date()) {
   const iso = date.toISOString().slice(0, 10)
   const [ano, mes, dia] = iso.split('-').map(Number)

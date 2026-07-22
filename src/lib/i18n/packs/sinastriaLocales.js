@@ -100,7 +100,7 @@ export const VENUS_REL_DE = {
     "de": "sucht Harmonie, Schönheit und elegante Gegenseitigkeit in der Intimität"
   },
   "Escorpião": {
-    "de": "lebt Erotik als totale Verschmelzung – alles oder nichts"
+    "de": "lebt Erotik als totale Verschmelzung - alles oder nichts"
   },
   "Sagitário": {
     "de": "braucht Freiheit und Abenteuer, um die Flamme am Leben zu halten"
