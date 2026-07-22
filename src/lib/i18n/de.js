@@ -617,6 +617,7 @@ export default {
     "startDaily": "Legung starten",
     "startShort": "Starten",
     "swipeGames": "Wischen für alle 9 Legungen ✦",
+    "gamesCount": "{count} Legungen verfügbar",
     "questionLabel": "Was ist Ihre Frage?(optional)",
     "questionPlaceholder": "Schreiben Sie Ihre Frage an das Universum...",
     "shuffleReveal": "✦ Mischen und aufdecken",

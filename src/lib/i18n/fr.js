@@ -627,6 +627,7 @@ export default {
     startDaily: "Commencer la lecture",
     startShort: "Commencer",
     swipeGames: "Glissez pour voir les 9 jeux ✦",
+    gamesCount: "{count} lectures disponibles",
     questionLabel: "Quelle est votre question ? (optionnel)",
     questionPlaceholder: "Écrivez votre question à l'Univers...",
     shuffleReveal: "✦ Mélanger et révéler",

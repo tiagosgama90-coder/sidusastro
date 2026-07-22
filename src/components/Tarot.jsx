@@ -520,7 +520,6 @@ function TarotTipoCard({
 }) {
   const isMobile = isMobileLayout
   const [hover, setHover] = useState(false)
-  const [expanded, setExpanded] = useState(false)
   const prazo = textoHorizonteTemporal(t, tipo.id, 'prazo')
   const foco = textoHorizonteTemporal(t, tipo.id, 'foco')
 
@@ -534,18 +533,52 @@ function TarotTipoCard({
     ? t('tarot.dailyBadge')
     : (tipo.n > 1 ? t('tarot.cardsPlural', { n: tipo.n }) : t('tarot.cards', { n: tipo.n }))
 
-  const ctaLabel = isMobile
-    ? t('tarot.startShort')
-    : (tipo.id === 'diaria'
-      ? t('tarot.startDaily')
-      : (tipo.n > 1 ? t('tarot.startCards', { n: tipo.n }) : t('tarot.startCard', { n: tipo.n })))
+  const ctaLabel = tipo.id === 'diaria'
+    ? t('tarot.startDaily')
+    : (tipo.n > 1 ? t('tarot.startCards', { n: tipo.n }) : t('tarot.startCard', { n: tipo.n }))
+
+  const statusBadge = tipo.id === 'diaria' ? (
+    <div className={`tarot-tipo-card__badge ${diariaAtiva ? 'tarot-tipo-card__badge--warn' : 'tarot-tipo-card__badge--ok'}`}>
+      {diariaAtiva
+        ? t('tarot.dailyNextIn', { time: formatarTempoRestante(msAteProximaDiaria(userId), lang) })
+        : t('tarot.dailyOnce')}
+    </div>
+  ) : !isPremium && (
+    <div className={`tarot-tipo-card__badge ${gratisEsgotada ? 'tarot-tipo-card__badge--warn' : 'tarot-tipo-card__badge--ok'}`}>
+      {gratisEsgotada ? t('tarot.paidOption', { price: precoLeituraFmt }) : t('tarot.includedFree', { max: MAX_LEITURAS_GRATIS })}
+    </div>
+  )
+
+  if (isMobile) {
+    return (
+      <button
+        type="button"
+        className={`tarot-tipo-card tarot-tipo-card--mobile tarot-tipo-card--compact${bloqueada ? ' tarot-tipo-card--bloqueada' : ''}`}
+        onClick={() => onSeleccionar(tipo)}
+      >
+        <div className="tarot-tipo-card__compact-row">
+          <div className="tarot-tipo-card__info">
+            <div className="tarot-tipo-card__nome">{tipo.nome}</div>
+            <div className="tarot-tipo-card__cartas-pill">{cartasLabel}</div>
+            {prazo && (
+              <div className="tarot-tipo-card__prazo">
+                <Clock size={11} className="tarot-tipo-card__prazo-icon" aria-hidden />
+                <span>{prazo}</span>
+              </div>
+            )}
+            {statusBadge}
+          </div>
+          <div className="tarot-tipo-card__arte">
+            <TarotTipoArte tipoId={tipo.id} size={72} landscape />
+          </div>
+        </div>
+      </button>
+    )
+  }
 
   const bodyContent = (
     <>
       <div className="tarot-tipo-card__nome">{tipo.nome}</div>
-      {isMobile && (
-        <div className="tarot-tipo-card__cartas-pill">{cartasLabel}</div>
-      )}
       <div className="tarot-tipo-card__desc">{tipo.desc}</div>
       {prazo && (
         <div className="tarot-tipo-card__prazo">
@@ -554,62 +587,13 @@ function TarotTipoCard({
         </div>
       )}
       {foco && (
-        <div className={`tarot-tipo-card__foco${expanded ? ' tarot-tipo-card__foco--open' : ''}`}>
-          {isMobile && expanded && (
-            <div className="tarot-tipo-card__detail-label">{t('tarot.detailLabel')}</div>
-          )}
+        <div className="tarot-tipo-card__foco">
           <p className="tarot-tipo-card__foco-text">{foco}</p>
         </div>
       )}
-      {isMobile && foco && !expanded && (
-        <div className="tarot-tipo-card__reveal-hint">{t('tarot.tapForDetail')}</div>
-      )}
-      {tipo.id === 'diaria' ? (
-        <div className={`tarot-tipo-card__badge ${diariaAtiva ? 'tarot-tipo-card__badge--warn' : 'tarot-tipo-card__badge--ok'}`}>
-          {diariaAtiva
-            ? t('tarot.dailyNextIn', { time: formatarTempoRestante(msAteProximaDiaria(userId), lang) })
-            : t('tarot.dailyOnce')}
-        </div>
-      ) : !isPremium && (
-        <div className={`tarot-tipo-card__badge ${gratisEsgotada ? 'tarot-tipo-card__badge--warn' : 'tarot-tipo-card__badge--ok'}`}>
-          {gratisEsgotada ? t('tarot.paidOption', { price: precoLeituraFmt }) : t('tarot.includedFree', { max: MAX_LEITURAS_GRATIS })}
-        </div>
-      )}
+      {statusBadge}
     </>
   )
-
-  if (isMobile) {
-    return (
-      <div
-        className={`tarot-tipo-card tarot-tipo-card--mobile${expanded ? ' tarot-tipo-card--open' : ''}${hover ? ' tarot-tipo-card--magic' : ''}${bloqueada ? ' tarot-tipo-card--bloqueada' : ''}`}
-      >
-        <div className="tarot-tipo-card__cosmic" aria-hidden>
-          <span>☽</span><span>✦</span><span>☉</span><span>✧</span><span>☽</span>
-        </div>
-        <div className="tarot-tipo-card__sparkles" aria-hidden>✦</div>
-        <button
-          type="button"
-          className="tarot-tipo-card__peek"
-          onClick={() => setExpanded((v) => !v)}
-          onFocus={() => setHover(true)}
-          onBlur={() => setHover(false)}
-          aria-expanded={expanded}
-        >
-          <div className="tarot-tipo-card__arte">
-            <TarotTipoArte tipoId={tipo.id} size={92} hovered={expanded || hover} />
-          </div>
-          <div className="tarot-tipo-card__body">{bodyContent}</div>
-        </button>
-        <button
-          type="button"
-          className="tarot-tipo-card__cta tarot-tipo-card__cta--action"
-          onClick={() => onSeleccionar(tipo)}
-        >
-          {ctaLabel}
-        </button>
-      </div>
-    )
-  }
 
   return (
     <button
@@ -669,7 +653,7 @@ function TelaSeleccionar({ tipos, onSeleccionar, isPremium, gratisEsgotada, rest
         )}
       </div>
       {isMobileLayout && (
-        <p className="tarot-mobile-swipe-hint">{t('tarot.swipeGames')}</p>
+        <p className="tarot-mobile-list-hint">{t('tarot.gamesCount', { count: tipos.length })}</p>
       )}
       {!isPremium && (
         <div style={{background:'rgba(223,183,108,0.07)',border:`1px solid rgba(223,183,108,0.25)`,borderRadius:10,padding:'8px 14px',marginBottom:18,display:'flex',alignItems:'center',gap:8}}>
