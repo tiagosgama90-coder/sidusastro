@@ -601,6 +601,7 @@ export default {
     startDaily: 'Start reading',
     startShort: 'Start',
     swipeGames: 'Swipe to see all 9 spreads ✦',
+    gamesCount: '{count} spreads available',
     questionLabel: 'What is your question? (optional)',
     questionPlaceholder: 'Write your question to the Universe...',
     shuffleReveal: '✦ Shuffle and Reveal',

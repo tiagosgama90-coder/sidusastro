@@ -617,6 +617,7 @@ export default {
     "startDaily": "Inizia lettura",
     "startShort": "Inizia",
     "swipeGames": "Scorri per vedere i 9 giochi ✦",
+    "gamesCount": "{count} letture disponibili",
     "questionLabel": "Qual è la tua domanda?(opzionale)",
     "questionPlaceholder": "Scrivi la tua domanda all'Universo...",
     "shuffleReveal": "✦ Mescola e rivela",

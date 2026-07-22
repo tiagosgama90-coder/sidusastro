@@ -603,6 +603,7 @@ export default {
     startDaily: 'Iniciar leitura',
     startShort: 'Iniciar',
     swipeGames: 'Desliza para ver os 9 jogos ✦',
+    gamesCount: '{count} leituras disponíveis',
     questionLabel: 'Qual é a tua questão? (opcional)',
     questionPlaceholder: 'Escreve a tua pergunta ao Universo...',
     shuffleReveal: '✦ Baralhar e Revelar',
