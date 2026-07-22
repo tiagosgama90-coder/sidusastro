@@ -3175,6 +3175,11 @@ html.sidus-no-ads .google-auto-placed {
   justify-items: center;
 }
 
+.tarot-tipo-grid--cols-1 {
+  grid-template-columns: 1fr;
+  justify-items: stretch;
+}
+
 .tarot-tipo-grid--cols-3 {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
@@ -3182,6 +3187,25 @@ html.sidus-no-ads .google-auto-placed {
 @media (max-width: 899px) {
   .tarot-tipo-grid--cols-3 {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 767px) {
+  .tarot-tipo-grid,
+  .tarot-tipo-grid--cols-2,
+  .tarot-tipo-grid--cols-3 {
+    grid-template-columns: 1fr;
+    justify-items: stretch;
+    gap: 14px;
+  }
+
+  .tarot-tipo-card {
+    max-width: none;
+  }
+
+  .tarot-seleccionar-page {
+    padding-left: 14px;
+    padding-right: 14px;
   }
 }
 
