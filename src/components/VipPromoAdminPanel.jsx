@@ -81,7 +81,8 @@ export function VipPromoAdminPanel({ user, obterIdToken }) {
       const { res, data } = await chamarAdmin({ requestId, action }) || {}
       if (!res?.ok) {
         const key = ERROR_KEYS[data?.error] || 'adminErrorActivation'
-        setFeedback({ tipo: 'erro', texto: t(`vipPromo.${key}`) })
+        const detalhe = data?.error && key === 'adminErrorActivation' ? ` (${data.error})` : ''
+        setFeedback({ tipo: 'erro', texto: t(`vipPromo.${key}`) + detalhe })
         return
       }
       if (action === 'approve') {
@@ -106,7 +107,8 @@ export function VipPromoAdminPanel({ user, obterIdToken }) {
       const { res, data } = await chamarAdmin({ action: 'grant_email', email }) || {}
       if (!res?.ok) {
         const key = ERROR_KEYS[data?.error] || 'adminErrorActivation'
-        setFeedback({ tipo: 'erro', texto: t(`vipPromo.${key}`) })
+        const detalhe = data?.error && key === 'adminErrorActivation' ? ` (${data.error})` : ''
+        setFeedback({ tipo: 'erro', texto: t(`vipPromo.${key}`) + detalhe })
         return
       }
       setFeedback({
