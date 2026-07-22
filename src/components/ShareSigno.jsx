@@ -302,7 +302,7 @@ export function ShareSigno({ mapaNatal, nome, variant = 'default' }) {
           {estado === 'loading' ? <Loader2 size={14} className="spin-icon" /> : estado === 'done' ? <Check size={14} /> : <Share2 size={14} />}
           {label}
         </button>
-        <button type="button" onClick={handleWhatsApp} disabled={estado === 'loading'} style={{ ...btnStyle, background: 'rgba(37,211,102,0.12)', borderColor: 'rgba(37,211,102,0.35)', color: '#4ADE80' }}>
+        <button type="button" onClick={handleWhatsApp} disabled={estado === 'loading'} style={{ ...btnStyle, background: 'rgba(37,211,102,0.1)', borderColor: 'rgba(37,211,102,0.28)', color: '#25D366' }}>
           <MessageCircle size={14} />
           WhatsApp
         </button>

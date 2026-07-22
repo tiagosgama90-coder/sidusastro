@@ -1,7 +1,7 @@
 export default {
   nav: {
-    home: 'Home', mapa: 'Astral Chart', tarot: 'Tarot Online', ferramentas: 'Tools',
-    oraculo: 'Chat Oracle', perfil: 'Profile',
+    home: 'Home', mapa: 'Chart', tarot: 'Tarot', ferramentas: 'Tools',
+    oraculo: 'Oracle', perfil: 'Profile',
     menu: 'Menu', openMenu: 'Open menu', closeMenu: 'Close menu',
   },
   common: {
@@ -947,20 +947,7 @@ export default {
     error: 'Could not subscribe. Try again.',
     privacy: 'No spam. Unsubscribe anytime.',
   },
-  tour: {
-    ariaLabel: 'Sidus guided tour',
-    step: 'Step {current} of {total}',
-    skip: 'Skip tour',
-    next: 'Next',
-    finish: 'Start exploring',
-    horoscopeTitle: 'Your personalised horoscope',
-    horoscopeText: 'Here you see the daily horoscope calculated with real transits - personalised to your sun sign.',
-    tarotTitle: 'Tarot linked to your chart',
-    tarotText: 'Do tarot readings with interpretation tied to your Sun, Moon and Ascendant. You get 3 free.',
-    oracleTitle: 'AI astrologer Oracle',
-    oracleText: 'Ask anything - love, career, transits. Answers grounded in your natal chart.',
-  },
-  premium: {
+  newsletter: {
     lifetimeNote: 'One-time payment · lifetime access, no renewals',
     tarotUsed: 'Tarot: {used} of {max} free readings · {left} left',
     oracleUsed: 'Oracle: {used} of {max} free questions · {left} left',

@@ -974,20 +974,7 @@ export default {
     error: 'Não foi possível subscrever. Tenta outra vez.',
     privacy: 'Sem spam. Podes cancelar a qualquer momento.',
   },
-  tour: {
-    ariaLabel: 'Tour guiado Sidus',
-    step: 'Passo {current} de {total}',
-    skip: 'Saltar tour',
-    next: 'Seguinte',
-    finish: 'Começar a explorar',
-    horoscopeTitle: 'O teu horóscopo personalizado',
-    horoscopeText: 'Aqui vês o horóscopo diário calculado com trânsitos reais - personalizado ao teu signo solar.',
-    tarotTitle: 'Tarot ligado ao teu mapa',
-    tarotText: 'Faz leituras de tarot com interpretação cruzada ao teu Sol, Lua e Ascendente. Tens 3 grátis.',
-    oracleTitle: 'Oráculo IA astrólogo',
-    oracleText: 'Pergunta o que quiseres - amor, carreira, trânsitos. Respostas fundamentadas no teu mapa natal.',
-  },
-  premium: {
+  newsletter: {
     lifetimeNote: 'Pagamento único · acesso vitalício sem renovações',
     tarotUsed: 'Tarot: {used} de {max} leituras grátis · restam {left}',
     oracleUsed: 'Oráculo: {used} de {max} perguntas grátis · restam {left}',

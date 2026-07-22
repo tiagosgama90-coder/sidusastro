@@ -91,7 +91,6 @@ import { readLandingDraft, clearLandingDraft, mergeLandingDraft, hasLandingDraft
 import { MobileBottomNav } from './components/MobileBottomNav.jsx'
 import { HomeParaTiHoje } from './components/HomeParaTiHoje.jsx'
 import { LandingStickyCta } from './components/LandingStickyCta.jsx'
-import { PostOnboardingTour } from './components/PostOnboardingTour.jsx'
 import { FerramentasEmptyState } from './components/FerramentasEmptyState.jsx'
 
 const EcraTarotLazy = lazy(() => import('./components/Tarot.jsx').then((m) => ({ default: m.EcraTarot })))
@@ -4438,12 +4437,7 @@ export default function App() {
       case 'home':
       case 'dashboard':
         return (
-          <>
-            <Dashboard nome={dados.nome} mapaNatal={mapaNatal} ceuAgora={ceuAgora} aspetos={aspetosAgora} onOraculo={() => irPara('chat')} onPrivacidade={() => irPara('privacidade')} isDesktop={isDesktop} isPremium={isPremium} onUpgrade={() => irPara('paywall')} onTarot={() => irPara('tarot')} onMapa={() => irPara('mapa')} userEmail={utilizador?.email} user={utilizador} oraclePerguntasUsadas={oraclePerguntasUsadas} leiturasTarotUsadas={leiturasTarotUsadas} isBrasil={isBrasil} />
-            {!isDesktop && contaConfigurada && (
-              <PostOnboardingTour onIrTarot={() => irPara('tarot')} onIrOraculo={() => irPara('chat')} />
-            )}
-          </>
+          <Dashboard nome={dados.nome} mapaNatal={mapaNatal} ceuAgora={ceuAgora} aspetos={aspetosAgora} onOraculo={() => irPara('chat')} onPrivacidade={() => irPara('privacidade')} isDesktop={isDesktop} isPremium={isPremium} onUpgrade={() => irPara('paywall')} onTarot={() => irPara('tarot')} onMapa={() => irPara('mapa')} userEmail={utilizador?.email} user={utilizador} oraclePerguntasUsadas={oraclePerguntasUsadas} leiturasTarotUsadas={leiturasTarotUsadas} isBrasil={isBrasil} />
         )
       case 'mapa':
         return <MapaAstral mapaNatal={mapaNatal} dados={dados} planetasNascimento={planetasNascimento} mapaDesbloqueado={isPremium || mapaCompleto} isPremium={isPremium} onUpgrade={() => irPara('paywall')} onComprarMapa={() => abrirPagamento(t('mapa.buyDesc'), PRECO_MAPA_COMPLETO, null, { productType: 'mapa' })} onMapaGerado={handleMapaGerado} isDesktop={isDesktop} motorAstro={motorAstro} perfilCarregando={perfilCarregando} reparandoDados={reparandoDados} mapaGerado={mapaGerado} onCompletarNatal={() => irPara('home')} obterIdToken={obterIdTokenOracle} interpretacaoPerfil={interpretacaoMapa} />

@@ -29,9 +29,10 @@ export function MobileBottomNav({ passo, onNavigate, hidden = false }) {
             className={`mobile-bottom-nav__item${ativo ? ' mobile-bottom-nav__item--active' : ''}`}
             onClick={() => onNavigate(tab.id)}
             aria-current={ativo ? 'page' : undefined}
+            aria-label={t(tab.labelKey)}
           >
             <Icon size={20} strokeWidth={ativo ? 2.2 : 1.8} />
-            <span>{t(tab.labelKey)}</span>
+            {ativo && <span className="mobile-bottom-nav__label">{t(tab.labelKey)}</span>}
           </button>
         )
       })}
