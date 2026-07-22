@@ -587,10 +587,11 @@ function TarotTipoCard({
   const bodyContent = (
     <>
       <div className="tarot-tipo-card__nome">{tipo.nome}</div>
+      <div className="tarot-tipo-card__cartas-pill">{cartasLabel}</div>
       <div className="tarot-tipo-card__desc">{tipo.desc}</div>
       {prazo && (
         <div className="tarot-tipo-card__prazo">
-          <Clock size={11} className="tarot-tipo-card__prazo-icon" aria-hidden />
+          <Clock size={12} className="tarot-tipo-card__prazo-icon" aria-hidden />
           <span>{prazo}</span>
         </div>
       )}
@@ -606,7 +607,7 @@ function TarotTipoCard({
   return (
     <button
       type="button"
-      className={`tarot-tipo-card tarot-tipo-card--desktop${hover ? ' tarot-tipo-card--magic' : ''}${bloqueada ? ' tarot-tipo-card--bloqueada' : ''}`}
+      className={`tarot-tipo-card${hover ? ' tarot-tipo-card--magic' : ''}${bloqueada ? ' tarot-tipo-card--bloqueada' : ''}`}
       onClick={() => onSeleccionar(tipo)}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
@@ -616,10 +617,9 @@ function TarotTipoCard({
     >
       <div className="tarot-tipo-card__sparkles" aria-hidden>✦</div>
       <div className="tarot-tipo-card__arte">
-        <span className="tarot-tipo-card__cartas-pill tarot-tipo-card__cartas-pill--desktop">{cartasLabel}</span>
         <TarotTipoArte
           tipoId={tipo.id}
-          size={72}
+          size={cols === 3 ? 108 : 118}
           hovered={hover}
         />
       </div>
@@ -635,13 +635,6 @@ function colsFromWidth(w) {
   return 1
 }
 
-const STAR_ORDER = ['diaria', 'simnao', 'amor', 'trabalho', 'geral', 'oraculo', 'ferradura', 'cigano', 'cruzcelta']
-
-function ordenarTiposEstrela(tipos) {
-  const byId = Object.fromEntries(tipos.map((t) => [t.id, t]))
-  return STAR_ORDER.map((id) => byId[id]).filter(Boolean)
-}
-
 function TelaSeleccionar({ tipos, onSeleccionar, isPremium, gratisEsgotada, restantes, tick, onVoltar, userId, lang, t, isBrasil = false, precoLeituraFmt = '2,00', vipPrecoFmt = '9,99' }) {
   void tick
   const diariaAtiva = !podeFazerLeituraDiaria(userId)
@@ -654,14 +647,14 @@ function TelaSeleccionar({ tipos, onSeleccionar, isPremium, gratisEsgotada, rest
   }, [])
 
   return (
-    <div className={`tarot-seleccionar-page${isMobileLayout ? '' : ' tarot-seleccionar-page--desktop'}`}>
+    <div className="tarot-seleccionar-page">
       <div className="tarot-seleccionar-centro">
       {onVoltar && (
         <button type="button" onClick={onVoltar} style={{ background:'none', border:'none', color:CORES.dourado, cursor:'pointer', marginBottom:12, fontSize:13 }}>
           {t('common.back')}
         </button>
       )}
-      <div className={`tarot-seleccionar-hero${isMobileLayout ? ' tarot-seleccionar-hero--compact' : ' tarot-seleccionar-hero--desktop'}`}>
+      <div className={`tarot-seleccionar-hero${isMobileLayout ? ' tarot-seleccionar-hero--compact' : ''}`}>
         <div className="tarot-seleccionar-hero__tag">{t('tarot.title')}</div>
         <h2 className="tarot-seleccionar-hero__title">{t('tarot.subtitle')}</h2>
         {!isMobileLayout && (
@@ -672,7 +665,7 @@ function TelaSeleccionar({ tipos, onSeleccionar, isPremium, gratisEsgotada, rest
         <p className="tarot-mobile-list-hint">{t('tarot.gamesCount', { count: tipos.length })}</p>
       )}
       {!isPremium && (
-        <div className={`tarot-free-banner${isMobileLayout ? '' : ' tarot-free-banner--desktop'}`}>
+        <div style={{background:'rgba(223,183,108,0.07)',border:`1px solid rgba(223,183,108,0.25)`,borderRadius:10,padding:'8px 14px',marginBottom:18,display:'flex',alignItems:'center',gap:8}}>
           <span style={{fontSize:16}}>✦</span>
           <span style={{fontSize:12,color:CORES.brancoMuted}}>
             {gratisEsgotada
@@ -681,8 +674,8 @@ function TelaSeleccionar({ tipos, onSeleccionar, isPremium, gratisEsgotada, rest
           </span>
         </div>
       )}
-      <div className={`tarot-tipo-grid tarot-tipo-grid--cols-${cols}${isMobileLayout ? ' tarot-tipo-grid--mobile' : ' tarot-tipo-grid--desktop tarot-tipo-grid--star'}`}>
-        {(isMobileLayout ? tipos : ordenarTiposEstrela(tipos)).map((tipo) => (
+      <div className={`tarot-tipo-grid tarot-tipo-grid--cols-${cols}${isMobileLayout ? ' tarot-tipo-grid--mobile' : ''}`}>
+        {tipos.map((tipo) => (
           <TarotTipoCard
             key={tipo.id}
             tipo={tipo}
