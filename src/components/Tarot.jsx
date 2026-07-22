@@ -11,7 +11,7 @@ import { PRECO_TAROT, precoTarotVitrine, precoPremiumVitrine, formatPrecoEuro } 
 import { sortearCartas, getCartaById, MAJOR_ARCANA } from '../lib/tarot/deck.js'
 import { sortearLenormand, LENORMAND_VERSO } from '../lib/tarot/lenormand.js'
 import { interpretarLeitura } from '../lib/tarot/interpretacao.js'
-import { CartaTarot, dimensoesCarta, VersoSVG } from './CartaTarot.jsx'
+import { CartaTarot, dimensoesCarta } from './CartaTarot.jsx'
 import { imagemCartaUrl, imagemVersoUrl } from '../lib/tarot/images.js'
 import {
   leituraDiariaAtiva, podeFazerLeituraDiaria, msAteProximaDiaria,
@@ -27,7 +27,7 @@ const CORES = {
 const CARTA_MOBILE = {
   revelar: 94,
   revelarMini: 70,
-  embaralhar: 112,
+  embaralhar: 86,
   distribuir: 94,
   diaria: 132,
 }
@@ -35,7 +35,7 @@ const CARTA_MOBILE = {
 const CARTA_DESKTOP = {
   revelar: 132,
   revelarMini: 96,
-  embaralhar: 142,
+  embaralhar: 96,
   distribuir: 114,
   diaria: 164,
 }
@@ -363,6 +363,7 @@ export function EcraTarot({ mapaNatal, isPremium, userId, leiturasTarotUsadas = 
     <TelaEmbaralhar
       t={t}
       numCartas={cartasNoBaralho(tipoId)}
+      cartaVerso={tipoId === 'cigano' ? LENORMAND_VERSO : MAJOR_ARCANA[0]}
     />
   )
 
@@ -460,75 +461,44 @@ function textoHorizonteTemporal(t, tipoId, campo) {
   return val
 }
 
-function InfoHorizonteTemporal({ tipoId, t, compact = false, centered = false }) {
+function InfoHorizonteTemporal({ tipoId, t, inline = false }) {
   const prazo = textoHorizonteTemporal(t, tipoId, 'prazo')
   const foco = textoHorizonteTemporal(t, tipoId, 'foco')
   if (!prazo) return null
 
-  const boxStyle = compact ? {
-    marginTop: 8,
-    padding: '9px 11px',
-    borderRadius: 10,
-    background: 'rgba(223,183,108,0.08)',
-    border: '1px solid rgba(223,183,108,0.24)',
-    textAlign: 'left',
-  } : {
-    marginTop: centered ? 14 : 0,
-    marginBottom: 20,
-    padding: '14px 16px',
-    borderRadius: 14,
-    background: 'linear-gradient(135deg,rgba(223,183,108,0.1),rgba(139,92,246,0.06))',
-    border: `1px solid ${CORES.vidroBorda}`,
-    textAlign: centered ? 'center' : 'left',
+  if (inline) {
+    return (
+      <p style={{
+        fontSize: 10,
+        color: 'rgba(255,255,255,0.42)',
+        margin: '5px 0 0',
+        lineHeight: 1.4,
+      }}>
+        {prazo}{foco ? ` · ${foco}` : ''}
+      </p>
+    )
   }
 
   return (
-    <div style={boxStyle}>
-      <div style={{
-        fontSize: compact ? 9 : 10,
-        color: CORES.dourado,
-        textTransform: 'uppercase',
-        letterSpacing: '0.08em',
-        fontWeight: 700,
-        marginBottom: compact ? 5 : 8,
-      }}>
-        {compact ? t('tarot.timeframeCovers') : t('tarot.timeframeTitle')}
-      </div>
-      <div style={{
-        display: 'inline-block',
-        fontSize: compact ? 12 : 15,
-        fontWeight: 700,
-        color: CORES.branco,
-        background: 'rgba(223,183,108,0.14)',
-        border: '1px solid rgba(223,183,108,0.35)',
-        borderRadius: 8,
-        padding: compact ? '4px 9px' : '6px 12px',
-        marginBottom: foco ? (compact ? 6 : 10) : 0,
-      }}>
-        {prazo}
-      </div>
+    <p style={{
+      fontSize: 11,
+      color: 'rgba(255,255,255,0.48)',
+      margin: '10px 0 0',
+      lineHeight: 1.45,
+      maxWidth: 320,
+      marginLeft: 'auto',
+      marginRight: 'auto',
+    }}>
+      <span style={{ fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+        {t('tarot.timeframeCovers')}{' '}
+      </span>
+      {prazo}
       {foco && (
-        <p style={{
-          fontSize: compact ? 10 : 12,
-          color: CORES.brancoMuted,
-          lineHeight: 1.5,
-          margin: 0,
-        }}>
+        <span style={{ display: 'block', fontSize: 10, marginTop: 3, fontStyle: 'italic' }}>
           {foco}
-        </p>
+        </span>
       )}
-      {!compact && (
-        <p style={{
-          fontSize: 10,
-          color: 'rgba(255,255,255,0.42)',
-          lineHeight: 1.45,
-          margin: '10px 0 0',
-          fontStyle: 'italic',
-        }}>
-          {t('tarot.timeframeNotDuration')}
-        </p>
-      )}
-    </div>
+    </p>
   )
 }
 
@@ -552,18 +522,6 @@ function TelaSeleccionar({ tipos, onSeleccionar, isPremium, gratisEsgotada, rest
         <h2 style={{fontSize:20,fontWeight:700,color:CORES.branco,margin:'0 0 4px'}}>{t('tarot.subtitle')}</h2>
         <p style={{fontSize:12,color:CORES.brancoMuted,margin:0}}>{t('tarot.desc')}</p>
       </div>
-      <div style={{
-        marginBottom: 14,
-        padding: '10px 14px',
-        borderRadius: 10,
-        background: 'rgba(139,92,246,0.08)',
-        border: '1px solid rgba(139,92,246,0.22)',
-      }}>
-        <p style={{ fontSize: 11, color: CORES.brancoMuted, margin: 0, lineHeight: 1.55 }}>
-          <span style={{ color: CORES.dourado, fontWeight: 700 }}>⏳ </span>
-          {t('tarot.timeframeListHint')}
-        </p>
-      </div>
       {!isPremium && (
         <div style={{background:'rgba(223,183,108,0.07)',border:`1px solid rgba(223,183,108,0.25)`,borderRadius:10,padding:'8px 14px',marginBottom:18,display:'flex',alignItems:'center',gap:8}}>
           <span style={{fontSize:16}}>✦</span>
@@ -586,8 +544,8 @@ function TelaSeleccionar({ tipos, onSeleccionar, isPremium, gratisEsgotada, rest
             <span style={{fontSize:28}}>{tipo.icone}</span>
             <div style={{flex:1}}>
               <div style={{fontSize:14,fontWeight:600,color:CORES.branco}}>{tipo.nome}</div>
-              <div style={{fontSize:11,color:CORES.brancoMuted}}>{tipo.desc}</div>
-              <InfoHorizonteTemporal tipoId={tipo.id} t={t} compact />
+              <div style={{fontSize:13,color:CORES.brancoSuave,lineHeight:1.45,marginTop:3}}>{tipo.desc}</div>
+              <InfoHorizonteTemporal tipoId={tipo.id} t={t} inline />
               {tipo.id === 'diaria' ? (
                 <div style={{fontSize:10,marginTop:4,color: diariaAtiva ? '#F87171' : '#34D399'}}>
                   {diariaAtiva
@@ -636,9 +594,9 @@ function TelaPergunta({ tipo, pergunta, setPergunta, onVoltar, podeLer, leituraP
       <button type="button" onClick={onVoltar} style={{background:'none',border:'none',color:CORES.brancoMuted,cursor:'pointer',fontSize:13,marginBottom:20,padding:0}}>{t('common.back')}</button>
       <div style={{textAlign:'center',marginBottom:28}}>
         <div style={{fontSize:44}}>{tipo?.icone}</div>
-        <h2 style={{color:CORES.dourado,margin:'8px 0 4px'}}>{tipo?.nome}</h2>
-        <p style={{fontSize:12,color:CORES.brancoMuted}}>{tipo?.desc}</p>
-        <InfoHorizonteTemporal tipoId={tipo?.id} t={t} centered />
+        <h2 style={{color:CORES.dourado,margin:'8px 0 6px'}}>{tipo?.nome}</h2>
+        <p style={{fontSize:15,color:CORES.brancoSuave,lineHeight:1.5,margin:'0 0 4px',fontWeight:500}}>{tipo?.desc}</p>
+        <InfoHorizonteTemporal tipoId={tipo?.id} t={t} />
       </div>
       <div style={{background:'rgba(255,255,255,0.04)',borderRadius:14,border:`1px solid rgba(223,183,108,0.2)`,padding:18,marginBottom:20}}>
         <label style={{fontSize:11,color:CORES.dourado,textTransform:'uppercase',letterSpacing:'0.08em',display:'block',marginBottom:10}}>
@@ -684,60 +642,41 @@ function TelaPergunta({ tipo, pergunta, setPergunta, onVoltar, podeLer, leituraP
   )
 }
 
-function CartaVersoEmbaralhar({ size, layer, pile }) {
-  const { w, h } = dimensoesCarta(size)
-  const offset = layer * 2.4
+function CartaVersoEmbaralhar({ size, layer, cartaVerso }) {
+  const offset = layer * 1.8
   return (
     <div
       style={{
         position: 'absolute',
         top: offset,
         left: offset,
-        width: w,
-        height: h,
-        borderRadius: 10,
-        overflow: 'hidden',
         zIndex: layer + 1,
-        background: '#0d0722',
-        boxShadow: layer >= 3
-          ? '0 8px 22px rgba(0,0,0,0.5), 0 0 0 1px rgba(223,183,108,0.28)'
-          : '0 4px 10px rgba(0,0,0,0.35), 0 0 0 1px rgba(223,183,108,0.16)',
       }}
     >
-      <VersoSVG w={w} h={h} idSuffix={`${pile}-${layer}`} />
+      <CartaTarot carta={cartaVerso} virada size={size} />
     </div>
   )
 }
 
-function TelaEmbaralhar({ t, numCartas = BARALHO_TAROT_TOTAL }) {
+function TelaEmbaralhar({ t, numCartas = BARALHO_TAROT_TOTAL, cartaVerso = MAJOR_ARCANA[0] }) {
   const CARTA = useTamanhoCartas()
   const cardSize = tamanhoCartaEmbaralhar(CARTA.embaralhar, numCartas)
   const { w: cardW, h: cardH } = dimensoesCarta(cardSize)
-  const pileLayers = 4
-  const pileDepth = Math.round((pileLayers - 1) * 2.4)
-  const stageW = cardW * 2 + 72
-  const stageH = cardH + pileDepth + 36
+  const pileLayers = 3
+  const pileDepth = Math.round((pileLayers - 1) * 1.8)
+  const stageW = cardW * 2 + 48
+  const stageH = cardH + pileDepth + 20
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '50vh', padding: 20, gap: 18 }}>
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '44vh', padding: 20, gap: 14 }}>
       <style>{`
         @keyframes tarotShuffleLeft {
-          0%, 100% { transform: translateX(0) rotate(-3deg); }
-          35% { transform: translateX(42px) rotate(5deg) translateY(-8px); }
-          65% { transform: translateX(18px) rotate(-2deg) translateY(3px); }
+          0%, 100% { transform: translateX(0) rotate(-2deg); }
+          50% { transform: translateX(28px) rotate(3deg) translateY(-4px); }
         }
         @keyframes tarotShuffleRight {
-          0%, 100% { transform: translateX(0) rotate(3deg); }
-          35% { transform: translateX(-42px) rotate(-5deg) translateY(8px); }
-          65% { transform: translateX(-18px) rotate(2deg) translateY(-3px); }
-        }
-        @keyframes tarotShuffleGlow {
-          0%, 100% { opacity: 0.25; transform: scale(0.92); }
-          50% { opacity: 0.7; transform: scale(1); }
-        }
-        @keyframes tarotShufflePulse {
-          0%, 100% { opacity: 0.45; }
-          50% { opacity: 1; }
+          0%, 100% { transform: translateX(0) rotate(2deg); }
+          50% { transform: translateX(-28px) rotate(-3deg) translateY(4px); }
         }
       `}</style>
 
@@ -746,85 +685,43 @@ function TelaEmbaralhar({ t, numCartas = BARALHO_TAROT_TOTAL }) {
           position: 'relative',
           width: stageW,
           height: stageH,
-          borderRadius: 20,
-          background: 'radial-gradient(ellipse at center, rgba(139,92,246,0.14) 0%, rgba(11,7,30,0) 68%)',
         }}
       >
         <div
-          aria-hidden
           style={{
             position: 'absolute',
-            left: '50%',
-            top: '50%',
-            width: cardW + 24,
-            height: cardH + 24,
-            marginLeft: -(cardW + 24) / 2,
-            marginTop: -(cardH + 24) / 2,
-            borderRadius: '50%',
-            background: 'radial-gradient(circle, rgba(223,183,108,0.22) 0%, transparent 70%)',
-            animation: 'tarotShuffleGlow 1.2s ease-in-out infinite',
-            pointerEvents: 'none',
-          }}
-        />
-
-        <div
-          style={{
-            position: 'absolute',
-            left: 16,
-            top: 12,
+            left: 8,
+            top: 8,
             width: cardW + pileDepth,
             height: cardH + pileDepth,
-            animation: 'tarotShuffleLeft 1.15s ease-in-out infinite',
+            animation: 'tarotShuffleLeft 1.1s ease-in-out infinite',
             transformOrigin: 'center bottom',
           }}
         >
           {Array.from({ length: pileLayers }, (_, layer) => (
-            <CartaVersoEmbaralhar key={`l-${layer}`} size={cardSize} layer={layer} pile="left" />
+            <CartaVersoEmbaralhar key={`l-${layer}`} size={cardSize} layer={layer} cartaVerso={cartaVerso} />
           ))}
         </div>
 
         <div
           style={{
             position: 'absolute',
-            right: 16,
-            top: 12,
+            right: 8,
+            top: 8,
             width: cardW + pileDepth,
             height: cardH + pileDepth,
-            animation: 'tarotShuffleRight 1.15s ease-in-out infinite',
+            animation: 'tarotShuffleRight 1.1s ease-in-out infinite',
             transformOrigin: 'center bottom',
           }}
         >
           {Array.from({ length: pileLayers }, (_, layer) => (
-            <CartaVersoEmbaralhar key={`r-${layer}`} size={cardSize} layer={layer} pile="right" />
+            <CartaVersoEmbaralhar key={`r-${layer}`} size={cardSize} layer={layer} cartaVerso={cartaVerso} />
           ))}
         </div>
-
-        {['✦', '·', '✦'].map((mark, i) => (
-          <span
-            key={mark + i}
-            aria-hidden
-            style={{
-              position: 'absolute',
-              left: '50%',
-              top: 18 + i * 10,
-              marginLeft: (i - 1) * 14,
-              color: CORES.dourado,
-              fontSize: i === 1 ? 18 : 12,
-              animation: `tarotShufflePulse 1.1s ease-in-out ${i * 0.18}s infinite`,
-              pointerEvents: 'none',
-              userSelect: 'none',
-            }}
-          >
-            {mark}
-          </span>
-        ))}
       </div>
 
-      <p style={{ fontSize: 15, color: CORES.brancoMuted, fontStyle: 'italic', textAlign: 'center', margin: 0 }}>
+      <p style={{ fontSize: 14, color: CORES.brancoMuted, fontStyle: 'italic', textAlign: 'center', margin: 0 }}>
         {t('tarot.shuffling')}
-      </p>
-      <p style={{ fontSize: 14, color: CORES.dourado, fontWeight: 700, margin: 0, letterSpacing: '0.04em' }}>
-        {t('tarot.shufflingCount', { count: numCartas })}
       </p>
     </div>
   )
@@ -870,8 +767,6 @@ function TelaRevelar({ cartas, reveladas = [], onRevelar, posicoes = [], tipo, p
           "{pergunta}"
         </div>
       )}
-
-      <InfoHorizonteTemporal tipoId={tipo?.id} t={t} compact />
 
       {/* Cartas */}
       <div style={{display:'flex',justifyContent:'center',flexWrap:'wrap',gap:14,marginBottom:20,overflow:'visible'}}>
