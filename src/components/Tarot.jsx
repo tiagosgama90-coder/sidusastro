@@ -505,7 +505,9 @@ function TarotTipoCard({
   tipo, bloqueada, onSeleccionar, t, cols, isPremium, gratisEsgotada,
   diariaAtiva, userId, lang, precoLeituraFmt,
 }) {
+  const isMobile = cols === 1
   const [hover, setHover] = useState(false)
+  const [expanded, setExpanded] = useState(false)
   const prazo = textoHorizonteTemporal(t, tipo.id, 'prazo')
   const foco = textoHorizonteTemporal(t, tipo.id, 'foco')
 
@@ -515,10 +517,77 @@ function TarotTipoCard({
     e.currentTarget.style.setProperty('--my', `${e.clientY - r.top}px`)
   }
 
+  const ctaLabel = tipo.id === 'diaria'
+    ? t('tarot.startDaily')
+    : (tipo.n > 1 ? t('tarot.startCards', { n: tipo.n }) : t('tarot.startCard', { n: tipo.n }))
+
+  const bodyContent = (
+    <>
+      <div className="tarot-tipo-card__nome">{tipo.nome}</div>
+      <div className="tarot-tipo-card__desc">{tipo.desc}</div>
+      {prazo && (
+        <div className="tarot-tipo-card__prazo">
+          <Clock size={12} className="tarot-tipo-card__prazo-icon" aria-hidden />
+          <span>{prazo}</span>
+        </div>
+      )}
+      {foco && (
+        <div className={`tarot-tipo-card__foco${expanded ? ' tarot-tipo-card__foco--open' : ''}`}>{foco}</div>
+      )}
+      {isMobile && foco && !expanded && (
+        <div className="tarot-tipo-card__reveal-hint">{t('tarot.tapToReveal')}</div>
+      )}
+      {tipo.id === 'diaria' ? (
+        <div className={`tarot-tipo-card__badge ${diariaAtiva ? 'tarot-tipo-card__badge--warn' : 'tarot-tipo-card__badge--ok'}`}>
+          {diariaAtiva
+            ? t('tarot.dailyNextIn', { time: formatarTempoRestante(msAteProximaDiaria(userId), lang) })
+            : t('tarot.dailyOnce')}
+        </div>
+      ) : !isPremium && (
+        <div className={`tarot-tipo-card__badge ${gratisEsgotada ? 'tarot-tipo-card__badge--warn' : 'tarot-tipo-card__badge--ok'}`}>
+          {gratisEsgotada ? t('tarot.paidOption', { price: precoLeituraFmt }) : t('tarot.includedFree', { max: MAX_LEITURAS_GRATIS })}
+        </div>
+      )}
+    </>
+  )
+
+  if (isMobile) {
+    return (
+      <div
+        className={`tarot-tipo-card tarot-tipo-card--mobile${expanded ? ' tarot-tipo-card--open' : ''}${hover ? ' tarot-tipo-card--magic' : ''}${bloqueada ? ' tarot-tipo-card--bloqueada' : ''}`}
+      >
+        <div className="tarot-tipo-card__cosmic" aria-hidden>
+          <span>☽</span><span>✦</span><span>☉</span><span>✧</span><span>☽</span>
+        </div>
+        <div className="tarot-tipo-card__sparkles" aria-hidden>✦</div>
+        <button
+          type="button"
+          className="tarot-tipo-card__peek"
+          onClick={() => setExpanded((v) => !v)}
+          onFocus={() => setHover(true)}
+          onBlur={() => setHover(false)}
+          aria-expanded={expanded}
+        >
+          <div className="tarot-tipo-card__arte">
+            <TarotTipoArte tipoId={tipo.id} size={108} hovered={expanded || hover} />
+          </div>
+          <div className="tarot-tipo-card__body">{bodyContent}</div>
+        </button>
+        <button
+          type="button"
+          className="tarot-tipo-card__cta tarot-tipo-card__cta--action"
+          onClick={() => onSeleccionar(tipo)}
+        >
+          {ctaLabel}
+        </button>
+      </div>
+    )
+  }
+
   return (
     <button
       type="button"
-      className={`tarot-tipo-card${cols === 1 ? ' tarot-tipo-card--rect' : ''}${hover ? ' tarot-tipo-card--magic' : ''}${bloqueada ? ' tarot-tipo-card--bloqueada' : ''}`}
+      className={`tarot-tipo-card${hover ? ' tarot-tipo-card--magic' : ''}${bloqueada ? ' tarot-tipo-card--bloqueada' : ''}`}
       onClick={() => onSeleccionar(tipo)}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
@@ -530,40 +599,12 @@ function TarotTipoCard({
       <div className="tarot-tipo-card__arte">
         <TarotTipoArte
           tipoId={tipo.id}
-          size={cols === 3 ? 108 : cols === 1 ? 100 : 118}
+          size={cols === 3 ? 108 : 118}
           hovered={hover}
-          landscape={cols === 1}
         />
       </div>
-      <div className="tarot-tipo-card__body">
-        <div className="tarot-tipo-card__nome">{tipo.nome}</div>
-        <div className="tarot-tipo-card__desc">{tipo.desc}</div>
-        {prazo && (
-          <div className="tarot-tipo-card__prazo">
-            <Clock size={12} className="tarot-tipo-card__prazo-icon" aria-hidden />
-            <span>{prazo}</span>
-          </div>
-        )}
-        {foco && (
-          <div className="tarot-tipo-card__foco">{foco}</div>
-        )}
-        {tipo.id === 'diaria' ? (
-          <div className={`tarot-tipo-card__badge ${diariaAtiva ? 'tarot-tipo-card__badge--warn' : 'tarot-tipo-card__badge--ok'}`}>
-            {diariaAtiva
-              ? t('tarot.dailyNextIn', { time: formatarTempoRestante(msAteProximaDiaria(userId), lang) })
-              : t('tarot.dailyOnce')}
-          </div>
-        ) : !isPremium && (
-          <div className={`tarot-tipo-card__badge ${gratisEsgotada ? 'tarot-tipo-card__badge--warn' : 'tarot-tipo-card__badge--ok'}`}>
-            {gratisEsgotada ? t('tarot.paidOption', { price: precoLeituraFmt }) : t('tarot.includedFree', { max: MAX_LEITURAS_GRATIS })}
-          </div>
-        )}
-      </div>
-      <div className="tarot-tipo-card__cta" aria-hidden>
-        {tipo.id === 'diaria'
-          ? t('tarot.startDaily')
-          : (tipo.n > 1 ? t('tarot.startCards', { n: tipo.n }) : t('tarot.startCard', { n: tipo.n }))}
-      </div>
+      <div className="tarot-tipo-card__body">{bodyContent}</div>
+      <div className="tarot-tipo-card__cta" aria-hidden>{ctaLabel}</div>
     </button>
   )
 }
@@ -607,7 +648,7 @@ function TelaSeleccionar({ tipos, onSeleccionar, isPremium, gratisEsgotada, rest
           </span>
         </div>
       )}
-      <div className={`tarot-tipo-grid tarot-tipo-grid--cols-${cols}${cols === 1 ? ' tarot-tipo-grid--rect' : ''}`}>
+      <div className={`tarot-tipo-grid tarot-tipo-grid--cols-${cols}${cols === 1 ? ' tarot-tipo-grid--mobile' : ''}`}>
         {tipos.map((tipo) => (
           <TarotTipoCard
             key={tipo.id}

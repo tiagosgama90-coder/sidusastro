@@ -581,6 +581,7 @@ export default {
     subtitle: 'Arcanos Virtuais',
     desc: '9 jogos · interpretação personalizada com o teu mapa natal',
     timeframeListHint: 'Cada leitura fala de um período diferente na tua vida - não é o tempo que demoras a ler as cartas.',
+    tapToReveal: 'Toca para revelar ✦',
     timeframeCovers: 'Esta leitura abrange:',
     timeframeTitle: 'Sobre que período falam as cartas?',
     timeframeNotDuration: 'Isto não é quanto tempo demoras a fazer a leitura. É o intervalo de tempo (passado ou futuro) que as cartas descrevem na tua vida.',
