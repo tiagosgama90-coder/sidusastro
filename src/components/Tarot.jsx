@@ -518,7 +518,7 @@ function TarotTipoCard({
   return (
     <button
       type="button"
-      className={`tarot-tipo-card${hover ? ' tarot-tipo-card--magic' : ''}${bloqueada ? ' tarot-tipo-card--bloqueada' : ''}`}
+      className={`tarot-tipo-card${cols === 1 ? ' tarot-tipo-card--rect' : ''}${hover ? ' tarot-tipo-card--magic' : ''}${bloqueada ? ' tarot-tipo-card--bloqueada' : ''}`}
       onClick={() => onSeleccionar(tipo)}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
@@ -528,7 +528,12 @@ function TarotTipoCard({
     >
       <div className="tarot-tipo-card__sparkles" aria-hidden>✦</div>
       <div className="tarot-tipo-card__arte">
-        <TarotTipoArte tipoId={tipo.id} size={cols === 3 ? 108 : cols === 1 ? 148 : 118} hovered={hover} />
+        <TarotTipoArte
+          tipoId={tipo.id}
+          size={cols === 3 ? 108 : cols === 1 ? 100 : 118}
+          hovered={hover}
+          landscape={cols === 1}
+        />
       </div>
       <div className="tarot-tipo-card__body">
         <div className="tarot-tipo-card__nome">{tipo.nome}</div>
@@ -602,7 +607,7 @@ function TelaSeleccionar({ tipos, onSeleccionar, isPremium, gratisEsgotada, rest
           </span>
         </div>
       )}
-      <div className={`tarot-tipo-grid tarot-tipo-grid--cols-${cols}`}>
+      <div className={`tarot-tipo-grid tarot-tipo-grid--cols-${cols}${cols === 1 ? ' tarot-tipo-grid--rect' : ''}`}>
         {tipos.map((tipo) => (
           <TarotTipoCard
             key={tipo.id}

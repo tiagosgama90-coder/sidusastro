@@ -12,15 +12,16 @@ const IMAGENS = {
   cruzcelta: '/images/tarot/tipos/tipo-cruzcelta.png',
 }
 
-export function TarotTipoArte({ tipoId, size = 120, hovered = false }) {
+export function TarotTipoArte({ tipoId, size = 120, hovered = false, landscape = false }) {
   const src = IMAGENS[tipoId] || IMAGENS.geral
-  const h = Math.round(size * 0.72)
+  const w = size
+  const h = landscape ? Math.round(size * 0.62) : Math.round(size * 0.72)
   return (
     <div
       className={`tarot-tipo-arte${hovered ? ' tarot-tipo-arte--hover' : ''}`}
-      style={{ width: size, height: h }}
+      style={{ width: w, height: h }}
     >
-      <img src={src} alt="" width={size} height={h} loading="lazy" decoding="async" />
+      <img src={src} alt="" width={w} height={h} loading="lazy" decoding="async" />
     </div>
   )
 }
