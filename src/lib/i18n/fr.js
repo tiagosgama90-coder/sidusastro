@@ -626,7 +626,7 @@ export default {
     startCards: "Commencer ({n} cartes)",
     startDaily: "Commencer la lecture",
     startShort: "Commencer",
-    swipeGames: "Glissez pour voir les 9 jeux ✦",
+    swipeGames: "Glissez haut/bas · les autres lectures visibles derrière ✦",
     gamesCount: "{count} lectures disponibles",
     questionLabel: "Quelle est votre question ? (optionnel)",
     questionPlaceholder: "Écrivez votre question à l'Univers...",

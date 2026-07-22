@@ -616,7 +616,7 @@ export default {
     "startCards": "Starten ({n} Karten)",
     "startDaily": "Legung starten",
     "startShort": "Starten",
-    "swipeGames": "Wischen für alle 9 Legungen ✦",
+    "swipeGames": "Wischen hoch/runter · andere Legungen dahinter sichtbar ✦",
     "gamesCount": "{count} Legungen verfügbar",
     "questionLabel": "Was ist Ihre Frage?(optional)",
     "questionPlaceholder": "Schreiben Sie Ihre Frage an das Universum...",

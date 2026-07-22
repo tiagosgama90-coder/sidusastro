@@ -3625,59 +3625,88 @@ html.sidus-no-ads .google-auto-placed {
     align-items: stretch;
   }
 
-  .tarot-tipo-carousel {
-    margin: 0 -12px;
-    width: calc(100% + 24px);
-  }
-
-  .tarot-tipo-carousel__track {
-    overflow-x: auto;
-    overflow-y: hidden;
-    scroll-snap-type: x mandatory;
-    scroll-behavior: smooth;
-    scroll-padding-inline: 16px;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-    padding: 4px 0 8px;
-  }
-
-  .tarot-tipo-carousel__track::-webkit-scrollbar {
-    display: none;
-  }
-
-  .tarot-tipo-grid--mobile {
+  .tarot-tipo-carousel--vertical {
     width: 100%;
-    max-width: none;
-    margin: 0;
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    align-items: stretch;
-    gap: 12px;
-    padding: 0 16px;
+    margin: 0 auto;
+  }
+
+  .tarot-tipo-carousel__stage {
+    position: relative;
+    width: 100%;
+    max-width: 380px;
+    height: min(62vh, 460px);
+    min-height: 380px;
+    margin: 0 auto;
+    perspective: 1100px;
+    perspective-origin: 50% 42%;
     overflow: visible;
+    touch-action: pan-y;
+  }
+
+  .tarot-tipo-carousel__slide {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: calc(100% - 20px);
+    max-width: 360px;
+    transform-origin: center center;
+    transition:
+      transform 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+      opacity 0.45s ease,
+      filter 0.45s ease,
+      box-shadow 0.45s ease;
+    will-change: transform, opacity;
+    filter: brightness(calc(1 - abs(var(--slide-offset, 0)) * 0.1));
+    cursor: default;
+  }
+
+  .tarot-tipo-carousel__slide:not(.tarot-tipo-carousel__slide--active) {
+    cursor: pointer;
+  }
+
+  .tarot-tipo-carousel__slide:not(.tarot-tipo-carousel__slide--active) .tarot-tipo-card {
+    pointer-events: none;
+  }
+
+  .tarot-tipo-carousel__slide--active {
+    filter: brightness(1);
+    cursor: default;
+  }
+
+  .tarot-tipo-carousel__slide--active .tarot-tipo-card {
+    box-shadow:
+      0 0 28px rgba(223, 183, 108, 0.22),
+      0 16px 40px rgba(0, 0, 0, 0.38);
+    border-color: rgba(223, 183, 108, 0.48);
   }
 
   .tarot-tipo-carousel__dots {
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-wrap: wrap;
     gap: 6px;
-    margin-top: 4px;
+    margin-top: 10px;
     padding-bottom: 4px;
+    max-width: 280px;
+    margin-left: auto;
+    margin-right: auto;
   }
 
   .tarot-tipo-carousel__dot {
     width: 6px;
     height: 6px;
+    padding: 0;
+    border: none;
     border-radius: 50%;
     background: rgba(223, 183, 108, 0.28);
     transition: background 0.35s ease, transform 0.35s ease, box-shadow 0.35s ease;
+    cursor: pointer;
   }
 
   .tarot-tipo-carousel__dot--active {
     background: rgba(223, 183, 108, 0.95);
-    transform: scale(1.2);
+    transform: scale(1.25);
     box-shadow: 0 0 8px rgba(223, 183, 108, 0.45);
   }
 
@@ -3718,17 +3747,15 @@ html.sidus-no-ads .google-auto-placed {
   }
 
   .tarot-tipo-card.tarot-tipo-card--mobile.tarot-tipo-card--compact {
-    flex: 0 0 min(88vw, 320px);
-    scroll-snap-align: center;
-    width: min(88vw, 320px);
+    width: 100%;
     max-width: none;
     margin: 0;
-    padding: 10px 12px;
+    padding: 12px 14px;
     text-align: left;
     display: block;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.06), rgba(88, 28, 135, 0.09));
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.07), rgba(88, 28, 135, 0.1));
     border-color: rgba(223, 183, 108, 0.32);
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.28);
     transition: transform 0.35s ease, box-shadow 0.35s ease, border-color 0.35s ease;
   }
 

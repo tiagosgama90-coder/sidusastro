@@ -1,6 +1,6 @@
 // Service Worker para notificações PWA - Sidus Astro
-// v11: tarot mobile carrossel — fix CSS conflitos
-const CACHE_NAME = 'sidusastro-v11'
+// v12: tarot mobile carrossel vertical em pilha 3D
+const CACHE_NAME = 'sidusastro-v12'
 const OFFLINE_URLS = ['/manifest.json', '/favicon.svg']
 
 const SIGNO_EMOJI = {
