@@ -3254,6 +3254,7 @@ html.sidus-no-ads .google-auto-placed {
 
 .tarot-tipo-grid--cols-3 {
   grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: stretch;
 }
 
 @media (max-width: 899px) {
@@ -3477,6 +3478,11 @@ html.sidus-no-ads .google-auto-placed {
   position: relative;
   width: 100%;
   max-width: 300px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
   border: 1px solid rgba(223, 183, 108, 0.28);
   border-radius: 18px;
   padding: 14px 14px 12px;
@@ -3487,9 +3493,10 @@ html.sidus-no-ads .google-auto-placed {
     border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   overflow: hidden;
   cursor: pointer;
-  text-align: left;
+  text-align: center;
   font-family: inherit;
   color: inherit;
+  box-sizing: border-box;
 }
 
 .tarot-tipo-card::before {
@@ -3538,7 +3545,19 @@ html.sidus-no-ads .google-auto-placed {
 .tarot-tipo-card__arte {
   display: flex;
   justify-content: center;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
+  flex-shrink: 0;
+  width: 100%;
+}
+
+.tarot-tipo-card__body {
+  width: 100%;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 0;
+  padding-bottom: 4px;
 }
 
 .tarot-tipo-arte {
@@ -3571,10 +3590,10 @@ html.sidus-no-ads .google-auto-placed {
 
 .tarot-tipo-card__desc {
   font-size: 13px;
-  color: rgba(255, 255, 255, 0.62);
+  color: rgba(255, 255, 255, 0.52);
   line-height: 1.5;
   font-weight: 500;
-  margin-bottom: 6px;
+  margin-bottom: 8px;
 }
 
 .tarot-tipo-card__prazo {
@@ -3582,10 +3601,10 @@ html.sidus-no-ads .google-auto-placed {
   align-items: center;
   gap: 6px;
   font-size: 11px;
-  color: rgba(255, 255, 255, 0.52);
+  color: rgba(255, 255, 255, 0.42);
   line-height: 1.45;
   font-weight: 500;
-  margin-bottom: 4px;
+  margin-bottom: 6px;
 }
 
 .tarot-tipo-card__prazo-icon {
@@ -3596,9 +3615,9 @@ html.sidus-no-ads .google-auto-placed {
 
 .tarot-tipo-card__foco {
   font-size: 11px;
-  color: rgba(255, 255, 255, 0.48);
+  color: rgba(255, 255, 255, 0.38);
   line-height: 1.45;
-  margin-top: 2px;
+  margin-top: 0;
   margin-bottom: 0;
   max-height: none;
   opacity: 1;
@@ -3612,14 +3631,16 @@ html.sidus-no-ads .google-auto-placed {
 .tarot-tipo-card__badge {
   font-size: 10px;
   font-weight: 600;
-  margin-top: 8px;
+  margin-top: 6px;
+  margin-bottom: 2px;
 }
 
 .tarot-tipo-card__badge--ok { color: #34D399; }
 .tarot-tipo-card__badge--warn { color: #E8A855; }
 
 .tarot-tipo-card__cta {
-  margin-top: 12px;
+  margin-top: auto;
+  flex-shrink: 0;
   width: auto;
   max-width: 100%;
   margin-left: auto;
@@ -3630,6 +3651,7 @@ html.sidus-no-ads .google-auto-placed {
   color: #1a1008;
   text-align: center;
   padding: 7px 14px;
+  padding-top: 10px;
   border-radius: 999px;
   border: 1px solid rgba(223, 183, 108, 0.5);
   background: linear-gradient(135deg, rgba(232, 196, 120, 0.95), rgba(201, 150, 75, 0.88));
@@ -3695,26 +3717,21 @@ html.sidus-no-ads .google-auto-placed {
   .tarot-tipo-grid--desktop-compact {
     gap: 16px;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    align-items: start;
+    align-items: stretch;
     justify-items: center;
   }
 
   .tarot-tipo-card--desktop {
     max-width: 228px;
     width: 100%;
-    height: auto;
-    min-height: unset;
-    padding: 11px 11px 9px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
+    height: 100%;
+    min-height: 100%;
+    padding: 11px 11px 10px;
     border-radius: 14px;
   }
 
   .tarot-tipo-card--desktop .tarot-tipo-card__arte {
-    margin-bottom: 6px;
-    flex-shrink: 0;
+    margin-bottom: 8px;
   }
 
   .tarot-tipo-card--desktop .tarot-tipo-arte {
@@ -3724,17 +3741,13 @@ html.sidus-no-ads .google-auto-placed {
   }
 
   .tarot-tipo-card--desktop .tarot-tipo-card__body {
-    width: 100%;
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    padding-bottom: 6px;
   }
 
   .tarot-tipo-card--desktop .tarot-tipo-card__nome {
     font-size: 12px;
     line-height: 1.25;
-    margin-bottom: 4px;
+    margin-bottom: 5px;
     width: 100%;
     color: #DFB76C;
   }
@@ -3742,35 +3755,34 @@ html.sidus-no-ads .google-auto-placed {
   .tarot-tipo-card--desktop .tarot-tipo-card__desc {
     font-size: 11px;
     line-height: 1.4;
-    margin-bottom: 4px;
-    width: 100%;
-    color: rgba(255, 255, 255, 0.62);
-    display: block;
-    overflow: visible;
+    margin-bottom: 6px;
+    color: rgba(255, 255, 255, 0.52);
   }
 
   .tarot-tipo-card--desktop .tarot-tipo-card__prazo {
     font-size: 10px;
-    margin-bottom: 3px;
-    justify-content: center;
-    color: rgba(255, 255, 255, 0.5);
+    margin-bottom: 5px;
+    color: rgba(255, 255, 255, 0.4);
   }
 
   .tarot-tipo-card--desktop .tarot-tipo-card__foco {
     font-size: 10px;
     line-height: 1.4;
-    margin-top: 0;
-    color: rgba(255, 255, 255, 0.46);
+    color: rgba(255, 255, 255, 0.36);
   }
 
   .tarot-tipo-card--desktop .tarot-tipo-card__badge {
     font-size: 9px;
     margin-top: 4px;
+    margin-bottom: 4px;
   }
 
   .tarot-tipo-card--desktop .tarot-tipo-card__cta {
-    margin-top: 8px;
-    padding: 5px 12px;
+    margin-top: auto;
+    padding-top: 12px;
+    padding-bottom: 7px;
+    padding-left: 12px;
+    padding-right: 12px;
     font-size: 10px;
     line-height: 1.2;
   }
@@ -3900,23 +3912,23 @@ html.sidus-no-ads .google-auto-placed {
     overflow: visible;
     font-size: 10px;
     line-height: 1.4;
-    color: rgba(255, 255, 255, 0.62);
-    margin: 0 0 4px;
+    color: rgba(255, 255, 255, 0.5);
+    margin: 0 0 5px;
     text-align: left;
   }
 
   .tarot-tipo-card--compact .tarot-tipo-card__prazo {
     font-size: 9px;
-    margin-bottom: 2px;
+    margin-bottom: 3px;
     justify-content: flex-start;
-    color: rgba(255, 255, 255, 0.5);
+    color: rgba(255, 255, 255, 0.4);
   }
 
   .tarot-tipo-card--compact .tarot-tipo-card__foco {
     font-size: 9px;
     line-height: 1.4;
-    color: rgba(255, 255, 255, 0.46);
-    margin: 0 0 3px;
+    color: rgba(255, 255, 255, 0.36);
+    margin: 0 0 4px;
     text-align: left;
     max-height: none;
     opacity: 1;
