@@ -13,8 +13,8 @@ const CORES = {
 
 const DESKTOP_VISIBLE = 5
 const MOBILE_VISIBLE = 3
-const AUTO_MS = 5500
-const LOGO_SIDUS = '/favicon.svg'
+const AUTO_MS = 12000
+const NEWS_FALLBACK = '/images/news-fallback-astro.svg'
 
 const newsBtnStyle = {
   width: 36, height: 36, borderRadius: '50%',
@@ -41,12 +41,13 @@ function useIsMobile(bp = 768) {
 
 /** Prioriza URL directa da API; proxy só como fallback após erro. */
 function buildImgCandidates(noticia) {
-  const raw = noticia?.urlToImage
-  if (!raw) return []
+  const raw = noticia?.urlToImage || noticia?.imagem
+  if (!raw) return [NEWS_FALLBACK]
   const list = [raw]
   if (noticia?.imagem && noticia.imagem !== raw) list.push(noticia.imagem)
   const proxied = `/.netlify/functions/astro-image-proxy?url=${encodeURIComponent(raw)}`
   if (!list.includes(proxied)) list.push(proxied)
+  list.push(NEWS_FALLBACK)
   return list
 }
 
@@ -68,11 +69,6 @@ export function AstroNewsCarousel({ aspetos = [] }) {
     ;(async () => {
       const items = await gerarNoticiasAstrologia({ aspetos, lang, max: 25, forceRefresh: true })
       if (cancelled) return
-      console.log('[Sidus AstroNews debug]', items.map((n) => ({
-        texto: n.texto?.slice(0, 55),
-        urlToImage: n.urlToImage ?? null,
-        tag: n.tag,
-      })))
       setNoticias(items)
     })()
     return () => { cancelled = true }
@@ -128,7 +124,7 @@ export function AstroNewsCarousel({ aspetos = [] }) {
     const candidates = buildImgCandidates(n)
     const idx = imgState[key] ?? 0
     const failed = idx === -1
-    const imgSrc = !failed && candidates.length ? candidates[idx] : null
+    const imgSrc = candidates.length ? (failed ? NEWS_FALLBACK : candidates[idx]) : NEWS_FALLBACK
     const mobileCompact = isMobile && visible >= 3
 
     return (
@@ -155,13 +151,7 @@ export function AstroNewsCarousel({ aspetos = [] }) {
                 loading="lazy"
                 onError={() => onImgError(key, candidates, idx)}
               />
-            ) : (
-              <img
-                src={LOGO_SIDUS}
-                alt="Sidus"
-                style={{ width: mobileCompact ? 28 : (isMobile ? 48 : 40), height: mobileCompact ? 28 : (isMobile ? 48 : 40), objectFit: 'contain', opacity: 0.7 }}
-              />
-            )}
+            ) : null}
           </div>
           <span style={{
             display: 'block', marginTop: mobileCompact ? 6 : (isMobile ? 12 : 8),

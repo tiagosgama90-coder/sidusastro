@@ -30,6 +30,7 @@ import {
   User,
   Menu,
   X,
+  History,
 } from 'lucide-react'
 import { Body, GeoVector, Ecliptic, MakeTime, SiderealTime } from 'astronomy-engine'
 import { pesquisarCidades, pesquisarFusoHorario, geocodificarCidade } from './lib/geocoding'
@@ -120,6 +121,13 @@ import { utilizadorTemPremium, emailTemPremiumPrivilegiado } from './lib/premium
 import {
   MAX_ORACLE_GRATIS, oraclePerguntasUsadas as contarOraclePerguntas, registarOraclePergunta, sincronizarOraclePerguntas,
 } from './lib/oracleLimit.js'
+import {
+  carregarSessoesOracle,
+  criarSessaoOracle,
+  actualizarSessaoOracle,
+  upsertSessaoOracle,
+  formatarDataSessao,
+} from './lib/oracleHistory.js'
 
 const CORES = {
   fundo: '#0B071E',
@@ -2814,9 +2822,18 @@ function Chat({ mapaNatal, isPremium, userId, oracleRemotas, onOracleUsada, onUp
   const { lang, t } = useLanguage()
   const [perguntasUsadas, setPerguntasUsadas] = useState(() => contarOraclePerguntas(userId, oracleRemotas))
 
-  const [mensagens, setMensagens] = useState(() => [
-    { id: 1, autor: 'ia', texto: getChatGreeting(mapaNatal, 'pt', MAX_ORACLE_GRATIS, isPremium) },
-  ])
+  const chaveSessaoActual = userId ? `sidus_oracle_current_${userId}` : 'sidus_oracle_current_local'
+
+  const saudacaoInicial = useCallback(() => ([{
+    id: 1,
+    autor: 'ia',
+    texto: getChatGreeting(mapaNatal, lang, MAX_ORACLE_GRATIS, isPremium),
+  }]), [mapaNatal, lang, isPremium])
+
+  const [sessaoId, setSessaoId] = useState(() => `sess-${Date.now()}`)
+  const [sessoes, setSessoes] = useState([])
+  const [historicoAberto, setHistoricoAberto] = useState(false)
+  const [mensagens, setMensagens] = useState(saudacaoInicial)
 
   const [texto, setTexto]       = useState('')
   const [digitando, setDigitando] = useState(false)
@@ -2827,8 +2844,67 @@ function Chat({ mapaNatal, isPremium, userId, oracleRemotas, onOracleUsada, onUp
   }, [userId, oracleRemotas])
 
   useEffect(() => {
-    setMensagens([{ id: 1, autor: 'ia', texto: getChatGreeting(mapaNatal, lang, MAX_ORACLE_GRATIS, isPremium) }])
+    if (!isPremium) {
+      setMensagens([{
+        id: 1,
+        autor: 'ia',
+        texto: getChatGreeting(mapaNatal, lang, MAX_ORACLE_GRATIS, isPremium),
+      }])
+      return
+    }
+    const lista = carregarSessoesOracle(userId)
+    setSessoes(lista)
+    const actualId = localStorage.getItem(chaveSessaoActual)
+    const actual = lista.find((s) => s.id === actualId)
+    if (actual?.mensagens?.length) {
+      setSessaoId(actual.id)
+      setMensagens(actual.mensagens)
+    } else {
+      const id = `sess-${Date.now()}`
+      setSessaoId(id)
+      setMensagens([{
+        id: 1,
+        autor: 'ia',
+        texto: getChatGreeting(mapaNatal, lang, MAX_ORACLE_GRATIS, isPremium),
+      }])
+      localStorage.setItem(chaveSessaoActual, id)
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- carregar sessão só ao mudar utilizador/premium
+  }, [isPremium, userId, chaveSessaoActual])
+
+  useEffect(() => {
+    setMensagens((prev) => {
+      if (prev.length === 1 && prev[0]?.autor === 'ia' && !prev[0]?.aviso) {
+        return [{ ...prev[0], texto: getChatGreeting(mapaNatal, lang, MAX_ORACLE_GRATIS, isPremium) }]
+      }
+      return prev
+    })
   }, [lang, mapaNatal, isPremium])
+
+  useEffect(() => {
+    if (!isPremium || !mensagens.length) return
+    const base = criarSessaoOracle({ mensagens, id: sessaoId, lang })
+    const sessao = actualizarSessaoOracle(base, mensagens)
+    upsertSessaoOracle(userId, sessao)
+    localStorage.setItem(chaveSessaoActual, sessao.id)
+    setSessoes(carregarSessoesOracle(userId))
+  }, [mensagens, isPremium, userId, sessaoId, lang, chaveSessaoActual])
+
+  const iniciarNovaConversa = () => {
+    const id = `sess-${Date.now()}`
+    setSessaoId(id)
+    setMensagens(saudacaoInicial())
+    localStorage.setItem(chaveSessaoActual, id)
+    setHistoricoAberto(false)
+  }
+
+  const abrirSessaoHistorico = (sess) => {
+    if (!sess?.id) return
+    setSessaoId(sess.id)
+    setMensagens(sess.mensagens?.length ? sess.mensagens : saudacaoInicial())
+    localStorage.setItem(chaveSessaoActual, sess.id)
+    setHistoricoAberto(false)
+  }
 
   useEffect(() => { fimRef.current?.scrollIntoView({ behavior: 'smooth' }) }, [mensagens, digitando])
 
@@ -2966,12 +3042,12 @@ function Chat({ mapaNatal, isPremium, userId, oracleRemotas, onOracleUsada, onUp
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100svh', maxHeight: '100svh', position: 'relative', zIndex: 1 }}>
       {/* Cabeçalho */}
-      <header style={{ padding: '14px 18px', background: 'rgba(11,7,30,0.97)', borderBottom: `1px solid ${CORES.vidroBorda}`, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <div style={{ width: 36, height: 36, borderRadius: '50%', background: 'linear-gradient(135deg,#6D28D9,#0B071E)', border: `1.5px solid ${CORES.dourado}`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18 }}>
+      <header style={{ padding: '14px 18px', background: 'rgba(11,7,30,0.97)', borderBottom: `1px solid ${CORES.vidroBorda}`, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0, gap: 10 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, minWidth: 0 }}>
+          <div style={{ width: 36, height: 36, borderRadius: '50%', background: 'linear-gradient(135deg,#6D28D9,#0B071E)', border: `1.5px solid ${CORES.dourado}`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18, flexShrink: 0 }}>
             ✦
           </div>
-          <div>
+          <div style={{ minWidth: 0 }}>
             <div style={{ fontSize: 18, fontWeight: 700, color: CORES.dourado }}>{t('oracle.title')}</div>
             {isPremium && (
               <div style={{ fontSize: 13, color: CORES.brancoMuted, marginTop: 2 }}>
@@ -2980,7 +3056,25 @@ function Chat({ mapaNatal, isPremium, userId, oracleRemotas, onOracleUsada, onUp
             )}
           </div>
         </div>
-        {!isPremium && (
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
+          {isPremium && (
+            <button
+              type="button"
+              onClick={() => setHistoricoAberto((v) => !v)}
+              style={{
+                display: 'flex', alignItems: 'center', gap: 6,
+                fontSize: 11, color: CORES.dourado,
+                background: historicoAberto ? 'rgba(223,183,108,0.16)' : 'rgba(223,183,108,0.08)',
+                padding: '6px 12px', borderRadius: 20,
+                border: `1px solid rgba(223,183,108,0.35)`,
+                cursor: 'pointer', fontWeight: 600,
+              }}
+            >
+              <History size={14} />
+              {t('oracle.historyOpen')}
+            </button>
+          )}
+          {!isPremium && (
           <button type="button" onClick={onUpgrade} style={{
             fontSize: 11, color: CORES.dourado, background: 'rgba(223,183,108,0.08)',
             padding: '5px 12px', borderRadius: 20, border: `1px solid rgba(223,183,108,0.3)`,
@@ -2990,8 +3084,58 @@ function Chat({ mapaNatal, isPremium, userId, oracleRemotas, onOracleUsada, onUp
               ? (restantes === 1 ? t('oracle.freeQuestions', { count: restantes }) : t('oracle.freeQuestionsPlural', { count: restantes }))
               : t('oracle.premiumBadge')}
           </button>
-        )}
+          )}
+        </div>
       </header>
+
+      {isPremium && historicoAberto && (
+        <div style={{
+          flexShrink: 0,
+          maxHeight: '38vh',
+          overflowY: 'auto',
+          borderBottom: `1px solid ${CORES.vidroBorda}`,
+          background: 'rgba(11,7,30,0.98)',
+          padding: '12px 14px',
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
+            <span style={{ fontSize: 12, fontWeight: 700, color: CORES.dourado, letterSpacing: '0.06em', textTransform: 'uppercase' }}>
+              {t('oracle.historyTitle')}
+            </span>
+            <button type="button" onClick={iniciarNovaConversa} style={{
+              fontSize: 11, color: '#34D399', background: 'rgba(52,211,153,0.1)',
+              border: '1px solid rgba(52,211,153,0.35)', borderRadius: 8,
+              padding: '5px 10px', cursor: 'pointer', fontWeight: 600,
+            }}>
+              + {t('oracle.historyNew')}
+            </button>
+          </div>
+          {!sessoes.length ? (
+            <p style={{ fontSize: 12, color: CORES.brancoMuted, margin: 0 }}>{t('oracle.historyEmpty')}</p>
+          ) : (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+              {sessoes.map((sess) => (
+                <button
+                  key={sess.id}
+                  type="button"
+                  onClick={() => abrirSessaoHistorico(sess)}
+                  style={{
+                    textAlign: 'left', padding: '10px 12px', borderRadius: 10, cursor: 'pointer',
+                    background: sess.id === sessaoId ? 'rgba(223,183,108,0.14)' : 'rgba(255,255,255,0.04)',
+                    border: `1px solid ${sess.id === sessaoId ? 'rgba(223,183,108,0.4)' : 'rgba(255,255,255,0.08)'}`,
+                  }}
+                >
+                  <div style={{ fontSize: 12, color: CORES.brancoSuave, fontWeight: 600, lineHeight: 1.35, marginBottom: 3 }}>
+                    {sess.title || t('oracle.historyNew')}
+                  </div>
+                  <div style={{ fontSize: 10, color: CORES.brancoMuted }}>
+                    {formatarDataSessao(sess.updatedAt || sess.createdAt, lang)}
+                  </div>
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Mensagens */}
       <div style={{ flex: 1, overflowY: 'auto', padding: '16px 14px 10px', display: 'flex', flexDirection: 'column', gap: 12 }}>
@@ -3257,7 +3401,7 @@ function Navbar({ passo, setPasso, isDesktop, dados, fotoPerfil }) {
           <AvatarNav foto={fotoPerfil} nome={nomePerfil} size={34} ativo={perfilAtivo} />
         </button>
       )}
-      <header style={headerStyle}>
+      <header style={headerStyle} className={isDesktop ? 'desktop-nav-header' : undefined}>
         {isDesktop ? (
           <>
             <div className="desktop-nav-brand">
