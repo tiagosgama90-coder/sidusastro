@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useId, useState } from 'react'
 import { imagemCartaUrl, imagemVersoUrl } from '../lib/tarot/images.js'
 
 const CORES = {
@@ -136,18 +136,26 @@ function CartaFallbackSVG({ carta, size }) {
   )
 }
 
-function VersoSVG({ w, h }) {
+export function VersoSVG({ w, h, idSuffix = '0' }) {
+  const gradId = `vd_mystic_${idSuffix}`
   return (
-    <svg width={w} height={h} viewBox="0 0 90 144">
+    <svg width={w} height={h} viewBox="0 0 90 144" style={{ display: 'block' }}>
       <defs>
-        <linearGradient id="vd_mystic" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#0d0722" />
-          <stop offset="100%" stopColor="#1a0d3a" />
+        <linearGradient id={gradId} x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#1a0d3a" />
+          <stop offset="50%" stopColor="#0d0722" />
+          <stop offset="100%" stopColor="#12082a" />
         </linearGradient>
+        <pattern id={`vd_pt_${idSuffix}`} x="0" y="0" width="10" height="10" patternUnits="userSpaceOnUse">
+          <circle cx="1.5" cy="1.5" r="0.6" fill={CORES.dourado} opacity="0.14" />
+        </pattern>
       </defs>
-      <rect width="90" height="144" rx="8" fill="url(#vd_mystic)" />
-      <rect x="2" y="2" width="86" height="140" rx="7" fill="none" stroke={CORES.dourado} strokeWidth="1" opacity="0.45" />
-      <text x="45" y="76" fontSize="26" textAnchor="middle" dominantBaseline="middle" fill={CORES.dourado} opacity="0.3">✦</text>
+      <rect width="90" height="144" rx="8" fill={`url(#${gradId})`} />
+      <rect width="90" height="144" rx="8" fill={`url(#vd_pt_${idSuffix})`} />
+      <rect x="2" y="2" width="86" height="140" rx="7" fill="none" stroke={CORES.dourado} strokeWidth="1.2" opacity="0.5" />
+      <rect x="8" y="8" width="74" height="128" rx="5" fill="none" stroke={CORES.dourado} strokeWidth="0.5" opacity="0.22" />
+      <text x="45" y="72" fontSize="22" textAnchor="middle" dominantBaseline="middle" fill={CORES.dourado} opacity="0.38">✦</text>
+      <text x="45" y="96" fontSize="8" textAnchor="middle" fill={CORES.dourado} opacity="0.28" fontFamily="Georgia,serif" letterSpacing="1.2">SIDUS</text>
     </svg>
   )
 }
@@ -164,6 +172,7 @@ export function dimensoesCarta(size) {
  */
 export function CartaTarot({ carta, size = 110, virada = false, animarFlip = false, className, style }) {
   const [imgOk, setImgOk] = useState(true)
+  const versoId = useId().replace(/:/g, '')
   if (!carta) return null
   if (animarFlip) ensureFlipCss()
 
@@ -182,6 +191,7 @@ export function CartaTarot({ carta, size = 110, virada = false, animarFlip = fal
     flexShrink: 0,
     display: 'inline-block',
     verticalAlign: 'top',
+    background: virada ? '#0d0722' : '#12082a',
     boxShadow: virada ? '0 4px 16px rgba(223,183,108,0.22)' : '0 4px 24px rgba(223,183,108,0.2)',
     ...style,
   }
@@ -204,32 +214,39 @@ export function CartaTarot({ carta, size = 110, virada = false, animarFlip = fal
 
   const renderFace = () => {
     if (virada) {
-      if (!showImg) return <VersoSVG w={w} h={h} />
       return (
+        <div style={{ position: 'relative', width: '100%', height: '100%', background: '#0d0722' }}>
+          <VersoSVG w={w} h={h} idSuffix={versoId} />
+          {showImg && (
+            <img
+              src={src}
+              alt="Verso"
+              width={w}
+              height={h}
+              loading="eager"
+              decoding="async"
+              onError={() => setImgOk(false)}
+              style={{ ...imgStyle, position: 'absolute', inset: 0 }}
+            />
+          )}
+        </div>
+      )
+    }
+    if (!showImg) return <CartaFallbackSVG carta={carta} size={size} />
+    return (
+      <div style={{ position: 'relative', width: '100%', height: '100%', background: '#12082a' }}>
+        <CartaFallbackSVG carta={carta} size={size} />
         <img
           src={src}
-          alt="Verso"
+          alt={carta.nome}
           width={w}
           height={h}
           loading="eager"
           decoding="async"
           onError={() => setImgOk(false)}
-          style={imgStyle}
+          style={{ ...imgStyle, position: 'absolute', inset: 0 }}
         />
-      )
-    }
-    if (!showImg) return <CartaFallbackSVG carta={carta} size={size} />
-    return (
-      <img
-        src={src}
-        alt={carta.nome}
-        width={w}
-        height={h}
-        loading="eager"
-        decoding="async"
-        onError={() => setImgOk(false)}
-        style={imgStyle}
-      />
+      </div>
     )
   }
 
