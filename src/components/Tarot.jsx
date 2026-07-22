@@ -536,13 +536,7 @@ function TarotTipoCard({
     e.currentTarget.style.setProperty('--my', `${e.clientY - r.top}px`)
   }
 
-  const cartasLabel = tipo.id === 'diaria'
-    ? t('tarot.dailyBadge')
-    : (tipo.n > 1 ? t('tarot.cardsPlural', { n: tipo.n }) : t('tarot.cards', { n: tipo.n }))
-
-  const ctaLabel = tipo.id === 'diaria'
-    ? t('tarot.startDaily')
-    : (tipo.n > 1 ? t('tarot.startCards', { n: tipo.n }) : t('tarot.startCard', { n: tipo.n }))
+  const ctaLabel = t('tarot.startDaily')
 
   const statusBadge = tipo.id === 'diaria' ? (
     <div className={`tarot-tipo-card__badge ${diariaAtiva ? 'tarot-tipo-card__badge--warn' : 'tarot-tipo-card__badge--ok'}`}>
@@ -567,7 +561,6 @@ function TarotTipoCard({
           <div className="tarot-tipo-card__info">
             <div className="tarot-tipo-card__nome">{tipo.nome}</div>
             <div className="tarot-tipo-card__desc tarot-tipo-card__desc--compact">{tipo.desc}</div>
-            <div className="tarot-tipo-card__cartas-pill">{cartasLabel}</div>
             {prazo && (
               <div className="tarot-tipo-card__prazo">
                 <Clock size={11} className="tarot-tipo-card__prazo-icon" aria-hidden />
@@ -587,7 +580,6 @@ function TarotTipoCard({
   const bodyContent = (
     <>
       <div className="tarot-tipo-card__nome">{tipo.nome}</div>
-      <div className="tarot-tipo-card__cartas-pill">{cartasLabel}</div>
       <div className="tarot-tipo-card__desc">{tipo.desc}</div>
       {prazo && (
         <div className="tarot-tipo-card__prazo">
@@ -607,7 +599,7 @@ function TarotTipoCard({
   return (
     <button
       type="button"
-      className={`tarot-tipo-card${hover ? ' tarot-tipo-card--magic' : ''}${bloqueada ? ' tarot-tipo-card--bloqueada' : ''}`}
+      className={`tarot-tipo-card tarot-tipo-card--desktop${hover ? ' tarot-tipo-card--magic' : ''}${bloqueada ? ' tarot-tipo-card--bloqueada' : ''}`}
       onClick={() => onSeleccionar(tipo)}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
@@ -619,7 +611,7 @@ function TarotTipoCard({
       <div className="tarot-tipo-card__arte">
         <TarotTipoArte
           tipoId={tipo.id}
-          size={cols === 3 ? 108 : 118}
+          size={88}
           hovered={hover}
         />
       </div>
@@ -647,7 +639,7 @@ function TelaSeleccionar({ tipos, onSeleccionar, isPremium, gratisEsgotada, rest
   }, [])
 
   return (
-    <div className="tarot-seleccionar-page">
+    <div className={`tarot-seleccionar-page${isMobileLayout ? '' : ' tarot-seleccionar-page--desktop-fit'}`}>
       <div className="tarot-seleccionar-centro">
       {onVoltar && (
         <button type="button" onClick={onVoltar} style={{ background:'none', border:'none', color:CORES.dourado, cursor:'pointer', marginBottom:12, fontSize:13 }}>
@@ -665,7 +657,7 @@ function TelaSeleccionar({ tipos, onSeleccionar, isPremium, gratisEsgotada, rest
         <p className="tarot-mobile-list-hint">{t('tarot.gamesCount', { count: tipos.length })}</p>
       )}
       {!isPremium && (
-        <div style={{background:'rgba(223,183,108,0.07)',border:`1px solid rgba(223,183,108,0.25)`,borderRadius:10,padding:'8px 14px',marginBottom:18,display:'flex',alignItems:'center',gap:8}}>
+        <div className="tarot-free-banner" style={{background:'rgba(223,183,108,0.07)',border:`1px solid rgba(223,183,108,0.25)`,borderRadius:10,padding:'8px 14px',marginBottom:18,display:'flex',alignItems:'center',gap:8}}>
           <span style={{fontSize:16}}>✦</span>
           <span style={{fontSize:12,color:CORES.brancoMuted}}>
             {gratisEsgotada
@@ -674,7 +666,7 @@ function TelaSeleccionar({ tipos, onSeleccionar, isPremium, gratisEsgotada, rest
           </span>
         </div>
       )}
-      <div className={`tarot-tipo-grid tarot-tipo-grid--cols-${cols}${isMobileLayout ? ' tarot-tipo-grid--mobile' : ''}`}>
+      <div className={`tarot-tipo-grid tarot-tipo-grid--cols-${cols}${isMobileLayout ? ' tarot-tipo-grid--mobile' : ' tarot-tipo-grid--desktop-compact'}`}>
         {tipos.map((tipo) => (
           <TarotTipoCard
             key={tipo.id}

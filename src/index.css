@@ -3647,17 +3647,7 @@ html.sidus-no-ads .google-auto-placed {
 }
 
 .tarot-tipo-card:not(.tarot-tipo-card--mobile) .tarot-tipo-card__cartas-pill {
-  display: inline-block;
-  width: fit-content;
-  margin: 0 0 8px;
-  padding: 2px 10px;
-  border-radius: 20px;
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  color: #1a1008;
-  background: linear-gradient(135deg, rgba(232, 196, 120, 0.95), rgba(201, 150, 75, 0.88));
-  border: 1px solid rgba(223, 183, 108, 0.45);
+  display: none;
 }
 
 .tarot-tipo-card--magic .tarot-tipo-card__cta {
@@ -3673,6 +3663,140 @@ html.sidus-no-ads .google-auto-placed {
   .tarot-seleccionar-page {
     padding-left: 24px;
     padding-right: 24px;
+  }
+
+  .tarot-seleccionar-page--desktop-fit {
+    min-height: calc(100svh - 58px);
+    max-height: calc(100svh - 58px);
+    overflow: hidden;
+    padding: 10px 24px 16px;
+    box-sizing: border-box;
+  }
+
+  .tarot-seleccionar-page--desktop-fit .tarot-seleccionar-centro {
+    max-width: 900px;
+    height: 100%;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .tarot-seleccionar-page--desktop-fit .tarot-seleccionar-hero {
+    flex-shrink: 0;
+    padding: 10px 16px;
+    margin-bottom: 8px;
+  }
+
+  .tarot-seleccionar-page--desktop-fit .tarot-seleccionar-hero__title {
+    font-size: 1.15rem;
+    margin-bottom: 4px;
+  }
+
+  .tarot-seleccionar-page--desktop-fit .tarot-seleccionar-hero__lead {
+    font-size: 12px;
+    line-height: 1.35;
+  }
+
+  .tarot-seleccionar-page--desktop-fit .tarot-free-banner {
+    flex-shrink: 0;
+    margin-bottom: 8px;
+    padding: 6px 12px;
+  }
+
+  .tarot-tipo-grid--desktop-compact {
+    flex: 1;
+    min-height: 0;
+    gap: 10px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    align-items: stretch;
+    justify-items: center;
+  }
+
+  .tarot-tipo-card--desktop {
+    max-width: 220px;
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    padding: 10px 10px 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    border-radius: 14px;
+  }
+
+  .tarot-tipo-card--desktop .tarot-tipo-card__arte {
+    margin-bottom: 6px;
+    flex-shrink: 0;
+  }
+
+  .tarot-tipo-card--desktop .tarot-tipo-arte {
+    width: 88px;
+    height: 88px;
+    border-radius: 12px;
+  }
+
+  .tarot-tipo-card--desktop .tarot-tipo-card__body {
+    width: 100%;
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .tarot-tipo-card--desktop .tarot-tipo-card__nome {
+    font-size: 12px;
+    line-height: 1.25;
+    margin-bottom: 4px;
+    width: 100%;
+  }
+
+  .tarot-tipo-card--desktop .tarot-tipo-card__desc {
+    font-size: 11px;
+    line-height: 1.35;
+    margin-bottom: 4px;
+    width: 100%;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .tarot-tipo-card--desktop .tarot-tipo-card__prazo {
+    font-size: 10px;
+    margin-bottom: 2px;
+    justify-content: center;
+  }
+
+  .tarot-tipo-card--desktop .tarot-tipo-card__foco {
+    max-height: 0;
+    opacity: 0;
+    margin: 0;
+    overflow: hidden;
+  }
+
+  .tarot-tipo-card--desktop.tarot-tipo-card--magic .tarot-tipo-card__foco {
+    max-height: 2.8rem;
+    opacity: 1;
+    margin-top: 4px;
+    font-size: 10px;
+  }
+
+  .tarot-tipo-card--desktop .tarot-tipo-card__badge {
+    font-size: 9px;
+    margin-top: 2px;
+  }
+
+  .tarot-tipo-card--desktop .tarot-tipo-card__cta {
+    margin-top: auto;
+    padding: 5px 12px;
+    font-size: 10px;
+    line-height: 1.2;
+  }
+
+  .tarot-tipo-card--desktop.tarot-tipo-card--magic {
+    transform: translateY(-3px);
   }
 }
 
