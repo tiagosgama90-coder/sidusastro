@@ -530,13 +530,22 @@ function TarotTipoCard({
     e.currentTarget.style.setProperty('--my', `${e.clientY - r.top}px`)
   }
 
-  const ctaLabel = tipo.id === 'diaria'
-    ? t('tarot.startDaily')
-    : (tipo.n > 1 ? t('tarot.startCards', { n: tipo.n }) : t('tarot.startCard', { n: tipo.n }))
+  const cartasLabel = tipo.id === 'diaria'
+    ? t('tarot.dailyBadge')
+    : (tipo.n > 1 ? t('tarot.cardsPlural', { n: tipo.n }) : t('tarot.cards', { n: tipo.n }))
+
+  const ctaLabel = isMobile
+    ? t('tarot.startShort')
+    : (tipo.id === 'diaria'
+      ? t('tarot.startDaily')
+      : (tipo.n > 1 ? t('tarot.startCards', { n: tipo.n }) : t('tarot.startCard', { n: tipo.n })))
 
   const bodyContent = (
     <>
       <div className="tarot-tipo-card__nome">{tipo.nome}</div>
+      {isMobile && (
+        <div className="tarot-tipo-card__cartas-pill">{cartasLabel}</div>
+      )}
       <div className="tarot-tipo-card__desc">{tipo.desc}</div>
       {prazo && (
         <div className="tarot-tipo-card__prazo">
@@ -587,7 +596,7 @@ function TarotTipoCard({
           aria-expanded={expanded}
         >
           <div className="tarot-tipo-card__arte">
-            <TarotTipoArte tipoId={tipo.id} size={108} hovered={expanded || hover} />
+            <TarotTipoArte tipoId={tipo.id} size={92} hovered={expanded || hover} />
           </div>
           <div className="tarot-tipo-card__body">{bodyContent}</div>
         </button>
@@ -652,11 +661,16 @@ function TelaSeleccionar({ tipos, onSeleccionar, isPremium, gratisEsgotada, rest
           {t('common.back')}
         </button>
       )}
-      <div className="tarot-seleccionar-hero">
+      <div className={`tarot-seleccionar-hero${isMobileLayout ? ' tarot-seleccionar-hero--compact' : ''}`}>
         <div className="tarot-seleccionar-hero__tag">{t('tarot.title')}</div>
         <h2 className="tarot-seleccionar-hero__title">{t('tarot.subtitle')}</h2>
-        <p className="tarot-seleccionar-hero__lead">{t('tarot.desc')}</p>
+        {!isMobileLayout && (
+          <p className="tarot-seleccionar-hero__lead">{t('tarot.desc')}</p>
+        )}
       </div>
+      {isMobileLayout && (
+        <p className="tarot-mobile-swipe-hint">{t('tarot.swipeGames')}</p>
+      )}
       {!isPremium && (
         <div style={{background:'rgba(223,183,108,0.07)',border:`1px solid rgba(223,183,108,0.25)`,borderRadius:10,padding:'8px 14px',marginBottom:18,display:'flex',alignItems:'center',gap:8}}>
           <span style={{fontSize:16}}>✦</span>

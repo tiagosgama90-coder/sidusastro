@@ -625,6 +625,8 @@ export default {
     startCard: "Iniciar ({n} carta)",
     startCards: "Iniciar ({n} cartas)",
     startDaily: "Iniciar lectura",
+    startShort: "Iniciar",
+    swipeGames: "Desliza para ver los 9 juegos ✦",
     questionLabel: "¿Cuál es tu pregunta? (opcional)",
     questionPlaceholder: "Escribe tu pregunta al Universo...",
     shuffleReveal: "✦ Barajar y revelar",
