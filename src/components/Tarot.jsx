@@ -590,7 +590,7 @@ function TarotMobileCarousel({ children, total }) {
               style={{
                 zIndex: total - abs,
                 '--slide-offset': offset,
-                transform: `translate(-50%, calc(-50% + ${translateY}px)) scale(${scale}) rotateX(${offset * -2.8}deg)`,
+                transform: `translate(-50%, calc(-50% + ${translateY}px)) translateZ(${-abs * 32}px) scale(${scale}) rotateX(${offset * -3}deg)`,
                 opacity,
               }}
               onClick={!isActive ? () => goTo(i) : undefined}
