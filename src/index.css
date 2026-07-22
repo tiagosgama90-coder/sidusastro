@@ -3201,9 +3201,6 @@ html.sidus-no-ads .google-auto-placed {
 
   .tarot-tipo-grid--mobile {
     gap: 10px;
-    max-width: 420px;
-    margin-left: auto;
-    margin-right: auto;
   }
 
   .tarot-tipo-card {
@@ -3650,8 +3647,11 @@ html.sidus-no-ads .google-auto-placed {
 
   .tarot-tipo-grid--mobile {
     width: 100%;
+    max-width: none;
+    margin: 0;
     display: flex;
     flex-direction: row;
+    flex-wrap: nowrap;
     align-items: stretch;
     gap: 12px;
     padding: 0 16px;
