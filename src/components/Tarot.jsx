@@ -11,8 +11,8 @@ import { PRECO_TAROT, precoTarotVitrine, precoPremiumVitrine, formatPrecoEuro } 
 import { sortearCartas, getCartaById, MAJOR_ARCANA } from '../lib/tarot/deck.js'
 import { sortearLenormand, LENORMAND_VERSO } from '../lib/tarot/lenormand.js'
 import { interpretarLeitura } from '../lib/tarot/interpretacao.js'
-import { CartaTarot, dimensoesCarta } from './CartaTarot.jsx'
-import { imagemCartaUrl } from '../lib/tarot/images.js'
+import { CartaTarot, dimensoesCarta, VersoSVG } from './CartaTarot.jsx'
+import { imagemCartaUrl, imagemVersoUrl } from '../lib/tarot/images.js'
 import {
   leituraDiariaAtiva, podeFazerLeituraDiaria, msAteProximaDiaria,
   formatarTempoRestante, registarLeituraDiaria,
@@ -188,6 +188,13 @@ export function EcraTarot({ mapaNatal, isPremium, userId, leiturasTarotUsadas = 
   }, [])
 
   useEffect(() => {
+    ;[imagemVersoUrl('tarot'), imagemVersoUrl('lenormand')].forEach((src) => {
+      const img = new Image()
+      img.src = src
+    })
+  }, [])
+
+  useEffect(() => {
     if (tarotCreditoPago || consumirCreditoTarotPago()) {
       setLeituraPaga(true)
     }
@@ -356,7 +363,6 @@ export function EcraTarot({ mapaNatal, isPremium, userId, leiturasTarotUsadas = 
     <TelaEmbaralhar
       t={t}
       numCartas={cartasNoBaralho(tipoId)}
-      cartaVerso={tipoId === 'cigano' ? LENORMAND_VERSO : MAJOR_ARCANA[0]}
     />
   )
 
@@ -601,80 +607,146 @@ function TelaPergunta({ tipo, pergunta, setPergunta, onVoltar, podeLer, leituraP
   )
 }
 
-function TelaEmbaralhar({ t, numCartas = BARALHO_TAROT_TOTAL, cartaVerso = MAJOR_ARCANA[0] }) {
+function CartaVersoEmbaralhar({ size, layer, pile }) {
+  const { w, h } = dimensoesCarta(size)
+  const offset = layer * 2.4
+  return (
+    <div
+      style={{
+        position: 'absolute',
+        top: offset,
+        left: offset,
+        width: w,
+        height: h,
+        borderRadius: 10,
+        overflow: 'hidden',
+        zIndex: layer + 1,
+        background: '#0d0722',
+        boxShadow: layer >= 3
+          ? '0 8px 22px rgba(0,0,0,0.5), 0 0 0 1px rgba(223,183,108,0.28)'
+          : '0 4px 10px rgba(0,0,0,0.35), 0 0 0 1px rgba(223,183,108,0.16)',
+      }}
+    >
+      <VersoSVG w={w} h={h} idSuffix={`${pile}-${layer}`} />
+    </div>
+  )
+}
+
+function TelaEmbaralhar({ t, numCartas = BARALHO_TAROT_TOTAL }) {
   const CARTA = useTamanhoCartas()
   const cardSize = tamanhoCartaEmbaralhar(CARTA.embaralhar, numCartas)
   const { w: cardW, h: cardH } = dimensoesCarta(cardSize)
-  const visualCount = Math.min(numCartas, BARALHO_VISUAL_MAX)
-  const offsetY = 2.4
-  const offsetX = 2
-  const stackDepthY = Math.round((visualCount - 1) * offsetY)
-  const stackDepthX = Math.round((visualCount - 1) * offsetX)
-  const layers = Array.from({ length: visualCount })
-  const versoCarta = cartaVerso?.tipo === 'lenormand' ? LENORMAND_VERSO : cartaVerso
+  const pileLayers = 4
+  const pileDepth = Math.round((pileLayers - 1) * 2.4)
+  const stageW = cardW * 2 + 72
+  const stageH = cardH + pileDepth + 36
 
   return (
-    <div style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',minHeight:'50vh',padding:20,gap:16,overflow:'visible'}}>
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '50vh', padding: 20, gap: 18 }}>
       <style>{`
-        @keyframes shuffleRock {
-          0%, 100% { transform: rotate(-3deg) translateY(0); }
-          50% { transform: rotate(3deg) translateY(-5px); }
+        @keyframes tarotShuffleLeft {
+          0%, 100% { transform: translateX(0) rotate(-3deg); }
+          35% { transform: translateX(42px) rotate(5deg) translateY(-8px); }
+          65% { transform: translateX(18px) rotate(-2deg) translateY(3px); }
         }
-        @keyframes pulseFloat { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
-        @keyframes sparkle {
-          0%,100% { opacity: 0.35; transform: scale(0.8); }
-          50% { opacity: 1; transform: scale(1.1); }
+        @keyframes tarotShuffleRight {
+          0%, 100% { transform: translateX(0) rotate(3deg); }
+          35% { transform: translateX(-42px) rotate(-5deg) translateY(8px); }
+          65% { transform: translateX(-18px) rotate(2deg) translateY(-3px); }
+        }
+        @keyframes tarotShuffleGlow {
+          0%, 100% { opacity: 0.25; transform: scale(0.92); }
+          50% { opacity: 0.7; transform: scale(1); }
+        }
+        @keyframes tarotShufflePulse {
+          0%, 100% { opacity: 0.45; }
+          50% { opacity: 1; }
         }
       `}</style>
-      <div style={{
-        position:'relative',
-        width: cardW + stackDepthX + 40,
-        height: cardH + stackDepthY + 32,
-        overflow:'visible',
-      }}>
-        {layers.map((_, i) => (
-          <div
-            key={i}
+
+      <div
+        style={{
+          position: 'relative',
+          width: stageW,
+          height: stageH,
+          borderRadius: 20,
+          background: 'radial-gradient(ellipse at center, rgba(139,92,246,0.14) 0%, rgba(11,7,30,0) 68%)',
+        }}
+      >
+        <div
+          aria-hidden
+          style={{
+            position: 'absolute',
+            left: '50%',
+            top: '50%',
+            width: cardW + 24,
+            height: cardH + 24,
+            marginLeft: -(cardW + 24) / 2,
+            marginTop: -(cardH + 24) / 2,
+            borderRadius: '50%',
+            background: 'radial-gradient(circle, rgba(223,183,108,0.22) 0%, transparent 70%)',
+            animation: 'tarotShuffleGlow 1.2s ease-in-out infinite',
+            pointerEvents: 'none',
+          }}
+        />
+
+        <div
+          style={{
+            position: 'absolute',
+            left: 16,
+            top: 12,
+            width: cardW + pileDepth,
+            height: cardH + pileDepth,
+            animation: 'tarotShuffleLeft 1.15s ease-in-out infinite',
+            transformOrigin: 'center bottom',
+          }}
+        >
+          {Array.from({ length: pileLayers }, (_, layer) => (
+            <CartaVersoEmbaralhar key={`l-${layer}`} size={cardSize} layer={layer} pile="left" />
+          ))}
+        </div>
+
+        <div
+          style={{
+            position: 'absolute',
+            right: 16,
+            top: 12,
+            width: cardW + pileDepth,
+            height: cardH + pileDepth,
+            animation: 'tarotShuffleRight 1.15s ease-in-out infinite',
+            transformOrigin: 'center bottom',
+          }}
+        >
+          {Array.from({ length: pileLayers }, (_, layer) => (
+            <CartaVersoEmbaralhar key={`r-${layer}`} size={cardSize} layer={layer} pile="right" />
+          ))}
+        </div>
+
+        {['✦', '·', '✦'].map((mark, i) => (
+          <span
+            key={mark + i}
+            aria-hidden
             style={{
-              position:'absolute',
-              top: 6 + i * offsetY,
-              left: 12 + i * offsetX,
-              transformOrigin: 'center center',
-              zIndex: i + 1,
-              animation: `shuffleRock 0.55s ease-in-out ${i * 0.07}s infinite`,
+              position: 'absolute',
+              left: '50%',
+              top: 18 + i * 10,
+              marginLeft: (i - 1) * 14,
+              color: CORES.dourado,
+              fontSize: i === 1 ? 18 : 12,
+              animation: `tarotShufflePulse 1.1s ease-in-out ${i * 0.18}s infinite`,
+              pointerEvents: 'none',
+              userSelect: 'none',
             }}
           >
-            <CartaTarot
-              carta={versoCarta}
-              size={cardSize}
-              virada
-              style={{
-                boxShadow: i >= visualCount - 2
-                  ? '0 4px 14px rgba(223,183,108,0.35)'
-                  : '0 2px 6px rgba(223,183,108,0.15)',
-              }}
-            />
-          </div>
-        ))}
-        {[0,1,2,3].map((i)=>(
-          <span key={`spark-${i}`} style={{
-            position:'absolute',
-            top: 4 + (i * 18),
-            right: 2 + ((i % 2) * 10),
-            left: i % 2 === 0 ? 2 + (i * 6) : undefined,
-            color: '#DFB76C',
-            fontSize: 12,
-            animation:`sparkle 0.9s ease-in-out ${i*0.15}s infinite`,
-            userSelect: 'none',
-            pointerEvents: 'none',
-            zIndex: visualCount + 2,
-          }}>✦</span>
+            {mark}
+          </span>
         ))}
       </div>
-      <p style={{fontSize:15,color:CORES.brancoMuted,fontStyle:'italic',textAlign:'center',margin:0,animation:'pulseFloat 1.9s ease-in-out infinite'}}>
+
+      <p style={{ fontSize: 15, color: CORES.brancoMuted, fontStyle: 'italic', textAlign: 'center', margin: 0 }}>
         {t('tarot.shuffling')}
       </p>
-      <p style={{fontSize:14,color:CORES.dourado,fontWeight:700,margin:0,letterSpacing:'0.04em'}}>
+      <p style={{ fontSize: 14, color: CORES.dourado, fontWeight: 700, margin: 0, letterSpacing: '0.04em' }}>
         {t('tarot.shufflingCount', { count: numCartas })}
       </p>
     </div>
@@ -686,14 +758,16 @@ function TelaDistribuir({ cartas, posicoes, distribuindo, t, cartaVerso = MAJOR_
   return (
     <div style={{padding:'30px 20px',textAlign:'center',overflow:'visible'}}>
       <style>{`
-        @keyframes deal{from{transform:translateY(-16px) scale(0.97);opacity:0.5}to{transform:translateY(0) scale(1);opacity:1}}
+        @keyframes deal{from{transform:translateY(-12px) scale(0.98);opacity:0.85}to{transform:translateY(0) scale(1);opacity:1}}
       `}</style>
       <p style={{fontSize:13,color:CORES.brancoMuted,marginBottom:20}}>{t('tarot.dealing')}</p>
       <div style={{display:'flex',justifyContent:'center',flexWrap:'wrap',gap:10}}>
         {posicoes.map((pos,i)=>(
-          <div key={i} style={{textAlign:'center',
+          <div key={i} style={{
+            textAlign:'center',
             animation: i<=distribuindo ? 'deal 0.22s ease-out forwards' : 'none',
-            opacity: i<=distribuindo ? 1 : 0.35,
+            opacity: i<=distribuindo ? 1 : 0.72,
+            filter: i<=distribuindo ? 'none' : 'brightness(0.82)',
           }}>
             <CartaTarot carta={cartaVerso} virada size={CARTA.distribuir}/>
             <div style={{fontSize:9,color:CORES.brancoMuted,marginTop:4,width:CARTA.distribuir}}>{pos}</div>
