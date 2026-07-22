@@ -1,5 +1,6 @@
-import { useId, useState } from 'react'
+import { useId, useState, useEffect } from 'react'
 import { imagemCartaUrl, imagemVersoUrl } from '../lib/tarot/images.js'
+import { garantirVersoCarregado, versoEstaPronto } from '../lib/tarot/versoCache.js'
 
 const CORES = {
   dourado: '#DFB76C',
@@ -173,12 +174,24 @@ export function dimensoesCarta(size) {
 export function CartaTarot({ carta, size = 110, virada = false, animarFlip = false, className, style }) {
   const [imgOk, setImgOk] = useState(true)
   const versoId = useId().replace(/:/g, '')
+  const deck = carta?.tipo === 'lenormand' ? 'lenormand' : 'tarot'
+  const [versoReady, setVersoReady] = useState(() => !virada || versoEstaPronto(deck))
+
+  useEffect(() => {
+    if (!virada || !carta) return undefined
+    let cancelled = false
+    garantirVersoCarregado(deck).then((ok) => {
+      if (!cancelled && ok) setVersoReady(true)
+    })
+    return () => { cancelled = true }
+  }, [virada, deck, carta])
+
   if (!carta) return null
   if (animarFlip) ensureFlipCss()
 
   const { w, h } = dimensoesCarta(size)
   const src = virada
-    ? imagemVersoUrl(carta?.tipo === 'lenormand' ? 'lenormand' : 'tarot')
+    ? imagemVersoUrl(deck)
     : imagemCartaUrl(carta)
   const showImg = src && imgOk
   const invertida = carta.invertida && !virada && carta.tipo !== 'lenormand'
@@ -191,7 +204,7 @@ export function CartaTarot({ carta, size = 110, virada = false, animarFlip = fal
     flexShrink: 0,
     display: 'inline-block',
     verticalAlign: 'top',
-    background: virada ? '#0d0722' : '#12082a',
+    background: virada ? '#1a1208' : '#12082a',
     boxShadow: virada ? '0 4px 16px rgba(223,183,108,0.22)' : '0 4px 24px rgba(223,183,108,0.2)',
     ...style,
   }
@@ -215,19 +228,35 @@ export function CartaTarot({ carta, size = 110, virada = false, animarFlip = fal
   const renderFace = () => {
     if (virada) {
       return (
-        <div style={{ position: 'relative', width: '100%', height: '100%', background: '#0d0722' }}>
-          <VersoSVG w={w} h={h} idSuffix={versoId} />
-          {showImg && (
+        <div style={{ position: 'relative', width: '100%', height: '100%', background: '#1a1208' }}>
+          {!versoReady && (
+            <div style={{
+              position: 'absolute',
+              inset: 0,
+              background: 'linear-gradient(145deg, #2a1f0f 0%, #1a1208 55%, #120c06 100%)',
+            }} />
+          )}
+          {showImg ? (
             <img
               src={src}
               alt="Verso"
               width={w}
               height={h}
               loading="eager"
-              decoding="async"
+              decoding="sync"
+              fetchPriority="high"
+              onLoad={() => setVersoReady(true)}
               onError={() => setImgOk(false)}
-              style={{ ...imgStyle, position: 'absolute', inset: 0 }}
+              style={{
+                ...imgStyle,
+                position: 'absolute',
+                inset: 0,
+                opacity: versoReady ? 1 : 0,
+                transition: 'opacity 0.1s ease',
+              }}
             />
+          ) : (
+            <VersoSVG w={w} h={h} idSuffix={versoId} />
           )}
         </div>
       )

@@ -13,7 +13,8 @@ import { sortearLenormand, LENORMAND_VERSO } from '../lib/tarot/lenormand.js'
 import { interpretarLeitura } from '../lib/tarot/interpretacao.js'
 import { CartaTarot, dimensoesCarta } from './CartaTarot.jsx'
 import { TarotTipoArte } from './TarotTipoArte.jsx'
-import { imagemCartaUrl, imagemVersoUrl } from '../lib/tarot/images.js'
+import { imagemCartaUrl } from '../lib/tarot/images.js'
+import { garantirVersoCarregado, precarregarVersos } from '../lib/tarot/versoCache.js'
 import {
   leituraDiariaAtiva, podeFazerLeituraDiaria, msAteProximaDiaria,
   formatarTempoRestante, registarLeituraDiaria,
@@ -187,10 +188,7 @@ export function EcraTarot({ mapaNatal, isPremium, userId, leiturasTarotUsadas = 
   }, [])
 
   useEffect(() => {
-    ;[imagemVersoUrl('tarot'), imagemVersoUrl('lenormand')].forEach((src) => {
-      const img = new Image()
-      img.src = src
-    })
+    precarregarVersos()
   }, [])
 
   useEffect(() => {
@@ -236,7 +234,7 @@ export function EcraTarot({ mapaNatal, isPremium, userId, leiturasTarotUsadas = 
     setFase('pergunta')
   }
 
-  const comecarEmbaralhar = (tipoEscolhidoId = tipoId) => {
+  const comecarEmbaralhar = async (tipoEscolhidoId = tipoId) => {
     if (aIniciarLeitura || embaralhando || distribuindo >= 0) return
     const tipoAtual = TIPOS.find((x) => x.id === tipoEscolhidoId) || tipo
     if (!tipoAtual?.n) return
@@ -250,6 +248,7 @@ export function EcraTarot({ mapaNatal, isPremium, userId, leiturasTarotUsadas = 
       onLeituraGratisUsada?.(n)
       refrescar()
     }
+    await garantirVersoCarregado(tipoEscolhidoId === 'cigano' ? 'lenormand' : 'tarot')
     setEmbaralhando(true)
     agendar(() => {
       const sel = tipoEscolhidoId === 'cigano'
@@ -501,33 +500,88 @@ function InfoHorizonteTemporal({ tipoId, t, inline = false }) {
   )
 }
 
+function TarotTipoCard({
+  tipo, bloqueada, onSeleccionar, t, cols, isPremium, gratisEsgotada,
+  diariaAtiva, userId, lang, precoLeituraFmt,
+}) {
+  const [hover, setHover] = useState(false)
+  const prazo = textoHorizonteTemporal(t, tipo.id, 'prazo')
+  const foco = textoHorizonteTemporal(t, tipo.id, 'foco')
+
+  const moverMagia = (e) => {
+    const r = e.currentTarget.getBoundingClientRect()
+    e.currentTarget.style.setProperty('--mx', `${e.clientX - r.left}px`)
+    e.currentTarget.style.setProperty('--my', `${e.clientY - r.top}px`)
+  }
+
+  return (
+    <button
+      type="button"
+      className={`tarot-tipo-card${hover ? ' tarot-tipo-card--magic' : ''}${bloqueada ? ' tarot-tipo-card--bloqueada' : ''}`}
+      onClick={() => onSeleccionar(tipo)}
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+      onFocus={() => setHover(true)}
+      onBlur={() => setHover(false)}
+      onMouseMove={moverMagia}
+    >
+      <div className="tarot-tipo-card__sparkles" aria-hidden>✦</div>
+      <div className="tarot-tipo-card__arte">
+        <TarotTipoArte tipoId={tipo.id} size={cols === 3 ? 108 : 118} hovered={hover} />
+      </div>
+      <div className="tarot-tipo-card__body">
+        <div className="tarot-tipo-card__nome">{tipo.nome}</div>
+        <div className="tarot-tipo-card__desc">{tipo.desc}</div>
+        {prazo && (
+          <div className="tarot-tipo-card__prazo">
+            <span className="tarot-tipo-card__prazo-label">{t('tarot.timeframeCovers')}</span>
+            {prazo}
+          </div>
+        )}
+        {foco && (
+          <div className="tarot-tipo-card__foco">{foco}</div>
+        )}
+        {tipo.id === 'diaria' ? (
+          <div className={`tarot-tipo-card__badge ${diariaAtiva ? 'tarot-tipo-card__badge--warn' : 'tarot-tipo-card__badge--ok'}`}>
+            {diariaAtiva
+              ? t('tarot.dailyNextIn', { time: formatarTempoRestante(msAteProximaDiaria(userId), lang) })
+              : t('tarot.dailyOnce')}
+          </div>
+        ) : !isPremium && (
+          <div className={`tarot-tipo-card__badge ${gratisEsgotada ? 'tarot-tipo-card__badge--warn' : 'tarot-tipo-card__badge--ok'}`}>
+            {gratisEsgotada ? t('tarot.paidOption', { price: precoLeituraFmt }) : t('tarot.includedFree', { max: MAX_LEITURAS_GRATIS })}
+          </div>
+        )}
+      </div>
+      <div className="tarot-tipo-card__cartas">
+        {tipo.id === 'diaria' ? t('tarot.dailyBadge') : (tipo.n > 1 ? t('tarot.cardsPlural', { n: tipo.n }) : t('tarot.cards', { n: tipo.n }))}
+      </div>
+    </button>
+  )
+}
+
 function TelaSeleccionar({ tipos, onSeleccionar, isPremium, gratisEsgotada, restantes, tick, onVoltar, userId, lang, t, isBrasil = false, precoLeituraFmt = '2,00', vipPrecoFmt = '9,99' }) {
   void tick
   const diariaAtiva = !podeFazerLeituraDiaria(userId)
-  const [cols, setCols] = useState(() => (typeof window !== 'undefined' && window.innerWidth >= 720 ? 3 : 2))
+  const [cols, setCols] = useState(() => (typeof window !== 'undefined' && window.innerWidth >= 900 ? 3 : 2))
   useEffect(() => {
-    const fn = () => setCols(window.innerWidth >= 720 ? 3 : 2)
+    const fn = () => setCols(window.innerWidth >= 900 ? 3 : 2)
     window.addEventListener('resize', fn)
     return () => window.removeEventListener('resize', fn)
   }, [])
 
   return (
-    <div style={{ padding:'20px 20px 110px' }}>
+    <div className="tarot-seleccionar-page">
+      <div className="tarot-seleccionar-centro">
       {onVoltar && (
         <button type="button" onClick={onVoltar} style={{ background:'none', border:'none', color:CORES.dourado, cursor:'pointer', marginBottom:12, fontSize:13 }}>
           {t('common.back')}
         </button>
       )}
-      <div style={{
-        background:'linear-gradient(135deg,rgba(223,183,108,0.14),rgba(109,40,217,0.1))',
-        border:`1px solid rgba(223,183,108,0.35)`, borderRadius:16, padding:'16px 18px', marginBottom:16,
-        boxShadow:'0 8px 32px rgba(0,0,0,0.2)',
-      }}>
-        <div style={{fontSize:10,color:CORES.dourado,textTransform:'uppercase',letterSpacing:'0.14em',marginBottom:6,fontWeight:700}}>
-          {t('tarot.title')}
-        </div>
-        <h2 style={{fontSize:22,fontWeight:700,color:CORES.branco,margin:'0 0 6px',letterSpacing:'0.02em'}}>{t('tarot.subtitle')}</h2>
-        <p style={{fontSize:13,color:CORES.brancoSuave,margin:0,lineHeight:1.5}}>{t('tarot.desc')}</p>
+      <div className="tarot-seleccionar-hero">
+        <div className="tarot-seleccionar-hero__tag">{t('tarot.title')}</div>
+        <h2 className="tarot-seleccionar-hero__title">{t('tarot.subtitle')}</h2>
+        <p className="tarot-seleccionar-hero__lead">{t('tarot.desc')}</p>
       </div>
       {!isPremium && (
         <div style={{background:'rgba(223,183,108,0.07)',border:`1px solid rgba(223,183,108,0.25)`,borderRadius:10,padding:'8px 14px',marginBottom:18,display:'flex',alignItems:'center',gap:8}}>
@@ -539,53 +593,24 @@ function TelaSeleccionar({ tipos, onSeleccionar, isPremium, gratisEsgotada, rest
           </span>
         </div>
       )}
-      <div style={{
-        display:'grid',
-        gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))`,
-        gap: 12,
-      }}>
-        {tipos.map(tipo=>{
-          const bloqueada = tipo.id === 'diaria' && diariaAtiva
-          return (
-          <button key={tipo.id} type="button" onClick={()=>onSeleccionar(tipo)} style={{
-            background: bloqueada
-              ? 'linear-gradient(160deg,rgba(255,255,255,0.02),rgba(0,0,0,0.15))'
-              : 'linear-gradient(160deg,rgba(255,255,255,0.06),rgba(109,40,217,0.08))',
-            border: bloqueada ? '1px solid rgba(239,68,68,0.28)' : '1px solid rgba(223,183,108,0.28)',
-            borderRadius:16,padding:'14px 12px 12px',cursor:'pointer',textAlign:'left',
-            display:'flex',flexDirection:'column',alignItems:'stretch',gap:10,
-            opacity: bloqueada ? 0.82 : 1,
-            boxShadow: bloqueada ? 'none' : '0 6px 24px rgba(0,0,0,0.18)',
-            transition:'transform 0.15s ease, border-color 0.15s ease',
-          }}>
-            <div style={{ display:'flex', justifyContent:'center' }}>
-              <TarotTipoArte tipoId={tipo.id} size={cols === 3 ? 68 : 76} />
-            </div>
-            <div>
-              <div style={{fontSize:13,fontWeight:700,color:CORES.branco,lineHeight:1.25,marginBottom:6}}>{tipo.nome}</div>
-              <div style={{fontSize:12,color:'rgba(255,255,255,0.88)',lineHeight:1.5,fontWeight:500}}>{tipo.desc}</div>
-              <InfoHorizonteTemporal tipoId={tipo.id} t={t} inline />
-              {tipo.id === 'diaria' ? (
-                <div style={{fontSize:10,marginTop:6,color: diariaAtiva ? '#F87171' : '#34D399',fontWeight:600}}>
-                  {diariaAtiva
-                    ? t('tarot.dailyNextIn', { time: formatarTempoRestante(msAteProximaDiaria(userId), lang) })
-                    : t('tarot.dailyOnce')}
-                </div>
-              ) : !isPremium && (
-                <div style={{fontSize:10,marginTop:6,color: gratisEsgotada ? '#F87171' : '#34D399',fontWeight:600}}>
-                  {gratisEsgotada ? t('tarot.paidOption', { price: precoLeituraFmt }) : t('tarot.includedFree', { max: MAX_LEITURAS_GRATIS })}
-                </div>
-              )}
-            </div>
-            <div style={{
-              fontSize:10,color:CORES.dourado,fontWeight:700,textAlign:'center',
-              padding:'5px 8px',borderRadius:8,
-              background:'rgba(223,183,108,0.1)',border:'1px solid rgba(223,183,108,0.22)',
-            }}>
-              {tipo.id === 'diaria' ? t('tarot.dailyBadge') : (tipo.n > 1 ? t('tarot.cardsPlural', { n: tipo.n }) : t('tarot.cards', { n: tipo.n }))}
-            </div>
-          </button>
-        )})}
+      <div className={`tarot-tipo-grid tarot-tipo-grid--cols-${cols}`}>
+        {tipos.map((tipo) => (
+          <TarotTipoCard
+            key={tipo.id}
+            tipo={tipo}
+            bloqueada={tipo.id === 'diaria' && diariaAtiva}
+            onSeleccionar={onSeleccionar}
+            t={t}
+            cols={cols}
+            isPremium={isPremium}
+            gratisEsgotada={gratisEsgotada}
+            diariaAtiva={diariaAtiva}
+            userId={userId}
+            lang={lang}
+            precoLeituraFmt={precoLeituraFmt}
+          />
+        ))}
+      </div>
       </div>
     </div>
   )

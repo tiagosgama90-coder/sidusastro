@@ -59,7 +59,7 @@ import { EnergiaDoDia, TransitoSemanal } from './components/EnergiaDoDia.jsx'
 import { VipPaywallBody } from './components/VipPaywallBody.jsx'
 import { PremiumHomeTeaser } from './components/PremiumHomeTeaser.jsx'
 import { applyRouteSeo } from './lib/routeSeo.js'
-import { ErrorBoundary } from './components/ErrorBoundary.jsx'
+import { MagicCursorTrail } from './components/MagicCursorTrail.jsx'
 import { auth, db, firebaseDisponivel, firebaseReady } from './lib/firebase'
 import { enviarEmailVerificacao, enviarEmailRecuperacaoSenha, traduzirErroEmail } from './lib/authEmail'
 import {
@@ -4423,6 +4423,7 @@ export default function App() {
   return (
     <div className={`sidus-cosmic-shell${!utilizador ? ' sidus-login-shell' : ''}`} style={shellStyle}>
       <LandingCosmicBackground />
+      {isDesktop && utilizador && <MagicCursorTrail />}
       <div className="sidus-cosmic-foreground">
       {!utilizador && isDesktop && <LanguageSwitcher />}
 
