@@ -1,6 +1,6 @@
 import { cert, getApps, initializeApp } from 'firebase-admin/app'
-import { getAuth as getAdminAuthSdk } from 'firebase-admin/auth'
 import { FieldValue, getFirestore as getAdminFirestore } from 'firebase-admin/firestore'
+import { GoogleAuth } from 'google-auth-library'
 import { env } from './env.mjs'
 
 let initialized = false
@@ -129,13 +129,8 @@ export function getFirestore() {
 }
 
 export function getAdminAuth() {
-  if (!ensureInit()) return null
-  try {
-    return getAdminAuthSdk()
-  } catch (e) {
-    console.error('[getAdminAuth]', e?.message)
-    return null
-  }
+  // firebase-admin/auth crasha no Netlify (jose/jwks ESM) — não usar
+  return null
 }
 
 async function verifyIdTokenViaRest(idToken) {
@@ -169,23 +164,47 @@ function firebaseWebApiKey() {
   return env('VITE_FIREBASE_API_KEY') || env('FIREBASE_API_KEY') || env('FIREBASE_WEB_API_KEY')
 }
 
-/** Resolve UID pelo email de login (Auth Admin → Firestore → REST). */
+async function lookupEmailViaServiceAccount(email) {
+  const serviceAccount = prepareServiceAccount(env('FIREBASE_SERVICE_ACCOUNT'))
+  if (!serviceAccount?.project_id) return null
+  try {
+    const auth = new GoogleAuth({
+      credentials: serviceAccount,
+      scopes: ['https://www.googleapis.com/auth/identitytoolkit'],
+    })
+    const client = await auth.getClient()
+    const tokenResponse = await client.getAccessToken()
+    const token = tokenResponse?.token
+    if (!token) return null
+
+    const res = await fetch(
+      `https://identitytoolkit.googleapis.com/v1/projects/${serviceAccount.project_id}/accounts:lookup`,
+      {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email: [email] }),
+      },
+    )
+    if (!res.ok) {
+      const errBody = await res.text().catch(() => '')
+      console.warn('[lookupEmailViaServiceAccount]', res.status, errBody.slice(0, 160))
+      return null
+    }
+    const data = await res.json()
+    return data.users?.[0]?.localId || null
+  } catch (e) {
+    console.warn('[lookupEmailViaServiceAccount]', e?.message)
+    return null
+  }
+}
+
+/** Resolve UID pelo email (Firestore → service account → REST API key). */
 export async function findUidByEmail(email) {
   const normalized = email?.trim()?.toLowerCase()
   if (!normalized) return null
-
-  const auth = getAdminAuth()
-  if (auth) {
-    try {
-      const user = await auth.getUserByEmail(normalized)
-      if (user?.uid) return user.uid
-    } catch (e) {
-      const code = e?.code || e?.errorInfo?.code || ''
-      if (code !== 'auth/user-not-found') {
-        console.warn('[findUidByEmail] admin auth:', e?.message)
-      }
-    }
-  }
 
   const db = getFirestore()
   if (db) {
@@ -196,6 +215,9 @@ export async function findUidByEmail(email) {
       console.warn('[findUidByEmail] firestore:', e?.message)
     }
   }
+
+  const viaSa = await lookupEmailViaServiceAccount(normalized)
+  if (viaSa) return viaSa
 
   const apiKey = firebaseWebApiKey()
   if (!apiKey) return null
@@ -229,55 +251,40 @@ export async function activarPremium(userId, extra = {}) {
   }
 
   const ref = db.collection('users').doc(userId)
-  const updates = {
+  const isRecurring = Boolean(extra.stripeSubscriptionId)
+  const payload = {
     isPremium: true,
     mapaCompleto: true,
     premiumAt: FieldValue.serverTimestamp(),
+    premiumBilling: isRecurring ? 'recurring' : 'lifetime',
   }
 
   if (extra.stripeSubscriptionId) {
-    updates.stripeSubscriptionId = extra.stripeSubscriptionId
-    updates.stripeCustomerId = extra.stripeCustomerId || null
-    updates.premiumBilling = 'recurring'
+    payload.stripeSubscriptionId = extra.stripeSubscriptionId
+    payload.stripeCustomerId = extra.stripeCustomerId || null
   } else {
-    updates.premiumBilling = 'lifetime'
-    updates.premiumUntil = FieldValue.delete()
-    updates.stripeSubscriptionId = FieldValue.delete()
-    if (extra.stripeCustomerId) updates.stripeCustomerId = extra.stripeCustomerId
+    payload.stripeSubscriptionId = FieldValue.delete()
+    payload.premiumUntil = FieldValue.delete()
+    if (extra.stripeCustomerId) payload.stripeCustomerId = extra.stripeCustomerId
   }
 
-  if (extra.stripeCustomerId && !updates.stripeCustomerId) {
-    updates.stripeCustomerId = extra.stripeCustomerId
-  }
-
-  if (extra.premiumSource) {
-    updates.premiumSource = extra.premiumSource
-  }
-
-  if (extra.email) {
-    updates.email = extra.email.trim().toLowerCase()
-  }
+  if (extra.premiumSource) payload.premiumSource = extra.premiumSource
+  if (extra.email) payload.email = extra.email.trim().toLowerCase()
 
   try {
-    const snap = await ref.get()
-    if (snap.exists) {
-      await ref.update(updates)
-    } else {
-      const { premiumUntil, stripeSubscriptionId, ...createFields } = updates
-      await ref.set(createFields)
-    }
+    await ref.set(payload, { merge: true })
 
     const verify = await ref.get()
     const data = verify.data()
-    if (data?.isPremium !== true || data?.mapaCompleto !== true) {
-      console.error('[activarPremium] verificação falhou após escrita', userId, data)
-      return { ok: false, error: 'verify_failed', uid: userId }
+    if (data?.isPremium === true && data?.mapaCompleto === true) {
+      return { ok: true, uid: userId, email: data.email || extra.email || null }
     }
 
-    return { ok: true, uid: userId, email: data.email || extra.email || null }
+    console.error('[activarPremium] verificação falhou após escrita', userId, data)
+    return { ok: false, error: 'verify_failed', uid: userId }
   } catch (e) {
     console.error('[activarPremium] escrita Firestore falhou:', e?.message)
-    return { ok: false, error: e?.message || 'write_failed', uid: userId }
+    return { ok: false, error: 'write_failed', uid: userId }
   }
 }
 
