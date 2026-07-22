@@ -501,11 +501,24 @@ function InfoHorizonteTemporal({ tipoId, t, inline = false }) {
   )
 }
 
+function useMobileTarotLayout() {
+  const [mobile, setMobile] = useState(
+    () => typeof window !== 'undefined' && window.matchMedia('(max-width: 767px)').matches,
+  )
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 767px)')
+    const onChange = () => setMobile(mq.matches)
+    mq.addEventListener('change', onChange)
+    return () => mq.removeEventListener('change', onChange)
+  }, [])
+  return mobile
+}
+
 function TarotTipoCard({
   tipo, bloqueada, onSeleccionar, t, cols, isPremium, gratisEsgotada,
-  diariaAtiva, userId, lang, precoLeituraFmt,
+  diariaAtiva, userId, lang, precoLeituraFmt, isMobileLayout = false,
 }) {
-  const isMobile = cols === 1
+  const isMobile = isMobileLayout
   const [hover, setHover] = useState(false)
   const [expanded, setExpanded] = useState(false)
   const prazo = textoHorizonteTemporal(t, tipo.id, 'prazo')
@@ -532,10 +545,15 @@ function TarotTipoCard({
         </div>
       )}
       {foco && (
-        <div className={`tarot-tipo-card__foco${expanded ? ' tarot-tipo-card__foco--open' : ''}`}>{foco}</div>
+        <div className={`tarot-tipo-card__foco${expanded ? ' tarot-tipo-card__foco--open' : ''}`}>
+          {isMobile && expanded && (
+            <div className="tarot-tipo-card__detail-label">{t('tarot.detailLabel')}</div>
+          )}
+          <p className="tarot-tipo-card__foco-text">{foco}</p>
+        </div>
       )}
       {isMobile && foco && !expanded && (
-        <div className="tarot-tipo-card__reveal-hint">{t('tarot.tapToReveal')}</div>
+        <div className="tarot-tipo-card__reveal-hint">{t('tarot.tapForDetail')}</div>
       )}
       {tipo.id === 'diaria' ? (
         <div className={`tarot-tipo-card__badge ${diariaAtiva ? 'tarot-tipo-card__badge--warn' : 'tarot-tipo-card__badge--ok'}`}>
@@ -618,6 +636,7 @@ function colsFromWidth(w) {
 function TelaSeleccionar({ tipos, onSeleccionar, isPremium, gratisEsgotada, restantes, tick, onVoltar, userId, lang, t, isBrasil = false, precoLeituraFmt = '2,00', vipPrecoFmt = '9,99' }) {
   void tick
   const diariaAtiva = !podeFazerLeituraDiaria(userId)
+  const isMobileLayout = useMobileTarotLayout()
   const [cols, setCols] = useState(() => colsFromWidth(typeof window !== 'undefined' ? window.innerWidth : 900))
   useEffect(() => {
     const fn = () => setCols(colsFromWidth(window.innerWidth))
@@ -648,7 +667,7 @@ function TelaSeleccionar({ tipos, onSeleccionar, isPremium, gratisEsgotada, rest
           </span>
         </div>
       )}
-      <div className={`tarot-tipo-grid tarot-tipo-grid--cols-${cols}${cols === 1 ? ' tarot-tipo-grid--mobile' : ''}`}>
+      <div className={`tarot-tipo-grid tarot-tipo-grid--cols-${cols}${isMobileLayout ? ' tarot-tipo-grid--mobile' : ''}`}>
         {tipos.map((tipo) => (
           <TarotTipoCard
             key={tipo.id}
@@ -657,6 +676,7 @@ function TelaSeleccionar({ tipos, onSeleccionar, isPremium, gratisEsgotada, rest
             onSeleccionar={onSeleccionar}
             t={t}
             cols={cols}
+            isMobileLayout={isMobileLayout}
             isPremium={isPremium}
             gratisEsgotada={gratisEsgotada}
             diariaAtiva={diariaAtiva}

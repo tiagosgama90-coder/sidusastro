@@ -598,6 +598,8 @@ export default {
     "desc": "6 mazzi · lettura personalizzata con la tua carta natale",
     "timeframeListHint": "Ogni lettura parla di un periodo diverso della tua vita - non è il tempo che impieghi a leggere le carte.",
     "tapToReveal": "Tocca per rivelare ✦",
+    "tapForDetail": "Tocca per la descrizione dettagliata ✦",
+    "detailLabel": "Descrizione dettagliata",
     "timeframeCovers": "Questa lettura copre:",
     "timeframeTitle": "Su quale periodo parlano le carte?",
     "timeframeNotDuration": "Non è quanto tempo impieghi per la lettura. È l'intervallo di tempo (passato o futuro) che le carte descrivono nella tua vita.",

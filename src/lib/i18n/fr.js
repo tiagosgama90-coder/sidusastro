@@ -608,6 +608,8 @@ export default {
     desc: "6 jeux · lecture personnalisée avec votre carte natale",
     timeframeListHint: "Chaque tirage parle d'une période différente de votre vie - ce n'est pas le temps pour lire les cartes.",
     tapToReveal: "Toucher pour révéler ✦",
+    tapForDetail: "Toucher pour la description détaillée ✦",
+    detailLabel: "Description détaillée",
     timeframeCovers: "Ce tirage couvre :",
     timeframeTitle: "Sur quelle période parlent les cartes ?",
     timeframeNotDuration: "Ce n'est pas la durée de la lecture. C'est l'intervalle de temps (passé ou futur) que les cartes décrivent dans votre vie.",
