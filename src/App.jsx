@@ -132,6 +132,8 @@ import {
   actualizarSessaoOracle,
   upsertSessaoOracle,
   guardarSessoesOracle,
+  removerSessaoOracle,
+  temRespostaOracle,
   formatarDataSessao,
 } from './lib/oracleHistory.js'
 
@@ -2946,13 +2948,18 @@ function Chat({ mapaNatal, isPremium, userId, oracleRemotas, onOracleUsada, onUp
 
   useEffect(() => {
     if (!mensagens.length) return
+    if (!temRespostaOracle(mensagens)) {
+      removerSessaoOracle(userId, sessaoId)
+      setSessoes(carregarSessoesOracle(userId))
+      return
+    }
     const base = criarSessaoOracle({ mensagens, id: sessaoId, lang })
     const sessao = actualizarSessaoOracle(base, mensagens)
     if (isPremium) {
       upsertSessaoOracle(userId, sessao)
       localStorage.setItem(chaveSessaoActual, sessao.id)
       setSessoes(carregarSessoesOracle(userId))
-    } else if (mensagens.some((m) => m.autor === 'user')) {
+    } else {
       guardarSessoesOracle(userId, [sessao])
       localStorage.setItem(chaveSessaoActual, sessao.id)
       setSessoes([sessao])
