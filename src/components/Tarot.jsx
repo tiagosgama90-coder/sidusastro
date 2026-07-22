@@ -528,7 +528,7 @@ function TarotTipoCard({
     >
       <div className="tarot-tipo-card__sparkles" aria-hidden>✦</div>
       <div className="tarot-tipo-card__arte">
-        <TarotTipoArte tipoId={tipo.id} size={cols === 3 ? 108 : 118} hovered={hover} />
+        <TarotTipoArte tipoId={tipo.id} size={cols === 3 ? 108 : cols === 1 ? 148 : 118} hovered={hover} />
       </div>
       <div className="tarot-tipo-card__body">
         <div className="tarot-tipo-card__nome">{tipo.nome}</div>
@@ -563,12 +563,18 @@ function TarotTipoCard({
   )
 }
 
+function colsFromWidth(w) {
+  if (w >= 900) return 3
+  if (w >= 768) return 2
+  return 1
+}
+
 function TelaSeleccionar({ tipos, onSeleccionar, isPremium, gratisEsgotada, restantes, tick, onVoltar, userId, lang, t, isBrasil = false, precoLeituraFmt = '2,00', vipPrecoFmt = '9,99' }) {
   void tick
   const diariaAtiva = !podeFazerLeituraDiaria(userId)
-  const [cols, setCols] = useState(() => (typeof window !== 'undefined' && window.innerWidth >= 900 ? 3 : 2))
+  const [cols, setCols] = useState(() => colsFromWidth(typeof window !== 'undefined' ? window.innerWidth : 900))
   useEffect(() => {
-    const fn = () => setCols(window.innerWidth >= 900 ? 3 : 2)
+    const fn = () => setCols(colsFromWidth(window.innerWidth))
     window.addEventListener('resize', fn)
     return () => window.removeEventListener('resize', fn)
   }, [])
