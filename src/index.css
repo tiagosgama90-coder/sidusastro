@@ -3666,80 +3666,75 @@ html.sidus-no-ads .google-auto-placed {
   }
 
   .tarot-seleccionar-page--desktop-fit {
-    min-height: calc(100svh - 58px);
-    max-height: calc(100svh - 58px);
-    overflow: hidden;
-    padding: 10px 24px 16px;
+    padding: 8px 24px 28px;
     box-sizing: border-box;
   }
 
   .tarot-seleccionar-page--desktop-fit .tarot-seleccionar-centro {
-    max-width: 900px;
-    height: 100%;
-    min-height: 0;
-    display: flex;
-    flex-direction: column;
+    max-width: 920px;
   }
 
   .tarot-seleccionar-page--desktop-fit .tarot-seleccionar-hero {
-    flex-shrink: 0;
-    padding: 10px 16px;
-    margin-bottom: 8px;
+    padding: 8px 14px;
+    margin-bottom: 6px;
   }
 
-  .tarot-seleccionar-page--desktop-fit .tarot-seleccionar-hero__title {
-    font-size: 1.15rem;
+  .tarot-seleccionar-page--desktop-fit .tarot-seleccionar-hero__tag {
     margin-bottom: 4px;
   }
 
+  .tarot-seleccionar-page--desktop-fit .tarot-seleccionar-hero__title {
+    font-size: 1.1rem;
+    margin-bottom: 2px;
+  }
+
   .tarot-seleccionar-page--desktop-fit .tarot-seleccionar-hero__lead {
-    font-size: 12px;
-    line-height: 1.35;
+    font-size: 11px;
+    line-height: 1.3;
   }
 
   .tarot-seleccionar-page--desktop-fit .tarot-free-banner {
-    flex-shrink: 0;
-    margin-bottom: 8px;
-    padding: 6px 12px;
+    margin-bottom: 6px;
+    padding: 5px 10px;
+    font-size: 11px;
   }
 
   .tarot-tipo-grid--desktop-compact {
-    flex: 1;
-    min-height: 0;
     gap: 10px;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    align-items: stretch;
+    align-items: start;
     justify-items: center;
+    overflow: visible;
   }
 
   .tarot-tipo-card--desktop {
-    max-width: 220px;
+    max-width: 210px;
     width: 100%;
-    height: 100%;
-    min-height: 0;
-    padding: 10px 10px 8px;
+    height: auto;
+    min-height: unset;
+    padding: 9px 9px 7px;
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
     border-radius: 14px;
+    overflow: visible;
   }
 
   .tarot-tipo-card--desktop .tarot-tipo-card__arte {
-    margin-bottom: 6px;
+    margin-bottom: 5px;
     flex-shrink: 0;
   }
 
   .tarot-tipo-card--desktop .tarot-tipo-arte {
-    width: 88px;
-    height: 88px;
+    width: 84px;
+    height: 84px;
     border-radius: 12px;
   }
 
   .tarot-tipo-card--desktop .tarot-tipo-card__body {
     width: 100%;
     flex: 1;
-    min-height: 0;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -3748,14 +3743,14 @@ html.sidus-no-ads .google-auto-placed {
   .tarot-tipo-card--desktop .tarot-tipo-card__nome {
     font-size: 12px;
     line-height: 1.25;
-    margin-bottom: 4px;
+    margin-bottom: 3px;
     width: 100%;
   }
 
   .tarot-tipo-card--desktop .tarot-tipo-card__desc {
     font-size: 11px;
     line-height: 1.35;
-    margin-bottom: 4px;
+    margin-bottom: 3px;
     width: 100%;
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -3774,13 +3769,7 @@ html.sidus-no-ads .google-auto-placed {
     opacity: 0;
     margin: 0;
     overflow: hidden;
-  }
-
-  .tarot-tipo-card--desktop.tarot-tipo-card--magic .tarot-tipo-card__foco {
-    max-height: 2.8rem;
-    opacity: 1;
-    margin-top: 4px;
-    font-size: 10px;
+    transition: max-height 0.25s ease, opacity 0.25s ease, margin 0.25s ease;
   }
 
   .tarot-tipo-card--desktop .tarot-tipo-card__badge {
@@ -3789,7 +3778,7 @@ html.sidus-no-ads .google-auto-placed {
   }
 
   .tarot-tipo-card--desktop .tarot-tipo-card__cta {
-    margin-top: auto;
+    margin-top: 6px;
     padding: 5px 12px;
     font-size: 10px;
     line-height: 1.2;
@@ -3797,6 +3786,27 @@ html.sidus-no-ads .google-auto-placed {
 
   .tarot-tipo-card--desktop.tarot-tipo-card--magic {
     transform: translateY(-3px);
+    z-index: 8;
+    overflow: visible;
+    box-shadow:
+      0 0 20px rgba(223, 183, 108, 0.2),
+      0 12px 28px rgba(0, 0, 0, 0.28);
+  }
+
+  .tarot-tipo-card--desktop.tarot-tipo-card--magic .tarot-tipo-card__desc {
+    display: block;
+    -webkit-line-clamp: unset;
+    overflow: visible;
+    white-space: normal;
+  }
+
+  .tarot-tipo-card--desktop.tarot-tipo-card--magic .tarot-tipo-card__foco {
+    max-height: 12rem;
+    opacity: 1;
+    margin-top: 4px;
+    font-size: 10px;
+    line-height: 1.45;
+    overflow: visible;
   }
 }
 

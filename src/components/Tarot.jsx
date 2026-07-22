@@ -611,7 +611,7 @@ function TarotTipoCard({
       <div className="tarot-tipo-card__arte">
         <TarotTipoArte
           tipoId={tipo.id}
-          size={88}
+          size={84}
           hovered={hover}
         />
       </div>
