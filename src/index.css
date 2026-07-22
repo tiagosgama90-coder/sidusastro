@@ -3850,6 +3850,84 @@ html.sidus-no-ads .google-auto-placed {
   padding-bottom: calc(68px + env(safe-area-inset-bottom, 0px));
 }
 
+/* Home — horóscopo signos grid */
+.home-signos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(72px, 1fr));
+  gap: 8px;
+}
+
+.home-signo-btn {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(223, 183, 108, 0.22);
+  border-radius: 12px;
+  padding: 10px 6px;
+  cursor: pointer;
+  text-align: center;
+  transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease, background 0.22s ease;
+}
+
+.home-signo-btn--selected,
+.home-signo-btn--user {
+  background: linear-gradient(145deg, rgba(139, 92, 246, 0.2), rgba(223, 183, 108, 0.12));
+}
+
+.home-signo-btn--selected {
+  border-color: rgba(139, 92, 246, 0.5);
+}
+
+.home-signo-btn--user {
+  border-color: rgba(223, 183, 108, 0.55);
+  box-shadow: 0 0 12px rgba(223, 183, 108, 0.25);
+}
+
+.home-signo-btn__symbol {
+  font-size: 24px;
+  line-height: 1;
+  margin-bottom: 4px;
+  transition: transform 0.22s ease, filter 0.22s ease;
+}
+
+.home-signo-btn--user .home-signo-btn__symbol {
+  filter: drop-shadow(0 0 6px rgba(223, 183, 108, 0.5));
+}
+
+.home-signo-btn__name {
+  font-size: 9px;
+  font-weight: 600;
+  color: #FFFFFF;
+  line-height: 1.2;
+}
+
+.home-signo-btn--user .home-signo-btn__name {
+  font-weight: 700;
+  color: #DFB76C;
+}
+
+@media (hover: hover) and (pointer: fine) and (min-width: 768px) {
+  .home-signo-btn {
+    position: relative;
+    z-index: 0;
+  }
+
+  .home-signo-btn:hover {
+    transform: scale(1.1);
+    z-index: 2;
+    border-color: rgba(223, 183, 108, 0.65) !important;
+    background: linear-gradient(145deg, rgba(139, 92, 246, 0.28), rgba(223, 183, 108, 0.18)) !important;
+    box-shadow: 0 10px 28px rgba(223, 183, 108, 0.28), 0 0 0 1px rgba(223, 183, 108, 0.2);
+  }
+
+  .home-signo-btn:hover .home-signo-btn__symbol {
+    transform: scale(1.14);
+    filter: drop-shadow(0 0 10px rgba(223, 183, 108, 0.65));
+  }
+
+  .home-signo-btn:hover .home-signo-btn__name {
+    color: #DFB76C;
+  }
+}
+
 /* Home — Para ti hoje */
 .home-para-ti {
   margin-bottom: 16px;

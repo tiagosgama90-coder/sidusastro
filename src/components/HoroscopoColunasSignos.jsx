@@ -64,12 +64,8 @@ export function HoroscopoColunasSignos({
   const showPanel = Boolean(activo)
 
   return (
-    <div style={{ marginTop: 16 }}>
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fill, minmax(72px, 1fr))',
-        gap: 8,
-      }}>
+    <div className="home-signos-wrap" style={{ marginTop: 16 }}>
+      <div className="home-signos-grid">
         {lista.map((h) => {
           const sel = panelSign === h.nome
           const destaque = h.isUser
@@ -78,35 +74,14 @@ export function HoroscopoColunasSignos({
               key={h.nome}
               type="button"
               onClick={() => setPanelSign(h.nome)}
-              style={{
-                background: sel || destaque
-                  ? 'linear-gradient(145deg, rgba(139,92,246,0.2), rgba(223,183,108,0.12))'
-                  : 'rgba(255,255,255,0.03)',
-                border: `1px solid ${destaque ? 'rgba(223,183,108,0.55)' : sel ? 'rgba(139,92,246,0.5)' : CORES.vidroBorda}`,
-                borderRadius: 12,
-                padding: '10px 6px',
-                cursor: 'pointer',
-                textAlign: 'center',
-                transition: 'all 0.25s ease',
-                boxShadow: destaque ? '0 0 12px rgba(223,183,108,0.25)' : 'none',
-              }}
+              className={[
+                'home-signo-btn',
+                destaque ? 'home-signo-btn--user' : '',
+                sel ? 'home-signo-btn--selected' : '',
+              ].filter(Boolean).join(' ')}
             >
-              <div style={{
-                fontSize: 24,
-                lineHeight: 1,
-                marginBottom: 4,
-                filter: destaque ? 'drop-shadow(0 0 6px rgba(223,183,108,0.5))' : 'none',
-              }}>
-                {h.simbolo}
-              </div>
-              <div style={{
-                fontSize: 9,
-                fontWeight: destaque ? 700 : 600,
-                color: destaque ? CORES.dourado : CORES.branco,
-                lineHeight: 1.2,
-              }}>
-                {h.nome}
-              </div>
+              <div className="home-signo-btn__symbol">{h.simbolo}</div>
+              <div className="home-signo-btn__name">{h.nome}</div>
             </button>
           )
         })}
