@@ -53,6 +53,27 @@ const CORES = {
   brancoMuted:'rgba(255,255,255,0.55)', vidroBorda:'rgba(223,183,108,0.22)',
 }
 
+function PaginaFerramenta({ className = '', children }) {
+  return (
+    <div className={`ferramenta-page${className ? ` ${className}` : ''}`}>
+      {children}
+    </div>
+  )
+}
+
+function TituloPagina({ children }) {
+  return <h1 className="sidus-page-title">{children}</h1>
+}
+
+function CabecalhoFerramenta({ titulo, children }) {
+  return (
+    <header style={{ marginBottom: 20 }}>
+      <TituloPagina>{titulo}</TituloPagina>
+      {children}
+    </header>
+  )
+}
+
 export function BussolaCosmica({ mapaNatal, planetasNatal, onVoltar }) {
   const { lang, t, ts, tp, tpo, th } = useLanguage()
   const agora = new Date()
@@ -80,18 +101,17 @@ export function BussolaCosmica({ mapaNatal, planetasNatal, onVoltar }) {
   }, [agora])
 
   return (
-    <div style={{padding:'20px 20px 110px'}}>
+    <PaginaFerramenta>
       <BotaoVoltar onVoltar={onVoltar} t={t} />
 
-      <div style={{marginBottom:20}}>
-        <h2 style={{fontSize:20,fontWeight:700,color:CORES.dourado,margin:'0 0 4px'}}>{t('ferramentasPremium.bussola.title')}</h2>
+      <CabecalhoFerramenta titulo={t('ferramentasPremium.bussola.title')}>
         <p style={{fontSize:13,color:CORES.brancoMuted,margin:'0 0 8px'}}>
           {t('ferramentasPremium.bussola.subtitle')}
         </p>
         <p style={{fontSize:11,color:CORES.brancoMuted,margin:0,lineHeight:1.5}}>
           {t('ferramentasPremium.bussola.methodology')}
         </p>
-      </div>
+      </CabecalhoFerramenta>
 
       <div style={{marginBottom:20}}>
         <div style={{fontSize:12,color:CORES.brancoMuted,marginBottom:8}}>
@@ -258,7 +278,7 @@ export function BussolaCosmica({ mapaNatal, planetasNatal, onVoltar }) {
           {t('ferramentasPremium.bussola.motor', { motor: dados.motor })}
         </p>
       )}
-    </div>
+    </PaginaFerramenta>
   )
 }
 
@@ -419,10 +439,11 @@ export function Sinastria({ mapaNatal, dadosUtilizador, isPremium = false, onUpg
   }
 
   return (
-    <div style={{ padding: '20px 20px 110px' }}>
+    <PaginaFerramenta>
       <BotaoVoltar onVoltar={onVoltar} t={t} />
-      <h2 style={{ fontSize: 20, fontWeight: 700, color: CORES.dourado, marginBottom: 4 }}>{t('ferramentasPremium.sinastria.title')}</h2>
-      <p style={{ fontSize: 13, color: CORES.brancoMuted, marginBottom: 8 }}>{t('ferramentasPremium.sinastria.subtitlePro')}</p>
+      <CabecalhoFerramenta titulo={t('ferramentasPremium.sinastria.title')}>
+        <p style={{ fontSize: 13, color: CORES.brancoMuted, margin: 0 }}>{t('ferramentasPremium.sinastria.subtitlePro')}</p>
+      </CabecalhoFerramenta>
 
       {mapaNatal && (
         <div style={{ background: 'rgba(255,255,255,0.04)', border: `1px solid ${CORES.vidroBorda}`, borderRadius: 14, padding: 16, marginBottom: 20 }}>
@@ -590,7 +611,7 @@ export function Sinastria({ mapaNatal, dadosUtilizador, isPremium = false, onUpg
           )}
         </div>
       )}
-    </div>
+    </PaginaFerramenta>
   )
 }
 
@@ -609,10 +630,11 @@ export function Biorritmo({ dados, utilizador, mapaNatal, onVoltar }) {
   const diasVida = diasVidaDesdeNascimento(resolvido)
 
   if (!dadosMinimosFerramentas(resolvido) || diasVida == null || diasVida < 0) return (
-    <div style={{ padding: 24 }}>
+    <PaginaFerramenta>
       <BotaoVoltar onVoltar={onVoltar} t={t} />
-      <p style={{ color: CORES.brancoMuted, textAlign: 'center', lineHeight: 1.6 }}>{t('ferramentasPremium.biorritmo.fillNatal')}</p>
-    </div>
+      <CabecalhoFerramenta titulo={t('ferramentasPremium.biorritmo.title')} />
+      <p style={{ color: CORES.brancoMuted, lineHeight: 1.6 }}>{t('ferramentasPremium.biorritmo.fillNatal')}</p>
+    </PaginaFerramenta>
   )
 
   const fisico = valorBiorritmo(diasVida, CICLO_FISICO)
@@ -632,12 +654,13 @@ export function Biorritmo({ dados, utilizador, mapaNatal, onVoltar }) {
   const locale = dateLocale(lang)
 
   return (
-    <div style={{ padding: '20px 20px 110px' }}>
+    <PaginaFerramenta>
       <BotaoVoltar onVoltar={onVoltar} t={t} />
-      <h2 style={{ fontSize: 20, fontWeight: 700, color: CORES.dourado, marginBottom: 4 }}>{t('ferramentasPremium.biorritmo.title')}</h2>
-      <p style={{ fontSize: 13, color: CORES.brancoMuted, marginBottom: 12 }}>
-        {t('ferramentasPremium.biorritmo.subtitle', { days: diasVidaInt.toLocaleString(locale) })}
-      </p>
+      <CabecalhoFerramenta titulo={t('ferramentasPremium.biorritmo.title')}>
+        <p style={{ fontSize: 13, color: CORES.brancoMuted, margin: 0 }}>
+          {t('ferramentasPremium.biorritmo.subtitle', { days: diasVidaInt.toLocaleString(locale) })}
+        </p>
+      </CabecalhoFerramenta>
       {resolvido?.hora && (
         <p style={{ fontSize: 11, color: CORES.brancoMuted, marginBottom: 16, lineHeight: 1.5 }}>
           {t('ferramentasPremium.biorritmo.precisionNote', { time: resolvido.hora })}
@@ -727,7 +750,7 @@ export function Biorritmo({ dados, utilizador, mapaNatal, onVoltar }) {
           }
         </p>
       </div>
-    </div>
+    </PaginaFerramenta>
   )
 }
 
@@ -852,8 +875,8 @@ function FormularioNumerologia({ t, onCalcular }) {
   const pronto = nome.trim() && dia.length === 2 && mes.length === 2 && ano.length === 4
 
   return (
-    <div style={{ background: 'rgba(255,255,255,0.04)', border: `1px solid ${CORES.vidroBorda}`, borderRadius: 14, padding: 20, maxWidth: 400, margin: '0 auto' }}>
-      <p style={{ fontSize: 13, color: CORES.brancoMuted, textAlign: 'center', marginBottom: 16, lineHeight: 1.6 }}>{t('ferramentasPremium.numerologia.fillForm')}</p>
+    <div className="numerologia-form-card" style={{ background: 'rgba(255,255,255,0.04)', border: `1px solid ${CORES.vidroBorda}`, borderRadius: 14, padding: 20 }}>
+      <p style={{ fontSize: 13, color: CORES.brancoMuted, marginBottom: 16, lineHeight: 1.6 }}>{t('ferramentasPremium.numerologia.fillForm')}</p>
       <label style={{ display: 'block', fontSize: 11, color: CORES.dourado, marginBottom: 6, textTransform: 'uppercase', letterSpacing: '0.06em' }}>{t('ferramentasPremium.numerologia.nameLabel')}</label>
       <input value={nome} onChange={(e) => setNome(e.target.value)} placeholder={t('ferramentasPremium.numerologia.namePlaceholder')} style={{ ...inputStyle, marginBottom: 14 }} />
       <label style={{ display: 'block', fontSize: 11, color: CORES.dourado, marginBottom: 6, textTransform: 'uppercase', letterSpacing: '0.06em' }}>{t('ferramentasPremium.numerologia.dateLabel')}</label>
@@ -884,10 +907,11 @@ export function Numerologia({ dados, utilizador, mapaNatal, onVoltar }) {
   ), [resolvido, lang, mapaNatal])
 
   if (!mapa) return (
-    <div style={{ padding: 24 }}>
+    <PaginaFerramenta className="numerologia-page">
       <BotaoVoltar onVoltar={onVoltar} t={t} />
+      <CabecalhoFerramenta titulo={t('ferramentasPremium.numerologia.title')} />
       <FormularioNumerologia t={t} onCalcular={setManual} />
-    </div>
+    </PaginaFerramenta>
   )
 
   const labelsPilar = {
@@ -902,17 +926,18 @@ export function Numerologia({ dados, utilizador, mapaNatal, onVoltar }) {
   }
 
   return (
-    <div style={{ padding: '20px 20px 110px', maxWidth: 520, margin: '0 auto' }}>
+    <PaginaFerramenta className="numerologia-page">
       <BotaoVoltar onVoltar={onVoltar} t={t} />
-      <h2 style={{ fontSize: 20, fontWeight: 700, color: CORES.dourado, marginBottom: 4 }}>{t('ferramentasPremium.numerologia.title')}</h2>
-      <p style={{ fontSize: 18, fontWeight: 600, color: CORES.branco, marginBottom: 6 }}>{resolvido.nome}</p>
-      <p style={{ fontSize: 12, color: CORES.brancoMuted, lineHeight: 1.65, marginBottom: 16 }}>
-        {t('ferramentasPremium.numerologia.nameSource', { name: resolvido.nome })}
-      </p>
+      <CabecalhoFerramenta titulo={t('ferramentasPremium.numerologia.title')}>
+        <p className="numerologia-nome" style={{ fontSize: 18, fontWeight: 600, color: CORES.branco, margin: '0 0 6px' }}>{resolvido.nome}</p>
+        <p style={{ fontSize: 12, color: CORES.brancoMuted, lineHeight: 1.65, margin: 0 }}>
+          {t('ferramentasPremium.numerologia.nameSource', { name: resolvido.nome })}
+        </p>
+      </CabecalhoFerramenta>
 
       {/* Tabela pitagórica */}
       <SecaoNumerologia titulo={t('ferramentasPremium.numerologia.tablePythagorean')}>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 6 }}>
+        <div className="numerologia-pitagorica" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 6 }}>
           {GRUPOS_PITAGORICOS.map((g) => (
             <div key={g.num} style={{ background: 'rgba(255,255,255,0.03)', borderRadius: 8, padding: '8px 10px', textAlign: 'center' }}>
               <div style={{ fontSize: 18, fontWeight: 700, color: CORES.dourado }}>{g.num}</div>
@@ -928,7 +953,7 @@ export function Numerologia({ dados, utilizador, mapaNatal, onVoltar }) {
       </SecaoNumerologia>
 
       {/* Resumo visual - 3 pilares */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10, marginBottom: 20 }}>
+      <div className="numerologia-pilares" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10, marginBottom: 20 }}>
         {mapa.pilares?.map((p) => (
           <div key={p.id} style={{
             background: 'rgba(255,255,255,0.04)', border: `1px solid ${p.cor}44`,
@@ -983,7 +1008,7 @@ export function Numerologia({ dados, utilizador, mapaNatal, onVoltar }) {
 
       {/* Ritmo actual */}
       <SecaoNumerologia titulo={t('ferramentasPremium.numerologia.sectionRhythm')}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+        <div className="numerologia-ritmo" style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
           {[
             { key: 'anoPessoal', label: t('ferramentasPremium.numerologia.personalYear'), item: mapa.ritmo?.ano, texto: mapa.textos.anoPessoal },
             { key: 'mesPessoal', label: t('ferramentasPremium.numerologia.personalMonth'), item: mapa.ritmo?.mes, texto: mapa.textos.mesPessoal },
@@ -1050,14 +1075,14 @@ export function Numerologia({ dados, utilizador, mapaNatal, onVoltar }) {
           </p>
         </div>
       )}
-    </div>
+    </PaginaFerramenta>
   )
 }
 
 function SecaoNumerologia({ titulo, children }) {
   return (
     <div style={{ marginBottom: 24 }}>
-      <div style={{ fontSize: 11, color: CORES.dourado, textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 700, marginBottom: 12, paddingBottom: 8, borderBottom: `1px solid ${CORES.vidroBorda}` }}>
+      <div className="mapa-sec-label" style={{ fontSize: 11, color: CORES.dourado, textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 700, marginBottom: 12, paddingBottom: 8, borderBottom: `1px solid ${CORES.vidroBorda}` }}>
         {titulo}
       </div>
       {children}
@@ -1293,10 +1318,11 @@ export function InterpretacaoSonhos({ mapaNatal, onVoltar }) {
   const pronto = (sonho.trim().length > 2 || chipsSel.length > 0) && !aInterpretar
 
   return (
-    <div style={{ padding: '20px 20px 110px' }}>
+    <PaginaFerramenta>
       <BotaoVoltar onVoltar={onVoltar} t={t} />
-      <h2 style={{ fontSize: 20, fontWeight: 700, color: CORES.dourado, marginBottom: 4 }}>{t('ferramentasPremium.sonhos.title')}</h2>
-      <p style={{ fontSize: 13, color: CORES.brancoMuted, marginBottom: 20, lineHeight: 1.6 }}>{t('ferramentasPremium.sonhos.subtitle')}</p>
+      <CabecalhoFerramenta titulo={t('ferramentasPremium.sonhos.title')}>
+        <p style={{ fontSize: 13, color: CORES.brancoMuted, margin: 0, lineHeight: 1.6 }}>{t('ferramentasPremium.sonhos.subtitle')}</p>
+      </CabecalhoFerramenta>
 
       <div style={{
         background: 'linear-gradient(160deg, rgba(109,40,217,0.12), rgba(11,7,30,0.6))',
@@ -1425,7 +1451,7 @@ export function InterpretacaoSonhos({ mapaNatal, onVoltar }) {
           ))}
         </div>
       )}
-    </div>
+    </PaginaFerramenta>
   )
 }
 
@@ -1480,14 +1506,13 @@ export function HorasIguais({ onVoltar }) {
       : t('ferramentasPremium.horasIguais.typeNeutral')
 
   return (
-    <div style={{ padding: '20px 20px 110px' }}>
+    <PaginaFerramenta>
       <BotaoVoltar onVoltar={onVoltar} t={t} />
-      <h2 style={{ fontSize: 20, fontWeight: 700, color: CORES.dourado, marginBottom: 4 }}>
-        {t('ferramentasPremium.horasIguais.title')}
-      </h2>
-      <p style={{ fontSize: 13, color: CORES.brancoMuted, marginBottom: 20, lineHeight: 1.6 }}>
-        {t('ferramentasPremium.horasIguais.subtitle')}
-      </p>
+      <CabecalhoFerramenta titulo={t('ferramentasPremium.horasIguais.title')}>
+        <p style={{ fontSize: 13, color: CORES.brancoMuted, margin: 0, lineHeight: 1.6 }}>
+          {t('ferramentasPremium.horasIguais.subtitle')}
+        </p>
+      </CabecalhoFerramenta>
 
       {/* Relógio vivo - portal do momento */}
       <div style={{
@@ -1600,6 +1625,6 @@ export function HorasIguais({ onVoltar }) {
       <p style={{ fontSize: 11, color: CORES.brancoMuted, lineHeight: 1.6, fontStyle: 'italic', margin: '16px 0 0' }}>
         {t('ferramentasPremium.horasIguais.attribution')}
       </p>
-    </div>
+    </PaginaFerramenta>
   )
 }

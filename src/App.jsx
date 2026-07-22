@@ -2451,7 +2451,7 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
   return (
     <div style={layoutConteudo(isDesktop)}>
       <header style={{ marginBottom: 20 }}>
-        <h1 style={{ ...estilos.titulo, textAlign: 'left', fontSize: isDesktop ? 28 : 22 }}>{t('mapa.title')}</h1>
+        <h1 className="sidus-page-title" style={{ textAlign: 'left' }}>{t('mapa.title')}</h1>
         <p style={{ ...estilos.subtitulo, textAlign: 'left', marginBottom: 2 }}>
           {dados.nome} · {formatarData(dados.data)} às {dados.hora}
         </p>
@@ -2782,7 +2782,7 @@ function Ferramentas({ onFerramenta, isDesktop, acessoVip, mapaNatal, onCompleta
   return (
     <div style={layoutConteudo(isDesktop)}>
       <header style={{ marginBottom: 28 }}>
-        <h1 style={{ ...estilos.titulo, textAlign: 'left', fontSize: 22 }}>{t('ferramentas.title')}</h1>
+        <h1 className="sidus-page-title" style={{ textAlign: 'left' }}>{t('ferramentas.title')}</h1>
       </header>
       {semMapa && <FerramentasEmptyState onCompletarMapa={onCompletarMapa} />}
       <div style={{ display: 'flex', flexDirection: 'column', gap: 12, opacity: semMapa ? 0.55 : 1 }}>
