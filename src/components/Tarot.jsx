@@ -514,6 +514,94 @@ function useMobileTarotLayout() {
   return mobile
 }
 
+function TarotMobileCarousel({ children, total }) {
+  const trackRef = useRef(null)
+  const pausedRef = useRef(false)
+  const activeRef = useRef(0)
+  const [active, setActive] = useState(0)
+
+  const setActiveIndex = (index) => {
+    activeRef.current = index
+    setActive(index)
+  }
+
+  useEffect(() => {
+    const track = trackRef.current
+    if (!track || total < 2) return undefined
+
+    const cards = () => track.querySelectorAll('.tarot-tipo-card--compact')
+    const goTo = (index) => {
+      const list = cards()
+      const card = list[index]
+      if (!card) return
+      const left = card.offsetLeft - (track.clientWidth - card.clientWidth) / 2
+      track.scrollTo({ left: Math.max(0, left), behavior: 'smooth' })
+      setActiveIndex(index)
+    }
+
+    const id = setInterval(() => {
+      if (pausedRef.current) return
+      const list = cards()
+      if (!list.length) return
+      goTo((activeRef.current + 1) % list.length)
+    }, 4800)
+
+    return () => clearInterval(id)
+  }, [total])
+
+  useEffect(() => {
+    const track = trackRef.current
+    if (!track) return undefined
+
+    const onScroll = () => {
+      const list = track.querySelectorAll('.tarot-tipo-card--compact')
+      if (!list.length) return
+      const center = track.scrollLeft + track.clientWidth / 2
+      let best = 0
+      let bestDist = Infinity
+      list.forEach((card, i) => {
+        const cardCenter = card.offsetLeft + card.clientWidth / 2
+        const dist = Math.abs(center - cardCenter)
+        if (dist < bestDist) {
+          bestDist = dist
+          best = i
+        }
+      })
+      setActiveIndex(best)
+    }
+
+    track.addEventListener('scroll', onScroll, { passive: true })
+    return () => track.removeEventListener('scroll', onScroll)
+  }, [total])
+
+  const pause = () => { pausedRef.current = true }
+  const resumeLater = () => {
+    window.setTimeout(() => { pausedRef.current = false }, 8000)
+  }
+
+  return (
+    <div className="tarot-tipo-carousel">
+      <div
+        ref={trackRef}
+        className="tarot-tipo-carousel__track"
+        onTouchStart={pause}
+        onTouchEnd={resumeLater}
+        onMouseEnter={pause}
+        onMouseLeave={resumeLater}
+      >
+        {children}
+      </div>
+      {total > 1 && (
+        <div className="tarot-tipo-carousel__dots" aria-hidden>
+          {Array.from({ length: total }, (_, i) => (
+            <span key={i} className={`tarot-tipo-carousel__dot${i === active ? ' tarot-tipo-carousel__dot--active' : ''}`} />
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
 function TarotTipoCard({
   tipo, bloqueada, onSeleccionar, t, cols, isPremium, gratisEsgotada,
   diariaAtiva, userId, lang, precoLeituraFmt, isMobileLayout = false,
@@ -559,6 +647,7 @@ function TarotTipoCard({
         <div className="tarot-tipo-card__compact-row">
           <div className="tarot-tipo-card__info">
             <div className="tarot-tipo-card__nome">{tipo.nome}</div>
+            <div className="tarot-tipo-card__desc tarot-tipo-card__desc--compact">{tipo.desc}</div>
             <div className="tarot-tipo-card__cartas-pill">{cartasLabel}</div>
             {prazo && (
               <div className="tarot-tipo-card__prazo">
@@ -653,7 +742,7 @@ function TelaSeleccionar({ tipos, onSeleccionar, isPremium, gratisEsgotada, rest
         )}
       </div>
       {isMobileLayout && (
-        <p className="tarot-mobile-list-hint">{t('tarot.gamesCount', { count: tipos.length })}</p>
+        <p className="tarot-mobile-swipe-hint">{t('tarot.swipeGames')}</p>
       )}
       {!isPremium && (
         <div style={{background:'rgba(223,183,108,0.07)',border:`1px solid rgba(223,183,108,0.25)`,borderRadius:10,padding:'8px 14px',marginBottom:18,display:'flex',alignItems:'center',gap:8}}>
@@ -665,7 +754,30 @@ function TelaSeleccionar({ tipos, onSeleccionar, isPremium, gratisEsgotada, rest
           </span>
         </div>
       )}
-      <div className={`tarot-tipo-grid tarot-tipo-grid--cols-${cols}${isMobileLayout ? ' tarot-tipo-grid--mobile' : ''}`}>
+      {isMobileLayout ? (
+        <TarotMobileCarousel total={tipos.length}>
+          <div className={`tarot-tipo-grid tarot-tipo-grid--cols-${cols} tarot-tipo-grid--mobile`}>
+            {tipos.map((tipo) => (
+              <TarotTipoCard
+                key={tipo.id}
+                tipo={tipo}
+                bloqueada={tipo.id === 'diaria' && diariaAtiva}
+                onSeleccionar={onSeleccionar}
+                t={t}
+                cols={cols}
+                isMobileLayout={isMobileLayout}
+                isPremium={isPremium}
+                gratisEsgotada={gratisEsgotada}
+                diariaAtiva={diariaAtiva}
+                userId={userId}
+                lang={lang}
+                precoLeituraFmt={precoLeituraFmt}
+              />
+            ))}
+          </div>
+        </TarotMobileCarousel>
+      ) : (
+      <div className={`tarot-tipo-grid tarot-tipo-grid--cols-${cols}`}>
         {tipos.map((tipo) => (
           <TarotTipoCard
             key={tipo.id}
@@ -684,6 +796,7 @@ function TelaSeleccionar({ tipos, onSeleccionar, isPremium, gratisEsgotada, rest
           />
         ))}
       </div>
+      )}
       </div>
     </div>
   )

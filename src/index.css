@@ -3621,20 +3621,65 @@ html.sidus-no-ads .google-auto-placed {
 
   .tarot-seleccionar-centro {
     width: 100%;
-    max-width: 400px;
+    max-width: none;
     margin: 0 auto;
     display: flex;
     flex-direction: column;
     align-items: stretch;
   }
 
+  .tarot-tipo-carousel {
+    width: 100%;
+    margin: 0 -12px;
+    width: calc(100% + 24px);
+  }
+
+  .tarot-tipo-carousel__track {
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    scroll-padding-inline: 16px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding: 4px 0 8px;
+  }
+
+  .tarot-tipo-carousel__track::-webkit-scrollbar {
+    display: none;
+  }
+
   .tarot-tipo-grid--mobile {
     width: 100%;
     display: flex;
-    flex-direction: column;
-    gap: 8px;
-    padding: 0;
+    flex-direction: row;
+    align-items: stretch;
+    gap: 12px;
+    padding: 0 16px;
     overflow: visible;
+  }
+
+  .tarot-tipo-carousel__dots {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    margin-top: 4px;
+    padding-bottom: 4px;
+  }
+
+  .tarot-tipo-carousel__dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: rgba(223, 183, 108, 0.28);
+    transition: background 0.35s ease, transform 0.35s ease, box-shadow 0.35s ease;
+  }
+
+  .tarot-tipo-carousel__dot--active {
+    background: rgba(223, 183, 108, 0.95);
+    transform: scale(1.2);
+    box-shadow: 0 0 8px rgba(223, 183, 108, 0.45);
   }
 
   .tarot-mobile-list-hint,
@@ -3674,7 +3719,9 @@ html.sidus-no-ads .google-auto-placed {
   }
 
   .tarot-tipo-card.tarot-tipo-card--mobile.tarot-tipo-card--compact {
-    width: 100%;
+    flex: 0 0 min(88vw, 320px);
+    scroll-snap-align: center;
+    width: min(88vw, 320px);
     max-width: none;
     margin: 0;
     padding: 10px 12px;
@@ -3683,6 +3730,7 @@ html.sidus-no-ads .google-auto-placed {
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.06), rgba(88, 28, 135, 0.09));
     border-color: rgba(223, 183, 108, 0.32);
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+    transition: transform 0.35s ease, box-shadow 0.35s ease, border-color 0.35s ease;
   }
 
   .tarot-tipo-card--compact::after {
@@ -3710,7 +3758,19 @@ html.sidus-no-ads .google-auto-placed {
     font-size: 13px;
     font-weight: 700;
     line-height: 1.25;
-    margin-bottom: 4px;
+    margin-bottom: 2px;
+    text-align: left;
+  }
+
+  .tarot-tipo-card--compact .tarot-tipo-card__desc--compact {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    font-size: 10px;
+    line-height: 1.4;
+    color: rgba(255, 255, 255, 0.62);
+    margin: 0 0 5px;
     text-align: left;
   }
 
@@ -3742,7 +3802,6 @@ html.sidus-no-ads .google-auto-placed {
     box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
   }
 
-  .tarot-tipo-card--compact .tarot-tipo-card__desc,
   .tarot-tipo-card--compact .tarot-tipo-card__foco,
   .tarot-tipo-card--compact .tarot-tipo-card__reveal-hint,
   .tarot-tipo-card--compact .tarot-tipo-card__cta,
