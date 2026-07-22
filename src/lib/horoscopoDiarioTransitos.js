@@ -1,7 +1,8 @@
 /**
- * Horóscopo diário por signo — trânsitos reais (efemérides) + fase lunar.
+ * Horóscopo diário por signo - trânsitos reais (efemérides) + fase lunar.
  */
 import { SIGNOS_PT } from './i18n/astro.js'
+import { sanitizarHoroscopo } from './textoUtil.js'
 
 const REGENTE_PT = ['Marte', 'Vénus', 'Mercúrio', 'Lua', 'Sol', 'Mercúrio', 'Vénus', 'Marte', 'Júpiter', 'Saturno', 'Saturno', 'Júpiter']
 
@@ -46,15 +47,16 @@ function relacaoSignos(idxA, idxB) {
   return 'neutro'
 }
 
-export function formatarTextoHoroscopo(text) {
-  return String(text || '')
-    .replace(/\s*\(orbe[^)]*\)/gi, '')
-    .replace(/\s*\(orb[^)]*\)/gi, '')
-    .replace(/\s*\(Orbis[^)]*\)/gi, '')
-    .replace(/—/g, '-')
-    .replace(/–/g, '-')
-    .replace(/\s+/g, ' ')
-    .trim()
+export function formatarTextoHoroscopo(text, lang = 'pt') {
+  return sanitizarHoroscopo(
+    String(text || '')
+      .replace(/\s*\(orbe[^)]*\)/gi, '')
+      .replace(/\s*\(orb[^)]*\)/gi, '')
+      .replace(/\s*\(Orbis[^)]*\)/gi, '')
+      .replace(/\s+/g, ' ')
+      .trim(),
+    lang,
+  )
 }
 
 const PLANETA = {
@@ -197,7 +199,7 @@ export function gerarHoroscopoSignoTransito({
   apiText,
 }) {
   if (!ceuAgora?.length) {
-    return formatarTextoHoroscopo(apiText || '')
+    return formatarTextoHoroscopo(apiText || '', lang)
   }
 
   const partes = []
@@ -241,7 +243,7 @@ export function gerarHoroscopoSignoTransito({
   if (apiText && apiText.length > 40 && !apiText.includes('pequenos passos')) {
     texto = `${apiText} ${texto}`
   }
-  return formatarTextoHoroscopo(texto)
+  return formatarTextoHoroscopo(texto, lang)
 }
 
 export function gerarHoroscoposTodosSignos({

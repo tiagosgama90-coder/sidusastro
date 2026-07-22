@@ -81,8 +81,8 @@ const SOL_EXTRA = {
     en: ' Your strength lies in depth and persistence - the world recognises your competence when you stop hiding what you know.',
     es: ' Tu fuerza reside en la profundidad y la persistencia: el mundo reconoce tu competencia cuando dejas de esconder lo que sabes.',
     it: ' La tua forza risiede nella profondità e nella persistenza: il mondo riconosce la tua competenza quando smetti di nascondere ciò che sai.',
-    de: ' Deine Stärke liegt in Tiefe und Ausdauer – die Welt erkennt deine Kompetenz, wenn du aufhörst zu verbergen, was du weißt.',
-    fr: ' Ta force réside dans la profondeur et la persévérance – le monde reconnaît ta compétence quand tu cesses de cacher ce que tu sais.',
+    de: ' Deine Stärke liegt in Tiefe und Ausdauer - die Welt erkennt deine Kompetenz, wenn du aufhörst zu verbergen, was du weißt.',
+    fr: ' Ta force réside dans la profondeur et la persévérance - le monde reconnaît ta compétence quand tu cesses de cacher ce que tu sais.',
   },
   fire: {
     pt: ' Precisas de palco e propósito: sem expressão autêntica, a vitalidade transforma-se em inquietação.',
@@ -161,8 +161,8 @@ export function buildParagrafoLua(lang, { s, signo, casa, essencia, temas }) {
       en: 'Your affective needs ask for recognition - they are not weakness, they are compass.',
       es: 'Tus necesidades afectivas piden reconocimiento: no son debilidad, son brújula.',
       it: 'Le tue necessità affettive chiedono riconoscimento: non sono debolezza, sono bussola.',
-      de: 'Deine affektiven Bedürfnisse verlangen Anerkennung – sie sind keine Schwäche, sondern Kompass.',
-      fr: 'Tes besoins affectifs demandent reconnaissance – ce n\'est pas faiblesse, c\'est boussole.',
+      de: 'Deine affektiven Bedürfnisse verlangen Anerkennung - sie sind keine Schwäche, sondern Kompass.',
+      fr: 'Tes besoins affectifs demandent reconnaissance - ce n\'est pas faiblesse, c\'est boussole.',
     })
   return contentForLang(lang, {
     pt: `A Lua em ${s}${casaEm(lang, casa)} descreve o teu mundo emocional: ${ess}. Sob stress, regresses a estes padrões instintivos. ${casaBit}`,
@@ -213,8 +213,8 @@ export function buildDinamicaBig3(lang, { sol, lua, asc, sn, elemento, modalidad
       en: `Sun (${ss}/${eSolL}) and Moon (${sl}/${eLuaL}) dialogue with tension ${tensao}. They are not internal enemies - they are two languages your psyche speaks.`,
       es: `Sol (${ss}/${eSolL}) y Luna (${sl}/${eLuaL}) dialogan con tensión ${tensao}. No son enemigos internos: son dos idiomas que habla tu psique.`,
       it: `Sole (${ss}/${eSolL}) e Luna (${sl}/${eLuaL}) dialogano con tensione ${tensao}. Non sono nemici interiori: sono due linguaggi che la tua psiche parla.`,
-      de: `Sonne (${ss}/${eSolL}) und Mond (${sl}/${eLuaL}) dialogisieren mit Spannung ${tensao}. Sie sind keine inneren Feinde – zwei Sprachen deiner Psyche.`,
-      fr: `Soleil (${ss}/${eSolL}) et Lune (${sl}/${eLuaL}) dialoguent avec une tension ${tensao}. Ce ne sont pas des ennemis intérieurs – deux langues que parle ta psyché.`,
+      de: `Sonne (${ss}/${eSolL}) und Mond (${sl}/${eLuaL}) dialogisieren mit Spannung ${tensao}. Sie sind keine inneren Feinde - zwei Sprachen deiner Psyche.`,
+      fr: `Soleil (${ss}/${eSolL}) et Lune (${sl}/${eLuaL}) dialoguent avec une tension ${tensao}. Ce ne sont pas des ennemis intérieurs - deux langues que parle ta psyché.`,
     }))
   } else {
     partes.push(contentForLang(lang, {
@@ -231,19 +231,19 @@ export function buildDinamicaBig3(lang, { sol, lua, asc, sn, elemento, modalidad
     partes.push(contentForLang(lang, {
       pt: `O Ascendente em ${sa} (${eAscL}) colore a forma como o mundo lê o teu Sol em ${ss}: por vezes és percebido/a de forma diferente da tua essência íntima - usar isso como recurso, não como contradição.`,
       en: `The Ascendant in ${sa} (${eAscL}) colours how the world reads your Sun in ${ss}: sometimes you are perceived differently from your inner essence - use this as a resource, not a contradiction.`,
-      es: `El Ascendente en ${sa} (${eAscL}) colorea cómo el mundo lee tu Sol en ${ss}: a veces eres percibido/a de forma distinta a tu esencia íntima – úsalo como recurso, no como contradicción.`,
-      it: `L\'Ascendente in ${sa} (${eAscL}) colora come il mondo legge il tuo Sole in ${ss}: a volte sei percepito/a diversamente dalla tua essenza intima – usalo come risorsa, non contraddizione.`,
-      de: `Der Aszendent in ${sa} (${eAscL}) färbt, wie die Welt deine Sonne in ${ss} liest: manchmal wirst du anders wahrgenommen als deine innere Essenz – nutze das als Ressource, nicht als Widerspruch.`,
-      fr: `L\'Ascendant en ${sa} (${eAscL}) colore comment le monde lit ton Soleil en ${ss} : parfois tu es perçu(e) différemment de ton essence intime – utilise cela comme ressource, pas contradiction.`,
+      es: `El Ascendente en ${sa} (${eAscL}) colorea cómo el mundo lee tu Sol en ${ss}: a veces eres percibido/a de forma distinta a tu esencia íntima - úsalo como recurso, no como contradicción.`,
+      it: `L\'Ascendente in ${sa} (${eAscL}) colora come il mondo legge il tuo Sole in ${ss}: a volte sei percepito/a diversamente dalla tua essenza intima - usalo come risorsa, non contraddizione.`,
+      de: `Der Aszendent in ${sa} (${eAscL}) färbt, wie die Welt deine Sonne in ${ss} liest: manchmal wirst du anders wahrgenommen als deine innere Essenz - nutze das als Ressource, nicht als Widerspruch.`,
+      fr: `L\'Ascendant en ${sa} (${eAscL}) colore comment le monde lit ton Soleil en ${ss} : parfois tu es perçu(e) différemment de ton essence intime - utilise cela comme ressource, pas contradiction.`,
     }))
   } else {
     partes.push(contentForLang(lang, {
       pt: 'Ascendente e Sol partilham elemento: a tua imagem pública reforça a identidade - transparência e autenticidade são o teu superpoder social.',
       en: 'Ascendant and Sun share element: your public image reinforces identity - transparency and authenticity are your social superpower.',
-      es: 'Ascendente y Sol comparten elemento: tu imagen pública refuerza la identidad – transparencia y autenticidad son tu superpoder social.',
-      it: 'Ascendente e Sole condividono elemento: la tua immagine pubblica rafforza l\'identità – trasparenza e autenticità sono il tuo superpotere sociale.',
-      de: 'Aszendent und Sonne teilen das Element: dein öffentliches Bild stärkt die Identität – Transparenz und Authentizität sind deine soziale Superkraft.',
-      fr: 'Ascendant et Soleil partagent l\'élément : ton image publique renforce l\'identité – transparence et authenticité sont ton superpouvoir social.',
+      es: 'Ascendente y Sol comparten elemento: tu imagen pública refuerza la identidad - transparencia y autenticidad son tu superpoder social.',
+      it: 'Ascendente e Sole condividono elemento: la tua immagine pubblica rafforza l\'identità - trasparenza e autenticità sono il tuo superpotere sociale.',
+      de: 'Aszendent und Sonne teilen das Element: dein öffentliches Bild stärkt die Identität - Transparenz und Authentizität sind deine soziale Superkraft.',
+      fr: 'Ascendant et Soleil partagent l\'élément : ton image publique renforce l\'identité - transparence et authenticité sont ton superpouvoir social.',
     }))
   }
 
@@ -271,8 +271,8 @@ const MERC_T = {
   en: ({ s, casaEm: ce, ess, foco }) => `Mercury in ${s}${ce} defines how you think, learn and communicate: ${ess || 'your own mental style'}. ${foco ? `The mind activates especially in ${foco}. ` : ''}Write, speak and question from this place - that is where your intelligence flourishes.`,
   es: ({ s, casaEm: ce, ess, foco }) => `Mercurio en ${s}${ce} define cómo piensas, aprendes y comunicas: ${ess || 'un estilo mental propio'}. ${foco ? `La mente se activa especialmente en ${foco}. ` : ''}Escribe, habla y cuestiona desde este lugar: ahí florece tu inteligencia.`,
   it: ({ s, casaEm: ce, ess, foco }) => `Mercurio in ${s}${ce} definisce come pensi, impari e comunichi: ${ess || 'uno stile mentale proprio'}. ${foco ? `La mente si attiva soprattutto in ${foco}. ` : ''}Scrivi, parla e interroga da questo luogo: lì fiorisce la tua intelligenza.`,
-  de: ({ s, casaEm: ce, ess, foco }) => `Merkur in ${s}${ce} definiert, wie du denkst, lernst und kommunizierst: ${ess || 'dein eigener mentaler Stil'}. ${foco ? `Der Geist aktiviert sich besonders in ${foco}. ` : ''}Schreibe, sprich und hinterfrage von hier – dort blüht deine Intelligenz.`,
-  fr: ({ s, casaEm: ce, ess, foco }) => `Mercure en ${s}${ce} définit comment tu penses, apprends et communiques : ${ess || 'ton propre style mental'}. ${foco ? `L\'esprit s\'active surtout dans ${foco}. ` : ''}Écris, parle et questionne depuis ce lieu – c\'est là que ton intelligence fleurit.`,
+  de: ({ s, casaEm: ce, ess, foco }) => `Merkur in ${s}${ce} definiert, wie du denkst, lernst und kommunizierst: ${ess || 'dein eigener mentaler Stil'}. ${foco ? `Der Geist aktiviert sich besonders in ${foco}. ` : ''}Schreibe, sprich und hinterfrage von hier - dort blüht deine Intelligenz.`,
+  fr: ({ s, casaEm: ce, ess, foco }) => `Mercure en ${s}${ce} définit comment tu penses, apprends et communiques : ${ess || 'ton propre style mental'}. ${foco ? `L\'esprit s\'active surtout dans ${foco}. ` : ''}Écris, parle et questionne depuis ce lieu - c\'est là que ton intelligence fleurit.`,
 }
 
 const VEN_T = {
@@ -298,8 +298,8 @@ const JUP_T = {
   en: ({ s, casaEm: ce, ess, foco }) => `Jupiter in ${s}${ce} points where life expands most easily: ${ess || 'optimism and growth'}. ${foco ? `Your philosophical "luck" activates in ${foco}. Trust, but do not exaggerate - Jupiter also inflates.` : ''}`,
   es: ({ s, casaEm: ce, ess, foco }) => `Júpiter en ${s}${ce} señala dónde la vida te expande con más facilidad: ${ess || 'optimismo y crecimiento'}. ${foco ? `Tu «suerte» filosófica se activa en ${foco}. Confía, pero no exageres: Júpiter también infla.` : ''}`,
   it: ({ s, casaEm: ce, ess, foco }) => `Giove in ${s}${ce} indica dove la vita ti espande più facilmente: ${ess || 'ottimismo e crescita'}. ${foco ? `La tua «fortuna» filosofica si attiva in ${foco}. Fidati, ma non esagerare: Giove gonfia anche.` : ''}`,
-  de: ({ s, casaEm: ce, ess, foco }) => `Jupiter in ${s}${ce} zeigt, wo das Leben dich am leichtesten erweitert: ${ess || 'Optimismus und Wachstum'}. ${foco ? `Dein philosophisches «Glück» aktiviert sich in ${foco}. Vertraue, aber übertreibe nicht – Jupiter bläht auch auf.` : ''}`,
-  fr: ({ s, casaEm: ce, ess, foco }) => `Jupiter en ${s}${ce} indique où la vie t\'étend le plus facilement : ${ess || 'optimisme et croissance'}. ${foco ? `Ta «chance» philosophique s\'active dans ${foco}. Fais confiance, mais n\'exagère pas – Jupiter gonfle aussi.` : ''}`,
+  de: ({ s, casaEm: ce, ess, foco }) => `Jupiter in ${s}${ce} zeigt, wo das Leben dich am leichtesten erweitert: ${ess || 'Optimismus und Wachstum'}. ${foco ? `Dein philosophisches «Glück» aktiviert sich in ${foco}. Vertraue, aber übertreibe nicht - Jupiter bläht auch auf.` : ''}`,
+  fr: ({ s, casaEm: ce, ess, foco }) => `Jupiter en ${s}${ce} indique où la vie t\'étend le plus facilement : ${ess || 'optimisme et croissance'}. ${foco ? `Ta «chance» philosophique s\'active dans ${foco}. Fais confiance, mais n\'exagère pas - Jupiter gonfle aussi.` : ''}`,
 }
 
 const SAT_T = {
@@ -307,8 +307,8 @@ const SAT_T = {
   en: ({ s, casaEm: ce, ess, foco }) => `Saturn in ${s}${ce} is your karmic teacher: ${ess || 'lessons of maturity'}. ${foco ? `Here you fear failure until you build solid competence in ${foco}. Discipline in this area becomes your throne.` : ''} Saturn does not punish - it teaches through time.`,
   es: ({ s, casaEm: ce, ess, foco }) => `Saturno en ${s}${ce} es tu maestro kármico: ${ess || 'lecciones de madurez'}. ${foco ? `Aquí temes el fracaso hasta construir competencia sólida en ${foco}. La disciplina en esta área se convierte en tu trono.` : ''} Saturno no castiga: enseña con el tiempo.`,
   it: ({ s, casaEm: ce, ess, foco }) => `Saturno in ${s}${ce} è il tuo maestro karmico: ${ess || 'lezioni di maturità'}. ${foco ? `Qui temi il fallimento finché non costruisci competenza solida in ${foco}. La disciplina in quest\'area diventa il tuo trono.` : ''} Saturno non punisce: insegna col tempo.`,
-  de: ({ s, casaEm: ce, ess, foco }) => `Saturn in ${s}${ce} ist dein karmischer Lehrer: ${ess || 'Lektionen der Reife'}. ${foco ? `Hier fürchtest du Versagen, bis du solide Kompetenz in ${foco} aufbaust. Disziplin in diesem Bereich wird dein Thron.` : ''} Saturn bestraft nicht – er lehrt durch die Zeit.`,
-  fr: ({ s, casaEm: ce, ess, foco }) => `Saturne en ${s}${ce} est ton maître karmique : ${ess || 'leçons de maturité'}. ${foco ? `Ici tu crains l\'échec jusqu\'à construire une compétence solide dans ${foco}. La discipline dans ce domaine devient ton trône.` : ''} Saturne ne punit pas – il enseigne avec le temps.`,
+  de: ({ s, casaEm: ce, ess, foco }) => `Saturn in ${s}${ce} ist dein karmischer Lehrer: ${ess || 'Lektionen der Reife'}. ${foco ? `Hier fürchtest du Versagen, bis du solide Kompetenz in ${foco} aufbaust. Disziplin in diesem Bereich wird dein Thron.` : ''} Saturn bestraft nicht - er lehrt durch die Zeit.`,
+  fr: ({ s, casaEm: ce, ess, foco }) => `Saturne en ${s}${ce} est ton maître karmique : ${ess || 'leçons de maturité'}. ${foco ? `Ici tu crains l\'échec jusqu\'à construire une compétence solide dans ${foco}. La discipline dans ce domaine devient ton trône.` : ''} Saturne ne punit pas - il enseigne avec le temps.`,
 }
 
 export function buildParagrafoMerc(lang, ctx) { return planetaParagrafo(lang, 'Mercury', ctx.s, ctx.signo, ctx.casa, ctx.essencia, ctx.temas, MERC_T) }
@@ -340,8 +340,8 @@ export function buildParagrafoMC(lang, { s, signo, essencia, temas }) {
     en: `The Midheaven in ${s} defines your public vocation and the legacy you seek to leave: ${ess}. The ideal career is not just a job - it is the visible expression of your inner authority. In ${s}, the world recognises you when you ${foco10} with authenticity ${tail}.`,
     es: `El Medio Cielo en ${s} define tu vocación pública y el legado que buscas dejar: ${ess}. La carrera ideal no es solo un empleo: es la expresión visible de tu autoridad interior. En ${s}, el mundo te reconoce cuando ${foco10} con autenticidad ${tail}.`,
     it: `Il Medio Cielo in ${s} definisce la tua vocazione pubblica e l\'eredità che cerchi di lasciare: ${ess}. La carriera ideale non è solo un lavoro: è l\'espressione visibile della tua autorità interiore. In ${s}, il mondo ti riconosce quando ${foco10} con autenticità ${tail}.`,
-    de: `Das Medium Coeli in ${s} definiert deine öffentliche Berufung und das Erbe, das du hinterlassen willst: ${ess}. Der ideale Beruf ist nicht nur ein Job – er ist der sichtbare Ausdruck deiner inneren Autorität. In ${s} erkennt dich die Welt, wenn du ${foco10} mit Authentizität ${tail}.`,
-    fr: `Le Milieu du Ciel en ${s} définit ta vocation publique et l\'héritage que tu cherches à laisser : ${ess}. La carrière idéale n\'est pas qu\'un emploi – c\'est l\'expression visible de ton autorité intérieure. En ${s}, le monde te reconnaît quand tu ${foco10} avec authenticité ${tail}.`,
+    de: `Das Medium Coeli in ${s} definiert deine öffentliche Berufung und das Erbe, das du hinterlassen willst: ${ess}. Der ideale Beruf ist nicht nur ein Job - er ist der sichtbare Ausdruck deiner inneren Autorität. In ${s} erkennt dich die Welt, wenn du ${foco10} mit Authentizität ${tail}.`,
+    fr: `Le Milieu du Ciel en ${s} définit ta vocation publique et l\'héritage que tu cherches à laisser : ${ess}. La carrière idéale n\'est pas qu\'un emploi - c\'est l\'expression visible de ton autorité intérieure. En ${s}, le monde te reconnaît quand tu ${foco10} avec authenticité ${tail}.`,
   })
 }
 
@@ -367,8 +367,8 @@ export function buildParagrafoGeracional(lang, { nome, s, signo, casa, essencia,
       en: `Neptune in ${s}${ce} opens doors to the symbolic, spiritual and creative plane. ${ess} ${foco ? `Dissolution of boundaries operates in ${foco}.` : ''} Beware of illusions - Neptune also clouds; intuition needs grounding.`,
       es: `Neptuno en ${s}${ce} abre puertas al plano simbólico, espiritual y creativo. ${ess} ${foco ? `La disolución de fronteras opera en ${foco}.` : ''} Cuidado con las ilusiones: Neptuno también nubla; la intuición necesita anclaje.`,
       it: `Nettuno in ${s}${ce} apre porte al piano simbolico, spirituale e creativo. ${ess} ${foco ? `La dissoluzione dei confini opera in ${foco}.` : ''} Attenzione alle illusioni: Nettuno anche offusca; l\'intuizione ha bisogno di radicamento.`,
-      de: `Neptun in ${s}${ce} öffnet Türen zur symbolischen, spirituellen und kreativen Ebene. ${ess} ${foco ? `Auflösung von Grenzen wirkt in ${foco}.` : ''} Vorsicht vor Illusionen – Neptun trübt auch; Intuition braucht Verankerung.`,
-      fr: `Neptune en ${s}${ce} ouvre des portes au plan symbolique, spirituel et créatif. ${ess} ${foco ? `La dissolution des frontières opère dans ${foco}.` : ''} Attention aux illusions – Neptune brouille aussi ; l\'intuition a besoin d\'ancrage.`,
+      de: `Neptun in ${s}${ce} öffnet Türen zur symbolischen, spirituellen und kreativen Ebene. ${ess} ${foco ? `Auflösung von Grenzen wirkt in ${foco}.` : ''} Vorsicht vor Illusionen - Neptun trübt auch; Intuition braucht Verankerung.`,
+      fr: `Neptune en ${s}${ce} ouvre des portes au plan symbolique, spirituel et créatif. ${ess} ${foco ? `La dissolution des frontières opère dans ${foco}.` : ''} Attention aux illusions - Neptune brouille aussi ; l\'intuition a besoin d\'ancrage.`,
     },
     Plutão: {
       pt: `Plutão em ${s}${ce} indica onde a transformação profunda é inevitável. ${ess} ${foco ? `Crises regeneradoras concentram-se em ${foco}.` : ''} O que morre aqui renasce com mais poder autêntico.`,
@@ -391,7 +391,7 @@ export function buildParagrafoGeracional(lang, { nome, s, signo, casa, essencia,
       en: `Chiron in ${s}${ce} reveals the wound-wisdom - where you feel inadequate and where, precisely because of that, you can heal others. ${foco ? `Healing passes through ${foco}.` : ''}`,
       es: `Quirón en ${s}${ce} revela la herida-sabiduría: el punto donde sientes inadecuación y donde, precisamente por eso, puedes curar a otros. ${foco ? `La cura pasa por ${foco}.` : ''}`,
       it: `Chirone in ${s}${ce} rivela la ferita-saggezza: il punto dove senti inadeguatezza e dove, proprio per questo, puoi curare gli altri. ${foco ? `La guarigione passa per ${foco}.` : ''}`,
-      de: `Chiron in ${s}${ce} offenbart die Wunde-Weisheit – wo du dich unzulänglich fühlst und wo du gerade deshalb andere heilen kannst. ${foco ? `Heilung geht durch ${foco}.` : ''}`,
+      de: `Chiron in ${s}${ce} offenbart die Wunde-Weisheit - wo du dich unzulänglich fühlst und wo du gerade deshalb andere heilen kannst. ${foco ? `Heilung geht durch ${foco}.` : ''}`,
       fr: `Chiron en ${s}${ce} révèle la blessure-sagesse : l\'endroit où tu te sens inadéquat(e) et où, précisément pour cela, tu peux guérir les autres. ${foco ? `La guérison passe par ${foco}.` : ''}`,
     },
   }
@@ -416,25 +416,25 @@ export function buildResumoGratuito(lang, { sn, mapaNatal, gancho }) {
       pt: `O teu Sol em ${sn(sol)} define o núcleo da tua identidade - mas em que *casa* brilhas? Isso muda tudo.`,
       en: `Your Sun in ${sn(sol)} defines the core of your identity - but in which *house* do you shine? That changes everything.`,
       es: `Tu Sol en ${sn(sol)} define el núcleo de tu identidad, pero ¿en qué *casa* brillas? Eso lo cambia todo.`,
-      it: `Il tuo Sole in ${sn(sol)} definisce il nucleo della tua identità – ma in quale *casa* brilli? Questo cambia tutto.`,
-      de: `Deine Sonne in ${sn(sol)} definiert den Kern deiner Identität – aber in welchem *Haus* strahlst du? Das ändert alles.`,
-      fr: `Ton Soleil en ${sn(sol)} définit le cœur de ton identité – mais dans quelle *maison* brilles-tu ? Cela change tout.`,
+      it: `Il tuo Sole in ${sn(sol)} definisce il nucleo della tua identità - ma in quale *casa* brilli? Questo cambia tutto.`,
+      de: `Deine Sonne in ${sn(sol)} definiert den Kern deiner Identität - aber in welchem *Haus* strahlst du? Das ändert alles.`,
+      fr: `Ton Soleil en ${sn(sol)} définit le cœur de ton identité - mais dans quelle *maison* brilles-tu ? Cela change tout.`,
     }) : null,
     lua: lua ? contentForLang(lang, {
       pt: `A Lua em ${sn(lua)} regula o teu mundo emocional. A casa lunar revela onde buscas segurança - informação reservada ao mapa completo.`,
       en: `The Moon in ${sn(lua)} regulates your emotional world. The lunar house reveals where you seek security - reserved for the full chart.`,
-      es: `La Luna en ${sn(lua)} regula tu mundo emocional. La casa lunar revela dónde buscas seguridad – reservado para la carta completa.`,
-      it: `La Luna in ${sn(lua)} regola il tuo mondo emotivo. La casa lunare rivela dove cerchi sicurezza – riservato alla carta completa.`,
-      de: `Der Mond in ${sn(lua)} reguliert deine emotionale Welt. Das Mondhaus zeigt, wo du Sicherheit suchst – dem vollen Horoskop vorbehalten.`,
-      fr: `La Lune en ${sn(lua)} régule ton monde émotionnel. La maison lunaire révèle où tu cherches la sécurité – réservé à la carte complète.`,
+      es: `La Luna en ${sn(lua)} regula tu mundo emocional. La casa lunar revela dónde buscas seguridad - reservado para la carta completa.`,
+      it: `La Luna in ${sn(lua)} regola il tuo mondo emotivo. La casa lunare rivela dove cerchi sicurezza - riservato alla carta completa.`,
+      de: `Der Mond in ${sn(lua)} reguliert deine emotionale Welt. Das Mondhaus zeigt, wo du Sicherheit suchst - dem vollen Horoskop vorbehalten.`,
+      fr: `La Lune en ${sn(lua)} régule ton monde émotionnel. La maison lunaire révèle où tu cherches la sécurité - réservé à la carte complète.`,
     }) : null,
     asc: asc ? contentForLang(lang, {
-      pt: `Ascendente em ${sn(asc)}: o mundo vê-te através desta lente. A combinação Sol–Lua–Ascendente forma a tua assinatura psíquica única.`,
-      en: `Ascendant in ${sn(asc)}: the world sees you through this lens. The Sun–Moon–Ascendant combination forms your unique psychic signature.`,
-      es: `Ascendente en ${sn(asc)}: el mundo te ve a través de esta lente. La combinación Sol–Luna–Ascendente forma tu firma psíquica única.`,
-      it: `Ascendente in ${sn(asc)}: il mondo ti vede attraverso questa lente. La combinazione Sole–Luna–Ascendente forma la tua firma psichica unica.`,
-      de: `Aszendent in ${sn(asc)}: die Welt sieht dich durch diese Linse. Die Kombination Sonne–Mond–Aszendent bildet deine einzigartige psychische Signatur.`,
-      fr: `Ascendant en ${sn(asc)} : le monde te voit à travers cette lentille. La combinaison Soleil–Lune–Ascendant forme ta signature psychique unique.`,
+      pt: `Ascendente em ${sn(asc)}: o mundo vê-te através desta lente. A combinação Sol-Lua-Ascendente forma a tua assinatura psíquica única.`,
+      en: `Ascendant in ${sn(asc)}: the world sees you through this lens. The Sun-Moon-Ascendant combination forms your unique psychic signature.`,
+      es: `Ascendente en ${sn(asc)}: el mundo te ve a través de esta lente. La combinación Sol-Luna-Ascendente forma tu firma psíquica única.`,
+      it: `Ascendente in ${sn(asc)}: il mondo ti vede attraverso questa lente. La combinazione Sole-Luna-Ascendente forma la tua firma psichica unica.`,
+      de: `Aszendent in ${sn(asc)}: die Welt sieht dich durch diese Linse. Die Kombination Sonne-Mond-Aszendent bildet deine einzigartige psychische Signatur.`,
+      fr: `Ascendant en ${sn(asc)} : le monde te voit à travers cette lentille. La combinaison Soleil-Lune-Ascendant forme ta signature psychique unique.`,
     }) : null,
     gancho,
   }
@@ -449,8 +449,8 @@ export function buildSinteseAspectoTenso(lang, { asp, L }) {
         en: 'There is no dominant square or opposition among major aspects - this does not mean an easy life, but indicates your personal planets dialogue with relative fluidity. Your growth will come from integrating subtle polarities (Sun/Moon/Ascendant) rather than major internal clashes.',
         es: 'No hay cuadratura u oposición dominante en los aspectos principales: no significa vida fácil, pero indica que tus planetas personales dialogan con relativa fluidez. Tu crecimiento vendrá de integrar polaridades sutiles (Sol/Luna/Ascendente) en vez de grandes choques internos.',
         it: 'Non c\'è quadratura o opposizione dominante negli aspetti principali: non significa vita facile, ma indica che i tuoi pianeti personali dialogano con relativa fluidità. La crescita verrà dall\'integrare polarità sottili (Sole/Luna/Ascendente) invece di grandi scontri interni.',
-        de: 'Kein dominantes Quadrat oder Opposition unter den Hauptaspekten – das bedeutet kein leichtes Leben, zeigt aber, dass deine persönlichen Planeten mit relativer Flüssigkeit dialogisieren. Wachstum kommt durch Integration subtiler Polaritäten (Sonne/Mond/Aszendent) statt großer innerer Konflikte.',
-        fr: 'Pas de carré ou opposition dominant parmi les aspects majeurs – cela ne signifie pas une vie facile, mais indique que tes planètes personnelles dialoguent avec une fluidité relative. Ta croissance viendra d\'intégrer des polarités subtiles (Soleil/Lune/Ascendant) plutôt que de grands chocs internes.',
+        de: 'Kein dominantes Quadrat oder Opposition unter den Hauptaspekten - das bedeutet kein leichtes Leben, zeigt aber, dass deine persönlichen Planeten mit relativer Flüssigkeit dialogisieren. Wachstum kommt durch Integration subtiler Polaritäten (Sonne/Mond/Aszendent) statt großer innerer Konflikte.',
+        fr: 'Pas de carré ou opposition dominant parmi les aspects majeurs - cela ne signifie pas une vie facile, mais indique que tes planètes personnelles dialoguent avec une fluidité relative. Ta croissance viendra d\'intégrer des polarités subtiles (Soleil/Lune/Ascendant) plutôt que de grands chocs internes.',
       }),
       conselho: contentForLang(lang, {
         pt: 'Aprofunda autoconhecimento nas áreas de casa que mais te movem emocionalmente.',
@@ -475,8 +475,8 @@ export function buildSinteseAspectoTenso(lang, { asp, L }) {
       en: `The most tense aspect in your chart is the ${nomeAsp} between ${pA} and ${pB}. This tension is not a curse - it is evolutionary fuel. Where you feel "pulled in opposite directions", your greatest competence is born when you learn to negotiate internally instead of choosing one pole and rejecting the other.`,
       es: `El aspecto más tenso de tu carta es la ${nomeAsp} entre ${pA} y ${pB}. Esta tensión no es maldición: es combustible evolutivo. Donde sientes «tirar hacia lados opuestos», nace tu mayor competencia al aprender a negociar internamente en vez de elegir un polo y rechazar el otro.`,
       it: `L\'aspetto più teso della tua carta è la ${nomeAsp} tra ${pA} e ${pB}. Questa tensione non è maledizione: è combustibile evolutivo. Dove senti «tirare verso poli opposti», nasce la tua maggiore competenza quando impari a negoziare internamente invece di scegliere un polo e rifiutare l\'altro.`,
-      de: `Der spannungsreichste Aspekt deines Horoskops ist das ${nomeAsp} zwischen ${pA} und ${pB}. Diese Spannung ist kein Fluch – evolutionärer Treibstoff. Wo du dich «in entgegengesetzte Richtungen gezogen» fühlst, entsteht deine größte Kompetenz, wenn du intern verhandelst statt einen Pol zu wählen und den anderen abzulehnen.`,
-      fr: `L\'aspect le plus tendu de ta carte est la ${nomeAsp} entre ${pA} et ${pB}. Cette tension n\'est pas une malédiction – c\'est du carburant évolutif. Là où tu te sens «tiré(e) vers des pôles opposés», naît ta plus grande compétence quand tu apprends à négocier intérieurement au lieu de choisir un pôle et rejeter l\'autre.`,
+      de: `Der spannungsreichste Aspekt deines Horoskops ist das ${nomeAsp} zwischen ${pA} und ${pB}. Diese Spannung ist kein Fluch - evolutionärer Treibstoff. Wo du dich «in entgegengesetzte Richtungen gezogen» fühlst, entsteht deine größte Kompetenz, wenn du intern verhandelst statt einen Pol zu wählen und den anderen abzulehnen.`,
+      fr: `L\'aspect le plus tendu de ta carte est la ${nomeAsp} entre ${pA} et ${pB}. Cette tension n\'est pas une malédiction - c\'est du carburant évolutif. Là où tu te sens «tiré(e) vers des pôles opposés», naît ta plus grande compétence quand tu apprends à négocier intérieurement au lieu de choisir un pôle et rejeter l\'autre.`,
     }),
     conselho: contentForLang(lang, {
       pt: `Usa a ${nomeAsp} como professor/a: quando surgir conflito entre estas energias, pausa e pergunta «o que cada uma precisa de ser ouvida?». A integração deste aspecto é o teu superpoder de maturidade.`,
@@ -495,8 +495,8 @@ export function buildConselhoFinal(lang, { sol, lua, casaTxt, casaSat, casaJup }
     en: `Saturn in the ${casaSat}th House asks for structured patience - build brick by brick.`,
     es: `Saturno en la Casa ${casaSat} pide paciencia estructurada: construye ladrillo a ladrillo.`,
     it: `Saturno nella Casa ${casaSat} chiede pazienza strutturata: costruisci mattone su mattone.`,
-    de: `Saturn im ${casaSat}. Haus verlangt strukturierte Geduld – Stein für Stein bauen.`,
-    fr: `Saturne en Maison ${casaSat} demande une patience structurée – construis brique par brique.`,
+    de: `Saturn im ${casaSat}. Haus verlangt strukturierte Geduld - Stein für Stein bauen.`,
+    fr: `Saturne en Maison ${casaSat} demande une patience structurée - construis brique par brique.`,
   }) : ''
   const jupBit = casaJup ? contentForLang(lang, {
     pt: `Júpiter na ${casaJup}ª Casa abre portas quando te permites crescer além do conforto conhecido.`,

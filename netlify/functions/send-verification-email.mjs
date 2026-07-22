@@ -29,7 +29,7 @@ async function sendViaFirebaseOob(idToken, continueUrl, apiKey) {
   return { ok: true, email: data.email }
 }
 
-/** Verificação de e-mail — apenas Firebase (sem Resend). */
+/** Verificação de e-mail - apenas Firebase (sem Resend). */
 export default async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { status: 204, headers: corsHeaders })

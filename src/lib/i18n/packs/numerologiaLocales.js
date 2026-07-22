@@ -614,31 +614,31 @@ export const INTERPRETACOES_DE = {
     "3": {
       "resumo": "Dein Name schwingt in Kreativität und Kommunikation.",
       "espiritual": "Der Ausdruck ist Kunst in Bewegung: Worte, Gesten oder Ideen, die erleuchten.",
-      "pratica": "Drücke etwas aus, das du in dir bewahrt hast – schreiben, singen, zeichnen oder laut sprechen.",
+      "pratica": "Drücke etwas aus, das du in dir bewahrt hast - schreiben, singen, zeichnen oder laut sprechen.",
       "reflexao": "Was muss ich sagen oder erschaffen, um mich ganz zu fühlen?"
     },
     "4": {
       "resumo": "Dein Name schwingt in Ordnung und Ausdauer.",
       "espiritual": "Der Ausdruck baut sich mit Geduld auf. Jeder methodische Schritt ist ein stilles Gebet.",
-      "pratica": "Ordne einen physischen oder digitalen Raum – äußere Klarheit spiegelt innere Klarheit.",
+      "pratica": "Ordne einen physischen oder digitalen Raum - äußere Klarheit spiegelt innere Klarheit.",
       "reflexao": "Wo brauche ich mehr Struktur, um selbstbewusst voranzugehen?"
     },
     "5": {
       "resumo": "Dein Name schwingt in Freiheit und Anpassung.",
       "espiritual": "Der Ausdruck verlangt bewusste Bewegung: erkunden, lernen, wandeln ohne die Mitte zu verlieren.",
-      "pratica": "Probiere etwas Neues – einen Weg, eine Idee, ein unerwartetes Gespräch.",
+      "pratica": "Probiere etwas Neues - einen Weg, eine Idee, ein unerwartetes Gespräch.",
       "reflexao": "Stecke ich in Routinen fest, die mir nicht mehr dienen?"
     },
     "6": {
       "resumo": "Dein Name schwingt in Fürsorge und Verantwortung.",
       "espiritual": "Der Ausdruck nährt: Familie, Gemeinschaft, Schönheit im Alltag.",
-      "pratica": "Tu etwas Konkretes für jemanden, den du liebst – ohne Anerkennung zu erwarten.",
+      "pratica": "Tu etwas Konkretes für jemanden, den du liebst - ohne Anerkennung zu erwarten.",
       "reflexao": "Sorge ich für andere und vergesse mich selbst?"
     },
     "7": {
       "resumo": "Dein Name schwingt in Tiefe und Introspektion.",
       "espiritual": "Der Ausdruck sucht unsichtbare Wahrheiten. Stille, Studium und Kontemplation öffnen Weisheit.",
-      "pratica": "Nimm dir 15 bildschirmfreie Minuten – nur Atem und Präsenz.",
+      "pratica": "Nimm dir 15 bildschirmfreie Minuten - nur Atem und Präsenz.",
       "reflexao": "Welche innere Wahrheit bin ich bereit zu hören?"
     },
     "8": {
@@ -650,13 +650,13 @@ export const INTERPRETACOES_DE = {
     "9": {
       "resumo": "Dein Name schwingt in Mitgefühl und Vollendung.",
       "espiritual": "Der Ausdruck schließt Zyklen großzügig. Vergeben und dem Ganzen dienen sind heilige Akte.",
-      "pratica": "Lass etwas los, dessen Zeit vorbei ist – eine Gewohnheit, einen Groll, einen Gegenstand.",
+      "pratica": "Lass etwas los, dessen Zeit vorbei ist - eine Gewohnheit, einen Groll, einen Gegenstand.",
       "reflexao": "Was muss ich abschließen, um Raum für Neues zu schaffen?"
     },
     "11": {
       "resumo": "Meisterzahl der Inspiration und Intuition.",
       "espiritual": "Der Ausdruck ist ein Kanal: Visionen und Sensibilität jenseits des Gewöhnlichen.",
-      "pratica": "Notiere eine Einsicht oder einen Traum – es kann eine wichtige Botschaft sein.",
+      "pratica": "Notiere eine Einsicht oder einen Traum - es kann eine wichtige Botschaft sein.",
       "reflexao": "Vertraue ich meiner Intuition oder unterdrücke ich sie?"
     },
     "22": {
@@ -668,7 +668,7 @@ export const INTERPRETACOES_DE = {
     "33": {
       "resumo": "Meisterzahl der Heilung und Lehre.",
       "espiritual": "Der Ausdruck strahlt bedingungslose Liebe aus. Heilen durch Präsenz ist dein seltenstes Geschenk.",
-      "pratica": "Schenke jemandem volles Zuhören – ohne Ratschläge, nur Präsenz.",
+      "pratica": "Schenke jemandem volles Zuhören - ohne Ratschläge, nur Präsenz.",
       "reflexao": "Wie kann ich mit Liebe dienen, ohne mich zu verlieren?"
     }
   },
@@ -676,7 +676,7 @@ export const INTERPRETACOES_DE = {
     "1": {
       "resumo": "In dir wünschst du dir Autonomie und Anerkennung.",
       "espiritual": "Die Seele (Vokale des Namens) ist dein tiefstes Verlangen: einzigartig sein und ohne Masken.",
-      "pratica": "Tu etwas nur für dich – ohne es in sozialen Medien zu teilen.",
+      "pratica": "Tu etwas nur für dich - ohne es in sozialen Medien zu teilen.",
       "reflexao": "Wann fühle ich mich wirklich wie ich selbst?"
     },
     "2": {
@@ -688,7 +688,7 @@ export const INTERPRETACOES_DE = {
     "3": {
       "resumo": "In dir wünschst du dir Freude und Ausdruck.",
       "espiritual": "Die Seele atmet durch Kreativität. Lachen, Erschaffen und Kommunizieren sind spirituelle Bedürfnisse.",
-      "pratica": "Gönne dir einen Moment reiner Freude – ohne Schuldgefühle.",
+      "pratica": "Gönne dir einen Moment reiner Freude - ohne Schuldgefühle.",
       "reflexao": "Was lässt mich innerlich leicht fühlen?"
     },
     "4": {
@@ -700,7 +700,7 @@ export const INTERPRETACOES_DE = {
     "5": {
       "resumo": "In dir wünschst du dir Freiheit und Neuheit.",
       "espiritual": "Die Seele widersteht Gefängnissen. Abwechslung und Bewegung nähren die Flamme.",
-      "pratica": "Ändere eine kleine Gewohnheit – setz dich woanders hin, hör andere Musik.",
+      "pratica": "Ändere eine kleine Gewohnheit - setz dich woanders hin, hör andere Musik.",
       "reflexao": "Wo fühle ich mich am lebendigsten und freiesten?"
     },
     "6": {
@@ -717,7 +717,7 @@ export const INTERPRETACOES_DE = {
     },
     "8": {
       "resumo": "In dir wünschst du dir Erfolg und Gerechtigkeit.",
-      "espiritual": "Die Seele will konkrete Wirkung. Macht im Einklang mit dem Sinn – nicht Herrschaft.",
+      "espiritual": "Die Seele will konkrete Wirkung. Macht im Einklang mit dem Sinn - nicht Herrschaft.",
       "pratica": "Prüfe ein finanzielles oder berufliches Ziel ehrlich.",
       "reflexao": "Wem dient der Erfolg, den ich anstrebe?"
     },
@@ -824,7 +824,7 @@ export const INTERPRETACOES_DE = {
     "1": {
       "resumo": "Lebensmission: führen und initiieren.",
       "espiritual": "Der Lebensweg (Geburtsdatum) zeigt die zentrale Lektion dieser Inkarnation.",
-      "pratica": "Starte ein Projekt, das du aufgeschoben hast – auch ein kleines.",
+      "pratica": "Starte ein Projekt, das du aufgeschoben hast - auch ein kleines.",
       "reflexao": "Wo habe ich Angst, der Erste zu sein?"
     },
     "2": {
@@ -848,7 +848,7 @@ export const INTERPRETACOES_DE = {
     "5": {
       "resumo": "Lebensmission: erkunden und anpassen.",
       "espiritual": "Bewusster Wandel ist Evolution. Flexibilität ohne das Wesentliche zu verlieren.",
-      "pratica": "Verlasse deine Komfortzone – auch nur ein wenig.",
+      "pratica": "Verlasse deine Komfortzone - auch nur ein wenig.",
       "reflexao": "Fliehe ich vor Routine oder vor Verantwortung?"
     },
     "6": {
@@ -872,7 +872,7 @@ export const INTERPRETACOES_DE = {
     "9": {
       "resumo": "Lebensmission: vollenden und loslassen.",
       "espiritual": "Schließe Zyklen großzügig. Humanität als höchster Ausdruck.",
-      "pratica": "Vergib jemandem – einschließlich dir selbst.",
+      "pratica": "Vergib jemandem - einschließlich dir selbst.",
       "reflexao": "Was muss ich loslassen, um voranzukommen?"
     },
     "11": {

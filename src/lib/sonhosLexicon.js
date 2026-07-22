@@ -1,5 +1,5 @@
 /**
- * Léxico A–Z de símbolos oníricos - base hermenêutica para pesquisa por palavras-chave.
+ * Léxico A-Z de símbolos oníricos - base hermenêutica para pesquisa por palavras-chave.
  */
 import { contentForLang, looksPortuguese } from './i18n/langUtil.js'
 import {
@@ -159,8 +159,8 @@ export function extrairSimbolos(texto, chipsExtra = [], lang = 'pt') {
     en: 'Selected symbol - apply Golden Rule: current conflict, call to change, path of healing.',
     es: 'Símbolo seleccionado: aplicar Regla de Oro: conflicto actual, llamado a conversión, remedio de cura.',
     it: 'Simbolo selezionato: applicare la Regola d\'Oro: conflitto attuale, appello alla conversione, rimedio di guarigione.',
-    de: 'Ausgewähltes Symbol – Goldene Regel anwenden: aktueller Konflikt, Aufruf zur Wandlung, Heilungsweg.',
-    fr: 'Symbole sélectionné – appliquer la Règle d\'Or : conflit actuel, appel à la conversion, remède de guérison.',
+    de: 'Ausgewähltes Symbol - Goldene Regel anwenden: aktueller Konflikt, Aufruf zur Wandlung, Heilungsweg.',
+    fr: 'Symbole sélectionné - appliquer la Règle d\'Or : conflit actuel, appel à la conversion, remède de guérison.',
   })
 
   for (const chip of chipsExtra || []) {

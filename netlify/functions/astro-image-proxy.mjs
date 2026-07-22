@@ -1,4 +1,4 @@
-/** Proxy de imagens externas — sem fallbacks de stock; 404 se falhar. */
+/** Proxy de imagens externas - sem fallbacks de stock; 404 se falhar. */
 
 const BLOCKED_HOSTS = ['unsplash.com', 'placeholder.com', 'placehold.it', 'via.placeholder.com']
 

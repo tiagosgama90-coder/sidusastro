@@ -7,6 +7,7 @@ import { calcularFaseLua } from '../lib/faseLua.js'
 import { dateLocale } from '../lib/i18n/langUtil.js'
 import { HoroscopoColunasSignos } from './HoroscopoColunasSignos.jsx'
 import { normalizeSignoNome } from '../lib/i18n/astro.js'
+import { sanitizarHoroscopo } from '../lib/textoUtil.js'
 
 const CORES = {
   dourado: '#DFB76C',
@@ -55,7 +56,12 @@ export function ConteudoDinamicoSidus({ mapaNatal, ceuAgora = [], aspetos = [], 
     return () => { cancelled = true }
   }, [faseAtual.nome, transitSummary, lang])
 
-  const packHoroscopes = useMemo(() => pack?.horoscopes?.[lang] || {}, [pack, lang])
+  const packHoroscopes = useMemo(() => {
+    const raw = pack?.horoscopes?.[lang] || {}
+    return Object.fromEntries(
+      Object.entries(raw).map(([signo, texto]) => [signo, sanitizarHoroscopo(texto, lang)]),
+    )
+  }, [pack, lang])
 
   return (
     <div style={{ marginBottom: 20 }}>

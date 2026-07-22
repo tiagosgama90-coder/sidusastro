@@ -1,5 +1,5 @@
 /**
- * Fase lunar actual - cálculo via elongação Sol–Lua (efemérides astronomy-engine).
+ * Fase lunar actual - cálculo via elongação Sol-Lua (efemérides astronomy-engine).
  */
 import { Body, Ecliptic, GeoVector, MakeTime } from 'astronomy-engine'
 import { contentForLang } from './i18n/langUtil.js'

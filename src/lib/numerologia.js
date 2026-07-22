@@ -146,7 +146,7 @@ function buildCalculoData(dataISO) {
   }
 }
 
-/** Tabela pitagórica A–Z para referência na UI */
+/** Tabela pitagórica A-Z para referência na UI */
 export const GRUPOS_PITAGORICOS = [
   { num: 1, letras: 'A J S' },
   { num: 2, letras: 'B K T' },
@@ -238,7 +238,7 @@ const SIGNIFICADOS_DE = {
   7: 'Introspektion, Studium und Spiritualität. Stille und Analyse vertiefen Weisheit.',
   8: 'Materielle Verwirklichung, Macht und Gerechtigkeit. Ehrgeiz und Ethik auszubalancieren ist zentral.',
   9: 'Humanitarismus, Abschluss und Mitgefühl. Zyklen großzügig zu schließen öffnet neue Türen.',
-  11: 'Erhabene Intuition und Inspiration. Mission, Bewusstsein zu erheben – Kanal spiritueller Vision.',
+  11: 'Erhabene Intuition und Inspiration. Mission, Bewusstsein zu erheben - Kanal spiritueller Vision.',
   22: 'Baumeister großer Werke. Fähigkeit, Ideale zum kollektiven Nutzen zu materialisieren.',
   33: 'Meister der Mitgefühl und Lehre. Liebender Dienst als höchster Ausdruck des Weges.',
 }
@@ -253,7 +253,7 @@ const SIGNIFICADOS_FR = {
   7: 'Introspection, étude et spiritualité. Le silence et l\'analyse approfondissent la sagesse.',
   8: 'Réalisation matérielle, pouvoir et justice. Équilibrer ambition et éthique est le défi central.',
   9: 'Humanitarisme, achèvement et compassion. Clore les cycles avec générosité ouvre de nouvelles portes.',
-  11: 'Intuition élevée et inspiration. Mission d\'élever les consciences – canal de vision spirituelle.',
+  11: 'Intuition élevée et inspiration. Mission d\'élever les consciences - canal de vision spirituelle.',
   22: 'Bâtisseur de grandes œuvres. Capacité de matérialiser des idéaux au bénéfice collectif.',
   33: 'Maître de la compassion et de l\'enseignement. Service aimant comme expression maximale du chemin.',
 }

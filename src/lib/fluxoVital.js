@@ -164,8 +164,8 @@ function luaNatalTxt(lunar, aspectoLua, lang) {
     en: { high: 'Emotions flow clearly - good for intimate dialogue.', low: 'Heightened sensitivity; protect emotional space.', mid: 'Balance reason and feeling in decisions.' },
     es: { high: 'Las emociones fluyen con claridad: buen momento para diálogo íntimo.', low: 'Sensibilidad amplificada; protege el espacio emocional.', mid: 'Equilibrio entre razón y sentimiento en las decisiones.' },
     it: { high: 'Le emozioni fluiscono con chiarezza: buon momento per dialogo intimo.', low: 'Sensibilità amplificata; proteggi lo spazio emotivo.', mid: 'Equilibrio tra ragione e sentimento nelle decisioni.' },
-    de: { high: 'Emotionen fließen klar – gut für intimen Dialog.', low: 'Erhöhte Sensibilität; schütze den emotionalen Raum.', mid: 'Gleichgewicht zwischen Verstand und Gefühl bei Entscheidungen.' },
-    fr: { high: 'Les émotions coulent avec clarté – bon moment pour un dialogue intime.', low: 'Sensibilité amplifiée ; protège ton espace émotionnel.', mid: 'Équilibre entre raison et sentiment dans les décisions.' },
+    de: { high: 'Emotionen fließen klar - gut für intimen Dialog.', low: 'Erhöhte Sensibilität; schütze den emotionalen Raum.', mid: 'Gleichgewicht zwischen Verstand und Gefühl bei Entscheidungen.' },
+    fr: { high: 'Les émotions coulent avec clarté - bon moment pour un dialogue intime.', low: 'Sensibilité amplifiée ; protège ton espace émotionnel.', mid: 'Équilibre entre raison et sentiment dans les décisions.' },
   }
   const h = harmonia[lang] || harmonia.en
   const nota = aspectoLua.score >= 75 ? h.high : aspectoLua.score <= 45 ? h.low : h.mid

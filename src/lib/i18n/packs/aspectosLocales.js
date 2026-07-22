@@ -13,7 +13,7 @@ export const ASPETO_NUCLEO_ES = {
 }
 
 export const PAR_DINAMICA_ES = {
-  "Sun-Moon": "The identity–emotion axis: who you want to be and what you need to feel whole.",
+  "Sun-Moon": "The identity-emotion axis: who you want to be and what you need to feel whole.",
   "Sun-Saturn": "Will meets limit: inner authority versus fear of failure.",
   "Sun-Jupiter": "Identity expansion: faith in yourself and excess of promises.",
   "Moon-Saturn": "Contained emotion: need for security versus fear of vulnerability.",
@@ -38,7 +38,7 @@ export const ASPETO_NUCLEO_IT = {
 }
 
 export const PAR_DINAMICA_IT = {
-  "Sun-Moon": "The identity–emotion axis: who you want to be and what you need to feel whole.",
+  "Sun-Moon": "The identity-emotion axis: who you want to be and what you need to feel whole.",
   "Sun-Saturn": "Will meets limit: inner authority versus fear of failure.",
   "Sun-Jupiter": "Identity expansion: faith in yourself and excess of promises.",
   "Moon-Saturn": "Contained emotion: need for security versus fear of vulnerability.",
@@ -63,7 +63,7 @@ export const ASPETO_NUCLEO_DE = {
 }
 
 export const PAR_DINAMICA_DE = {
-  "Sun-Moon": "The identity–emotion axis: who you want to be and what you need to feel whole.",
+  "Sun-Moon": "The identity-emotion axis: who you want to be and what you need to feel whole.",
   "Sun-Saturn": "Will meets limit: inner authority versus fear of failure.",
   "Sun-Jupiter": "Identity expansion: faith in yourself and excess of promises.",
   "Moon-Saturn": "Contained emotion: need for security versus fear of vulnerability.",
@@ -88,7 +88,7 @@ export const ASPETO_NUCLEO_FR = {
 }
 
 export const PAR_DINAMICA_FR = {
-  "Sun-Moon": "The identity–emotion axis: who you want to be and what you need to feel whole.",
+  "Sun-Moon": "The identity-emotion axis: who you want to be and what you need to feel whole.",
   "Sun-Saturn": "Will meets limit: inner authority versus fear of failure.",
   "Sun-Jupiter": "Identity expansion: faith in yourself and excess of promises.",
   "Moon-Saturn": "Contained emotion: need for security versus fear of vulnerability.",

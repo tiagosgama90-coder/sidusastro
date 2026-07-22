@@ -96,7 +96,7 @@ export const MATRIZ_SIMBOLOS = [
 ]
 
 export const CAMINHOS_CURA_PT = `
-CAMINHOS DE CURA (escolhe 1–2 concretos na secção 3):
+CAMINHOS DE CURA (escolhe 1-2 concretos na secção 3):
 - Dez minutos de silêncio com a imagem central do sonho; deixa que ela fale sem forçar significado.
 - Escrita livre: "O que neste sonho me pede perdão?" - contigo ou com alguém evocado.
 - Gestão de sombra: nomeia em voz baixa o que temeste no sonho e pergunta "Que parte minha és?"
@@ -107,7 +107,7 @@ CAMINHOS DE CURA (escolhe 1–2 concretos na secção 3):
 `.trim()
 
 export const CAMINHOS_CURA_EN = `
-HEALING PATHS (choose 1–2 concrete ones in section 3):
+HEALING PATHS (choose 1-2 concrete ones in section 3):
 - Ten minutes of silence with the dream's central image; let it speak without forcing meaning.
 - Free writing: "What in this dream asks for forgiveness?" - toward yourself or someone evoked.
 - Shadow work: quietly name what you feared in the dream and ask "Which part of me are you?"

@@ -34,7 +34,7 @@ export function aberturaProfessor(lang, nomeA, nomeB, tema) {
     en: (a, b, t) => `${a}, the stars speak directly to you about **${t}** with ${b}. This is your personal synastry - woven from your exact birth chart crossed with theirs. No generic text: every sentence reflects your sky.\n\n`,
     es: (a, b, t) => `${a}, los astros te hablan directamente sobre **${t}** con ${b}. Esta es tu sinastría personal, tejida a partir de tu carta exacta cruzada con la suya. Nada de texto genérico: cada frase refleja tu cielo.\n\n`,
     it: (a, b, t) => `${a}, le stelle ti parlano direttamente di **${t}** con ${b}. Questa è la tua sinastria personale, tessuta dal tuo tema esatto incrociato con il suo. Niente testo generico: ogni frase riflette il tuo cielo.\n\n`,
-    de: (a, b, t) => `${a}, die Sterne sprechen dich direkt an über **${t}** mit ${b}. Dies ist deine persönliche Synastrie – gewebt aus deinem exakten Horoskop gekreuzt mit dem ihrem/seinem. Kein generischer Text: jeder Satz spiegelt deinen Himmel.\n\n`,
+    de: (a, b, t) => `${a}, die Sterne sprechen dich direkt an über **${t}** mit ${b}. Dies ist deine persönliche Synastrie - gewebt aus deinem exakten Horoskop gekreuzt mit dem ihrem/seinem. Kein generischer Text: jeder Satz spiegelt deinen Himmel.\n\n`,
     fr: (a, b, t) => `${a}, les astres te parlent directement de **${t}** avec ${b}. C'est ta synastrie personnelle, tissée à partir de ta carte exacte croisée avec la sienne. Pas de texte générique : chaque phrase reflète ton ciel.\n\n`,
   }, nomeA, nomeB, tema)
 }
@@ -127,8 +127,8 @@ export function textoAspectoNarrativa(lang, nomeA, nomeB, a, tsAsp, tsSignA, tsS
     en: (na, nb, pA, pB, t, as, sA, sB) => `${na}, when your sky meets ${nb}'s, ${pA} and ${pB} ${t} in a ${as.toLowerCase()} (${sA} · ${sB}). The cosmos is pointing at this thread in your bond - pay attention.`,
     es: (na, nb, pA, pB, t, as, sA, sB) => `${na}, cuando tu cielo encuentra el de ${nb}, ${pA} y ${pB} ${t} en ${as.toLowerCase()} (${sA} · ${sB}). El cosmos señala este hilo en vuestro vínculo: presta atención.`,
     it: (na, nb, pA, pB, t, as, sA, sB) => `${na}, quando il tuo cielo incontra quello di ${nb}, ${pA} e ${pB} ${t} in ${as.toLowerCase()} (${sA} · ${sB}). Il cosmo indica questo filo nel vostro legame: presta attenzione.`,
-    de: (na, nb, pA, pB, t, as, sA, sB) => `${na}, wenn dein Himmel auf den von ${nb} trifft, ${t} ${pA} und ${pB} in einem ${as} (${sA} · ${sB}). Der Kosmos zeigt auf diesen Faden in eurer Verbindung – achte darauf.`,
-    fr: (na, nb, pA, pB, t, as, sA, sB) => `${na}, quand ton ciel rencontre celui de ${nb}, ${pA} et ${pB} ${t} en ${as.toLowerCase()} (${sA} · ${sB}). Le cosmos pointe ce fil dans votre lien – fais attention.`,
+    de: (na, nb, pA, pB, t, as, sA, sB) => `${na}, wenn dein Himmel auf den von ${nb} trifft, ${t} ${pA} und ${pB} in einem ${as} (${sA} · ${sB}). Der Kosmos zeigt auf diesen Faden in eurer Verbindung - achte darauf.`,
+    fr: (na, nb, pA, pB, t, as, sA, sB) => `${na}, quand ton ciel rencontre celui de ${nb}, ${pA} et ${pB} ${t} en ${as.toLowerCase()} (${sA} · ${sB}). Le cosmos pointe ce fil dans votre lien - fais attention.`,
   }, nomeA, nomeB, a.pessoaA, a.pessoaB, tom, asp, tsSignA(a.signoA), tsSignB(a.signoB))
 }
 
@@ -140,8 +140,8 @@ export function textoAspectoComposto(lang, a, tsAsp) {
       en: () => `• **${a.corpoA} ${asp.toLowerCase()} ${a.corpoB}** (${a.signoA} · ${a.signoB}): a natural gift in your relationship - energy flows here with ease, without you having to force it.`,
       es: () => `• **${a.corpoA} ${asp.toLowerCase()} ${a.corpoB}** (${a.signoA} · ${a.signoB}): don natural de vuestra relación: la energía fluye aquí con facilidad, sin forzar.`,
       it: () => `• **${a.corpoA} ${asp.toLowerCase()} ${a.corpoB}** (${a.signoA} · ${a.signoB}): dono naturale della vostra relazione: l'energia fluisce qui con facilità, senza forzare.`,
-      de: () => `• **${a.corpoA} ${asp.toLowerCase()} ${a.corpoB}** (${a.signoA} · ${a.signoB}): natürliches Geschenk eurer Beziehung – Energie fließt hier mühelos, ohne Zwang.`,
-      fr: () => `• **${a.corpoA} ${asp.toLowerCase()} ${a.corpoB}** (${a.signoA} · ${a.signoB}): don naturel de votre relation – l'énergie coule ici avec aisance, sans forcer.`,
+      de: () => `• **${a.corpoA} ${asp.toLowerCase()} ${a.corpoB}** (${a.signoA} · ${a.signoB}): natürliches Geschenk eurer Beziehung - Energie fließt hier mühelos, ohne Zwang.`,
+      fr: () => `• **${a.corpoA} ${asp.toLowerCase()} ${a.corpoB}** (${a.signoA} · ${a.signoB}): don naturel de votre relation - l'énergie coule ici avec aisance, sans forcer.`,
     })
   }
   if (a.tenso) {
@@ -150,8 +150,8 @@ export function textoAspectoComposto(lang, a, tsAsp) {
       en: () => `• **${a.corpoA} ${asp.toLowerCase()} ${a.corpoB}** (${a.signoA} · ${a.signoB}): a recurring trigger - the arena where arguments or crises return until you both learn the lesson together. Not a curse: a growth edge.`,
       es: () => `• **${a.corpoA} ${asp.toLowerCase()} ${a.corpoB}** (${a.signoA} · ${a.signoB}): gatillo recurrente: la arena donde vuelven discusiones o crisis hasta aprender juntos la lección. No es maldición: es frontera de crecimiento.`,
       it: () => `• **${a.corpoA} ${asp.toLowerCase()} ${a.corpoB}** (${a.signoA} · ${a.signoB}): grilletto ricorrente: l'arena dove tornano litigi o crisi finché imparate insieme la lezione. Non è una maledizione: è un confine di crescita.`,
-      de: () => `• **${a.corpoA} ${asp.toLowerCase()} ${a.corpoB}** (${a.signoA} · ${a.signoB}): wiederkehrender Auslöser – die Arena, in der Streit oder Krisen zurückkehren, bis ihr die Lektion gemeinsam lernt. Kein Fluch: eine Wachstumsgrenze.`,
-      fr: () => `• **${a.corpoA} ${asp.toLowerCase()} ${a.corpoB}** (${a.signoA} · ${a.signoB}): déclencheur récurrent – l'arène où reviennent disputes ou crises jusqu'à apprendre ensemble la leçon. Pas une malédiction : une frontière de croissance.`,
+      de: () => `• **${a.corpoA} ${asp.toLowerCase()} ${a.corpoB}** (${a.signoA} · ${a.signoB}): wiederkehrender Auslöser - die Arena, in der Streit oder Krisen zurückkehren, bis ihr die Lektion gemeinsam lernt. Kein Fluch: eine Wachstumsgrenze.`,
+      fr: () => `• **${a.corpoA} ${asp.toLowerCase()} ${a.corpoB}** (${a.signoA} · ${a.signoB}): déclencheur récurrent - l'arène où reviennent disputes ou crises jusqu'à apprendre ensemble la leçon. Pas une malédiction : une frontière de croissance.`,
     })
   }
   return sx(lang, {
@@ -159,7 +159,7 @@ export function textoAspectoComposto(lang, a, tsAsp) {
     en: () => `• **${a.corpoA} ${asp.toLowerCase()} ${a.corpoB}** (${a.signoA} · ${a.signoB}): intense fusion - you become one voice in this area, for better or for deeper merging.`,
     es: () => `• **${a.corpoA} ${asp.toLowerCase()} ${a.corpoB}** (${a.signoA} · ${a.signoB}): fusión intensa: se convierten en una sola voz en esta área, para mejor o para fundirse más profundamente.`,
     it: () => `• **${a.corpoA} ${asp.toLowerCase()} ${a.corpoB}** (${a.signoA} · ${a.signoB}): fusione intensa: diventate una sola voce in quest'area, per il meglio o per fondervi più profondamente.`,
-    de: () => `• **${a.corpoA} ${asp.toLowerCase()} ${a.corpoB}** (${a.signoA} · ${a.signoB}): intensive Verschmelzung – ihr werdet in diesem Bereich zu einer Stimme, zum Besseren oder tieferen Zusammenwachsen.`,
-    fr: () => `• **${a.corpoA} ${asp.toLowerCase()} ${a.corpoB}** (${a.signoA} · ${a.signoB}): fusion intense – vous devenez une seule voix dans ce domaine, pour le mieux ou une fusion plus profonde.`,
+    de: () => `• **${a.corpoA} ${asp.toLowerCase()} ${a.corpoB}** (${a.signoA} · ${a.signoB}): intensive Verschmelzung - ihr werdet in diesem Bereich zu einer Stimme, zum Besseren oder tieferen Zusammenwachsen.`,
+    fr: () => `• **${a.corpoA} ${asp.toLowerCase()} ${a.corpoB}** (${a.signoA} · ${a.signoB}): fusion intense - vous devenez une seule voix dans ce domaine, pour le mieux ou une fusion plus profonde.`,
   })
 }

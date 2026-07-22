@@ -30,7 +30,7 @@ function idx(signo) {
   return null
 }
 
-/** Distância mínima entre signos (0–6). */
+/** Distância mínima entre signos (0-6). */
 function distSignos(a, b) {
   const ia = idx(a)
   const ib = idx(b)

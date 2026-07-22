@@ -67,7 +67,7 @@ function normalizarGraus(g) {
   return ((g % 360) + 360) % 360
 }
 
-/** Determina em que casa (1–12) está um planeta pela longitude eclíptica. */
+/** Determina em que casa (1-12) está um planeta pela longitude eclíptica. */
 export function casaDoPlaneta(longitude, cusps) {
   if (!cusps || cusps.length < 12) return null
   const lon = normalizarGraus(longitude)

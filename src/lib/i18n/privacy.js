@@ -108,11 +108,11 @@ export function getPrivacyMeta(lang) {
   if (lang !== 'pt') {
     return {
       title: 'Privacy Policy',
-      updated: 'Sidus – Last updated: June 2026',
+      updated: 'Sidus - Last updated: June 2026',
     }
   }
   return {
     title: 'Política de Privacidade',
-    updated: 'Sidus – Última actualização: Junho 2026',
+    updated: 'Sidus - Última actualização: Junho 2026',
   }
 }

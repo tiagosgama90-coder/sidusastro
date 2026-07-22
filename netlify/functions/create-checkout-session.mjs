@@ -68,7 +68,7 @@ export default async (req) => {
     const metodo = resolverMetodoPagamento(paymentMethod)
     const v = resolverValorCobranca({ productType, metodo, valorCliente, country })
 
-    // VIP: pagamento único — acesso permanente (todos os métodos)
+    // VIP: pagamento único - acesso permanente (todos os métodos)
     const billingType = isPremium ? 'lifetime' : 'one_time'
 
     const metadata = {

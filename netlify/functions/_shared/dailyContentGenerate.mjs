@@ -1,5 +1,30 @@
 import { chatCompletion } from './ai.mjs'
 
+function normalizarTracos(text) {
+  return String(text || '').replace(/\u2014/g, '-').replace(/\u2013/g, '-')
+}
+
+function corrigirLexicoPt(text) {
+  return normalizarTracos(text)
+    .replace(/\bcharisma\b/gi, 'carisma')
+    .replace(/\bcharismatic\b/gi, 'carismático')
+    .replace(/\bfocus\b/gi, 'foco')
+    .replace(/\benergy\b/gi, 'energia')
+    .replace(/\bchallenges\b/gi, 'desafios')
+    .replace(/\bbalance\b/gi, 'equilíbrio')
+}
+
+function sanitizarHoroscopoPack(horoscopes) {
+  const out = { pt: {}, en: {} }
+  for (const [signo, texto] of Object.entries(horoscopes?.pt || {})) {
+    out.pt[signo] = corrigirLexicoPt(texto)
+  }
+  for (const [signo, texto] of Object.entries(horoscopes?.en || {})) {
+    out.en[signo] = normalizarTracos(texto)
+  }
+  return out
+}
+
 const SIGNOS_PT = [
   'Carneiro', 'Touro', 'Gémeos', 'Caranguejo', 'Leão', 'Virgem',
   'Balança', 'Escorpião', 'Sagitário', 'Capricórnio', 'Aquário', 'Peixes',
@@ -79,7 +104,8 @@ function buildTemplatePack({ date, fasePt, faseEn }) {
 }
 
 async function buildIAPack({ date, fasePt, faseEn, transitSummary }) {
-  const system = `You generate daily astrology content for Sidus Astro. JSON only, no markdown.`
+  const system = `You generate daily astrology content for Sidus Astro. JSON only, no markdown.
+Rules for Portuguese (pt): European Portuguese (PT-PT), correct accents and orthography, never use English words (e.g. use "carisma" not "charisma"). Use hyphen (-) only, never em dash (-).`
   const user = `Date: ${date}
 Moon phase PT: ${fasePt}
 Moon phase EN: ${faseEn}
@@ -112,11 +138,24 @@ Return JSON:
   try {
     const json = JSON.parse(raw.replace(/```json|```/g, '').trim())
     if (!json?.horoscopes?.pt || !json?.horoscopes?.en) return null
+    const horoscopes = sanitizarHoroscopoPack(json.horoscopes)
     return {
       date,
-      horoscopes: json.horoscopes,
-      social: json.social,
-      transitNote: json.transitNote,
+      horoscopes,
+      social: {
+        pt: {
+          text: corrigirLexicoPt(json.social?.pt?.text || ''),
+          hashtags: normalizarTracos(json.social?.pt?.hashtags || ''),
+        },
+        en: {
+          text: normalizarTracos(json.social?.en?.text || ''),
+          hashtags: normalizarTracos(json.social?.en?.hashtags || ''),
+        },
+      },
+      transitNote: {
+        pt: corrigirLexicoPt(json.transitNote?.pt || ''),
+        en: normalizarTracos(json.transitNote?.en || ''),
+      },
       source: 'ia',
       generatedAt: new Date().toISOString(),
     }

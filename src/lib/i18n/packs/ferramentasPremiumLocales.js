@@ -48,7 +48,7 @@ export const TRANSITOS_ES = [
     "signo": "Cáncer",
     "tipo": "retrógrado",
     "impacto": "atenção",
-    "desc": "Mercurio Retrógrado in Cáncer (1–25 Jun). Review emotional communications. Avoid major decisions. Reconcile with the past."
+    "desc": "Mercurio Retrógrado in Cáncer (1-25 Jun). Review emotional communications. Avoid major decisions. Reconcile with the past."
   },
   {
     "mes": "Julio",
@@ -211,7 +211,7 @@ export const TRANSITOS_IT = [
     "signo": "Cancro",
     "tipo": "retrogrado",
     "impacto": "atenção",
-    "desc": "Mercurio Retrograde in Cancro (1–25 Jun). Review emotional communications. Avoid major decisions. Reconcile with the past."
+    "desc": "Mercurio Retrograde in Cancro (1-25 Jun). Review emotional communications. Avoid major decisions. Reconcile with the past."
   },
   {
     "mes": "Luglio",
@@ -374,7 +374,7 @@ export const TRANSITOS_DE = [
     "signo": "Krebs",
     "tipo": "rückläufig",
     "impacto": "atenção",
-    "desc": "Merkur Retrograde in Krebs (1–25 Jun). Review emotional communications. Avoid major decisions. Reconcile with the past."
+    "desc": "Merkur Retrograde in Krebs (1-25 Jun). Review emotional communications. Avoid major decisions. Reconcile with the past."
   },
   {
     "mes": "Juli",
@@ -537,7 +537,7 @@ export const TRANSITOS_FR = [
     "signo": "Cancer",
     "tipo": "rétrograde",
     "impacto": "atenção",
-    "desc": "Mercure Retrograde in Cancer (1–25 Jun). Review emotional communications. Avoid major decisions. Reconcile with the past."
+    "desc": "Mercure Retrograde in Cancer (1-25 Jun). Review emotional communications. Avoid major decisions. Reconcile with the past."
   },
   {
     "mes": "Juillet",

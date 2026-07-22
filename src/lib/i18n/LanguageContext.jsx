@@ -14,6 +14,7 @@ import {
   translateModalidade, translateAspecto, localizeSignoObj,
   translatePontoNatal, translateHouseLabel,
 } from './astro.js'
+import { sanitizarTextoUi } from '../textoUtil.js'
 
 const STORAGE_KEY = 'sidus_lang'
 
@@ -62,7 +63,8 @@ export function LanguageProvider({ children }) {
       ?? getNested(LOCALES.en, key)
       ?? getNested(LOCALES.pt, key)
       ?? key
-    return interpolate(val, vars)
+    const raw = interpolate(val, vars)
+    return typeof raw === 'string' ? sanitizarTextoUi(raw, lang) : raw
   }, [lang])
 
   const value = useMemo(() => ({

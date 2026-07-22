@@ -129,7 +129,7 @@ export function getFirestore() {
 }
 
 export function getAdminAuth() {
-  // firebase-admin/auth crasha no Netlify (jose/jwks ESM) — não usar
+  // firebase-admin/auth crasha no Netlify (jose/jwks ESM) - não usar
   return null
 }
 
@@ -156,7 +156,7 @@ async function verifyIdTokenViaRest(idToken) {
 }
 
 export async function verifyIdToken(idToken) {
-  // REST only — evita firebase-admin/auth (jose/jwks-rsa ESM crash no Netlify)
+  // REST only - evita firebase-admin/auth (jose/jwks-rsa ESM crash no Netlify)
   return verifyIdTokenViaRest(idToken)
 }
 
@@ -299,7 +299,7 @@ export async function grantPremiumByEmail(email, extra = {}) {
 export async function activarMapaCompleto(userId) {
   const db = getFirestore()
   if (!db || !userId) {
-    console.error('[activarMapaCompleto] Firestore indisponível — confirma FIREBASE_SERVICE_ACCOUNT no Netlify')
+    console.error('[activarMapaCompleto] Firestore indisponível - confirma FIREBASE_SERVICE_ACCOUNT no Netlify')
     return false
   }
   await db.collection('users').doc(userId).set(

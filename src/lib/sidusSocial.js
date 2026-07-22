@@ -1,4 +1,4 @@
-/** Contas oficiais Sidusastro — mencionar/marcar nas publicações VIP. */
+/** Contas oficiais Sidusastro - mencionar/marcar nas publicações VIP. */
 export const SIDUS_SOCIAL = {
   instagram: {
     id: 'instagram',

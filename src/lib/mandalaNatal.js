@@ -1,4 +1,4 @@
-/** Geometria da roda natal (SVG) — zodíaco tropical, ASC à esquerda, Placidus. */
+/** Geometria da roda natal (SVG) - zodíaco tropical, ASC à esquerda, Placidus. */
 
 export const SIGNOS_ZODIACO = [
   { simbolo: '♈', nome: 'Áries' },
@@ -364,7 +364,7 @@ export function formatarGrauDms(longitude) {
   return `${graus}°${String(minutos).padStart(2, '0')}'${String(segundos).padStart(2, '0')}"`
 }
 
-/** Longitude eclíptica absoluta (0–360°) com 6 casas decimais. */
+/** Longitude eclíptica absoluta (0-360°) com 6 casas decimais. */
 export function formatarLongitudeEcliptica(longitude) {
   return `${normalizarLongitude(longitude).toFixed(6)}°`
 }

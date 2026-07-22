@@ -1,12 +1,12 @@
 /** Preços Sidus (EUR) - fonte única para UI e Stripe. */
 export const PRECO_TAROT = 2
-/** Leitura de Tarot Brasil — exclusivo via PIX. */
+/** Leitura de Tarot Brasil - exclusivo via PIX. */
 export const PRECO_TAROT_BR_PIX = 1
 export const PRECO_MAPA_COMPLETO = 10
 /** VIP: pagamento único, acesso permanente */
 export const PRECO_PREMIUM_UNICO = 9.99
 export const PRECO_PREMIUM_MENSAL = PRECO_PREMIUM_UNICO
-/** VIP Brasil — exclusivo via PIX (conta bancária BR). */
+/** VIP Brasil - exclusivo via PIX (conta bancária BR). */
 export const PRECO_PREMIUM_BR_PIX = 5
 
 export function formatPrecoEuro(valor) {
@@ -18,7 +18,7 @@ export function precoPremiumEfetivo(paymentMethod) {
   return paymentMethod === 'pix' ? PRECO_PREMIUM_BR_PIX : PRECO_PREMIUM_UNICO
 }
 
-/** Preço Tarot efectivo — BR com PIX = 1 €; restantes = 2 €. */
+/** Preço Tarot efectivo - BR com PIX = 1 €; restantes = 2 €. */
 export function precoTarotEfetivo(paymentMethod, isBrasil = false) {
   if (isBrasil && paymentMethod === 'pix') return PRECO_TAROT_BR_PIX
   return PRECO_TAROT

@@ -422,7 +422,7 @@ export function calcularDinamicaEmocional(aspectos, posA, posB) {
 }
 
 /**
- * Cruza posições de A e B; devolve aspectos, pilares 0–100, missão e dinâmica emocional.
+ * Cruza posições de A e B; devolve aspectos, pilares 0-100, missão e dinâmica emocional.
  */
 export function calcularSinastria(posA, posB) {
   if (!posA?.corpos || !posB?.corpos) return null
@@ -543,7 +543,7 @@ export function compatibilidadeSolarGratis(solA, solB, lang = 'pt') {
       en: `Suns in ${sA} and ${sB} share compatible elemental language (${elA} · ${elB}). There is a natural basis for mutual recognition - depth requires the full chart.`,
       es: `Los Soles en ${sA} y ${sB} comparten un lenguaje elemental compatible (${elA} · ${elB}). Hay una base natural de reconocimiento mutuo; profundizar requiere la carta completa.`,
       it: `I Soli in ${sA} e ${sB} condividono un linguaggio elementale compatibile (${elA} · ${elB}). C'è una base naturale di riconoscimento reciproco; approfondire richiede il tema completo.`,
-      de: `Sonne in ${sA} und ${sB} teilen eine verträgliche Elementarsprache (${elA} · ${elB}). Es gibt eine natürliche Basis gegenseitiger Anerkennung – Tiefe erfordert das volle Horoskop.`,
+      de: `Sonne in ${sA} und ${sB} teilen eine verträgliche Elementarsprache (${elA} · ${elB}). Es gibt eine natürliche Basis gegenseitiger Anerkennung - Tiefe erfordert das volle Horoskop.`,
       fr: `Les Soleils en ${sA} et ${sB} partagent un langage élémentaire compatible (${elA} · ${elB}). Il y a une base naturelle de reconnaissance mutuelle ; approfondir exige le thème complet.`,
     },
     medio: {
