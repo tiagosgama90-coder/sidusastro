@@ -1,6 +1,6 @@
 // Service Worker para notificações PWA - Sidus Astro
 // v14: oracle chat mobile layout fix
-const CACHE_NAME = 'sidusastro-v28'
+const CACHE_NAME = 'sidusastro-v29'
 const OFFLINE_URLS = ['/manifest.json', '/favicon.svg']
 
 const SIGNO_EMOJI = {

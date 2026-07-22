@@ -61,6 +61,7 @@ import { PremiumHomeTeaser } from './components/PremiumHomeTeaser.jsx'
 import { applyRouteSeo } from './lib/routeSeo.js'
 import { ErrorBoundary } from './components/ErrorBoundary.jsx'
 import { MagicCursorTrail } from './components/MagicCursorTrail.jsx'
+import { OracleChatAvatar } from './components/OracleChatAvatar.jsx'
 import { auth, db, firebaseDisponivel, firebaseReady } from './lib/firebase'
 import { enviarEmailVerificacao, enviarEmailRecuperacaoSenha, traduzirErroEmail } from './lib/authEmail'
 import {
@@ -3121,9 +3122,7 @@ function Chat({ mapaNatal, isPremium, userId, oracleRemotas, onOracleUsada, onUp
       {/* Cabeçalho */}
       <header style={{ padding: '14px 18px', background: 'rgba(11,7,30,0.97)', borderBottom: `1px solid ${CORES.vidroBorda}`, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0, gap: 10 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, minWidth: 0 }}>
-          <div style={{ width: 36, height: 36, borderRadius: '50%', background: 'linear-gradient(135deg,#6D28D9,#0B071E)', border: `1.5px solid ${CORES.dourado}`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18, flexShrink: 0 }}>
-            ✦
-          </div>
+          <OracleChatAvatar size={40} />
           <div style={{ minWidth: 0 }}>
             <h1 className="sidus-page-title oracle-chat__title">{t('oracle.title')}</h1>
             {isPremium && (
