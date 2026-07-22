@@ -1,6 +1,6 @@
 // Service Worker para notificações PWA - Sidus Astro
-// v6: purge caches após hotfix ErrorBoundary (import em App.jsx)
-const CACHE_NAME = 'sidusastro-v6'
+// v7: purge cache após fix mobile tarot centrado + descrição dinâmica
+const CACHE_NAME = 'sidusastro-v7'
 const OFFLINE_URLS = ['/manifest.json', '/favicon.svg']
 
 const SIGNO_EMOJI = {

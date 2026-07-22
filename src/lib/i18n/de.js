@@ -598,6 +598,8 @@ export default {
     "desc": "6 Decks · personalisierte Lektüre mit Ihrem Geburtshoroskop",
     "timeframeListHint": "Jede Legung spricht über einen anderen Zeitraum in deinem Leben - nicht darüber, wie lange du brauchst, die Karten zu lesen.",
     "tapToReveal": "Tippen zum Enthüllen ✦",
+    "tapForDetail": "Tippen für ausführliche Beschreibung ✦",
+    "detailLabel": "Ausführliche Beschreibung",
     "timeframeCovers": "Diese Legung umfasst:",
     "timeframeTitle": "Über welchen Zeitraum sprechen die Karten?",
     "timeframeNotDuration": "Das ist nicht, wie lange die Legung dauert. Es ist der Zeitraum (Vergangenheit oder Zukunft), den die Karten in deinem Leben beschreiben.",

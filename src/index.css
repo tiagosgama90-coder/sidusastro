@@ -3608,6 +3608,100 @@ html.sidus-no-ads .google-auto-placed {
   }
 }
 
+/* Mobile Tarot — overrides finais (depois dos estilos base) */
+@media (max-width: 767px) {
+  .tarot-seleccionar-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-left: 12px;
+    padding-right: 12px;
+    padding-bottom: 96px;
+  }
+
+  .tarot-seleccionar-centro {
+    width: 100%;
+    max-width: 380px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .tarot-tipo-grid--mobile {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .tarot-tipo-card.tarot-tipo-card--mobile {
+    width: 100%;
+    max-width: 360px;
+    margin: 0 auto;
+    text-align: center;
+    align-items: center;
+  }
+
+  .tarot-tipo-card--mobile .tarot-tipo-card__body {
+    align-items: center;
+    text-align: center;
+  }
+
+  .tarot-tipo-card--mobile .tarot-tipo-card__nome,
+  .tarot-tipo-card--mobile .tarot-tipo-card__desc,
+  .tarot-tipo-card--mobile .tarot-tipo-card__prazo {
+    text-align: center;
+    justify-content: center;
+  }
+
+  .tarot-tipo-card--mobile .tarot-tipo-card__foco {
+    width: 100%;
+    max-width: 100%;
+    text-align: center;
+  }
+
+  .tarot-tipo-card--mobile.tarot-tipo-card--open .tarot-tipo-card__foco,
+  .tarot-tipo-card--mobile .tarot-tipo-card__foco--open {
+    max-height: 320px;
+    opacity: 1;
+    margin-top: 8px;
+    padding: 10px 12px 8px;
+    border-top: 1px solid rgba(223, 183, 108, 0.28);
+    background: linear-gradient(180deg, rgba(223, 183, 108, 0.06), transparent);
+    border-radius: 0 0 12px 12px;
+  }
+
+  .tarot-tipo-card__detail-label {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #DFB76C;
+    margin-bottom: 6px;
+    text-align: center;
+  }
+
+  .tarot-tipo-card__foco-text {
+    margin: 0;
+    font-size: 11px;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.92);
+    text-align: center;
+  }
+
+  .tarot-tipo-card__reveal-hint {
+    text-align: center;
+    width: 100%;
+  }
+
+  .tarot-tipo-card--mobile .tarot-tipo-card__cta--action {
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
 /* Chat oráculo — desktop: preencher área abaixo da navbar sem overflow */
 .oracle-chat {
   display: flex;

@@ -608,6 +608,8 @@ export default {
     desc: "6 barajas · lectura personalizada con tu carta natal",
     timeframeListHint: "Cada lectura habla de un período distinto en tu vida - no es el tiempo que tardas en leer las cartas.",
     tapToReveal: "Toca para revelar ✦",
+    tapForDetail: "Toca para ver la descripción detallada ✦",
+    detailLabel: "Descripción detallada",
     timeframeCovers: "Esta lectura abarca:",
     timeframeTitle: "¿Sobre qué período hablan las cartas?",
     timeframeNotDuration: "No es cuánto tardas en hacer la lectura. Es el intervalo de tiempo (pasado o futuro) que las cartas describen en tu vida.",
