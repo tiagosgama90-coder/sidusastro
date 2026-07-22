@@ -1,6 +1,6 @@
 // Service Worker para notificações PWA - Sidus Astro
-// v12: tarot mobile carrossel vertical em pilha 3D
-const CACHE_NAME = 'sidusastro-v12'
+// v13: tarot mobile lista vertical compacta (sem carrossel)
+const CACHE_NAME = 'sidusastro-v13'
 const OFFLINE_URLS = ['/manifest.json', '/favicon.svg']
 
 const SIGNO_EMOJI = {

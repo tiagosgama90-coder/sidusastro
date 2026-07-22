@@ -4,7 +4,7 @@
  * ─ 3 leituras gratuitas por conta · depois 2 € por leitura (BR: 1 € PIX) ou Premium
  * ─ 9 tipos de leitura · interpretações personalizadas com mapa natal
  */
-import { useState, useEffect, useRef, Children, useCallback } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Clock } from 'lucide-react'
 import { useLanguage } from '../lib/i18n/LanguageContext.jsx'
 import { localizeArcano, getTiposTarot, getPosicoesTarot } from '../lib/i18n/tarotArcana.js'
@@ -514,114 +514,6 @@ function useMobileTarotLayout() {
   return mobile
 }
 
-function TarotMobileCarousel({ children, total }) {
-  const slides = Children.toArray(children)
-  const [active, setActive] = useState(0)
-  const activeRef = useRef(0)
-  const pausedRef = useRef(false)
-  const touchRef = useRef(null)
-
-  const goTo = useCallback((index) => {
-    const next = ((index % total) + total) % total
-    activeRef.current = next
-    setActive(next)
-  }, [total])
-
-  useEffect(() => {
-    if (total < 2) return undefined
-    const id = setInterval(() => {
-      if (pausedRef.current) return
-      goTo(activeRef.current + 1)
-    }, 4500)
-    return () => clearInterval(id)
-  }, [total, goTo])
-
-  const pause = () => { pausedRef.current = true }
-  const resumeLater = () => {
-    window.setTimeout(() => { pausedRef.current = false }, 7000)
-  }
-
-  const onTouchStart = (e) => {
-    pause()
-    touchRef.current = { y: e.touches[0].clientY, t: Date.now() }
-  }
-
-  const onTouchEnd = (e) => {
-    const start = touchRef.current
-    touchRef.current = null
-    if (!start) {
-      resumeLater()
-      return
-    }
-    const dy = e.changedTouches[0].clientY - start.y
-    const dt = Date.now() - start.t
-    if (Math.abs(dy) > 36 && dt < 700) {
-      goTo(activeRef.current + (dy < 0 ? 1 : -1))
-    }
-    resumeLater()
-  }
-
-  const stackGap = 46
-  const maxOffset = 4
-
-  return (
-    <div className="tarot-tipo-carousel tarot-tipo-carousel--vertical">
-      <div
-        className="tarot-tipo-carousel__stage"
-        onTouchStart={onTouchStart}
-        onTouchEnd={onTouchEnd}
-        onMouseEnter={pause}
-        onMouseLeave={resumeLater}
-      >
-        {slides.map((slide, i) => {
-          const offset = i - active
-          const abs = Math.abs(offset)
-          if (abs > maxOffset) return null
-
-          const scale = Math.max(0.74, 1 - abs * 0.068)
-          const translateY = offset * stackGap
-          const opacity = Math.max(0.42, 1 - abs * 0.17)
-          const isActive = i === active
-
-          return (
-            <div
-              key={slide.key ?? i}
-              className={`tarot-tipo-carousel__slide${isActive ? ' tarot-tipo-carousel__slide--active' : ''}`}
-              style={{
-                zIndex: total - abs,
-                '--slide-offset': offset,
-                transform: `translate(-50%, calc(-50% + ${translateY}px)) translateZ(${-abs * 32}px) scale(${scale}) rotateX(${offset * -3}deg)`,
-                opacity,
-              }}
-              onClick={!isActive ? () => goTo(i) : undefined}
-              role={!isActive ? 'button' : undefined}
-              tabIndex={!isActive ? 0 : undefined}
-              onKeyDown={!isActive ? (e) => { if (e.key === 'Enter' || e.key === ' ') goTo(i) } : undefined}
-              aria-hidden={!isActive}
-            >
-              {slide}
-            </div>
-          )
-        })}
-      </div>
-      {total > 1 && (
-        <div className="tarot-tipo-carousel__dots" aria-hidden>
-          {Array.from({ length: total }, (_, i) => (
-            <button
-              key={i}
-              type="button"
-              className={`tarot-tipo-carousel__dot${i === active ? ' tarot-tipo-carousel__dot--active' : ''}`}
-              onClick={() => goTo(i)}
-              tabIndex={-1}
-              aria-label={`Leitura ${i + 1}`}
-            />
-          ))}
-        </div>
-      )}
-    </div>
-  )
-}
-
 function TarotTipoCard({
   tipo, bloqueada, onSeleccionar, t, cols, isPremium, gratisEsgotada,
   diariaAtiva, userId, lang, precoLeituraFmt, isMobileLayout = false,
@@ -762,7 +654,7 @@ function TelaSeleccionar({ tipos, onSeleccionar, isPremium, gratisEsgotada, rest
         )}
       </div>
       {isMobileLayout && (
-        <p className="tarot-mobile-swipe-hint">{t('tarot.swipeGames')}</p>
+        <p className="tarot-mobile-list-hint">{t('tarot.gamesCount', { count: tipos.length })}</p>
       )}
       {!isPremium && (
         <div style={{background:'rgba(223,183,108,0.07)',border:`1px solid rgba(223,183,108,0.25)`,borderRadius:10,padding:'8px 14px',marginBottom:18,display:'flex',alignItems:'center',gap:8}}>
@@ -774,28 +666,7 @@ function TelaSeleccionar({ tipos, onSeleccionar, isPremium, gratisEsgotada, rest
           </span>
         </div>
       )}
-      {isMobileLayout ? (
-        <TarotMobileCarousel total={tipos.length}>
-          {tipos.map((tipo) => (
-            <TarotTipoCard
-              key={tipo.id}
-              tipo={tipo}
-              bloqueada={tipo.id === 'diaria' && diariaAtiva}
-              onSeleccionar={onSeleccionar}
-              t={t}
-              cols={cols}
-              isMobileLayout={isMobileLayout}
-              isPremium={isPremium}
-              gratisEsgotada={gratisEsgotada}
-              diariaAtiva={diariaAtiva}
-              userId={userId}
-              lang={lang}
-              precoLeituraFmt={precoLeituraFmt}
-            />
-          ))}
-        </TarotMobileCarousel>
-      ) : (
-      <div className={`tarot-tipo-grid tarot-tipo-grid--cols-${cols}`}>
+      <div className={`tarot-tipo-grid tarot-tipo-grid--cols-${cols}${isMobileLayout ? ' tarot-tipo-grid--mobile' : ''}`}>
         {tipos.map((tipo) => (
           <TarotTipoCard
             key={tipo.id}
@@ -814,7 +685,6 @@ function TelaSeleccionar({ tipos, onSeleccionar, isPremium, gratisEsgotada, rest
           />
         ))}
       </div>
-      )}
       </div>
     </div>
   )
