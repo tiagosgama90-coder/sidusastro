@@ -113,6 +113,7 @@ function RouteLoader() {
 import { validarOnboarding } from './lib/i18n/validation.js'
 import { traduzirErroAuth } from './lib/i18n/authErrors.js'
 import { labelBarraCurto, tituloSecaoMapa } from './lib/i18n/labelUtil.js'
+import { getFerramentas } from './lib/i18n/ferramentasData.js'
 import {
   validarPerguntaOracle, gerarRespostaOracle,
   getChatGreeting, getOracleLimitMessage,
@@ -3436,7 +3437,7 @@ function Navbar({ passo, setPasso, isDesktop, dados, fotoPerfil }) {
     glow: f.premium ? CORES.dourado : '#93C5FD',
   }))
 
-  const itensDesktop = [
+  const itens = [
     { id: 'home',        label: t('nav.home'),    icon: Home,          glow: '#DFB76C' },
     { id: 'mapa',        label: t('nav.mapa'),    icon: Map,           glow: '#C4B5FD' },
     { id: 'tarot',       label: t('nav.tarot'),   icon: Layers,        glow: '#F472B6' },
@@ -3444,37 +3445,20 @@ function Navbar({ passo, setPasso, isDesktop, dados, fotoPerfil }) {
     { id: 'chat',        label: t('nav.oraculo'), icon: MessageCircle, glow: '#34D399' },
   ]
 
-  /** Mobile drawer: só Perfil (topo) + Ferramentas — Início/Mapa/Tarot/Oráculo ficam na bottom nav. */
-  const itensMenuMobile = [
-    { id: 'ferramentas', label: t('nav.ferramentas'), icon: Grid3x3, glow: '#93C5FD' },
-    ...ferramentasNav,
-  ]
-
-  const itens = isDesktop ? itensDesktop : itensMenuMobile
-
   const passosFerramenta = new Set(ferramentasNav.map((f) => f.id))
-
-  const itensContexto = [
-    { id: 'home', label: t('nav.home') },
-    { id: 'mapa', label: t('nav.mapa') },
-    { id: 'tarot', label: t('nav.tarot') },
-    { id: 'chat', label: t('nav.oraculo') },
-    { id: 'perfil', label: t('nav.perfil') },
-    ...itensMenuMobile,
-  ]
 
   const navegar = (id) => {
     setPasso(id)
     setMenuAberto(false)
   }
 
-  const itemAtivo = (item) => passo === item.id || (item.id === 'ferramentas' && (passo === 'ferramentas' || passosFerramenta.has(passo)))
+  const itemAtivo = (item) => passo === item.id || (item.id === 'ferramentas' && passosFerramenta.has(passo))
 
   useEffect(() => {
     setMenuAberto(false)
   }, [passo])
 
-  const itemAtivoNav = itensContexto.find((i) => itemAtivo(i))
+  const itemAtivoNav = itens.find((i) => itemAtivo(i))
   const headerStyle = isDesktop ? estilos.navbarDesktopTop : estilos.navbarMobileTop
   const perfilAtivo = passo === 'perfil'
 
@@ -3508,7 +3492,7 @@ function Navbar({ passo, setPasso, isDesktop, dados, fotoPerfil }) {
             </div>
             <div className="desktop-nav-scroll">
               <div className="desktop-nav-items">
-              {itensDesktop.map((item) => {
+              {itens.map((item) => {
                 const Icon = item.icon
                 const ativo = itemAtivo(item)
                 const emHover = hover === item.id
@@ -3590,13 +3574,13 @@ function Navbar({ passo, setPasso, isDesktop, dados, fotoPerfil }) {
         </button>
         <div style={{ padding: '8px 16px 12px', borderBottom: `1px solid ${CORES.vidroBorda}` }}>
           <div style={{ fontSize: 10, color: CORES.brancoMuted, textTransform: 'uppercase', letterSpacing: '0.1em' }}>
-            {t('nav.ferramentas')}
+            {t('nav.menu')}
           </div>
           {itemAtivoNav && (
             <div style={{ fontSize: 13, color: CORES.dourado, marginTop: 4, fontWeight: 600 }}>{itemAtivoNav.label}</div>
           )}
         </div>
-        {itensMenuMobile.map((item) => {
+        {itens.map((item) => {
           const Icon = item.icon
           const ativo = itemAtivo(item)
           return (
