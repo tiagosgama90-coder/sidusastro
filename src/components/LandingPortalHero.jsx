@@ -1,11 +1,12 @@
+import { forwardRef } from 'react'
 import { useLanguage } from '../lib/i18n/LanguageContext.jsx'
 import { SidusLogoMark } from './SidusLogoMark.jsx'
 
-export function LandingPortalHero() {
+export const LandingPortalHero = forwardRef(function LandingPortalHero(_props, ref) {
   const { t } = useLanguage()
 
   return (
-    <header className="landing-auth-hero">
+    <header ref={ref} className="landing-auth-hero">
       <div className="landing-portal-brand-row">
         <span className="landing-portal-welcome-inline">{t('auth.portal.eyebrow')}</span>
         <SidusLogoMark size={26} className="landing-portal-brand-mark" />
@@ -15,4 +16,4 @@ export function LandingPortalHero() {
       <p className="landing-trust-bar">{t('auth.portal.trustBar')}</p>
     </header>
   )
-}
+})

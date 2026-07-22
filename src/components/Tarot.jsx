@@ -20,6 +20,7 @@ import {
   leituraDiariaAtiva, podeFazerLeituraDiaria, msAteProximaDiaria,
   formatarTempoRestante, registarLeituraDiaria,
 } from '../lib/tarotDiario.js'
+import { ShareWhatsAppButton } from './ShareWhatsAppButton.jsx'
 
 const CORES = {
   fundo:'#0B071E', dourado:'#DFB76C', douradoEscuro:'#B8944F',
@@ -155,7 +156,7 @@ function consumirCreditoTarotPago() {
   return false
 }
 
-export function EcraTarot({ mapaNatal, isPremium, userId, leiturasTarotUsadas = 0, tarotCreditoPago = false, onTarotCreditoConsumido, onLeituraGratisUsada, onPagar, onVoltar, onPremium, isBrasil = false }) {
+export function EcraTarot({ mapaNatal, isPremium, userId, leiturasTarotUsadas = 0, tarotCreditoPago = false, onTarotCreditoConsumido, onLeituraGratisUsada, onLeituraConcluida, onPagar, onVoltar, onPremium, isBrasil = false }) {
   const { lang, t } = useLanguage()
   const [fase, setFase]           = useState('seleccionar')
   const [tipoId, setTipoId]       = useState(null)
@@ -166,6 +167,7 @@ export function EcraTarot({ mapaNatal, isPremium, userId, leiturasTarotUsadas = 
   const [distribuindo, setDistribuindo] = useState(-1)
   const [tick, setTick]           = useState(0)
   const [resultado, setResultado]       = useState(null)
+  const leituraConcluidaRef = useRef(false)
   const [leituraPaga, setLeituraPaga]   = useState(false)
   const [aIniciarLeitura, setAIniciarLeitura] = useState(false)
   const montadoRef = useRef(true)
@@ -297,6 +299,10 @@ export function EcraTarot({ mapaNatal, isPremium, userId, leiturasTarotUsadas = 
       try {
         const res = interpretarLeitura(cartas, tipoId, pergunta, mapaNatal, lang, t, getPosicoesTarot)
         setResultado(res)
+        if (!leituraConcluidaRef.current) {
+          leituraConcluidaRef.current = true
+          onLeituraConcluida?.()
+        }
         if (tipoId === 'diaria') {
           registarLeituraDiaria(userId, {
             cartas: cartas.map((c) => ({ id: c.id, nome: c.nome, invertida: !!c.invertida })),
@@ -323,6 +329,7 @@ export function EcraTarot({ mapaNatal, isPremium, userId, leiturasTarotUsadas = 
     setCartas([])
     setReveladas([])
     setResultado(null)
+    leituraConcluidaRef.current = false
     setEmbaralhando(false)
     setDistribuindo(-1)
     refrescar()
@@ -877,6 +884,15 @@ function TelaDistribuir({ cartas, posicoes, distribuindo, t, cartaVerso = MAJOR_
 function TelaRevelar({ cartas, reveladas = [], onRevelar, posicoes = [], tipo, pergunta, resultado, onVoltar, t }) {
   const CARTA = useTamanhoCartas()
   const todasReveladas = reveladas.length > 0 && reveladas.length === cartas.length && reveladas.every(Boolean)
+  const siteUrl = typeof window !== 'undefined' ? window.location.origin : 'https://sidusastro.com'
+  const textoPartilha = todasReveladas && resultado
+    ? t('share.tarotText', {
+      tipo: tipo?.nome || 'Tarot',
+      resposta: resultado.resposta || cartas.map((c) => c.nome).join(' · '),
+      detalhe: (resultado.detalhe || '').slice(0, 280),
+      url: siteUrl,
+    })
+    : null
 
   return (
     <div style={{padding:'20px 20px 110px',overflow:'visible'}}>
@@ -956,6 +972,7 @@ function TelaRevelar({ cartas, reveladas = [], onRevelar, posicoes = [], tipo, p
             <div style={{fontSize:28,fontWeight:700,textAlign:'center',marginBottom:12}}>{resultado.resposta}</div>
           )}
           <div style={{fontSize:13,color:CORES.brancoSuave,lineHeight:1.8,whiteSpace:'pre-wrap'}}>{resultado.detalhe}</div>
+          <ShareWhatsAppButton texto={textoPartilha} compact />
         </div>
       )}
 

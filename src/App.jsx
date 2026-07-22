@@ -77,6 +77,7 @@ import { doc, getDoc, setDoc, onSnapshot } from 'firebase/firestore'
 import { atribuirCasasPlanetas } from './lib/casasPlacidus.js'
 import { gerarAnaliseCompleta, gerarResumoGratuito, mapaPlanetasProntos } from './lib/mapaInterpretacao.js'
 import { calcularFaseLua } from './lib/faseLua.js'
+import { gerarHoroscopoSignoTransito } from './lib/horoscopoDiarioTransitos.js'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { passoFromPath, pathFromPasso, langFromPath, stripLangPrefix } from './lib/routes.js'
 import { initGoogleAnalytics } from './lib/googleAnalytics.js'
@@ -87,7 +88,11 @@ import { allowsAds, getCookieConsent } from './lib/cookieConsent.js'
 import { LanguageSwitcher } from './components/LanguageSwitcher.jsx'
 import { useLanguage } from './lib/i18n/LanguageContext.jsx'
 import { readLandingDraft, clearLandingDraft, mergeLandingDraft, hasLandingDraft, flushLandingDraft } from './lib/landingDraft.js'
-import { getFerramentas } from './lib/i18n/ferramentasData.js'
+import { MobileBottomNav } from './components/MobileBottomNav.jsx'
+import { HomeParaTiHoje } from './components/HomeParaTiHoje.jsx'
+import { LandingStickyCta } from './components/LandingStickyCta.jsx'
+import { PostOnboardingTour } from './components/PostOnboardingTour.jsx'
+import { FerramentasEmptyState } from './components/FerramentasEmptyState.jsx'
 
 const EcraTarotLazy = lazy(() => import('./components/Tarot.jsx').then((m) => ({ default: m.EcraTarot })))
 const MandalaNatalLazy = lazy(() => import('./components/MandalaNatal.jsx').then((m) => ({ default: m.MandalaNatal })))
@@ -127,6 +132,7 @@ import {
   criarSessaoOracle,
   actualizarSessaoOracle,
   upsertSessaoOracle,
+  guardarSessoesOracle,
   formatarDataSessao,
 } from './lib/oracleHistory.js'
 
@@ -181,7 +187,7 @@ const PLANETAS_NATAL = [
 ]
 
 const DESKTOP_BP = 768
-const MOBILE_MAX = 430
+const MOBILE_MAX = 480
 
 function useIsDesktop() {
   const [isDesktop, setIsDesktop] = useState(
@@ -923,6 +929,20 @@ function precisaVerificarEmail(user) {
   return !user.emailVerified
 }
 
+function tarotPreVerifyUsado() {
+  try { return sessionStorage.getItem('sidus_preverify_tarot_used') === '1' } catch { return false }
+}
+
+function marcarTarotPreVerifyUsado() {
+  try { sessionStorage.setItem('sidus_preverify_tarot_used', '1') } catch { /* ignore */ }
+}
+
+function bloqueadoPorEmailNaoVerificado(user, passoAtual) {
+  if (!precisaVerificarEmail(user)) return false
+  if (passoAtual === 'tarot' && !tarotPreVerifyUsado()) return false
+  return true
+}
+
 async function inicializarPerfilUsuario(user) {
   if (!db || !firebaseDisponivel || !user?.uid) return
 
@@ -1306,6 +1326,7 @@ function EcraVerificarEmail({ utilizador, isDesktop, onLogout, onVerificado }) {
 function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
   const { lang, t } = useLanguage()
   const authPanelRef = useRef(null)
+  const portalRef = useRef(null)
   const [email, setEmail]       = useState('')
   const [senha, setSenha]       = useState('')
   const [confirmar, setConfirmar] = useState('')
@@ -1409,12 +1430,13 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
   return (
     <div className={`landing-auth-layout${isDesktop ? ' landing-auth-layout--desktop' : ' landing-auth-layout--mobile'}`}>
       <BannerBrasil />
+      <LandingStickyCta targetRef={portalRef} onCta={scrollParaAuth} />
       {isDesktop ? (
         <>
           <div className="landing-auth-sticky-top">
             <LandingSkyLive />
           </div>
-          <LandingPortalHero />
+          <LandingPortalHero ref={portalRef} />
         </>
       ) : (
         <>
@@ -1424,7 +1446,7 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
           <div className="landing-sky-mobile-wrap">
             <LandingSkyLive />
           </div>
-          <LandingPortalHero />
+          <LandingPortalHero ref={portalRef} />
         </>
       )}
       <section className="landing-conversion-zone" aria-label={t('auth.portal.conversionAria')}>
@@ -1924,12 +1946,35 @@ function Onboarding({ dados: dadosProp, setDados, onSubmit, isDesktop }) {
 function Dashboard({ nome, mapaNatal, ceuAgora, aspetos, onOraculo, onPrivacidade, isDesktop, isPremium, onUpgrade, onTarot, onMapa, userEmail, user, oraclePerguntasUsadas, leiturasTarotUsadas, isBrasil }) {
   const { t, ts, te, tp, ta, lang } = useLanguage()
   const faseLua = calcularFaseLua(new Date(), lang)
+
+  const energiaResumo = useMemo(() => {
+    if (!mapaNatal?.solar?.nome || !ceuAgora?.length) return null
+    const signoNome = ts(mapaNatal.solar.nome)
+    const idx = SIGNOS.findIndex((s) => s.nome === mapaNatal.solar.nome || (mapaNatal.solar.nome === 'Áries' && s.nome === 'Carneiro'))
+    if (idx < 0) return null
+    return gerarHoroscopoSignoTransito({
+      signoIndex: idx,
+      signoNome,
+      ceuAgora,
+      aspetos,
+      faseLua,
+      lang,
+    })
+  }, [mapaNatal, ceuAgora, aspetos, faseLua, lang, ts])
+
   return (
     <div style={layoutConteudo(isDesktop)}>
       <header style={{ textAlign: 'center', marginBottom: 20 }}>
         <h1 className="notranslate" translate="no" style={estilos.titulo}>Sidus</h1>
         <p style={{ ...estilos.subtitulo, marginBottom: 0 }}>{nome ? t('home.welcome', { name: nome }) : t('home.skyRealtime')}</p>
       </header>
+
+      <HomeParaTiHoje
+        onTarot={onTarot}
+        onOraculo={onOraculo}
+        onMapa={onMapa}
+        energiaResumo={energiaResumo}
+      />
 
       <HeroHomeSidus mapaNatal={mapaNatal} onMapa={onMapa} isPremium={isPremium} />
 
@@ -2728,15 +2773,17 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
   )
 }
 
-function Ferramentas({ onFerramenta, isDesktop, acessoVip }) {
+function Ferramentas({ onFerramenta, isDesktop, acessoVip, mapaNatal, onCompletarMapa }) {
   const { lang, t } = useLanguage()
   const ferramentas = getFerramentas(lang)
+  const semMapa = !mapaNatalValido(mapaNatal)
   return (
     <div style={layoutConteudo(isDesktop)}>
       <header style={{ marginBottom: 28 }}>
         <h1 style={{ ...estilos.titulo, textAlign: 'left', fontSize: 22 }}>{t('ferramentas.title')}</h1>
       </header>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+      {semMapa && <FerramentasEmptyState onCompletarMapa={onCompletarMapa} />}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 12, opacity: semMapa ? 0.55 : 1 }}>
         {ferramentas.map((f) => {
           const Icon = f.icon
           const bloqueada = f.premium && !acessoVip
@@ -2767,6 +2814,8 @@ function Paywall({ onVoltar, onPagar, onSucesso, onPromo, isDesktop, isBrasil, o
         <ChevronLeft size={20} /> {t('common.back')}
       </button>
 
+      {isBrasil && <BannerBrasil variant="paywall" />}
+
       <VipPaywallBody
         onCta={() => onPagar(t('vip.productName'), precoVitrine, onSucesso, { productType: 'premium' })}
         onPromo={onPromo}
@@ -2788,6 +2837,7 @@ function Paywall({ onVoltar, onPagar, onSucesso, onPromo, isDesktop, isBrasil, o
 
 function OraclePremiumUpsell({ onUpgrade, onPromo, isBrasil = false, oraclePerguntasUsadas = 0, leiturasTarotUsadas = 0, compact = false }) {
   const { t } = useLanguage()
+  const beneficios = ['oracle.upsellBenefit1', 'oracle.upsellBenefit2', 'oracle.upsellBenefit3', 'oracle.upsellBenefit4']
   return (
     <div style={{
       alignSelf: 'stretch',
@@ -2799,6 +2849,11 @@ function OraclePremiumUpsell({ onUpgrade, onPromo, isBrasil = false, oraclePergu
       border: `1px solid ${CORES.dourado}`,
       boxShadow: '0 8px 32px rgba(223,183,108,0.12)',
     }}>
+      <ul className="oracle-upsell-benefits">
+        {beneficios.map((key) => (
+          <li key={key}>{t(key)}</li>
+        ))}
+      </ul>
       <VipPaywallBody
         onCta={onUpgrade}
         onPromo={onPromo}
@@ -2845,30 +2900,38 @@ function Chat({ mapaNatal, isPremium, userId, oracleRemotas, onOracleUsada, onUp
   }, [userId, oracleRemotas])
 
   useEffect(() => {
-    if (!isPremium) {
-      setMensagens([{
-        id: 1,
-        autor: 'ia',
-        texto: getChatGreeting(mapaNatal, lang, MAX_ORACLE_GRATIS, isPremium),
-      }])
+    const lista = carregarSessoesOracle(userId)
+    if (isPremium) {
+      setSessoes(lista)
+      const actualId = localStorage.getItem(chaveSessaoActual)
+      const actual = lista.find((s) => s.id === actualId)
+      if (actual?.mensagens?.length) {
+        setSessaoId(actual.id)
+        setMensagens(actual.mensagens)
+      } else {
+        const id = `sess-${Date.now()}`
+        setSessaoId(id)
+        setMensagens([{
+          id: 1,
+          autor: 'ia',
+          texto: getChatGreeting(mapaNatal, lang, MAX_ORACLE_GRATIS, isPremium),
+        }])
+        localStorage.setItem(chaveSessaoActual, id)
+      }
       return
     }
-    const lista = carregarSessoesOracle(userId)
-    setSessoes(lista)
+    setSessoes(lista.slice(0, 1))
     const actualId = localStorage.getItem(chaveSessaoActual)
-    const actual = lista.find((s) => s.id === actualId)
+    const actual = lista.find((s) => s.id === actualId) || lista[0]
     if (actual?.mensagens?.length) {
       setSessaoId(actual.id)
       setMensagens(actual.mensagens)
     } else {
-      const id = `sess-${Date.now()}`
-      setSessaoId(id)
       setMensagens([{
         id: 1,
         autor: 'ia',
         texto: getChatGreeting(mapaNatal, lang, MAX_ORACLE_GRATIS, isPremium),
       }])
-      localStorage.setItem(chaveSessaoActual, id)
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps -- carregar sessão só ao mudar utilizador/premium
   }, [isPremium, userId, chaveSessaoActual])
@@ -2883,12 +2946,18 @@ function Chat({ mapaNatal, isPremium, userId, oracleRemotas, onOracleUsada, onUp
   }, [lang, mapaNatal, isPremium])
 
   useEffect(() => {
-    if (!isPremium || !mensagens.length) return
+    if (!mensagens.length) return
     const base = criarSessaoOracle({ mensagens, id: sessaoId, lang })
     const sessao = actualizarSessaoOracle(base, mensagens)
-    upsertSessaoOracle(userId, sessao)
-    localStorage.setItem(chaveSessaoActual, sessao.id)
-    setSessoes(carregarSessoesOracle(userId))
+    if (isPremium) {
+      upsertSessaoOracle(userId, sessao)
+      localStorage.setItem(chaveSessaoActual, sessao.id)
+      setSessoes(carregarSessoesOracle(userId))
+    } else if (mensagens.some((m) => m.autor === 'user')) {
+      guardarSessoesOracle(userId, [sessao])
+      localStorage.setItem(chaveSessaoActual, sessao.id)
+      setSessoes([sessao])
+    }
   }, [mensagens, isPremium, userId, sessaoId, lang, chaveSessaoActual])
 
   const iniciarNovaConversa = () => {
@@ -3058,23 +3127,21 @@ function Chat({ mapaNatal, isPremium, userId, oracleRemotas, onOracleUsada, onUp
           </div>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
-          {isPremium && (
-            <button
-              type="button"
-              onClick={() => setHistoricoAberto((v) => !v)}
-              style={{
-                display: 'flex', alignItems: 'center', gap: 6,
-                fontSize: 11, color: CORES.dourado,
-                background: historicoAberto ? 'rgba(223,183,108,0.16)' : 'rgba(223,183,108,0.08)',
-                padding: '6px 12px', borderRadius: 20,
-                border: `1px solid rgba(223,183,108,0.35)`,
-                cursor: 'pointer', fontWeight: 600,
-              }}
-            >
-              <History size={14} />
-              {t('oracle.historyOpen')}
-            </button>
-          )}
+          <button
+            type="button"
+            onClick={() => setHistoricoAberto((v) => !v)}
+            style={{
+              display: 'flex', alignItems: 'center', gap: 6,
+              fontSize: 11, color: CORES.dourado,
+              background: historicoAberto ? 'rgba(223,183,108,0.16)' : 'rgba(223,183,108,0.08)',
+              padding: '6px 12px', borderRadius: 20,
+              border: `1px solid rgba(223,183,108,0.35)`,
+              cursor: 'pointer', fontWeight: 600,
+            }}
+          >
+            <History size={14} />
+            {isPremium ? t('oracle.historyOpen') : t('oracle.historyLast')}
+          </button>
           {!isPremium && (
           <button type="button" onClick={onUpgrade} style={{
             fontSize: 11, color: CORES.dourado, background: 'rgba(223,183,108,0.08)',
@@ -3089,7 +3156,7 @@ function Chat({ mapaNatal, isPremium, userId, oracleRemotas, onOracleUsada, onUp
         </div>
       </header>
 
-      {isPremium && historicoAberto && (
+      {historicoAberto && (
         <div style={{
           flexShrink: 0,
           maxHeight: '38vh',
@@ -3100,8 +3167,9 @@ function Chat({ mapaNatal, isPremium, userId, oracleRemotas, onOracleUsada, onUp
         }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
             <span style={{ fontSize: 12, fontWeight: 700, color: CORES.dourado, letterSpacing: '0.06em', textTransform: 'uppercase' }}>
-              {t('oracle.historyTitle')}
+              {isPremium ? t('oracle.historyTitle') : t('oracle.historyLastTitle')}
             </span>
+            {isPremium && (
             <button type="button" onClick={iniciarNovaConversa} style={{
               fontSize: 11, color: '#34D399', background: 'rgba(52,211,153,0.1)',
               border: '1px solid rgba(52,211,153,0.35)', borderRadius: 8,
@@ -3109,7 +3177,13 @@ function Chat({ mapaNatal, isPremium, userId, oracleRemotas, onOracleUsada, onUp
             }}>
               + {t('oracle.historyNew')}
             </button>
+            )}
           </div>
+          {!isPremium && (
+            <p style={{ fontSize: 11, color: CORES.brancoMuted, margin: '0 0 8px', lineHeight: 1.45 }}>
+              {t('oracle.historyFreeHint')}
+            </p>
+          )}
           {!sessoes.length ? (
             <p style={{ fontSize: 12, color: CORES.brancoMuted, margin: 0 }}>{t('oracle.historyEmpty')}</p>
           ) : (
@@ -4027,7 +4101,7 @@ export default function App() {
   }, [utilizador, authCarregando, location.search, location.pathname, navigate, t, lang, dados, destinoAposPagamento, productTypePagamentoPendente])
 
   // ── Guarda dados natais no Firestore quando o onboarding termina (1x por conta) ──
-  const guardarPerfil = useCallback(async (dadosNovos) => {
+  const guardarPerfil = useCallback(async (dadosNovos, opts = {}) => {
     if (!utilizador || !firebaseDisponivel || !db) return false
     const prontos = dadosProntosParaMapa(dadosNovos)
     if (!prontos) return false
@@ -4038,13 +4112,12 @@ export default function App() {
         const perfil = snap.data()
         const dadosFirestore = normalizarDadosPerfil(perfil.dados)
         const perfilCompleto = perfil.mapaGerado === true && dadosNataisCompletos(dadosFirestore)
-        if (perfilCompleto) return false
+        if (perfilCompleto && !opts.permitirEdicao) return false
       }
-      await setDoc(ref, {
-        dados: prontos,
-        dadosTravados: true,
-        mapaGerado: true,
-      }, { merge: true })
+      const payload = opts.permitirEdicao
+        ? { dados: prontos }
+        : { dados: prontos, dadosTravados: true, mapaGerado: true }
+      await setDoc(ref, payload, { merge: true })
       return true
     } catch (e) {
       console.warn('[Sidus] Não foi possível guardar o perfil:', e?.message)
@@ -4182,6 +4255,22 @@ export default function App() {
     } catch { /* offline */ }
   }, [utilizador])
 
+  const handleEditarDadosNatalis = useCallback(async (parcial) => {
+    const chave = utilizador?.uid ? `sidus_natal_edits_${utilizador.uid}` : 'sidus_natal_edits_local'
+    const usados = parseInt(localStorage.getItem(chave) || '0', 10)
+    if (usados >= 1) return false
+    const novos = { ...dados, ...parcial }
+    setDados(novos)
+    const prontos = dadosProntosParaMapa(novos)
+    if (prontos) {
+      const mapa = calcularMapaNatalMotor(prontos, sweRef.current)
+      if (mapaNatalValido(mapa)) setMapaNatal(mapa)
+    }
+    await guardarPerfil(novos, { permitirEdicao: true })
+    localStorage.setItem(chave, '1')
+    return true
+  }, [dados, utilizador])
+
   const registarOraclePerguntaUsada = useCallback(async (total) => {
     setOraclePerguntasUsadas(total)
     if (!utilizador || !firebaseDisponivel || !db) return
@@ -4248,6 +4337,8 @@ export default function App() {
   const mostrarNavbar = utilizador && contaConfigurada && passo !== 'paywall' && passo !== 'vipPromo'
 
   const chatFullScreen = passo === 'chat'
+  const mostrarBottomNav = !isDesktop && mostrarNavbar && !chatFullScreen
+    && passo !== 'onboarding' && passo !== 'paywall' && passo !== 'vipPromo'
   const linkEmailPendente = (() => {
     const p = new URLSearchParams(location.search)
     return p.get('mode') === 'verifyEmail' && Boolean(p.get('oobCode'))
@@ -4291,7 +4382,7 @@ export default function App() {
       }
       return <EcraAuth tipo={tipoAuth} onMudar={setTipoAuth} isDesktop={isDesktop} firebaseOk={firebaseDisponivel} />
     }
-    if (precisaVerificarEmail(utilizador)) {
+    if (bloqueadoPorEmailNaoVerificado(utilizador, passo)) {
       return (
         <EcraVerificarEmail
           utilizador={utilizador}
@@ -4346,13 +4437,20 @@ export default function App() {
     switch (passo) {
       case 'home':
       case 'dashboard':
-        return <Dashboard nome={dados.nome} mapaNatal={mapaNatal} ceuAgora={ceuAgora} aspetos={aspetosAgora} onOraculo={() => irPara('chat')} onPrivacidade={() => irPara('privacidade')} isDesktop={isDesktop} isPremium={isPremium} onUpgrade={() => irPara('paywall')} onTarot={() => irPara('tarot')} onMapa={() => irPara('mapa')} userEmail={utilizador?.email} user={utilizador} oraclePerguntasUsadas={oraclePerguntasUsadas} leiturasTarotUsadas={leiturasTarotUsadas} isBrasil={isBrasil} />
+        return (
+          <>
+            <Dashboard nome={dados.nome} mapaNatal={mapaNatal} ceuAgora={ceuAgora} aspetos={aspetosAgora} onOraculo={() => irPara('chat')} onPrivacidade={() => irPara('privacidade')} isDesktop={isDesktop} isPremium={isPremium} onUpgrade={() => irPara('paywall')} onTarot={() => irPara('tarot')} onMapa={() => irPara('mapa')} userEmail={utilizador?.email} user={utilizador} oraclePerguntasUsadas={oraclePerguntasUsadas} leiturasTarotUsadas={leiturasTarotUsadas} isBrasil={isBrasil} />
+            {!isDesktop && contaConfigurada && (
+              <PostOnboardingTour onIrTarot={() => irPara('tarot')} onIrOraculo={() => irPara('chat')} />
+            )}
+          </>
+        )
       case 'mapa':
         return <MapaAstral mapaNatal={mapaNatal} dados={dados} planetasNascimento={planetasNascimento} mapaDesbloqueado={isPremium || mapaCompleto} isPremium={isPremium} onUpgrade={() => irPara('paywall')} onComprarMapa={() => abrirPagamento(t('mapa.buyDesc'), PRECO_MAPA_COMPLETO, null, { productType: 'mapa' })} onMapaGerado={handleMapaGerado} isDesktop={isDesktop} motorAstro={motorAstro} perfilCarregando={perfilCarregando} reparandoDados={reparandoDados} mapaGerado={mapaGerado} onCompletarNatal={() => irPara('home')} obterIdToken={obterIdTokenOracle} interpretacaoPerfil={interpretacaoMapa} />
       case 'tarot':
         return (
           <Suspense fallback={<RouteLoader />}>
-            <EcraTarotLazy mapaNatal={mapaNatal} isPremium={acessoVip} userId={utilizador?.uid} leiturasTarotUsadas={leiturasTarotUsadas} tarotCreditoPago={tarotCreditoPago} onTarotCreditoConsumido={() => setTarotCreditoPago(false)} onLeituraGratisUsada={registarLeituraTarotGratis} onPagar={abrirPagamento} onVoltar={() => irPara('home')} onPremium={() => irPara('paywall')} isBrasil={isBrasil} />
+            <EcraTarotLazy mapaNatal={mapaNatal} isPremium={acessoVip} userId={utilizador?.uid} leiturasTarotUsadas={leiturasTarotUsadas} tarotCreditoPago={tarotCreditoPago} onTarotCreditoConsumido={() => setTarotCreditoPago(false)} onLeituraGratisUsada={registarLeituraTarotGratis} onLeituraConcluida={() => { if (precisaVerificarEmail(utilizador)) marcarTarotPreVerifyUsado() }} onPagar={abrirPagamento} onVoltar={() => irPara('home')} onPremium={() => irPara('paywall')} isBrasil={isBrasil} />
           </Suspense>
         )
       case 'bussola':
@@ -4398,7 +4496,7 @@ export default function App() {
           </Suspense>
         )
       case 'ferramentas':
-        return <Ferramentas onFerramenta={handleFerramenta} isDesktop={isDesktop} acessoVip={acessoVip} />
+        return <Ferramentas onFerramenta={handleFerramenta} isDesktop={isDesktop} acessoVip={acessoVip} mapaNatal={mapaNatal} onCompletarMapa={() => irPara('onboarding')} />
       case 'paywall':
         return <Paywall onVoltar={() => irPara('home')} onPagar={abrirPagamento} onPromo={() => irPara('vipPromo')} onSucesso={() => { setIsPremium(true); setMapaCompleto(true); irPara(dadosNataisMinimos(dados) ? 'mapa' : 'onboarding') }} isDesktop={isDesktop} isBrasil={isBrasil} oraclePerguntasUsadas={oraclePerguntasUsadas} leiturasTarotUsadas={leiturasTarotUsadas} />
       case 'chat':
@@ -4408,6 +4506,7 @@ export default function App() {
           dadosBloqueados={dadosBloqueados}
           onLogout={handleLogout}
           onVipPromo={() => irPara('vipPromo')}
+          onEditarDados={handleEditarDadosNatalis}
           obterIdToken={obterIdTokenOracle} />
       default:
         return <Dashboard nome={dados.nome} mapaNatal={mapaNatal} ceuAgora={ceuAgora} aspetos={aspetosAgora} onOraculo={() => irPara('chat')} onPrivacidade={() => irPara('privacidade')} isDesktop={isDesktop} isPremium={isPremium} onUpgrade={() => irPara('paywall')} onTarot={() => irPara('tarot')} onMapa={() => irPara('mapa')} userEmail={utilizador?.email} user={utilizador} oraclePerguntasUsadas={oraclePerguntasUsadas} leiturasTarotUsadas={leiturasTarotUsadas} isBrasil={isBrasil} />
@@ -4484,7 +4583,10 @@ export default function App() {
       )}
 
       <div
-        className={!utilizador ? 'landing-auth-page-wrap' : undefined}
+        className={[
+          !utilizador ? 'landing-auth-page-wrap' : null,
+          mostrarBottomNav ? 'mobile-shell-pad-bottom' : null,
+        ].filter(Boolean).join(' ') || undefined}
         style={{
         paddingTop: paddingTopo,
         marginTop: margemNav,
@@ -4516,6 +4618,9 @@ export default function App() {
           dados={dados}
           fotoPerfil={fotoPerfil}
         />
+      )}
+      {mostrarBottomNav && (
+        <MobileBottomNav passo={passo} onNavigate={irPara} />
       )}
 
       {/* Modal de pagamento - sobrepõe tudo */}

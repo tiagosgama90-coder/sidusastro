@@ -3,6 +3,8 @@ import { useLanguage } from '../lib/i18n/LanguageContext.jsx'
 import { ReviewsAdminPanel } from './ReviewsAdminPanel.jsx'
 import { VipPromoAdminPanel } from './VipPromoAdminPanel.jsx'
 import { emailTemPremiumPrivilegiado } from '../lib/premiumAccess.js'
+import { CampoCidadeField } from './CampoCidadeField.jsx'
+import { pesquisarFusoHorario } from '../lib/geocoding.js'
 
 const CORES = {
   fundo:'#0B071E', dourado:'#DFB76C', douradoEscuro:'#B8944F',
@@ -23,12 +25,23 @@ function formatarData(iso) {
   return `${d}/${m}/${a}`
 }
 
-export function Perfil({ utilizador, dados, mapaNatal, isPremium, dadosBloqueados, onLogout, onVipPromo, obterIdToken }) {
+export function Perfil({ utilizador, dados, mapaNatal, isPremium, dadosBloqueados, onLogout, onVipPromo, onEditarDados, obterIdToken }) {
   const { t, ts, te } = useLanguage()
   const [foto, setFoto] = useState(() => {
     try { return localStorage.getItem('sidus_foto') || null } catch { return null }
   })
   const inputFoto = useRef(null)
+  const chaveEdits = utilizador?.uid ? `sidus_natal_edits_${utilizador.uid}` : 'sidus_natal_edits_local'
+  const editsUsados = (() => {
+    try { return parseInt(localStorage.getItem(chaveEdits) || '0', 10) >= 1 } catch { return false }
+  })()
+  const [editando, setEditando] = useState(false)
+  const [horaEdit, setHoraEdit] = useState(dados?.hora || '')
+  const [cidadeEdit, setCidadeEdit] = useState(dados?.cidade || '')
+  const [localizacaoEdit, setLocalizacaoEdit] = useState(dados?.localizacao || null)
+  const [fusoEdit, setFusoEdit] = useState(dados?.fuso ?? null)
+  const [aGuardar, setAGuardar] = useState(false)
+  const [msgEdit, setMsgEdit] = useState(null)
 
   const handleFoto = (e) => {
     const file = e.target.files?.[0]
@@ -44,6 +57,36 @@ export function Perfil({ utilizador, dados, mapaNatal, isPremium, dadosBloqueado
 
   const nome = dados?.nome || utilizador?.displayName || t('perfil.defaultName')
   const email = utilizador?.email || ''
+
+  const seleccionarCidade = async (loc) => {
+    const cidadeCurta = loc.nome?.split(',')[0] || loc.nome
+    setCidadeEdit(cidadeCurta)
+    setLocalizacaoEdit({ ...loc, nome: loc.nome })
+    setFusoEdit(null)
+    try {
+      const tz = await pesquisarFusoHorario(loc.lat, loc.lon)
+      setFusoEdit(tz)
+    } catch { /* ignore */ }
+  }
+
+  const guardarEdicao = async () => {
+    if (!onEditarDados || editsUsados) return
+    setAGuardar(true)
+    setMsgEdit(null)
+    const ok = await onEditarDados({
+      hora: horaEdit,
+      cidade: cidadeEdit,
+      localizacao: localizacaoEdit,
+      fuso: fusoEdit,
+    })
+    setAGuardar(false)
+    if (ok) {
+      setMsgEdit('ok')
+      setEditando(false)
+    } else {
+      setMsgEdit('fail')
+    }
+  }
 
   return (
     <div style={{ padding:'24px 20px 110px' }}>
@@ -131,12 +174,50 @@ export function Perfil({ utilizador, dados, mapaNatal, isPremium, dadosBloqueado
           display:'flex', gap:10, alignItems:'flex-start',
         }}>
           <span style={{fontSize:16}}>🔒</span>
-          <div>
+          <div style={{ flex: 1 }}>
             <div style={{fontSize:13,fontWeight:700,color:CORES.dourado,marginBottom:3}}>{t('perfil.lockedTitle')}</div>
             <div style={{fontSize:11,color:CORES.brancoMuted,lineHeight:1.5}}>
               {t('perfil.lockedDesc')}
             </div>
+            {onEditarDados && !editsUsados && !editando && (
+              <button type="button" className="perfil-edit-natal__btn" onClick={() => setEditando(true)}>
+                {t('perfil.editNatalBtn')}
+              </button>
+            )}
+            {editsUsados && (
+              <p style={{ margin: '8px 0 0', fontSize: 11, color: CORES.brancoMuted }}>{t('perfil.editNatalUsed')}</p>
+            )}
           </div>
+        </div>
+      )}
+
+      {editando && onEditarDados && (
+        <div className="perfil-edit-natal">
+          <h4>{t('perfil.editNatalTitle')}</h4>
+          <p>{t('perfil.editNatalHint')}</p>
+          <label className="perfil-edit-natal__label">{t('perfil.editNatalTime')}</label>
+          <input
+            type="time"
+            value={horaEdit}
+            onChange={(e) => setHoraEdit(e.target.value)}
+            className="perfil-edit-natal__input"
+          />
+          <CampoCidadeField
+            label={t('perfil.editNatalPlace')}
+            valor={cidadeEdit}
+            localizacao={localizacaoEdit}
+            onChange={setCidadeEdit}
+            onSelect={seleccionarCidade}
+            placeholder={dados?.cidade || ''}
+          />
+          <div className="perfil-edit-natal__actions">
+            <button type="button" className="perfil-edit-natal__cancel" onClick={() => setEditando(false)}>{t('common.close')}</button>
+            <button type="button" className="perfil-edit-natal__save" onClick={guardarEdicao} disabled={aGuardar || !horaEdit || !localizacaoEdit}>
+              {aGuardar ? t('common.loading') : t('perfil.editNatalSave')}
+            </button>
+          </div>
+          {msgEdit === 'ok' && <p className="perfil-edit-natal__ok">{t('perfil.editNatalSuccess')}</p>}
+          {msgEdit === 'fail' && <p className="perfil-edit-natal__fail">{t('perfil.editNatalUsed')}</p>}
         </div>
       )}
 
