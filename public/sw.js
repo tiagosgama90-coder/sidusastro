@@ -1,6 +1,6 @@
 // Service Worker para notificações PWA - Sidus Astro
-// v5: purge total de caches em deploy (guias/landing actualizados)
-const CACHE_NAME = 'sidusastro-v5'
+// v6: purge caches após hotfix ErrorBoundary (import em App.jsx)
+const CACHE_NAME = 'sidusastro-v6'
 const OFFLINE_URLS = ['/manifest.json', '/favicon.svg']
 
 const SIGNO_EMOJI = {
