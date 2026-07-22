@@ -760,7 +760,7 @@ function carregarDiario() {
   try { return JSON.parse(localStorage.getItem(CHAVE_DIARIO)||'[]') } catch { return [] }
 }
 
-export function DiarioAstral({ mapaNatal }) {
+export function DiarioAstral({ mapaNatal, onVoltar }) {
   const { lang, t, ts } = useLanguage()
   const [entradas, setEntradas] = useState(carregarDiario)
   const [nova, setNova]         = useState('')
@@ -799,9 +799,13 @@ export function DiarioAstral({ mapaNatal }) {
   }
 
   return (
-    <div style={{padding:'20px 20px 110px'}}>
-      <h2 style={{fontSize:20,fontWeight:700,color:CORES.dourado,marginBottom:4}}>{t('ferramentasPremium.diario.title')}</h2>
-      <p style={{fontSize:13,color:CORES.brancoMuted,marginBottom:20}}>{t('ferramentasPremium.diario.subtitle')}</p>
+    <PaginaFerramenta>
+      <BotaoVoltar onVoltar={onVoltar} t={t} />
+      <CabecalhoFerramenta titulo={t('ferramentasPremium.diario.title')}>
+        <p style={{ fontSize: 13, color: CORES.brancoMuted, margin: 0 }}>
+          {t('ferramentasPremium.diario.subtitle')}
+        </p>
+      </CabecalhoFerramenta>
 
       <div style={{background:'rgba(255,255,255,0.04)',border:`1px solid ${CORES.vidroBorda}`,borderRadius:14,padding:18,marginBottom:20}}>
         <div style={{display:'flex',gap:8,marginBottom:12,flexWrap:'wrap'}}>
@@ -849,7 +853,7 @@ export function DiarioAstral({ mapaNatal }) {
           })}
         </div>
       )}
-    </div>
+    </PaginaFerramenta>
   )
 }
 
