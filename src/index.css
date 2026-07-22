@@ -3760,19 +3760,25 @@ html.sidus-no-ads .google-auto-placed {
   }
 }
 
-/* Chat oráculo — desktop: preencher área abaixo da navbar sem overflow */
+/* Chat oráculo — preencher área abaixo da navbar (mobile + desktop) */
 .oracle-chat {
   display: flex;
   flex-direction: column;
-  height: 100svh;
-  max-height: 100svh;
-  position: relative;
-  z-index: 1;
-}
-
-.oracle-chat--desktop {
+  flex: 1;
+  min-height: 0;
   height: 100%;
   max-height: 100%;
-  min-height: 0;
-  flex: 1;
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.oracle-chat__input-bar {
+  padding-bottom: max(22px, env(safe-area-inset-bottom, 22px));
+}
+
+@media (max-width: 767px) {
+  .oracle-chat__input-bar {
+    padding-bottom: max(14px, env(safe-area-inset-bottom, 14px));
+  }
 }

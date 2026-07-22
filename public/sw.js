@@ -1,6 +1,6 @@
 // Service Worker para notificações PWA - Sidus Astro
-// v13: tarot mobile lista vertical compacta (sem carrossel)
-const CACHE_NAME = 'sidusastro-v13'
+// v14: oracle chat mobile layout fix
+const CACHE_NAME = 'sidusastro-v14'
 const OFFLINE_URLS = ['/manifest.json', '/favicon.svg']
 
 const SIGNO_EMOJI = {

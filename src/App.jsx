@@ -3041,7 +3041,7 @@ function Chat({ mapaNatal, isPremium, userId, oracleRemotas, onOracleUsada, onUp
   }
 
   return (
-    <div className={isDesktop ? 'oracle-chat oracle-chat--desktop' : 'oracle-chat'}>
+    <div className="oracle-chat">
       {/* Cabeçalho */}
       <header style={{ padding: '14px 18px', background: 'rgba(11,7,30,0.97)', borderBottom: `1px solid ${CORES.vidroBorda}`, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0, gap: 10 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, minWidth: 0 }}>
@@ -3192,7 +3192,7 @@ function Chat({ mapaNatal, isPremium, userId, oracleRemotas, onOracleUsada, onUp
       </div>
 
       {/* Input */}
-      <div style={{ padding: '10px 14px 22px', background: 'rgba(11,7,30,0.97)', borderTop: `1px solid ${CORES.vidroBorda}`, flexShrink: 0 }}>
+      <div className="oracle-chat__input-bar" style={{ padding: '10px 14px 0', background: 'rgba(11,7,30,0.97)', borderTop: `1px solid ${CORES.vidroBorda}`, flexShrink: 0 }}>
         {!isPremium && (
           <p style={{
             fontSize: 11,
@@ -4488,11 +4488,13 @@ export default function App() {
         style={{
         paddingTop: paddingTopo,
         marginTop: margemNav,
-        paddingBottom: chatFullScreen && !isDesktop ? 72 : 0,
-        height: chatFullScreen && isDesktop ? `calc(100vh - ${paddingTopo}px)` : undefined,
-        overflow: chatFullScreen && isDesktop ? 'hidden' : undefined,
+        paddingBottom: 0,
+        height: chatFullScreen ? `calc(100svh - ${paddingTopo}px)` : undefined,
+        maxHeight: chatFullScreen ? `calc(100svh - ${paddingTopo}px)` : undefined,
+        overflow: chatFullScreen ? 'hidden' : undefined,
         display: chatFullScreen ? 'flex' : undefined,
         flexDirection: chatFullScreen ? 'column' : undefined,
+        minHeight: chatFullScreen ? 0 : undefined,
         position: 'relative',
         zIndex: 1,
       }}>
@@ -4503,7 +4505,9 @@ export default function App() {
       {!isPremium && allowsAds() && shouldShowAdsOnPasso(passo) && (
         <AdSenseBanner key={passo} isPremium={isPremium} />
       )}
-      <RodapeSidus isDesktop={isDesktop} mostrarNavbar={mostrarNavbar} />
+      {!chatFullScreen && (
+        <RodapeSidus isDesktop={isDesktop} mostrarNavbar={mostrarNavbar} />
+      )}
       {mostrarNavbar && (
         <Navbar
           passo={passo}
