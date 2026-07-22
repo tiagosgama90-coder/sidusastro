@@ -453,6 +453,85 @@ function TelaDiariaBloqueada({ t, lang, ativa, msRestante, onVoltar }) {
   )
 }
 
+function textoHorizonteTemporal(t, tipoId, campo) {
+  if (!tipoId) return null
+  const val = t(`tarot.types.${tipoId}.${campo}`)
+  if (!val || String(val).startsWith('tarot.types.')) return null
+  return val
+}
+
+function InfoHorizonteTemporal({ tipoId, t, compact = false, centered = false }) {
+  const prazo = textoHorizonteTemporal(t, tipoId, 'prazo')
+  const foco = textoHorizonteTemporal(t, tipoId, 'foco')
+  if (!prazo) return null
+
+  const boxStyle = compact ? {
+    marginTop: 8,
+    padding: '9px 11px',
+    borderRadius: 10,
+    background: 'rgba(223,183,108,0.08)',
+    border: '1px solid rgba(223,183,108,0.24)',
+    textAlign: 'left',
+  } : {
+    marginTop: centered ? 14 : 0,
+    marginBottom: 20,
+    padding: '14px 16px',
+    borderRadius: 14,
+    background: 'linear-gradient(135deg,rgba(223,183,108,0.1),rgba(139,92,246,0.06))',
+    border: `1px solid ${CORES.vidroBorda}`,
+    textAlign: centered ? 'center' : 'left',
+  }
+
+  return (
+    <div style={boxStyle}>
+      <div style={{
+        fontSize: compact ? 9 : 10,
+        color: CORES.dourado,
+        textTransform: 'uppercase',
+        letterSpacing: '0.08em',
+        fontWeight: 700,
+        marginBottom: compact ? 5 : 8,
+      }}>
+        {compact ? t('tarot.timeframeCovers') : t('tarot.timeframeTitle')}
+      </div>
+      <div style={{
+        display: 'inline-block',
+        fontSize: compact ? 12 : 15,
+        fontWeight: 700,
+        color: CORES.branco,
+        background: 'rgba(223,183,108,0.14)',
+        border: '1px solid rgba(223,183,108,0.35)',
+        borderRadius: 8,
+        padding: compact ? '4px 9px' : '6px 12px',
+        marginBottom: foco ? (compact ? 6 : 10) : 0,
+      }}>
+        {prazo}
+      </div>
+      {foco && (
+        <p style={{
+          fontSize: compact ? 10 : 12,
+          color: CORES.brancoMuted,
+          lineHeight: 1.5,
+          margin: 0,
+        }}>
+          {foco}
+        </p>
+      )}
+      {!compact && (
+        <p style={{
+          fontSize: 10,
+          color: 'rgba(255,255,255,0.42)',
+          lineHeight: 1.45,
+          margin: '10px 0 0',
+          fontStyle: 'italic',
+        }}>
+          {t('tarot.timeframeNotDuration')}
+        </p>
+      )}
+    </div>
+  )
+}
+
 function TelaSeleccionar({ tipos, onSeleccionar, isPremium, gratisEsgotada, restantes, tick, onVoltar, userId, lang, t, isBrasil = false, precoLeituraFmt = '2,00', vipPrecoFmt = '9,99' }) {
   void tick
   const diariaAtiva = !podeFazerLeituraDiaria(userId)
@@ -472,6 +551,18 @@ function TelaSeleccionar({ tipos, onSeleccionar, isPremium, gratisEsgotada, rest
         </div>
         <h2 style={{fontSize:20,fontWeight:700,color:CORES.branco,margin:'0 0 4px'}}>{t('tarot.subtitle')}</h2>
         <p style={{fontSize:12,color:CORES.brancoMuted,margin:0}}>{t('tarot.desc')}</p>
+      </div>
+      <div style={{
+        marginBottom: 14,
+        padding: '10px 14px',
+        borderRadius: 10,
+        background: 'rgba(139,92,246,0.08)',
+        border: '1px solid rgba(139,92,246,0.22)',
+      }}>
+        <p style={{ fontSize: 11, color: CORES.brancoMuted, margin: 0, lineHeight: 1.55 }}>
+          <span style={{ color: CORES.dourado, fontWeight: 700 }}>⏳ </span>
+          {t('tarot.timeframeListHint')}
+        </p>
       </div>
       {!isPremium && (
         <div style={{background:'rgba(223,183,108,0.07)',border:`1px solid rgba(223,183,108,0.25)`,borderRadius:10,padding:'8px 14px',marginBottom:18,display:'flex',alignItems:'center',gap:8}}>
@@ -496,16 +587,7 @@ function TelaSeleccionar({ tipos, onSeleccionar, isPremium, gratisEsgotada, rest
             <div style={{flex:1}}>
               <div style={{fontSize:14,fontWeight:600,color:CORES.branco}}>{tipo.nome}</div>
               <div style={{fontSize:11,color:CORES.brancoMuted}}>{tipo.desc}</div>
-              {tipo.prazoKey && (
-                <div style={{fontSize:10,marginTop:5,color:CORES.dourado,fontWeight:600}}>
-                  ⏱ {t(tipo.prazoKey)}
-                </div>
-              )}
-              {tipo.focoKey && (
-                <div style={{fontSize:10,marginTop:3,color:CORES.brancoMuted,lineHeight:1.4}}>
-                  {t(tipo.focoKey)}
-                </div>
-              )}
+              <InfoHorizonteTemporal tipoId={tipo.id} t={t} compact />
               {tipo.id === 'diaria' ? (
                 <div style={{fontSize:10,marginTop:4,color: diariaAtiva ? '#F87171' : '#34D399'}}>
                   {diariaAtiva
@@ -556,12 +638,7 @@ function TelaPergunta({ tipo, pergunta, setPergunta, onVoltar, podeLer, leituraP
         <div style={{fontSize:44}}>{tipo?.icone}</div>
         <h2 style={{color:CORES.dourado,margin:'8px 0 4px'}}>{tipo?.nome}</h2>
         <p style={{fontSize:12,color:CORES.brancoMuted}}>{tipo?.desc}</p>
-        {tipo?.prazoKey && (
-          <p style={{fontSize:11,color:CORES.dourado,margin:'10px 0 0',fontWeight:600}}>⏱ {t(tipo.prazoKey)}</p>
-        )}
-        {tipo?.focoKey && (
-          <p style={{fontSize:11,color:CORES.brancoMuted,margin:'6px 0 0',lineHeight:1.45}}>{t(tipo.focoKey)}</p>
-        )}
+        <InfoHorizonteTemporal tipoId={tipo?.id} t={t} centered />
       </div>
       <div style={{background:'rgba(255,255,255,0.04)',borderRadius:14,border:`1px solid rgba(223,183,108,0.2)`,padding:18,marginBottom:20}}>
         <label style={{fontSize:11,color:CORES.dourado,textTransform:'uppercase',letterSpacing:'0.08em',display:'block',marginBottom:10}}>
@@ -793,6 +870,8 @@ function TelaRevelar({ cartas, reveladas = [], onRevelar, posicoes = [], tipo, p
           "{pergunta}"
         </div>
       )}
+
+      <InfoHorizonteTemporal tipoId={tipo?.id} t={t} compact />
 
       {/* Cartas */}
       <div style={{display:'flex',justifyContent:'center',flexWrap:'wrap',gap:14,marginBottom:20,overflow:'visible'}}>
