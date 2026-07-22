@@ -615,6 +615,8 @@ export default {
     "startCard": "Starten ({n} Karte)",
     "startCards": "Starten ({n} Karten)",
     "startDaily": "Legung starten",
+    "startShort": "Starten",
+    "swipeGames": "Wischen für alle 9 Legungen ✦",
     "questionLabel": "Was ist Ihre Frage?(optional)",
     "questionPlaceholder": "Schreiben Sie Ihre Frage an das Universum...",
     "shuffleReveal": "✦ Mischen und aufdecken",

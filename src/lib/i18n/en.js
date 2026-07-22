@@ -599,6 +599,8 @@ export default {
     startCard: 'Start ({n} card)',
     startCards: 'Start ({n} cards)',
     startDaily: 'Start reading',
+    startShort: 'Start',
+    swipeGames: 'Swipe to see all 9 spreads ✦',
     questionLabel: 'What is your question? (optional)',
     questionPlaceholder: 'Write your question to the Universe...',
     shuffleReveal: '✦ Shuffle and Reveal',

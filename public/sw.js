@@ -1,6 +1,6 @@
 // Service Worker para notificações PWA - Sidus Astro
-// v7: purge cache após fix mobile tarot centrado + descrição dinâmica
-const CACHE_NAME = 'sidusastro-v7'
+// v8: carousel mobile tarot + cartas pill
+const CACHE_NAME = 'sidusastro-v8'
 const OFFLINE_URLS = ['/manifest.json', '/favicon.svg']
 
 const SIGNO_EMOJI = {
