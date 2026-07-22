@@ -22,7 +22,7 @@ const LEXICO_EN_PT = [
 
 export function normalizarTracos(text) {
   if (!text || typeof text !== 'string') return text
-  return text.replace(/-/g, '-').replace(/-/g, '-')
+  return text.replace(/\u2014/g, '-').replace(/\u2013/g, '-')
 }
 
 export function corrigirLexicoPt(text) {

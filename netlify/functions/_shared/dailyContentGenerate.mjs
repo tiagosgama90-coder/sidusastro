@@ -1,7 +1,7 @@
 import { chatCompletion } from './ai.mjs'
 
 function normalizarTracos(text) {
-  return String(text || '').replace(/-/g, '-').replace(/-/g, '-')
+  return String(text || '').replace(/\u2014/g, '-').replace(/\u2013/g, '-')
 }
 
 function corrigirLexicoPt(text) {
