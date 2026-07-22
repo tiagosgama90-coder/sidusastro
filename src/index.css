@@ -317,7 +317,8 @@ html.sidus-no-ads .google-auto-placed {
 }
 
 /* Títulos de página — mesmo estilo que Mapa Astral */
-.sidus-page-title {
+h1.sidus-page-title {
+  font-family: var(--heading);
   font-size: 22px;
   font-weight: 300;
   letter-spacing: 0.12em;
@@ -325,6 +326,7 @@ html.sidus-no-ads .google-auto-placed {
   color: #DFB76C;
   margin: 0 0 4px;
   text-align: left;
+  line-height: 1.2;
 }
 
 .ferramenta-page {
@@ -335,7 +337,7 @@ html.sidus-no-ads .google-auto-placed {
 }
 
 @media (min-width: 900px) {
-  .sidus-page-title {
+  h1.sidus-page-title {
     font-size: 28px;
   }
 
@@ -3983,12 +3985,19 @@ html.sidus-no-ads .google-auto-placed {
   overflow: hidden;
 }
 
+.oracle-chat-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 35%, rgba(124, 58, 237, 0.22), rgba(11, 7, 30, 0.5));
+  border: 1.5px solid rgba(223, 183, 108, 0.45);
+  box-shadow: 0 0 14px rgba(124, 58, 237, 0.25);
+}
+
 .oracle-chat__title {
   margin: 0;
   line-height: 1.15;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 .oracle-chat__input-bar {
