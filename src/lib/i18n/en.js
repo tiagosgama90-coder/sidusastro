@@ -579,6 +579,7 @@ export default {
     subtitle: 'Virtual Arcana',
     desc: '9 spreads · personalised reading with your natal chart',
     timeframeListHint: 'Each reading covers a different time period in your life - not how long it takes to read the cards.',
+    tapToReveal: 'Tap to reveal ✦',
     timeframeCovers: 'This reading covers:',
     timeframeTitle: 'What time period do the cards speak about?',
     timeframeNotDuration: 'This is not how long the reading takes. It is the time span (past or future) the cards describe in your life.',
