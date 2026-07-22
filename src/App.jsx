@@ -3125,7 +3125,7 @@ function Chat({ mapaNatal, isPremium, userId, oracleRemotas, onOracleUsada, onUp
             ✦
           </div>
           <div style={{ minWidth: 0 }}>
-            <div style={{ fontSize: 18, fontWeight: 700, color: CORES.dourado }}>{t('oracle.title')}</div>
+            <h1 className="sidus-page-title oracle-chat__title">{t('oracle.title')}</h1>
             {isPremium && (
               <div style={{ fontSize: 13, color: CORES.brancoMuted, marginTop: 2 }}>
                 {t('oracle.premiumSubtitle')}

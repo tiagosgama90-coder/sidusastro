@@ -3983,6 +3983,14 @@ html.sidus-no-ads .google-auto-placed {
   overflow: hidden;
 }
 
+.oracle-chat__title {
+  margin: 0;
+  line-height: 1.15;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .oracle-chat__input-bar {
   padding-bottom: max(22px, env(safe-area-inset-bottom, 22px));
 }
