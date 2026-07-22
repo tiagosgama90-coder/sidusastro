@@ -5,6 +5,7 @@
  * ─ 9 tipos de leitura · interpretações personalizadas com mapa natal
  */
 import { useState, useEffect, useRef } from 'react'
+import { Clock } from 'lucide-react'
 import { useLanguage } from '../lib/i18n/LanguageContext.jsx'
 import { localizeArcano, getTiposTarot, getPosicoesTarot } from '../lib/i18n/tarotArcana.js'
 import { PRECO_TAROT, precoTarotVitrine, precoPremiumVitrine, formatPrecoEuro } from '../lib/pricing.js'
@@ -419,11 +420,11 @@ function TelaDiariaBloqueada({ t, lang, ativa, msRestante, onVoltar }) {
         background: 'linear-gradient(135deg,rgba(239,68,68,0.08),rgba(223,183,108,0.06))',
         border: '1px solid rgba(239,68,68,0.25)', borderRadius: 14, padding: '16px 18px', marginBottom: 18,
       }}>
-        <div style={{ fontSize: 10, color: '#F87171', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 6, fontWeight: 700 }}>
+        <div style={{ fontSize: 10, color: '#E8A855', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 6, fontWeight: 700 }}>
           {t('tarot.dailyLocked')}
         </div>
         <p style={{ fontSize: 13, color: CORES.brancoMuted, margin: '0 0 10px', lineHeight: 1.65 }}>{t('tarot.dailyLockedDesc')}</p>
-        <p style={{ fontSize: 14, fontWeight: 600, color: CORES.dourado, margin: 0 }}>
+        <p style={{ fontSize: 14, fontWeight: 600, color: '#E8A855', margin: 0 }}>
           {t('tarot.dailyNextIn', { time: formatarTempoRestante(msRestante, lang) })}
         </p>
       </div>
@@ -534,8 +535,8 @@ function TarotTipoCard({
         <div className="tarot-tipo-card__desc">{tipo.desc}</div>
         {prazo && (
           <div className="tarot-tipo-card__prazo">
-            <span className="tarot-tipo-card__prazo-label">{t('tarot.timeframeCovers')}</span>
-            {prazo}
+            <Clock size={12} className="tarot-tipo-card__prazo-icon" aria-hidden />
+            <span>{prazo}</span>
           </div>
         )}
         {foco && (
@@ -553,8 +554,10 @@ function TarotTipoCard({
           </div>
         )}
       </div>
-      <div className="tarot-tipo-card__cartas">
-        {tipo.id === 'diaria' ? t('tarot.dailyBadge') : (tipo.n > 1 ? t('tarot.cardsPlural', { n: tipo.n }) : t('tarot.cards', { n: tipo.n }))}
+      <div className="tarot-tipo-card__cta" aria-hidden>
+        {tipo.id === 'diaria'
+          ? t('tarot.startDaily')
+          : (tipo.n > 1 ? t('tarot.startCards', { n: tipo.n }) : t('tarot.startCard', { n: tipo.n }))}
       </div>
     </button>
   )
@@ -588,7 +591,7 @@ function TelaSeleccionar({ tipos, onSeleccionar, isPremium, gratisEsgotada, rest
           <span style={{fontSize:16}}>✦</span>
           <span style={{fontSize:12,color:CORES.brancoMuted}}>
             {gratisEsgotada
-              ? <><b style={{color:'#EF4444'}}>{t('tarot.freeExhausted')}</b>{isBrasil ? t('tarot.thenPaidBr', { price: precoLeituraFmt, vipPrice: vipPrecoFmt }) : t('tarot.thenPaid', { price: precoLeituraFmt, vipPrice: vipPrecoFmt })}</>
+              ? <><b style={{color:'#E8A855'}}>{t('tarot.freeExhausted')}</b>{isBrasil ? t('tarot.thenPaidBr', { price: precoLeituraFmt, vipPrice: vipPrecoFmt }) : t('tarot.thenPaid', { price: precoLeituraFmt, vipPrice: vipPrecoFmt })}</>
               : <><b style={{color:CORES.dourado}}>{restantes === 1 ? t('tarot.freeRemaining', { count: restantes }) : t('tarot.freeRemainingPlural', { count: restantes })}</b>{isBrasil ? t('tarot.thenPaidShortBr', { price: precoLeituraFmt }) : t('tarot.thenPaidShort', { price: precoLeituraFmt })}</>}
           </span>
         </div>

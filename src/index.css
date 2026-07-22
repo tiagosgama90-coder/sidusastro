@@ -3193,7 +3193,10 @@ html.sidus-no-ads .google-auto-placed {
   border-radius: 18px;
   padding: 14px 14px 12px;
   background: linear-gradient(165deg, rgba(255, 255, 255, 0.06), rgba(109, 40, 217, 0.08));
-  transition: transform 0.28s ease, box-shadow 0.28s ease, border-color 0.28s ease;
+  transition:
+    transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   overflow: hidden;
   cursor: pointer;
   text-align: left;
@@ -3287,24 +3290,20 @@ html.sidus-no-ads .google-auto-placed {
 }
 
 .tarot-tipo-card__prazo {
+  display: flex;
+  align-items: center;
+  gap: 6px;
   font-size: 11px;
-  color: #DFB76C;
+  color: rgba(223, 183, 108, 0.88);
   line-height: 1.45;
-  font-weight: 600;
-  padding: 6px 9px;
-  border-radius: 8px;
-  background: rgba(223, 183, 108, 0.1);
-  border: 1px solid rgba(223, 183, 108, 0.25);
-  margin-bottom: 6px;
+  font-weight: 500;
+  margin-bottom: 4px;
 }
 
-.tarot-tipo-card__prazo-label {
-  display: block;
-  font-size: 9px;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  opacity: 0.85;
-  margin-bottom: 2px;
+.tarot-tipo-card__prazo-icon {
+  flex-shrink: 0;
+  opacity: 0.75;
+  stroke-width: 1.75;
 }
 
 .tarot-tipo-card__foco {
@@ -3314,7 +3313,7 @@ html.sidus-no-ads .google-auto-placed {
   max-height: 0;
   opacity: 0;
   overflow: hidden;
-  transition: max-height 0.35s ease, opacity 0.3s ease, margin 0.3s ease;
+  transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), margin 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .tarot-tipo-card--magic .tarot-tipo-card__foco {
@@ -3331,18 +3330,34 @@ html.sidus-no-ads .google-auto-placed {
 }
 
 .tarot-tipo-card__badge--ok { color: #34D399; }
-.tarot-tipo-card__badge--warn { color: #F87171; }
+.tarot-tipo-card__badge--warn { color: #E8A855; }
 
-.tarot-tipo-card__cartas {
-  margin-top: 10px;
-  font-size: 10px;
-  color: #DFB76C;
+.tarot-tipo-card__cta {
+  margin-top: 12px;
+  width: 100%;
+  font-size: 12px;
   font-weight: 700;
+  color: #1a1008;
   text-align: center;
-  padding: 6px 8px;
-  border-radius: 8px;
-  background: rgba(223, 183, 108, 0.1);
-  border: 1px solid rgba(223, 183, 108, 0.22);
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(223, 183, 108, 0.5);
+  background: linear-gradient(135deg, rgba(232, 196, 120, 0.95), rgba(201, 150, 75, 0.88));
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  transition:
+    box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+}
+
+.tarot-tipo-card--magic .tarot-tipo-card__cta {
+  border-color: rgba(255, 220, 150, 0.75);
+  box-shadow:
+    0 0 18px rgba(223, 183, 108, 0.45),
+    0 0 8px rgba(255, 200, 100, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  transform: translateY(-1px);
 }
 
 @media (min-width: 900px) {
@@ -3360,4 +3375,21 @@ html.sidus-no-ads .google-auto-placed {
     font-size: 11px;
     color: rgba(255, 255, 255, 0.85);
   }
+}
+
+/* Chat oráculo — desktop: preencher área abaixo da navbar sem overflow */
+.oracle-chat {
+  display: flex;
+  flex-direction: column;
+  height: 100svh;
+  max-height: 100svh;
+  position: relative;
+  z-index: 1;
+}
+
+.oracle-chat--desktop {
+  height: 100%;
+  max-height: 100%;
+  min-height: 0;
+  flex: 1;
 }
