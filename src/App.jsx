@@ -2819,7 +2819,7 @@ async function consultarSidus(pergunta, mapaNatal, historico, lang, idToken, cli
   return consultarOracleServidor(pergunta, mapaNatal, historico, lang, idToken, clientPremium)
 }
 
-function Chat({ mapaNatal, isPremium, userId, oracleRemotas, onOracleUsada, onUpgrade, onPromo, leiturasTarotUsadas = 0, obterIdToken, isBrasil = false }) {
+function Chat({ mapaNatal, isPremium, userId, oracleRemotas, onOracleUsada, onUpgrade, onPromo, leiturasTarotUsadas = 0, obterIdToken, isBrasil = false, isDesktop = false }) {
   const { lang, t } = useLanguage()
   const [perguntasUsadas, setPerguntasUsadas] = useState(() => contarOraclePerguntas(userId, oracleRemotas))
 
@@ -3041,7 +3041,7 @@ function Chat({ mapaNatal, isPremium, userId, oracleRemotas, onOracleUsada, onUp
   }
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100svh', maxHeight: '100svh', position: 'relative', zIndex: 1 }}>
+    <div className={isDesktop ? 'oracle-chat oracle-chat--desktop' : 'oracle-chat'}>
       {/* Cabeçalho */}
       <header style={{ padding: '14px 18px', background: 'rgba(11,7,30,0.97)', borderBottom: `1px solid ${CORES.vidroBorda}`, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0, gap: 10 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, minWidth: 0 }}>
@@ -4402,7 +4402,7 @@ export default function App() {
       case 'paywall':
         return <Paywall onVoltar={() => irPara('home')} onPagar={abrirPagamento} onPromo={() => irPara('vipPromo')} onSucesso={() => { setIsPremium(true); setMapaCompleto(true); irPara(dadosNataisMinimos(dados) ? 'mapa' : 'onboarding') }} isDesktop={isDesktop} isBrasil={isBrasil} oraclePerguntasUsadas={oraclePerguntasUsadas} leiturasTarotUsadas={leiturasTarotUsadas} />
       case 'chat':
-        return <Chat mapaNatal={mapaNatal} isPremium={isPremium} userId={utilizador?.uid} oracleRemotas={oraclePerguntasUsadas} onOracleUsada={registarOraclePerguntaUsada} onUpgrade={() => irPara('paywall')} onPromo={() => irPara('vipPromo')} leiturasTarotUsadas={leiturasTarotUsadas} obterIdToken={obterIdTokenOracle} isBrasil={isBrasil} />
+        return <Chat mapaNatal={mapaNatal} isPremium={isPremium} userId={utilizador?.uid} oracleRemotas={oraclePerguntasUsadas} onOracleUsada={registarOraclePerguntaUsada} onUpgrade={() => irPara('paywall')} onPromo={() => irPara('vipPromo')} leiturasTarotUsadas={leiturasTarotUsadas} obterIdToken={obterIdTokenOracle} isBrasil={isBrasil} isDesktop={isDesktop} />
       case 'perfil':
         return <Perfil utilizador={utilizador} dados={dados} mapaNatal={mapaNatal} isPremium={isPremium}
           dadosBloqueados={dadosBloqueados}
@@ -4424,7 +4424,7 @@ export default function App() {
   return (
     <div className={`sidus-cosmic-shell${!utilizador ? ' sidus-login-shell' : ''}`} style={shellStyle}>
       <LandingCosmicBackground />
-      {isDesktop && utilizador && <MagicCursorTrail />}
+      {isDesktop && utilizador && passo !== 'chat' && passo !== 'tarot' && <MagicCursorTrail />}
       <div className="sidus-cosmic-foreground">
       {!utilizador && isDesktop && <LanguageSwitcher />}
 
@@ -4489,7 +4489,8 @@ export default function App() {
         paddingTop: paddingTopo,
         marginTop: margemNav,
         paddingBottom: chatFullScreen && !isDesktop ? 72 : 0,
-        minHeight: chatFullScreen && isDesktop ? 'calc(100vh - 68px)' : undefined,
+        height: chatFullScreen && isDesktop ? `calc(100vh - ${paddingTopo}px)` : undefined,
+        overflow: chatFullScreen && isDesktop ? 'hidden' : undefined,
         display: chatFullScreen ? 'flex' : undefined,
         flexDirection: chatFullScreen ? 'column' : undefined,
         position: 'relative',
