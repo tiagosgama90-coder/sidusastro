@@ -567,6 +567,11 @@ function TarotTipoCard({
                 <span>{prazo}</span>
               </div>
             )}
+            {foco && (
+              <div className="tarot-tipo-card__foco">
+                <p className="tarot-tipo-card__foco-text">{foco}</p>
+              </div>
+            )}
             {statusBadge}
           </div>
           <div className="tarot-tipo-card__arte">
