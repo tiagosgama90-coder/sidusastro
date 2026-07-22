@@ -23,12 +23,12 @@ export function slugForCarta(carta) {
 export function imagemCartaUrl(carta) {
   const slug = slugForCarta(carta)
   if (!slug) return null
-  if (carta.tipo === 'lenormand') return `/tarot/lenormand/${slug}.svg`
+  if (carta.tipo === 'lenormand') return `/tarot/lenormand/${slug}.png`
   return `/tarot/mystic/${slug}.png`
 }
 
 export function imagemVersoUrl(deck = 'tarot') {
-  if (deck === 'lenormand') return '/tarot/lenormand/verso.svg'
+  if (deck === 'lenormand') return '/tarot/lenormand/verso.png'
   return '/tarot/mystic/verso.png'
 }
 
