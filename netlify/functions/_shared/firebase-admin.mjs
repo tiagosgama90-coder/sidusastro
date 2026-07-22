@@ -1,4 +1,5 @@
 import { cert, getApps, initializeApp } from 'firebase-admin/app'
+import { getAuth as getAdminAuthSdk } from 'firebase-admin/auth'
 import { FieldValue, getFirestore as getAdminFirestore } from 'firebase-admin/firestore'
 import { env } from './env.mjs'
 
@@ -129,7 +130,12 @@ export function getFirestore() {
 
 export function getAdminAuth() {
   if (!ensureInit()) return null
-  return admin.auth()
+  try {
+    return getAdminAuthSdk()
+  } catch (e) {
+    console.error('[getAdminAuth]', e?.message)
+    return null
+  }
 }
 
 async function verifyIdTokenViaRest(idToken) {
@@ -163,11 +169,36 @@ function firebaseWebApiKey() {
   return env('VITE_FIREBASE_API_KEY') || env('FIREBASE_API_KEY') || env('FIREBASE_WEB_API_KEY')
 }
 
-/** Resolve UID pelo email de login Firebase Auth (mais fiável que Firestore). */
+/** Resolve UID pelo email de login (Auth Admin → Firestore → REST). */
 export async function findUidByEmail(email) {
-  const apiKey = firebaseWebApiKey()
   const normalized = email?.trim()?.toLowerCase()
-  if (!apiKey || !normalized) return null
+  if (!normalized) return null
+
+  const auth = getAdminAuth()
+  if (auth) {
+    try {
+      const user = await auth.getUserByEmail(normalized)
+      if (user?.uid) return user.uid
+    } catch (e) {
+      const code = e?.code || e?.errorInfo?.code || ''
+      if (code !== 'auth/user-not-found') {
+        console.warn('[findUidByEmail] admin auth:', e?.message)
+      }
+    }
+  }
+
+  const db = getFirestore()
+  if (db) {
+    try {
+      const snap = await db.collection('users').where('email', '==', normalized).limit(1).get()
+      if (!snap.empty) return snap.docs[0].id
+    } catch (e) {
+      console.warn('[findUidByEmail] firestore:', e?.message)
+    }
+  }
+
+  const apiKey = firebaseWebApiKey()
+  if (!apiKey) return null
   try {
     const res = await fetch(
       `https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=${apiKey}`,
@@ -177,7 +208,11 @@ export async function findUidByEmail(email) {
         body: JSON.stringify({ email: [normalized] }),
       },
     )
-    if (!res.ok) return null
+    if (!res.ok) {
+      const errBody = await res.text().catch(() => '')
+      console.warn('[findUidByEmail] REST lookup failed:', res.status, errBody.slice(0, 120))
+      return null
+    }
     const data = await res.json()
     return data.users?.[0]?.localId || null
   } catch (e) {
