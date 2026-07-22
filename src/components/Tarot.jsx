@@ -12,6 +12,7 @@ import { sortearCartas, getCartaById, MAJOR_ARCANA } from '../lib/tarot/deck.js'
 import { sortearLenormand, LENORMAND_VERSO } from '../lib/tarot/lenormand.js'
 import { interpretarLeitura } from '../lib/tarot/interpretacao.js'
 import { CartaTarot, dimensoesCarta } from './CartaTarot.jsx'
+import { TarotTipoArte } from './TarotTipoArte.jsx'
 import { imagemCartaUrl, imagemVersoUrl } from '../lib/tarot/images.js'
 import {
   leituraDiariaAtiva, podeFazerLeituraDiaria, msAteProximaDiaria,
@@ -27,7 +28,7 @@ const CORES = {
 const CARTA_MOBILE = {
   revelar: 94,
   revelarMini: 70,
-  embaralhar: 86,
+  embaralhar: 94,
   distribuir: 94,
   diaria: 132,
 }
@@ -35,8 +36,8 @@ const CARTA_MOBILE = {
 const CARTA_DESKTOP = {
   revelar: 132,
   revelarMini: 96,
-  embaralhar: 96,
-  distribuir: 114,
+  embaralhar: 132,
+  distribuir: 132,
   diaria: 164,
 }
 
@@ -65,9 +66,7 @@ function cartasNoBaralho(tipoId) {
   return tipoId === 'cigano' ? BARALHO_CIGANO_TOTAL : BARALHO_TAROT_TOTAL
 }
 
-function tamanhoCartaEmbaralhar(base, numCartas) {
-  if (numCartas >= 70) return Math.round(base * 0.68)
-  if (numCartas >= 30) return Math.round(base * 0.78)
+function tamanhoCartaEmbaralhar(base) {
   return base
 }
 
@@ -505,6 +504,13 @@ function InfoHorizonteTemporal({ tipoId, t, inline = false }) {
 function TelaSeleccionar({ tipos, onSeleccionar, isPremium, gratisEsgotada, restantes, tick, onVoltar, userId, lang, t, isBrasil = false, precoLeituraFmt = '2,00', vipPrecoFmt = '9,99' }) {
   void tick
   const diariaAtiva = !podeFazerLeituraDiaria(userId)
+  const [cols, setCols] = useState(() => (typeof window !== 'undefined' && window.innerWidth >= 720 ? 3 : 2))
+  useEffect(() => {
+    const fn = () => setCols(window.innerWidth >= 720 ? 3 : 2)
+    window.addEventListener('resize', fn)
+    return () => window.removeEventListener('resize', fn)
+  }, [])
+
   return (
     <div style={{ padding:'20px 20px 110px' }}>
       {onVoltar && (
@@ -513,14 +519,15 @@ function TelaSeleccionar({ tipos, onSeleccionar, isPremium, gratisEsgotada, rest
         </button>
       )}
       <div style={{
-        background:'linear-gradient(135deg,rgba(223,183,108,0.12),rgba(139,92,246,0.08))',
-        border:`1px solid rgba(223,183,108,0.35)`, borderRadius:14, padding:'14px 18px', marginBottom:16,
+        background:'linear-gradient(135deg,rgba(223,183,108,0.14),rgba(109,40,217,0.1))',
+        border:`1px solid rgba(223,183,108,0.35)`, borderRadius:16, padding:'16px 18px', marginBottom:16,
+        boxShadow:'0 8px 32px rgba(0,0,0,0.2)',
       }}>
-        <div style={{fontSize:10,color:CORES.dourado,textTransform:'uppercase',letterSpacing:'0.12em',marginBottom:4,fontWeight:700}}>
+        <div style={{fontSize:10,color:CORES.dourado,textTransform:'uppercase',letterSpacing:'0.14em',marginBottom:6,fontWeight:700}}>
           {t('tarot.title')}
         </div>
-        <h2 style={{fontSize:20,fontWeight:700,color:CORES.branco,margin:'0 0 4px'}}>{t('tarot.subtitle')}</h2>
-        <p style={{fontSize:12,color:CORES.brancoMuted,margin:0}}>{t('tarot.desc')}</p>
+        <h2 style={{fontSize:22,fontWeight:700,color:CORES.branco,margin:'0 0 6px',letterSpacing:'0.02em'}}>{t('tarot.subtitle')}</h2>
+        <p style={{fontSize:13,color:CORES.brancoSuave,margin:0,lineHeight:1.5}}>{t('tarot.desc')}</p>
       </div>
       {!isPremium && (
         <div style={{background:'rgba(223,183,108,0.07)',border:`1px solid rgba(223,183,108,0.25)`,borderRadius:10,padding:'8px 14px',marginBottom:18,display:'flex',alignItems:'center',gap:8}}>
@@ -532,37 +539,53 @@ function TelaSeleccionar({ tipos, onSeleccionar, isPremium, gratisEsgotada, rest
           </span>
         </div>
       )}
-      <div style={{display:'flex',flexDirection:'column',gap:10}}>
-        {tipos.map(tipo=>(
+      <div style={{
+        display:'grid',
+        gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))`,
+        gap: 12,
+      }}>
+        {tipos.map(tipo=>{
+          const bloqueada = tipo.id === 'diaria' && diariaAtiva
+          return (
           <button key={tipo.id} type="button" onClick={()=>onSeleccionar(tipo)} style={{
-            background: tipo.id === 'diaria' && diariaAtiva ? 'rgba(255,255,255,0.02)' : 'rgba(255,255,255,0.04)',
-            border: tipo.id === 'diaria' && diariaAtiva ? '1px solid rgba(239,68,68,0.25)' : '1px solid rgba(223,183,108,0.18)',
-            borderRadius:14,padding:'15px 18px',cursor:'pointer',textAlign:'left',
-            display:'flex',alignItems:'center',gap:14,
-            opacity: tipo.id === 'diaria' && diariaAtiva ? 0.85 : 1,
+            background: bloqueada
+              ? 'linear-gradient(160deg,rgba(255,255,255,0.02),rgba(0,0,0,0.15))'
+              : 'linear-gradient(160deg,rgba(255,255,255,0.06),rgba(109,40,217,0.08))',
+            border: bloqueada ? '1px solid rgba(239,68,68,0.28)' : '1px solid rgba(223,183,108,0.28)',
+            borderRadius:16,padding:'14px 12px 12px',cursor:'pointer',textAlign:'left',
+            display:'flex',flexDirection:'column',alignItems:'stretch',gap:10,
+            opacity: bloqueada ? 0.82 : 1,
+            boxShadow: bloqueada ? 'none' : '0 6px 24px rgba(0,0,0,0.18)',
+            transition:'transform 0.15s ease, border-color 0.15s ease',
           }}>
-            <span style={{fontSize:28}}>{tipo.icone}</span>
-            <div style={{flex:1}}>
-              <div style={{fontSize:14,fontWeight:600,color:CORES.branco}}>{tipo.nome}</div>
-              <div style={{fontSize:13,color:CORES.brancoSuave,lineHeight:1.45,marginTop:3}}>{tipo.desc}</div>
+            <div style={{ display:'flex', justifyContent:'center' }}>
+              <TarotTipoArte tipoId={tipo.id} size={cols === 3 ? 68 : 76} />
+            </div>
+            <div>
+              <div style={{fontSize:13,fontWeight:700,color:CORES.branco,lineHeight:1.25,marginBottom:6}}>{tipo.nome}</div>
+              <div style={{fontSize:12,color:'rgba(255,255,255,0.88)',lineHeight:1.5,fontWeight:500}}>{tipo.desc}</div>
               <InfoHorizonteTemporal tipoId={tipo.id} t={t} inline />
               {tipo.id === 'diaria' ? (
-                <div style={{fontSize:10,marginTop:4,color: diariaAtiva ? '#F87171' : '#34D399'}}>
+                <div style={{fontSize:10,marginTop:6,color: diariaAtiva ? '#F87171' : '#34D399',fontWeight:600}}>
                   {diariaAtiva
                     ? t('tarot.dailyNextIn', { time: formatarTempoRestante(msAteProximaDiaria(userId), lang) })
                     : t('tarot.dailyOnce')}
                 </div>
               ) : !isPremium && (
-                <div style={{fontSize:10,marginTop:4,color: gratisEsgotada ? '#F87171' : '#34D399'}}>
+                <div style={{fontSize:10,marginTop:6,color: gratisEsgotada ? '#F87171' : '#34D399',fontWeight:600}}>
                   {gratisEsgotada ? t('tarot.paidOption', { price: precoLeituraFmt }) : t('tarot.includedFree', { max: MAX_LEITURAS_GRATIS })}
                 </div>
               )}
             </div>
-            <div style={{fontSize:11,color:CORES.dourado,fontWeight:700}}>
+            <div style={{
+              fontSize:10,color:CORES.dourado,fontWeight:700,textAlign:'center',
+              padding:'5px 8px',borderRadius:8,
+              background:'rgba(223,183,108,0.1)',border:'1px solid rgba(223,183,108,0.22)',
+            }}>
               {tipo.id === 'diaria' ? t('tarot.dailyBadge') : (tipo.n > 1 ? t('tarot.cardsPlural', { n: tipo.n }) : t('tarot.cards', { n: tipo.n }))}
             </div>
           </button>
-        ))}
+        )})}
       </div>
     </div>
   )
@@ -660,7 +683,7 @@ function CartaVersoEmbaralhar({ size, layer, cartaVerso }) {
 
 function TelaEmbaralhar({ t, numCartas = BARALHO_TAROT_TOTAL, cartaVerso = MAJOR_ARCANA[0] }) {
   const CARTA = useTamanhoCartas()
-  const cardSize = tamanhoCartaEmbaralhar(CARTA.embaralhar, numCartas)
+  const cardSize = tamanhoCartaEmbaralhar(CARTA.revelar)
   const { w: cardW, h: cardH } = dimensoesCarta(cardSize)
   const pileLayers = 3
   const pileDepth = Math.round((pileLayers - 1) * 1.8)
@@ -743,8 +766,8 @@ function TelaDistribuir({ cartas, posicoes, distribuindo, t, cartaVerso = MAJOR_
             opacity: i<=distribuindo ? 1 : 0.72,
             filter: i<=distribuindo ? 'none' : 'brightness(0.82)',
           }}>
-            <CartaTarot carta={cartaVerso} virada size={CARTA.distribuir}/>
-            <div style={{fontSize:9,color:CORES.brancoMuted,marginTop:4,width:CARTA.distribuir}}>{pos}</div>
+            <CartaTarot carta={cartaVerso} virada size={CARTA.revelar}/>
+            <div style={{fontSize:9,color:CORES.brancoMuted,marginTop:4,width:CARTA.revelar}}>{pos}</div>
           </div>
         ))}
       </div>
