@@ -273,11 +273,6 @@ export function BussolaCosmica({ mapaNatal, planetasNatal, onVoltar }) {
         </div>
       )}
 
-      {!carregando && dados?.motor && (
-        <p style={{fontSize:10,color:CORES.brancoMuted,marginTop:24,textAlign:'center'}}>
-          {t('ferramentasPremium.bussola.motor', { motor: dados.motor })}
-        </p>
-      )}
     </PaginaFerramenta>
   )
 }
