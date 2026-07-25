@@ -2,7 +2,7 @@ import sharp from 'sharp'
 import { mkdir, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 
-const outDir = path.resolve('public/images/brand')
+const outDir = path.resolve('brand-assets')
 
 const markSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
   <path d="M16 5.5 18.2 13.8 26.5 16 18.2 18.2 16 26.5 13.8 18.2 5.5 16 13.8 13.8 16 5.5Z" stroke="#DFB76C" stroke-width="1.35" stroke-linejoin="round"/>
