@@ -9,8 +9,7 @@ import { pesquisarCidades, pesquisarFusoHorario } from '../lib/geocoding.js'
 import { readLandingDraft, saveLandingDraft, stageLandingDraft, flushLandingDraft } from '../lib/landingDraft.js'
 import { calcularMapaNatal, calcularSignoSolarPorData } from '../lib/astrologia.js'
 import { LeituraGratisDiaria } from './LeituraGratisDiaria.jsx'
-import { useGoogleTranslateRescan, useGoogleTranslateLandingSupport } from '../hooks/useGoogleTranslateRescan.js'
-import { INPUT_NO_TRANSLATE, fusosFallbackLabels } from '../lib/landingTranslate.js'
+import { CITY_SUGGESTION_NO_TRANSLATE, fusosFallbackLabels } from '../lib/landingTranslate.js'
 
 const CORES = {
   dourado: '#DFB76C',
@@ -54,6 +53,23 @@ const inputStyle = {
   boxSizing: 'border-box',
 }
 
+function PortalInputWrap({ children, placeholder, showPlaceholder, placeholderLeft = 42 }) {
+  return (
+    <div className="landing-portal-input-wrap">
+      {children}
+      {showPlaceholder && placeholder ? (
+        <span
+          className="landing-portal-fake-placeholder"
+          style={{ left: placeholderLeft }}
+          aria-hidden="true"
+        >
+          {placeholder}
+        </span>
+      ) : null}
+    </div>
+  )
+}
+
 function CampoDataPortal({ valor, onChange, onBlur, erro, t }) {
   const diaRef = useRef(null)
   const mesRef = useRef(null)
@@ -91,17 +107,26 @@ function CampoDataPortal({ valor, onChange, onBlur, erro, t }) {
     <div className="landing-portal-field">
       <label style={labelStyle}>{t('onboarding.birthDate')}</label>
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 12px 1fr 12px 1.4fr', alignItems: 'center' }}>
-        <input ref={diaRef} inputMode="numeric" maxLength={2} placeholder="DD" value={dia}
-          onChange={(e) => { const d = e.target.value.replace(/\D/g, '').slice(0, 2); setDia(d); if (d.length === 2) mesRef.current?.focus() }}
-          onBlur={onBlur} style={mini} {...INPUT_NO_TRANSLATE} />
+        <div className="landing-portal-input-wrap landing-portal-input-wrap--mini">
+          <input ref={diaRef} inputMode="numeric" maxLength={2} value={dia}
+            onChange={(e) => { const d = e.target.value.replace(/\D/g, '').slice(0, 2); setDia(d); if (d.length === 2) mesRef.current?.focus() }}
+            onBlur={onBlur} style={mini} className="landing-portal-input" />
+          {!dia && <span className="landing-portal-fake-placeholder landing-portal-fake-placeholder--mini" aria-hidden="true">DD</span>}
+        </div>
         <span style={{ textAlign: 'center', color: CORES.brancoMuted, fontSize: 18 }}>/</span>
-        <input ref={mesRef} inputMode="numeric" maxLength={2} placeholder="MM" value={mes}
-          onChange={(e) => { const m = e.target.value.replace(/\D/g, '').slice(0, 2); setMes(m); if (m.length === 2) anoRef.current?.focus() }}
-          onBlur={onBlur} style={mini} {...INPUT_NO_TRANSLATE} />
+        <div className="landing-portal-input-wrap landing-portal-input-wrap--mini">
+          <input ref={mesRef} inputMode="numeric" maxLength={2} value={mes}
+            onChange={(e) => { const m = e.target.value.replace(/\D/g, '').slice(0, 2); setMes(m); if (m.length === 2) anoRef.current?.focus() }}
+            onBlur={onBlur} style={mini} className="landing-portal-input" />
+          {!mes && <span className="landing-portal-fake-placeholder landing-portal-fake-placeholder--mini" aria-hidden="true">MM</span>}
+        </div>
         <span style={{ textAlign: 'center', color: CORES.brancoMuted, fontSize: 18 }}>/</span>
-        <input ref={anoRef} inputMode="numeric" maxLength={4} placeholder="AAAA" value={ano}
-          onChange={(e) => setAno(e.target.value.replace(/\D/g, '').slice(0, 4))}
-          onBlur={onBlur} style={mini} {...INPUT_NO_TRANSLATE} />
+        <div className="landing-portal-input-wrap landing-portal-input-wrap--mini">
+          <input ref={anoRef} inputMode="numeric" maxLength={4} value={ano}
+            onChange={(e) => setAno(e.target.value.replace(/\D/g, '').slice(0, 4))}
+            onBlur={onBlur} style={mini} className="landing-portal-input" />
+          {!ano && <span className="landing-portal-fake-placeholder landing-portal-fake-placeholder--mini" aria-hidden="true">AAAA</span>}
+        </div>
       </div>
       {erro && <p style={{ margin: '6px 0 0', fontSize: 12, color: '#F87171' }}>{erro}</p>}
     </div>
@@ -141,19 +166,24 @@ function CampoCidadePortal({ valor, localizacao, onChange, onSelect, erro, onBlu
     <div ref={containerRef} className="landing-portal-field" style={{ position: 'relative' }}>
       <label style={labelStyle}>{t('onboarding.birthCity')}</label>
       <div style={{ position: 'relative' }}>
-        <input
-          value={valor}
-          onChange={(e) => onChange(e.target.value)}
-          onBlur={onBlur}
-          onFocus={() => sugestoes.length > 0 && setAberto(true)}
+        <PortalInputWrap
           placeholder={t('onboarding.citySearchPlaceholder')}
-          style={{
-            ...inputStyle,
-            paddingRight: 40,
-            borderColor: erro ? 'rgba(248,113,113,0.7)' : localizacao ? 'rgba(74,222,128,0.5)' : CORES.vidroBorda,
-          }}
-          {...INPUT_NO_TRANSLATE}
-        />
+          showPlaceholder={!valor}
+          placeholderLeft={14}
+        >
+          <input
+            value={valor}
+            onChange={(e) => onChange(e.target.value)}
+            onBlur={onBlur}
+            onFocus={() => sugestoes.length > 0 && setAberto(true)}
+            className="landing-portal-input"
+            style={{
+              ...inputStyle,
+              paddingRight: 40,
+              borderColor: erro ? 'rgba(248,113,113,0.7)' : localizacao ? 'rgba(74,222,128,0.5)' : CORES.vidroBorda,
+            }}
+          />
+        </PortalInputWrap>
         <div style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)' }}>
           {aPesquisar ? <Loader2 size={18} color={CORES.dourado} style={{ animation: 'spin 1s linear infinite' }} />
             : localizacao ? <Check size={18} color="#4ADE80" /> : <MapPin size={18} color={CORES.brancoMuted} />}
@@ -170,7 +200,7 @@ function CampoCidadePortal({ valor, localizacao, onChange, onSelect, erro, onBlu
             <li key={s.placeId}>
               <button
                 type="button"
-                translate="no"
+                {...CITY_SUGGESTION_NO_TRANSLATE}
                 onPointerDown={(e) => { e.preventDefault(); onSelect(s); setAberto(false) }}
                 style={{
                   width: '100%', background: 'none', border: 'none', color: CORES.brancoSuave,
@@ -208,8 +238,6 @@ export function LandingBirthPortal({ isDesktop, onSaved, onScrollToLogin }) {
   const erros = validarOnboarding(dados, lang)
   const tocar = (campo) => () => setTocado((p) => ({ ...p, [campo]: true }))
   const tocarTodos = () => setTocado({ nome: true, data: true, hora: true, cidade: true })
-
-  useGoogleTranslateRescan(guardado, lang)
 
   const ferramentasTicker = useMemo(() => {
     const lista = isDesktop ? FERRAMENTAS_LANDING : FERRAMENTAS_MOBILE_TICKER
@@ -355,19 +383,23 @@ export function LandingBirthPortal({ isDesktop, onSaved, onScrollToLogin }) {
               <div className="landing-portal-field">
                 <label style={labelStyle}>{t('onboarding.name')}</label>
                 <div style={{ position: 'relative' }}>
-                  <User size={16} color={CORES.brancoMuted} style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)' }} />
-                  <input
-                    value={nome}
-                    onChange={(e) => setNome(e.target.value)}
-                    onBlur={tocar('nome')}
+                  <User size={16} color={CORES.brancoMuted} style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', zIndex: 1, pointerEvents: 'none' }} />
+                  <PortalInputWrap
                     placeholder={t('onboarding.namePlaceholder')}
-                    style={{
-                      ...inputStyle,
-                      paddingLeft: 42,
-                      borderColor: tocado.nome && erros.nome ? 'rgba(248,113,113,0.7)' : CORES.vidroBorda,
-                    }}
-                    {...INPUT_NO_TRANSLATE}
-                  />
+                    showPlaceholder={!nome}
+                  >
+                    <input
+                      value={nome}
+                      onChange={(e) => setNome(e.target.value)}
+                      onBlur={tocar('nome')}
+                      className="landing-portal-input"
+                      style={{
+                        ...inputStyle,
+                        paddingLeft: 42,
+                        borderColor: tocado.nome && erros.nome ? 'rgba(248,113,113,0.7)' : CORES.vidroBorda,
+                      }}
+                    />
+                  </PortalInputWrap>
                 </div>
                 {tocado.nome && erros.nome && <p style={{ margin: '6px 0 0', fontSize: 12, color: '#F87171' }}>{erros.nome}</p>}
               </div>
@@ -383,12 +415,12 @@ export function LandingBirthPortal({ isDesktop, onSaved, onScrollToLogin }) {
                     value={hora}
                     onChange={(e) => setHora(e.target.value)}
                     onBlur={tocar('hora')}
+                    className="landing-portal-input"
                     style={{
                       ...inputStyle,
                       paddingLeft: 42,
                       borderColor: tocado.hora && erros.hora ? 'rgba(248,113,113,0.7)' : CORES.vidroBorda,
                     }}
-                    {...INPUT_NO_TRANSLATE}
                   />
                 </div>
                 {tocado.hora && erros.hora && <p style={{ margin: '6px 0 0', fontSize: 12, color: '#F87171' }}>{erros.hora}</p>}

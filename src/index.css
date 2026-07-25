@@ -515,9 +515,47 @@ h1.sidus-page-title {
   pointer-events: none;
 }
 
+.landing-portal-input {
+  position: relative;
+  z-index: 1;
+}
+
 .landing-portal-input:focus {
   border-color: rgba(223, 183, 108, 0.55) !important;
   box-shadow: 0 0 0 3px rgba(223, 183, 108, 0.12);
+}
+
+.landing-portal-input-wrap {
+  position: relative;
+  width: 100%;
+}
+
+.landing-portal-input-wrap--mini {
+  width: 100%;
+}
+
+.landing-portal-fake-placeholder {
+  position: absolute;
+  top: 50%;
+  right: 14px;
+  transform: translateY(-50%);
+  color: rgba(255, 255, 255, 0.38);
+  pointer-events: none;
+  font-size: 15px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  z-index: 0;
+}
+
+.landing-portal-fake-placeholder--mini {
+  left: 50%;
+  right: auto;
+  transform: translate(-50%, -50%);
+  font-size: 14px;
+  text-align: center;
+  width: 100%;
+  padding: 0 4px;
 }
 
 .landing-portal-cta {

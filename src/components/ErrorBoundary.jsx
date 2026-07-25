@@ -7,10 +7,15 @@ const CORES = {
   brancoMuted: 'rgba(255, 255, 255, 0.55)',
 }
 
+function isTranslateDomError(message = '') {
+  return /insertBefore|removeChild|not a child of this node/i.test(message)
+}
+
 export class ErrorBoundary extends Component {
   constructor(props) {
     super(props)
     this.state = { hasError: false, error: null }
+    this._translateRetries = 0
   }
 
   static getDerivedStateFromError(error) {
@@ -18,12 +23,20 @@ export class ErrorBoundary extends Component {
   }
 
   componentDidCatch(error, info) {
+    if (isTranslateDomError(error?.message) && this._translateRetries < 2) {
+      this._translateRetries += 1
+      window.setTimeout(() => {
+        this.setState({ hasError: false, error: null })
+      }, 0)
+      return
+    }
     console.error('[Sidus] Erro na interface:', error?.message, info?.componentStack)
   }
 
   componentDidUpdate(prevProps) {
     if (this.state.hasError && prevProps.resetKey !== this.props.resetKey) {
       this.setState({ hasError: false, error: null })
+      this._translateRetries = 0
     }
   }
 
@@ -33,13 +46,14 @@ export class ErrorBoundary extends Component {
 
   handleRetry = () => {
     this.setState({ hasError: false, error: null })
+    this._translateRetries = 0
     this.props.onRetry?.()
   }
 
   render() {
     if (!this.state.hasError) return this.props.children
 
-    const isTranslateCrash = /insertBefore|removeChild|not a child of this node/i.test(this.state.error?.message || '')
+    const isTranslateCrash = isTranslateDomError(this.state.error?.message)
 
     return (
       <div style={{
@@ -73,7 +87,7 @@ export class ErrorBoundary extends Component {
           </p>
           {isTranslateCrash && (
             <p style={{ margin: '0 0 16px', fontSize: 13, lineHeight: 1.55, color: 'rgba(223,183,108,0.9)' }}>
-              Se estás a usar o Google Tradutor, desactiva a tradução desta página - ela interfere com os formulários de nascimento.
+              Se usaste o Tradutor do Google, recarrega a página uma vez — a versão nova já suporta tradução sem bloquear o formulário.
             </p>
           )}
           {this.state.error?.message && (

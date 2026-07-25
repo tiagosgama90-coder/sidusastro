@@ -37,7 +37,6 @@ import { pesquisarCidades, pesquisarFusoHorario, geocodificarCidade } from './li
 import { ModalPagamento, verificarSessaoPagamento } from './components/Pagamento'
 import { PRECO_MAPA_COMPLETO, precoPremiumVitrine, formatPrecoEuro, formatPrecoCompleto } from './lib/pricing.js'
 import { useGeoCountry } from './hooks/useGeoCountry.js'
-import { useGoogleTranslateLandingSupport } from './hooks/useGoogleTranslateRescan.js'
 import { RecaptchaCheckbox } from './components/Recaptcha'
 import { Perfil } from './components/Perfil'
 import { VipPromoPage } from './components/VipPromoPage.jsx'
@@ -957,7 +956,7 @@ async function inicializarPerfilUsuario(user) {
   }, { merge: true })
 }
 
-function Campo({ label, tipo = 'text', valor, onChange, placeholder, erro, onBlur, noTranslate = false }) {
+function Campo({ label, tipo = 'text', valor, onChange, placeholder, erro, onBlur }) {
   return (
     <div style={{ marginBottom: 20 }}>
       <label style={estilos.label}>{label}</label>
@@ -967,8 +966,6 @@ function Campo({ label, tipo = 'text', valor, onChange, placeholder, erro, onBlu
         onChange={(e) => onChange(e.target.value)}
         onBlur={onBlur}
         placeholder={placeholder}
-        className={noTranslate ? 'notranslate' : undefined}
-        translate={noTranslate ? 'no' : undefined}
         style={{ ...estilos.input, borderColor: erro ? 'rgba(248,113,113,0.7)' : CORES.vidroBorda }}
       />
       {erro && <p style={{ margin: '6px 0 0', fontSize: 12, color: '#F87171' }}>{erro}</p>}
@@ -1327,7 +1324,6 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
   const { lang, t } = useLanguage()
   const authPanelRef = useRef(null)
   const portalRef = useRef(null)
-  useGoogleTranslateLandingSupport()
   const [email, setEmail]       = useState('')
   const [senha, setSenha]       = useState('')
   const [confirmar, setConfirmar] = useState('')
@@ -1828,7 +1824,6 @@ function Onboarding({ dados: dadosProp, setDados, onSubmit, isDesktop }) {
           onBlur={tocar('nome')}
           erro={tocado.nome ? erros.nome : null}
           placeholder={t('onboarding.namePlaceholder')}
-          noTranslate
         />
         <div style={{ marginBottom: 20 }}>
           <label style={estilos.label}>{t('onboarding.birthDate')}</label>
@@ -1838,8 +1833,6 @@ function Onboarding({ dados: dadosProp, setDados, onSubmit, isDesktop }) {
             max={new Date().toISOString().slice(0, 10)}
             onChange={(e) => setDados((p) => ({ ...(p || DADOS_VAZIO), data: e.target.value }))}
             onBlur={tocar('data')}
-            className="notranslate"
-            translate="no"
             style={{
               ...estilos.input,
               borderColor: tocado.data && erros.data ? 'rgba(248,113,113,0.7)' : CORES.vidroBorda,
@@ -1856,7 +1849,6 @@ function Onboarding({ dados: dadosProp, setDados, onSubmit, isDesktop }) {
           onChange={(v) => setDados((p) => ({ ...(p || DADOS_VAZIO), hora: v }))}
           onBlur={tocar('hora')}
           erro={tocado.hora ? erros.hora : null}
-          noTranslate
         />
 
         <CampoCidade

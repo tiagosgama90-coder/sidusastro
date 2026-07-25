@@ -1,10 +1,9 @@
-/** Atributos para inputs com dados do utilizador (não traduzir nomes, cidades, datas). */
-export const INPUT_NO_TRANSLATE = {
-  className: 'landing-portal-input',
+export const FUSO_OFFSET_VALUES = [0, 1, -3, 2]
+
+/** Só para nomes de cidades reais nas sugestões — não traduzir geografia. */
+export const CITY_SUGGESTION_NO_TRANSLATE = {
   translate: 'no',
 }
-
-export const FUSO_OFFSET_VALUES = [0, 1, -3, 2]
 
 export function fusosFallbackLabels(t) {
   return FUSO_OFFSET_VALUES.map((value) => ({
