@@ -1824,14 +1824,6 @@ h1.sidus-page-title {
     width: min(110vw, 420px);
     height: min(110vw, 420px);
   }
-
-  /* App logado: hendecagrama desfocado e escondido atrás (como landing) */
-  .sidus-app-shell .landing-cosmic-hendecagram-wrap {
-    opacity: 0.3;
-    filter: blur(14px);
-    width: min(100vw, 380px);
-    height: min(100vw, 380px);
-  }
 }
 
 .landing-auth-divider-mobile {
@@ -1867,7 +1859,6 @@ h1.sidus-page-title {
   z-index: 0;
   pointer-events: none;
   overflow: hidden;
-  contain: paint;
 }
 
 .sidus-cosmic-foreground {
@@ -1875,11 +1866,14 @@ h1.sidus-page-title {
   z-index: 1;
   min-height: 100svh;
   isolation: isolate;
+  transform: translateZ(0);
 }
 
-.sidus-app-content {
+.sidus-app-content,
+.landing-auth-page-wrap {
   position: relative;
   z-index: 1;
+  isolation: isolate;
 }
 
 /* Rasto cósmico — dentro do backdrop, à frente das estrelas */
