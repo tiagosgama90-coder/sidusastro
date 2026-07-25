@@ -4524,7 +4524,6 @@ export default function App() {
     <div className={`sidus-cosmic-shell${!utilizador ? ' sidus-login-shell' : ' sidus-app-shell'}`} style={shellStyle}>
       <div className="sidus-cosmic-backdrop" aria-hidden="true">
         <LandingCosmicBackground />
-        <MagicCursorTrail />
       </div>
       <div className="sidus-cosmic-foreground">
       {!utilizador && isDesktop && <LanguageSwitcher />}
@@ -4643,6 +4642,10 @@ export default function App() {
         onConsentChange={setCookieConsent}
         onPrivacy={() => irPara('privacidade')}
       />
+
+      <div className="sidus-cosmic-fx-layer" aria-hidden="true">
+        <MagicCursorTrail />
+      </div>
       </div>
     </div>
   )
