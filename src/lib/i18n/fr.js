@@ -237,6 +237,13 @@ export default {
     tzHistorical: "Inclut l'heure d'été historique réelle pour votre date de naissance.",
     tzManual: "Sélectionnez le fuseau horaire manuellement :",
     tzFail: "Impossible de détecter le fuseau horaire automatiquement.",
+    manualOffset: "UTC{offset}",
+    tzOffset: {
+      p0: "UTC+0 (Portugal / Royaume-Uni)",
+      p1: "UTC+1 (Espagne / France)",
+      m3: "UTC−3 (Brésil)",
+      p2: "UTC+2 (Grèce / Égypte)",
+    },
     calculate: "Calculer mon destin",
     birthDate: "Date de naissance",
     birthCity: "Ville de naissance",

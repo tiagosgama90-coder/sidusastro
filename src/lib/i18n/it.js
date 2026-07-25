@@ -237,6 +237,13 @@ export default {
     "tzHistorical": "Include l'ora legale storica reale per la tua data di nascita",
     "tzManual": "Seleziona manualmente il fuso orario:",
     "tzFail": "Impossibile rilevare automaticamente il fuso orario.",
+    "manualOffset": "UTC{offset}",
+    "tzOffset": {
+      "p0": "UTC+0 (Portogallo / Regno Unito)",
+      "p1": "UTC+1 (Spagna / Francia)",
+      "m3": "UTC−3 (Brasile)",
+      "p2": "UTC+2 (Grecia / Egitto)"
+    },
     "calculate": "Calcola il mio destino",
     "birthDate": "Data di nascita",
     "birthCity": "Città di nascita",

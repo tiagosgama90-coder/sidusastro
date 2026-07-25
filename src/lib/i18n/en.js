@@ -224,6 +224,13 @@ export default {
     tzHistorical: 'Includes real historical daylight saving for your birth date',
     tzManual: 'Select time zone manually:',
     tzFail: 'Could not detect time zone automatically.',
+    manualOffset: 'UTC{offset}',
+    tzOffset: {
+      p0: 'UTC+0 (Portugal / UK)',
+      p1: 'UTC+1 (Spain / France)',
+      m3: 'UTC−3 (Brazil)',
+      p2: 'UTC+2 (Greece / Egypt)',
+    },
     calculate: 'Calculate My Destiny',
     birthDate: 'Date of Birth',
     birthCity: 'Birth City',

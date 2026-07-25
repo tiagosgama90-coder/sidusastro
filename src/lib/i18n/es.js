@@ -237,6 +237,13 @@ export default {
     tzHistorical: "Incluye horario de verano histórico real para tu fecha de nacimiento.",
     tzManual: "Selecciona la zona horaria manualmente:",
     tzFail: "No se pudo detectar la zona horaria automáticamente.",
+    manualOffset: "UTC{offset}",
+    tzOffset: {
+      p0: "UTC+0 (Portugal / Reino Unido)",
+      p1: "UTC+1 (España / Francia)",
+      m3: "UTC−3 (Brasil)",
+      p2: "UTC+2 (Grecia / Egipto)",
+    },
     calculate: "Calcular mi destino",
     birthDate: "Fecha de nacimiento",
     birthCity: "Ciudad de nacimiento",

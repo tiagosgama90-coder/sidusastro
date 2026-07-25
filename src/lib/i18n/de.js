@@ -237,6 +237,13 @@ export default {
     "tzHistorical": "Beinhaltet die tatsächliche historische Sommerzeit für Ihr Geburtsdatum",
     "tzManual": "Zeitzone manuell auswählen:",
     "tzFail": "Die Zeitzone konnte nicht automatisch erkannt werden.",
+    "manualOffset": "UTC{offset}",
+    "tzOffset": {
+      "p0": "UTC+0 (Portugal / UK)",
+      "p1": "UTC+1 (Spanien / Frankreich)",
+      "m3": "UTC−3 (Brasilien)",
+      "p2": "UTC+2 (Griechenland / Ägypten)"
+    },
     "calculate": "Berechnen Sie mein Schicksal",
     "birthDate": "Geburtsdatum",
     "birthCity": "Geburtsstadt",

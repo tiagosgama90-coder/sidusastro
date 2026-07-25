@@ -958,11 +958,7 @@ async function inicializarPerfilUsuario(user) {
 
 function Campo({ label, tipo = 'text', valor, onChange, placeholder, erro, onBlur, noTranslate = false }) {
   return (
-    <div
-      style={{ marginBottom: 20 }}
-      className={noTranslate ? 'notranslate' : undefined}
-      translate={noTranslate ? 'no' : undefined}
-    >
+    <div style={{ marginBottom: 20 }}>
       <label style={estilos.label}>{label}</label>
       <input
         type={tipo}
@@ -1822,7 +1818,7 @@ function Onboarding({ dados: dadosProp, setDados, onSubmit, isDesktop }) {
         <p style={estilos.subtitulo}>{t('onboarding.tagline')}</p>
       </div>
 
-      <div style={{ ...estilos.vidro, padding: 24 }} className="notranslate" translate="no">
+      <div style={{ ...estilos.vidro, padding: 24 }}>
         <Campo
           label={t('onboarding.name')}
           valor={dados.nome ?? ''}
@@ -1832,7 +1828,7 @@ function Onboarding({ dados: dadosProp, setDados, onSubmit, isDesktop }) {
           placeholder={t('onboarding.namePlaceholder')}
           noTranslate
         />
-        <div style={{ marginBottom: 20 }} className="notranslate" translate="no">
+        <div style={{ marginBottom: 20 }}>
           <label style={estilos.label}>{t('onboarding.birthDate')}</label>
           <input
             type="date"
