@@ -4523,7 +4523,7 @@ export default function App() {
   return (
     <div className={`sidus-cosmic-shell${!utilizador ? ' sidus-login-shell' : ''}`} style={shellStyle}>
       <LandingCosmicBackground />
-      {isDesktop && utilizador && passo !== 'chat' && passo !== 'tarot' && <MagicCursorTrail />}
+      <MagicCursorTrail />
       <div className="sidus-cosmic-foreground">
       {!utilizador && isDesktop && <LanguageSwitcher />}
 
