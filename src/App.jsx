@@ -338,8 +338,8 @@ const estilos = {
   },
   vidro: {
     position: 'relative',
-    zIndex: 1,
-    background: 'rgba(11, 7, 30, 0.72)',
+    zIndex: 2,
+    background: 'rgba(11, 7, 30, 0.88)',
     backdropFilter: 'blur(16px)',
     WebkitBackdropFilter: 'blur(16px)',
     border: `1px solid ${CORES.vidroBorda}`,
@@ -4624,9 +4624,6 @@ export default function App() {
           fotoPerfil={fotoPerfil}
         />
       )}
-      {mostrarBottomNav && (
-        <MobileBottomNav passo={passo} onNavigate={irPara} />
-      )}
 
       {/* Modal de pagamento - sobrepõe tudo */}
       {modalPagamento && (
@@ -4651,6 +4648,9 @@ export default function App() {
         <MagicCursorTrail />
       </div>
       </div>
+      {mostrarBottomNav && (
+        <MobileBottomNav passo={passo} onNavigate={irPara} />
+      )}
     </div>
   )
 }

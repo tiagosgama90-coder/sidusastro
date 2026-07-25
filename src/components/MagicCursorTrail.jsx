@@ -8,7 +8,7 @@ function rgba([r, g, b], a) {
 }
 
 function colorFor(tint, alpha) {
-  if (tint === 'white') return rgba(WHITE, alpha * 0.6)
+  if (tint === 'white') return rgba(WHITE, alpha * 0.75)
   return rgba(GOLD, alpha)
 }
 
@@ -29,35 +29,48 @@ function isInteractiveTarget(el) {
   }
 }
 
-/** Rasto quase impercetível — só desktop */
+/** Rasto suave — desktop e mobile */
 function pushSoftTrail(particulas, x, y) {
   particulas.push({
     kind: 'soft',
-    x: x + (Math.random() - 0.5) * 3,
-    y: y + (Math.random() - 0.5) * 3,
+    x: x + (Math.random() - 0.5) * 4,
+    y: y + (Math.random() - 0.5) * 4,
     life: 1,
-    decay: 0.09,
-    size: 0.3 + Math.random() * 0.35,
-    tint: 'gold',
+    decay: 0.075,
+    size: 0.55 + Math.random() * 0.55,
+    tint: Math.random() > 0.4 ? 'gold' : 'white',
   })
 }
 
-/** Toque leve — 3 grãos de poeira dourada, sem explosão */
+/** Poeira leve ao deslizar o dedo — mobile */
+function pushWandDust(particulas, x, y) {
+  particulas.push({
+    kind: 'dust',
+    x: x + (Math.random() - 0.5) * 5,
+    y: y + (Math.random() - 0.5) * 5,
+    life: 1,
+    decay: 0.05 + Math.random() * 0.02,
+    size: 0.65 + Math.random() * 0.7,
+    tint: Math.random() > 0.35 ? 'gold' : 'white',
+  })
+}
+
+/** Toque em botão — pequena explosãozinha discreta */
 function pushGentleTap(particulas, x, y) {
-  const count = 3
+  const count = 4
   for (let i = 0; i < count; i += 1) {
-    const angle = (Math.PI * 2 * i) / count + (Math.random() - 0.5) * 0.3
-    const speed = 0.2 + Math.random() * 0.35
+    const angle = (Math.PI * 2 * i) / count + (Math.random() - 0.5) * 0.35
+    const speed = 0.35 + Math.random() * 0.45
     particulas.push({
       kind: 'tap',
-      x: x + (Math.random() - 0.5) * 3,
-      y: y + (Math.random() - 0.5) * 3,
+      x: x + (Math.random() - 0.5) * 4,
+      y: y + (Math.random() - 0.5) * 4,
       vx: Math.cos(angle) * speed,
-      vy: Math.sin(angle) * speed - 0.12,
+      vy: Math.sin(angle) * speed - 0.15,
       life: 1,
-      decay: 0.07 + Math.random() * 0.02,
-      size: 0.35 + Math.random() * 0.45,
-      tint: Math.random() > 0.5 ? 'gold' : 'white',
+      decay: 0.065 + Math.random() * 0.02,
+      size: 0.55 + Math.random() * 0.55,
+      tint: Math.random() > 0.45 ? 'gold' : 'white',
     })
   }
 }
@@ -67,9 +80,9 @@ function trimParticles(particulas, max) {
 }
 
 /**
- * Efeito cósmico muito leve:
- * - Mobile: 3 grãos dourados ao tocar botões/links
- * - Desktop: rasto quase invisível + mesmo toque suave
+ * Efeito cósmico leve:
+ * - Mobile: rasto suave ao deslizar + grãos ao tocar botões
+ * - Desktop: rasto suave + toque em botões
  */
 export function MagicCursorTrail({ activo = true }) {
   useEffect(() => {
@@ -80,7 +93,7 @@ export function MagicCursorTrail({ activo = true }) {
     if (!fxLayer) return undefined
 
     const coarse = window.matchMedia('(pointer: coarse)').matches
-    const particleMax = coarse ? 18 : 24
+    const particleMax = coarse ? 32 : 28
 
     const particulas = []
     let w = window.innerWidth
@@ -90,6 +103,7 @@ export function MagicCursorTrail({ activo = true }) {
     let lastBurst = 0
     let lastBurstX = 0
     let lastBurstY = 0
+    let touchActive = false
 
     const canvas = document.createElement('canvas')
     canvas.className = 'magic-cosmic-trail-canvas'
@@ -117,6 +131,12 @@ export function MagicCursorTrail({ activo = true }) {
       trimParticles(particulas, particleMax)
     }
 
+    const dustAt = (x, y) => {
+      pushWandDust(particulas, x, y)
+      if (Math.random() > 0.55) pushWandDust(particulas, x, y)
+      trimParticles(particulas, particleMax)
+    }
+
     const resolvePoint = (e) => {
       if (e.clientX != null && e.clientY != null) {
         return { x: e.clientX, y: e.clientY }
@@ -131,7 +151,7 @@ export function MagicCursorTrail({ activo = true }) {
       const pt = resolvePoint(e)
       if (!pt) return
       const now = performance.now()
-      if (now - lastBurst < 100 && Math.abs(pt.x - lastBurstX) < 14 && Math.abs(pt.y - lastBurstY) < 14) return
+      if (now - lastBurst < 90 && Math.abs(pt.x - lastBurstX) < 16 && Math.abs(pt.y - lastBurstY) < 16) return
       lastBurst = now
       lastBurstX = pt.x
       lastBurstY = pt.y
@@ -140,10 +160,28 @@ export function MagicCursorTrail({ activo = true }) {
 
     const onMove = (e) => {
       const now = performance.now()
-      if (now - lastTrailSpawn < 140) return
+      if (now - lastTrailSpawn < 90) return
       lastTrailSpawn = now
       pushSoftTrail(particulas, e.clientX, e.clientY)
       trimParticles(particulas, particleMax)
+    }
+
+    const onTouchStart = () => {
+      touchActive = true
+    }
+
+    const onTouchEnd = () => {
+      touchActive = false
+    }
+
+    const onTouchMove = (e) => {
+      if (!touchActive) return
+      const t = e.touches?.[0]
+      if (!t) return
+      const now = performance.now()
+      if (now - lastTrailSpawn < 55) return
+      lastTrailSpawn = now
+      dustAt(t.clientX, t.clientY)
     }
 
     let raf = 0
@@ -159,8 +197,8 @@ export function MagicCursorTrail({ activo = true }) {
         if (p.kind === 'tap') {
           p.x += p.vx
           p.y += p.vy
-          p.vx *= 0.96
-          p.vy *= 0.96
+          p.vx *= 0.95
+          p.vy *= 0.95
         }
         if (p.life <= 0) {
           particulas.splice(i, 1)
@@ -168,8 +206,13 @@ export function MagicCursorTrail({ activo = true }) {
         }
 
         const isTap = p.kind === 'tap'
-        const alpha = isTap ? p.life * 0.28 : p.life * 0.14
-        const radius = p.size * p.life
+        const isDust = p.kind === 'dust'
+        const alpha = isTap
+          ? p.life * 0.42
+          : isDust
+            ? p.life * 0.28
+            : p.life * 0.22
+        const radius = p.size * (0.85 + p.life * 0.25)
 
         ctx.beginPath()
         ctx.arc(p.x, p.y, radius, 0, Math.PI * 2)
@@ -185,6 +228,10 @@ export function MagicCursorTrail({ activo = true }) {
 
     window.addEventListener('resize', resize)
     document.addEventListener('visibilitychange', onVisibility)
+    document.addEventListener('touchstart', onTouchStart, { passive: true })
+    document.addEventListener('touchend', onTouchEnd, { passive: true })
+    document.addEventListener('touchcancel', onTouchEnd, { passive: true })
+    document.addEventListener('touchmove', onTouchMove, { passive: true })
     document.addEventListener('touchend', onTap, { passive: true })
     document.addEventListener('click', onTap, { passive: true, capture: true })
 
@@ -197,6 +244,10 @@ export function MagicCursorTrail({ activo = true }) {
       cancelAnimationFrame(raf)
       window.removeEventListener('resize', resize)
       window.removeEventListener('mousemove', onMove)
+      document.removeEventListener('touchstart', onTouchStart)
+      document.removeEventListener('touchend', onTouchEnd)
+      document.removeEventListener('touchcancel', onTouchEnd)
+      document.removeEventListener('touchmove', onTouchMove)
       document.removeEventListener('touchend', onTap)
       document.removeEventListener('pointerup', onTap)
       document.removeEventListener('click', onTap, { capture: true })
