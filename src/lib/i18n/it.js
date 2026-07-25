@@ -36,7 +36,7 @@ export default {
     "tagline": "Dove la mappa del cielo incontra la saggezza delle carte per guidare i tuoi passi.",
     "liveNow": "Live · Sky aggiornato",
     "heroTitle": "La tua carta natale completa.Il tuo destino, decodificato.",
-    "heroSubtitle": "Effemeridi svizzere · Case di Placido · Oracolo Astrale · Tarocchi · Numerologia: il tutto personalizzato con Sole, Luna e Ascendente.",
+    "heroSubtitle": "Effemeridi svizzere · Case di Placido · Chat Oracolo · Tarocchi · Numerologia: il tutto personalizzato con Sole, Luna e Ascendente.",
     "login": "Registrazione",
     "register": "Creare un account",
     "email": "E-mail",
@@ -97,12 +97,12 @@ export default {
         "title": "Domande frequenti",
         "q1": "Cosa ottengo con il tema natale?",
         "a1": "Un rapporto PDF completo e interpretato di alta qualità con Sole, Luna, Ascendente, pianeti, case di Placido e aspetti, calcolato con le effemeridi svizzere.",
-        "q2": "Come funziona l'Oracolo Astrale?",
+        "q2": "Come funziona il Chat Oracolo?",
         "a2": "È una chat sicura di orientamento astrologico personalizzata sul tuo tema natale: amore, carriera, transiti e scopo di vita.",
         "q3": "I miei dati di nascita sono al sicuro?",
         "a3": "Sì, i tuoi dati vengono elaborati crittografati tramite Firebase.",
         "q4": "Qual è la differenza tra il grafico One-off e quello Premium?",
-        "a4": "Il grafico una tantum prevede un pagamento unico: riceverai il report PDF completo senza abbonamento mensile.Sidus Premium include la carta natale completa più oracolo astrale, tarocchi, sinastria e tutti gli strumenti.Se vuoi qualcosa di più del PDF, Premium è la scelta migliore.",
+        "a4": "Il grafico una tantum prevede un pagamento unico: riceverai il report PDF completo senza abbonamento mensile.Sidus Premium include la carta natale completa più Chat Oracolo, tarocchi, sinastria e tutti gli strumenti.Se vuoi qualcosa di più del PDF, Premium è la scelta migliore.",
         "q5": "La mandala astrologica viene calcolata per ogni persona?",
         "a5": "Sì. Ogni ruota viene generata in tempo reale con Swiss Ephemeris a partire dalla data, ora e luogo esatti di nascita - pianeti, case Placidus, aspetti e angoli (ASC/MC) con precisione di efemeridi professionali.",
         "q6": "Ho bisogno dell'ora esatta di nascita?",
@@ -176,7 +176,7 @@ export default {
       },
       "oraculo": {
         "badge": "Oracolo stellare",
-        "title": "Astrologo astrale dedicato",
+        "title": "Astrologo dedicato",
         "desc": "Chiedi qualsiasi cosa: risposte basate sul tuo tema natale, non oroscopi generici.",
         "pill": "Chatta Oracolo"
       },
@@ -492,7 +492,7 @@ export default {
     }
   },
   "oracle": {
-    "title": "Oracolo astrale",
+    "title": "Chat Oracolo",
     "subtitle": "",
     "freeQuestions": "{count} domanda gratuita",
     "freeQuestionsPlural": "{count} domande gratuite",
@@ -504,7 +504,7 @@ export default {
     "placeholderLocked": "🔒 Hai utilizzato le tue {max} domande gratuite: vedi Premium di seguito",
     "sessionError": "✦ Sessione scaduta.Ricarica la pagina e riprova.",
     "premiumSubtitle": "Chat professionale illimitata",
-    "upsellTitle": "Sblocca l'Oracolo completo",
+    "upsellTitle": "Sblocca il Chat Oracolo completo",
     "upsellLead": "Hai provato Sidus con 3 domande su misura per il tuo grafico.Con Premium ottieni una consulenza illimitata, come una vera sessione con un astrologo professionista, sempre legato al tuo Sole, Luna e Ascendente.",
     "upsellCta": "✦ Attiva Sidus VIP - € 9,99/mese"
   },
