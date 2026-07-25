@@ -86,6 +86,24 @@
     Content-Type = "text/plain; charset=utf-8"
     Cache-Control = "public, max-age=86400"
 
+[[headers]]
+  for = "/og-image.png"
+  [headers.values]
+    Cache-Control = "public, max-age=300"
+    Content-Type = "image/png"
+
+[[headers]]
+  for = "/apple-touch-icon.png"
+  [headers.values]
+    Cache-Control = "public, max-age=300"
+    Content-Type = "image/png"
+
+[[headers]]
+  for = "/favicon.svg"
+  [headers.values]
+    Cache-Control = "public, max-age=300"
+    Content-Type = "image/svg+xml"
+
 # Ficheiros estáticos e guias editoriais ANTES do fallback SPA
 [[redirects]]
   from = "/landing/*"

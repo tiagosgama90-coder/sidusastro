@@ -1,5 +1,6 @@
 /** Meta title/description por rota e idioma (SEO indexável no cliente). */
 import { PASSO_TO_PATH } from './routes.js'
+import { applySocialShareMeta } from './socialShare.js'
 
 const SITE = 'Sidusastro'
 const BASE_URL = 'https://sidusastro.com'
@@ -101,15 +102,19 @@ export function applyRouteSeo(passo, lang = 'pt') {
   const title = `${SITE} - ${L.title}`
   document.title = title
   setMeta('name', 'description', L.description)
-  setMeta('property', 'og:title', title)
-  setMeta('property', 'og:description', L.description)
-  setMeta('name', 'twitter:title', title)
-  setMeta('name', 'twitter:description', L.description)
-
   const path = PASSO_TO_PATH[passo] || '/'
   const canonical = lang && lang !== 'pt'
     ? `${BASE_URL}/${lang}${path === '/' ? '' : path}`
     : `${BASE_URL}${path}`
+
+  const localeMap = { pt: 'pt_PT', en: 'en_GB', es: 'es_ES', it: 'it_IT', de: 'de_DE', fr: 'fr_FR' }
+  applySocialShareMeta({
+    title,
+    description: L.description,
+    url: canonical,
+    type: 'website',
+    locale: localeMap[lang] || 'pt_PT',
+  })
   let link = document.querySelector('link[rel="canonical"]')
   if (!link) {
     link = document.createElement('link')

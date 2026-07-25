@@ -436,6 +436,27 @@
     el.setAttribute('content', content)
   }
 
+  function applyShareMeta({ title, description, url, type = 'article', locale = 'pt_PT' }) {
+    const image = `${window.location.origin}/og-image.png?v=3`
+    upsertMeta('property', 'og:type', type)
+    upsertMeta('property', 'og:site_name', 'Sidusastro')
+    upsertMeta('property', 'og:locale', locale)
+    upsertMeta('property', 'og:url', url)
+    if (title) upsertMeta('property', 'og:title', title)
+    if (description) upsertMeta('property', 'og:description', description)
+    upsertMeta('property', 'og:image', image)
+    upsertMeta('property', 'og:image:secure_url', image)
+    upsertMeta('property', 'og:image:type', 'image/png')
+    upsertMeta('property', 'og:image:width', '1200')
+    upsertMeta('property', 'og:image:height', '630')
+    upsertMeta('property', 'og:image:alt', 'Sidus - estrela azul e logotipo SIDUS')
+    upsertMeta('name', 'twitter:card', 'summary_large_image')
+    if (title) upsertMeta('name', 'twitter:title', title)
+    if (description) upsertMeta('name', 'twitter:description', description)
+    upsertMeta('name', 'twitter:image', image)
+    upsertMeta('name', 'twitter:image:alt', 'Sidus - estrela azul e logotipo SIDUS')
+  }
+
   function updateSeoMeta(lang) {
     const pageId = getPageId()
     const pack = window.SIDUS_GUIA_I18N
@@ -454,17 +475,13 @@
     }
     link.href = canonical
 
-    upsertMeta('property', 'og:type', 'article')
-    upsertMeta('property', 'og:site_name', 'Sidusastro')
-    upsertMeta('property', 'og:locale', lang === 'pt' ? 'pt_PT' : lang)
-    upsertMeta('property', 'og:url', canonical)
-    upsertMeta('property', 'og:title', title || h1)
-    upsertMeta('property', 'og:description', description || '')
-    upsertMeta('property', 'og:image', `${window.location.origin}/og-image.png?v=2`)
-    upsertMeta('name', 'twitter:card', 'summary_large_image')
-    upsertMeta('name', 'twitter:title', title || h1)
-    upsertMeta('name', 'twitter:description', description || '')
-    upsertMeta('name', 'twitter:image', `${window.location.origin}/og-image.png?v=2`)
+    applyShareMeta({
+      title: title || h1,
+      description: description || '',
+      url: canonical,
+      type: 'article',
+      locale: lang === 'pt' ? 'pt_PT' : lang,
+    })
 
     const jsonId = 'guia-jsonld'
     let script = document.getElementById(jsonId)
