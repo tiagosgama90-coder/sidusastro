@@ -22,18 +22,22 @@ const RETURN_PATH = { premium: '/mapaastral', mapa: '/mapaastral', tarot: '/taro
 const CANCEL_PATH = { premium: '/vip', mapa: '/mapaastral', tarot: '/tarot' }
 const SUPPORTED_LANGS = new Set(['pt', 'en', 'es', 'it', 'de', 'fr'])
 const PRECO_PREMIUM_EUR = 9.99
-const PRECO_PREMIUM_PIX_EUR = 5
-const PRECO_TAROT_PIX_EUR = 1
+const PRECO_PREMIUM_PIX_BRL = 28
+const PRECO_TAROT_PIX_BRL = 5.9
 
-function resolverValorCobranca({ productType, metodo, valorCliente, country }) {
+function resolverCobranca({ productType, metodo, valorCliente, country }) {
   const isBr = String(country || '').toUpperCase() === 'BR'
+  const pixBr = isBr && metodo === 'pix'
+
   if (productType === 'premium') {
-    return metodo === 'pix' ? PRECO_PREMIUM_PIX_EUR : PRECO_PREMIUM_EUR
+    return pixBr
+      ? { amount: PRECO_PREMIUM_PIX_BRL, currency: 'brl' }
+      : { amount: PRECO_PREMIUM_EUR, currency: 'eur' }
   }
-  if (productType === 'tarot' && isBr && metodo === 'pix') {
-    return PRECO_TAROT_PIX_EUR
+  if (productType === 'tarot' && pixBr) {
+    return { amount: PRECO_TAROT_PIX_BRL, currency: 'brl' }
   }
-  return Number(valorCliente)
+  return { amount: Number(valorCliente), currency: 'eur' }
 }
 
 function pathComIdioma(basePath, lang) {
@@ -60,15 +64,18 @@ export default async (req) => {
     const stripe = getStripe()
     const origin = siteOrigin(req)
     const valorCliente = Number(valor)
-    const productType = productTypeRaw
-      || (valorCliente >= PRECO_PREMIUM_EUR - 0.01 || /vip|premium|subscri/i.test(descricao || '') ? 'premium'
-        : valorCliente >= 10 || /mapa.*completo|natal chart/i.test(descricao || '') ? 'mapa'
-          : 'tarot')
-    const isPremium = productType === 'premium'
     const metodo = resolverMetodoPagamento(paymentMethod)
-    const v = resolverValorCobranca({ productType, metodo, valorCliente, country })
+    const cobranca = resolverCobranca({ productType: productTypeRaw, metodo, valorCliente, country })
+    const productType = productTypeRaw
+      || (cobranca.currency === 'brl' && cobranca.amount >= PRECO_PREMIUM_PIX_BRL - 0.01
+        ? 'premium'
+        : valorCliente >= PRECO_PREMIUM_EUR - 0.01 || /vip|premium|subscri/i.test(descricao || '')
+          ? 'premium'
+          : valorCliente >= 10 || /mapa.*completo|natal chart/i.test(descricao || '')
+            ? 'mapa'
+            : 'tarot')
+    const isPremium = productType === 'premium'
 
-    // VIP: pagamento único - acesso permanente (todos os métodos)
     const billingType = isPremium ? 'lifetime' : 'one_time'
 
     const metadata = {
@@ -77,6 +84,7 @@ export default async (req) => {
       billingType,
       descricao: String(descricao).slice(0, 500),
       paymentMethod: metodo,
+      currency: cobranca.currency,
     }
 
     const returnPath = pathComIdioma(RETURN_PATH[productType] || '/tarot', langRaw)
@@ -91,15 +99,15 @@ export default async (req) => {
       customer_email: userEmail || undefined,
       client_reference_id: String(userId),
       metadata,
-      locale: 'pt',
+      locale: cobranca.currency === 'brl' ? 'pt-BR' : 'pt',
       success_url: `${origin}${returnPath}?payment=success&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}${cancelPath}?payment=cancelled`,
       line_items: [{
         quantity: 1,
         price_data: {
-          currency: 'eur',
+          currency: cobranca.currency,
           product_data: { name: nomeProduto },
-          unit_amount: Math.round(v * 100),
+          unit_amount: Math.round(cobranca.amount * 100),
         },
       }],
       payment_method_types: tiposPagamentoCheckout(metodo),
@@ -120,5 +128,3 @@ export default async (req) => {
     })
   }
 }
-
-export const config = { path: '/api/create-checkout-session' }

@@ -1,7 +1,7 @@
 import { Crown, Check } from 'lucide-react'
 import { useLanguage } from '../lib/i18n/LanguageContext.jsx'
 import { getBeneficiosVip } from '../lib/i18n/ferramentasData.js'
-import { formatPrecoEuro, precoPremiumVitrine } from '../lib/pricing.js'
+import { formatPrecoCompleto, precoPremiumVitrine, PRECO_PREMIUM_UNICO } from '../lib/pricing.js'
 import { PremiumComparacao } from './PremiumComparacao.jsx'
 
 const CORES = {
@@ -31,7 +31,9 @@ export function VipPaywallBody({
 }) {
   const { t, lang } = useLanguage()
   const beneficios = getBeneficiosVip(lang)
-  const precoLabel = formatPrecoEuro(precoPremiumVitrine(isBrasil))
+  const precoVitrine = precoPremiumVitrine(isBrasil)
+  const precoLabel = formatPrecoCompleto(precoVitrine.valor, precoVitrine.currency)
+  const precoCartaoBr = formatPrecoCompleto(PRECO_PREMIUM_UNICO, 'eur')
 
   return (
     <>
@@ -85,10 +87,11 @@ export function VipPaywallBody({
         border: `1px solid ${CORES.dourado}`,
       }}>
         <div style={{ fontSize: compact ? 26 : 36, fontWeight: 700, color: CORES.branco }}>
-          {precoLabel} € <span style={{ fontSize: compact ? 12 : 14, color: CORES.brancoMuted, fontWeight: 400 }}>{t('common.oneTime')}</span>
+          {precoLabel} {isBrasil ? <span style={{ fontSize: compact ? 12 : 14, color: '#34D399', fontWeight: 600 }}>{t('vip.pixLabel')}</span> : null}
+          {!isBrasil ? <span style={{ fontSize: compact ? 12 : 14, color: CORES.brancoMuted, fontWeight: 400 }}> {t('common.oneTime')}</span> : null}
         </div>
         {isBrasil ? (
-          <p style={{ fontSize: 11, color: '#34D399', marginTop: 8, fontWeight: 600 }}>{t('vip.priceBrPixNote')}</p>
+          <p style={{ fontSize: 11, color: '#34D399', marginTop: 8, fontWeight: 600 }}>{t('vip.priceBrPixNote', { preco: precoLabel, precoEur: precoCartaoBr })}</p>
         ) : null}
         <p style={{ fontSize: 11, color: CORES.brancoMuted, marginTop: 6, marginBottom: 0 }}>{t('vip.oneTimeAccess')}</p>
       </div>
@@ -108,11 +111,11 @@ export function VipPaywallBody({
           fontWeight: 700,
         }}
       >
-        {ctaText || (isBrasil ? t('vip.ctaBr') : t('vip.cta'))}
+        {ctaText || (isBrasil ? t('vip.ctaBr', { preco: precoLabel }) : t('vip.cta'))}
       </button>
 
       <p style={{ textAlign: 'center', fontSize: 11, color: CORES.brancoMuted, marginTop: 10, marginBottom: 0, lineHeight: 1.5 }}>
-        {isBrasil ? t('vip.paymentMethodsBr') : t('vip.paymentMethods')}
+        {isBrasil ? t('vip.paymentMethodsBr', { precoPix: precoLabel, precoEur: precoCartaoBr }) : t('vip.paymentMethods')}
       </p>
 
       {onPromo ? (

@@ -1,7 +1,7 @@
 import { Crown, ArrowRight, Sparkles } from 'lucide-react'
 import { useLanguage } from '../lib/i18n/LanguageContext.jsx'
 import { PremiumComparacao } from './PremiumComparacao.jsx'
-import { precoPremiumVitrine, formatPrecoEuro } from '../lib/pricing.js'
+import { precoPremiumVitrine, formatPrecoCompleto } from '../lib/pricing.js'
 
 export function PremiumHomeTeaser({
   isPremium,
@@ -14,7 +14,8 @@ export function PremiumHomeTeaser({
 
   if (isPremium) return null
 
-  const preco = formatPrecoEuro(precoPremiumVitrine(isBrasil))
+  const precoVitrine = precoPremiumVitrine(isBrasil)
+  const preco = formatPrecoCompleto(precoVitrine.valor, precoVitrine.currency)
 
   return (
     <section className="premium-home-teaser landing-glass" aria-label={t('premium.homeTeaser.ariaLabel')}>

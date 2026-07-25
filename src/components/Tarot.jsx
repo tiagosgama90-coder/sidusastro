@@ -1,14 +1,14 @@
 /**
  * Sistema de Tarot Sidus - baralho profissional de 78 cartas (Mystic Marchetti)
  * ─ Ilustrações + interpretações profissionais
- * ─ 3 leituras gratuitas por conta · depois 2 € por leitura (BR: 1 € PIX) ou Premium
+ * ─ 3 leituras gratuitas por conta · depois 2 € por leitura (BR: R$ 5,90 PIX) ou Premium
  * ─ 9 tipos de leitura · interpretações personalizadas com mapa natal
  */
 import { useState, useEffect, useRef } from 'react'
 import { Clock } from 'lucide-react'
 import { useLanguage } from '../lib/i18n/LanguageContext.jsx'
 import { localizeArcano, getTiposTarot, getPosicoesTarot } from '../lib/i18n/tarotArcana.js'
-import { PRECO_TAROT, precoTarotVitrine, precoPremiumVitrine, formatPrecoEuro } from '../lib/pricing.js'
+import { PRECO_TAROT, precoTarotVitrine, precoPremiumVitrine, formatPrecoCompleto } from '../lib/pricing.js'
 import { sortearCartas, getCartaById, MAJOR_ARCANA } from '../lib/tarot/deck.js'
 import { sortearLenormand, LENORMAND_VERSO } from '../lib/tarot/lenormand.js'
 import { interpretarLeitura } from '../lib/tarot/interpretacao.js'
@@ -218,8 +218,9 @@ export function EcraTarot({ mapaNatal, isPremium, userId, leiturasTarotUsadas = 
   const podeLer = podeLerGratis(isPremium, userId, leiturasTarotUsadas)
   const gratisEsgotada = !isPremium && usadas >= maxLeiturasGratis()
   const precoLeitura = precoTarotVitrine(isBrasil)
-  const precoLeituraFmt = formatPrecoEuro(precoLeitura)
-  const vipPrecoFmt = formatPrecoEuro(precoPremiumVitrine(isBrasil))
+  const precoVip = precoPremiumVitrine(isBrasil)
+  const precoLeituraFmt = formatPrecoCompleto(precoLeitura.valor, precoLeitura.currency)
+  const vipPrecoFmt = formatPrecoCompleto(precoVip.valor, precoVip.currency)
 
   const refrescar = () => setTick(n => n + 1)
 
@@ -391,7 +392,7 @@ export function EcraTarot({ mapaNatal, isPremium, userId, leiturasTarotUsadas = 
         if (isPremium || podeLer || leituraPaga) {
           comecarEmbaralhar(tipoId)
         } else {
-          onPagar(t('tarot.payDesc', { tipo: tipo?.nome || '' }), precoLeitura, () => {
+          onPagar(t('tarot.payDesc', { tipo: tipo?.nome || '' }), precoLeitura.valor, () => {
             setLeituraPaga(true)
             comecarEmbaralhar(tipoId)
           }, { productType: 'tarot' })
@@ -707,7 +708,7 @@ function TelaPergunta({ tipo, pergunta, setPergunta, onVoltar, podeLer, leituraP
     try {
       await onPagar(
         t('tarot.payDesc', { tipo: tipo?.nome || '' }),
-        precoLeitura,
+        precoLeitura.valor,
         onComecarPago,
         { productType: 'tarot' },
       )
@@ -744,7 +745,7 @@ function TelaPergunta({ tipo, pergunta, setPergunta, onVoltar, podeLer, leituraP
         </button>
       ) : (
         <div style={{background:'rgba(223,183,108,0.06)',border:`1px solid ${CORES.dourado}`,borderRadius:14,padding:20,textAlign:'center',position:'relative',zIndex:1}}>
-          <div style={{fontSize:28,fontWeight:700,color:CORES.dourado,marginBottom:8}}>{precoLeituraFmt} €</div>
+          <div style={{fontSize:28,fontWeight:700,color:CORES.dourado,marginBottom:8}}>{precoLeituraFmt}</div>
           <p style={{fontSize:13,color:CORES.brancoMuted,marginBottom:16,lineHeight:1.5}}>
             {isBrasil
               ? t('tarot.paywallTextBr', { max: MAX_LEITURAS_GRATIS, price: precoLeituraFmt, vipPrice: vipPrecoFmt })

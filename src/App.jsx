@@ -2820,7 +2820,7 @@ function Paywall({ onVoltar, onPagar, onSucesso, onPromo, isDesktop, isBrasil, o
       {isBrasil && <BannerBrasil variant="paywall" />}
 
       <VipPaywallBody
-        onCta={() => onPagar(t('vip.productName'), precoVitrine, onSucesso, { productType: 'premium' })}
+        onCta={() => onPagar(t('vip.productName'), precoVitrine.valor, onSucesso, { productType: 'premium' })}
         onPromo={onPromo}
         isBrasil={isBrasil}
         oraclePerguntasUsadas={oraclePerguntasUsadas}
