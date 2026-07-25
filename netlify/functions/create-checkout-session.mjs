@@ -1,4 +1,5 @@
 import { getStripe, siteOrigin } from './_shared/stripe.mjs'
+import { PRECO_PREMIUM_PIX_BRL, PRECO_TAROT_PIX_BRL } from './_shared/pricing.mjs'
 
 function resolverMetodoPagamento(raw) {
   const key = String(raw || 'card').trim().toLowerCase().replace(/-/g, '_')
@@ -22,8 +23,6 @@ const RETURN_PATH = { premium: '/mapaastral', mapa: '/mapaastral', tarot: '/taro
 const CANCEL_PATH = { premium: '/vip', mapa: '/mapaastral', tarot: '/tarot' }
 const SUPPORTED_LANGS = new Set(['pt', 'en', 'es', 'it', 'de', 'fr'])
 const PRECO_PREMIUM_EUR = 9.99
-const PRECO_PREMIUM_PIX_BRL = 28
-const PRECO_TAROT_PIX_BRL = 6
 
 function resolverCobranca({ productType, metodo, valorCliente, country }) {
   const isBr = String(country || '').toUpperCase() === 'BR'
