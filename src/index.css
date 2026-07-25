@@ -1852,13 +1852,14 @@ h1.sidus-page-title {
   isolation: isolate;
 }
 
-/* Camada fixa única: estrelas + hendecagrama + rasto — sempre atrás do conteúdo */
+/* Camada fixa única: estrelas + hendecagrama — SEMPRE atrás do conteúdo */
 .sidus-cosmic-backdrop {
   position: fixed;
   inset: 0;
   z-index: 0;
   pointer-events: none;
   overflow: hidden;
+  transform: translateZ(0);
 }
 
 .sidus-cosmic-foreground {
@@ -1866,6 +1867,7 @@ h1.sidus-page-title {
   z-index: 1;
   min-height: 100svh;
   isolation: isolate;
+  transform: translateZ(0);
 }
 
 .sidus-app-content,
@@ -1875,19 +1877,77 @@ h1.sidus-page-title {
   isolation: isolate;
 }
 
-/* Conteúdo legível em todas as páginas — fundo cósmico fica atrás */
-.sidus-app-content > * {
+/* Wrapper de cada página — site todo */
+.sidus-page-root {
+  position: relative;
+  z-index: 1;
+  isolation: isolate;
+}
+
+.sidus-page-root > * {
   position: relative;
   z-index: 1;
 }
 
-.sidus-app-content :where(
-  h1, h2, h3, h4, h5, h6,
-  p, span, li, table, thead, tbody, tr, th, td,
-  button, a, input, select, textarea, label, nav, section, article
-) {
+/* Cabeçalhos de página (Home, etc.) */
+.sidus-page-header {
   position: relative;
   z-index: 1;
+  isolation: isolate;
+  background: rgba(11, 7, 30, 0.78);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(223, 183, 108, 0.18);
+  border-radius: 14px;
+  padding: 14px 16px;
+}
+
+/* Painel vidro padrão Sidus */
+.sidus-glass {
+  position: relative;
+  z-index: 1;
+  isolation: isolate;
+  background: rgba(11, 7, 30, 0.72);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(223, 183, 108, 0.22);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+}
+
+/* Tabelas legíveis em qualquer página */
+.sidus-page-root table,
+.sidus-app-content table {
+  position: relative;
+  z-index: 1;
+  isolation: isolate;
+  background: rgba(11, 7, 30, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.sidus-page-root th,
+.sidus-page-root td,
+.sidus-app-content th,
+.sidus-app-content td {
+  position: relative;
+  z-index: 1;
+  background: rgba(11, 7, 30, 0.7);
+}
+
+/* Páginas lazy (tarot, oráculo, ferramentas) */
+.sidus-page-root .tarot-seleccionar-page,
+.sidus-page-root .oracle-chat {
+  position: relative;
+  z-index: 1;
+  isolation: isolate;
+}
+
+/* Hendecagrama e estrelas — fundo, nunca por cima */
+.landing-cosmic-stars-canvas,
+.landing-cosmic-nebula,
+.landing-cosmic-hendecagram-wrap {
+  z-index: 0;
 }
 
 /* Efeitos de toque/clique — visíveis mas sem bloquear interação */
@@ -4274,7 +4334,12 @@ h1.sidus-page-title {
   padding: 14px;
   border-radius: 16px;
   border: 1px solid rgba(223, 183, 108, 0.22);
-  background: linear-gradient(145deg, rgba(255, 255, 255, 0.05), rgba(88, 28, 135, 0.08));
+  background: rgba(11, 7, 30, 0.72);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  position: relative;
+  z-index: 1;
+  isolation: isolate;
 }
 
 .home-para-ti__header {
@@ -4317,7 +4382,12 @@ h1.sidus-page-title {
   padding: 10px 12px;
   border-radius: 12px;
   border: 1px solid rgba(255, 255, 255, 0.08);
-  background: rgba(255, 255, 255, 0.04);
+  background: rgba(11, 7, 30, 0.65);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  position: relative;
+  z-index: 1;
+  isolation: isolate;
   cursor: pointer;
   text-align: left;
   color: inherit;

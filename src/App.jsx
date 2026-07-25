@@ -337,7 +337,9 @@ const estilos = {
     boxSizing: 'border-box',
   },
   vidro: {
-    background: CORES.vidro,
+    position: 'relative',
+    zIndex: 1,
+    background: 'rgba(11, 7, 30, 0.72)',
     backdropFilter: 'blur(16px)',
     WebkitBackdropFilter: 'blur(16px)',
     border: `1px solid ${CORES.vidroBorda}`,
@@ -1957,7 +1959,7 @@ function Dashboard({ nome, mapaNatal, ceuAgora, aspetos, onOraculo, onPrivacidad
 
   return (
     <div style={layoutConteudo(isDesktop)}>
-      <header style={{ textAlign: 'center', marginBottom: 20 }}>
+      <header className="sidus-page-header" style={{ textAlign: 'center', marginBottom: 20 }}>
         <h1 className="notranslate" translate="no" style={estilos.titulo}>Sidus</h1>
         <p style={{ ...estilos.subtitulo, marginBottom: 0 }}>{nome ? t('home.welcome', { name: nome }) : t('home.skyRealtime')}</p>
       </header>
@@ -4602,7 +4604,9 @@ export default function App() {
         zIndex: 1,
       }}>
         <ErrorBoundary resetKey={passo} compact={passo === 'tarot'}>
-          {renderEcran()}
+          <div className="sidus-page-root">
+            {renderEcran()}
+          </div>
         </ErrorBoundary>
       </div>
       {!isPremium && allowsAds() && shouldShowAdsOnPasso(passo) && (

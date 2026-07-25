@@ -12,7 +12,7 @@ export function HeroHomeSidus({ mapaNatal, onMapa, isPremium }) {
   const temMapa = Boolean(mapaNatal?.solar?.nome)
 
   return (
-    <div style={{
+    <div className="sidus-glass" style={{
       background: 'linear-gradient(145deg, rgba(223,183,108,0.12) 0%, rgba(139,92,246,0.08) 50%, rgba(11,7,30,0) 100%)',
       border: '1px solid rgba(223,183,108,0.28)', borderRadius: 18, padding: '18px 20px', marginBottom: 20,
     }}>
