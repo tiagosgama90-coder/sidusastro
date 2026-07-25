@@ -10,6 +10,7 @@ import { readLandingDraft, saveLandingDraft, stageLandingDraft, flushLandingDraf
 import { calcularMapaNatal, calcularSignoSolarPorData } from '../lib/astrologia.js'
 import { LeituraGratisDiaria } from './LeituraGratisDiaria.jsx'
 import { CITY_SUGGESTION_NO_TRANSLATE, fusosFallbackLabels } from '../lib/landingTranslate.js'
+import { useGoogleTranslateRescanOnMount } from '../hooks/useGoogleTranslateRescanOnMount.js'
 
 const CORES = {
   dourado: '#DFB76C',
@@ -258,6 +259,8 @@ export function LandingBirthPortal({ isDesktop, onSaved, onScrollToLogin }) {
     return sol ? { solar: sol, lunar: null } : null
   }, [data, hora, localizacao])
 
+  const posSaveRef = useGoogleTranslateRescanOnMount(guardado, [previewSignos?.solar?.nome, previewSignos?.lunar?.nome])
+
   useEffect(() => {
     const draft = readLandingDraft()
     if (!draft) return
@@ -356,6 +359,7 @@ export function LandingBirthPortal({ isDesktop, onSaved, onScrollToLogin }) {
           <p className="landing-portal-form-lead">{t('auth.portal.formLead')}</p>
         )}
 
+        <div ref={posSaveRef} className="landing-portal-post-save">
         <div className={`landing-portal-card${guardado ? ' landing-portal-card--saved' : ''}`}>
           <div className="landing-portal-card-shimmer" aria-hidden />
 
@@ -369,10 +373,10 @@ export function LandingBirthPortal({ isDesktop, onSaved, onScrollToLogin }) {
                 <Sparkles size={26} color="#34D399" />
               </div>
               <p style={{ margin: '0 0 8px', fontSize: 17, fontWeight: 700, color: CORES.dourado }}>
-                {t('auth.portal.savedTitle')}
+                <span>{t('auth.portal.savedTitle')}</span>
               </p>
               <p style={{ margin: '0 0 16px', fontSize: 13, color: CORES.brancoMuted, lineHeight: 1.6 }}>
-                {t('auth.portal.savedHint')}
+                <span>{t('auth.portal.savedHint')}</span>
               </p>
               <div style={{ display: 'flex', justifyContent: 'center', color: CORES.dourado, opacity: 0.7 }}>
                 <ChevronDown size={22} className="landing-portal-bounce" />
@@ -494,6 +498,7 @@ export function LandingBirthPortal({ isDesktop, onSaved, onScrollToLogin }) {
             <LeituraGratisDiaria solar={previewSignos.solar} lunar={previewSignos.lunar} compact />
           </div>
         )}
+        </div>
 
         <footer className="landing-portal-tools-footer" aria-label={t('auth.portal.toolsAria')}>
           <div className="landing-portal-tools-ticker-viewport">

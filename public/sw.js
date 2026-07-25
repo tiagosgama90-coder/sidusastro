@@ -1,6 +1,6 @@
 // Service Worker para notificações PWA - Sidus Astro
-// v16: Google Translate compat — sem crash React
-const CACHE_NAME = 'sidusastro-v31'
+// v17: re-traduzir secção pós-guardar na landing
+const CACHE_NAME = 'sidusastro-v32'
 const OFFLINE_URLS = ['/manifest.json', '/favicon.svg']
 
 const SIGNO_EMOJI = {
