@@ -154,7 +154,7 @@ export function ModalPagamento({
           borderRadius: 12, padding: '12px 14px', marginBottom: 16, fontSize: 12,
           color: CORES.brancoSuave, lineHeight: 1.55,
         }}>
-          {t('pagamento.brPixBanner', { precoPix, precoEur: precoPremiumEur })}
+          {t('pagamento.brPixBanner', { precoPix: precoPixVip, precoEur: precoPremiumEur })}
         </div>
       )}
 
