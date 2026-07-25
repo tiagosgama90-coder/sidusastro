@@ -1848,7 +1848,7 @@ h1.sidus-page-title {
 .sidus-cosmic-shell {
   position: relative;
   min-height: 100svh;
-  background: transparent !important;
+  background: #030818 !important;
   isolation: isolate;
 }
 
@@ -1856,10 +1856,9 @@ h1.sidus-page-title {
 .sidus-cosmic-backdrop {
   position: fixed;
   inset: 0;
-  z-index: 0;
+  z-index: -1;
   pointer-events: none;
   overflow: hidden;
-  transform: translateZ(0);
 }
 
 .sidus-cosmic-foreground {
@@ -1867,13 +1866,22 @@ h1.sidus-page-title {
   z-index: 1;
   min-height: 100svh;
   isolation: isolate;
-  transform: translateZ(0);
+}
+
+/* Véu suave entre fundo cósmico e texto — estrela visível mas nunca “em cima” */
+.sidus-cosmic-foreground::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: rgba(3, 8, 24, 0.45);
 }
 
 .sidus-app-content,
 .landing-auth-page-wrap {
   position: relative;
-  z-index: 1;
+  z-index: 2;
   isolation: isolate;
 }
 
@@ -1894,7 +1902,7 @@ h1.sidus-page-title {
   position: relative;
   z-index: 1;
   isolation: isolate;
-  background: rgba(11, 7, 30, 0.78);
+  background: rgba(11, 7, 30, 0.88);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   border: 1px solid rgba(223, 183, 108, 0.18);
@@ -1905,9 +1913,9 @@ h1.sidus-page-title {
 /* Painel vidro padrão Sidus */
 .sidus-glass {
   position: relative;
-  z-index: 1;
+  z-index: 2;
   isolation: isolate;
-  background: rgba(11, 7, 30, 0.72);
+  background: rgba(11, 7, 30, 0.88);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid rgba(223, 183, 108, 0.22);
@@ -1950,11 +1958,11 @@ h1.sidus-page-title {
   z-index: 0;
 }
 
-/* Efeitos de toque/clique — visíveis mas sem bloquear interação */
+/* Efeitos de toque/clique — acima do conteúdo, abaixo da nav mobile */
 .sidus-cosmic-fx-layer {
   position: fixed;
   inset: 0;
-  z-index: 160;
+  z-index: 120;
   pointer-events: none;
   overflow: hidden;
 }
@@ -4193,7 +4201,7 @@ h1.sidus-page-title {
   }
 }
 
-/* Mobile bottom nav */
+/* Mobile bottom nav — sempre visível e clicável por cima de tudo */
 .mobile-bottom-nav {
   position: fixed;
   bottom: 0;
@@ -4205,11 +4213,13 @@ h1.sidus-page-title {
   justify-content: space-around;
   align-items: stretch;
   padding: 8px 6px max(10px, env(safe-area-inset-bottom, 10px));
-  background: rgba(11, 7, 30, 0.96);
+  background: rgba(11, 7, 30, 0.98);
   backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   border-top: 1px solid rgba(223, 183, 108, 0.22);
-  z-index: 140;
+  z-index: 220;
   box-sizing: border-box;
+  pointer-events: auto;
 }
 
 .mobile-bottom-nav__item {
