@@ -2,6 +2,7 @@ import { Crown, Check, X } from 'lucide-react'
 import { useLanguage } from '../lib/i18n/LanguageContext.jsx'
 import { MAX_ORACLE_GRATIS } from '../lib/oracleLimit.js'
 import { MAX_LEITURAS_GRATIS } from '../components/Tarot.jsx'
+import { formatPrecoCompleto, PRECO_PREMIUM_BR_PIX_BRL, PRECO_PREMIUM_UNICO } from '../lib/pricing.js'
 
 export function PremiumComparacao({ isPremium, oracleUsadas = 0, tarotUsadas = 0, isBrasil = false, compact = false }) {
   const { t } = useLanguage()
@@ -51,7 +52,10 @@ export function PremiumComparacao({ isPremium, oracleUsadas = 0, tarotUsadas = 0
       </div>
 
       {isBrasil && (
-        <p className="premium-br-note">{t('brasil.premiumNote')}</p>
+        <p className="premium-br-note">{t('brasil.premiumNote', {
+          preco: formatPrecoCompleto(PRECO_PREMIUM_BR_PIX_BRL, 'brl'),
+          precoEur: formatPrecoCompleto(PRECO_PREMIUM_UNICO, 'eur'),
+        })}</p>
       )}
     </div>
   )

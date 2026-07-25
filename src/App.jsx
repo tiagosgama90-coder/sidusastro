@@ -2865,7 +2865,7 @@ function OraclePremiumUpsell({ onUpgrade, onPromo, isBrasil = false, oraclePergu
         leiturasTarotUsadas={leiturasTarotUsadas}
         titleKey="oracle.upsellTitle"
         subtitleKey="oracle.upsellLead"
-        ctaText={isBrasil ? t('vip.ctaBr') : t('oracle.upsellCta')}
+        ctaText={isBrasil ? undefined : t('oracle.upsellCta')}
         compact
       />
     </div>

@@ -1,7 +1,7 @@
 /**
  * Sistema de Tarot Sidus - baralho profissional de 78 cartas (Mystic Marchetti)
  * ─ Ilustrações + interpretações profissionais
- * ─ 3 leituras gratuitas por conta · depois 2 € por leitura (BR: R$ 5,90 PIX) ou Premium
+ * ─ 3 leituras gratuitas por conta · depois 2 € por leitura (BR: R$ 6,00 PIX) ou Premium
  * ─ 9 tipos de leitura · interpretações personalizadas com mapa natal
  */
 import { useState, useEffect, useRef } from 'react'

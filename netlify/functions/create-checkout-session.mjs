@@ -23,7 +23,7 @@ const CANCEL_PATH = { premium: '/vip', mapa: '/mapaastral', tarot: '/tarot' }
 const SUPPORTED_LANGS = new Set(['pt', 'en', 'es', 'it', 'de', 'fr'])
 const PRECO_PREMIUM_EUR = 9.99
 const PRECO_PREMIUM_PIX_BRL = 28
-const PRECO_TAROT_PIX_BRL = 5.9
+const PRECO_TAROT_PIX_BRL = 6
 
 function resolverCobranca({ productType, metodo, valorCliente, country }) {
   const isBr = String(country || '').toUpperCase() === 'BR'
