@@ -1,10 +1,9 @@
-import { useState, useEffect, useMemo, useRef } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { useLanguage } from '../lib/i18n/LanguageContext.jsx'
 import { localizeArcano } from '../lib/i18n/tarotArcana.js'
 import { indiceCartaDoDia, frasePersonalizadaDia } from '../lib/leituraDiaria.js'
 import { TAROT_DECK } from '../lib/tarot/deck.js'
 import { CartaTarot } from './CartaTarot.jsx'
-import { scheduleGoogleTranslateRescan } from '../lib/googleTranslateRescan.js'
 const CORES = {
   dourado: '#DFB76C',
   branco: '#FFFFFF',
@@ -28,7 +27,6 @@ function localeForLang(lang) {
  */
 export function LeituraGratisDiaria({ solar, lunar, compact = false }) {
   const { lang, t, ts } = useLanguage()
-  const rootRef = useRef(null)
   const [dataHoje, setDataHoje] = useState(() => new Date().toISOString().slice(0, 10))
 
   useEffect(() => {
@@ -52,16 +50,10 @@ export function LeituraGratisDiaria({ solar, lunar, compact = false }) {
   const fraseSol = solar?.nome ? frasePersonalizadaDia('sol', solar.nome, lang) : null
   const fraseLua = lunar?.nome ? frasePersonalizadaDia('lua', lunar.nome, lang) : null
 
-  useEffect(() => {
-    if (!compact || !carta?.nome) return undefined
-    return scheduleGoogleTranslateRescan(rootRef.current, [150, 450, 900])
-  }, [compact, carta?.nome, fraseSol, fraseLua, dataFormatada])
-
   if (!carta?.nome) return null
 
   return (
     <div
-      ref={rootRef}
       className={compact ? 'leitura-gratis leitura-gratis--compact' : 'leitura-gratis'}
       style={{
         background: 'rgba(255, 255, 255, 0.06)',

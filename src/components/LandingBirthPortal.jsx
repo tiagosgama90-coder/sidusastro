@@ -10,7 +10,7 @@ import { readLandingDraft, saveLandingDraft, stageLandingDraft, flushLandingDraf
 import { calcularMapaNatal, calcularSignoSolarPorData } from '../lib/astrologia.js'
 import { LeituraGratisDiaria } from './LeituraGratisDiaria.jsx'
 import { CITY_SUGGESTION_NO_TRANSLATE, fusosFallbackLabels } from '../lib/landingTranslate.js'
-import { useGoogleTranslateRescanOnMount } from '../hooks/useGoogleTranslateRescanOnMount.js'
+import { useGoogleTranslateRetranslate } from '../hooks/useGoogleTranslateRetranslate.js'
 
 const CORES = {
   dourado: '#DFB76C',
@@ -259,7 +259,7 @@ export function LandingBirthPortal({ isDesktop, onSaved, onScrollToLogin }) {
     return sol ? { solar: sol, lunar: null } : null
   }, [data, hora, localizacao])
 
-  const posSaveRef = useGoogleTranslateRescanOnMount(guardado, [previewSignos?.solar?.nome, previewSignos?.lunar?.nome])
+  useGoogleTranslateRetranslate(!!previewSignos, [guardado, previewSignos?.solar?.nome, previewSignos?.lunar?.nome])
 
   useEffect(() => {
     const draft = readLandingDraft()
@@ -355,35 +355,41 @@ export function LandingBirthPortal({ isDesktop, onSaved, onScrollToLogin }) {
       <div className="landing-portal-orb landing-portal-orb--2" aria-hidden />
 
       <div style={{ position: 'relative', zIndex: 1 }}>
-        {!guardado && (
-          <p className="landing-portal-form-lead">{t('auth.portal.formLead')}</p>
-        )}
+        <p className={`landing-portal-form-lead${guardado ? ' landing-portal-panel--hidden' : ''}`}>
+          {t('auth.portal.formLead')}
+        </p>
 
-        <div ref={posSaveRef} className="landing-portal-post-save">
+        <div className="landing-portal-post-save">
         <div className={`landing-portal-card${guardado ? ' landing-portal-card--saved' : ''}`}>
           <div className="landing-portal-card-shimmer" aria-hidden />
 
-          {guardado ? (
-            <div style={{ textAlign: 'center', padding: '12px 8px 4px' }}>
-              <div style={{
-                width: 56, height: 56, borderRadius: '50%', margin: '0 auto 16px',
-                background: 'rgba(52,211,153,0.15)', border: '1px solid rgba(52,211,153,0.45)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-              }}>
-                <Sparkles size={26} color="#34D399" />
-              </div>
-              <p style={{ margin: '0 0 8px', fontSize: 17, fontWeight: 700, color: CORES.dourado }}>
-                <span>{t('auth.portal.savedTitle')}</span>
-              </p>
-              <p style={{ margin: '0 0 16px', fontSize: 13, color: CORES.brancoMuted, lineHeight: 1.6 }}>
-                <span>{t('auth.portal.savedHint')}</span>
-              </p>
-              <div style={{ display: 'flex', justifyContent: 'center', color: CORES.dourado, opacity: 0.7 }}>
-                <ChevronDown size={22} className="landing-portal-bounce" />
-              </div>
+          <div
+            className={`landing-portal-saved-view${guardado ? '' : ' landing-portal-panel--gt-prerender'}`}
+            aria-hidden={!guardado}
+            style={{ textAlign: 'center', padding: '12px 8px 4px' }}
+          >
+            <div style={{
+              width: 56, height: 56, borderRadius: '50%', margin: '0 auto 16px',
+              background: 'rgba(52,211,153,0.15)', border: '1px solid rgba(52,211,153,0.45)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+            }}>
+              <Sparkles size={26} color="#34D399" />
             </div>
-          ) : (
-            <>
+            <p style={{ margin: '0 0 8px', fontSize: 17, fontWeight: 700, color: CORES.dourado }}>
+              <span>{t('auth.portal.savedTitle')}</span>
+            </p>
+            <p style={{ margin: '0 0 16px', fontSize: 13, color: CORES.brancoMuted, lineHeight: 1.6 }}>
+              <span>{t('auth.portal.savedHint')}</span>
+            </p>
+            <div style={{ display: 'flex', justifyContent: 'center', color: CORES.dourado, opacity: 0.7 }}>
+              <ChevronDown size={22} className="landing-portal-bounce" />
+            </div>
+          </div>
+
+          <div
+            className={`landing-portal-form-view${guardado ? ' landing-portal-panel--hidden' : ''}`}
+            aria-hidden={guardado}
+          >
               <div className="landing-portal-field">
                 <label style={labelStyle}>{t('onboarding.name')}</label>
                 <div style={{ position: 'relative' }}>
@@ -489,12 +495,14 @@ export function LandingBirthPortal({ isDesktop, onSaved, onScrollToLogin }) {
                 )}
               </button>
               <p className="landing-portal-swiss-note">{t('auth.portal.swissNote')}</p>
-            </>
-          )}
+          </div>
         </div>
 
-        {guardado && previewSignos && (
-          <div style={{ marginTop: 16 }}>
+        {previewSignos && (
+          <div
+            className={`landing-portal-leitura-wrap${guardado ? '' : ' landing-portal-panel--gt-prerender'}`}
+            aria-hidden={!guardado}
+          >
             <LeituraGratisDiaria solar={previewSignos.solar} lunar={previewSignos.lunar} compact />
           </div>
         )}

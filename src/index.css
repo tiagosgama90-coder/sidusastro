@@ -515,6 +515,31 @@ h1.sidus-page-title {
   pointer-events: none;
 }
 
+.landing-portal-panel--hidden {
+  display: none !important;
+}
+
+.landing-portal-panel--gt-prerender {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+  pointer-events: none !important;
+}
+
+.landing-portal-post-save {
+  position: relative;
+}
+
+.landing-portal-leitura-wrap {
+  margin-top: 16px;
+}
+
 .landing-portal-input {
   position: relative;
   z-index: 1;
