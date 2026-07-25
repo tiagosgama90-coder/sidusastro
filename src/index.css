@@ -1560,6 +1560,14 @@ h1.sidus-page-title {
   text-align: center;
   letter-spacing: 0.03em;
 }
+.landing-trust-bar-note {
+  margin: 6px 0 0;
+  font-size: 11px;
+  font-weight: 500;
+  color: #34d399;
+  text-align: center;
+  letter-spacing: 0.02em;
+}
 .landing-portal-form-lead {
   margin: 0 0 14px;
   padding: 0 4px;

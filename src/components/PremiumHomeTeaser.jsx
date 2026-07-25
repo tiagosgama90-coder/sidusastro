@@ -39,7 +39,7 @@ export function PremiumHomeTeaser({
 
       <button type="button" className="premium-home-teaser-cta" onClick={onUpgrade}>
         <Sparkles size={16} />
-        <span>{t('premium.homeTeaser.cta', { price: preco })}</span>
+        <span>{t(isBrasil ? 'premium.homeTeaser.ctaBr' : 'premium.homeTeaser.cta', { price: preco })}</span>
         <ArrowRight size={16} />
       </button>
     </section>

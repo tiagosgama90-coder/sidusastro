@@ -62,6 +62,8 @@ export default {
       logoAlt: 'Sidus',
       title: 'When you were born, the sky drew your astral chart',
       trustBar: 'Free to start · VIP €9.99 one-time payment',
+      trustBarBr: 'Free to start · VIP {preco} with PIX · one-time payment',
+      trustBarPixNote: 'In Brazil you pay in reais via PIX.',
       formLead: 'Read your personalized horoscope',
       mobileLoginPrompt: 'Already have an account?',
       mobileLoginLink: 'Sign in here',
@@ -323,6 +325,7 @@ export default {
     buyOnce: '💳 Buy full chart · €10',
     buyOnceNote: 'One-time payment · no subscription',
     premiumOption: '✦ Sidus Premium €9.99 · Everything included',
+    premiumOptionBr: '✦ Sidus VIP {preco} · PIX · Everything included',
     premiumRecommended: 'Recommended - full chart + all tools included',
     pricingHint: 'Premium unlocks the full chart and the entire cosmos for less than two one-off chart purchases.',
     activate: 'Activate for €9.99 · one-time payment',
@@ -948,7 +951,7 @@ export default {
     error: 'Could not subscribe. Try again.',
     privacy: 'No spam. Unsubscribe anytime.',
   },
-  newsletter: {
+  premium: {
     lifetimeNote: 'One-time payment · lifetime access, no renewals',
     tarotUsed: 'Tarot: {used} of {max} free readings · {left} left',
     oracleUsed: 'Oracle: {used} of {max} free questions · {left} left',
@@ -956,7 +959,8 @@ export default {
       ariaLabel: 'Compare Sidus plans',
       title: 'Unlock the full cosmos',
       lead: 'Unlimited tarot and oracle, synastry, premium tools and professional PDF.',
-      cta: 'Sidus VIP - {price} € lifetime',
+      cta: 'Sidus VIP - {price} lifetime',
+      ctaBr: 'Sidus VIP - {price} · PIX lifetime',
     },
     table: {
       feature: 'Portal',
