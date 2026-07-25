@@ -460,9 +460,11 @@
     upsertMeta('property', 'og:url', canonical)
     upsertMeta('property', 'og:title', title || h1)
     upsertMeta('property', 'og:description', description || '')
-    upsertMeta('name', 'twitter:card', 'summary')
+    upsertMeta('property', 'og:image', `${window.location.origin}/og-image.png?v=2`)
+    upsertMeta('name', 'twitter:card', 'summary_large_image')
     upsertMeta('name', 'twitter:title', title || h1)
     upsertMeta('name', 'twitter:description', description || '')
+    upsertMeta('name', 'twitter:image', `${window.location.origin}/og-image.png?v=2`)
 
     const jsonId = 'guia-jsonld'
     let script = document.getElementById(jsonId)
