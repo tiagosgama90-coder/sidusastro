@@ -62,6 +62,8 @@ export default {
       logoAlt: 'Sidus',
       title: 'Quando nasceste, o céu desenhou o teu mapa astral',
       trustBar: 'Grátis para começar · VIP 9,99 € pagamento único',
+      trustBarBr: 'Grátis para começar · VIP {preco} com PIX · pagamento único',
+      trustBarPixNote: 'No Brasil pagas em reais via PIX.',
       formLead: 'Lê o teu horóscopo personalizado',
       mobileLoginPrompt: 'Já tens conta?',
       mobileLoginLink: 'Entra aqui',
@@ -323,6 +325,7 @@ export default {
     buyOnce: '💳 Comprar mapa completo · 10 €',
     buyOnceNote: 'Pagamento único · sem mensalidade',
     premiumOption: '✦ Sidus Premium 9,99 € · Tudo incluído',
+    premiumOptionBr: '✦ Sidus VIP {preco} · PIX · Tudo incluído',
     premiumRecommended: 'Recomendado - inclui mapa completo + ferramentas',
     pricingHint: 'O Premium desbloqueia o mapa completo e todo o cosmos por menos do que dois mapas avulsos.',
     activate: 'Activar por 9,99 € · pagamento único',
@@ -975,7 +978,7 @@ export default {
     error: 'Não foi possível subscrever. Tenta outra vez.',
     privacy: 'Sem spam. Podes cancelar a qualquer momento.',
   },
-  newsletter: {
+  premium: {
     lifetimeNote: 'Pagamento único · acesso vitalício sem renovações',
     tarotUsed: 'Tarot: {used} de {max} leituras grátis · restam {left}',
     oracleUsed: 'Oráculo: {used} de {max} perguntas grátis · restam {left}',
@@ -983,7 +986,8 @@ export default {
       ariaLabel: 'Comparar planos Sidus',
       title: 'Desbloqueia o cosmos completo',
       lead: 'Tarot e oráculo ilimitados, sinastria, ferramentas premium e PDF profissional.',
-      cta: 'Sidus VIP - {price} € vitalício',
+      cta: 'Sidus VIP - {price} vitalício',
+      ctaBr: 'Sidus VIP - {price} · PIX vitalício',
     },
     table: {
       feature: 'Portal',
