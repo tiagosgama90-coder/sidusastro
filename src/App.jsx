@@ -4521,9 +4521,11 @@ export default function App() {
   const margemNav = 0
 
   return (
-    <div className={`sidus-cosmic-shell${!utilizador ? ' sidus-login-shell' : ''}`} style={shellStyle}>
-      <LandingCosmicBackground />
-      <MagicCursorTrail />
+    <div className={`sidus-cosmic-shell${!utilizador ? ' sidus-login-shell' : ' sidus-app-shell'}`} style={shellStyle}>
+      <div className="sidus-cosmic-backdrop" aria-hidden="true">
+        <LandingCosmicBackground />
+        <MagicCursorTrail />
+      </div>
       <div className="sidus-cosmic-foreground">
       {!utilizador && isDesktop && <LanguageSwitcher />}
 
@@ -4584,7 +4586,7 @@ export default function App() {
 
       <div
         className={[
-          !utilizador ? 'landing-auth-page-wrap' : null,
+          !utilizador ? 'landing-auth-page-wrap' : 'sidus-app-content',
           mostrarBottomNav ? 'mobile-shell-pad-bottom' : null,
         ].filter(Boolean).join(' ') || undefined}
         style={{
