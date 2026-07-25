@@ -110,7 +110,7 @@ export function AstroNewsCarousel({ aspetos = [] }) {
 
   if (!noticias.length) {
     return (
-      <div style={{
+      <div className="sidus-glass" style={{
         background: 'rgba(255,255,255,0.04)', borderRadius: 16,
         border: `1px solid ${CORES.vidroBorda}`, padding: 16, marginBottom: 18,
       }}>
@@ -172,7 +172,7 @@ export function AstroNewsCarousel({ aspetos = [] }) {
   }
 
   return (
-    <div style={{
+    <div className="sidus-glass" style={{
       background: 'rgba(255,255,255,0.04)', borderRadius: 16,
       border: `1px solid ${CORES.vidroBorda}`, marginBottom: 18, overflow: 'hidden',
     }}>

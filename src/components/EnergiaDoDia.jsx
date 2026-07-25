@@ -44,7 +44,7 @@ export function EnergiaDoDia({ mapaNatal, ceuAgora = [], aspetos = [] }) {
   const textoPartilha = t('share.energyText', { energia: energia.slice(0, 320), url: siteUrl })
 
   return (
-    <div style={{
+    <div className="sidus-glass" style={{
       background: 'linear-gradient(135deg, rgba(139,92,246,0.12) 0%, rgba(223,183,108,0.08) 100%)',
       border: `1px solid ${CORES.vidroBorda}`,
       borderRadius: 16,
@@ -83,7 +83,7 @@ export function TransitoSemanal({ ceuAgora = [], aspetos = [] }) {
   }, [aspetos, ceuAgora, t, tp, ta, ts])
 
   return (
-    <div style={{
+    <div className="sidus-glass" style={{
       background: 'rgba(255,255,255,0.04)',
       border: `1px solid ${CORES.vidroBorda}`,
       borderRadius: 16,

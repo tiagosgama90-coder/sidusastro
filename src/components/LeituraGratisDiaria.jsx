@@ -54,7 +54,7 @@ export function LeituraGratisDiaria({ solar, lunar, compact = false }) {
 
   return (
     <div
-      className={compact ? 'leitura-gratis leitura-gratis--compact' : 'leitura-gratis'}
+      className={compact ? 'leitura-gratis leitura-gratis--compact sidus-glass' : 'leitura-gratis sidus-glass'}
       style={{
         background: 'rgba(255, 255, 255, 0.06)',
         padding: compact ? '14px 16px' : '22px 24px',
