@@ -14,21 +14,34 @@ function colorFor(tint, alpha) {
   return rgba(GOLD, alpha)
 }
 
-function pushPointerParticle(particulas, x, y, { burst = false } = {}) {
-  const count = burst ? 8 : 1
+function pushDesktopTrail(particulas, x, y) {
+  particulas.push({
+    kind: 'pointer',
+    x: x + (Math.random() - 0.5) * 5,
+    y: y + (Math.random() - 0.5) * 5,
+    vx: 0,
+    vy: 0,
+    life: 1,
+    decay: 0.044,
+    size: 1.4 + Math.random() * 2.6,
+    tint: Math.random() > 0.7 ? 'purple' : 'gold',
+  })
+}
+
+/** Rasto suave de poeira cósmica (varinha) — mobile */
+function pushWandDust(particulas, x, y) {
+  const count = 2 + Math.floor(Math.random() * 2)
   for (let i = 0; i < count; i += 1) {
-    const angle = burst ? (Math.PI * 2 * i) / count + Math.random() * 0.35 : 0
-    const speed = burst ? 1.4 + Math.random() * 2.2 : 0
     particulas.push({
-      kind: burst ? 'burst' : 'pointer',
-      x: x + (burst ? 0 : (Math.random() - 0.5) * 5),
-      y: y + (burst ? 0 : (Math.random() - 0.5) * 5),
-      vx: burst ? Math.cos(angle) * speed : 0,
-      vy: burst ? Math.sin(angle) * speed : 0,
+      kind: 'wand',
+      x: x + (Math.random() - 0.5) * 14,
+      y: y + (Math.random() - 0.5) * 14,
+      vx: (Math.random() - 0.5) * 0.28,
+      vy: -0.18 - Math.random() * 0.38,
       life: 1,
-      decay: burst ? 0.036 : 0.044,
-      size: burst ? 1.6 + Math.random() * 2.4 : 1.4 + Math.random() * 2.6,
-      tint: Math.random() > 0.7 ? 'purple' : 'gold',
+      decay: 0.014 + Math.random() * 0.01,
+      size: 0.45 + Math.random() * 1.1,
+      tint: Math.random() > 0.72 ? 'gold' : Math.random() > 0.45 ? 'white' : 'purple',
     })
   }
 }
@@ -51,30 +64,33 @@ function seedAmbient(w, h, count) {
 }
 
 /**
- * Efeitos cósmicos Sidus — site inteiro:
+ * Efeitos cósmicos Sidus — site inteiro, sempre atrás do conteúdo:
  * - Desktop: rasto dourado/roxo ao mover o rato
- * - Mobile: rasto ao dedo + explosão ao tocar + poeira ambiente
+ * - Mobile: rasto suave de poeira cósmica ao deslizar o dedo
  */
 export function MagicCursorTrail({ activo = true }) {
   useEffect(() => {
     if (!activo || typeof window === 'undefined') return undefined
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return undefined
 
+    const shell = document.querySelector('.sidus-cosmic-shell')
+    if (!shell) return undefined
+
     const coarse = window.matchMedia('(pointer: coarse)').matches
-    const pointerMax = coarse ? 34 : 48
-    const ambientCount = coarse ? 26 : 18
+    const pointerMax = coarse ? 42 : 48
+    const ambientCount = coarse ? 20 : 18
 
     const particulas = []
     let ambients = []
     let w = window.innerWidth
     let h = window.innerHeight
     let visible = true
+    let lastTouchSpawn = 0
 
     const canvas = document.createElement('canvas')
     canvas.className = 'magic-cosmic-trail-canvas'
     canvas.setAttribute('aria-hidden', 'true')
-    canvas.style.cssText = 'position:fixed;inset:0;pointer-events:none;z-index:9998;width:100%;height:100%;'
-    document.body.appendChild(canvas)
+    shell.appendChild(canvas)
 
     const ctx = canvas.getContext('2d', { alpha: true })
     if (!ctx) {
@@ -94,22 +110,17 @@ export function MagicCursorTrail({ activo = true }) {
     resize()
 
     const onMove = (e) => {
-      pushPointerParticle(particulas, e.clientX, e.clientY)
+      pushDesktopTrail(particulas, e.clientX, e.clientY)
       trimPointerParticles(particulas, pointerMax)
     }
 
     const onTouchMove = (e) => {
+      const now = performance.now()
+      if (now - lastTouchSpawn < 28) return
+      lastTouchSpawn = now
       for (let i = 0; i < e.touches.length; i += 1) {
         const t = e.touches[i]
-        pushPointerParticle(particulas, t.clientX, t.clientY)
-      }
-      trimPointerParticles(particulas, pointerMax)
-    }
-
-    const onTouchStart = (e) => {
-      for (let i = 0; i < e.changedTouches.length; i += 1) {
-        const t = e.changedTouches[i]
-        pushPointerParticle(particulas, t.clientX, t.clientY, { burst: true })
+        pushWandDust(particulas, t.clientX, t.clientY)
       }
       trimPointerParticles(particulas, pointerMax)
     }
@@ -131,33 +142,42 @@ export function MagicCursorTrail({ activo = true }) {
         const tw = 0.5 + 0.5 * Math.sin(now * 0.0014 + p.pulse)
         ctx.beginPath()
         ctx.arc(p.x, p.y, p.size * tw, 0, Math.PI * 2)
-        ctx.fillStyle = colorFor(p.tint, 0.22 * tw)
+        ctx.fillStyle = colorFor(p.tint, (coarse ? 0.16 : 0.22) * tw)
         ctx.fill()
       }
 
       for (let i = particulas.length - 1; i >= 0; i -= 1) {
         const p = particulas[i]
         p.life -= p.decay
-        if (p.kind === 'burst') {
+        if (p.kind === 'wand') {
           p.x += p.vx
           p.y += p.vy
-          p.vx *= 0.95
-          p.vy *= 0.95
+          p.vx *= 0.98
+          p.vy *= 0.98
         }
         if (p.life <= 0) {
           particulas.splice(i, 1)
           continue
         }
-        const alpha = p.kind === 'burst' ? p.life * 0.72 : p.life * 0.78
-        const radius = p.size * p.life
+
+        const isWand = p.kind === 'wand'
+        const alpha = isWand ? p.life * 0.42 : p.life * 0.78
+        const radius = p.size * (isWand ? 0.55 + p.life * 0.45 : p.life)
+
         ctx.beginPath()
         ctx.arc(p.x, p.y, radius, 0, Math.PI * 2)
         ctx.fillStyle = colorFor(p.tint, alpha)
         ctx.fill()
-        if (p.life > 0.45) {
+
+        if (!isWand && p.life > 0.45) {
           ctx.beginPath()
           ctx.arc(p.x, p.y, radius * 2.4, 0, Math.PI * 2)
           ctx.fillStyle = colorFor(p.tint, alpha * 0.14)
+          ctx.fill()
+        } else if (isWand && p.life > 0.35) {
+          ctx.beginPath()
+          ctx.arc(p.x, p.y, radius * 1.8, 0, Math.PI * 2)
+          ctx.fillStyle = colorFor(p.tint, alpha * 0.08)
           ctx.fill()
         }
       }
@@ -172,15 +192,9 @@ export function MagicCursorTrail({ activo = true }) {
     document.addEventListener('visibilitychange', onVisibility)
 
     if (coarse) {
-      window.addEventListener('touchstart', onTouchStart, { passive: true })
       window.addEventListener('touchmove', onTouchMove, { passive: true })
     } else {
       window.addEventListener('mousemove', onMove, { passive: true })
-    }
-
-    // Híbridos (Surface, etc.): rato + toque
-    if (!coarse) {
-      window.addEventListener('touchstart', onTouchStart, { passive: true })
       window.addEventListener('touchmove', onTouchMove, { passive: true })
     }
 
@@ -188,7 +202,6 @@ export function MagicCursorTrail({ activo = true }) {
       cancelAnimationFrame(raf)
       window.removeEventListener('resize', resize)
       window.removeEventListener('mousemove', onMove)
-      window.removeEventListener('touchstart', onTouchStart)
       window.removeEventListener('touchmove', onTouchMove)
       document.removeEventListener('visibilitychange', onVisibility)
       canvas.remove()
