@@ -37,6 +37,7 @@ import { pesquisarCidades, pesquisarFusoHorario, geocodificarCidade } from './li
 import { ModalPagamento, verificarSessaoPagamento } from './components/Pagamento'
 import { PRECO_MAPA_COMPLETO, precoPremiumVitrine, formatPrecoEuro, formatPrecoCompleto } from './lib/pricing.js'
 import { useGeoCountry } from './hooks/useGeoCountry.js'
+import { useGoogleTranslateLandingSupport } from './hooks/useGoogleTranslateRescan.js'
 import { RecaptchaCheckbox } from './components/Recaptcha'
 import { Perfil } from './components/Perfil'
 import { VipPromoPage } from './components/VipPromoPage.jsx'
@@ -1326,6 +1327,7 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
   const { lang, t } = useLanguage()
   const authPanelRef = useRef(null)
   const portalRef = useRef(null)
+  useGoogleTranslateLandingSupport()
   const [email, setEmail]       = useState('')
   const [senha, setSenha]       = useState('')
   const [confirmar, setConfirmar] = useState('')
@@ -1427,7 +1429,7 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
   }, [])
 
   return (
-    <div className={`landing-auth-layout${isDesktop ? ' landing-auth-layout--desktop' : ' landing-auth-layout--mobile'}`}>
+    <div className={`landing-auth-layout${isDesktop ? ' landing-auth-layout--desktop' : ' landing-auth-layout--mobile'}`} translate="yes">
       <BannerBrasil />
       <LandingStickyCta targetRef={portalRef} onCta={scrollParaAuth} />
       {isDesktop ? (

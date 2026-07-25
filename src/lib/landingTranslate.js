@@ -1,6 +1,6 @@
 /** Atributos para inputs com dados do utilizador (não traduzir nomes, cidades, datas). */
 export const INPUT_NO_TRANSLATE = {
-  className: 'landing-portal-input notranslate',
+  className: 'landing-portal-input',
   translate: 'no',
 }
 

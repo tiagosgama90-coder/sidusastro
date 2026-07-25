@@ -9,7 +9,7 @@ import { pesquisarCidades, pesquisarFusoHorario } from '../lib/geocoding.js'
 import { readLandingDraft, saveLandingDraft, stageLandingDraft, flushLandingDraft } from '../lib/landingDraft.js'
 import { calcularMapaNatal, calcularSignoSolarPorData } from '../lib/astrologia.js'
 import { LeituraGratisDiaria } from './LeituraGratisDiaria.jsx'
-import { useGoogleTranslateRescan } from '../hooks/useGoogleTranslateRescan.js'
+import { useGoogleTranslateRescan, useGoogleTranslateLandingSupport } from '../hooks/useGoogleTranslateRescan.js'
 import { INPUT_NO_TRANSLATE, fusosFallbackLabels } from '../lib/landingTranslate.js'
 
 const CORES = {
@@ -170,7 +170,6 @@ function CampoCidadePortal({ valor, localizacao, onChange, onSelect, erro, onBlu
             <li key={s.placeId}>
               <button
                 type="button"
-                className="notranslate"
                 translate="no"
                 onPointerDown={(e) => { e.preventDefault(); onSelect(s); setAberto(false) }}
                 style={{
