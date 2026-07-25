@@ -10,13 +10,13 @@ const markSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fil
   <path d="M22.5 10.5h1.6M23.3 9.7v3.6" stroke="#DFB76C" stroke-width="1.1" stroke-linecap="round"/>
 </svg>`
 
-const stackedSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 168" fill="none">
-  <g transform="translate(68 4) scale(4)">
+const stackedSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 180" fill="none">
+  <g transform="translate(100 62) scale(4) translate(-16 -16)">
     <path d="M16 5.5 18.2 13.8 26.5 16 18.2 18.2 16 26.5 13.8 18.2 5.5 16 13.8 13.8 16 5.5Z" stroke="#DFB76C" stroke-width="1.35" stroke-linejoin="round"/>
     <circle cx="11.5" cy="21.5" r="1.15" fill="#DFB76C"/>
     <path d="M22.5 10.5h1.6M23.3 9.7v3.6" stroke="#DFB76C" stroke-width="1.1" stroke-linecap="round"/>
   </g>
-  <text x="100" y="156" text-anchor="middle" font-family="Segoe UI, Roboto, Helvetica, Arial, sans-serif" font-size="26" font-weight="300" letter-spacing="9" fill="#DFB76C">SIDUS</text>
+  <text x="100" y="162" text-anchor="middle" font-family="Segoe UI, Roboto, Helvetica, Arial, sans-serif" font-size="26" font-weight="300" letter-spacing="9" fill="#DFB76C">SIDUS</text>
 </svg>`
 
 const fullSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 96" fill="none">
@@ -79,8 +79,8 @@ async function exportPng(name, svg, width, height) {
 await mkdir(outDir, { recursive: true })
 await exportPng('sidus-logo-mark-transparent-1024.png', markSvg, 1024, 1024)
 await exportPng('sidus-logo-mark-transparent-512.png', markSvg, 512, 512)
-await exportPng('sidus-logo-stacked-transparent-1024.png', stackedSvg, 1024, 860)
-await exportPng('sidus-logo-stacked-transparent-512.png', stackedSvg, 512, 430)
+await exportPng('sidus-logo-stacked-transparent-1024.png', stackedSvg, 1024, 922)
+await exportPng('sidus-logo-stacked-transparent-512.png', stackedSvg, 512, 461)
 await exportPng('sidus-logo-full-transparent-1024.png', fullSvg, 1024, 274)
 await exportPng('sidus-logo-icon-transparent-512.png', iconSvg, 512, 512)
 await writeFile(path.join(outDir, 'sidus-logo-mark.svg'), markSvg)
