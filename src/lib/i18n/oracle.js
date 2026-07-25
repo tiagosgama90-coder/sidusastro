@@ -77,7 +77,7 @@ export function construirSistema(mapaNatal, lang = 'pt', isPremium = false) {
   if (isPremium) {
     if (!isPt(lang)) {
       return `
-You are Sidus, Senior Astrologer and Astral Oracle - 30+ years of practice integrating classical astrology, Jungian psychology and spiritual counselling.
+You are Sidus, Senior Astrologer and Chat Oracle - 30+ years of practice integrating classical astrology, Jungian psychology and spiritual counselling.
 You respond ALWAYS in ${respondIn(lang)}, as in a real professional consultation: warm, precise, human, never robotic.
 ${aiOutputLanguageBlock(lang)}
 ${zodiacNamesInstruction(lang)}
@@ -103,7 +103,7 @@ ${blocoEscopoAstrologia(lang)}
     }
 
     return `
-És Sidus, Oráculo Astral e Astróloga Sénior - mais de 30 anos de prática integrando astrologia clássica, psicologia junguiana e acompanhamento espiritual.
+És Sidus, Chat Oráculo e Astróloga Sénior - mais de 30 anos de prática integrando astrologia clássica, psicologia junguiana e acompanhamento espiritual.
 Respondes SEMPRE em Português de Portugal, como numa consulta profissional real: caloroso, preciso, humano, nunca robótico.
 
 ${sol ? `MAPA NATAL DO CLIENTE (Swiss Ephemeris, Placidus):
@@ -129,7 +129,7 @@ ${blocoEscopoAstrologia('pt')}
   // Versão gratuita - mais inteligente mas concisa
   if (!isPt(lang)) {
     return `
-You are Sidus, the Astral Oracle. Respond in ${respondIn(lang)} with clarity and warmth - concise but never shallow.
+You are Sidus, the Chat Oracle. Respond in ${respondIn(lang)} with clarity and warmth - concise but never shallow.
 ${aiOutputLanguageBlock(lang)}
 ${zodiacNamesInstruction(lang)}
 
@@ -146,7 +146,7 @@ ${blocoEscopoAstrologia(lang)}
   }
 
   return `
-És Sidus, o Oráculo Astral. Respondes em Português de Portugal com clareza e calor - conciso mas nunca superficial.
+És Sidus, o Chat Oráculo. Respondes em Português de Portugal com clareza e calor - conciso mas nunca superficial.
 
 ${sol ? `Dados natais: Sol ${sol}, Lua ${lua}, Ascendente ${asc}.
 Liga SEMPRE a resposta a estes posicionamentos. Menciona como o Sol (identidade), a Lua (emoções) e o Ascendente (modo de viver) colorem esta questão concreta.` : 'Dados de nascimento em falta - orienta com profundidade geral e sugere completar o registo.'}
@@ -362,35 +362,35 @@ export function getChatGreeting(mapaNatal, lang = 'pt', maxFree = 3, isPremium =
   if (!isPt(lang)) {
     const greet = contentForLang(lang, {
       en: {
-        premSol: (s, l, a) => `Welcome. I am Sidus, your Astral Oracle.\n\nI have studied your natal chart: Sun in ${s}, Moon in ${l}, Ascendant in ${a}. Premium gives unlimited professional consultation.\n\nTell me what is happening in your life.`,
-        premNo: () => `Welcome. I am Sidus, Astral Oracle.\n\nComplete your birth registration for full chart precision.\n\nWhat weighs on your heart today?`,
-        freeSol: (s, l, a, n) => `Hello. I am Sidus, the Astral Oracle.\n\nSun in ${s}, Moon in ${l}, Ascendant in ${a}.\n\nYou have ${n} free questions. Ask about love, career, purpose or transits.\n\nWhat do you want to read in the stars now?`,
-        freeNo: () => `Hello. I am Sidus, the Astral Oracle.\n\nComplete your birth registration for personalised answers.\n\nWhat do you want to read in the stars now?`,
+        premSol: (s, l, a) => `Welcome. I am Sidus, your Chat Oracle.\n\nI have studied your natal chart: Sun in ${s}, Moon in ${l}, Ascendant in ${a}. Premium gives unlimited professional consultation.\n\nTell me what is happening in your life.`,
+        premNo: () => `Welcome. I am Sidus, Chat Oracle.\n\nComplete your birth registration for full chart precision.\n\nWhat weighs on your heart today?`,
+        freeSol: (s, l, a, n) => `Hello. I am Sidus, the Chat Oracle.\n\nSun in ${s}, Moon in ${l}, Ascendant in ${a}.\n\nYou have ${n} free questions. Ask about love, career, purpose or transits.\n\nWhat do you want to read in the stars now?`,
+        freeNo: () => `Hello. I am Sidus, the Chat Oracle.\n\nComplete your birth registration for personalised answers.\n\nWhat do you want to read in the stars now?`,
         limit: (n) => `✦ You have used your ${n} free questions.\n\nActivate Premium below for unlimited guidance from Sidus.`,
       },
       es: {
-        premSol: (s, l, a) => `Bienvenido/a. Soy Sidus, tu Oráculo Astral.\n\nHe estudiado tu carta: Sol en ${s}, Luna en ${l}, Ascendente en ${a}. Premium ofrece consulta ilimitada.\n\nCuéntame qué pasa en tu vida.`,
-        premNo: () => `Bienvenido/a. Soy Sidus, Oráculo Astral.\n\nCompleta tu registro natal para leer tu carta con precisión.\n\n¿Qué pesa en tu corazón hoy?`,
-        freeSol: (s, l, a, n) => `Hola. Soy Sidus, Oráculo Astral.\n\nSol en ${s}, Luna en ${l}, Ascendente en ${a}.\n\nTienes ${n} preguntas gratuitas. Pregunta sobre amor, carrera o tránsitos.\n\n¿Qué quieres leer en las estrellas?`,
-        freeNo: () => `Hola. Soy Sidus, Oráculo Astral.\n\nCompleta tu registro para respuestas personalizadas.\n\n¿Qué quieres leer en las estrellas?`,
+        premSol: (s, l, a) => `Bienvenido/a. Soy Sidus, tu Chat Oráculo.\n\nHe estudiado tu carta: Sol en ${s}, Luna en ${l}, Ascendente en ${a}. Premium ofrece consulta ilimitada.\n\nCuéntame qué pasa en tu vida.`,
+        premNo: () => `Bienvenido/a. Soy Sidus, Chat Oráculo.\n\nCompleta tu registro natal para leer tu carta con precisión.\n\n¿Qué pesa en tu corazón hoy?`,
+        freeSol: (s, l, a, n) => `Hola. Soy Sidus, Chat Oráculo.\n\nSol en ${s}, Luna en ${l}, Ascendente en ${a}.\n\nTienes ${n} preguntas gratuitas. Pregunta sobre amor, carrera o tránsitos.\n\n¿Qué quieres leer en las estrellas?`,
+        freeNo: () => `Hola. Soy Sidus, Chat Oráculo.\n\nCompleta tu registro para respuestas personalizadas.\n\n¿Qué quieres leer en las estrellas?`,
         limit: (n) => `✦ Has usado tus ${n} preguntas gratuitas.\n\nActiva Premium para orientación ilimitada.`,
       },
       it: {
-        premSol: (s, l, a) => `Benvenuto/a. Sono Sidus, il tuo Oracolo Astrale.\n\nHo studiato la tua carta: Sole in ${s}, Luna in ${l}, Ascendente in ${a}.\n\nRaccontami cosa succede nella tua vita.`,
-        premNo: () => `Benvenuto/a. Sono Sidus, Oracolo Astrale.\n\nCompleta la registrazione natale per precisione totale.`,
-        freeSol: (s, l, a, n) => `Ciao. Sono Sidus, Oracolo Astrale.\n\nSole in ${s}, Luna in ${l}, Ascendente in ${a}.\n\nHai ${n} domande gratuite.`,
+        premSol: (s, l, a) => `Benvenuto/a. Sono Sidus, il tuo Chat Oracolo.\n\nHo studiato la tua carta: Sole in ${s}, Luna in ${l}, Ascendente in ${a}.\n\nRaccontami cosa succede nella tua vita.`,
+        premNo: () => `Benvenuto/a. Sono Sidus, Chat Oracolo.\n\nCompleta la registrazione natale per precisione totale.`,
+        freeSol: (s, l, a, n) => `Ciao. Sono Sidus, Chat Oracolo.\n\nSole in ${s}, Luna in ${l}, Ascendente in ${a}.\n\nHai ${n} domande gratuite.`,
         freeNo: () => `Ciao. Sono Sidus. Completa la registrazione per risposte personalizzate.`,
         limit: (n) => `✦ Hai usato le ${n} domande gratuite. Attiva Premium per guida illimitata.`,
       },
       de: {
-        premSol: (s, l, a) => `Willkommen. Ich bin Sidus, dein Astralorakel.\n\nSonne in ${s}, Mond in ${l}, Aszendent in ${a}.\n\nErzähl mir, was in deinem Leben passiert.`,
+        premSol: (s, l, a) => `Willkommen. Ich bin Sidus, dein Chat-Orakel.\n\nSonne in ${s}, Mond in ${l}, Aszendent in ${a}.\n\nErzähl mir, was in deinem Leben passiert.`,
         premNo: () => `Willkommen. Vervollständige deine Geburtseintragung für volle Präzision.`,
         freeSol: (s, l, a, n) => `Hallo. Ich bin Sidus.\n\nSonne ${s}, Mond ${l}, Aszendent ${a}. Du hast ${n} Gratisfragen.`,
         freeNo: () => `Hallo. Ich bin Sidus. Vervollständige die Registrierung für personalisierte Antworten.`,
         limit: (n) => `✦ Du hast deine ${n} Gratisfragen genutzt. Aktiviere Premium für unbegrenzte Beratung.`,
       },
       fr: {
-        premSol: (s, l, a) => `Bienvenue. Je suis Sidus, ton Oracle Astral.\n\nSoleil en ${s}, Lune en ${l}, Ascendant en ${a}.\n\nRaconte-moi ce qui se passe dans ta vie.`,
+        premSol: (s, l, a) => `Bienvenue. Je suis Sidus, ton Chat Oráculo.\n\nSoleil en ${s}, Lune en ${l}, Ascendant en ${a}.\n\nRaconte-moi ce qui se passe dans ta vie.`,
         premNo: () => `Bienvenue. Complète ton enregistrement natal pour une lecture précise.`,
         freeSol: (s, l, a, n) => `Bonjour. Je suis Sidus.\n\nSoleil ${s}, Lune ${l}, Ascendant ${a}. Tu as ${n} questions gratuites.`,
         freeNo: () => `Bonjour. Je suis Sidus. Complète l'enregistrement pour des réponses personnalisées.`,
@@ -407,14 +407,14 @@ export function getChatGreeting(mapaNatal, lang = 'pt', maxFree = 3, isPremium =
 
   if (isPremium) {
     if (sol) {
-      return `Bem-vindo/a. Sou Sidus, o teu Oráculo Astral.\n\nEstudei o teu mapa natal em profundidade: Sol em ${sol}, Lua em ${lua}, Ascendente em ${asc}. O Premium dá-te consulta profissional ilimitada - como numa sessão real.\n\nConta-me o que se passa na tua vida. Lerei através do teu mapa.`
+      return `Bem-vindo/a. Sou Sidus, o teu Chat Oráculo.\n\nEstudei o teu mapa natal em profundidade: Sol em ${sol}, Lua em ${lua}, Ascendente em ${asc}. O Premium dá-te consulta profissional ilimitada - como numa sessão real.\n\nConta-me o que se passa na tua vida. Lerei através do teu mapa.`
     }
-    return `Bem-vindo/a. Sou Sidus, Oráculo Astral.\n\nCompleta o registo natal para eu ler o teu mapa com precisão total. Depois trabalhamos juntos sem limites.\n\nO que pesa no teu coração hoje?`
+    return `Bem-vindo/a. Sou Sidus, Chat Oráculo.\n\nCompleta o registo natal para eu ler o teu mapa com precisão total. Depois trabalhamos juntos sem limites.\n\nO que pesa no teu coração hoje?`
   }
   if (sol) {
-    return `Olá. Sou Sidus, Oráculo Astral.\n\nLi o teu mapa: Sol em ${sol}, Lua em ${lua}, Ascendente em ${asc}.\n\nTens ${maxFree} questões gratuitas. Pergunta sobre amor, carreira, propósito, ciclos ou trânsitos - sempre ligado ao teu mapa.\n\nO que queres ler nas estrelas agora?`
+    return `Olá. Sou Sidus, Chat Oráculo.\n\nLi o teu mapa: Sol em ${sol}, Lua em ${lua}, Ascendente em ${asc}.\n\nTens ${maxFree} questões gratuitas. Pergunta sobre amor, carreira, propósito, ciclos ou trânsitos - sempre ligado ao teu mapa.\n\nO que queres ler nas estrelas agora?`
   }
-  return `Olá. Sou Sidus, Oráculo Astral.\n\nCompleta o registo natal para respostas personalizadas ao teu mapa.\n\nPergunta sobre amor, carreira, propósito ou ciclos planetários.\n\nO que queres ler nas estrelas agora?`
+  return `Olá. Sou Sidus, Chat Oráculo.\n\nCompleta o registo natal para respostas personalizadas ao teu mapa.\n\nPergunta sobre amor, carreira, propósito ou ciclos planetários.\n\nO que queres ler nas estrelas agora?`
 }
 
 export function getOracleLimitMessage(maxFree, lang = 'pt') {

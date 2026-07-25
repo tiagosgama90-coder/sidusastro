@@ -7,12 +7,12 @@ const BASE_URL = 'https://sidusastro.com'
 
 const SEO = {
   login: {
-    pt: { title: 'Mapa Astral Grátis · Login', description: 'Calcula o teu mapa astral com Swiss Ephemeris. Tarot, oráculo IA e horóscopo personalizado ao teu Sol, Lua e Ascendente.' },
-    en: { title: 'Free Natal Chart · Sign In', description: 'Calculate your birth chart with Swiss Ephemeris. Tarot, AI oracle and horoscope tailored to your Sun, Moon and Ascendant.' },
-    es: { title: 'Carta Natal Gratis · Entrar', description: 'Calcula tu carta natal con Swiss Ephemeris. Tarot, oráculo IA y horóscopo personalizado a tu Sol, Luna y Ascendente.' },
-    it: { title: 'Tema Natale Gratis · Accedi', description: 'Calcola il tuo tema natale con Swiss Ephemeris. Tarocchi, oracolo IA e oroscopo personalizzato.' },
-    de: { title: 'Gratis Geburtshoroskop · Anmelden', description: 'Berechne dein Geburtshoroskop mit Swiss Ephemeris. Tarot, KI-Orakel und personalisiertes Horoskop.' },
-    fr: { title: 'Thème Natal Gratuit · Connexion', description: 'Calcule ton thème natal avec Swiss Ephemeris. Tarot, oracle IA et horoscope personnalisé.' },
+    pt: { title: 'Mapa Astral Grátis · Login', description: 'Calcula o teu mapa astral com Swiss Ephemeris. Tarot, Chat Oráculo e horóscopo personalizado ao teu Sol, Lua e Ascendente.' },
+    en: { title: 'Free Natal Chart · Sign In', description: 'Calculate your birth chart with Swiss Ephemeris. Tarot, Chat Oracle and horoscope tailored to your Sun, Moon and Ascendant.' },
+    es: { title: 'Carta Natal Gratis · Entrar', description: 'Calcula tu carta natal con Swiss Ephemeris. Tarot, Chat Oráculo y horóscopo personalizado a tu Sol, Luna y Ascendente.' },
+    it: { title: 'Tema Natale Gratis · Accedi', description: 'Calcola il tuo tema natale con Swiss Ephemeris. Tarocchi, Chat Oracolo e oroscopo personalizzato.' },
+    de: { title: 'Gratis Geburtshoroskop · Anmelden', description: 'Berechne dein Geburtshoroskop mit Swiss Ephemeris. Tarot, Chat-Orakel und personalisiertes Horoskop.' },
+    fr: { title: 'Thème Natal Gratuit · Connexion', description: 'Calcule ton thème natal avec Swiss Ephemeris. Tarot, Chat Oráculo et horoscope personnalisé.' },
   },
   home: {
     pt: { title: 'Horóscopo do Dia · Início', description: 'O teu céu em tempo real: fases da Lua, trânsitos, carta do dia e leitura personalizada ao teu mapa natal.' },
@@ -47,12 +47,12 @@ const SEO = {
     fr: { title: 'Outils Astrologiques', description: 'Synastrie, numérologie, biorhythme, heures miroirs, rêves et boussole cosmique.' },
   },
   chat: {
-    pt: { title: 'Oráculo IA Astrológico', description: 'Chat com oráculo de inteligência artificial focado em astrologia - amor, carreira e trânsitos ao teu mapa.' },
-    en: { title: 'AI Astrology Oracle', description: 'AI oracle chat focused on astrology - love, career and transits for your natal chart.' },
-    es: { title: 'Oráculo IA Astrológico', description: 'Chat con oráculo de IA enfocado en astrología - amor, carrera y tránsitos.' },
-    it: { title: 'Oracolo IA Astrologico', description: 'Chat con oracolo IA su astrologia - amore, carriera e transiti.' },
-    de: { title: 'KI-Astrologie-Orakel', description: 'KI-Orakel-Chat zu Astrologie - Liebe, Karriere und Transite.' },
-    fr: { title: 'Oracle IA Astrologique', description: 'Chat oracle IA sur l\'astrologie - amour, carrière et transits.' },
+    pt: { title: 'Chat Oráculo', description: 'Chat de orientação astrológica personalizada ao teu mapa - amor, carreira e trânsitos.' },
+    en: { title: 'Chat Oracle', description: 'Astrological guidance chat personalised to your natal chart - love, career and transits.' },
+    es: { title: 'Chat Oráculo', description: 'Chat de orientación astrológica personalizada a tu carta natal - amor, carrera y tránsitos.' },
+    it: { title: 'Chat Oracolo', description: 'Chat di orientamento astrologico personalizzata sul tuo tema natale - amore, carriera e transiti.' },
+    de: { title: 'Chat-Orakel', description: 'Astrologischer Beratungs-Chat personalisiert zu deinem Geburtshoroskop - Liebe, Karriere und Transite.' },
+    fr: { title: 'Chat Oráculo', description: 'Chat d\'orientation astrologique personnalisé à ton thème natal - amour, carrière et transits.' },
   },
   privacidade: {
     pt: { title: 'Política de Privacidade', description: 'Como o Sidusastro protege os teus dados de nascimento e informação pessoal.' },
@@ -73,12 +73,12 @@ const SEO = {
 }
 
 const DEFAULT = {
-  pt: { title: 'O Seu Guia Cósmico', description: 'Mapa astral, tarot online, oráculo IA e ferramentas astrológicas personalizadas.' },
-  en: { title: 'Your Cosmic Guide', description: 'Natal chart, online tarot, AI oracle and personalised astrology tools.' },
-  es: { title: 'Tu Guía Cósmica', description: 'Carta natal, tarot online, oráculo IA y herramientas astrológicas personalizadas.' },
-  it: { title: 'La Tua Guida Cosmica', description: 'Tema natale, tarocchi online, oracolo IA e strumenti astrologici personalizzati.' },
-  de: { title: 'Dein Kosmischer Guide', description: 'Geburtshoroskop, Online-Tarot, KI-Orakel und personalisierte Astrologie-Tools.' },
-  fr: { title: 'Ton Guide Cosmique', description: 'Thème natal, tarot en ligne, oracle IA et outils astrologiques personnalisés.' },
+  pt: { title: 'O Seu Guia Cósmico', description: 'Mapa astral, tarot online, Chat Oráculo e ferramentas astrológicas personalizadas.' },
+  en: { title: 'Your Cosmic Guide', description: 'Natal chart, online tarot, Chat Oracle and personalised astrology tools.' },
+  es: { title: 'Tu Guía Cósmica', description: 'Carta natal, tarot online, Chat Oráculo y herramientas astrológicas personalizadas.' },
+  it: { title: 'La Tua Guida Cosmica', description: 'Tema natale, tarocchi online, Chat Oracolo e strumenti astrologici personalizzati.' },
+  de: { title: 'Dein Kosmischer Guide', description: 'Geburtshoroskop, Online-Tarot, Chat-Orakel und personalisierte Astrologie-Tools.' },
+  fr: { title: 'Ton Guide Cosmique', description: 'Thème natal, tarot en ligne, Chat Oráculo et outils astrologiques personnalisés.' },
 }
 
 function setMeta(attr, key, value) {

@@ -7,13 +7,13 @@ export const NOVIDADES_SIDUS = [
   },
   {
     date: '2026-06-17',
-    pt: 'Gemini limitado a astrologia · Motor IA gratuito (Groq/Gemini)',
-    en: 'Gemini scoped to astrology · Free AI stack (Groq/Gemini)',
+    pt: 'Gemini limitado a astrologia · Motor gratuito (Groq/Gemini)',
+    en: 'Gemini scoped to astrology · Free processing stack (Groq/Gemini)',
   },
   {
     date: '2026-06-15',
-    pt: 'Interpretação de sonhos · IA no servidor (mais seguro)',
-    en: 'Dream interpretation · Server-side AI (more secure)',
+    pt: 'Interpretação de sonhos · processamento no servidor (mais seguro)',
+    en: 'Dream interpretation · Server-side processing (more secure)',
   },
   {
     date: '2026-06-10',

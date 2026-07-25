@@ -36,7 +36,7 @@ export default {
     "tagline": "Wo die Himmelskarte auf die Weisheit der Karten trifft, um Ihre Schritte zu leiten.",
     "liveNow": "Live · Sky aktualisiert",
     "heroTitle": "Ihr komplettes Geburtshoroskop.Dein Schicksal, entschlüsselt.",
-    "heroSubtitle": "Schweizer Ephemeriden · Placidus-Häuser · KI-Orakel · Tarot · Numerologie - alles personalisiert mit Ihrer Sonne, Ihrem Mond und Ihrem Aszendenten.",
+    "heroSubtitle": "Schweizer Ephemeriden · Placidus-Häuser · Chat-Orakel · Tarot · Numerologie - alles personalisiert mit Ihrer Sonne, Ihrem Mond und Ihrem Aszendenten.",
     "login": "Anmelden",
     "register": "Benutzerkonto erstellen",
     "email": "E-Mail",
@@ -97,12 +97,12 @@ export default {
         "title": "Häufig gestellte Fragen",
         "q1": "Was bekomme ich mit dem Geburtshoroskop?",
         "a1": "Ein vollständiger, hochwertig interpretierter PDF-Bericht mit Sonne, Mond, Aszendent, Planeten, Placidus-Häusern und Aspekten - berechnet mit Swiss Ephemeris.",
-        "q2": "Wie funktioniert das KI-Orakel?",
-        "a2": "Es handelt sich um einen sicheren Chat mit künstlicher Intelligenz, der sich auf astrologische Beratung konzentriert - Liebe, Karriere, Transite und Ihr Geburtshoroskop.",
+        "q2": "Wie funktioniert das Chat-Orakel?",
+        "a2": "Es handelt sich um einen sicheren Chat mit astrologischer Beratung, personalisiert zu Ihrem Geburtshoroskop - Liebe, Karriere, Transite und Lebensweg.",
         "q3": "Sind meine Geburtsdaten sicher?",
         "a3": "Ja - Ihre Daten werden verschlüsselt über Firebase verarbeitet.",
         "q4": "Was ist der Unterschied zwischen dem Einmal-Chart und Premium?",
-        "a4": "Das einmalige Diagramm ist eine einmalige Zahlung - Sie erhalten den vollständigen PDF-Bericht ohne monatliches Abonnement.Sidus Premium enthält das vollständige Geburtshoroskop sowie KI-Orakel, Tarot, Synastrie und alle Tools.Wenn Sie mehr als das PDF wollen, ist Premium die beste Wahl.",
+        "a4": "Das einmalige Diagramm ist eine einmalige Zahlung - Sie erhalten den vollständigen PDF-Bericht ohne monatliches Abonnement.Sidus Premium enthält das vollständige Geburtshoroskop sowie Chat-Orakel, Tarot, Synastrie und alle Tools.Wenn Sie mehr als das PDF wollen, ist Premium die beste Wahl.",
         "q5": "Wird die astrologische Mandala für jede Person berechnet?",
         "a5": "Ja. Jedes Rad wird in Echtzeit mit Swiss Ephemeris aus dem genauen Geburtsdatum, der Geburtszeit und dem Geburtsort generiert - Planeten, Placidus-Häuser, Aspekte und Winkel (ASC/MC) mit professioneller Ephemeriden-Präzision.",
         "q6": "Brauche ich die genaue Geburtszeit?",
@@ -176,7 +176,7 @@ export default {
       },
       "oraculo": {
         "badge": "Sternenorakel",
-        "title": "Engagierter KI-Astrologe",
+        "title": "Engagierter Astrologe",
         "desc": "Fragen Sie alles - die Antworten basieren auf Ihrem Horoskop, nicht auf generischen Horoskopen.",
         "pill": "Chat-Orakel"
       },
@@ -492,7 +492,7 @@ export default {
     }
   },
   "oracle": {
-    "title": "Astralorakel",
+    "title": "Chat-Orakel",
     "subtitle": "",
     "freeQuestions": "{count} kostenlose Frage",
     "freeQuestionsPlural": "{count} kostenlose Fragen",
@@ -504,7 +504,7 @@ export default {
     "placeholderLocked": "🔒 Sie haben Ihre {max} kostenlosen Fragen verwendet - siehe Premium unten",
     "sessionError": "✦ Sitzung abgelaufen.Laden Sie die Seite neu und versuchen Sie es erneut.",
     "premiumSubtitle": "Unbegrenzter professioneller Chat",
-    "upsellTitle": "Schalte das vollständige Oracle frei",
+    "upsellTitle": "Schalte das vollständige Chat-Orakel frei",
     "upsellLead": "Sie haben Sidus mit 3 auf Ihr Diagramm zugeschnittenen Fragen ausprobiert.Mit Premium erhalten Sie unbegrenzte Beratung - wie eine echte Sitzung mit einem professionellen Astrologen, immer gebunden an Ihre Sonne, Ihren Mond und Ihren Aszendenten.",
     "upsellCta": "✦ Aktivieren Sie Sidus VIP - 9,99 €/Monat"
   },
