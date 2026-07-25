@@ -1824,6 +1824,14 @@ h1.sidus-page-title {
     width: min(110vw, 420px);
     height: min(110vw, 420px);
   }
+
+  /* App logado: hendecagrama desfocado e escondido atrás (como landing) */
+  .sidus-app-shell .landing-cosmic-hendecagram-wrap {
+    opacity: 0.3;
+    filter: blur(14px);
+    width: min(100vw, 380px);
+    height: min(100vw, 380px);
+  }
 }
 
 .landing-auth-divider-mobile {
@@ -1849,17 +1857,34 @@ h1.sidus-page-title {
   position: relative;
   min-height: 100svh;
   background: transparent !important;
+  isolation: isolate;
+}
+
+/* Camada fixa única: estrelas + hendecagrama + rasto — sempre atrás do conteúdo */
+.sidus-cosmic-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+  contain: paint;
 }
 
 .sidus-cosmic-foreground {
   position: relative;
-  z-index: 2;
+  z-index: 1;
   min-height: 100svh;
+  isolation: isolate;
 }
 
-/* Rasto cósmico — fixo atrás do conteúdo, à frente do fundo estrelado */
+.sidus-app-content {
+  position: relative;
+  z-index: 1;
+}
+
+/* Rasto cósmico — dentro do backdrop, à frente das estrelas */
 .magic-cosmic-trail-canvas {
-  position: fixed;
+  position: absolute;
   inset: 0;
   z-index: 1;
   width: 100%;
@@ -1875,9 +1900,9 @@ h1.sidus-page-title {
   overflow-x: clip;
 }
 
-/* Fundo cÃ³smico - estrelas + hendecagrama (fixo atrÃ¡s do conteÃºdo) */
+/* Fundo cósmico - estrelas + hendecagrama (dentro do backdrop, atrás do conteúdo) */
 .cosmic-bg-root {
-  position: fixed;
+  position: absolute;
   inset: 0;
   z-index: 0;
   pointer-events: none;

@@ -437,7 +437,7 @@
   }
 
   function applyShareMeta({ title, description, url, type = 'article', locale = 'pt_PT' }) {
-    const image = `${window.location.origin}/og-image.png?v=4`
+    const image = `${window.location.origin}/og-image.png?v=5`
     upsertMeta('property', 'og:type', type)
     upsertMeta('property', 'og:site_name', 'Sidusastro')
     upsertMeta('property', 'og:locale', locale)
