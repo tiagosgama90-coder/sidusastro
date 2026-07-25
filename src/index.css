@@ -1866,7 +1866,6 @@ h1.sidus-page-title {
   z-index: 1;
   min-height: 100svh;
   isolation: isolate;
-  transform: translateZ(0);
 }
 
 .sidus-app-content,
@@ -1876,7 +1875,31 @@ h1.sidus-page-title {
   isolation: isolate;
 }
 
-/* Rasto cósmico — dentro do backdrop, à frente das estrelas */
+/* Conteúdo legível em todas as páginas — fundo cósmico fica atrás */
+.sidus-app-content > * {
+  position: relative;
+  z-index: 1;
+}
+
+.sidus-app-content :where(
+  h1, h2, h3, h4, h5, h6,
+  p, span, li, table, thead, tbody, tr, th, td,
+  button, a, input, select, textarea, label, nav, section, article
+) {
+  position: relative;
+  z-index: 1;
+}
+
+/* Efeitos de toque/clique — visíveis mas sem bloquear interação */
+.sidus-cosmic-fx-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 160;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+/* Rasto / explosõezinhas cósmicas */
 .magic-cosmic-trail-canvas {
   position: absolute;
   inset: 0;
