@@ -1,5 +1,5 @@
 /** Imagem partilhada em WhatsApp, Telegram, iMessage, X, LinkedIn, Discord, Slack, etc. */
-export const SOCIAL_SHARE_IMAGE = 'https://sidusastro.com/og-image.png?v=5'
+export const SOCIAL_SHARE_IMAGE = 'https://sidusastro.com/og-image.png?v=6'
 
 function setMeta(attr, key, value) {
   if (!value) return
@@ -34,11 +34,11 @@ export function applySocialShareMeta({
   setMeta('property', 'og:image:type', 'image/png')
   setMeta('property', 'og:image:width', '1200')
   setMeta('property', 'og:image:height', '630')
-  setMeta('property', 'og:image:alt', 'Sidus - estrela azul e logotipo SIDUS')
+  setMeta('property', 'og:image:alt', 'Sidus - constelação dourada e logotipo SIDUS')
 
   setMeta('name', 'twitter:card', 'summary_large_image')
   if (title) setMeta('name', 'twitter:title', title)
   if (description) setMeta('name', 'twitter:description', description)
   setMeta('name', 'twitter:image', image)
-  setMeta('name', 'twitter:image:alt', 'Sidus - estrela azul e logotipo SIDUS')
+  setMeta('name', 'twitter:image:alt', 'Sidus - constelação dourada e logotipo SIDUS')
 }

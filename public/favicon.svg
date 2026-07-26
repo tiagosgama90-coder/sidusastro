@@ -1,9 +1,28 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" role="img" aria-label="Sidus">
-  <rect width="64" height="64" rx="12" fill="#000000"/>
-  <g transform="translate(32 24) scale(1.15) translate(-16 -16)">
-    <path d="M16 5.5 18.2 13.8 26.5 16 18.2 18.2 16 26.5 13.8 18.2 5.5 16 13.8 13.8 16 5.5Z" stroke="#DFB76C" stroke-width="1.35" stroke-linejoin="round"/>
-    <circle cx="11.5" cy="21.5" r="1.15" fill="#DFB76C"/>
-    <path d="M22.5 10.5h1.6M23.3 9.7v3.6" stroke="#DFB76C" stroke-width="1.1" stroke-linecap="round"/>
+  <rect width="64" height="64" rx="14" fill="#0B071E"/>
+  <g transform="translate(32 30) scale(0.72) translate(-24 -32)">
+    <defs>
+      <radialGradient id="g" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="#FFF8E7"/>
+        <stop offset="50%" stop-color="#DFB76C"/>
+        <stop offset="100%" stop-color="#B8944F"/>
+      </radialGradient>
+      <linearGradient id="gold" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#F0D08A"/>
+        <stop offset="50%" stop-color="#DFB76C"/>
+        <stop offset="100%" stop-color="#C9A55A"/>
+      </linearGradient>
+      <filter id="sg" x="-80%" y="-80%" width="260%" height="260%">
+        <feGaussianBlur stdDeviation="1.8" result="b"/>
+        <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
+    </defs>
+    <path d="M24 10 L36 22 L12 32 L34 44 L14 54" stroke="url(#gold)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="14" cy="54" r="2.2" fill="url(#gold)"/>
+    <circle cx="34" cy="44" r="2.2" fill="url(#gold)"/>
+    <circle cx="12" cy="32" r="2.2" fill="url(#gold)"/>
+    <circle cx="36" cy="22" r="2.2" fill="url(#gold)"/>
+    <circle cx="24" cy="10" r="3.4" fill="url(#g)" filter="url(#sg)"/>
+    <circle cx="24" cy="58" r="2.1" fill="url(#gold)"/>
   </g>
-  <text x="32" y="54" text-anchor="middle" font-family="Segoe UI, Roboto, Helvetica, Arial, sans-serif" font-size="9" font-weight="400" letter-spacing="2.8" fill="#DFB76C">SIDUS</text>
 </svg>

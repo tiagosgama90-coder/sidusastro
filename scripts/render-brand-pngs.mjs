@@ -1,46 +1,50 @@
 /**
- * Gera og-image.png e apple-touch-icon.png a partir dos SVGs da marca.
+ * Gera PNGs da marca Sidus (OG, ícones, transparentes para vídeo).
  * Uso: node scripts/render-brand-pngs.mjs
  */
 import { chromium } from 'playwright'
-import { readFileSync, writeFileSync } from 'fs'
+import { readFileSync, writeFileSync, mkdirSync } from 'fs'
 import { fileURLToPath } from 'url'
 import { dirname, join } from 'path'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const root = join(__dirname, '..')
+const brandDir = join(root, 'public/brand')
 
-async function svgToPng(svgPath, outPath, width, height) {
-  const svg = readFileSync(svgPath, 'utf8')
-  const html = `<!DOCTYPE html><html><head><style>*{margin:0;padding:0}body{background:#000}</style></head><body>${svg}</body></html>`
-  const browser = await chromium.launch()
-  const page = await browser.newPage({ viewport: { width, height } })
-  await page.setContent(html, { waitUntil: 'networkidle' })
-  await page.screenshot({ path: outPath, type: 'png', clip: { x: 0, y: 0, width, height } })
-  await browser.close()
+mkdirSync(brandDir, { recursive: true })
+
+async function renderSvg(browser, svg, outPath, w, h, transparent = false) {
+  const bg = transparent ? 'transparent' : '#0B071E'
+  const page = await browser.newPage({ viewport: { width: w, height: h } })
+  await page.setContent(
+    `<!DOCTYPE html><html><head><style>*{margin:0}html,body{width:${w}px;height:${h}px;overflow:hidden;background:${bg}}</style></head><body>${svg}</body></html>`,
+    { waitUntil: 'domcontentloaded' },
+  )
+  await page.screenshot({
+    path: outPath,
+    type: 'png',
+    omitBackground: transparent,
+    clip: { x: 0, y: 0, width: w, height: h },
+  })
+  await page.close()
   console.log('Wrote', outPath)
 }
 
-const ogSvg = readFileSync(join(root, 'public/brand/sidus-og.svg'), 'utf8')
-const iconSvg = readFileSync(join(root, 'public/brand/sidus-logo-stacked-blue.svg'), 'utf8')
-
 async function main() {
+  const mark = readFileSync(join(brandDir, 'sidus-constellation-mark.svg'), 'utf8')
+  const horizontal = readFileSync(join(brandDir, 'sidus-logo-horizontal.svg'), 'utf8')
+  const stacked = readFileSync(join(brandDir, 'sidus-logo-stacked.svg'), 'utf8')
+  const og = readFileSync(join(brandDir, 'sidus-og.svg'), 'utf8')
+
   const browser = await chromium.launch()
   try {
-    for (const [svg, out, w, h] of [
-      [ogSvg, join(root, 'public/og-image.png'), 1200, 630],
-      [iconSvg, join(root, 'public/apple-touch-icon.png'), 512, 512],
-      [iconSvg, join(root, 'public/logo_grande.png'), 1024, 1024],
-    ]) {
-      const page = await browser.newPage({ viewport: { width: w, height: h } })
-      await page.setContent(
-        `<!DOCTYPE html><html><head><style>*{margin:0}html,body{width:${w}px;height:${h}px;overflow:hidden;background:#000}</style></head><body>${svg}</body></html>`,
-        { waitUntil: 'domcontentloaded' },
-      )
-      await page.screenshot({ path: out, type: 'png', clip: { x: 0, y: 0, width: w, height: h } })
-      await page.close()
-      console.log('Wrote', out)
-    }
+    await renderSvg(browser, og, join(root, 'public/og-image.png'), 1200, 630, false)
+    await renderSvg(browser, stacked, join(root, 'public/apple-touch-icon.png'), 512, 512, false)
+    await renderSvg(browser, mark, join(brandDir, 'sidus-constellation-mark-512.png'), 512, 512, true)
+    await renderSvg(browser, mark, join(brandDir, 'sidus-constellation-mark-1024.png'), 1024, 1024, true)
+    await renderSvg(browser, horizontal, join(brandDir, 'sidus-logo-horizontal-1024.png'), 1024, 256, true)
+    await renderSvg(browser, stacked, join(brandDir, 'sidus-logo-stacked-1024.png'), 1024, 1024, true)
+    await renderSvg(browser, mark, join(brandDir, 'sidus-constellation-mark-gold-on-black-1024.png'), 1024, 1024, false)
   } finally {
     await browser.close()
   }

@@ -36,9 +36,9 @@ function pushSoftTrail(particulas, x, y) {
     x: x + (Math.random() - 0.5) * 4,
     y: y + (Math.random() - 0.5) * 4,
     life: 1,
-    decay: 0.075,
-    size: 0.55 + Math.random() * 0.55,
-    tint: Math.random() > 0.4 ? 'gold' : 'white',
+    decay: 0.065,
+    size: 0.75 + Math.random() * 0.65,
+    tint: Math.random() > 0.35 ? 'gold' : 'white',
   })
 }
 
@@ -160,9 +160,10 @@ export function MagicCursorTrail({ activo = true }) {
 
     const onMove = (e) => {
       const now = performance.now()
-      if (now - lastTrailSpawn < 90) return
+      if (now - lastTrailSpawn < 48) return
       lastTrailSpawn = now
       pushSoftTrail(particulas, e.clientX, e.clientY)
+      if (Math.random() > 0.45) pushSoftTrail(particulas, e.clientX + 2, e.clientY - 1)
       trimParticles(particulas, particleMax)
     }
 
@@ -211,7 +212,7 @@ export function MagicCursorTrail({ activo = true }) {
           ? p.life * 0.42
           : isDust
             ? p.life * 0.28
-            : p.life * 0.22
+            : p.life * 0.34
         const radius = p.size * (0.85 + p.life * 0.25)
 
         ctx.beginPath()

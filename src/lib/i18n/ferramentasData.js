@@ -1,10 +1,10 @@
-import { Compass, Heart, Activity, BookOpen, Moon, Sparkles, Clock } from 'lucide-react'
+import { Compass, Heart, Activity, BookOpen, Moon, Hash, Clock } from 'lucide-react'
 import { contentForLang } from './langUtil.js'
 
 const FERRAMENTAS_PT = [
   { id: 'bussola', nome: 'Bússola Cósmica', sub: 'Trânsitos reais · Ptolomeu · Robert Hand', icon: Compass, premium: true },
   { id: 'sinastria', nome: 'Radar de Afinidades', sub: 'Prévia grátis · Sinastria Pro', icon: Heart, premium: false },
-  { id: 'numerologia', nome: 'Numerologia', sub: 'Vibração espiritual do nome', icon: Sparkles, premium: true },
+  { id: 'numerologia', nome: 'Numerologia', sub: 'Vibração espiritual do nome', icon: Hash, premium: true },
   { id: 'sonhos', nome: 'Interpretação de Sonhos', sub: 'Símbolos e mensagens', icon: Moon, premium: false },
   { id: 'biorritmo', nome: 'Fluxo Vital', sub: 'Biorritmo', icon: Activity, premium: false },
   { id: 'horasIguais', nome: 'Horas Iguais', sub: 'Mensagens angélicas', icon: Clock, premium: false },
@@ -14,7 +14,7 @@ const FERRAMENTAS_PT = [
 const FERRAMENTAS_EN = [
   { id: 'bussola', nome: 'Cosmic Compass', sub: 'Real transits · Ptolemy · Robert Hand', icon: Compass, premium: true },
   { id: 'sinastria', nome: 'Affinity Radar', sub: 'Free preview · Pro synastry', icon: Heart, premium: false },
-  { id: 'numerologia', nome: 'Numerology', sub: 'Spiritual name vibration', icon: Sparkles, premium: true },
+  { id: 'numerologia', nome: 'Numerology', sub: 'Spiritual name vibration', icon: Hash, premium: true },
   { id: 'sonhos', nome: 'Dream Interpretation', sub: 'Symbols & messages', icon: Moon, premium: false },
   { id: 'biorritmo', nome: 'Vital Flow', sub: 'Biorhythm', icon: Activity, premium: false },
   { id: 'horasIguais', nome: 'Mirror Hours', sub: 'Angelic messages', icon: Clock, premium: false },
@@ -24,7 +24,7 @@ const FERRAMENTAS_EN = [
 const FERRAMENTAS_ES = [
   { id: 'bussola', nome: 'Brújula Cósmica', sub: 'Tránsitos reales · Ptolomeo · Robert Hand', icon: Compass, premium: true },
   { id: 'sinastria', nome: 'Radar de Afinidades', sub: 'Vista previa gratis · Sinastría Pro', icon: Heart, premium: false },
-  { id: 'numerologia', nome: 'Numerología', sub: 'Vibración espiritual del nombre', icon: Sparkles, premium: true },
+  { id: 'numerologia', nome: 'Numerología', sub: 'Vibración espiritual del nombre', icon: Hash, premium: true },
   { id: 'sonhos', nome: 'Interpretación de Sueños', sub: 'Símbolos y mensajes', icon: Moon, premium: false },
   { id: 'biorritmo', nome: 'Flujo Vital', sub: 'Biorritmo', icon: Activity, premium: false },
   { id: 'horasIguais', nome: 'Horas Espejo', sub: 'Mensajes angélicos', icon: Clock, premium: false },
@@ -34,7 +34,7 @@ const FERRAMENTAS_ES = [
 const FERRAMENTAS_IT = [
   { id: 'bussola', nome: 'Bussola Cosmica', sub: 'Transiti reali · Tolomeo · Robert Hand', icon: Compass, premium: true },
   { id: 'sinastria', nome: 'Radar delle Affinità', sub: 'Anteprima gratis · Sinastria Pro', icon: Heart, premium: false },
-  { id: 'numerologia', nome: 'Numerologia', sub: 'Vibrazione spirituale del nome', icon: Sparkles, premium: true },
+  { id: 'numerologia', nome: 'Numerologia', sub: 'Vibrazione spirituale del nome', icon: Hash, premium: true },
   { id: 'sonhos', nome: 'Interpretazione dei Sogni', sub: 'Simboli e messaggi', icon: Moon, premium: false },
   { id: 'biorritmo', nome: 'Flusso Vitale', sub: 'Bioritmo', icon: Activity, premium: false },
   { id: 'horasIguais', nome: 'Ore Specchio', sub: 'Messaggi angelici', icon: Clock, premium: false },
@@ -44,7 +44,7 @@ const FERRAMENTAS_IT = [
 const FERRAMENTAS_DE = [
   { id: 'bussola', nome: 'Kosmischer Kompass', sub: 'Echte Transite · Ptolemäus · Robert Hand', icon: Compass, premium: true },
   { id: 'sinastria', nome: 'Affinitäts-Radar', sub: 'Kostenlose Vorschau · Pro-Synastrie', icon: Heart, premium: false },
-  { id: 'numerologia', nome: 'Numerologie', sub: 'Spirituelle Namensschwingung', icon: Sparkles, premium: true },
+  { id: 'numerologia', nome: 'Numerologie', sub: 'Spirituelle Namensschwingung', icon: Hash, premium: true },
   { id: 'sonhos', nome: 'Traumdeutung', sub: 'Symbole & Botschaften', icon: Moon, premium: false },
   { id: 'biorritmo', nome: 'Vitaler Fluss', sub: 'Biorhythmus', icon: Activity, premium: false },
   { id: 'horasIguais', nome: 'Spiegelstunden', sub: 'Engelsbotschaften', icon: Clock, premium: false },
@@ -54,7 +54,7 @@ const FERRAMENTAS_DE = [
 const FERRAMENTAS_FR = [
   { id: 'bussola', nome: 'Boussole Cosmique', sub: 'Transits réels · Ptolémée · Robert Hand', icon: Compass, premium: true },
   { id: 'sinastria', nome: 'Radar d\'Affinités', sub: 'Aperçu gratuit · Synastrie Pro', icon: Heart, premium: false },
-  { id: 'numerologia', nome: 'Numérologie', sub: 'Vibration spirituelle du nom', icon: Sparkles, premium: true },
+  { id: 'numerologia', nome: 'Numérologie', sub: 'Vibration spirituelle du nom', icon: Hash, premium: true },
   { id: 'sonhos', nome: 'Interprétation des Rêves', sub: 'Symboles et messages', icon: Moon, premium: false },
   { id: 'biorritmo', nome: 'Flux Vital', sub: 'Biorythme', icon: Activity, premium: false },
   { id: 'horasIguais', nome: 'Heures Miroirs', sub: 'Messages angéliques', icon: Clock, premium: false },
@@ -127,11 +127,22 @@ const BENEFICIOS_VIP_FR = [
   'Alertes de transits planétaires en temps réel',
 ]
 
+const NAV_SHORT = {
+  pt: { bussola: 'Bússola', sinastria: 'Sinastria', numerologia: 'Números', sonhos: 'Sonhos', biorritmo: 'Fluxo', horasIguais: 'Horas', diario: 'Diário' },
+  en: { bussola: 'Compass', sinastria: 'Synastry', numerologia: 'Numbers', sonhos: 'Dreams', biorritmo: 'Flow', horasIguais: 'Hours', diario: 'Journal' },
+  es: { bussola: 'Brújula', sinastria: 'Sinastría', numerologia: 'Números', sonhos: 'Sueños', biorritmo: 'Flujo', horasIguais: 'Horas', diario: 'Diario' },
+  it: { bussola: 'Bussola', sinastria: 'Sinastria', numerologia: 'Numeri', sonhos: 'Sogni', biorritmo: 'Flusso', horasIguais: 'Ore', diario: 'Diario' },
+  de: { bussola: 'Kompass', sinastria: 'Synastrie', numerologia: 'Zahlen', sonhos: 'Träume', biorritmo: 'Fluss', horasIguais: 'Stunden', diario: 'Tagebuch' },
+  fr: { bussola: 'Boussole', sinastria: 'Synastrie', numerologia: 'Nombres', sonhos: 'Rêves', biorritmo: 'Flux', horasIguais: 'Heures', diario: 'Journal' },
+}
+
 export function getFerramentas(lang) {
-  return contentForLang(lang, {
+  const list = contentForLang(lang, {
     pt: FERRAMENTAS_PT, en: FERRAMENTAS_EN, es: FERRAMENTAS_ES,
     it: FERRAMENTAS_IT, de: FERRAMENTAS_DE, fr: FERRAMENTAS_FR,
   }) || FERRAMENTAS_EN
+  const shorts = NAV_SHORT[lang] || NAV_SHORT.en
+  return list.map((f) => ({ ...f, navShort: shorts[f.id] || f.nome }))
 }
 
 export function getBeneficiosVip(lang) {

@@ -78,6 +78,7 @@ export default {
       logoAlt: "Sidus",
       title: "Quand vous êtes né(e), le ciel a tracé votre carte astrale",
       trustBar: "Gratuit pour commencer · VIP 9,99 € paiement unique",
+      topCta: 'Gratuit pour commencer',
       trustBarBr: "Gratuit pour commencer · VIP {preco} avec PIX · paiement unique",
       trustBarPixNote: "Au Brésil, tu paies en reais via PIX.",
       formLead: "Lisez votre horoscope personnalisé",

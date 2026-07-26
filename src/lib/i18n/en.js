@@ -62,6 +62,7 @@ export default {
       logoAlt: 'Sidus',
       title: 'When you were born, the sky drew your astral chart',
       trustBar: 'Free to start · VIP €9.99 one-time payment',
+      topCta: 'Free to start',
       trustBarBr: 'Free to start · VIP {preco} with PIX · one-time payment',
       trustBarPixNote: 'In Brazil you pay in reais via PIX.',
       formLead: 'Read your personalized horoscope',

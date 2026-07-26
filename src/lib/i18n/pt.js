@@ -62,6 +62,7 @@ export default {
       logoAlt: 'Sidus',
       title: 'Quando nasceste, o céu desenhou o teu mapa astral',
       trustBar: 'Grátis para começar · VIP 9,99 € pagamento único',
+      topCta: 'Grátis para começar',
       trustBarBr: 'Grátis para começar · VIP {preco} com PIX · pagamento único',
       trustBarPixNote: 'No Brasil pagas em reais via PIX.',
       formLead: 'Lê o teu horóscopo personalizado',
