@@ -18,6 +18,7 @@ export const PASSO_TO_PATH = {
   paywall: '/vip',
   vipPromo: '/divulgacao-vip',
   onboarding: '/comecar',
+  developers: '/developers',
 }
 
 const PATH_TO_PASSO = Object.fromEntries(
@@ -33,6 +34,7 @@ PATH_TO_PASSO['/premium'] = 'paywall'
 PATH_TO_PASSO['/divulgacao'] = 'vipPromo'
 PATH_TO_PASSO['/horoscopo'] = 'home'
 PATH_TO_PASSO['/horoscope'] = 'home'
+PATH_TO_PASSO['/api'] = 'developers'
 
 const SUPPORTED_LANGS = new Set(['pt', 'en', 'es', 'it', 'de', 'fr'])
 
