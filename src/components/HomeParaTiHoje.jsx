@@ -1,5 +1,6 @@
-import { Layers, MessageCircle, Map, Sparkles } from 'lucide-react'
+import { Layers, MessageCircle, Map } from 'lucide-react'
 import { useLanguage } from '../lib/i18n/LanguageContext.jsx'
+import { SidusConstellationMark } from './SidusConstellationMark.jsx'
 
 const CORES = {
   dourado: '#DFB76C',
@@ -20,7 +21,7 @@ export function HomeParaTiHoje({ onTarot, onOraculo, onMapa, energiaResumo }) {
   return (
     <section className="home-para-ti" aria-label={t('home.paraTiTitle')}>
       <div className="home-para-ti__header">
-        <Sparkles size={16} color={CORES.dourado} aria-hidden />
+        <SidusConstellationMark size={14} glow className="home-para-ti__mark notranslate" />
         <h2 className="home-para-ti__title">{t('home.paraTiTitle')}</h2>
       </div>
       {energiaResumo && (

@@ -1,6 +1,5 @@
 ﻿import { useState, useEffect, useRef, useCallback, useMemo, lazy, Suspense } from 'react'
 import {
-  Sparkles,
   Moon,
   Star,
   Compass,
@@ -46,6 +45,8 @@ import { ConteudoDinamicoSidus } from './components/ConteudoDinamicoSidus'
 import { AstroNewsCarousel } from './components/AstroNewsCarousel'
 import { LandingCosmicBackground } from './components/LandingCosmicBackground.jsx'
 import { LandingBirthPortal } from './components/LandingBirthPortal.jsx'
+import { LandingTopBar } from './components/LandingTopBar.jsx'
+import { SidusLogo } from './components/SidusLogo.jsx'
 import { LandingFaq } from './components/LandingFaq.jsx'
 import { LandingPortalHero } from './components/LandingPortalHero.jsx'
 import { LandingSkyLive } from './components/LandingSkyLive.jsx'
@@ -1432,7 +1433,8 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
       <LandingStickyCta targetRef={portalRef} onCta={scrollParaAuth} />
       {isDesktop ? (
         <>
-          <div className="landing-auth-sticky-top">
+          <LandingTopBar onCta={scrollParaAuth} />
+          <div className="landing-sky-desktop-wrap">
             <LandingSkyLive />
           </div>
           <LandingPortalHero ref={portalRef} />
@@ -1497,17 +1499,15 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
         {/* Email */}
         <div className="landing-auth-field" style={{ marginBottom: 16 }}>
           <label style={estilos.label}>{t('auth.email')}</label>
-          <div style={{ position: 'relative' }}>
-            <Mail size={15} color={CORES.brancoMuted} style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }} />
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder={t('auth.emailPlaceholder')}
-              style={{ ...estilos.input, paddingLeft: 40 }}
-              onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
-            />
-          </div>
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder={t('auth.emailPlaceholder')}
+            className="landing-auth-input"
+            style={estilos.input}
+            onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
+          />
         </div>
 
         {/* Senha */}
@@ -1515,13 +1515,13 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
         <div className="landing-auth-field landing-auth-password-block" style={{ marginBottom: tipo === 'register' ? 16 : 20 }}>
           <label style={estilos.label}>{t('auth.password')}</label>
           <div className="landing-auth-password-input">
-            <Lock size={15} color={CORES.brancoMuted} style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }} />
             <input
               type={verSenha ? 'text' : 'password'}
               value={senha}
               onChange={(e) => setSenha(e.target.value)}
               placeholder="••••••••"
-              style={{ ...estilos.input, paddingLeft: 40, paddingRight: 44 }}
+              className="landing-auth-input"
+              style={{ ...estilos.input, paddingRight: 44 }}
               onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
             />
             <button
@@ -1813,8 +1813,9 @@ function Onboarding({ dados: dadosProp, setDados, onSubmit, isDesktop }) {
   return (
     <div style={layoutConteudo(isDesktop, { paddingTop: 48, paddingBottom: 40, maxWidth: isDesktop ? 520 : undefined, margin: isDesktop ? '0 auto' : undefined })}>
       <div style={{ textAlign: 'center', marginBottom: 40 }}>
-        <Sparkles size={40} color={CORES.dourado} strokeWidth={1.5} style={{ marginBottom: 16 }} />
-        <h1 style={{ ...estilos.titulo, fontSize: 36, letterSpacing: '0.2em' }}>Sidus</h1>
+        <div className="onboarding-logo-wrap notranslate" translate="no">
+          <SidusLogo variant="stacked" markSize={56} glow />
+        </div>
         <p style={estilos.subtitulo}>{t('onboarding.tagline')}</p>
       </div>
 
@@ -1959,9 +1960,13 @@ function Dashboard({ nome, mapaNatal, ceuAgora, aspetos, onOraculo, onPrivacidad
 
   return (
     <div style={layoutConteudo(isDesktop)}>
-      <header className="sidus-page-header" style={{ textAlign: 'center', marginBottom: 20 }}>
-        <h1 className="notranslate" translate="no" style={estilos.titulo}>Sidus</h1>
-        <p style={{ ...estilos.subtitulo, marginBottom: 0 }}>{nome ? t('home.welcome', { name: nome }) : t('home.skyRealtime')}</p>
+      <header className="sidus-page-header sidus-home-welcome" style={{ textAlign: 'center', marginBottom: 20 }}>
+        <div className="sidus-home-welcome__logo notranslate" translate="no">
+          <SidusLogo variant="stacked" markSize={64} glow />
+        </div>
+        <p className="sidus-home-welcome__greeting">
+          {nome ? t('home.welcome', { name: nome }) : t('home.skyRealtime')}
+        </p>
       </header>
 
       <HomeParaTiHoje
@@ -3370,26 +3375,13 @@ function RodapeSidus({ isDesktop, mostrarNavbar }) {
 
 function LogoSidus({ onClick, compact = false }) {
   return (
-    <button
-      type="button"
+    <SidusLogo
+      variant="horizontal"
+      markSize={compact ? 30 : 34}
       onClick={onClick}
-      aria-label="Sidus - Home"
-      className="notranslate"
-      translate="no"
-      style={{
-        background: 'none',
-        border: 'none',
-        cursor: 'pointer',
-        display: 'flex',
-        alignItems: 'center',
-        gap: compact ? 8 : 10,
-        padding: compact ? '4px 2px' : '4px 8px',
-        flexShrink: 0,
-      }}
-    >
-      <Sparkles size={compact ? 18 : 20} color={CORES.dourado} strokeWidth={1.5} />
-      <span className="notranslate" translate="no" style={{ fontSize: compact ? 17 : 20, fontWeight: 300, letterSpacing: compact ? '0.18em' : '0.2em', color: CORES.dourado }}>SIDUS</span>
-    </button>
+      glow
+      className={compact ? 'sidus-logo--nav-compact' : 'sidus-logo--nav'}
+    />
   )
 }
 
@@ -3431,16 +3423,17 @@ function Navbar({ passo, setPasso, isDesktop, dados, fotoPerfil }) {
   const ferramentasNav = getFerramentas(lang).map((f) => ({
     id: f.id,
     label: f.nome,
+    shortLabel: f.navShort || labelNavBarra(f.nome),
     icon: f.icon,
     glow: f.premium ? CORES.dourado : '#93C5FD',
   }))
 
   const itens = [
-    { id: 'home',        label: t('nav.home'),    icon: Home,          glow: '#DFB76C' },
-    { id: 'mapa',        label: t('nav.mapa'),    icon: Map,           glow: '#C4B5FD' },
-    { id: 'tarot',       label: t('nav.tarot'),   icon: Layers,        glow: '#F472B6' },
+    { id: 'home',        label: t('nav.home'),    shortLabel: t('nav.home'),    icon: Home,          glow: '#DFB76C' },
+    { id: 'mapa',        label: t('nav.mapa'),    shortLabel: t('nav.mapa'),    icon: Map,           glow: '#C4B5FD' },
+    { id: 'tarot',       label: t('nav.tarot'),   shortLabel: t('nav.tarot'),   icon: Layers,        glow: '#F472B6' },
     ...ferramentasNav,
-    { id: 'chat',        label: t('nav.oraculo'), icon: MessageCircle, glow: '#34D399' },
+    { id: 'chat',        label: t('nav.oraculo'), shortLabel: t('nav.oraculo'), icon: MessageCircle, glow: '#34D399' },
   ]
 
   const passosFerramenta = new Set(ferramentasNav.map((f) => f.id))
@@ -3498,11 +3491,12 @@ function Navbar({ passo, setPasso, isDesktop, dados, fotoPerfil }) {
                   <button
                     key={item.id}
                     type="button"
-                    className="desktop-nav-item"
+                    className={`desktop-nav-item${passosFerramenta.has(item.id) ? ' desktop-nav-item--tool' : ''}`}
                     onClick={() => navegar(item.id)}
                     onMouseEnter={() => setHover(item.id)}
                     onMouseLeave={() => setHover(null)}
                     title={item.label}
+                    aria-label={item.label}
                     style={{
                       background: ativo ? 'rgba(223,183,108,0.18)' : emHover ? 'rgba(255,255,255,0.06)' : 'transparent',
                       border: `1px solid ${ativo ? CORES.dourado : emHover ? 'rgba(223,183,108,0.3)' : 'transparent'}`,
@@ -3511,7 +3505,7 @@ function Navbar({ passo, setPasso, isDesktop, dados, fotoPerfil }) {
                     }}
                   >
                     <Icon size={12} strokeWidth={ativo ? 2.2 : 1.8} />
-                    <span>{item.label}</span>
+                    <span className="desktop-nav-item__label">{item.shortLabel || item.label}</span>
                   </button>
                 )
               })}
@@ -4528,8 +4522,6 @@ export default function App() {
         <LandingCosmicBackground />
       </div>
       <div className="sidus-cosmic-foreground">
-      {!utilizador && isDesktop && <LanguageSwitcher />}
-
       {/* Barra de dev - só visível em localhost */}
       {isDev && contaConfigurada && (
         <div style={{

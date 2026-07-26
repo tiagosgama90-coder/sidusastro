@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Star, Moon, Sparkles, Layers, MessageCircle, Radio } from 'lucide-react'
+import { Star, Moon, Hash, Layers, MessageCircle, Radio } from 'lucide-react'
 import { useLanguage } from '../lib/i18n/LanguageContext.jsx'
 
 const CORES = {
@@ -13,7 +13,7 @@ const DESTAQUES = [
   { icon: Moon, cor: '#A78BFA', key: 'ceu' },
   { icon: MessageCircle, cor: '#34D399', key: 'oraculo' },
   { icon: Layers, cor: '#F472B6', key: 'tarot' },
-  { icon: Sparkles, cor: '#60A5FA', key: 'numerologia' },
+  { icon: Hash, cor: '#60A5FA', key: 'numerologia' },
 ]
 
 export function HeroAuthSidus() {

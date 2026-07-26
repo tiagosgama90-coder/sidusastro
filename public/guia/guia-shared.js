@@ -437,7 +437,7 @@
   }
 
   function applyShareMeta({ title, description, url, type = 'article', locale = 'pt_PT' }) {
-    const image = `${window.location.origin}/og-image.png?v=5`
+    const image = `${window.location.origin}/og-image.png?v=6`
     upsertMeta('property', 'og:type', type)
     upsertMeta('property', 'og:site_name', 'Sidusastro')
     upsertMeta('property', 'og:locale', locale)
@@ -449,12 +449,12 @@
     upsertMeta('property', 'og:image:type', 'image/png')
     upsertMeta('property', 'og:image:width', '1200')
     upsertMeta('property', 'og:image:height', '630')
-    upsertMeta('property', 'og:image:alt', 'Sidus - estrela azul e logotipo SIDUS')
+    upsertMeta('property', 'og:image:alt', 'Sidus - constelação dourada e logotipo SIDUS')
     upsertMeta('name', 'twitter:card', 'summary_large_image')
     if (title) upsertMeta('name', 'twitter:title', title)
     if (description) upsertMeta('name', 'twitter:description', description)
     upsertMeta('name', 'twitter:image', image)
-    upsertMeta('name', 'twitter:image:alt', 'Sidus - estrela azul e logotipo SIDUS')
+    upsertMeta('name', 'twitter:image:alt', 'Sidus - constelação dourada e logotipo SIDUS')
   }
 
   function updateSeoMeta(lang) {
