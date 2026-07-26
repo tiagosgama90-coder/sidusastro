@@ -70,14 +70,6 @@ const SEO = {
     de: { title: 'VIP für Werbung', description: 'Erhalte lebenslangen Sidus VIP durch Bewerbung von Sidusastro in sozialen Medien.' },
     fr: { title: 'VIP pour Promotion', description: 'Gagne Sidus VIP à vie en promouvant Sidusastro sur les réseaux sociaux.' },
   },
-  developers: {
-    pt: { title: 'API de Astrologia · Developers', description: 'Horóscopo diário, numerologia e conteúdo astrológico em JSON. API para bots, apps e criadores de conteúdo.' },
-    en: { title: 'Astrology API · Developers', description: 'Daily horoscope, numerology and astrological content in JSON. API for bots, apps and content creators.' },
-    es: { title: 'API de Astrología · Developers', description: 'Horóscopo diario, numerología y contenido astrológico en JSON para bots y apps.' },
-    it: { title: 'API di Astrologia · Developers', description: 'Oroscopo giornaliero, numerologia e contenuti astrologici in JSON per bot e app.' },
-    de: { title: 'Astrologie-API · Developers', description: 'Tageshoroskop, Numerologie und astrologische Inhalte als JSON für Bots und Apps.' },
-    fr: { title: 'API Astrologie · Developers', description: 'Horoscope quotidien, numérologie et contenu astrologique en JSON pour bots et apps.' },
-  },
 }
 
 const DEFAULT = {
