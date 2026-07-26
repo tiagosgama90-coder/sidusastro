@@ -48,7 +48,6 @@ import { LandingBirthPortal } from './components/LandingBirthPortal.jsx'
 import { LandingTopBar } from './components/LandingTopBar.jsx'
 import { SidusLogo } from './components/SidusLogo.jsx'
 import { LandingFaq } from './components/LandingFaq.jsx'
-import { LandingPortalHero } from './components/LandingPortalHero.jsx'
 import { LandingSkyLive } from './components/LandingSkyLive.jsx'
 import { LandingReviews } from './components/LandingReviews.jsx'
 import { LandingGuides } from './components/LandingGuides.jsx'
@@ -1326,7 +1325,7 @@ function EcraVerificarEmail({ utilizador, isDesktop, onLogout, onVerificado }) {
 function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
   const { lang, t } = useLanguage()
   const authPanelRef = useRef(null)
-  const portalRef = useRef(null)
+  const conversionZoneRef = useRef(null)
   const [email, setEmail]       = useState('')
   const [senha, setSenha]       = useState('')
   const [confirmar, setConfirmar] = useState('')
@@ -1430,27 +1429,29 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
   return (
     <div className={`landing-auth-layout${isDesktop ? ' landing-auth-layout--desktop' : ' landing-auth-layout--mobile'}`} translate="yes">
       <BannerBrasil />
-      <LandingStickyCta targetRef={portalRef} onCta={scrollParaAuth} />
+      <LandingStickyCta targetRef={conversionZoneRef} onCta={scrollParaAuth} />
       {isDesktop ? (
-        <>
+        <div className="landing-desktop-top-stack">
           <LandingTopBar onCta={scrollParaAuth} />
-          <div className="landing-sky-desktop-wrap">
-            <LandingSkyLive />
+          <div className="landing-sky-desktop-wrap landing-sky-desktop-wrap--compact">
+            <LandingSkyLive compact />
           </div>
-          <LandingPortalHero ref={portalRef} />
-        </>
+        </div>
       ) : (
         <>
           <div className="landing-lang-bar landing-lang-bar--standalone">
             <LanguageSwitcher variant="landing-bar" />
           </div>
-          <div className="landing-sky-mobile-wrap">
-            <LandingSkyLive />
+          <div className="landing-sky-mobile-wrap landing-sky-mobile-wrap--compact">
+            <LandingSkyLive compact />
           </div>
-          <LandingPortalHero ref={portalRef} />
         </>
       )}
-      <section className="landing-conversion-zone" aria-label={t('auth.portal.conversionAria')}>
+      <section
+        ref={conversionZoneRef}
+        className="landing-conversion-zone"
+        aria-label={t('auth.portal.conversionAria')}
+      >
         <div className="landing-conversion-zone-head">
           <p className="landing-conversion-eyebrow">{t('auth.portal.conversionEyebrow')}</p>
           <h2 className="landing-conversion-title">{t('auth.portal.conversionTitle')}</h2>
@@ -3423,17 +3424,16 @@ function Navbar({ passo, setPasso, isDesktop, dados, fotoPerfil }) {
   const ferramentasNav = getFerramentas(lang).map((f) => ({
     id: f.id,
     label: f.nome,
-    shortLabel: f.navShort || labelNavBarra(f.nome),
     icon: f.icon,
     glow: f.premium ? CORES.dourado : '#93C5FD',
   }))
 
   const itens = [
-    { id: 'home',        label: t('nav.home'),    shortLabel: t('nav.home'),    icon: Home,          glow: '#DFB76C' },
-    { id: 'mapa',        label: t('nav.mapa'),    shortLabel: t('nav.mapa'),    icon: Map,           glow: '#C4B5FD' },
-    { id: 'tarot',       label: t('nav.tarot'),   shortLabel: t('nav.tarot'),   icon: Layers,        glow: '#F472B6' },
+    { id: 'home',        label: t('nav.home'),    icon: Home,          glow: '#DFB76C' },
+    { id: 'mapa',        label: t('nav.mapa'),    icon: Map,           glow: '#C4B5FD' },
+    { id: 'tarot',       label: t('nav.tarot'),   icon: Layers,        glow: '#F472B6' },
     ...ferramentasNav,
-    { id: 'chat',        label: t('nav.oraculo'), shortLabel: t('nav.oraculo'), icon: MessageCircle, glow: '#34D399' },
+    { id: 'chat',        label: t('nav.oraculo'), icon: MessageCircle, glow: '#34D399' },
   ]
 
   const passosFerramenta = new Set(ferramentasNav.map((f) => f.id))
@@ -3505,7 +3505,7 @@ function Navbar({ passo, setPasso, isDesktop, dados, fotoPerfil }) {
                     }}
                   >
                     <Icon size={12} strokeWidth={ativo ? 2.2 : 1.8} />
-                    <span className="desktop-nav-item__label">{item.shortLabel || item.label}</span>
+                    <span className="desktop-nav-item__label">{item.label}</span>
                   </button>
                 )
               })}
