@@ -1,3 +1,5 @@
+const GUIDE_H = 128
+
 function GoldDefs({ id }) {
   return (
     <defs>
@@ -13,16 +15,45 @@ function GoldDefs({ id }) {
         <stop offset="75%" stopColor="#6b21a8" />
         <stop offset="100%" stopColor="#9a3412" stopOpacity="0.65" />
       </linearGradient>
+      <linearGradient id={`${id}-card`} x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stopColor="#1a1038" />
+        <stop offset="100%" stopColor="#0b071e" />
+      </linearGradient>
     </defs>
+  )
+}
+
+function TarotCardFace({ x, y, rot, accent, face = 'back', scale = 1 }) {
+  const w = 44 * scale
+  const h = 68 * scale
+  return (
+    <g transform={`translate(${x} ${y}) rotate(${rot})`}>
+      <rect x={-w / 2} y={-h / 2} width={w} height={h} rx={5 * scale} fill="url(#guideTarot-card)" stroke={accent} strokeWidth={1.1 * scale} />
+      <rect x={-w / 2 + 4 * scale} y={-h / 2 + 4 * scale} width={w - 8 * scale} height={h - 8 * scale} rx={3 * scale} fill="none" stroke="rgba(223,183,108,0.25)" strokeWidth={0.7 * scale} />
+      {face === 'back' ? (
+        <>
+          <circle cx="0" cy="0" r={10 * scale} fill="none" stroke={accent} strokeWidth={0.8 * scale} opacity="0.7" />
+          <path d={`M0 ${-14 * scale} L${4 * scale} ${-4 * scale} L${14 * scale} 0 L${4 * scale} ${4 * scale} L0 ${14 * scale} L${-4 * scale} ${4 * scale} L${-14 * scale} 0 L${-4 * scale} ${-4 * scale} Z`} fill="none" stroke={accent} strokeWidth={0.6 * scale} opacity="0.55" />
+          <circle cx="0" cy="0" r={2.2 * scale} fill={accent} opacity="0.85" />
+        </>
+      ) : (
+        <>
+          <circle cx="0" cy={-6 * scale} r={9 * scale} fill="rgba(251,191,36,0.15)" stroke="#FBBF24" strokeWidth={0.8 * scale} />
+          <text x="0" y={-3 * scale} textAnchor="middle" fill="#FBBF24" fontSize={11 * scale} fontWeight="700">☉</text>
+          <path d={`M0 ${8 * scale} L${3 * scale} ${14 * scale} L${-3 * scale} ${14 * scale} Z`} fill="none" stroke={accent} strokeWidth={0.7 * scale} />
+          <text x="0" y={24 * scale} textAnchor="middle" fill={accent} fontSize={5.5 * scale} fontWeight="700" letterSpacing="0.08em">XIX</text>
+        </>
+      )}
+    </g>
   )
 }
 
 /** Mapa natal simplificado - roda clássica com casas e planetas. */
 function ArtMapa({ accent }) {
   const cx = 160
-  const cy = 72
-  const rOut = 54
-  const rIn = 34
+  const cy = 64
+  const rOut = 46
+  const rIn = 28
   const houses = Array.from({ length: 12 }, (_, i) => {
     const a = (i * 30 - 90) * (Math.PI / 180)
     return {
@@ -35,17 +66,17 @@ function ArtMapa({ accent }) {
   })
   const zodiac = ['♈', '♉', '♊', '♋', '♌', '♍', '♎', '♏', '♐', '♑', '♒', '♓']
   const planets = [
-    { sym: '☉', a: -35, r: 22, c: '#FBBF24' },
-    { sym: '☽', a: 55, r: 18, c: '#C4B5FD' },
-    { sym: '☿', a: 10, r: 26, c: '#93C5FD' },
-    { sym: '♀', a: 80, r: 24, c: '#F9A8D4' },
-    { sym: '♂', a: -95, r: 20, c: '#FCA5A5' },
+    { sym: '☉', a: -35, r: 18, c: '#FBBF24' },
+    { sym: '☽', a: 55, r: 14, c: '#C4B5FD' },
+    { sym: '☿', a: 10, r: 22, c: '#93C5FD' },
+    { sym: '♀', a: 80, r: 20, c: '#F9A8D4' },
+    { sym: '♂', a: -95, r: 16, c: '#FCA5A5' },
   ]
 
   return (
-    <svg viewBox="0 0 320 150" className="landing-guide-art-svg" aria-hidden>
+    <svg viewBox={`0 0 320 ${GUIDE_H}`} className="landing-guide-art-svg" preserveAspectRatio="xMidYMid slice" aria-hidden>
       <GoldDefs id="guideMapa" />
-      <rect width="320" height="150" fill="url(#guideMapa-sky)" opacity="0.9" />
+      <rect width="320" height={GUIDE_H} fill="url(#guideMapa-sky)" opacity="0.9" />
       <circle cx={cx} cy={cy} r={rOut + 3} fill="rgba(8,5,24,0.55)" stroke={accent} strokeWidth="1.6" />
       <circle cx={cx} cy={cy} r={rIn} fill="rgba(11,7,30,0.8)" stroke="rgba(223,183,108,0.45)" strokeWidth="1" />
       {houses.map(({ x1, y1, x2, y2, major }, i) => (
@@ -66,15 +97,7 @@ function ArtMapa({ accent }) {
         const x = cx + Math.cos(a) * (rOut + 0.5)
         const y = cy + Math.sin(a) * (rOut + 0.5)
         return (
-          <text
-            key={sym}
-            x={x}
-            y={y}
-            textAnchor="middle"
-            dominantBaseline="middle"
-            fill="rgba(223,183,108,0.88)"
-            fontSize="8"
-          >
+          <text key={sym} x={x} y={y} textAnchor="middle" dominantBaseline="middle" fill="rgba(223,183,108,0.88)" fontSize="7.5">
             {sym}
           </text>
         )
@@ -85,20 +108,19 @@ function ArtMapa({ accent }) {
         const y = cy + Math.sin(rad) * r
         return (
           <g key={sym}>
-            <circle cx={x} cy={y} r="5.5" fill="rgba(0,0,0,0.4)" stroke={c} strokeWidth="0.7" />
-            <text x={x} y={y + 0.5} textAnchor="middle" dominantBaseline="middle" fill={c} fontSize="7">{sym}</text>
+            <circle cx={x} cy={y} r="4.5" fill="rgba(0,0,0,0.4)" stroke={c} strokeWidth="0.7" />
+            <text x={x} y={y + 0.5} textAnchor="middle" dominantBaseline="middle" fill={c} fontSize="6">{sym}</text>
           </g>
         )
       })}
-      <text x={cx - rOut - 6} y={cy + 2} textAnchor="end" fill={accent} fontSize="7" fontWeight="700">ASC</text>
-      <text x={cx} y={cy - rOut - 4} textAnchor="middle" fill="rgba(223,183,108,0.65)" fontSize="6.5">MC</text>
+      <text x={cx - rOut - 6} y={cy + 2} textAnchor="end" fill={accent} fontSize="6.5" fontWeight="700">ASC</text>
     </svg>
   )
 }
 
 function ArtAscendente({ accent }) {
   return (
-    <svg viewBox="0 0 320 132" className="landing-guide-art-svg" aria-hidden>
+    <svg viewBox={`0 0 320 ${GUIDE_H}`} className="landing-guide-art-svg" preserveAspectRatio="xMidYMid slice" aria-hidden>
       <defs>
         <linearGradient id="guideAscSky" x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stopColor="#1e1b4b" />
@@ -106,20 +128,19 @@ function ArtAscendente({ accent }) {
           <stop offset="100%" stopColor="#4c1d95" stopOpacity="0.4" />
         </linearGradient>
       </defs>
-      <rect width="320" height="132" fill="url(#guideAscSky)" />
-      <path d="M0 86 Q80 64 160 78 T320 74 L320 132 L0 132 Z" fill="rgba(15,10,35,0.85)" />
-      <line x1="0" y1="78" x2="320" y2="78" stroke={accent} strokeWidth="2" opacity="0.9" />
-      <path d="M160 78 L160 30" stroke={accent} strokeWidth="1.5" strokeDasharray="4 3" opacity="0.7" />
-      <text x="160" y="24" textAnchor="middle" fill={accent} fontSize="22" fontWeight="700">↑</text>
-      <text x="160" y="108" textAnchor="middle" fill="rgba(255,255,255,0.55)" fontSize="10">ASC</text>
-      <circle cx="72" cy="44" r="2" fill="#fff" opacity="0.8" />
-      <circle cx="248" cy="36" r="1.5" fill="#fff" opacity="0.6" />
-      <circle cx="210" cy="52" r="1.2" fill="#fff" opacity="0.5" />
+      <rect width="320" height={GUIDE_H} fill="url(#guideAscSky)" />
+      <path d={`M0 82 Q80 60 160 74 T320 70 L320 ${GUIDE_H} L0 ${GUIDE_H} Z`} fill="rgba(15,10,35,0.85)" />
+      <line x1="0" y1="74" x2="320" y2="74" stroke={accent} strokeWidth="2" opacity="0.9" />
+      <path d="M160 74 L160 28" stroke={accent} strokeWidth="1.5" strokeDasharray="4 3" opacity="0.7" />
+      <text x="160" y="22" textAnchor="middle" fill={accent} fontSize="20" fontWeight="700">↑</text>
+      <text x="160" y="104" textAnchor="middle" fill="rgba(255,255,255,0.55)" fontSize="9">ASC</text>
+      <circle cx="72" cy="40" r="1.8" fill="#fff" opacity="0.8" />
+      <circle cx="248" cy="34" r="1.4" fill="#fff" opacity="0.6" />
+      <circle cx="210" cy="48" r="1.1" fill="#fff" opacity="0.5" />
     </svg>
   )
 }
 
-/** Banner ilustrado dourado - 12 signos em grelha (imagem de alta qualidade). */
 function ArtSignos() {
   return (
     <div className="landing-guide-art-photo-wrap">
@@ -138,25 +159,14 @@ function ArtSignos() {
 
 function ArtTarot({ accent }) {
   return (
-    <svg viewBox="0 0 320 132" className="landing-guide-art-svg" aria-hidden>
-      <defs>
-        <radialGradient id="guideTarotGlow" cx="50%" cy="50%" r="55%">
-          <stop offset="0%" stopColor="#34D399" stopOpacity="0.22" />
-          <stop offset="100%" stopColor="#34D399" stopOpacity="0" />
-        </radialGradient>
-      </defs>
-      <rect width="320" height="132" fill="url(#guideTarotGlow)" />
-      {[
-        { x: 108, rot: -14, sym: '☽' },
-        { x: 160, rot: 0, sym: '✦' },
-        { x: 212, rot: 14, sym: '☉' },
-      ].map(({ x, rot, sym }) => (
-        <g key={x} transform={`translate(${x} 66) rotate(${rot})`}>
-          <rect x="-28" y="-40" width="56" height="80" rx="8" fill="rgba(20,14,45,0.95)" stroke={accent} strokeWidth="1.2" />
-          <rect x="-22" y="-34" width="44" height="68" rx="5" fill="none" stroke="rgba(255,255,255,0.08)" />
-          <text textAnchor="middle" y="6" fill={accent} fontSize="20">{sym}</text>
-        </g>
-      ))}
+    <svg viewBox={`0 0 320 ${GUIDE_H}`} className="landing-guide-art-svg" preserveAspectRatio="xMidYMid slice" aria-hidden>
+      <GoldDefs id="guideTarot" />
+      <rect width="320" height={GUIDE_H} fill="url(#guideTarot-sky)" opacity="0.92" />
+      <ellipse cx="160" cy="64" rx="120" ry="42" fill="rgba(52,211,153,0.08)" />
+      <TarotCardFace x={108} y={66} rot={-16} accent={accent} face="back" />
+      <TarotCardFace x={160} y={64} rot={0} accent={accent} face="sun" scale={1.05} />
+      <TarotCardFace x={212} y={66} rot={16} accent={accent} face="back" />
+      <text x="160" y="118" textAnchor="middle" fill="rgba(255,255,255,0.35)" fontSize="7" letterSpacing="0.14em">TAROT SIDUS</text>
     </svg>
   )
 }
@@ -171,7 +181,7 @@ const ARTS = {
 export function LandingGuideArt({ id, accent = '#DFB76C' }) {
   const Art = ARTS[id] || ArtMapa
   return (
-    <div className={`landing-guide-art${id === 'signos' || id === 'mapa' ? ` landing-guide-art--${id}` : ''}`} style={{ '--guide-accent': accent }}>
+    <div className="landing-guide-art" style={{ '--guide-accent': accent }}>
       <Art accent={accent} />
     </div>
   )

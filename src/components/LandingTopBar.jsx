@@ -7,7 +7,7 @@ export function LandingTopBar({ onCta }) {
 
   return (
     <header className="landing-top-bar notranslate" translate="no">
-      <SidusLogo variant="horizontal" markSize={36} glow />
+      <SidusLogo variant="horizontal" markSize={48} glow className="sidus-logo--landing-bar" />
       <div className="landing-top-bar__actions">
         <LanguageSwitcher variant="landing-bar" />
         <button type="button" className="landing-top-bar__cta" onClick={onCta}>
