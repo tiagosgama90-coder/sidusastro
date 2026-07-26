@@ -430,23 +430,6 @@ h1.sidus-page-title {
   }
 }
 
-@media (min-width: 1024px) and (max-width: 1480px) {
-  .desktop-nav-item--tool .desktop-nav-item__label {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border: 0;
-  }
-  .desktop-nav-item--tool {
-    padding: 7px 8px;
-  }
-}
-
 .desktop-nav-item__label {
   font-size: inherit;
   font-weight: inherit;
@@ -498,16 +481,16 @@ h1.sidus-page-title {
 
 /* Landing top bar */
 .landing-top-bar {
-  position: sticky;
-  top: 0;
+  position: relative;
+  top: auto;
   z-index: 150;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 16px;
   width: 100%;
-  max-width: min(1100px, 100%);
-  margin: 0 auto 12px;
+  max-width: 100%;
+  margin: 0 0 8px;
   padding: 10px 16px;
   box-sizing: border-box;
   background: rgba(11, 7, 30, 0.92);
@@ -548,6 +531,24 @@ h1.sidus-page-title {
   width: 100%;
   max-width: min(1100px, 100%);
   margin: 0 auto 10px;
+}
+
+.landing-desktop-top-stack {
+  width: 100%;
+  max-width: min(1100px, 100%);
+  margin: 0 auto 8px;
+  padding: 0 16px;
+  box-sizing: border-box;
+}
+
+.landing-sky-desktop-wrap--compact {
+  margin: 0 0 6px;
+}
+
+.landing-sky-mobile-wrap--compact {
+  width: 100%;
+  margin: 0 0 8px;
+  padding: 0 2px;
 }
 
 /* Landing hero místico */
@@ -1156,7 +1157,7 @@ h1.sidus-page-title {
   width: 100%;
   max-width: min(900px, calc(100vw - 32px));
   margin: 0 auto 8px;
-  padding: 20px 18px 22px;
+  padding: 16px 18px 20px;
   border-radius: 22px;
   border: 1px solid rgba(223, 183, 108, 0.28);
   background:
@@ -1171,7 +1172,7 @@ h1.sidus-page-title {
 
 .landing-conversion-zone-head {
   text-align: center;
-  margin-bottom: 18px;
+  margin-bottom: 14px;
 }
 
 .landing-conversion-eyebrow {
@@ -1685,17 +1686,58 @@ h1.sidus-page-title {
   100% { transform: translateX(-50%); }
 }
 
-/* CÃ©u ao vivo - faixa no topo */
+/* Céu ao vivo - faixa no topo */
 .landing-sky-top {
   width: 100%;
-  margin: 0 0 16px;
+  margin: 0 0 10px;
   position: relative;
   z-index: 1;
 }
+
+.landing-sky-top--compact {
+  margin: 0 0 6px;
+}
+
 .landing-portal-sky-live--top {
   margin-bottom: 0;
   padding: 8px 12px;
   border-radius: 12px;
+}
+
+.landing-portal-sky-live--compact {
+  padding: 5px 10px !important;
+  border-radius: 10px !important;
+  border-color: rgba(223, 183, 108, 0.12) !important;
+  background: rgba(11, 7, 30, 0.72) !important;
+  box-shadow: none !important;
+}
+
+.landing-portal-sky-live--compact .landing-portal-sky-stars {
+  opacity: 0.22;
+}
+
+.landing-portal-sky-live--compact .landing-portal-sky-live-badge {
+  font-size: 9px;
+  letter-spacing: 0.08em;
+}
+
+.landing-portal-sky-live--compact .landing-portal-sky-live-date,
+.landing-portal-sky-live--compact .landing-portal-sky-moon-name--top {
+  font-size: 10px;
+}
+
+.landing-portal-sky-live--compact .landing-portal-sky-moon-emoji--top {
+  font-size: 13px;
+}
+
+.landing-portal-sky-live--compact .landing-portal-sky-ticker-item {
+  font-size: 10px;
+  opacity: 0.78;
+}
+
+.landing-portal-sky-live--compact .landing-portal-pulse-icon {
+  width: 10px;
+  height: 10px;
 }
 .landing-sky-top-inner {
   position: relative;
@@ -2445,7 +2487,7 @@ h1.sidus-page-title {
 
   .landing-auth-layout--desktop {
     max-width: min(900px, calc(100vw - 48px)) !important;
-    padding-top: calc(62px + env(safe-area-inset-top, 0px)) !important;
+    padding-top: calc(12px + env(safe-area-inset-top, 0px)) !important;
     padding-bottom: 16px !important;
     padding-left: 24px !important;
     padding-right: 24px !important;
