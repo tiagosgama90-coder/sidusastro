@@ -40,6 +40,7 @@ import { useGeoCountry } from './hooks/useGeoCountry.js'
 import { RecaptchaCheckbox } from './components/Recaptcha'
 import { Perfil } from './components/Perfil'
 import { VipPromoPage } from './components/VipPromoPage.jsx'
+import { DevelopersPage } from './components/DevelopersPage.jsx'
 import { PoliticaPrivacidade } from './components/PoliticaPrivacidade'
 import { InterpretacaoMapa } from './components/InterpretacaoMapa'
 import { ConteudoDinamicoSidus } from './components/ConteudoDinamicoSidus'
@@ -3358,6 +3359,12 @@ function RodapeSidus({ isDesktop, mostrarNavbar }) {
       </p>
       <p style={{ margin: '10px 0 0', fontSize: isDesktop ? 11 : 10 }}>
         <a
+          href="/developers"
+          style={{ color: 'rgba(255,255,255,0.35)', textDecoration: 'underline', marginRight: 12 }}
+        >
+          API Developers
+        </a>
+        <a
           href="/privacidade"
           style={{ color: 'rgba(255,255,255,0.35)', textDecoration: 'underline' }}
         >
@@ -4367,6 +4374,14 @@ export default function App() {
   }
 
   const renderEcran = () => {
+    if (passo === 'developers') {
+      return (
+        <DevelopersPage
+          isDesktop={isDesktop}
+          onVoltar={() => navigate(utilizador ? '/home' : '/login')}
+        />
+      )
+    }
     if (passo === 'privacidade' && utilizador) {
       return <PoliticaPrivacidade onVoltar={() => irPara('perfil')} />
     }
