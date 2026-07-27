@@ -35,12 +35,12 @@ function isInteractiveTarget(el) {
 function pushSoftTrail(particulas, x, y) {
   particulas.push({
     kind: 'soft',
-    x: x + (Math.random() - 0.5) * 4,
-    y: y + (Math.random() - 0.5) * 4,
+    x: x + (Math.random() - 0.5) * 5,
+    y: y + (Math.random() - 0.5) * 5,
     life: 1,
-    decay: 0.052,
-    size: 0.95 + Math.random() * 0.85,
-    tint: Math.random() > 0.3 ? 'gold' : 'white',
+    decay: 0.038,
+    size: 1.25 + Math.random() * 1.1,
+    tint: Math.random() > 0.25 ? 'gold' : 'white',
   })
 }
 
@@ -116,8 +116,9 @@ export function MagicCursorTrail({ activo = true }) {
     const fxLayer = document.querySelector('.sidus-cosmic-fx-layer')
     if (!fxLayer) return undefined
 
+    const desktopFine = window.matchMedia('(hover: hover) and (pointer: fine)').matches
     const coarse = window.matchMedia('(pointer: coarse)').matches
-    const particleMax = coarse ? 50 : 34
+    const particleMax = coarse ? 50 : 42
 
     const particulas = []
     let w = window.innerWidth
@@ -183,10 +184,11 @@ export function MagicCursorTrail({ activo = true }) {
 
     const onMove = (e) => {
       const now = performance.now()
-      if (now - lastTrailSpawn < 36) return
+      if (now - lastTrailSpawn < 28) return
       lastTrailSpawn = now
       pushSoftTrail(particulas, e.clientX, e.clientY)
-      if (Math.random() > 0.45) pushSoftTrail(particulas, e.clientX + 2, e.clientY - 1)
+      pushSoftTrail(particulas, e.clientX + 1, e.clientY - 1)
+      if (Math.random() > 0.35) pushSoftTrail(particulas, e.clientX - 2, e.clientY + 1)
       trimParticles(particulas, particleMax)
     }
 
@@ -232,11 +234,11 @@ export function MagicCursorTrail({ activo = true }) {
         const isTap = p.kind === 'tap'
         const isDust = p.kind === 'speck' || p.kind === 'spark' || p.kind === 'mote'
         const alpha = isTap
-          ? p.life * 0.48
+          ? p.life * 0.52
           : isDust
             ? p.life * (p.kind === 'spark' ? 0.62 : 0.36)
-            : p.life * 0.5
-        const radius = p.size * (0.75 + p.life * 0.3)
+            : p.life * 0.68
+        const radius = p.size * (0.8 + p.life * 0.35)
 
         if (p.kind === 'spark') {
           drawSpark(ctx, p.x, p.y, radius * 1.5, alpha, colorFor(p.tint, alpha))
@@ -263,7 +265,7 @@ export function MagicCursorTrail({ activo = true }) {
     document.addEventListener('touchend', onTap, { passive: true })
     document.addEventListener('click', onTap, { passive: true, capture: true })
 
-    if (!coarse) {
+    if (desktopFine) {
       window.addEventListener('mousemove', onMove, { passive: true })
       document.addEventListener('pointerup', onTap, { passive: true })
     }
