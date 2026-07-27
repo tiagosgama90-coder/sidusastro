@@ -2,7 +2,6 @@ import { useEffect, useState, useCallback } from 'react'
 import { Star, Send, Loader2, Check } from 'lucide-react'
 import { useLanguage } from '../lib/i18n/LanguageContext.jsx'
 import { RecaptchaCheckbox } from './Recaptcha.jsx'
-import { LandingMapaPreview } from './LandingMapaPreview.jsx'
 
 export function LandingReviews() {
   const { t } = useLanguage()
@@ -64,12 +63,8 @@ export function LandingReviews() {
   return (
     <section className="landing-testimonials" aria-label={t('reviews.ariaLabel')}>
       <h2 className="landing-testimonials-title">{t('reviews.title')}</h2>
-      <div className="landing-testimonials-grid">
-        <div className="landing-testimonials-visual">
-          <LandingMapaPreview />
-          <p className="landing-testimonials-caption">{t('reviews.previewCaption')}</p>
-        </div>
-        <div className="landing-testimonials-quotes">
+      <div className="landing-testimonials-grid landing-testimonials-grid--reviews-only">
+        <div className="landing-testimonials-quotes landing-testimonials-quotes--full">
           {carregando ? (
             <p className="landing-review-empty">{t('reviews.loading')}</p>
           ) : reviews.length === 0 ? (

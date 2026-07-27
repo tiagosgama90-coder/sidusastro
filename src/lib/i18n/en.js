@@ -102,6 +102,15 @@ export default {
         q6: 'Do I need an exact birth time?',
         a6: 'For an accurate Ascendant, houses and Moon, yes. Without an exact time we still calculate the Sun and outer planets; the mandala and full chart use the time you provide.',
       },
+      pdfShowcase: {
+        ariaLabel: 'VIP natal chart PDF report preview',
+        title: 'Your natal chart PDF report',
+        description: 'Complete high-quality interpreted report — Sun, Moon, Ascendant, 10 planets, 12 Placidus houses and aspects. Calculated with Swiss Ephemeris, available in Portuguese and English.',
+        caption: 'Professional PDF report · Sun, Moon, Ascendant and 10 planets',
+        expandCover: 'Tap to view full size',
+        expandCoverEn: 'Touch to enlarge the preview',
+        expandCoverAria: 'Enlarge VIP natal chart PDF report preview',
+      },
       guides: {
         ariaLabel: 'Sidus astrological guides',
         eyebrow: 'Sidus Library',

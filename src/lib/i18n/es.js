@@ -112,6 +112,15 @@ export default {
         q6: "¿Necesito la hora exacta de nacimiento?",
         a6: "Para un Ascendente, casas y Luna precisos, sí. Sin hora exacta, calculamos igualmente el Sol y los planetas lentos; la mandala y el tema completo usan la hora que indiques."
       },
+      pdfShowcase: {
+        ariaLabel: 'Vista previa del informe PDF del mapa astral VIP',
+        title: 'Informe PDF de tu mapa astral',
+        description: 'Informe interpretado completo de alta calidad — Sol, Luna, Ascendente, 10 planetas, 12 casas Placidus y aspectos. Calculado con Swiss Ephemeris y disponible en portugués e inglés.',
+        caption: 'Informe PDF profesional · Sol, Luna, Ascendente y 10 planetas',
+        expandCover: 'Toca para ver a tamaño real',
+        expandCoverEn: 'Tap to view full size',
+        expandCoverAria: 'Ampliar vista previa del informe PDF del mapa astral VIP',
+      },
       guides: {
         ariaLabel: "Guías astrológicas Sidus",
         eyebrow: "Biblioteca Sidus",

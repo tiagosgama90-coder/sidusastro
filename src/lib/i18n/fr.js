@@ -112,6 +112,15 @@ export default {
         q6: "Ai-je besoin de l'heure exacte de naissance ?",
         a6: "Pour un Ascendant, des maisons et une Lune précis, oui. Sans heure exacte, nous calculons quand même le Soleil et les planètes lentes ; la mandala et le thème complet utilisent l'heure que vous indiquerez."
       },
+      pdfShowcase: {
+        ariaLabel: 'Aperçu du rapport PDF de la carte natale VIP',
+        title: 'Rapport PDF de votre carte natale',
+        description: 'Rapport interprété complet de haute qualité — Soleil, Lune, Ascendant, 10 planètes, 12 maisons Placidus et aspects. Calculé avec Swiss Ephemeris, disponible en portugais et en anglais.',
+        caption: 'Rapport PDF professionnel · Soleil, Lune, Ascendant et 10 planètes',
+        expandCover: 'Appuyez pour voir en taille réelle',
+        expandCoverEn: 'Tap to view full size',
+        expandCoverAria: 'Agrandir l’aperçu du rapport PDF de la carte natale VIP',
+      },
       guides: {
         ariaLabel: "Guides astrologiques Sidus",
         eyebrow: "Bibliothèque Sidus",

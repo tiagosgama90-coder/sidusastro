@@ -111,6 +111,15 @@ export default {
         "q6": "Brauche ich die genaue Geburtszeit?",
         "a6": "Für genaue Aszendent, Häuser und Mond, ja. Ohne genaue Zeit berechnen wir dennoch Sonne und langsame Planeten; die Mandala und das vollständige Horoskop verwenden die von dir angegebene Zeit."
       },
+      "pdfShowcase": {
+        "ariaLabel": "VIP-Geburtshoroskop-PDF-Vorschau",
+        "title": "Dein Geburtshoroskop-PDF-Bericht",
+        "description": "Vollständiger, hochwertig interpretierter Bericht — Sonne, Mond, Aszendent, 10 Planeten, 12 Placidus-Häuser und Aspekte. Berechnet mit Swiss Ephemeris, verfügbar auf Portugiesisch und Englisch.",
+        "caption": "Professioneller PDF-Bericht · Sonne, Mond, Aszendent und 10 Planeten",
+        "expandCover": "Tippen für Originalgröße",
+        "expandCoverEn": "Tap to view full size",
+        "expandCoverAria": "VIP-Geburtshoroskop-PDF-Vorschau vergrößern"
+      },
       "guides": {
         "ariaLabel": "Astrologische Leitfäden von Sidus",
         "eyebrow": "Sidus Bibliothek",
