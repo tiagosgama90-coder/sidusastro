@@ -104,8 +104,10 @@ export default {
       },
       pdfShowcase: {
         ariaLabel: 'VIP natal chart PDF report preview',
-        title: 'Your natal chart PDF report',
-        description: 'Complete high-quality interpreted report — Sun, Moon, Ascendant, 10 planets, 12 Placidus houses and aspects. Calculated with Swiss Ephemeris, available in Portuguese and English.',
+        title: 'Your Natal Chart PDF Report',
+        titleHighlight: 'Natal Chart',
+        description: 'Complete Natal Chart of high precision - Sun, Moon, Ascendant, 10 planets, 12 Placidus houses and aspects, with the greatest detail and professional rigour possible.',
+        descriptionHighlight: 'Complete Natal Chart of high precision',
         caption: 'Professional PDF report · Sun, Moon, Ascendant and 10 planets',
         expandCover: 'Tap to view full size',
         expandCoverEn: 'Touch to enlarge the preview',
