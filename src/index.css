@@ -1820,14 +1820,23 @@ h1.sidus-page-title {
 }
 
 @media (min-width: 900px) {
-  .natal-chart-premium--showcase {
-    max-width: min(600px, 72vw);
+  .natal-chart-premium--showcase,
+  .landing-pdf-showcase .landing-testimonial-preview--showcase {
+    max-width: min(720px, calc(100% - 40px));
+  }
+
+  .landing-pdf-showcase__visual--glow {
+    max-width: min(740px, 100%);
   }
 
   .landing-pdf-showcase {
     margin-top: 36px;
     margin-bottom: 28px;
-    padding-top: 28px;
+    padding-top: 32px;
+  }
+
+  .landing-pdf-showcase__title {
+    font-size: clamp(1.5rem, 3.2vw, 2rem);
   }
 }
 
