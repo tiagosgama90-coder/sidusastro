@@ -1691,9 +1691,10 @@ h1.sidus-page-title {
 }
 
 .natal-chart-premium__photo--cover {
-  aspect-ratio: 3 / 4;
-  object-fit: cover;
-  object-position: center center;
+  aspect-ratio: 210 / 297;
+  object-fit: contain;
+  object-position: top center;
+  background: #0B071E;
 }
 
 .natal-chart-premium--guide,

@@ -1,5 +1,6 @@
 /**
- * Gera a capa comercial da landing a partir do PDF REAL (PdfMapa.jsx).
+ * Exporta a capa comercial = página 1 do PDF REAL, pixel a pixel.
+ * Sem mockups, sem logos inventados, sem badges — igual ao download do site.
  * Uso: npx vite-node scripts/generate-pdf-commercial-cover.mjs
  */
 import { writeFileSync, mkdtempSync, rmSync, readFileSync } from 'fs'
@@ -18,7 +19,6 @@ import { gerarPdfMapaAstral } from '../src/components/PdfMapa.jsx'
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const root = join(__dirname, '..')
 const OUT = join(root, 'public/brand/sidus-pdf-vip-commercial-cover.png')
-const LOGO_STACKED = join(root, 'public/brand/sidus-logo-stacked-1024.png')
 
 const PLANETAS = [
   { key: 'sol', nome: 'Sol', corpo: Body.Sun, simbolo: '☉' },
@@ -76,87 +76,22 @@ function calcularPlanetasDemo(dataUTC) {
   })
 }
 
-function renderPdfPagePng(pdfArrayBuffer, scale = 2.2) {
+/** Renderiza página 1 do PDF com pdftoppm — fiel ao ficheiro gerado. */
+function renderPdfPage1(pdfArrayBuffer, dpi = 200) {
   const tmp = mkdtempSync(join(tmpdir(), 'sidus-pdf-'))
   const pdfPath = join(tmp, 'mapa.pdf')
   const outPrefix = join(tmp, 'page')
   try {
     writeFileSync(pdfPath, Buffer.from(pdfArrayBuffer))
-    const dpi = Math.round(72 * scale)
-    execFileSync('pdftoppm', ['-png', '-f', '1', '-l', '1', '-r', String(dpi), '-singlefile', pdfPath, outPrefix], {
-      stdio: 'pipe',
-    })
+    execFileSync(
+      'pdftoppm',
+      ['-png', '-f', '1', '-l', '1', '-r', String(dpi), '-singlefile', pdfPath, outPrefix],
+      { stdio: 'pipe' },
+    )
     return readFileSync(`${outPrefix}.png`)
   } finally {
     rmSync(tmp, { recursive: true, force: true })
   }
-}
-
-async function composeCommercialCover(pdfPngBuffer) {
-  const W = 1040
-  const H = 1386
-  const pad = 36
-  const innerW = W - pad * 2
-  const innerH = H - pad * 2
-
-  const pdfResized = await sharp(pdfPngBuffer)
-    .resize(innerW, innerH, { fit: 'cover', position: 'top' })
-    .png()
-    .toBuffer()
-
-  const bg = await sharp({
-    create: {
-      width: W,
-      height: H,
-      channels: 4,
-      background: { r: 5, g: 3, b: 8, alpha: 1 },
-    },
-  })
-    .composite([
-      {
-        input: Buffer.from(
-          `<svg width="${W}" height="${H}" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <radialGradient id="g" cx="50%" cy="18%" r="72%">
-                <stop offset="0%" stop-color="#1C103A" stop-opacity="0.95"/>
-                <stop offset="55%" stop-color="#0B071E" stop-opacity="0.6"/>
-                <stop offset="100%" stop-color="#050308" stop-opacity="1"/>
-              </radialGradient>
-            </defs>
-            <rect width="100%" height="100%" fill="url(#g)"/>
-          </svg>`,
-        ),
-        top: 0,
-        left: 0,
-      },
-    ])
-    .png()
-    .toBuffer()
-
-  const logoSize = 120
-  const logo = await sharp(LOGO_STACKED)
-    .resize(logoSize, logoSize, { fit: 'contain', background: { r: 0, g: 0, b: 0, alpha: 0 } })
-    .png()
-    .toBuffer()
-
-  const badgeSvg = Buffer.from(`<svg width="160" height="44" xmlns="http://www.w3.org/2000/svg">
-    <rect x="1" y="1" width="158" height="42" rx="8" fill="rgba(11,7,30,0.82)" stroke="#DFB76C" stroke-width="1.2"/>
-    <text x="80" y="28" text-anchor="middle" font-family="Helvetica,Arial,sans-serif" font-size="15" font-weight="700" fill="#DFB76C" letter-spacing="3">SIDUS VIP</text>
-  </svg>`)
-
-  const frameSvg = Buffer.from(`<svg width="${W}" height="${H}" xmlns="http://www.w3.org/2000/svg">
-    <rect x="18" y="18" width="${W - 36}" height="${H - 36}" rx="18" fill="none" stroke="#DFB76C" stroke-opacity="0.42" stroke-width="2"/>
-  </svg>`)
-
-  return sharp(bg)
-    .composite([
-      { input: pdfResized, top: pad, left: pad },
-      { input: frameSvg, top: 0, left: 0 },
-      { input: logo, top: 36, left: 36 },
-      { input: badgeSvg, top: 40, left: W - 196 },
-    ])
-    .png({ compressionLevel: 9 })
-    .toBuffer()
 }
 
 async function main() {
@@ -165,18 +100,19 @@ async function main() {
   const dataUTC = criarDataUTCporLocal(DADOS_DEMO.data, DADOS_DEMO.hora, DADOS_DEMO.fuso)
   const planetas = atribuirCasasPlanetas(calcularPlanetasDemo(dataUTC), mapaNatal.cusps)
 
-  console.log('A gerar PDF real (PdfMapa.jsx)…')
+  console.log('A gerar PDF real (PdfMapa.jsx) — mesmo código do site…')
   const doc = await gerarPdfMapaAstral(mapaNatal, DADOS_DEMO, planetas, null, 'pt', { returnDoc: true })
   const pdfArrayBuffer = doc.output('arraybuffer')
-  console.log(`PDF gerado: ${(pdfArrayBuffer.byteLength / 1024).toFixed(1)} KB, ${doc.getNumberOfPages()} páginas`)
+  console.log(`PDF: ${(pdfArrayBuffer.byteLength / 1024).toFixed(1)} KB, ${doc.getNumberOfPages()} páginas`)
 
-  console.log('A renderizar página 1 do PDF…')
-  const pdfPng = renderPdfPagePng(pdfArrayBuffer)
+  console.log('A exportar página 1 sem alterações…')
+  const pagePng = renderPdfPage1(pdfArrayBuffer, 200)
 
-  console.log('A compor capa comercial…')
-  const finalPng = await composeCommercialCover(pdfPng)
-  writeFileSync(OUT, finalPng)
-  console.log('Wrote', OUT)
+  // Guardar tal como sai — proporção A4 exacta, sem crop, sem overlays
+  await sharp(pagePng).png({ compressionLevel: 9 }).toFile(OUT)
+
+  const meta = await sharp(OUT).metadata()
+  console.log(`Wrote ${OUT} (${meta.width}×${meta.height})`)
 }
 
 main().catch((e) => {
