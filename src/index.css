@@ -1678,10 +1678,39 @@ h1.sidus-page-title {
   border-top: 1px solid rgba(201, 162, 77, 0.14);
 }
 
-.natal-chart-premium--wheel,
-.natal-chart-premium__svg--wide {
+.natal-chart-premium__frame--photo {
+  position: relative;
+  padding: 0;
+  background: #050308;
+}
+
+.natal-chart-premium__photo {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.natal-chart-premium__photo--cover {
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+  object-position: center top;
+}
+
+.natal-chart-premium--guide,
+.natal-chart-premium__photo--guide {
   width: 100%;
   height: 100%;
+}
+
+.natal-chart-premium__photo--guide {
+  object-fit: cover;
+  object-position: center center;
+}
+
+.natal-chart-premium--cover .natal-chart-premium__cover-meta {
+  margin-top: 10px;
+  padding: 0 4px;
+  border-top: none;
 }
 
 .landing-guide-art--mapa-wheel {

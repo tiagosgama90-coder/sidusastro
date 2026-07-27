@@ -1,4 +1,4 @@
-import { NatalChartPremiumArt } from './NatalChartPremiumArt.jsx'
+import { LandingMapaGuideArt } from './LandingMapaPreview.jsx'
 
 const GUIDE_H = 128
 
@@ -51,7 +51,7 @@ function TarotCardFace({ x, y, rot, accent, face = 'back', scale = 1 }) {
 }
 
 function ArtMapa() {
-  return <NatalChartPremiumArt variant="wheel" className="landing-guide-art--mapa-wheel" />
+  return <LandingMapaGuideArt className="landing-guide-art--mapa-wheel" />
 }
 
 function ArtAscendente({ accent }) {
