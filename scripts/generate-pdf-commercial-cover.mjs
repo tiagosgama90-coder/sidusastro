@@ -1,29 +1,35 @@
 /**
- * Capa VIP v7 — cinematográfica: PDF gigante em perspectiva real, zero template.
+ * Capa VIP v8 — thumbnail estilo landing Sidus, bilingue PT/EN, 3D, rodapé VIP.
+ *   npx vite-node scripts/generate-pdf-commercial-cover.mjs
+ *   npx vite-node scripts/generate-pdf-commercial-cover.mjs --apply
  */
-import { writeFileSync, mkdtempSync, rmSync, readFileSync, mkdirSync } from 'fs'
+import { writeFileSync, mkdtempSync, rmSync, readFileSync, mkdirSync, copyFileSync } from 'fs'
 import { tmpdir } from 'os'
 import { execFileSync } from 'child_process'
-import { fileURLToPath } from 'url'
+import { fileURLToPath, pathToFileURL } from 'url'
 import { dirname, join } from 'path'
 import sharp from 'sharp'
-import { createCanvas, loadImage } from '@napi-rs/canvas'
+import { chromium } from 'playwright'
 import { Body, Ecliptic, GeoVector, MakeTime } from 'astronomy-engine'
 import { criarDataUTCporLocal } from '../src/lib/datetime.js'
 import { calcularAngulosCasas } from '../src/lib/natalHouses.js'
 import { longitudeParaSigno } from '../src/lib/astrologia.js'
 import { atribuirCasasPlanetas } from '../src/lib/casasPlacidus.js'
 import { gerarPdfMapaAstral } from '../src/components/PdfMapa.jsx'
+import { getPdfLabels } from '../src/lib/pdfLabels.js'
+import pt from '../src/lib/i18n/pt.js'
+import en from '../src/lib/i18n/en.js'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const root = join(__dirname, '..')
 const APPLY = process.argv.includes('--apply')
 const OUT_PROD = join(root, 'public/brand/sidus-pdf-vip-commercial-cover.png')
-const OUT_PREVIEW = '/opt/cursor/artifacts/sidus-pdf-vip-commercial-cover-v7.png'
-const LOGO = join(root, 'public/brand/sidus-logo-stacked-1024.png')
+const OUT_PREVIEW = '/opt/cursor/artifacts/sidus-pdf-vip-commercial-cover-v8.png'
+const LOGO_H = join(root, 'public/brand/sidus-logo-horizontal-1024.png')
+const ZODIAC = join(root, 'public/brand/sidus-zodiac-ring.svg')
 
 const W = 1080
-const H = 1920
+const H = 1400
 
 const PLANETAS = [
   { key: 'sol', nome: 'Sol', corpo: Body.Sun, simbolo: '☉' },
@@ -47,8 +53,51 @@ const DADOS_DEMO = {
   fuso: 0,
 }
 
-function lerp(a, b, t) {
-  return a + (b - a) * t
+const VIP_INCLUDES = [
+  {
+    pt: 'Quatro Pilares Fundamentais',
+    en: 'Four Fundamental Pillars',
+    detailPt: 'Sol, Lua, Ascendente, Descendente e Meio do Céu com graus exactos.',
+    detailEn: 'Sun, Moon, Ascendant, Descendant and Midheaven with exact degrees.',
+  },
+  {
+    pt: 'Interpretação profissional por secção',
+    en: 'Professional section-by-section reading',
+    detailPt: 'Essência central, emoções, relações, carreira, karma e propósito.',
+    detailEn: 'Core essence, emotions, relationships, career, karma and purpose.',
+  },
+  {
+    pt: '10 planetas em casas Placidus',
+    en: '10 planets in Placidus houses',
+    detailPt: 'Mercúrio a Plutão — signo, casa e coordenadas eclípticas.',
+    detailEn: 'Mercury to Pluto — sign, house and ecliptic coordinates.',
+  },
+  {
+    pt: 'Equilíbrio de elementos e modalidades',
+    en: 'Element balance and modalities',
+    detailPt: 'Fogo, Terra, Ar, Água — cardinal, fixo e mutável.',
+    detailEn: 'Fire, Earth, Air, Water — cardinal, fixed and mutable.',
+  },
+  {
+    pt: 'Mandala astrológica + dados técnicos',
+    en: 'Astrological mandala + technical data',
+    detailPt: 'Roda zodiacal visual, efemérides e coordenadas de nascimento.',
+    detailEn: 'Visual zodiac wheel, ephemerides and birth coordinates.',
+  },
+  {
+    pt: 'PDF completo em português e inglês',
+    en: 'Full PDF in Portuguese and English',
+    detailPt: 'Descarrega e recebe por email — o mesmo relatório VIP.',
+    detailEn: 'Download and email delivery — the same VIP report.',
+  },
+]
+
+function esc(s) {
+  return String(s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
 }
 
 function calcularMapaDemo(dados) {
@@ -74,7 +123,7 @@ function calcularPlanetasDemo(dataUTC) {
   }))
 }
 
-function renderPdfPage1(buf, dpi = 360) {
+function renderPdfPage1(buf, dpi = 300) {
   const tmp = mkdtempSync(join(tmpdir(), 'sidus-pdf-'))
   const pdfPath = join(tmp, 'm.pdf')
   const prefix = join(tmp, 'p')
@@ -89,206 +138,204 @@ function renderPdfPage1(buf, dpi = 360) {
   }
 }
 
-/** Zoom extremo — cabeçalho + Quatro Pilares + início interpretação. */
-async function preparePdfHero(pngBuf) {
+async function preparePdfThumb(pngBuf) {
   const meta = await sharp(pngBuf).metadata()
-  const cropH = Math.round(meta.height * 0.58)
+  const cropH = Math.round(meta.height * 0.54)
   return sharp(pngBuf)
     .extract({ left: 0, top: 0, width: meta.width, height: cropH })
-    .resize(1040, null, { kernel: sharp.kernel.lanczos3 })
-    .sharpen({ sigma: 1.5, m1: 0.9, m2: 0.6 })
+    .resize(500, null, { kernel: sharp.kernel.lanczos3 })
+    .sharpen({ sigma: 1.2, m1: 0.8, m2: 0.5 })
     .png()
     .toBuffer()
 }
 
-/** Perspectiva por scanlines — trapézio estável. */
-async function warpPerspective(pngBuf, quad) {
-  const img = await loadImage(pngBuf)
-  const sw = img.width
-  const sh = img.height
-  const canvas = createCanvas(W, H)
-  const ctx = canvas.getContext('2d')
-  ctx.clearRect(0, 0, W, H)
-  ctx.imageSmoothingEnabled = true
-  ctx.imageSmoothingQuality = 'high'
+function buildHtml({ totalPages, labelsPt, labelsEn }) {
+  const mPt = pt.mapa
+  const mEn = en.mapa
 
-  const { tl, tr, br, bl } = quad
-  const rows = 900
+  const includesHtml = VIP_INCLUDES.map((item) => `
+    <div class="inc">
+      <div class="inc__pt">${esc(item.pt)}</div>
+      <div class="inc__en">${esc(item.en)}</div>
+      <div class="inc__dpt">${esc(item.detailPt)}</div>
+      <div class="inc__den">${esc(item.detailEn)}</div>
+    </div>`).join('')
 
-  for (let row = 0; row < rows; row += 1) {
-    const t = row / (rows - 1)
-    const y = lerp(tl.y, bl.y, t)
-    const lx = lerp(tl.x, bl.x, t)
-    const rx = lerp(tr.x, br.x, t)
-    const destW = rx - lx
-    if (destW < 2) continue
+  return `<!DOCTYPE html>
+<html lang="pt"><head><meta charset="utf-8"/>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html,body{width:${W}px;height:${H}px;overflow:hidden;
+  font-family:system-ui,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased}
 
-    const sy = Math.min(sh - 1, Math.floor(t * (sh - 1)))
-    const srcH = Math.max(1, Math.ceil(sh / rows) + 1)
+.page{position:relative;width:${W}px;height:${H}px;background:#030818;overflow:hidden}
 
-    ctx.drawImage(img, 0, sy, sw, srcH, lx, y, destW, 1.35)
-  }
+.cosmos{position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse 90% 70% at 50% 0%,rgba(12,28,68,.55) 0%,transparent 62%),
+    radial-gradient(ellipse 60% 50% at 20% 30%,rgba(124,58,237,.35) 0%,transparent 55%),
+    radial-gradient(ellipse 55% 45% at 85% 25%,rgba(219,39,119,.22) 0%,transparent 50%),
+    radial-gradient(ellipse 70% 40% at 50% 100%,rgba(37,99,235,.2) 0%,transparent 55%),
+    #030818}
+.stars{position:absolute;inset:0;opacity:.85;
+  background-image:
+    radial-gradient(1px 1px at 8% 12%,rgba(255,255,255,.7),transparent),
+    radial-gradient(1.5px 1.5px at 22% 35%,rgba(240,208,138,.5),transparent),
+    radial-gradient(1px 1px at 45% 8%,rgba(255,255,255,.55),transparent),
+    radial-gradient(1px 1px at 68% 18%,rgba(255,255,255,.6),transparent),
+    radial-gradient(1.2px 1.2px at 88% 28%,rgba(223,183,108,.45),transparent),
+    radial-gradient(1px 1px at 15% 78%,rgba(255,255,255,.35),transparent),
+    radial-gradient(1px 1px at 82% 72%,rgba(255,255,255,.4),transparent)}
 
-  ctx.strokeStyle = 'rgba(223,183,108,0.55)'
-  ctx.lineWidth = 2.5
-  ctx.beginPath()
-  ctx.moveTo(tl.x, tl.y)
-  ctx.lineTo(tr.x, tr.y)
-  ctx.lineTo(br.x, br.y)
-  ctx.lineTo(bl.x, bl.y)
-  ctx.closePath()
-  ctx.stroke()
+/* ── Card estilo landing-conversion-zone ── */
+.card{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  width:940px;padding:28px 32px 26px;border-radius:22px;
+  border:1px solid rgba(223,183,108,.28);
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 0%,rgba(223,183,108,.1),transparent 62%),
+    rgba(8,5,24,.82);
+  backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+  box-shadow:0 0 0 1px rgba(255,255,255,.03) inset,0 28px 72px rgba(0,0,0,.45)}
 
-  ctx.strokeStyle = 'rgba(255,255,255,0.08)'
-  ctx.lineWidth = 1
-  ctx.stroke()
+.logo-h{display:block;height:42px;width:auto;margin:0 auto 18px;object-fit:contain;
+  filter:drop-shadow(0 0 16px rgba(223,183,108,.25))}
 
-  return canvas.toBuffer('image/png')
+.head{text-align:center;margin-bottom:16px}
+.eyebrow{margin:0 0 3px;font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:rgba(223,183,108,.82)}
+.eyebrow-en{margin:0 0 10px;font-size:9px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.38)}
+
+.title{margin:0 0 4px;font-size:26px;font-weight:700;line-height:1.25;color:#fff;letter-spacing:-.01em}
+.title-en{margin:0 0 10px;font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.5)}
+
+.sub{margin:0 0 2px;font-size:12px;line-height:1.5;color:rgba(255,255,255,.68)}
+.sub-en{margin:0;font-size:10px;line-height:1.45;color:rgba(255,255,255,.4)}
+
+.glow-word{background:linear-gradient(180deg,#FFF8E7 0%,#F5DCA0 28%,#DFB76C 58%,#C9A55A 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  -webkit-text-fill-color:transparent;
+  filter:drop-shadow(0 0 10px rgba(223,183,108,.45))}
+
+.zodiac{width:100px;height:100px;margin:12px auto 8px;display:block;opacity:.92;
+  filter:drop-shadow(0 0 20px rgba(223,183,108,.2))}
+
+/* ── 3D PDF ── */
+.stage{position:relative;height:340px;margin:6px 0 14px;
+  perspective:1100px;perspective-origin:50% 40%}
+.plat{position:absolute;bottom:20px;left:50%;width:420px;height:80px;margin-left:-210px;
+  transform:rotateX(82deg);background:radial-gradient(ellipse,rgba(223,183,108,.18) 0%,transparent 68%);
+  filter:blur(12px);border-radius:50%}
+.doc{position:absolute;left:50%;top:50%;
+  width:460px;margin-left:-230px;margin-top:-155px;
+  transform-style:preserve-3d;
+  transform:rotateX(20deg) rotateY(-18deg) rotateZ(.5deg)}
+.sheet{position:relative;border-radius:8px;overflow:hidden;background:#0B071E;
+  border:1px solid rgba(223,183,108,.5);
+  box-shadow:-28px 32px 70px rgba(0,0,0,.55),0 0 80px rgba(139,92,246,.12),0 0 50px rgba(223,183,108,.08);
+  transform:translateZ(30px)}
+.sheet img{display:block;width:100%;height:auto}
+.spine{position:absolute;top:0;right:-5px;width:8px;height:100%;
+  background:linear-gradient(90deg,#1c103a,#0b071e);transform:rotateY(88deg);transform-origin:right center}
+.rim{position:absolute;inset:0;border-radius:8px;pointer-events:none;
+  background:linear-gradient(135deg,rgba(255,255,255,.08) 0%,transparent 40%,transparent 70%,rgba(0,0,0,.15) 100%)}
+.badge{position:absolute;top:14px;right:-8px;z-index:5;padding:7px 14px;border-radius:999px;
+  background:linear-gradient(145deg,#FFF3D6,#DFB76C 42%,#B8944F);
+  color:#0B071E;font-size:8px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;
+  box-shadow:0 10px 28px rgba(0,0,0,.4);transform:translateZ(50px)}
+.badge-en{display:block;font-size:6.5px;letter-spacing:.12em;margin-top:2px;opacity:.8;font-weight:700}
+
+/* ── Rodapé VIP ── */
+.vip-foot{margin-top:4px;padding:16px 14px 14px;border-radius:16px;
+  border:1px solid rgba(223,183,108,.22);
+  background:rgba(11,7,30,.72)}
+.vip-foot__title{margin:0 0 2px;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#DFB76C;text-align:center}
+.vip-foot__title-en{margin:0 0 12px;font-size:9px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.38);text-align:center}
+
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.inc{padding:9px 10px;border-radius:10px;background:rgba(0,0,0,.22);border:1px solid rgba(223,183,108,.14)}
+.inc__pt{font-size:8px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#DFB76C;line-height:1.3}
+.inc__en{font-size:7px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:rgba(255,255,255,.42);margin-top:2px;line-height:1.25}
+.inc__dpt{font-size:7.5px;line-height:1.4;color:rgba(255,255,255,.62);margin-top:5px}
+.inc__den{font-size:6.5px;line-height:1.35;color:rgba(255,255,255,.36);margin-top:3px}
+
+.legal{margin-top:12px;text-align:center}
+.legal__pt{font-size:8px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:rgba(223,183,108,.5)}
+.legal__en{font-size:7px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-top:3px}
+.chips{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin-top:10px}
+.chip{font-size:8px;font-weight:600;padding:5px 9px;border-radius:8px;
+  background:rgba(11,7,30,.8);border:1px solid rgba(223,183,108,.22);color:rgba(255,255,255,.7)}
+.chip span{display:block;font-size:6.5px;color:rgba(255,255,255,.38);font-weight:500;margin-top:1px}
+</style></head>
+<body>
+<div class="page">
+  <div class="cosmos"></div>
+  <div class="stars"></div>
+
+  <div class="card">
+    <img class="logo-h" src="logo-horizontal.png" alt="Sidus"/>
+
+    <div class="head">
+      <p class="eyebrow">${esc(pt.auth.portal.conversionEyebrow)}</p>
+      <p class="eyebrow-en">${esc(en.auth.portal.conversionEyebrow)}</p>
+      <h1 class="title"><span class="glow-word">${esc(mPt.fullChart)}</span> VIP</h1>
+      <p class="title-en">${esc(mEn.fullChart)} VIP</p>
+      <p class="sub">${esc(mPt.fullDesc)}</p>
+      <p class="sub-en">${esc(mEn.fullDesc)}</p>
+    </div>
+
+    <img class="zodiac" src="zodiac.svg" alt=""/>
+
+    <div class="stage">
+      <div class="plat"></div>
+      <div class="doc">
+        <div class="sheet">
+          <img src="page.png" alt="PDF"/>
+          <div class="spine"></div>
+          <div class="rim"></div>
+        </div>
+        <div class="badge">Sidus VIP<span class="badge-en">Premium</span></div>
+      </div>
+    </div>
+
+    <div class="vip-foot">
+      <p class="vip-foot__title">O que recebes ao pagar o VIP</p>
+      <p class="vip-foot__title-en">What you get when you upgrade to VIP</p>
+      <div class="grid">${includesHtml}</div>
+      <div class="chips">
+        <span class="chip">☉ ${esc(labelsPt.labels.sun)}<span>${esc(labelsEn.labels.sun)}</span></span>
+        <span class="chip">☽ ${esc(labelsPt.labels.moon)}<span>${esc(labelsEn.labels.moon)}</span></span>
+        <span class="chip">${esc(labelsPt.labels.asc)}<span>${esc(labelsEn.labels.asc)}</span></span>
+        <span class="chip">${esc(labelsPt.labels.mc)}<span>${esc(labelsEn.labels.mc)}</span></span>
+        <span class="chip">10 planetas<span>10 planets</span></span>
+        <span class="chip">Casas Placidus<span>Placidus houses</span></span>
+      </div>
+      <div class="legal">
+        <p class="legal__pt">${totalPages} páginas · Pré-visualização fiel do PDF · PT &amp; EN</p>
+        <p class="legal__en">${totalPages} pages · Faithful PDF preview · Portuguese &amp; English</p>
+      </div>
+    </div>
+  </div>
+</div>
+</body></html>`
 }
 
-function cosmosBase() {
-  return Buffer.from(`<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}">
-    <defs>
-      <radialGradient id="bg" cx="50%" cy="35%" r="75%">
-        <stop offset="0%" stop-color="#1a0a3a"/>
-        <stop offset="45%" stop-color="#08041a"/>
-        <stop offset="100%" stop-color="#010006"/>
-      </radialGradient>
-      <radialGradient id="n1" cx="20%" cy="15%" r="55%">
-        <stop offset="0%" stop-color="#a855f7" stop-opacity=".75"/>
-        <stop offset="100%" stop-opacity="0"/>
-      </radialGradient>
-      <radialGradient id="n2" cx="85%" cy="20%" r="50%">
-        <stop offset="0%" stop-color="#ec4899" stop-opacity=".55"/>
-        <stop offset="100%" stop-opacity="0"/>
-      </radialGradient>
-      <radialGradient id="n3" cx="50%" cy="88%" r="60%">
-        <stop offset="0%" stop-color="#3b82f6" stop-opacity=".5"/>
-        <stop offset="100%" stop-opacity="0"/>
-      </radialGradient>
-      <radialGradient id="gold" cx="50%" cy="42%" r="35%">
-        <stop offset="0%" stop-color="#DFB76C" stop-opacity=".22"/>
-        <stop offset="100%" stop-opacity="0"/>
-      </radialGradient>
-      <filter id="blur90"><feGaussianBlur stdDeviation="90"/></filter>
-      <filter id="blur50"><feGaussianBlur stdDeviation="50"/></filter>
-    </defs>
-    <rect width="100%" height="100%" fill="url(#bg)"/>
-    <rect width="100%" height="100%" fill="url(#n1)"/>
-    <rect width="100%" height="100%" fill="url(#n2)"/>
-    <rect width="100%" height="100%" fill="url(#n3)"/>
-    <rect width="100%" height="100%" fill="url(#gold)"/>
-    <ellipse cx="120" cy="260" rx="400" ry="280" fill="#7c3aed" opacity=".32" filter="url(#blur90)"/>
-    <ellipse cx="960" cy="200" rx="420" ry="300" fill="#db2777" opacity=".26" filter="url(#blur90)"/>
-    <ellipse cx="540" cy="1500" rx="550" ry="340" fill="#2563eb" opacity=".24" filter="url(#blur90)"/>
-    <ellipse cx="540" cy="680" rx="380" ry="240" fill="#DFB76C" opacity=".12" filter="url(#blur50)"/>
-  </svg>`)
-}
-
-function starsSvg() {
-  let dots = ''
-  for (let i = 0; i < 160; i++) {
-    const x = (Math.random() * W).toFixed(0)
-    const y = (Math.random() * H).toFixed(0)
-    const r = (Math.random() * 1.6 + 0.3).toFixed(2)
-    const o = (Math.random() * 0.6 + 0.15).toFixed(2)
-    dots += `<circle cx="${x}" cy="${y}" r="${r}" fill="#fff" opacity="${o}"/>`
-  }
-  return Buffer.from(`<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}">${dots}</svg>`)
-}
-
-function overlaySvg(totalPages, mapa) {
-  return Buffer.from(`<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}">
-    <defs>
-      <linearGradient id="top" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stop-color="#010006" stop-opacity=".92"/>
-        <stop offset="100%" stop-color="#010006" stop-opacity="0"/>
-      </linearGradient>
-      <linearGradient id="bot" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stop-color="#010006" stop-opacity="0"/>
-        <stop offset="55%" stop-color="#010006" stop-opacity=".88"/>
-        <stop offset="100%" stop-color="#010006"/>
-      </linearGradient>
-      <filter id="glow"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-    </defs>
-    <rect width="100%" height="320" fill="url(#top)"/>
-    <rect y="${H - 520}" width="100%" height="520" fill="url(#bot)"/>
-
-    <text x="540" y="118" text-anchor="middle" font-family="Georgia,serif" font-size="28" font-weight="700" fill="#F0D08A" filter="url(#glow)">Relatório PDF Profissional</text>
-    <text x="540" y="148" text-anchor="middle" font-family="Helvetica,Arial,sans-serif" font-size="13" font-weight="500" letter-spacing="3" fill="rgba(255,255,255,0.55)">PROFESSIONAL PDF REPORT</text>
-    <text x="540" y="178" text-anchor="middle" font-family="Helvetica,Arial,sans-serif" font-size="11" font-weight="600" letter-spacing="2" fill="rgba(223,183,108,0.7)">MAPA ASTRAL COMPLETO VIP · COMPLETE VIP NATAL CHART</text>
-
-    <rect x="60" y="1580" width="960" height="72" rx="16" fill="rgba(11,7,30,0.85)" stroke="rgba(223,183,108,0.35)" stroke-width="1.5"/>
-    <text x="540" y="1608" text-anchor="middle" font-family="Helvetica,Arial,sans-serif" font-size="13" font-weight="600" fill="#fff">☉ ${mapa.solar.nome} · ☽ ${mapa.lunar.nome} · ASC ${mapa.ascendente.nome} · MC ${mapa.mc.nome} · 10 planetas · Casas Placidus</text>
-    <text x="540" y="1632" text-anchor="middle" font-family="Helvetica,Arial,sans-serif" font-size="11" font-weight="500" fill="rgba(255,255,255,0.55)">☉ ${mapa.solar.nome} · ☽ ${mapa.lunar.nome} · ASC ${mapa.ascendente.nome} · MC ${mapa.mc.nome} · 10 planets · Placidus houses</text>
-
-    <text x="540" y="1688" text-anchor="middle" font-family="Helvetica,Arial,sans-serif" font-size="10" font-weight="700" letter-spacing="2.5" fill="rgba(223,183,108,0.55)">${totalPages} PÁGINAS · PRÉ-VISUALIZAÇÃO FIEL DO PDF ORIGINAL</text>
-    <text x="540" y="1710" text-anchor="middle" font-family="Helvetica,Arial,sans-serif" font-size="9" font-weight="500" letter-spacing="2" fill="rgba(255,255,255,0.35)">${totalPages} PAGES · FAITHFUL PREVIEW OF YOUR PURCHASE</text>
-
-    <g transform="translate(880,340)">
-      <rect x="0" y="0" width="118" height="34" rx="17" fill="url(#vip)" stroke="#DFB76C" stroke-width="1"/>
-      <defs><linearGradient id="vip" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#FFF3D6"/><stop offset="100%" stop-color="#C9A55A"/></linearGradient></defs>
-      <text x="59" y="15" text-anchor="middle" font-family="Helvetica,Arial,sans-serif" font-size="9" font-weight="800" fill="#0B071E" letter-spacing="2">SIDUS VIP</text>
-      <text x="59" y="27" text-anchor="middle" font-family="Helvetica,Arial,sans-serif" font-size="7" font-weight="600" fill="#0B071E" letter-spacing="1">PREMIUM</text>
-    </g>
-  </svg>`)
-}
-
-async function docShadow(quad) {
-  const { tl, tr, br, bl } = quad
-  const pad = 30
-  const minX = Math.max(0, Math.min(tl.x, tr.x, br.x, bl.x) - pad)
-  const maxX = Math.min(W, Math.max(tl.x, tr.x, br.x, bl.x) + pad)
-  const minY = Math.max(0, Math.min(tl.y, tr.y, br.y, bl.y) - pad)
-  const maxY = Math.min(H, Math.max(tl.y, tr.y, br.y, bl.y) + pad)
-  const sw = Math.max(1, Math.ceil(maxX - minX))
-  const sh = Math.max(1, Math.ceil(maxY - minY))
-  const buf = await sharp({
-    create: { width: sw, height: sh, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 0.6 } },
-  }).blur(32).png().toBuffer()
-  return { buf, left: Math.round(minX), top: Math.round(minY + 24) }
-}
-
-async function compose({ pdfHero, logoBuf, totalPages, mapa }) {
-  const quad = {
-    tl: { x: 60, y: 310 },
-    tr: { x: 1000, y: 250 },
-    br: { x: 1040, y: 1510 },
-    bl: { x: 30, y: 1550 },
-  }
-
-  const warped = await warpPerspective(pdfHero, quad)
-  const shadow = await docShadow(quad)
-  const logo = await sharp(logoBuf).resize(88, 88, { fit: 'contain' }).png().toBuffer()
-
-  const glowBehind = await sharp({
-    create: { width: 700, height: 900, channels: 4, background: { r: 223, g: 183, b: 108, alpha: 0.18 } },
-  }).blur(60).png().toBuffer()
-
-  const spine = await sharp(pdfHero)
-    .extract({
-      left: Math.max(0, (await sharp(pdfHero).metadata()).width - 10),
-      top: 0,
-      width: 10,
-      height: Math.min(700, (await sharp(pdfHero).metadata()).height),
+async function renderCover(html, assetsDir) {
+  writeFileSync(join(assetsDir, 'cover.html'), html)
+  const browser = await chromium.launch({ args: ['--disable-dev-shm-usage', '--no-sandbox'] })
+  try {
+    const page = await browser.newPage({
+      viewport: { width: W, height: H },
+      deviceScaleFactor: 2,
     })
-    .resize(24, 700)
-    .modulate({ brightness: 0.35 })
-    .png()
-    .toBuffer()
-
-  return sharp(await sharp(cosmosBase()).png().toBuffer())
-    .composite([
-      { input: await sharp(starsSvg()).png().toBuffer(), top: 0, left: 0 },
-      { input: glowBehind, top: 480, left: 190 },
-      { input: shadow.buf, top: shadow.top, left: shadow.left },
-      { input: spine, top: 310, left: 968, blend: 'over' },
-      { input: warped, top: 0, left: 0 },
-      { input: logo, top: 28, left: Math.round((W - 88) / 2) },
-      { input: await sharp(overlaySvg(totalPages, mapa)).png().toBuffer(), top: 0, left: 0 },
-    ])
-    .png({ compressionLevel: 4 })
-    .toBuffer()
+    await page.goto(pathToFileURL(join(assetsDir, 'cover.html')).href, { waitUntil: 'load', timeout: 90000 })
+    await page.waitForTimeout(1400)
+    return await page.screenshot({
+      type: 'png',
+      clip: { x: 0, y: 0, width: W, height: H },
+      timeout: 90000,
+    })
+  } finally {
+    await browser.close()
+  }
 }
 
 async function main() {
@@ -297,19 +344,35 @@ async function main() {
   const planetas = atribuirCasasPlanetas(calcularPlanetasDemo(utc), mapa.cusps)
   const doc = await gerarPdfMapaAstral(mapa, DADOS_DEMO, planetas, null, 'pt', { returnDoc: true })
   const total = doc.getNumberOfPages()
+  const labelsPt = getPdfLabels('pt')
+  const labelsEn = getPdfLabels('en')
 
-  console.log('PDF 360dpi · zoom extremo…')
-  const pdfHero = await preparePdfHero(renderPdfPage1(doc.output('arraybuffer'), 360))
+  console.log('PDF real · thumbnail landing Sidus…')
+  const pagePng = await preparePdfThumb(renderPdfPage1(doc.output('arraybuffer'), 300))
 
-  console.log('Perspectiva 3D real + cosmos cinematográfico…')
-  const png = await compose({ pdfHero, logoBuf: readFileSync(LOGO), totalPages: total, mapa })
+  const assetsDir = mkdtempSync(join(tmpdir(), 'sidus-cover-v8-'))
+  try {
+    writeFileSync(join(assetsDir, 'page.png'), pagePng)
+    copyFileSync(LOGO_H, join(assetsDir, 'logo-horizontal.png'))
+    copyFileSync(ZODIAC, join(assetsDir, 'zodiac.svg'))
 
-  mkdirSync('/opt/cursor/artifacts', { recursive: true })
-  writeFileSync(OUT_PREVIEW, png)
-  console.log('Preview:', OUT_PREVIEW)
-  if (APPLY) {
-    writeFileSync(OUT_PROD, png)
-    console.log('Applied:', OUT_PROD)
+    console.log('Card landing · 3D · bilingue PT/EN · rodapé VIP…')
+    const shot = await renderCover(buildHtml({ totalPages: total, labelsPt, labelsEn }), assetsDir)
+
+    mkdirSync('/opt/cursor/artifacts', { recursive: true })
+    const final = await sharp(shot)
+      .resize(W, H, { kernel: sharp.kernel.lanczos3 })
+      .png({ compressionLevel: 5 })
+      .toBuffer()
+
+    writeFileSync(OUT_PREVIEW, final)
+    console.log('Preview:', OUT_PREVIEW)
+    if (APPLY) {
+      writeFileSync(OUT_PROD, final)
+      console.log('Applied:', OUT_PROD)
+    }
+  } finally {
+    rmSync(assetsDir, { recursive: true, force: true })
   }
 }
 
