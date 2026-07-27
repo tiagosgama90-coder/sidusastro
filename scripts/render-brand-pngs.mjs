@@ -37,13 +37,15 @@ async function main() {
   const stacked = readFileSync(join(brandDir, 'sidus-logo-stacked.svg'), 'utf8')
   const og = readFileSync(join(brandDir, 'sidus-og.svg'), 'utf8')
   const zodiacRing = readFileSync(join(brandDir, 'sidus-zodiac-ring.svg'), 'utf8')
+  const cosmicMandala = readFileSync(join(brandDir, 'sidus-cosmic-mandala.svg'), 'utf8')
 
   const browser = await chromium.launch()
   try {
     await renderSvg(browser, og, join(root, 'public/og-image.png'), 1200, 630, false)
     await renderSvg(browser, favicon, join(root, 'public/apple-touch-icon.png'), 512, 512, false)
-    await renderSvg(browser, zodiacRing, join(brandDir, 'sidus-zodiac-ring-512.png'), 512, 512, true)
-    await renderSvg(browser, zodiacRing, join(brandDir, 'sidus-zodiac-ring-1024.png'), 1024, 1024, true)
+    await renderSvg(browser, cosmicMandala, join(brandDir, 'sidus-cosmic-mandala-512.png'), 512, 512, true)
+    await renderSvg(browser, cosmicMandala, join(brandDir, 'sidus-cosmic-mandala-1024.png'), 1024, 1024, true)
+    await renderSvg(browser, cosmicMandala, join(brandDir, 'sidus-cosmic-mandala-2048.png'), 2048, 2048, true)
     await renderSvg(browser, mark, join(brandDir, 'sidus-constellation-mark-512.png'), 512, 512, true)
     await renderSvg(browser, mark, join(brandDir, 'sidus-constellation-mark-1024.png'), 1024, 1024, true)
     await renderSvg(browser, horizontal, join(brandDir, 'sidus-logo-horizontal-1024.png'), 1024, 256, true)

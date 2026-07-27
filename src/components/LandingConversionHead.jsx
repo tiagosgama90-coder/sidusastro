@@ -1,8 +1,9 @@
 import { useLanguage } from '../lib/i18n/LanguageContext.jsx'
 import { LandingMysticHighlight } from './LandingMysticHighlight.jsx'
 
-const ZODIAC_RING_SRC = '/brand/sidus-zodiac-ring-512.png?v=10'
-const ZODIAC_RING_SRCSET = '/brand/sidus-zodiac-ring-512.png?v=10 1x, /brand/sidus-zodiac-ring-1024.png?v=10 2x'
+const MANDALA_SRC = '/brand/sidus-cosmic-mandala-1024.png?v=11'
+const MANDALA_SRCSET =
+  '/brand/sidus-cosmic-mandala-512.png?v=11 512w, /brand/sidus-cosmic-mandala-1024.png?v=11 1024w, /brand/sidus-cosmic-mandala-2048.png?v=11 2048w'
 
 export function LandingConversionHead() {
   const { t } = useLanguage()
@@ -25,10 +26,11 @@ export function LandingConversionHead() {
       <div className="landing-welcome-zodiac notranslate" translate="no" aria-hidden>
         <img
           className="landing-welcome-zodiac__img"
-          src={ZODIAC_RING_SRC}
-          srcSet={ZODIAC_RING_SRCSET}
-          width={128}
-          height={128}
+          src={MANDALA_SRC}
+          srcSet={MANDALA_SRCSET}
+          sizes="(max-width: 640px) 120px, 168px"
+          width={168}
+          height={168}
           alt=""
           decoding="async"
           draggable={false}
