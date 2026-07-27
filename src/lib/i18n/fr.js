@@ -96,6 +96,12 @@ export default {
       savedTitle: "✦ Données enregistrées dans le cosmos",
       savedHint: "Créez un compte ou connectez-vous ci-dessous - votre formulaire de carte sera prérempli automatiquement.",
       authDivider: "Continuer pour se connecter",
+      conversionAria: "Commencer sur Sidus - thème natal gratuit",
+      conversionEyebrow: "Votre cosmos personnel",
+      conversionTitle: "Quel est votre véritable destin cosmique ?",
+      conversionTitleHighlight: "destin cosmique",
+      conversionLead: "Entrez dans votre univers personnel et découvrez ce que révèle votre thème natal. Explorez l'astrologie, la numérologie et le tarot grâce à des outils de haute précision conçus pour guider vos prochaines étapes.",
+      conversionLeadHighlight: "thème natal",
       faq: {
         ariaLabel: "Questions fréquentes sur Sidus Astro",
         title: "Questions fréquentes",

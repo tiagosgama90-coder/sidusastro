@@ -95,6 +95,12 @@ export default {
       "savedTitle": "✦ Dati salvati nel cosmo",
       "savedHint": "Ora crea un account o accedi di seguito: il modulo del grafico verrà precompilato automaticamente.",
       "authDivider": "Continua ad accedere",
+      "conversionAria": "Inizia su Sidus - tema natale gratuito",
+      "conversionEyebrow": "Il tuo cosmo personale",
+      "conversionTitle": "Qual è il tuo vero destino cosmico?",
+      "conversionTitleHighlight": "destino cosmico",
+      "conversionLead": "Entra nel tuo universo personale e scopri cosa rivela il tuo tema natale. Esplora astrologia, numerologia e tarocchi con strumenti di alta precisione pensati per guidare i tuoi prossimi passi.",
+      "conversionLeadHighlight": "tema natale",
       "faq": {
         "ariaLabel": "Domande frequenti su Sidus Astro",
         "title": "Domande frequenti",
