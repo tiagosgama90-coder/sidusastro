@@ -68,7 +68,7 @@ export default async (req) => {
       })
       if (!activado.ok) {
         return new Response(JSON.stringify({
-          error: 'Não foi possível activar VIP no Firestore. Verifica FIREBASE_SERVICE_ACCOUNT no Netlify.',
+          error: 'Não foi possível activar Premium no Firestore. Verifica FIREBASE_SERVICE_ACCOUNT no Netlify.',
         }), { status: 503, headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
       }
     } else if (metaUserId && productType === 'mapa') {

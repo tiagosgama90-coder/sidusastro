@@ -136,6 +136,26 @@
   status = 200
 
 [[redirects]]
+  from = "/vip"
+  to = "/premium"
+  status = 301
+
+[[redirects]]
+  from = "/:lang/vip"
+  to = "/:lang/premium"
+  status = 301
+
+[[redirects]]
+  from = "/divulgacao-vip"
+  to = "/divulgacao-premium"
+  status = 301
+
+[[redirects]]
+  from = "/:lang/divulgacao-vip"
+  to = "/:lang/divulgacao-premium"
+  status = 301
+
+[[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200

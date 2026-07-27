@@ -27,7 +27,7 @@ const corsHeaders = {
 }
 
 const RETURN_PATH = { premium: '/mapaastral', mapa: '/mapaastral', tarot: '/tarot' }
-const CANCEL_PATH = { premium: '/vip', mapa: '/mapaastral', tarot: '/tarot' }
+const CANCEL_PATH = { premium: '/premium', mapa: '/mapaastral', tarot: '/tarot' }
 const SUPPORTED_LANGS = new Set(['pt', 'en', 'es', 'it', 'de', 'fr'])
 
 function resolverProductType({ productTypeRaw, cobranca, valorCliente, descricao }) {

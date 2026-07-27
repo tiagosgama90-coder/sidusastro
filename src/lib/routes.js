@@ -15,8 +15,8 @@ export const PASSO_TO_PATH = {
   chat: '/oraculo',
   perfil: '/perfil',
   privacidade: '/privacidade',
-  paywall: '/vip',
-  vipPromo: '/divulgacao-vip',
+  paywall: '/premium',
+  vipPromo: '/divulgacao-premium',
   onboarding: '/comecar',
 }
 
@@ -30,6 +30,9 @@ PATH_TO_PASSO['/inicio'] = 'home'
 PATH_TO_PASSO['/mapa'] = 'mapa'
 PATH_TO_PASSO['/chat'] = 'chat'
 PATH_TO_PASSO['/premium'] = 'paywall'
+PATH_TO_PASSO['/vip'] = 'paywall'
+PATH_TO_PASSO['/divulgacao-premium'] = 'vipPromo'
+PATH_TO_PASSO['/divulgacao-vip'] = 'vipPromo'
 PATH_TO_PASSO['/divulgacao'] = 'vipPromo'
 PATH_TO_PASSO['/horoscopo'] = 'home'
 PATH_TO_PASSO['/horoscope'] = 'home'
