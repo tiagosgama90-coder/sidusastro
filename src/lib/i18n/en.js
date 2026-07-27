@@ -613,6 +613,7 @@ export default {
     premiumFullPrice: 'International price: {preco}',
     stripeFail: 'Error connecting to Stripe',
     sessionFail: 'Could not start payment',
+    amountTooSmall: 'The amount is below the minimum accepted by Stripe. Try again or choose another method.',
     invalidUrl: 'Invalid payment URL',
     verifyError: 'Verification error',
     methods: {

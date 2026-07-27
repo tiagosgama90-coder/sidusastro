@@ -1,5 +1,12 @@
 import { getStripe, siteOrigin } from './_shared/stripe.mjs'
-import { PRECO_PREMIUM_EUR, PRECO_PREMIUM_PIX_BRL, PRECO_TAROT_PIX_BRL } from './_shared/pricing.mjs'
+import {
+  PRECO_PREMIUM_EUR,
+  PRECO_PREMIUM_PIX_BRL,
+  PRECO_TAROT_EUR,
+  PRECO_TAROT_PIX_BRL,
+  STRIPE_MIN_BRL,
+  STRIPE_MIN_EUR,
+} from './_shared/pricing.mjs'
 
 function resolverMetodoPagamento(raw) {
   const key = String(raw || 'card').trim().toLowerCase().replace(/-/g, '_')
@@ -22,7 +29,16 @@ const corsHeaders = {
 const RETURN_PATH = { premium: '/mapaastral', mapa: '/mapaastral', tarot: '/tarot' }
 const CANCEL_PATH = { premium: '/vip', mapa: '/mapaastral', tarot: '/tarot' }
 const SUPPORTED_LANGS = new Set(['pt', 'en', 'es', 'it', 'de', 'fr'])
-function resolverCobranca({ productType, metodo, valorCliente, country }) {
+
+function resolverProductType({ productTypeRaw, cobranca, valorCliente, descricao }) {
+  if (productTypeRaw) return productTypeRaw
+  if (cobranca.currency === 'brl' && cobranca.amount >= PRECO_PREMIUM_PIX_BRL - 0.01) return 'premium'
+  if (valorCliente >= PRECO_PREMIUM_EUR - 0.01 || /vip|premium|subscri/i.test(descricao || '')) return 'premium'
+  if (valorCliente >= 10 || /mapa.*completo|natal chart/i.test(descricao || '')) return 'mapa'
+  return 'tarot'
+}
+
+function resolverCobranca({ productType, metodo, country }) {
   const isBr = String(country || '').toUpperCase() === 'BR'
   const pixBr = isBr && metodo === 'pix'
 
@@ -31,10 +47,24 @@ function resolverCobranca({ productType, metodo, valorCliente, country }) {
       ? { amount: PRECO_PREMIUM_PIX_BRL, currency: 'brl' }
       : { amount: PRECO_PREMIUM_EUR, currency: 'eur' }
   }
-  if (productType === 'tarot' && pixBr) {
-    return { amount: PRECO_TAROT_PIX_BRL, currency: 'brl' }
+  if (productType === 'mapa') {
+    return { amount: 10, currency: 'eur' }
   }
-  return { amount: Number(valorCliente), currency: 'eur' }
+  if (productType === 'tarot') {
+    return pixBr
+      ? { amount: PRECO_TAROT_PIX_BRL, currency: 'brl' }
+      : { amount: PRECO_TAROT_EUR, currency: 'eur' }
+  }
+  return pixBr
+    ? { amount: PRECO_TAROT_PIX_BRL, currency: 'brl' }
+    : { amount: PRECO_TAROT_EUR, currency: 'eur' }
+}
+
+function validarMontante(amount, currency) {
+  const min = currency === 'brl' ? STRIPE_MIN_BRL : STRIPE_MIN_EUR
+  if (!Number.isFinite(amount) || amount < min) {
+    throw new Error(`amount_too_small:${currency}:${min}`)
+  }
 }
 
 function pathComIdioma(basePath, lang) {
@@ -55,24 +85,23 @@ export default async (req) => {
     const { valor, descricao, userId, userEmail, productType: productTypeRaw, paymentMethod, lang: langRaw, country } = body
 
     if (!valor || !descricao || !userId) {
-      return new Response(JSON.stringify({ error: 'Parâmetros em falta' }), { status: 400, headers: corsHeaders })
+      return new Response(JSON.stringify({ error: 'missing_params' }), { status: 400, headers: corsHeaders })
     }
 
     const stripe = getStripe()
     const origin = siteOrigin(req)
     const valorCliente = Number(valor)
     const metodo = resolverMetodoPagamento(paymentMethod)
-    const cobranca = resolverCobranca({ productType: productTypeRaw, metodo, valorCliente, country })
-    const productType = productTypeRaw
-      || (cobranca.currency === 'brl' && cobranca.amount >= PRECO_PREMIUM_PIX_BRL - 0.01
-        ? 'premium'
-        : valorCliente >= PRECO_PREMIUM_EUR - 0.01 || /vip|premium|subscri/i.test(descricao || '')
-          ? 'premium'
-          : valorCliente >= 10 || /mapa.*completo|natal chart/i.test(descricao || '')
-            ? 'mapa'
-            : 'tarot')
-    const isPremium = productType === 'premium'
+    const productType = resolverProductType({
+      productTypeRaw,
+      cobranca: resolverCobranca({ productType: productTypeRaw || 'tarot', metodo, country }),
+      valorCliente,
+      descricao,
+    })
+    const cobranca = resolverCobranca({ productType, metodo, country })
+    validarMontante(cobranca.amount, cobranca.currency)
 
+    const isPremium = productType === 'premium'
     const billingType = isPremium ? 'lifetime' : 'one_time'
 
     const metadata = {
@@ -119,7 +148,11 @@ export default async (req) => {
     })
   } catch (e) {
     console.error('[create-checkout-session]', e?.message)
-    return new Response(JSON.stringify({ error: e?.message || 'Erro ao criar sessão' }), {
+    const msg = String(e?.message || '')
+    const code = msg.startsWith('amount_too_small:')
+      ? 'amount_too_small'
+      : (msg.includes('STRIPE_SECRET_KEY') ? 'stripe_not_configured' : 'sessionFail')
+    return new Response(JSON.stringify({ error: code, detail: msg }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     })

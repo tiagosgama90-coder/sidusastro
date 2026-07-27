@@ -4526,6 +4526,7 @@ export default function App() {
   const margemNav = 0
 
   return (
+    <>
     <div className={`sidus-cosmic-shell${!utilizador ? ' sidus-login-shell' : ' sidus-app-shell'}`} style={shellStyle}>
       <div className="sidus-cosmic-backdrop" aria-hidden="true">
         <LandingCosmicBackground />
@@ -4646,12 +4647,11 @@ export default function App() {
       />
 
       </div>
-      <div className="sidus-cosmic-fx-layer" aria-hidden="true">
-        <MagicCursorTrail />
-      </div>
       {mostrarBottomNav && (
         <MobileBottomNav passo={passo} onNavigate={irPara} />
       )}
     </div>
+    <MagicCursorTrail />
+    </>
   )
 }
