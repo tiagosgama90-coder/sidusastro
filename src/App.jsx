@@ -45,6 +45,7 @@ import { ConteudoDinamicoSidus } from './components/ConteudoDinamicoSidus'
 import { AstroNewsCarousel } from './components/AstroNewsCarousel'
 import { LandingCosmicBackground } from './components/LandingCosmicBackground.jsx'
 import { LandingBirthPortal } from './components/LandingBirthPortal.jsx'
+import { LandingConversionHead } from './components/LandingConversionHead.jsx'
 import { LandingTopBar } from './components/LandingTopBar.jsx'
 import { SidusLogo } from './components/SidusLogo.jsx'
 import { LandingFaq } from './components/LandingFaq.jsx'
@@ -1455,12 +1456,7 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
         className="landing-conversion-zone"
         aria-label={t('auth.portal.conversionAria')}
       >
-        <div className="landing-conversion-zone-head">
-          <p className="landing-conversion-eyebrow">{t('auth.portal.conversionEyebrow')}</p>
-          <h2 className="landing-conversion-title">{t('auth.portal.conversionTitle')}</h2>
-          <p className="landing-conversion-lead">{t('auth.portal.conversionLead')}</p>
-          <p className="landing-conversion-pitch">{t('auth.portal.conversionPitch')}</p>
-        </div>
+        <LandingConversionHead />
         <div className="landing-auth-grid">
         <LandingBirthPortal isDesktop={isDesktop} onSaved={scrollParaAuth} onScrollToLogin={scrollParaAuth} />
 
