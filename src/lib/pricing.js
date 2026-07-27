@@ -1,8 +1,12 @@
 /** Preços Sidus — EUR (internacional) e BRL (PIX Brasil). */
-export const PRECO_TAROT = 0.25
+export const PRECO_TAROT = 0.5
 export const PRECO_MAPA_COMPLETO = 10
 export const PRECO_PREMIUM_UNICO = 4.99
 export const PRECO_PREMIUM_MENSAL = PRECO_PREMIUM_UNICO
+
+/** Mínimos Stripe (EUR/USD ~0,50; BRL ~0,50). */
+export const STRIPE_MIN_EUR = 0.5
+export const STRIPE_MIN_BRL = 0.5
 
 /** Taxa fixa da oferta PIX Brasil (5 € VIP → R$ 28). */
 export const PIX_BR_EUR_TO_BRL = 5.6
@@ -12,8 +16,8 @@ export const PRECO_PREMIUM_BR_PIX_EUR_REF = 5
 
 /** VIP Brasil via PIX — cobrado em reais (5 € × taxa). */
 export const PRECO_PREMIUM_BR_PIX_BRL = PRECO_PREMIUM_BR_PIX_EUR_REF * PIX_BR_EUR_TO_BRL
-/** Leitura Tarot Brasil via PIX — proporcional ao preço europeu (VIP mantém-se). */
-export const PRECO_TAROT_BR_PIX_BRL = Math.max(1, Math.round(PRECO_PREMIUM_BR_PIX_BRL * (PRECO_TAROT / PRECO_PREMIUM_UNICO)))
+/** Leitura Tarot / pergunta Brasil via PIX. */
+export const PRECO_TAROT_BR_PIX_BRL = 2.91
 
 export function formatPrecoEuro(valor) {
   return Number(valor).toFixed(2).replace('.', ',')

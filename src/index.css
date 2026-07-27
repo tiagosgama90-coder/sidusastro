@@ -2693,11 +2693,11 @@ h1.sidus-page-title {
   z-index: 0;
 }
 
-/* Efeitos de toque/clique — acima do conteúdo, abaixo da navbar (150) e nav mobile (220) */
+/* Efeitos de toque/clique — no body, acima do conteúdo, abaixo da navbar (150) */
 .sidus-cosmic-fx-layer {
   position: fixed;
   inset: 0;
-  z-index: 135;
+  z-index: 140;
   pointer-events: none;
   overflow: hidden;
 }

@@ -591,6 +591,7 @@ export default {
     premiumFullPrice: "Prix international : {preco}",
     stripeFail: "Erreur de connexion à Stripe",
     sessionFail: "Impossible de lancer le paiement",
+    amountTooSmall: "Le montant est inférieur au minimum accepté par Stripe. Réessaie ou choisis un autre moyen de paiement.",
     invalidUrl: "URL de paiement invalide",
     verifyError: "Erreur de vérification",
     methods: {
@@ -937,6 +938,7 @@ export default {
     premiumFullPrice: "Prix international : {preco}",
     stripeFail: "Erreur de connexion à Stripe",
     sessionFail: "Impossible de lancer le paiement",
+    amountTooSmall: "Le montant est inférieur au minimum accepté par Stripe. Réessaie ou choisis un autre moyen de paiement.",
     invalidUrl: "URL de paiement invalide",
     verifyError: "Erreur de vérification",
     methods: {

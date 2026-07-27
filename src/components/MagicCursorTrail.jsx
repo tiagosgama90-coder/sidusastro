@@ -1,4 +1,5 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
+import { createPortal } from 'react-dom'
 
 const GOLD = [223, 183, 108]
 const WHITE = [255, 255, 255]
@@ -9,8 +10,8 @@ function rgba([r, g, b], a) {
 }
 
 function colorFor(tint, alpha) {
-  if (tint === 'white') return rgba(WHITE, alpha * 0.8)
-  if (tint === 'lavender') return rgba(LAVENDER, alpha * 0.65)
+  if (tint === 'white') return rgba(WHITE, alpha * 0.85)
+  if (tint === 'lavender') return rgba(LAVENDER, alpha * 0.7)
   return rgba(GOLD, alpha)
 }
 
@@ -31,20 +32,18 @@ function isInteractiveTarget(el) {
   }
 }
 
-/** Rasto suave — desktop (bolinhas) */
 function pushSoftTrail(particulas, x, y) {
   particulas.push({
     kind: 'soft',
-    x: x + (Math.random() - 0.5) * 5,
-    y: y + (Math.random() - 0.5) * 5,
+    x: x + (Math.random() - 0.5) * 6,
+    y: y + (Math.random() - 0.5) * 6,
     life: 1,
-    decay: 0.038,
-    size: 1.25 + Math.random() * 1.1,
-    tint: Math.random() > 0.25 ? 'gold' : 'white',
+    decay: 0.032,
+    size: 1.45 + Math.random() * 1.25,
+    tint: Math.random() > 0.2 ? 'gold' : 'white',
   })
 }
 
-/** Poeira cósmica — mobile (grãos finos + micro-brilhos) */
 function pushCosmicDust(particulas, x, y) {
   const kinds = ['speck', 'speck', 'speck', 'spark', 'mote']
   const count = 2 + (Math.random() > 0.5 ? 1 : 0)
@@ -64,7 +63,6 @@ function pushCosmicDust(particulas, x, y) {
   }
 }
 
-/** Toque em botão — explosãozinha discreta */
 function pushGentleTap(particulas, x, y, mobile = false) {
   const count = mobile ? 7 : 5
   for (let i = 0; i < count; i += 1) {
@@ -92,7 +90,7 @@ function drawSpark(ctx, x, y, s, alpha, color) {
   ctx.save()
   ctx.translate(x, y)
   ctx.strokeStyle = color
-  ctx.lineWidth = 0.55
+  ctx.lineWidth = 0.65
   ctx.globalAlpha = alpha
   ctx.beginPath()
   ctx.moveTo(-s, 0)
@@ -103,22 +101,14 @@ function drawSpark(ctx, x, y, s, alpha, color) {
   ctx.restore()
 }
 
-/**
- * Efeito cósmico site-wide:
- * - Desktop: bolinhas suaves no rato + explosão em botões
- * - Mobile: poeira cósmica ao deslizar + explosão em botões
- */
-export function MagicCursorTrail({ activo = true }) {
+function FxLayer({ activo }) {
   useEffect(() => {
     if (!activo || typeof window === 'undefined') return undefined
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return undefined
 
-    const fxLayer = document.querySelector('.sidus-cosmic-fx-layer')
-    if (!fxLayer) return undefined
-
     const desktopFine = window.matchMedia('(hover: hover) and (pointer: fine)').matches
     const coarse = window.matchMedia('(pointer: coarse)').matches
-    const particleMax = coarse ? 50 : 42
+    const particleMax = coarse ? 50 : 48
 
     const particulas = []
     let w = window.innerWidth
@@ -133,7 +123,9 @@ export function MagicCursorTrail({ activo = true }) {
     const canvas = document.createElement('canvas')
     canvas.className = 'magic-cosmic-trail-canvas'
     canvas.setAttribute('aria-hidden', 'true')
-    fxLayer.appendChild(canvas)
+    const host = document.querySelector('.sidus-cosmic-fx-layer')
+    if (!host) return undefined
+    host.appendChild(canvas)
 
     const ctx = canvas.getContext('2d', { alpha: true })
     if (!ctx) {
@@ -184,11 +176,11 @@ export function MagicCursorTrail({ activo = true }) {
 
     const onMove = (e) => {
       const now = performance.now()
-      if (now - lastTrailSpawn < 28) return
+      if (now - lastTrailSpawn < 24) return
       lastTrailSpawn = now
       pushSoftTrail(particulas, e.clientX, e.clientY)
       pushSoftTrail(particulas, e.clientX + 1, e.clientY - 1)
-      if (Math.random() > 0.35) pushSoftTrail(particulas, e.clientX - 2, e.clientY + 1)
+      if (Math.random() > 0.3) pushSoftTrail(particulas, e.clientX - 2, e.clientY + 1)
       trimParticles(particulas, particleMax)
     }
 
@@ -234,11 +226,11 @@ export function MagicCursorTrail({ activo = true }) {
         const isTap = p.kind === 'tap'
         const isDust = p.kind === 'speck' || p.kind === 'spark' || p.kind === 'mote'
         const alpha = isTap
-          ? p.life * 0.52
+          ? p.life * 0.55
           : isDust
-            ? p.life * (p.kind === 'spark' ? 0.62 : 0.36)
-            : p.life * 0.68
-        const radius = p.size * (0.8 + p.life * 0.35)
+            ? p.life * (p.kind === 'spark' ? 0.65 : 0.38)
+            : p.life * 0.78
+        const radius = p.size * (0.85 + p.life * 0.4)
 
         if (p.kind === 'spark') {
           drawSpark(ctx, p.x, p.y, radius * 1.5, alpha, colorFor(p.tint, alpha))
@@ -287,6 +279,29 @@ export function MagicCursorTrail({ activo = true }) {
   }, [activo])
 
   return null
+}
+
+/**
+ * Efeito cósmico site-wide — camada fixa no body (fora de stacking contexts).
+ */
+export function MagicCursorTrail({ activo = true }) {
+  const [host, setHost] = useState(null)
+
+  useEffect(() => {
+    if (typeof document === 'undefined') return undefined
+    const el = document.createElement('div')
+    el.className = 'sidus-cosmic-fx-layer'
+    el.setAttribute('aria-hidden', 'true')
+    document.body.appendChild(el)
+    setHost(el)
+    return () => {
+      el.remove()
+      setHost(null)
+    }
+  }, [])
+
+  if (!host) return null
+  return createPortal(<FxLayer activo={activo} />, host)
 }
 
 export const MagicCosmicTrail = MagicCursorTrail

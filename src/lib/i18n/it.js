@@ -582,6 +582,7 @@ export default {
     "premiumFullPrice": "Prezzo internazionale: {preco}",
     "stripeFail": "Errore di connessione a Stripe",
     "sessionFail": "Impossibile avviare il pagamento",
+    "amountTooSmall": "L'importo è inferiore al minimo accettato da Stripe. Riprova o scegli un altro metodo di pagamento.",
     "invalidUrl": "URL di pagamento non valido",
     "verifyError": "Errore di verifica",
     "methods": {

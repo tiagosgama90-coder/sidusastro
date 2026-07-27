@@ -105,6 +105,9 @@ export function ModalPagamento({
       invalidUrl: t('pagamento.invalidUrl'),
       needLogin: t('pagamento.needLogin'),
       selectMethod: t('pagamento.selectMethod'),
+      amount_too_small: t('pagamento.amountTooSmall'),
+      stripe_not_configured: t('pagamento.stripeFail'),
+      missing_params: t('pagamento.sessionFail'),
     }
     return map[code] || code || t('pagamento.stripeFail')
   }
