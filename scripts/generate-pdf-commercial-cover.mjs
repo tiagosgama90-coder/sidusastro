@@ -69,14 +69,14 @@ const VIP_INCLUDES = [
   {
     pt: '10 planetas em casas Placidus',
     en: '10 planets in Placidus houses',
-    detailPt: 'Mercúrio a Plutão — signo, casa e coordenadas eclípticas.',
-    detailEn: 'Mercury to Pluto — sign, house and ecliptic coordinates.',
+    detailPt: 'Mercúrio a Plutão - signo, casa e coordenadas eclípticas.',
+    detailEn: 'Mercury to Pluto - sign, house and ecliptic coordinates.',
   },
   {
     pt: 'Equilíbrio de elementos e modalidades',
     en: 'Element balance and modalities',
-    detailPt: 'Fogo, Terra, Ar, Água — cardinal, fixo e mutável.',
-    detailEn: 'Fire, Earth, Air, Water — cardinal, fixed and mutable.',
+    detailPt: 'Fogo, Terra, Ar, Água - cardinal, fixo e mutável.',
+    detailEn: 'Fire, Earth, Air, Water - cardinal, fixed and mutable.',
   },
   {
     pt: 'Mandala astrológica + dados técnicos',
@@ -87,8 +87,8 @@ const VIP_INCLUDES = [
   {
     pt: 'PDF completo em português e inglês',
     en: 'Full PDF in Portuguese and English',
-    detailPt: 'Descarrega e recebe por email — o mesmo relatório VIP.',
-    detailEn: 'Download and email delivery — the same VIP report.',
+    detailPt: 'Descarrega e recebe por email - o mesmo relatório VIP.',
+    detailEn: 'Download and email delivery - the same VIP report.',
   },
 ]
 
