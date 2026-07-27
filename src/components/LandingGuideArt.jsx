@@ -1,3 +1,5 @@
+import { NatalChartPremiumArt } from './NatalChartPremiumArt.jsx'
+
 const GUIDE_H = 128
 
 function GoldDefs({ id }) {
@@ -48,35 +50,8 @@ function TarotCardFace({ x, y, rot, accent, face = 'back', scale = 1 }) {
   )
 }
 
-/** Mapa natal — painel retangular estilo relatório (sem roda circular). */
-function ArtMapa({ accent }) {
-  const planets = [
-    { sym: '☉', x: 52, y: 44, c: '#FBBF24' },
-    { sym: '☽', x: 118, y: 38, c: '#C4B5FD' },
-    { sym: '☿', x: 186, y: 52, c: '#93C5FD' },
-    { sym: '♀', x: 248, y: 44, c: '#F9A8D4' },
-    { sym: '♂', x: 278, y: 78, c: '#FCA5A5' },
-  ]
-
-  return (
-    <svg viewBox={`0 0 320 ${GUIDE_H}`} className="landing-guide-art-svg" preserveAspectRatio="xMidYMid meet" aria-hidden>
-      <GoldDefs id="guideMapa" />
-      <rect width="320" height={GUIDE_H} fill="url(#guideMapa-sky)" opacity="0.9" />
-      <rect x="28" y="18" width="264" height="92" rx="10" fill="rgba(8,5,24,0.55)" stroke={accent} strokeWidth="1.2" />
-      <path d="M40 30 H280 M40 54 H280 M40 78 H280 M40 102 H280" stroke="rgba(223,183,108,0.14)" strokeWidth="0.6" />
-      <path d="M88 30 V102 M160 30 V102 M232 30 V102" stroke="rgba(223,183,108,0.1)" strokeWidth="0.5" />
-      <text x="40" y="36" fill={accent} fontSize="6.5" fontWeight="700" letterSpacing="0.1em">MAPA NATAL</text>
-      <text x="278" y="36" textAnchor="end" fill="rgba(255,255,255,0.45)" fontSize="6">PDF</text>
-      {planets.map(({ sym, x, y, c }) => (
-        <g key={sym}>
-          <rect x={x - 14} y={y - 10} width="28" height="20" rx="4" fill="rgba(0,0,0,0.35)" stroke={c} strokeWidth="0.7" />
-          <text x={x} y={y + 1} textAnchor="middle" dominantBaseline="middle" fill={c} fontSize="8">{sym}</text>
-        </g>
-      ))}
-      <path d="M48 108 Q160 118 272 108" fill="none" stroke="rgba(147,197,253,0.35)" strokeWidth="0.8" strokeDasharray="4 4" />
-      <text x="48" y="122" fill="rgba(255,255,255,0.5)" fontSize="7">Casas · Aspectos · Ângulos</text>
-    </svg>
-  )
+function ArtMapa() {
+  return <NatalChartPremiumArt variant="wheel" className="landing-guide-art--mapa-wheel" />
 }
 
 function ArtAscendente({ accent }) {
@@ -104,11 +79,9 @@ function ArtAscendente({ accent }) {
 
 function ArtSignos({ accent }) {
   const zodiac = ['♈', '♉', '♊', '♋', '♌', '♍', '♎', '♏', '♐', '♑', '♒', '♓']
-  const points = zodiac.map((sym, i) => ({
-    sym,
-    x: 24 + i * 23.5,
-    y: 64 + Math.sin(i * 0.55) * 18,
-  }))
+  const cx = 160
+  const cy = 64
+  const r = 40
 
   return (
     <svg viewBox={`0 0 320 ${GUIDE_H}`} className="landing-guide-art-svg" preserveAspectRatio="xMidYMid meet" aria-hidden>
@@ -120,22 +93,27 @@ function ArtSignos({ accent }) {
         </linearGradient>
       </defs>
       <rect width="320" height={GUIDE_H} fill="url(#guideSignosSky)" />
-      <path
-        d={points.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x.toFixed(1)} ${p.y.toFixed(1)}`).join(' ')}
-        fill="none"
-        stroke="rgba(223,183,108,0.35)"
-        strokeWidth="0.9"
-        strokeDasharray="3 4"
-      />
-      {points.map(({ sym, x, y }) => (
-        <g key={sym}>
-          <circle cx={x} cy={y} r="7" fill="rgba(8,5,24,0.5)" stroke={accent} strokeWidth="0.7" />
-          <text x={x} y={y + 0.5} textAnchor="middle" dominantBaseline="middle" fill="rgba(223,183,108,0.92)" fontSize="7.5">
+      <circle cx={cx} cy={cy} r={r + 6} fill="rgba(8,5,24,0.45)" stroke={accent} strokeWidth="1.2" opacity="0.9" />
+      <circle cx={cx} cy={cy} r={r - 10} fill="none" stroke="rgba(147,197,253,0.25)" strokeWidth="0.7" strokeDasharray="3 4" />
+      {zodiac.map((sym, i) => {
+        const a = (i * 30 - 90) * (Math.PI / 180)
+        const x = cx + Math.cos(a) * r
+        const y = cy + Math.sin(a) * r
+        return (
+          <text
+            key={sym}
+            x={x}
+            y={y + 0.5}
+            textAnchor="middle"
+            dominantBaseline="middle"
+            fill="rgba(223,183,108,0.9)"
+            fontSize="9"
+          >
             {sym}
           </text>
-        </g>
-      ))}
-      <text x="160" y="118" textAnchor="middle" fill="rgba(255,255,255,0.4)" fontSize="7" letterSpacing="0.12em">12 ARQUÉTIPOS</text>
+        )
+      })}
+      <text x={cx} y={cy + 1} textAnchor="middle" dominantBaseline="middle" fill={accent} fontSize="8" fontWeight="700" letterSpacing="0.12em">12</text>
     </svg>
   )
 }
