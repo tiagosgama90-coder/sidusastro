@@ -1602,7 +1602,7 @@ h1.sidus-page-title {
 /* Mapa natal premium — landing */
 .natal-chart-premium--cover {
   width: 100%;
-  max-width: 280px;
+  max-width: 300px;
   margin: 0 auto;
 }
 
@@ -1681,7 +1681,9 @@ h1.sidus-page-title {
 .natal-chart-premium__frame--photo {
   position: relative;
   padding: 0;
-  background: #050308;
+  background: #030108;
+  border: none;
+  box-shadow: 0 24px 56px rgba(0, 0, 0, 0.5);
 }
 
 .natal-chart-premium__photo {
@@ -1691,10 +1693,10 @@ h1.sidus-page-title {
 }
 
 .natal-chart-premium__photo--cover {
-  aspect-ratio: 210 / 297;
+  aspect-ratio: 1080 / 1500;
   object-fit: contain;
-  object-position: top center;
-  background: #0B071E;
+  object-position: center center;
+  background: #030108;
 }
 
 .natal-chart-premium--guide,

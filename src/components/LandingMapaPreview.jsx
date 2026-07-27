@@ -1,4 +1,4 @@
-const PDF_COVER_SRC = '/brand/sidus-pdf-vip-commercial-cover.png?v=9'
+const PDF_COVER_SRC = '/brand/sidus-pdf-vip-commercial-cover.png?v=10'
 const GUIDE_WHEELS_SRC = '/brand/sidus-natal-guide-wheels.png?v=1'
 
 export function LandingMapaPreview() {
@@ -10,13 +10,12 @@ export function LandingMapaPreview() {
             className="natal-chart-premium__photo natal-chart-premium__photo--cover"
             src={PDF_COVER_SRC}
             alt=""
-            width={520}
-            height={693}
+            width={1080}
+            height={1500}
             decoding="async"
             draggable={false}
           />
         </div>
-        <p className="natal-chart-premium__cover-meta">☉ Sol · ☽ Lua · ASC · MC · 10 planetas · Casas Placidus</p>
       </div>
     </div>
   )
