@@ -321,6 +321,7 @@ export async function gerarPdfMapaAstral(mapaNatal, dados, planetas = [], analis
     })
   }
 
+  if (opts.returnDoc) return doc
   doc.save(getPdfFileName(lang, dados.nome))
 }
 

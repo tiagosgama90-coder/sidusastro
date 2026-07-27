@@ -27,9 +27,22 @@ const SIDUS_LOGO_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 
 
 let logoCache = null
 
+async function sidusLogoViaSharp() {
+  try {
+    const sharp = (await import('sharp')).default
+    const buf = await sharp(Buffer.from(SIDUS_LOGO_SVG)).resize(96, 128).png().toBuffer()
+    return `data:image/png;base64,${buf.toString('base64')}`
+  } catch {
+    return null
+  }
+}
+
 export async function sidusLogoParaPdf() {
   if (logoCache) return logoCache
-  if (typeof document === 'undefined') return null
+  if (typeof document === 'undefined') {
+    logoCache = await sidusLogoViaSharp()
+    return logoCache
+  }
 
   return new Promise((resolve) => {
     const img = new Image()
