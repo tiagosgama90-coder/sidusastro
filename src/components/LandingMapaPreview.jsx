@@ -1,4 +1,4 @@
-const PDF_COVER_SRC = '/brand/sidus-pdf-vip-commercial-cover.png?v=7'
+const PDF_COVER_SRC = '/brand/sidus-pdf-vip-commercial-cover.png?v=8'
 const GUIDE_WHEELS_SRC = '/brand/sidus-natal-guide-wheels.png?v=1'
 
 export function LandingMapaPreview() {
@@ -11,7 +11,7 @@ export function LandingMapaPreview() {
             src={PDF_COVER_SRC}
             alt=""
             width={520}
-            height={736}
+            height={693}
             decoding="async"
             draggable={false}
           />
