@@ -1,8 +1,9 @@
 import { useState, useEffect, useRef, useMemo } from 'react'
 import {
   Sparkles, MapPin, Clock, User, Check, Loader2, ChevronDown,
-  Star, MessageCircle, Layers, BookOpen, Hash,
+  Star, MessageCircle, Layers, BookOpen,
 } from 'lucide-react'
+import { PythagoreanStarIcon } from './icons/PythagoreanStarIcon.jsx'
 import { useLanguage } from '../lib/i18n/LanguageContext.jsx'
 import { validarOnboarding } from '../lib/i18n/validation.js'
 import { pesquisarCidades, pesquisarFusoHorario } from '../lib/geocoding.js'
@@ -26,7 +27,7 @@ const FERRAMENTAS_LANDING = [
   { key: 'mapa', Icon: Star },
   { key: 'oraculo', Icon: MessageCircle },
   { key: 'tarot', Icon: Layers },
-  { key: 'numerologia', Icon: Hash },
+  { key: 'numerologia', Icon: PythagoreanStarIcon },
   { key: 'sonhos', Icon: BookOpen },
 ]
 

@@ -1961,7 +1961,7 @@ function Dashboard({ nome, mapaNatal, ceuAgora, aspetos, onOraculo, onPrivacidad
 
   return (
     <div style={layoutConteudo(isDesktop)}>
-      <header className="sidus-page-header sidus-home-welcome" style={{ textAlign: 'center', marginBottom: 20 }}>
+      <header className="sidus-page-header sidus-home-welcome" style={{ textAlign: 'center', marginBottom: 12 }}>
         <div className="sidus-home-welcome__logo notranslate" translate="no">
           <SidusLogo variant="stacked" markSize={64} glow />
         </div>
