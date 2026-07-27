@@ -7,9 +7,6 @@ export function LandingConversionHead() {
 
   return (
     <div className="landing-conversion-zone-head">
-      <div className="landing-welcome-zodiac notranslate" translate="no" aria-hidden>
-        <SidusZodiacRing />
-      </div>
       <p className="landing-conversion-eyebrow">{t('auth.portal.conversionEyebrow')}</p>
       <h1 className="landing-conversion-title">
         <LandingMysticHighlight
@@ -23,6 +20,9 @@ export function LandingConversionHead() {
           highlight={t('auth.portal.conversionLeadHighlight')}
         />
       </p>
+      <div className="landing-welcome-zodiac notranslate" translate="no" aria-hidden>
+        <SidusZodiacRing />
+      </div>
     </div>
   )
 }

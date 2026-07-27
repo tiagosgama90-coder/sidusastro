@@ -1190,7 +1190,7 @@ h1.sidus-page-title {
 .landing-welcome-zodiac {
   display: flex;
   justify-content: center;
-  margin: 0 auto 14px;
+  margin: 16px auto 0;
   filter: drop-shadow(0 0 22px rgba(223, 183, 108, 0.28));
 }
 
