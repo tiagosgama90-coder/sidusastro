@@ -48,6 +48,7 @@ import { LandingBirthPortal } from './components/LandingBirthPortal.jsx'
 import { LandingConversionHead } from './components/LandingConversionHead.jsx'
 import { LandingTopBar } from './components/LandingTopBar.jsx'
 import { SidusLogo } from './components/SidusLogo.jsx'
+import { SidusConstellationMark } from './components/SidusConstellationMark.jsx'
 import { LandingFaq } from './components/LandingFaq.jsx'
 import { LandingSkyLive } from './components/LandingSkyLive.jsx'
 import { LandingReviews } from './components/LandingReviews.jsx'
@@ -1962,8 +1963,8 @@ function Dashboard({ nome, mapaNatal, ceuAgora, aspetos, onOraculo, onPrivacidad
   return (
     <div style={layoutConteudo(isDesktop)}>
       <header className="sidus-page-header sidus-home-welcome" style={{ textAlign: 'center', marginBottom: 12 }}>
-        <div className="sidus-home-welcome__logo notranslate" translate="no">
-          <SidusLogo variant="stacked" markSize={64} glow />
+        <div className="sidus-home-welcome__mark notranslate" translate="no" aria-hidden>
+          <SidusConstellationMark size={28} glow />
         </div>
         <p className="sidus-home-welcome__greeting">
           {nome ? t('home.welcome', { name: nome }) : t('home.skyRealtime')}
