@@ -2,13 +2,15 @@ import { useEffect } from 'react'
 
 const GOLD = [223, 183, 108]
 const WHITE = [255, 255, 255]
+const LAVENDER = [196, 181, 253]
 
 function rgba([r, g, b], a) {
   return `rgba(${r},${g},${b},${a})`
 }
 
 function colorFor(tint, alpha) {
-  if (tint === 'white') return rgba(WHITE, alpha * 0.75)
+  if (tint === 'white') return rgba(WHITE, alpha * 0.8)
+  if (tint === 'lavender') return rgba(LAVENDER, alpha * 0.65)
   return rgba(GOLD, alpha)
 }
 
@@ -29,7 +31,7 @@ function isInteractiveTarget(el) {
   }
 }
 
-/** Rasto suave — desktop e mobile */
+/** Rasto suave — desktop (bolinhas) */
 function pushSoftTrail(particulas, x, y) {
   particulas.push({
     kind: 'soft',
@@ -42,25 +44,32 @@ function pushSoftTrail(particulas, x, y) {
   })
 }
 
-/** Poeira leve ao deslizar o dedo — mobile */
-function pushWandDust(particulas, x, y) {
-  particulas.push({
-    kind: 'dust',
-    x: x + (Math.random() - 0.5) * 5,
-    y: y + (Math.random() - 0.5) * 5,
-    life: 1,
-    decay: 0.05 + Math.random() * 0.02,
-    size: 0.65 + Math.random() * 0.7,
-    tint: Math.random() > 0.35 ? 'gold' : 'white',
-  })
+/** Poeira cósmica — mobile (grãos finos + micro-brilhos) */
+function pushCosmicDust(particulas, x, y) {
+  const kinds = ['speck', 'speck', 'speck', 'spark', 'mote']
+  const count = 2 + (Math.random() > 0.5 ? 1 : 0)
+  for (let i = 0; i < count; i += 1) {
+    const kind = kinds[Math.floor(Math.random() * kinds.length)]
+    particulas.push({
+      kind,
+      x: x + (Math.random() - 0.5) * 9,
+      y: y + (Math.random() - 0.5) * 9,
+      vx: (Math.random() - 0.5) * 0.55,
+      vy: (Math.random() - 0.5) * 0.55 - 0.12,
+      life: 1,
+      decay: 0.026 + Math.random() * 0.016,
+      size: kind === 'spark' ? 1 + Math.random() * 0.75 : 0.32 + Math.random() * 0.5,
+      tint: Math.random() > 0.72 ? 'lavender' : Math.random() > 0.38 ? 'gold' : 'white',
+    })
+  }
 }
 
-/** Toque em botão — pequena explosãozinha discreta */
-function pushGentleTap(particulas, x, y) {
-  const count = 4
+/** Toque em botão — explosãozinha discreta */
+function pushGentleTap(particulas, x, y, mobile = false) {
+  const count = mobile ? 7 : 5
   for (let i = 0; i < count; i += 1) {
     const angle = (Math.PI * 2 * i) / count + (Math.random() - 0.5) * 0.35
-    const speed = 0.35 + Math.random() * 0.45
+    const speed = (mobile ? 0.45 : 0.35) + Math.random() * 0.45
     particulas.push({
       kind: 'tap',
       x: x + (Math.random() - 0.5) * 4,
@@ -68,8 +77,8 @@ function pushGentleTap(particulas, x, y) {
       vx: Math.cos(angle) * speed,
       vy: Math.sin(angle) * speed - 0.15,
       life: 1,
-      decay: 0.065 + Math.random() * 0.02,
-      size: 0.55 + Math.random() * 0.55,
+      decay: 0.058 + Math.random() * 0.02,
+      size: 0.42 + Math.random() * 0.52,
       tint: Math.random() > 0.45 ? 'gold' : 'white',
     })
   }
@@ -79,10 +88,25 @@ function trimParticles(particulas, max) {
   while (particulas.length > max) particulas.shift()
 }
 
+function drawSpark(ctx, x, y, s, alpha, color) {
+  ctx.save()
+  ctx.translate(x, y)
+  ctx.strokeStyle = color
+  ctx.lineWidth = 0.55
+  ctx.globalAlpha = alpha
+  ctx.beginPath()
+  ctx.moveTo(-s, 0)
+  ctx.lineTo(s, 0)
+  ctx.moveTo(0, -s)
+  ctx.lineTo(0, s)
+  ctx.stroke()
+  ctx.restore()
+}
+
 /**
- * Efeito cósmico leve:
- * - Mobile: rasto suave ao deslizar + grãos ao tocar botões
- * - Desktop: rasto suave + toque em botões
+ * Efeito cósmico site-wide:
+ * - Desktop: bolinhas suaves no rato + explosão em botões
+ * - Mobile: poeira cósmica ao deslizar + explosão em botões
  */
 export function MagicCursorTrail({ activo = true }) {
   useEffect(() => {
@@ -93,7 +117,7 @@ export function MagicCursorTrail({ activo = true }) {
     if (!fxLayer) return undefined
 
     const coarse = window.matchMedia('(pointer: coarse)').matches
-    const particleMax = coarse ? 36 : 34
+    const particleMax = coarse ? 50 : 34
 
     const particulas = []
     let w = window.innerWidth
@@ -127,13 +151,12 @@ export function MagicCursorTrail({ activo = true }) {
     resize()
 
     const tapAt = (x, y) => {
-      pushGentleTap(particulas, x, y)
+      pushGentleTap(particulas, x, y, coarse)
       trimParticles(particulas, particleMax)
     }
 
     const dustAt = (x, y) => {
-      pushWandDust(particulas, x, y)
-      if (Math.random() > 0.55) pushWandDust(particulas, x, y)
+      pushCosmicDust(particulas, x, y)
       trimParticles(particulas, particleMax)
     }
 
@@ -180,7 +203,7 @@ export function MagicCursorTrail({ activo = true }) {
       const t = e.touches?.[0]
       if (!t) return
       const now = performance.now()
-      if (now - lastTrailSpawn < 55) return
+      if (now - lastTrailSpawn < 42) return
       lastTrailSpawn = now
       dustAt(t.clientX, t.clientY)
     }
@@ -195,11 +218,11 @@ export function MagicCursorTrail({ activo = true }) {
       for (let i = particulas.length - 1; i >= 0; i -= 1) {
         const p = particulas[i]
         p.life -= p.decay
-        if (p.kind === 'tap') {
-          p.x += p.vx
-          p.y += p.vy
-          p.vx *= 0.95
-          p.vy *= 0.95
+        if (p.kind === 'tap' || p.kind === 'speck' || p.kind === 'spark' || p.kind === 'mote') {
+          p.x += p.vx || 0
+          p.y += p.vy || 0
+          if (p.vx) p.vx *= 0.96
+          if (p.vy) p.vy *= 0.96
         }
         if (p.life <= 0) {
           particulas.splice(i, 1)
@@ -207,18 +230,22 @@ export function MagicCursorTrail({ activo = true }) {
         }
 
         const isTap = p.kind === 'tap'
-        const isDust = p.kind === 'dust'
+        const isDust = p.kind === 'speck' || p.kind === 'spark' || p.kind === 'mote'
         const alpha = isTap
-          ? p.life * 0.5
+          ? p.life * 0.48
           : isDust
-            ? p.life * 0.36
-            : p.life * 0.52
-        const radius = p.size * (0.85 + p.life * 0.25)
+            ? p.life * (p.kind === 'spark' ? 0.62 : 0.36)
+            : p.life * 0.5
+        const radius = p.size * (0.75 + p.life * 0.3)
 
-        ctx.beginPath()
-        ctx.arc(p.x, p.y, radius, 0, Math.PI * 2)
-        ctx.fillStyle = colorFor(p.tint, alpha)
-        ctx.fill()
+        if (p.kind === 'spark') {
+          drawSpark(ctx, p.x, p.y, radius * 1.5, alpha, colorFor(p.tint, alpha))
+        } else {
+          ctx.beginPath()
+          ctx.arc(p.x, p.y, radius, 0, Math.PI * 2)
+          ctx.fillStyle = colorFor(p.tint, alpha)
+          ctx.fill()
+        }
       }
     }
     raf = requestAnimationFrame(animate)
@@ -260,5 +287,4 @@ export function MagicCursorTrail({ activo = true }) {
   return null
 }
 
-/** Alias descritivo */
 export const MagicCosmicTrail = MagicCursorTrail

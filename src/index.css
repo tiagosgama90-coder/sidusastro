@@ -1187,6 +1187,29 @@ h1.sidus-page-title {
   margin-bottom: 14px;
 }
 
+.landing-welcome-zodiac {
+  display: flex;
+  justify-content: center;
+  margin: 18px auto 0;
+}
+
+.landing-welcome-zodiac__img {
+  display: block;
+  width: 128px;
+  height: 128px;
+  object-fit: contain;
+  filter: drop-shadow(0 0 20px rgba(223, 183, 108, 0.32));
+  pointer-events: none;
+  user-select: none;
+}
+
+@media (max-width: 640px) {
+  .landing-welcome-zodiac__img {
+    width: 104px;
+    height: 104px;
+  }
+}
+
 .landing-conversion-eyebrow {
   margin: 0 0 8px;
   font-size: 11px;

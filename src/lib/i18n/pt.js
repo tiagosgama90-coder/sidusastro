@@ -81,7 +81,7 @@ export default {
       savedHint: 'Agora cria conta ou entra abaixo - o teu mapa será pré-preenchido automaticamente.',
       authDivider: 'Continua para entrar',
       conversionAria: 'Começar no Sidus - mapa astral grátis',
-      conversionEyebrow: '✦ O teu cosmos pessoal',
+      conversionEyebrow: 'O teu cosmos pessoal',
       conversionTitle: 'Qual é o teu verdadeiro destino cósmico?',
       conversionTitleHighlight: 'destino cósmico',
       conversionLead: 'Entra no teu universo pessoal e descobre o que o teu mapa astral revela. Explora a astrologia, a numerologia e o tarot através de ferramentas de alta precisão desenhadas para guiar os teus próximos passos.',
