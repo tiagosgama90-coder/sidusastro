@@ -74,7 +74,7 @@ function ArtMapa({ accent }) {
   ]
 
   return (
-    <svg viewBox={`0 0 320 ${GUIDE_H}`} className="landing-guide-art-svg" preserveAspectRatio="xMidYMid slice" aria-hidden>
+    <svg viewBox={`0 0 320 ${GUIDE_H}`} className="landing-guide-art-svg" preserveAspectRatio="xMidYMid meet" aria-hidden>
       <GoldDefs id="guideMapa" />
       <rect width="320" height={GUIDE_H} fill="url(#guideMapa-sky)" opacity="0.9" />
       <circle cx={cx} cy={cy} r={rOut + 3} fill="rgba(8,5,24,0.55)" stroke={accent} strokeWidth="1.6" />
@@ -120,7 +120,7 @@ function ArtMapa({ accent }) {
 
 function ArtAscendente({ accent }) {
   return (
-    <svg viewBox={`0 0 320 ${GUIDE_H}`} className="landing-guide-art-svg" preserveAspectRatio="xMidYMid slice" aria-hidden>
+    <svg viewBox={`0 0 320 ${GUIDE_H}`} className="landing-guide-art-svg" preserveAspectRatio="xMidYMid meet" aria-hidden>
       <defs>
         <linearGradient id="guideAscSky" x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stopColor="#1e1b4b" />
@@ -141,25 +141,50 @@ function ArtAscendente({ accent }) {
   )
 }
 
-function ArtSignos() {
+function ArtSignos({ accent }) {
+  const zodiac = ['♈', '♉', '♊', '♋', '♌', '♍', '♎', '♏', '♐', '♑', '♒', '♓']
+  const cx = 160
+  const cy = 64
+  const r = 40
+
   return (
-    <div className="landing-guide-art-photo-wrap">
-      <img
-        src="/landing/zodiac-signs-golden-banner.png"
-        alt=""
-        className="landing-guide-art-photo landing-guide-art-photo--signos"
-        loading="lazy"
-        decoding="async"
-        width={640}
-        height={360}
-      />
-    </div>
+    <svg viewBox={`0 0 320 ${GUIDE_H}`} className="landing-guide-art-svg" preserveAspectRatio="xMidYMid meet" aria-hidden>
+      <defs>
+        <linearGradient id="guideSignosSky" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stopColor="#1e1b4b" />
+          <stop offset="45%" stopColor="#312e81" />
+          <stop offset="100%" stopColor="#1e3a8a" stopOpacity="0.75" />
+        </linearGradient>
+      </defs>
+      <rect width="320" height={GUIDE_H} fill="url(#guideSignosSky)" />
+      <circle cx={cx} cy={cy} r={r + 6} fill="rgba(8,5,24,0.45)" stroke={accent} strokeWidth="1.2" opacity="0.9" />
+      <circle cx={cx} cy={cy} r={r - 10} fill="none" stroke="rgba(147,197,253,0.25)" strokeWidth="0.7" strokeDasharray="3 4" />
+      {zodiac.map((sym, i) => {
+        const a = (i * 30 - 90) * (Math.PI / 180)
+        const x = cx + Math.cos(a) * r
+        const y = cy + Math.sin(a) * r
+        return (
+          <text
+            key={sym}
+            x={x}
+            y={y + 0.5}
+            textAnchor="middle"
+            dominantBaseline="middle"
+            fill="rgba(223,183,108,0.9)"
+            fontSize="9"
+          >
+            {sym}
+          </text>
+        )
+      })}
+      <text x={cx} y={cy + 1} textAnchor="middle" dominantBaseline="middle" fill={accent} fontSize="8" fontWeight="700" letterSpacing="0.12em">12</text>
+    </svg>
   )
 }
 
 function ArtTarot({ accent }) {
   return (
-    <svg viewBox={`0 0 320 ${GUIDE_H}`} className="landing-guide-art-svg" preserveAspectRatio="xMidYMid slice" aria-hidden>
+    <svg viewBox={`0 0 320 ${GUIDE_H}`} className="landing-guide-art-svg" preserveAspectRatio="xMidYMid meet" aria-hidden>
       <GoldDefs id="guideTarot" />
       <rect width="320" height={GUIDE_H} fill="url(#guideTarot-sky)" opacity="0.92" />
       <ellipse cx="160" cy="64" rx="120" ry="42" fill="rgba(52,211,153,0.08)" />

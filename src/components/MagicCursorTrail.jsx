@@ -36,9 +36,9 @@ function pushSoftTrail(particulas, x, y) {
     x: x + (Math.random() - 0.5) * 4,
     y: y + (Math.random() - 0.5) * 4,
     life: 1,
-    decay: 0.065,
-    size: 0.75 + Math.random() * 0.65,
-    tint: Math.random() > 0.35 ? 'gold' : 'white',
+    decay: 0.052,
+    size: 0.95 + Math.random() * 0.85,
+    tint: Math.random() > 0.3 ? 'gold' : 'white',
   })
 }
 
@@ -93,7 +93,7 @@ export function MagicCursorTrail({ activo = true }) {
     if (!fxLayer) return undefined
 
     const coarse = window.matchMedia('(pointer: coarse)').matches
-    const particleMax = coarse ? 32 : 28
+    const particleMax = coarse ? 36 : 34
 
     const particulas = []
     let w = window.innerWidth
@@ -160,7 +160,7 @@ export function MagicCursorTrail({ activo = true }) {
 
     const onMove = (e) => {
       const now = performance.now()
-      if (now - lastTrailSpawn < 48) return
+      if (now - lastTrailSpawn < 36) return
       lastTrailSpawn = now
       pushSoftTrail(particulas, e.clientX, e.clientY)
       if (Math.random() > 0.45) pushSoftTrail(particulas, e.clientX + 2, e.clientY - 1)
@@ -209,10 +209,10 @@ export function MagicCursorTrail({ activo = true }) {
         const isTap = p.kind === 'tap'
         const isDust = p.kind === 'dust'
         const alpha = isTap
-          ? p.life * 0.42
+          ? p.life * 0.5
           : isDust
-            ? p.life * 0.28
-            : p.life * 0.34
+            ? p.life * 0.36
+            : p.life * 0.52
         const radius = p.size * (0.85 + p.life * 0.25)
 
         ctx.beginPath()

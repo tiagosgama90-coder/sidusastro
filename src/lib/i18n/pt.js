@@ -83,7 +83,8 @@ export default {
       conversionAria: 'Começar no Sidus - mapa astral grátis',
       conversionEyebrow: '✦ O teu cosmos pessoal',
       conversionTitle: 'O teu mapa começa aqui',
-      conversionLead: 'Introduz os dados de nascimento e entra - levas menos de um minuto.',
+      conversionPitch: 'Sidusastro é o teu guia cósmico completo: mapa astral com Swiss Ephemeris, tarot online, Chat Oráculo, numerologia, sinastria e ferramentas astrológicas — tudo personalizado ao teu céu de nascimento.',
+      conversionLead: 'Introduz os dados de nascimento e entra grátis — levas menos de um minuto a começar.',
       faq: {
         ariaLabel: 'Perguntas frequentes sobre Sidus Astro',
         title: 'Perguntas Frequentes',

@@ -22,8 +22,8 @@ function seedStars(count, w, h) {
     stars.push({
       x: Math.random() * w,
       y: Math.random() * h,
-      r: r > 0.97 ? 1.4 : r > 0.88 ? 0.9 : r > 0.6 ? 0.55 : 0.35,
-      a: 0.25 + Math.random() * 0.75,
+      r: r > 0.97 ? 1.75 : r > 0.88 ? 1.1 : r > 0.6 ? 0.7 : 0.45,
+      a: 0.38 + Math.random() * 0.82,
       tw: 0.003 + Math.random() * 0.008,
       ph: Math.random() * Math.PI * 2,
       tint: r > 0.92 ? 'gold' : r > 0.85 ? 'blue' : 'white',
@@ -59,7 +59,7 @@ export function LandingCosmicBackground() {
       canvas.style.width = `${w}px`
       canvas.style.height = `${h}px`
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
-      starsRef.current = seedStars(Math.floor((w * h) / 4200), w, h)
+      starsRef.current = seedStars(Math.floor((w * h) / 2800), w, h)
     }
 
     resize()
@@ -74,9 +74,9 @@ export function LandingCosmicBackground() {
       for (const s of stars) {
         const twinkle = 0.55 + 0.45 * Math.sin(t * s.tw + s.ph)
         const alpha = s.a * twinkle
-        if (s.tint === 'gold') ctx.fillStyle = `rgba(223,183,108,${alpha * 0.85})`
-        else if (s.tint === 'blue') ctx.fillStyle = `rgba(180,210,255,${alpha * 0.9})`
-        else ctx.fillStyle = `rgba(255,255,255,${alpha})`
+        if (s.tint === 'gold') ctx.fillStyle = `rgba(223,183,108,${alpha * 0.95})`
+        else if (s.tint === 'blue') ctx.fillStyle = `rgba(180,210,255,${alpha * 0.98})`
+        else ctx.fillStyle = `rgba(255,255,255,${alpha * 1.05})`
         ctx.beginPath()
         ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2)
         ctx.fill()
@@ -120,8 +120,8 @@ export function LandingCosmicBackground() {
                 key={idx}
                 d={d}
                 fill="none"
-                stroke="rgba(223,183,108,0.28)"
-                strokeWidth="0.9"
+                stroke="rgba(223,183,108,0.42)"
+                strokeWidth="1.05"
                 strokeLinecap="round"
               />
             ))}

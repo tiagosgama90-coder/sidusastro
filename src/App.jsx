@@ -1439,6 +1439,9 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
         </div>
       ) : (
         <>
+          <div className="landing-mobile-logo notranslate" translate="no">
+            <SidusLogo variant="horizontal" markSize={42} glow className="sidus-logo--landing-bar" />
+          </div>
           <div className="landing-lang-bar landing-lang-bar--standalone">
             <LanguageSwitcher variant="landing-bar" />
           </div>
@@ -1456,6 +1459,7 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
           <p className="landing-conversion-eyebrow">{t('auth.portal.conversionEyebrow')}</p>
           <h2 className="landing-conversion-title">{t('auth.portal.conversionTitle')}</h2>
           <p className="landing-conversion-lead">{t('auth.portal.conversionLead')}</p>
+          <p className="landing-conversion-pitch">{t('auth.portal.conversionPitch')}</p>
         </div>
         <div className="landing-auth-grid">
         <LandingBirthPortal isDesktop={isDesktop} onSaved={scrollParaAuth} onScrollToLogin={scrollParaAuth} />

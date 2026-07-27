@@ -31,6 +31,7 @@ async function renderSvg(browser, svg, outPath, w, h, transparent = false) {
 }
 
 async function main() {
+  const favicon = readFileSync(join(root, 'public/favicon.svg'), 'utf8')
   const mark = readFileSync(join(brandDir, 'sidus-constellation-mark.svg'), 'utf8')
   const horizontal = readFileSync(join(brandDir, 'sidus-logo-horizontal.svg'), 'utf8')
   const stacked = readFileSync(join(brandDir, 'sidus-logo-stacked.svg'), 'utf8')
@@ -39,7 +40,7 @@ async function main() {
   const browser = await chromium.launch()
   try {
     await renderSvg(browser, og, join(root, 'public/og-image.png'), 1200, 630, false)
-    await renderSvg(browser, stacked, join(root, 'public/apple-touch-icon.png'), 512, 512, false)
+    await renderSvg(browser, favicon, join(root, 'public/apple-touch-icon.png'), 512, 512, false)
     await renderSvg(browser, mark, join(brandDir, 'sidus-constellation-mark-512.png'), 512, 512, true)
     await renderSvg(browser, mark, join(brandDir, 'sidus-constellation-mark-1024.png'), 1024, 1024, true)
     await renderSvg(browser, horizontal, join(brandDir, 'sidus-logo-horizontal-1024.png'), 1024, 256, true)

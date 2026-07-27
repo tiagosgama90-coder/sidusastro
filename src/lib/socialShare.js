@@ -1,5 +1,5 @@
 /** Imagem partilhada em WhatsApp, Telegram, iMessage, X, LinkedIn, Discord, Slack, etc. */
-export const SOCIAL_SHARE_IMAGE = 'https://sidusastro.com/og-image.png?v=6'
+export const SOCIAL_SHARE_IMAGE = 'https://sidusastro.com/og-image.png?v=7'
 
 function setMeta(attr, key, value) {
   if (!value) return
