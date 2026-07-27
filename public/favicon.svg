@@ -21,9 +21,8 @@
       <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
     </filter>
   </defs>
-  <!-- Centrado: zoom ligeiro extra na constelação acima de SIDUS -->
-  <g transform="translate(32 31.5) scale(0.325) translate(-100 -114)">
-    <g transform="translate(76 8) scale(1.22)">
+  <g transform="translate(32 32) scale(0.30) translate(-100 -102)">
+    <g transform="translate(76 8) scale(1.18)">
       <path d="M24 10 L36 22 L12 32 L34 44 L14 54" stroke="url(#fav-gold)" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/>
       <circle cx="14" cy="54" r="2.1" fill="url(#fav-gold)"/>
       <circle cx="34" cy="44" r="2.1" fill="url(#fav-gold)"/>

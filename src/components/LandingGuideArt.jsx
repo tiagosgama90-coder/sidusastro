@@ -1,3 +1,5 @@
+import { NatalChartPremiumArt } from './NatalChartPremiumArt.jsx'
+
 const GUIDE_H = 128
 
 function GoldDefs({ id }) {
@@ -47,8 +49,6 @@ function TarotCardFace({ x, y, rot, accent, face = 'back', scale = 1 }) {
     </g>
   )
 }
-
-import { NatalChartPremiumArt } from './NatalChartPremiumArt.jsx'
 
 function ArtMapa() {
   return <NatalChartPremiumArt variant="wheel" className="landing-guide-art--mapa-wheel" />

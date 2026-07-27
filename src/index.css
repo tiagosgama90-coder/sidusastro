@@ -627,13 +627,14 @@ h1.sidus-page-title {
   border-radius: 0 !important;
 }
 
-.sidus-home-welcome__logo {
+.sidus-home-welcome__mark {
   margin-bottom: 8px;
   margin-top: -4px;
   display: flex;
   justify-content: center;
+  opacity: 0.95;
   filter: drop-shadow(0 0 28px rgba(223, 183, 108, 0.38));
-  transform: scale(1.05);
+  transform: scale(1.08);
 }
 
 .sidus-home-welcome__greeting {
@@ -1189,25 +1190,87 @@ h1.sidus-page-title {
 }
 
 .landing-welcome-zodiac {
+  position: relative;
   display: flex;
   justify-content: center;
-  margin: 22px auto 6px;
+  align-items: center;
+  width: 192px;
+  height: 192px;
+  margin: 24px auto 8px;
 }
 
+.landing-welcome-zodiac__halo {
+  position: absolute;
+  inset: 4%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 248, 231, 0.22) 0%, rgba(223, 183, 108, 0.14) 38%, rgba(139, 92, 246, 0.06) 58%, transparent 72%);
+  filter: blur(10px);
+  opacity: 0.9;
+  animation: landingZodiacHaloPulse 5s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.landing-welcome-zodiac__core-glow {
+  position: absolute;
+  width: 34%;
+  height: 34%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.55) 0%, rgba(240, 208, 138, 0.42) 35%, rgba(223, 183, 108, 0.12) 65%, transparent 100%);
+  filter: blur(6px);
+  opacity: 0.85;
+  animation: landingZodiacCorePulse 3.6s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.landing-welcome-zodiac__spark {
+  position: absolute;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #fff 0%, #f0d08a 45%, rgba(223, 183, 108, 0) 100%);
+  box-shadow: 0 0 10px rgba(255, 248, 231, 0.75), 0 0 18px rgba(223, 183, 108, 0.45);
+  opacity: 0.75;
+  animation: landingZodiacSparkPulse 4s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.landing-welcome-zodiac__spark--1 { top: 8%; left: 50%; transform: translateX(-50%); animation-delay: 0s; }
+.landing-welcome-zodiac__spark--2 { top: 50%; right: 6%; animation-delay: 0.8s; }
+.landing-welcome-zodiac__spark--3 { bottom: 8%; left: 50%; transform: translateX(-50%); animation-delay: 1.6s; }
+.landing-welcome-zodiac__spark--4 { top: 50%; left: 6%; animation-delay: 2.4s; }
+
 .landing-welcome-zodiac__img {
+  position: relative;
+  z-index: 1;
   display: block;
-  width: 184px;
-  height: 184px;
+  width: 100%;
+  height: 100%;
   object-fit: contain;
-  filter: drop-shadow(0 0 32px rgba(223, 183, 108, 0.5)) drop-shadow(0 0 64px rgba(223, 183, 108, 0.22));
+  opacity: 0.94;
+  filter: drop-shadow(0 0 28px rgba(223, 183, 108, 0.55)) drop-shadow(0 0 52px rgba(223, 183, 108, 0.2));
   pointer-events: none;
   user-select: none;
 }
 
+@keyframes landingZodiacHaloPulse {
+  0%, 100% { opacity: 0.72; transform: scale(0.98); }
+  50% { opacity: 1; transform: scale(1.03); }
+}
+
+@keyframes landingZodiacCorePulse {
+  0%, 100% { opacity: 0.65; transform: scale(0.92); }
+  50% { opacity: 1; transform: scale(1.08); }
+}
+
+@keyframes landingZodiacSparkPulse {
+  0%, 100% { opacity: 0.45; }
+  50% { opacity: 1; }
+}
+
 @media (max-width: 640px) {
-  .landing-welcome-zodiac__img {
-    width: 132px;
-    height: 132px;
+  .landing-welcome-zodiac {
+    width: 140px;
+    height: 140px;
   }
 }
 
@@ -1536,7 +1599,6 @@ h1.sidus-page-title {
   background: transparent;
   border: none;
 }
-
 /* Mapa natal premium — landing */
 .natal-chart-premium--cover {
   width: 100%;
