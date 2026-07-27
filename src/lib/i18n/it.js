@@ -111,6 +111,15 @@ export default {
         "q6": "Ho bisogno dell'ora esatta di nascita?",
         "a6": "Per Ascendente, case e Luna precisi, sì. Senza ora esatta calcoliamo comunque Sole e pianeti lenti; la mandala e il tema completo usano l'ora che indicherai."
       },
+      "pdfShowcase": {
+        "ariaLabel": "Anteprima del report PDF del tema natale VIP",
+        "title": "Report PDF del tuo tema natale",
+        "description": "Report interpretato completo di alta qualità — Sole, Luna, Ascendente, 10 pianeti, 12 case Placidus e aspetti. Calcolato con Swiss Ephemeris, disponibile in portoghese e inglese.",
+        "caption": "Report PDF professionale · Sole, Luna, Ascendente e 10 pianeti",
+        "expandCover": "Tocca per vedere a dimensione reale",
+        "expandCoverEn": "Tap to view full size",
+        "expandCoverAria": "Ingrandisci anteprima PDF della carta natale VIP"
+      },
       "guides": {
         "ariaLabel": "Guide astrologiche Sidus",
         "eyebrow": "Biblioteca Sidus",
@@ -135,6 +144,9 @@ export default {
         "ariaLabel": "Testimonianze utenti Sidusastro",
         "title": "Chi ha già scoperto il proprio tema",
         "previewCaption": "Report PDF professionale · Sole, Luna, Ascendente e 10 pianeti",
+        "expandCover": "Tocca per vedere a dimensione reale",
+        "expandCoverEn": "Tap to view full size",
+        "expandCoverAria": "Ingrandisci anteprima PDF della carta natale VIP",
         "quote1": "Il PDF del tema sembrava una consulenza dal vivo. L'interpretazione del mio Sole in Scorpione e Luna in Cancro ha colpito nel segno.",
         "author1": "Mariana S.",
         "meta1": "Lisbona · tema singolo",
