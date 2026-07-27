@@ -48,74 +48,10 @@ function TarotCardFace({ x, y, rot, accent, face = 'back', scale = 1 }) {
   )
 }
 
-/** Mapa natal simplificado - roda clássica com casas e planetas. */
-function ArtMapa({ accent }) {
-  const cx = 160
-  const cy = 64
-  const rOut = 46
-  const rIn = 28
-  const houses = Array.from({ length: 12 }, (_, i) => {
-    const a = (i * 30 - 90) * (Math.PI / 180)
-    return {
-      x1: cx + Math.cos(a) * rIn,
-      y1: cy + Math.sin(a) * rIn,
-      x2: cx + Math.cos(a) * rOut,
-      y2: cy + Math.sin(a) * rOut,
-      major: i % 3 === 0,
-    }
-  })
-  const zodiac = ['♈', '♉', '♊', '♋', '♌', '♍', '♎', '♏', '♐', '♑', '♒', '♓']
-  const planets = [
-    { sym: '☉', a: -35, r: 18, c: '#FBBF24' },
-    { sym: '☽', a: 55, r: 14, c: '#C4B5FD' },
-    { sym: '☿', a: 10, r: 22, c: '#93C5FD' },
-    { sym: '♀', a: 80, r: 20, c: '#F9A8D4' },
-    { sym: '♂', a: -95, r: 16, c: '#FCA5A5' },
-  ]
+import { NatalChartPremiumArt } from './NatalChartPremiumArt.jsx'
 
-  return (
-    <svg viewBox={`0 0 320 ${GUIDE_H}`} className="landing-guide-art-svg" preserveAspectRatio="xMidYMid meet" aria-hidden>
-      <GoldDefs id="guideMapa" />
-      <rect width="320" height={GUIDE_H} fill="url(#guideMapa-sky)" opacity="0.9" />
-      <circle cx={cx} cy={cy} r={rOut + 3} fill="rgba(8,5,24,0.55)" stroke={accent} strokeWidth="1.6" />
-      <circle cx={cx} cy={cy} r={rIn} fill="rgba(11,7,30,0.8)" stroke="rgba(223,183,108,0.45)" strokeWidth="1" />
-      {houses.map(({ x1, y1, x2, y2, major }, i) => (
-        <line
-          key={i}
-          x1={x1}
-          y1={y1}
-          x2={x2}
-          y2={y2}
-          stroke={major ? 'rgba(223,183,108,0.45)' : 'rgba(223,183,108,0.2)'}
-          strokeWidth={major ? 0.9 : 0.5}
-        />
-      ))}
-      <line x1={cx - rOut} y1={cy} x2={cx + rOut} y2={cy} stroke={accent} strokeWidth="0.9" opacity="0.5" />
-      <line x1={cx} y1={cy - rOut} x2={cx} y2={cy + rOut} stroke={accent} strokeWidth="0.9" opacity="0.4" />
-      {zodiac.map((sym, i) => {
-        const a = (i * 30 - 90) * (Math.PI / 180)
-        const x = cx + Math.cos(a) * (rOut + 0.5)
-        const y = cy + Math.sin(a) * (rOut + 0.5)
-        return (
-          <text key={sym} x={x} y={y} textAnchor="middle" dominantBaseline="middle" fill="rgba(223,183,108,0.88)" fontSize="7.5">
-            {sym}
-          </text>
-        )
-      })}
-      {planets.map(({ sym, a, r, c }) => {
-        const rad = (a * Math.PI) / 180
-        const x = cx + Math.cos(rad) * r
-        const y = cy + Math.sin(rad) * r
-        return (
-          <g key={sym}>
-            <circle cx={x} cy={y} r="4.5" fill="rgba(0,0,0,0.4)" stroke={c} strokeWidth="0.7" />
-            <text x={x} y={y + 0.5} textAnchor="middle" dominantBaseline="middle" fill={c} fontSize="6">{sym}</text>
-          </g>
-        )
-      })}
-      <text x={cx - rOut - 6} y={cy + 2} textAnchor="end" fill={accent} fontSize="6.5" fontWeight="700">ASC</text>
-    </svg>
-  )
+function ArtMapa() {
+  return <NatalChartPremiumArt variant="wheel" className="landing-guide-art--mapa-wheel" />
 }
 
 function ArtAscendente({ accent }) {

@@ -1963,7 +1963,7 @@ function Dashboard({ nome, mapaNatal, ceuAgora, aspetos, onOraculo, onPrivacidad
     <div style={layoutConteudo(isDesktop)}>
       <header className="sidus-page-header sidus-home-welcome" style={{ textAlign: 'center', marginBottom: 12 }}>
         <div className="sidus-home-welcome__logo notranslate" translate="no">
-          <SidusLogo variant="stacked" markSize={64} glow />
+          <SidusLogo variant="stacked" markSize={96} glow />
         </div>
         <p className="sidus-home-welcome__greeting">
           {nome ? t('home.welcome', { name: nome }) : t('home.skyRealtime')}
@@ -2707,7 +2707,7 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
               <button type="button" onClick={onUpgrade} style={{ ...estilos.botaoDourado, width: '100%', marginBottom: 14, position: 'relative' }}>
                 {isBrasil
                   ? t('mapa.premiumOptionBr', { preco: precoVipLabel })
-                  : t('mapa.premiumOption')}
+                  : t('mapa.premiumOption', { price: precoVipLabel })}
               </button>
               <p className="mapa-paywall-desc">{t('mapa.fullDesc')}</p>
               <div className="mapa-paywall-pills">
@@ -2845,6 +2845,8 @@ function Paywall({ onVoltar, onPagar, onSucesso, onPromo, isDesktop, isBrasil, o
 
 function OraclePremiumUpsell({ onUpgrade, onPromo, isBrasil = false, oraclePerguntasUsadas = 0, leiturasTarotUsadas = 0, compact = false }) {
   const { t } = useLanguage()
+  const precoVitrine = precoPremiumVitrine(isBrasil)
+  const precoLabel = formatPrecoCompleto(precoVitrine.valor, precoVitrine.currency)
   const beneficios = ['oracle.upsellBenefit1', 'oracle.upsellBenefit2', 'oracle.upsellBenefit3', 'oracle.upsellBenefit4']
   return (
     <div style={{
@@ -2870,7 +2872,7 @@ function OraclePremiumUpsell({ onUpgrade, onPromo, isBrasil = false, oraclePergu
         leiturasTarotUsadas={leiturasTarotUsadas}
         titleKey="oracle.upsellTitle"
         subtitleKey="oracle.upsellLead"
-        ctaText={isBrasil ? undefined : t('oracle.upsellCta')}
+        ctaText={isBrasil ? t('vip.ctaBr', { preco: precoLabel }) : t('oracle.upsellCta', { price: precoLabel })}
         compact
       />
     </div>
@@ -2884,6 +2886,10 @@ async function consultarSidus(pergunta, mapaNatal, historico, lang, idToken, cli
 
 function Chat({ mapaNatal, isPremium, userId, oracleRemotas, onOracleUsada, onUpgrade, onPromo, leiturasTarotUsadas = 0, obterIdToken, isBrasil = false, isDesktop = false }) {
   const { lang, t } = useLanguage()
+  const precoVipLabel = useMemo(() => {
+    const v = precoPremiumVitrine(isBrasil)
+    return formatPrecoCompleto(v.valor, v.currency)
+  }, [isBrasil])
   const [perguntasUsadas, setPerguntasUsadas] = useState(() => contarOraclePerguntas(userId, oracleRemotas))
 
   const chaveSessaoActual = userId ? `sidus_oracle_current_${userId}` : 'sidus_oracle_current_local'
@@ -3161,7 +3167,7 @@ function Chat({ mapaNatal, isPremium, userId, oracleRemotas, onOracleUsada, onUp
           }}>
             {restantes > 0
               ? (restantes === 1 ? t('oracle.freeQuestions', { count: restantes }) : t('oracle.freeQuestionsPlural', { count: restantes }))
-              : t('oracle.premiumBadge')}
+              : t('oracle.premiumBadge', { price: precoVipLabel })}
           </button>
           )}
         </div>

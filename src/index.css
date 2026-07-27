@@ -628,11 +628,12 @@ h1.sidus-page-title {
 }
 
 .sidus-home-welcome__logo {
-  margin-bottom: 6px;
-  margin-top: -8px;
+  margin-bottom: 8px;
+  margin-top: -4px;
   display: flex;
   justify-content: center;
-  filter: drop-shadow(0 0 24px rgba(223, 183, 108, 0.32));
+  filter: drop-shadow(0 0 28px rgba(223, 183, 108, 0.38));
+  transform: scale(1.05);
 }
 
 .sidus-home-welcome__greeting {
@@ -1531,45 +1532,99 @@ h1.sidus-page-title {
 }
 .landing-testimonial-preview {
   border-radius: 14px;
-  padding: 12px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(223, 183, 108, 0.25);
+  padding: 0;
+  background: transparent;
+  border: none;
 }
-.landing-testimonial-preview-inner {
-  position: relative;
-}
-.landing-testimonial-wheel {
+
+/* Mapa natal premium — landing */
+.natal-chart-premium--cover {
   width: 100%;
-  max-width: 220px;
-  height: auto;
-  display: block;
+  max-width: 260px;
   margin: 0 auto;
 }
-.landing-testimonial-zodiac-ring {
-  transform-origin: 100px 100px;
-  animation: landingTestimonialZodiacSpin 52s linear infinite reverse;
+
+.natal-chart-premium__frame {
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(201, 162, 77, 0.45);
+  background: linear-gradient(165deg, #120a24 0%, #080512 55%, #050308 100%);
+  box-shadow:
+    0 18px 48px rgba(0, 0, 0, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
 }
-.landing-testimonial-zodiac-upright {
-  transform-box: fill-box;
-  transform-origin: center;
-  animation: landingTestimonialZodiacSpin 52s linear infinite;
+
+.natal-chart-premium__cover-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 10px 12px 8px;
+  border-bottom: 1px solid rgba(201, 162, 77, 0.22);
+  background: rgba(0, 0, 0, 0.28);
 }
-@keyframes landingTestimonialZodiacSpin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-.landing-testimonial-pdf-badge {
-  position: absolute;
-  top: 8px;
-  right: 8px;
+
+.natal-chart-premium__brand {
   font-size: 10px;
   font-weight: 800;
-  letter-spacing: 0.08em;
-  padding: 4px 8px;
-  border-radius: 6px;
-  background: rgba(223, 183, 108, 0.2);
+  letter-spacing: 0.22em;
   color: #DFB76C;
-  border: 1px solid rgba(223, 183, 108, 0.45);
+}
+
+.natal-chart-premium__cover-title {
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  color: rgba(255, 255, 255, 0.62);
+  text-transform: uppercase;
+}
+
+.natal-chart-premium__cover-body {
+  position: relative;
+  padding: 10px 12px 6px;
+}
+
+.natal-chart-premium__svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+.natal-chart-premium__pdf-badge {
+  position: absolute;
+  top: 16px;
+  right: 18px;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  padding: 4px 7px;
+  border-radius: 5px;
+  background: rgba(201, 162, 77, 0.18);
+  color: #DFB76C;
+  border: 1px solid rgba(201, 162, 77, 0.5);
+}
+
+.natal-chart-premium__cover-meta {
+  margin: 0;
+  padding: 8px 12px 11px;
+  font-size: 9px;
+  line-height: 1.45;
+  letter-spacing: 0.04em;
+  color: rgba(255, 255, 255, 0.5);
+  text-align: center;
+  border-top: 1px solid rgba(201, 162, 77, 0.14);
+}
+
+.natal-chart-premium--wheel,
+.natal-chart-premium__svg--wide {
+  width: 100%;
+  height: 100%;
+}
+
+.landing-guide-art--mapa-wheel {
+  width: 100%;
+  height: 100%;
 }
 .landing-testimonials-caption {
   margin: 10px 0 0;
