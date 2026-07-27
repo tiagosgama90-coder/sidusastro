@@ -36,7 +36,7 @@ export function PremiumComparacao({ isPremium, oracleUsadas = 0, tarotUsadas = 0
             <tr>
               <th>{t('premium.table.feature')}</th>
               <th>{t('premium.table.free')}</th>
-              <th><Crown size={14} style={{ verticalAlign: 'middle', marginRight: 4 }} />VIP</th>
+              <th><Crown size={14} style={{ verticalAlign: 'middle', marginRight: 4 }} />Premium</th>
             </tr>
           </thead>
           <tbody>

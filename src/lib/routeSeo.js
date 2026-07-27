@@ -63,12 +63,12 @@ const SEO = {
     fr: { title: 'Politique de Confidentialité', description: 'Comment Sidusastro protège tes données de naissance et informations personnelles.' },
   },
   vipPromo: {
-    pt: { title: 'VIP por Divulgação · Parceiros', description: 'Ganha Sidus VIP vitalício ao divulgar o Sidusastro nas redes sociais. Programa de parceiros com aprovação em 48h.' },
-    en: { title: 'VIP for Promotion · Partners', description: 'Earn lifetime Sidus VIP by promoting Sidusastro on social media. Partner program reviewed within 48h.' },
-    es: { title: 'VIP por Divulgación', description: 'Gana Sidus VIP vitalicio al promocionar Sidusastro en redes sociales.' },
-    it: { title: 'VIP per Promozione', description: 'Ottieni Sidus VIP a vita promuovendo Sidusastro sui social.' },
-    de: { title: 'VIP für Werbung', description: 'Erhalte lebenslangen Sidus VIP durch Bewerbung von Sidusastro in sozialen Medien.' },
-    fr: { title: 'VIP pour Promotion', description: 'Gagne Sidus VIP à vie en promouvant Sidusastro sur les réseaux sociaux.' },
+    pt: { title: 'Premium por Divulgação · Parceiros', description: 'Ganha Sidus Premium vitalício ao divulgar o Sidusastro nas redes sociais. Programa de parceiros com aprovação em 48h.' },
+    en: { title: 'Premium for Promotion · Partners', description: 'Earn lifetime Sidus Premium by promoting Sidusastro on social media. Partner program reviewed within 48h.' },
+    es: { title: 'Premium por Divulgación', description: 'Gana Sidus Premium vitalicio al promocionar Sidusastro en redes sociales.' },
+    it: { title: 'Premium per Promozione', description: 'Ottieni Sidus Premium a vita promuovendo Sidusastro sui social.' },
+    de: { title: 'Premium für Werbung', description: 'Erhalte lebenslangen Sidus Premium durch Bewerbung von Sidusastro in sozialen Medien.' },
+    fr: { title: 'Premium pour Promotion', description: 'Gagne Sidus Premium à vie en promouvant Sidusastro sur les réseaux sociaux.' },
   },
 }
 

@@ -117,7 +117,7 @@ export default async (req) => {
     const cancelPath = pathComIdioma(CANCEL_PATH[productType] || '/tarot', langRaw)
 
     const nomeProduto = isPremium
-      ? (descricao || 'Sidus VIP - Acesso completo')
+      ? (descricao || 'Sidus Premium - Acesso completo')
       : descricao
 
     const sessionParams = {
