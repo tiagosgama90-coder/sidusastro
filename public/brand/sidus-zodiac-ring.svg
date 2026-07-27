@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none" role="img" aria-label="Zodiac ring">
+  <defs>
+    <filter id="zodiac-glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="3" result="b"/>
+      <feMerge>
+        <feMergeNode in="b"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  <circle cx="256" cy="256" r="178" fill="none" stroke="rgba(223,183,108,0.42)" stroke-width="4.8" filter="url(#zodiac-glow)"/>
+  <circle cx="256" cy="256" r="162" fill="none" stroke="rgba(147,197,253,0.32)" stroke-width="3.5" stroke-dasharray="14 16"/>
+  <text x="256" y="84.5" text-anchor="middle" dominant-baseline="middle" fill="rgba(223,183,108,0.95)" font-size="48.6" font-family="Segoe UI Symbol, Noto Sans Symbols2, Apple Symbols, sans-serif">H</text>
+  <text x="343" y="109.5" text-anchor="middle" dominant-baseline="middle" fill="rgba(223,183,108,0.95)" font-size="48.6" font-family="Segoe UI Symbol, Noto Sans Symbols2, Apple Symbols, sans-serif">I</text>
+  <text x="402.5" y="178" text-anchor="middle" dominant-baseline="middle" fill="rgba(223,183,108,0.95)" font-size="48.6" font-family="Segoe UI Symbol, Noto Sans Symbols2, Apple Symbols, sans-serif">J</text>
+  <text x="427.5" y="265" text-anchor="middle" dominant-baseline="middle" fill="rgba(223,183,108,0.95)" font-size="48.6" font-family="Segoe UI Symbol, Noto Sans Symbols2, Apple Symbols, sans-serif">K</text>
+  <text x="402.5" y="352" text-anchor="middle" dominant-baseline="middle" fill="rgba(223,183,108,0.95)" font-size="48.6" font-family="Segoe UI Symbol, Noto Sans Symbols2, Apple Symbols, sans-serif">L</text>
+  <text x="343" y="411.5" text-anchor="middle" dominant-baseline="middle" fill="rgba(223,183,108,0.95)" font-size="48.6" font-family="Segoe UI Symbol, Noto Sans Symbols2, Apple Symbols, sans-serif">M</text>
+  <text x="256" y="436.5" text-anchor="middle" dominant-baseline="middle" fill="rgba(223,183,108,0.95)" font-size="48.6" font-family="Segoe UI Symbol, Noto Sans Symbols2, Apple Symbols, sans-serif">N</text>
+  <text x="169" y="411.5" text-anchor="middle" dominant-baseline="middle" fill="rgba(223,183,108,0.95)" font-size="48.6" font-family="Segoe UI Symbol, Noto Sans Symbols2, Apple Symbols, sans-serif">O</text>
+  <text x="109.5" y="352" text-anchor="middle" dominant-baseline="middle" fill="rgba(223,183,108,0.95)" font-size="48.6" font-family="Segoe UI Symbol, Noto Sans Symbols2, Apple Symbols, sans-serif">P</text>
+  <text x="84.5" y="265" text-anchor="middle" dominant-baseline="middle" fill="rgba(223,183,108,0.95)" font-size="48.6" font-family="Segoe UI Symbol, Noto Sans Symbols2, Apple Symbols, sans-serif">Q</text>
+  <text x="109.5" y="178" text-anchor="middle" dominant-baseline="middle" fill="rgba(223,183,108,0.95)" font-size="48.6" font-family="Segoe UI Symbol, Noto Sans Symbols2, Apple Symbols, sans-serif">R</text>
+  <text x="169" y="109.5" text-anchor="middle" dominant-baseline="middle" fill="rgba(223,183,108,0.95)" font-size="48.6" font-family="Segoe UI Symbol, Noto Sans Symbols2, Apple Symbols, sans-serif">S</text>
+  <circle cx="256" cy="256" r="9.5" fill="#DFB76C" opacity="0.9"/>
+</svg>

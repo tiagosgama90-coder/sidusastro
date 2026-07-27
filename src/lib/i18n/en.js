@@ -81,7 +81,7 @@ export default {
       savedHint: 'Now create an account or sign in below - your chart form will be pre-filled automatically.',
       authDivider: 'Continue to sign in',
       conversionAria: 'Get started on Sidus - free birth chart',
-      conversionEyebrow: '✦ Your personal cosmos',
+      conversionEyebrow: 'Your personal cosmos',
       conversionTitle: 'What is your true cosmic destiny?',
       conversionTitleHighlight: 'cosmic destiny',
       conversionLead: 'Enter your personal universe and discover what your birth chart reveals. Explore astrology, numerology and tarot through high-precision tools designed to guide your next steps.',

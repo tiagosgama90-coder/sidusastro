@@ -1,6 +1,6 @@
 // Service Worker para notificações PWA - Sidus Astro
 // v19: efeitos cósmicos site inteiro (desktop + mobile)
-const CACHE_NAME = 'sidusastro-v47'
+const CACHE_NAME = 'sidusastro-v48'
 const OFFLINE_URLS = ['/manifest.json', '/favicon.svg']
 
 const SIGNO_EMOJI = {
