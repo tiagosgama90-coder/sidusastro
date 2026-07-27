@@ -113,8 +113,10 @@ export default {
       },
       "pdfShowcase": {
         "ariaLabel": "Anteprima del report PDF del tema natale VIP",
-        "title": "Report PDF del tuo tema natale",
-        "description": "Report interpretato completo di alta qualità — Sole, Luna, Ascendente, 10 pianeti, 12 case Placidus e aspetti. Calcolato con Swiss Ephemeris, disponibile in portoghese e inglese.",
+        "title": "Report PDF del tuo Tema Natale",
+        "titleHighlight": "Tema Natale",
+        "description": "Tema natale completo di alta precisione - Sole, Luna, Ascendente, 10 pianeti, 12 case Placidus e aspetti, con il massimo dettaglio e rigore professionale possibile.",
+        "descriptionHighlight": "Tema natale completo di alta precisione",
         "caption": "Report PDF professionale · Sole, Luna, Ascendente e 10 pianeti",
         "expandCover": "Tocca per vedere a dimensione reale",
         "expandCoverEn": "Tap to view full size",

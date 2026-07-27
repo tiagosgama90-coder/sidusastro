@@ -4645,9 +4645,9 @@ export default function App() {
         onPrivacy={() => irPara('privacidade')}
       />
 
+      </div>
       <div className="sidus-cosmic-fx-layer" aria-hidden="true">
         <MagicCursorTrail />
-      </div>
       </div>
       {mostrarBottomNav && (
         <MobileBottomNav passo={passo} onNavigate={irPara} />

@@ -1573,31 +1573,83 @@ h1.sidus-page-title {
 /* Testemunhos + preview mapa */
 .landing-pdf-showcase {
   width: 100%;
-  max-width: min(760px, calc(100vw - 32px));
-  margin: 28px auto 20px;
-  padding: 24px 18px 8px;
+  max-width: 100%;
+  margin: 28px auto 24px;
+  padding: 28px 0 12px;
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-sizing: border-box;
+  position: relative;
+  z-index: 1;
 }
 
 .landing-pdf-showcase__title {
-  margin: 0 0 10px;
-  font-size: clamp(20px, 4.5vw, 26px);
+  margin: 0 0 12px;
+  padding: 0 12px;
+  font-size: clamp(1.35rem, 4.8vw, 1.95rem);
   font-weight: 700;
-  color: #DFB76C;
-  letter-spacing: 0.03em;
-  line-height: 1.25;
+  line-height: 1.28;
+  color: #fff;
+  letter-spacing: -0.01em;
+  text-align: center;
+  max-width: min(680px, 100%);
+  text-shadow:
+    0 0 24px rgba(223, 183, 108, 0.35),
+    0 0 48px rgba(223, 183, 108, 0.15);
 }
 
 .landing-pdf-showcase__desc {
-  margin: 0 auto 20px;
-  max-width: 52ch;
+  margin: 0 auto 22px;
+  padding: 0 14px;
+  max-width: 54ch;
   font-size: 14px;
   line-height: 1.65;
-  color: rgba(255, 255, 255, 0.72);
+  color: rgba(255, 255, 255, 0.76);
+}
+
+.landing-pdf-showcase__visual {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto;
+  padding: 0 10px;
+  box-sizing: border-box;
+}
+
+.landing-pdf-showcase__visual--glow {
+  position: relative;
+  max-width: min(700px, 100%);
+}
+
+.landing-pdf-showcase__visual--glow::before {
+  content: '';
+  position: absolute;
+  inset: 6% 4%;
+  border-radius: 18px;
+  background: radial-gradient(ellipse at 50% 50%, rgba(223, 183, 108, 0.28), transparent 70%);
+  filter: blur(20px);
+  pointer-events: none;
+  z-index: 0;
+  animation: landingPdfGlowPulse 4.2s ease-in-out infinite;
+}
+
+.landing-pdf-showcase__visual--glow > * {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+}
+
+@keyframes landingPdfGlowPulse {
+  0%, 100% { opacity: 0.5; transform: scale(0.97); }
+  50% { opacity: 0.95; transform: scale(1.03); }
 }
 
 .landing-pdf-showcase__caption {
   margin: 14px auto 0;
+  padding: 0 12px;
   font-size: 12px;
   line-height: 1.5;
   color: rgba(255, 255, 255, 0.48);
@@ -1648,10 +1700,22 @@ h1.sidus-page-title {
 }
 
 .natal-chart-premium--showcase {
-  max-width: min(560px, 94vw);
+  width: 100%;
+  max-width: min(640px, calc(100vw - 36px));
+  margin-left: auto;
+  margin-right: auto;
 }
 
-.landing-testimonial-preview--showcase {
+.landing-pdf-showcase .landing-testimonial-preview--showcase {
+  width: 100%;
+  max-width: min(640px, calc(100vw - 36px));
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+}
+
+.landing-pdf-showcase .landing-pdf-cover-btn {
+  width: 100%;
   margin: 0 auto;
 }
 
@@ -2629,11 +2693,11 @@ h1.sidus-page-title {
   z-index: 0;
 }
 
-/* Efeitos de toque/clique — acima do conteúdo, abaixo da nav mobile */
+/* Efeitos de toque/clique — acima do conteúdo, abaixo da navbar (150) e nav mobile (220) */
 .sidus-cosmic-fx-layer {
   position: fixed;
   inset: 0;
-  z-index: 120;
+  z-index: 135;
   pointer-events: none;
   overflow: hidden;
 }
