@@ -95,6 +95,12 @@ export default {
       "savedTitle": "✦ Daten im Kosmos gespeichert",
       "savedHint": "Erstellen Sie jetzt ein Konto oder melden Sie sich unten an - Ihr Diagrammformular wird automatisch vorausgefüllt.",
       "authDivider": "Melden Sie sich weiterhin an",
+      "conversionAria": "Bei Sidus starten - kostenloses Geburtshoroskop",
+      "conversionEyebrow": "Ihr persönlicher Kosmos",
+      "conversionTitle": "Was ist Ihr wahres kosmisches Schicksal?",
+      "conversionTitleHighlight": "kosmisches Schicksal",
+      "conversionLead": "Betreten Sie Ihr persönliches Universum und entdecken Sie, was Ihr Geburtshoroskop offenbart. Erkunden Sie Astrologie, Numerologie und Tarot mit hochpräzisen Werkzeugen, die Ihre nächsten Schritte begleiten.",
+      "conversionLeadHighlight": "Geburtshoroskop",
       "faq": {
         "ariaLabel": "Häufig gestellte Fragen zu Sidus Astro",
         "title": "Häufig gestellte Fragen",

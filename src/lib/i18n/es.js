@@ -96,6 +96,12 @@ export default {
       savedTitle: "✦ Datos guardados en el cosmos",
       savedHint: "Crea una cuenta o conéctate abajo - tu formulario de carta se prellenará automáticamente.",
       authDivider: "Continuar para conectarse",
+      conversionAria: "Empezar en Sidus - carta natal gratis",
+      conversionEyebrow: "Tu cosmos personal",
+      conversionTitle: "¿Cuál es tu verdadero destino cósmico?",
+      conversionTitleHighlight: "destino cósmico",
+      conversionLead: "Entra en tu universo personal y descubre lo que revela tu carta natal. Explora la astrología, la numerología y el tarot con herramientas de alta precisión diseñadas para guiar tus próximos pasos.",
+      conversionLeadHighlight: "carta natal",
       faq: {
         ariaLabel: "Preguntas frecuentes sobre Sidus Astro",
         title: "Preguntas frecuentes",
