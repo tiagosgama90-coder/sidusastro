@@ -1187,6 +1187,43 @@ h1.sidus-page-title {
   margin-bottom: 14px;
 }
 
+.landing-welcome-zodiac {
+  display: flex;
+  justify-content: center;
+  margin: 0 auto 14px;
+  filter: drop-shadow(0 0 22px rgba(223, 183, 108, 0.28));
+}
+
+.sidus-zodiac-ring {
+  display: block;
+}
+
+.sidus-zodiac-ring__inner {
+  transform-origin: center;
+  animation: sidusZodiacInnerSpin 48s linear infinite;
+}
+
+.sidus-zodiac-ring__glyph {
+  animation: sidusZodiacGlyphPulse 4.5s ease-in-out infinite;
+}
+
+@keyframes sidusZodiacInnerSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes sidusZodiacGlyphPulse {
+  0%, 100% { opacity: 0.78; }
+  50% { opacity: 1; }
+}
+
+@media (max-width: 640px) {
+  .landing-welcome-zodiac .sidus-zodiac-ring {
+    width: 96px;
+    height: 96px;
+  }
+}
+
 .landing-conversion-eyebrow {
   margin: 0 0 8px;
   font-size: 11px;
