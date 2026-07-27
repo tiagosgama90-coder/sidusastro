@@ -219,10 +219,10 @@ html.sidus-no-ads .google-auto-placed {
   flex: 0 0 auto;
   position: relative;
   z-index: 3;
-  padding-right: 10px;
-  margin-right: 2px;
-  background: rgba(11, 7, 30, 0.98);
-  box-shadow: 10px 0 14px -6px rgba(11, 7, 30, 0.95);
+  padding-right: 8px;
+  margin-right: 0;
+  background: transparent;
+  box-shadow: none;
 }
 
 .desktop-nav-scroll {
@@ -234,27 +234,14 @@ html.sidus-no-ads .google-auto-placed {
   scrollbar-width: none;
   display: flex;
   justify-content: flex-start;
-  padding-left: 8px;
-  padding-right: clamp(40px, 4vw, 52px);
+  padding-left: 4px;
+  padding-right: clamp(48px, 5vw, 56px);
   position: relative;
+  z-index: 2;
 }
 
 .desktop-nav-scroll::before {
-  content: '';
-  position: absolute;
-  inset: -4px 0;
-  border-radius: 14px;
-  background: linear-gradient(
-    105deg,
-    rgba(223, 183, 108, 0.04) 0%,
-    rgba(139, 92, 246, 0.06) 35%,
-    rgba(52, 211, 153, 0.04) 70%,
-    rgba(223, 183, 108, 0.04) 100%
-  );
-  background-size: 220% 100%;
-  animation: desktopNavShimmer 14s ease-in-out infinite;
-  pointer-events: none;
-  opacity: 0.85;
+  display: none;
 }
 
 @keyframes desktopNavShimmer {
@@ -272,8 +259,10 @@ html.sidus-no-ads .google-auto-placed {
   flex-wrap: nowrap;
   gap: 2px;
   width: max-content;
-  margin-inline: auto;
-  padding-right: 8px;
+  margin-inline: 0;
+  padding-right: 12px;
+  position: relative;
+  z-index: 2;
 }
 
 .desktop-nav-item {
@@ -285,7 +274,7 @@ html.sidus-no-ads .google-auto-placed {
   flex: 0 0 auto;
   white-space: nowrap;
   cursor: pointer;
-  font-size: 11px;
+  font-size: 11.5px;
   font-weight: 600;
   font-family: inherit;
   line-height: 1.2;
@@ -301,7 +290,7 @@ html.sidus-no-ads .google-auto-placed {
 }
 
 .desktop-nav-item span {
-  font-size: 11px;
+  font-size: 11.5px;
   font-weight: inherit;
   white-space: nowrap;
 }
@@ -408,10 +397,10 @@ h1.sidus-page-title {
   .desktop-nav-item {
     padding: 5px 7px;
     gap: 3px;
-    font-size: 10.5px;
+    font-size: 10.7px;
   }
   .desktop-nav-item__label {
-    font-size: 10.5px;
+    font-size: 10.7px;
   }
   .desktop-nav-scroll {
     padding-left: 6px;
@@ -426,10 +415,10 @@ h1.sidus-page-title {
   .desktop-nav-item {
     padding: 5px 6px;
     gap: 3px;
-    font-size: 10px;
+    font-size: 10.2px;
   }
   .desktop-nav-item__label {
-    font-size: 10px;
+    font-size: 10.2px;
   }
 }
 
@@ -1216,11 +1205,19 @@ h1.sidus-page-title {
 }
 
 .landing-conversion-lead {
-  margin: 0 auto;
-  max-width: 520px;
+  margin: 0 auto 10px;
+  max-width: 560px;
   font-size: 13px;
   line-height: 1.55;
   color: rgba(255, 255, 255, 0.62);
+}
+
+.landing-conversion-pitch {
+  margin: 0 auto;
+  max-width: 600px;
+  font-size: 13px;
+  line-height: 1.65;
+  color: rgba(196, 181, 253, 0.88);
 }
 
 .landing-auth-input {
@@ -1980,6 +1977,22 @@ h1.sidus-page-title {
     margin: 0;
   }
 
+  .landing-mobile-logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 4px 8px 10px;
+    margin: 0;
+  }
+
+  .landing-mobile-logo .sidus-logo--landing-bar {
+    gap: 10px;
+  }
+
+  .landing-mobile-logo .sidus-logo__word {
+    font-size: 22px !important;
+  }
+
   .landing-sky-mobile-wrap {
     width: 100%;
     margin: 0 0 12px;
@@ -2314,9 +2327,9 @@ h1.sidus-page-title {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(ellipse 50% 40% at 50% 45%, rgba(223, 183, 108, 0.04) 0%, transparent 55%),
-    radial-gradient(ellipse 35% 30% at 30% 60%, rgba(67, 56, 202, 0.07) 0%, transparent 50%),
-    radial-gradient(ellipse 35% 30% at 70% 35%, rgba(88, 28, 135, 0.06) 0%, transparent 50%);
+    radial-gradient(ellipse 50% 40% at 50% 45%, rgba(223, 183, 108, 0.09) 0%, transparent 55%),
+    radial-gradient(ellipse 35% 30% at 30% 60%, rgba(67, 56, 202, 0.14) 0%, transparent 50%),
+    radial-gradient(ellipse 35% 30% at 70% 35%, rgba(88, 28, 135, 0.12) 0%, transparent 50%);
 }
 .landing-cosmic-hendecagram-wrap {
   position: absolute;
@@ -2325,7 +2338,7 @@ h1.sidus-page-title {
   transform: translate(-50%, -50%);
   width: min(92vw, 520px);
   height: min(92vw, 520px);
-  opacity: 0.58;
+  opacity: 0.82;
 }
 .landing-cosmic-hendecagram {
   width: 100%;
@@ -2346,7 +2359,7 @@ h1.sidus-page-title {
 }
 .landing-cosmic-zodiac {
   font-size: 15px;
-  fill: rgba(223, 183, 108, 0.55);
+  fill: rgba(223, 183, 108, 0.72);
   animation: landingZodiacShine 4.5s ease-in-out infinite;
 }
 @keyframes landingHendecSpin {
@@ -2362,8 +2375,8 @@ h1.sidus-page-title {
   50% { opacity: 1; }
 }
 @keyframes landingZodiacShine {
-  0%, 100% { fill: rgba(223, 183, 108, 0.45); opacity: 0.7; }
-  50% { fill: rgba(240, 207, 138, 0.95); opacity: 1; }
+  0%, 100% { fill: rgba(223, 183, 108, 0.62); opacity: 0.82; }
+  50% { fill: rgba(240, 207, 138, 1); opacity: 1; }
 }
 
 .sidus-login-shell .landing-portal-orb {

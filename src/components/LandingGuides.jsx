@@ -25,7 +25,7 @@ const GUIDES = [
     titleKey: 'auth.portal.guides.signosTitle',
     descKey: 'auth.portal.guides.signosDesc',
     readKey: 'auth.portal.guides.signosRead',
-    accent: '#F472B6',
+    accent: '#93C5FD',
   },
   {
     id: 'tarot',

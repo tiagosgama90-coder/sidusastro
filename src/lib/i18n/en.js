@@ -83,7 +83,8 @@ export default {
       conversionAria: 'Get started on Sidus - free birth chart',
       conversionEyebrow: '✦ Your personal cosmos',
       conversionTitle: 'Your chart starts here',
-      conversionLead: 'Enter your birth details and sign in - it takes less than a minute.',
+      conversionPitch: 'Sidusastro is your complete cosmic guide: natal chart with Swiss Ephemeris, online tarot, Oracle Chat, numerology, synastry and astrology tools — all personalized to your birth sky.',
+      conversionLead: 'Enter your birth details and sign in free — it takes less than a minute to start.',
       faq: {
         ariaLabel: 'Frequently asked questions about Sidus Astro',
         title: 'Frequently Asked Questions',
