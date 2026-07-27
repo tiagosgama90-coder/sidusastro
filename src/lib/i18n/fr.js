@@ -114,8 +114,9 @@ export default {
       },
       pdfShowcase: {
         ariaLabel: 'Aperçu du rapport PDF de la carte natale VIP',
-        title: 'Rapport PDF de votre carte natale',
-        description: 'Rapport interprété complet de haute qualité — Soleil, Lune, Ascendant, 10 planètes, 12 maisons Placidus et aspects. Calculé avec Swiss Ephemeris, disponible en portugais et en anglais.',
+        title: 'Rapport PDF de votre Carte Natale',
+        titleHighlight: 'Carte Natale',
+        description: 'Carte natale complète de haute précision — Soleil, Lune, Ascendant, 10 planètes, 12 maisons Placidus et aspects, avec le plus grand détail et la rigueur professionnelle possible.',
         caption: 'Rapport PDF professionnel · Soleil, Lune, Ascendant et 10 planètes',
         expandCover: 'Appuyez pour voir en taille réelle',
         expandCoverEn: 'Tap to view full size',

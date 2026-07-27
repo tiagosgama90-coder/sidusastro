@@ -114,7 +114,8 @@ export default {
       "pdfShowcase": {
         "ariaLabel": "VIP-Geburtshoroskop-PDF-Vorschau",
         "title": "Dein Geburtshoroskop-PDF-Bericht",
-        "description": "Vollständiger, hochwertig interpretierter Bericht — Sonne, Mond, Aszendent, 10 Planeten, 12 Placidus-Häuser und Aspekte. Berechnet mit Swiss Ephemeris, verfügbar auf Portugiesisch und Englisch.",
+        "titleHighlight": "Geburtshoroskop",
+        "description": "Vollständiges Geburtshoroskop mit höchster Präzision — Sonne, Mond, Aszendent, 10 Planeten, 12 Placidus-Häuser und Aspekte, mit größtmöglicher Detailtiefe und professioneller Genauigkeit.",
         "caption": "Professioneller PDF-Bericht · Sonne, Mond, Aszendent und 10 Planeten",
         "expandCover": "Tippen für Originalgröße",
         "expandCoverEn": "Tap to view full size",

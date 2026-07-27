@@ -104,8 +104,9 @@ export default {
       },
       pdfShowcase: {
         ariaLabel: 'Pré-visualização do relatório PDF do mapa astral VIP',
-        title: 'Relatório PDF do teu mapa astral',
-        description: 'Relatório interpretado completo em alta qualidade — Sol, Lua, Ascendente, 10 planetas, 12 casas Placidus e aspectos. Calculado com Swiss Ephemeris e disponível em português e inglês.',
+        title: 'Relatório PDF do teu Mapa Astral',
+        titleHighlight: 'Mapa Astral',
+        description: 'Mapa Astral Completo de alta precisão — Sol, Lua, Ascendente, 10 planetas, 12 casas Placidus e aspectos, com o maior detalhe e rigor profissional possível.',
         caption: 'Relatório PDF profissional · Sol, Lua, Ascendente e 10 planetas',
         expandCover: 'Toca para ver em tamanho real',
         expandCoverEn: 'Tap to view full size',
