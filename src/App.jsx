@@ -34,7 +34,7 @@ import {
 import { Body, GeoVector, Ecliptic, MakeTime, SiderealTime } from 'astronomy-engine'
 import { pesquisarCidades, pesquisarFusoHorario, geocodificarCidade } from './lib/geocoding'
 import { ModalPagamento, verificarSessaoPagamento } from './components/Pagamento'
-import { PRECO_MAPA_COMPLETO, precoPremiumVitrine, formatPrecoEuro, formatPrecoCompleto } from './lib/pricing.js'
+import { PRECO_MAPA_COMPLETO, PRECO_PREMIUM_UNICO, precoPremiumVitrine, formatPrecoEuro, formatPrecoCompleto } from './lib/pricing.js'
 import { useGeoCountry } from './hooks/useGeoCountry.js'
 import { RecaptchaCheckbox } from './components/Recaptcha'
 import { Perfil } from './components/Perfil'
@@ -2846,11 +2846,44 @@ function Paywall({ onVoltar, onPagar, onSucesso, onPromo, isDesktop, isBrasil, o
   )
 }
 
-function OraclePremiumUpsell({ onUpgrade, onPromo, isBrasil = false, oraclePerguntasUsadas = 0, leiturasTarotUsadas = 0, compact = false }) {
+function OraclePremiumUpsell({ onUpgrade, onPromo, isBrasil = false, oraclePerguntasUsadas = 0, leiturasTarotUsadas = 0, compact = false, variant = 'default' }) {
   const { t } = useLanguage()
   const precoVitrine = precoPremiumVitrine(isBrasil)
   const precoLabel = formatPrecoCompleto(precoVitrine.valor, precoVitrine.currency)
   const beneficios = ['oracle.upsellBenefit1', 'oracle.upsellBenefit2', 'oracle.upsellBenefit3', 'oracle.upsellBenefit4']
+  const ctaText = isBrasil ? t('vip.ctaBr', { preco: precoLabel }) : t('oracle.upsellCta', { price: precoLabel })
+
+  if (variant === 'chat') {
+    return (
+      <div className="oracle-chat-upsell">
+        <p className="oracle-chat-upsell__eyebrow">{t('oracle.upsellTitle')}</p>
+        <p className="oracle-chat-upsell__lead">{t('oracle.upsellLeadShort')}</p>
+        <ul className="oracle-upsell-benefits oracle-chat-upsell__benefits">
+          {beneficios.map((key) => (
+            <li key={key}>{t(key)}</li>
+          ))}
+        </ul>
+        <div className="oracle-chat-upsell__price">
+          {precoLabel}
+          {isBrasil ? <span className="oracle-chat-upsell__pix">{t('vip.pixLabel')}</span> : null}
+        </div>
+        <button type="button" className="oracle-chat-upsell__cta" onClick={onUpgrade}>
+          {ctaText}
+        </button>
+        {onPromo ? (
+          <button type="button" className="oracle-chat-upsell__promo" onClick={onPromo}>
+            {t('vipPromo.lead')}
+          </button>
+        ) : null}
+        <p className="oracle-chat-upsell__footnote">
+          {isBrasil
+            ? t('vip.paymentMethodsBr', { precoPix: precoLabel, precoEur: formatPrecoCompleto(PRECO_PREMIUM_UNICO, 'eur') })
+            : t('vip.paymentMethods')}
+        </p>
+      </div>
+    )
+  }
+
   return (
     <div style={{
       alignSelf: 'stretch',
@@ -2875,7 +2908,7 @@ function OraclePremiumUpsell({ onUpgrade, onPromo, isBrasil = false, oraclePergu
         leiturasTarotUsadas={leiturasTarotUsadas}
         titleKey="oracle.upsellTitle"
         subtitleKey="oracle.upsellLead"
-        ctaText={isBrasil ? t('vip.ctaBr', { preco: precoLabel }) : t('oracle.upsellCta', { price: precoLabel })}
+        ctaText={ctaText}
         compact
       />
     </div>
@@ -2885,6 +2918,14 @@ function OraclePremiumUpsell({ onUpgrade, onPromo, isBrasil = false, oraclePergu
 // ── Integração AI (servidor Netlify - chaves secretas) ─────────────────────────
 async function consultarSidus(pergunta, mapaNatal, historico, lang, idToken, clientPremium = false) {
   return consultarOracleServidor(pergunta, mapaNatal, historico, lang, idToken, clientPremium)
+}
+
+function sanitizarMensagensOracle(mensagens, perguntasUsadas, isPremium) {
+  if (!Array.isArray(mensagens) || !mensagens.length) return mensagens
+  if (isPremium || perguntasUsadas < MAX_ORACLE_GRATIS) {
+    return mensagens.filter((m) => m.tipo !== 'upsell')
+  }
+  return mensagens
 }
 
 function Chat({ mapaNatal, isPremium, userId, oracleRemotas, onOracleUsada, onUpgrade, onPromo, leiturasTarotUsadas = 0, obterIdToken, isBrasil = false, isDesktop = false }) {
@@ -2897,10 +2938,10 @@ function Chat({ mapaNatal, isPremium, userId, oracleRemotas, onOracleUsada, onUp
 
   const chaveSessaoActual = userId ? `sidus_oracle_current_${userId}` : 'sidus_oracle_current_local'
 
-  const saudacaoInicial = useCallback(() => ([{
+  const saudacaoInicial = useCallback((restantesGratis = MAX_ORACLE_GRATIS) => ([{
     id: 1,
     autor: 'ia',
-    texto: getChatGreeting(mapaNatal, lang, MAX_ORACLE_GRATIS, isPremium),
+    texto: getChatGreeting(mapaNatal, lang, restantesGratis, isPremium),
   }]), [mapaNatal, lang, isPremium])
 
   const [sessaoId, setSessaoId] = useState(() => `sess-${Date.now()}`)
@@ -2911,10 +2952,17 @@ function Chat({ mapaNatal, isPremium, userId, oracleRemotas, onOracleUsada, onUp
   const [texto, setTexto]       = useState('')
   const [digitando, setDigitando] = useState(false)
   const fimRef = useRef(null)
+  const listaRef = useRef(null)
+  const seguirFimRef = useRef(true)
+
+  const contagemOracle = useCallback(
+    () => contarOraclePerguntas(userId, oracleRemotas),
+    [userId, oracleRemotas],
+  )
 
   useEffect(() => {
-    setPerguntasUsadas(contarOraclePerguntas(userId, oracleRemotas))
-  }, [userId, oracleRemotas])
+    setPerguntasUsadas(contagemOracle())
+  }, [contagemOracle])
 
   useEffect(() => {
     const lista = carregarSessoesOracle(userId)
@@ -2924,14 +2972,14 @@ function Chat({ mapaNatal, isPremium, userId, oracleRemotas, onOracleUsada, onUp
       const actual = lista.find((s) => s.id === actualId)
       if (actual?.mensagens?.length) {
         setSessaoId(actual.id)
-        setMensagens(actual.mensagens)
+        setMensagens(sanitizarMensagensOracle(actual.mensagens, contagemOracle(), isPremium))
       } else {
         const id = `sess-${Date.now()}`
         setSessaoId(id)
         setMensagens([{
           id: 1,
           autor: 'ia',
-          texto: getChatGreeting(mapaNatal, lang, MAX_ORACLE_GRATIS, isPremium),
+          texto: getChatGreeting(mapaNatal, lang, Math.max(0, MAX_ORACLE_GRATIS - contagemOracle()), isPremium),
         }])
         localStorage.setItem(chaveSessaoActual, id)
       }
@@ -2942,12 +2990,12 @@ function Chat({ mapaNatal, isPremium, userId, oracleRemotas, onOracleUsada, onUp
     const actual = lista.find((s) => s.id === actualId) || lista[0]
     if (actual?.mensagens?.length) {
       setSessaoId(actual.id)
-      setMensagens(actual.mensagens)
+      setMensagens(sanitizarMensagensOracle(actual.mensagens, contagemOracle(), isPremium))
     } else {
       setMensagens([{
         id: 1,
         autor: 'ia',
-        texto: getChatGreeting(mapaNatal, lang, MAX_ORACLE_GRATIS, isPremium),
+        texto: getChatGreeting(mapaNatal, lang, Math.max(0, MAX_ORACLE_GRATIS - contagemOracle()), isPremium),
       }])
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps -- carregar sessão só ao mudar utilizador/premium
@@ -2956,11 +3004,12 @@ function Chat({ mapaNatal, isPremium, userId, oracleRemotas, onOracleUsada, onUp
   useEffect(() => {
     setMensagens((prev) => {
       if (prev.length === 1 && prev[0]?.autor === 'ia' && !prev[0]?.aviso) {
-        return [{ ...prev[0], texto: getChatGreeting(mapaNatal, lang, MAX_ORACLE_GRATIS, isPremium) }]
+        const restantesGratis = Math.max(0, MAX_ORACLE_GRATIS - contagemOracle())
+        return [{ ...prev[0], texto: getChatGreeting(mapaNatal, lang, restantesGratis, isPremium) }]
       }
       return prev
     })
-  }, [lang, mapaNatal, isPremium])
+  }, [lang, mapaNatal, isPremium, contagemOracle])
 
   useEffect(() => {
     if (!mensagens.length) return
@@ -2985,20 +3034,58 @@ function Chat({ mapaNatal, isPremium, userId, oracleRemotas, onOracleUsada, onUp
   const iniciarNovaConversa = () => {
     const id = `sess-${Date.now()}`
     setSessaoId(id)
-    setMensagens(saudacaoInicial())
+    setMensagens(saudacaoInicial(Math.max(0, MAX_ORACLE_GRATIS - contagemOracle())))
     localStorage.setItem(chaveSessaoActual, id)
     setHistoricoAberto(false)
+    seguirFimRef.current = true
   }
 
   const abrirSessaoHistorico = (sess) => {
     if (!sess?.id) return
     setSessaoId(sess.id)
-    setMensagens(sess.mensagens?.length ? sess.mensagens : saudacaoInicial())
+    setMensagens(sess.mensagens?.length
+      ? sanitizarMensagensOracle(sess.mensagens, contagemOracle(), isPremium)
+      : saudacaoInicial(Math.max(0, MAX_ORACLE_GRATIS - contagemOracle())))
     localStorage.setItem(chaveSessaoActual, sess.id)
     setHistoricoAberto(false)
   }
 
-  useEffect(() => { fimRef.current?.scrollIntoView({ behavior: 'smooth' }) }, [mensagens, digitando])
+  const temUpsell = mensagens.some((m) => m.tipo === 'upsell')
+  const upsellScrollFeitoRef = useRef(false)
+
+  useEffect(() => {
+    if (!temUpsell) upsellScrollFeitoRef.current = false
+  }, [temUpsell])
+
+  useEffect(() => {
+    const el = listaRef.current
+    if (!el) return undefined
+    const onScroll = () => {
+      const distanciaFim = el.scrollHeight - el.scrollTop - el.clientHeight
+      seguirFimRef.current = distanciaFim < 100
+    }
+    el.addEventListener('scroll', onScroll, { passive: true })
+    return () => el.removeEventListener('scroll', onScroll)
+  }, [])
+
+  useEffect(() => {
+    const el = listaRef.current
+    if (!el) return
+
+    if (temUpsell) {
+      if (!upsellScrollFeitoRef.current) {
+        const upsellEl = el.querySelector('.oracle-chat-upsell')
+        if (upsellEl) {
+          upsellScrollFeitoRef.current = true
+          upsellEl.scrollIntoView({ behavior: 'smooth', block: 'start' })
+        }
+      }
+      return
+    }
+
+    if (!seguirFimRef.current) return
+    fimRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }, [mensagens, digitando, temUpsell])
 
   const mostrarUpsell = useCallback(() => {
     setMensagens((prev) => {
@@ -3233,14 +3320,14 @@ function Chat({ mapaNatal, isPremium, userId, oracleRemotas, onOracleUsada, onUp
       )}
 
       {/* Mensagens */}
-      <div style={{ flex: 1, overflowY: 'auto', padding: '16px 14px 10px', display: 'flex', flexDirection: 'column', gap: 12 }}>
+      <div ref={listaRef} className="oracle-chat__messages">
         {mensagens.map((m) => (
           m.tipo === 'upsell' ? (
             <OraclePremiumUpsell
               key={m.id}
               onUpgrade={onUpgrade}
               onPromo={onPromo}
-              compact
+              variant="chat"
               isBrasil={isBrasil}
               oraclePerguntasUsadas={perguntasUsadas}
               leiturasTarotUsadas={leiturasTarotUsadas}
@@ -3268,15 +3355,6 @@ function Chat({ mapaNatal, isPremium, userId, oracleRemotas, onOracleUsada, onUp
             </div>
           )
         ))}
-        {limiteAtingido && !mensagens.some((m) => m.tipo === 'upsell') && (
-          <OraclePremiumUpsell
-            onUpgrade={onUpgrade}
-            onPromo={onPromo}
-            isBrasil={isBrasil}
-            oraclePerguntasUsadas={perguntasUsadas}
-            leiturasTarotUsadas={leiturasTarotUsadas}
-          />
-        )}
         {digitando && (
           <div style={{ alignSelf: 'flex-start', padding: '13px 18px', borderRadius: '4px 18px 18px 18px', background: 'rgba(255,255,255,0.055)', border: `1px solid rgba(255,255,255,0.09)` }}>
             <span style={{ fontSize: 18, letterSpacing: 6, color: CORES.dourado }}>✦ ✦ ✦</span>

@@ -549,6 +549,7 @@ export default {
     upsellBenefit4: 'Professional natal chart PDF',
     upsellTitle: 'Unlock the full Chat Oracle',
     upsellLead: 'You have tried Sidus with 3 questions tailored to your chart. With Premium you get unlimited consultation - like a real session with a professional astrologer, always tied to your Sun, Moon and Ascendant.',
+    upsellLeadShort: 'Your 3 free Oracle questions are separate from Tarot. Premium unlocks unlimited chart-based guidance.',
     upsellCta: '✦ Activate Sidus Premium - {price} · lifetime',
   },
   perfil: {

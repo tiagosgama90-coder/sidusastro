@@ -537,6 +537,7 @@ export default {
     "premiumSubtitle": "Chat professionale illimitata",
     "upsellTitle": "Sblocca il Chat Oracolo completo",
     "upsellLead": "Hai provato Sidus con 3 domande su misura per il tuo grafico.Con Premium ottieni una consulenza illimitata, come una vera sessione con un astrologo professionista, sempre legato al tuo Sole, Luna e Ascendente.",
+    "upsellLeadShort": "Le 3 domande gratuite dell'Oracolo sono separate dal Tarocchi. Premium sblocca consulenze illimitate.",
     "upsellCta": "✦ Attiva Sidus Premium - {price} · a vita"
   },
   "perfil": {

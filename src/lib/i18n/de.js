@@ -537,6 +537,7 @@ export default {
     "premiumSubtitle": "Unbegrenzter professioneller Chat",
     "upsellTitle": "Schalte das vollständige Chat-Orakel frei",
     "upsellLead": "Sie haben Sidus mit 3 auf Ihr Diagramm zugeschnittenen Fragen ausprobiert.Mit Premium erhalten Sie unbegrenzte Beratung - wie eine echte Sitzung mit einem professionellen Astrologen, immer gebunden an Ihre Sonne, Ihren Mond und Ihren Aszendenten.",
+    "upsellLeadShort": "Die 3 kostenlosen Orakel-Fragen sind unabhängig vom Tarot. Premium schaltet unbegrenzte Beratung frei.",
     "upsellCta": "✦ Aktivieren Sie Sidus Premium - {price} · lebenslang"
   },
   "perfil": {

@@ -549,6 +549,7 @@ export default {
     upsellBenefit4: 'Mapa astral PDF profissional',
     upsellTitle: 'Desbloqueia o Chat Oráculo completo',
     upsellLead: 'Já provaste o Sidus com 3 questões personalizadas ao teu mapa. Com Premium tens consulta ilimitada - como uma sessão real com astróloga profissional, sempre ligada ao teu Sol, Lua e Ascendente.',
+    upsellLeadShort: 'As 3 perguntas grátis do Oráculo são independentes do Tarot. Com Premium tens consulta ilimitada ligada ao teu mapa.',
     upsellCta: '✦ Activar Sidus Premium - {price} · vitalício',
   },
   perfil: {
