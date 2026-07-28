@@ -1,4 +1,4 @@
-/** Constelação «S» — marca Sidus (não traduzir). */
+/** Constelação «S» - marca Sidus (não traduzir). */
 export function SidusConstellationMark({
   size = 32,
   className = '',

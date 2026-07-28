@@ -2,7 +2,7 @@ import { SIGNOS_PT, SIGNOS_EN, SIGNOS_ES, SIGNOS_IT, SIGNOS_DE, SIGNOS_FR, SIGNO
 
 const SOCIAL_PT = [
   '🌙 {fase} hoje - o céu pede pausa. Pergunta ao Oráculo Sidus (3 grátis) → sidusastro.com',
-  '✦ Mapa astral + Oráculo Sidus. Descobre Sol, Lua e Ascendente → sidusastro.com',
+  'Mapa astral + Oráculo Sidus. Descobre Sol, Lua e Ascendente → sidusastro.com',
   '🔮 Horóscopo do dia no Sidus. Qual é o teu signo? → sidusastro.com/horoscopo',
   '⭐ Trânsitos de hoje explicados pelo teu mapa. sidusastro.com',
   '🎴 Tarot online + Oráculo Sidus - sidusastro.com/tarot',
@@ -10,7 +10,7 @@ const SOCIAL_PT = [
 
 const SOCIAL_EN = [
   '🌙 {phase} today - ask Sidus Oracle (3 free) → sidusastro.com',
-  '✦ Natal chart + Sidus Oracle. Sun, Moon & Ascendant → sidusastro.com',
+  'Natal chart + Sidus Oracle. Sun, Moon & Ascendant → sidusastro.com',
   '🔮 Daily horoscope on Sidus → sidusastro.com/horoscopo',
   '⭐ Today\'s transits through your chart → sidusastro.com',
   '🎴 Online Tarot + Sidus Oracle → sidusastro.com/tarot',

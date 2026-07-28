@@ -121,7 +121,7 @@ export function escreverParagrafoJustificado(doc, texto, x, maxWidthMm, yRef, pa
   return yRef.value
 }
 
-/** Titulo de seccao — alinhado a esquerda dentro da barra, com quebra se necessario. */
+/** Titulo de seccao - alinhado a esquerda dentro da barra, com quebra se necessario. */
 export function alturaTituloSecao(doc, texto, maxWidthMm, alturaLinha = 4.2) {
   const linhas = wrapPdfText(doc, texto, maxWidthMm - 4)
   return Math.max(9, 5 + linhas.length * alturaLinha + 2)

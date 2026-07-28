@@ -59,4 +59,4 @@ for (const name of DICT_NAMES) {
 }
 
 writeFileSync(SRC, src, 'utf8')
-console.log('✓ sinastriaNarrativas.js — s6 inline')
+console.log('✓ sinastriaNarrativas.js - s6 inline')

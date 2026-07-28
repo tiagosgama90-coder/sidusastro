@@ -65,9 +65,9 @@ function sinteseLenormand(cartas, lang) {
   const inicio = cartas[0].nome
   const fim = cartas[cartas.length - 1].nome
   if (lang === 'en') {
-    return `\n\n✦ **Lenormand synthesis:** From ${inicio} to ${fim} - a material, fast-moving path. Focus on concrete facts and timing within the next 90 days.`
+    return `\n\n**Lenormand synthesis:** From ${inicio} to ${fim} - a material, fast-moving path. Focus on concrete facts and timing within the next 90 days.`
   }
-  return `\n\n✦ **Síntese Lenormand:** De ${inicio} a ${fim} - um caminho material e rápido. Foca nos factos concretos e no prazo máximo de 90 dias.`
+  return `\n\n**Síntese Lenormand:** De ${inicio} a ${fim} - um caminho material e rápido. Foca nos factos concretos e no prazo máximo de 90 dias.`
 }
 
 function aberturaPergunta(pergunta, lang) {

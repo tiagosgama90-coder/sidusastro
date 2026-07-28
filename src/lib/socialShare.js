@@ -12,7 +12,7 @@ function setMeta(attr, key, value) {
   el.setAttribute('content', value)
 }
 
-/** Open Graph + Twitter Card — padrão usado por quase todas as apps de mensagens. */
+/** Open Graph + Twitter Card - padrão usado por quase todas as apps de mensagens. */
 export function applySocialShareMeta({
   title,
   description,

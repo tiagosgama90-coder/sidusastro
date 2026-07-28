@@ -1,6 +1,6 @@
 const ZODIAC = ['♈', '♉', '♊', '♋', '♌', '♍', '♎', '♏', '♐', '♑', '♒', '♓']
 
-/** Anel dos 12 signos — decoração mística Sidus (não traduzir). */
+/** Anel dos 12 signos - decoração mística Sidus (não traduzir). */
 export function SidusZodiacRing({ size = 118, className = '', accent = '#93C5FD' }) {
   const cx = size / 2
   const cy = size / 2

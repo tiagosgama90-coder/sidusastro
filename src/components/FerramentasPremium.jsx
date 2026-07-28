@@ -1343,7 +1343,7 @@ export function InterpretacaoSonhos({ mapaNatal, onVoltar }) {
                 color: sel ? CORES.dourado : CORES.brancoMuted,
                 transition: 'all 0.2s',
               }}>
-                {sel ? '✦ ' : ''}{chip}
+                {sel ? '' : ''}{chip}
               </button>
             )
           })}
@@ -1409,7 +1409,7 @@ export function InterpretacaoSonhos({ mapaNatal, onVoltar }) {
           background: 'rgba(109,40,217,0.08)', borderRadius: 16,
           border: '1px solid rgba(139,92,246,0.25)',
         }}>
-          <div style={{ fontSize: 28, marginBottom: 10, animation: 'pulse 2s ease-in-out infinite' }}>✦</div>
+          <div style={{ fontSize: 28, marginBottom: 10, animation: 'pulse 2s ease-in-out infinite' }}></div>
           <p style={{ fontSize: 13, color: '#C4B5FD', margin: 0, lineHeight: 1.6 }}>
             {t('ferramentasPremium.sonhos.decoding')}
           </p>
@@ -1562,7 +1562,7 @@ export function HorasIguais({ onVoltar }) {
           </span>
         </div>
         <div style={{ fontSize: 11, color: CORES.dourado, marginBottom: 10 }}>
-          ✦ {t('ferramentasPremium.horasIguais.angel')}: {interpretacao.anjo}
+          {t('ferramentasPremium.horasIguais.angel')}: {interpretacao.anjo}
         </div>
         <p style={{ fontSize: 14, color: CORES.brancoSuave, lineHeight: 1.75, margin: '0 0 14px' }}>
           {interpretacao.mensagem}

@@ -12,7 +12,7 @@ const WORDMARK_STYLE = {
 }
 
 /**
- * Logótipo Sidus — horizontal | stacked | mark
+ * Logótipo Sidus - horizontal | stacked | mark
  * Sempre notranslate (nunca traduzir SIDUS).
  */
 export function SidusLogo({

@@ -167,39 +167,39 @@ export function validarPerguntaOracle(texto, lang = 'pt') {
   if (!isPt(lang)) {
     const msgs = contentForLang(lang, {
       en: {
-        short: '✦ Share more about your situation so I can guide you with precision.',
-        detail: '✦ Formulate your question with a bit more detail - tell me the context.',
-        command: '✦ That looks like a command, not a question. Share a real situation from your life - the Oracle responds to what you live, not what you order.',
-        noise: '✦ The Oracle awaits a genuine question about your life, love, career or spiritual path.',
-        empty: '✦ Ask me a real question - about your love, career, purpose or any challenge you are living now.',
+        short: 'Share more about your situation so I can guide you with precision.',
+        detail: 'Formulate your question with a bit more detail - tell me the context.',
+        command: 'That looks like a command, not a question. Share a real situation from your life - the Oracle responds to what you live, not what you order.',
+        noise: 'The Oracle awaits a genuine question about your life, love, career or spiritual path.',
+        empty: 'Ask me a real question - about your love, career, purpose or any challenge you are living now.',
       },
       es: {
-        short: '✦ Comparte más sobre tu situación para poder orientarte con precisión.',
-        detail: '✦ Formula tu pregunta con un poco más de detalle: cuéntame el contexto.',
-        command: '✦ Eso parece una orden, no una pregunta. Comparte una situación real de tu vida.',
-        noise: '✦ El Oráculo espera una pregunta genuina sobre tu vida, amor, carrera o camino espiritual.',
-        empty: '✦ Hazme una pregunta real: sobre tu amor, carrera, propósito o cualquier desafío que vivas ahora.',
+        short: 'Comparte más sobre tu situación para poder orientarte con precisión.',
+        detail: 'Formula tu pregunta con un poco más de detalle: cuéntame el contexto.',
+        command: 'Eso parece una orden, no una pregunta. Comparte una situación real de tu vida.',
+        noise: 'El Oráculo espera una pregunta genuina sobre tu vida, amor, carrera o camino espiritual.',
+        empty: 'Hazme una pregunta real: sobre tu amor, carrera, propósito o cualquier desafío que vivas ahora.',
       },
       it: {
-        short: '✦ Condividi di più sulla tua situazione così posso guidarti con precisione.',
-        detail: '✦ Formula la domanda con un po\' più di dettaglio: raccontami il contesto.',
-        command: '✦ Sembra un comando, non una domanda. Condividi una situazione reale della tua vita.',
-        noise: '✦ L\'Oracolo attende una domanda genuina sulla tua vita, amore, carriera o percorso spirituale.',
-        empty: '✦ Fammi una domanda vera: sul tuo amore, carriera, scopo o qualsiasi sfida che stai vivendo.',
+        short: 'Condividi di più sulla tua situazione così posso guidarti con precisione.',
+        detail: 'Formula la domanda con un po\' più di dettaglio: raccontami il contesto.',
+        command: 'Sembra un comando, non una domanda. Condividi una situazione reale della tua vita.',
+        noise: 'L\'Oracolo attende una domanda genuina sulla tua vita, amore, carriera o percorso spirituale.',
+        empty: 'Fammi una domanda vera: sul tuo amore, carriera, scopo o qualsiasi sfida che stai vivendo.',
       },
       de: {
-        short: '✦ Erzähle mehr über deine Situation, damit ich dich präzise führen kann.',
-        detail: '✦ Formuliere deine Frage etwas ausführlicher - gib mir den Kontext.',
-        command: '✦ Das klingt wie ein Befehl, keine Frage. Teile eine echte Lebenssituation.',
-        noise: '✦ Das Orakel wartet auf eine echte Frage zu Leben, Liebe, Karriere oder spirituellem Weg.',
-        empty: '✦ Stelle mir eine echte Frage - zu Liebe, Karriere, Sinn oder einer aktuellen Herausforderung.',
+        short: 'Erzähle mehr über deine Situation, damit ich dich präzise führen kann.',
+        detail: 'Formuliere deine Frage etwas ausführlicher - gib mir den Kontext.',
+        command: 'Das klingt wie ein Befehl, keine Frage. Teile eine echte Lebenssituation.',
+        noise: 'Das Orakel wartet auf eine echte Frage zu Leben, Liebe, Karriere oder spirituellem Weg.',
+        empty: 'Stelle mir eine echte Frage - zu Liebe, Karriere, Sinn oder einer aktuellen Herausforderung.',
       },
       fr: {
-        short: '✦ Partage davantage sur ta situation pour que je puisse te guider avec précision.',
-        detail: '✦ Formule ta question avec un peu plus de détail - donne-moi le contexte.',
-        command: '✦ Cela ressemble à un ordre, pas à une question. Partage une situation réelle de ta vie.',
-        noise: '✦ L\'Oracle attend une question sincère sur ta vie, ton amour, ta carrière ou ton chemin spirituel.',
-        empty: '✦ Pose-moi une vraie question - sur ton amour, ta carrière, ton but ou un défi actuel.',
+        short: 'Partage davantage sur ta situation pour que je puisse te guider avec précision.',
+        detail: 'Formule ta question avec un peu plus de détail - donne-moi le contexte.',
+        command: 'Cela ressemble à un ordre, pas à une question. Partage une situation réelle de ta vie.',
+        noise: 'L\'Oracle attend une question sincère sur ta vie, ton amour, ta carrière ou ton chemin spirituel.',
+        empty: 'Pose-moi une vraie question - sur ton amour, ta carrière, ton but ou un défi actuel.',
       },
     }) || {}
     if (t.length < 10) return msgs.short
@@ -215,18 +215,18 @@ export function validarPerguntaOracle(texto, lang = 'pt') {
   }
 
   if (t.length < 10)
-    return '✦ Partilha mais sobre a tua situação para eu poder orientar-te com precisão.'
+    return 'Partilha mais sobre a tua situação para eu poder orientar-te com precisão.'
   if (palavras.length < 3)
-    return '✦ Formula a tua pergunta com um pouco mais de detalhe - conta-me o contexto.'
+    return 'Formula a tua pergunta com um pouco mais de detalhe - conta-me o contexto.'
   const imperativos = /^(faze?r?|dize?r?|escrev[ae]r?|respond[ae]r?|criar?|ger[ae]r?|mostrar?|test[ae]r?|colocar?|fazer?|tentar?|experimentar?)\b/i
   if (imperativos.test(t) && palavras.length < 6)
-    return '✦ Isso parece um comando, não uma pergunta. Partilha uma situação real da tua vida - o Oráculo responde ao que vives, não ao que mandas.'
+    return 'Isso parece um comando, não uma pergunta. Partilha uma situação real da tua vida - o Oráculo responde ao que vives, não ao que mandas.'
   const ruido = /^(ola|olá|hello|hi|hey|oi|ok|hm|sim|não|nao|e aí|eai|test|teste|a |o )\b/i
   if (ruido.test(t) && palavras.length < 5)
-    return '✦ O Oráculo aguarda uma pergunta genuína sobre a tua vida, amor, carreira ou caminho espiritual.'
+    return 'O Oráculo aguarda uma pergunta genuína sobre a tua vida, amor, carreira ou caminho espiritual.'
   const semConteudo = /^(uma pergunta|pergunta|algo|qualquer coisa|uma coisa|uma questão|alguma coisa)$/i
   if (semConteudo.test(t))
-    return '✦ Faz-me uma pergunta verdadeira - sobre o teu amor, carreira, propósito ou qualquer desafio que estejas a viver agora.'
+    return 'Faz-me uma pergunta verdadeira - sobre o teu amor, carreira, propósito ou qualquer desafio que estejas a viver agora.'
   if (!perguntaDentroEscopoAstrologia(t, 'pt'))
     return mensagemForaEscopo('pt')
   return null
@@ -366,35 +366,35 @@ export function getChatGreeting(mapaNatal, lang = 'pt', maxFree = 3, isPremium =
         premNo: () => `Welcome. I am Sidus, Chat Oracle.\n\nComplete your birth registration for full chart precision.\n\nWhat weighs on your heart today?`,
         freeSol: (s, l, a, n) => `Hello. I am Sidus, the Chat Oracle.\n\nSun in ${s}, Moon in ${l}, Ascendant in ${a}.\n\nYou have ${n} free questions. Ask about love, career, purpose or transits.\n\nWhat do you want to read in the stars now?`,
         freeNo: () => `Hello. I am Sidus, the Chat Oracle.\n\nComplete your birth registration for personalised answers.\n\nWhat do you want to read in the stars now?`,
-        limit: (n) => `✦ You have used your ${n} free questions.\n\nActivate Premium below for unlimited guidance from Sidus.`,
+        limit: (n) => `You have used your ${n} free questions.\n\nActivate Premium below for unlimited guidance from Sidus.`,
       },
       es: {
         premSol: (s, l, a) => `Bienvenido/a. Soy Sidus, tu Chat Oráculo.\n\nHe estudiado tu carta: Sol en ${s}, Luna en ${l}, Ascendente en ${a}. Premium ofrece consulta ilimitada.\n\nCuéntame qué pasa en tu vida.`,
         premNo: () => `Bienvenido/a. Soy Sidus, Chat Oráculo.\n\nCompleta tu registro natal para leer tu carta con precisión.\n\n¿Qué pesa en tu corazón hoy?`,
         freeSol: (s, l, a, n) => `Hola. Soy Sidus, Chat Oráculo.\n\nSol en ${s}, Luna en ${l}, Ascendente en ${a}.\n\nTienes ${n} preguntas gratuitas. Pregunta sobre amor, carrera o tránsitos.\n\n¿Qué quieres leer en las estrellas?`,
         freeNo: () => `Hola. Soy Sidus, Chat Oráculo.\n\nCompleta tu registro para respuestas personalizadas.\n\n¿Qué quieres leer en las estrellas?`,
-        limit: (n) => `✦ Has usado tus ${n} preguntas gratuitas.\n\nActiva Premium para orientación ilimitada.`,
+        limit: (n) => `Has usado tus ${n} preguntas gratuitas.\n\nActiva Premium para orientación ilimitada.`,
       },
       it: {
         premSol: (s, l, a) => `Benvenuto/a. Sono Sidus, il tuo Chat Oracolo.\n\nHo studiato la tua carta: Sole in ${s}, Luna in ${l}, Ascendente in ${a}.\n\nRaccontami cosa succede nella tua vita.`,
         premNo: () => `Benvenuto/a. Sono Sidus, Chat Oracolo.\n\nCompleta la registrazione natale per precisione totale.`,
         freeSol: (s, l, a, n) => `Ciao. Sono Sidus, Chat Oracolo.\n\nSole in ${s}, Luna in ${l}, Ascendente in ${a}.\n\nHai ${n} domande gratuite.`,
         freeNo: () => `Ciao. Sono Sidus. Completa la registrazione per risposte personalizzate.`,
-        limit: (n) => `✦ Hai usato le ${n} domande gratuite. Attiva Premium per guida illimitata.`,
+        limit: (n) => `Hai usato le ${n} domande gratuite. Attiva Premium per guida illimitata.`,
       },
       de: {
         premSol: (s, l, a) => `Willkommen. Ich bin Sidus, dein Chat-Orakel.\n\nSonne in ${s}, Mond in ${l}, Aszendent in ${a}.\n\nErzähl mir, was in deinem Leben passiert.`,
         premNo: () => `Willkommen. Vervollständige deine Geburtseintragung für volle Präzision.`,
         freeSol: (s, l, a, n) => `Hallo. Ich bin Sidus.\n\nSonne ${s}, Mond ${l}, Aszendent ${a}. Du hast ${n} Gratisfragen.`,
         freeNo: () => `Hallo. Ich bin Sidus. Vervollständige die Registrierung für personalisierte Antworten.`,
-        limit: (n) => `✦ Du hast deine ${n} Gratisfragen genutzt. Aktiviere Premium für unbegrenzte Beratung.`,
+        limit: (n) => `Du hast deine ${n} Gratisfragen genutzt. Aktiviere Premium für unbegrenzte Beratung.`,
       },
       fr: {
         premSol: (s, l, a) => `Bienvenue. Je suis Sidus, ton Chat Oráculo.\n\nSoleil en ${s}, Lune en ${l}, Ascendant en ${a}.\n\nRaconte-moi ce qui se passe dans ta vie.`,
         premNo: () => `Bienvenue. Complète ton enregistrement natal pour une lecture précise.`,
         freeSol: (s, l, a, n) => `Bonjour. Je suis Sidus.\n\nSoleil ${s}, Lune ${l}, Ascendant ${a}. Tu as ${n} questions gratuites.`,
         freeNo: () => `Bonjour. Je suis Sidus. Complète l'enregistrement pour des réponses personnalisées.`,
-        limit: (n) => `✦ Tu as utilisé tes ${n} questions gratuites. Active Premium pour un guidage illimité.`,
+        limit: (n) => `Tu as utilisé tes ${n} questions gratuites. Active Premium pour un guidage illimité.`,
       },
     })
     if (isPremium) {
@@ -420,13 +420,13 @@ export function getChatGreeting(mapaNatal, lang = 'pt', maxFree = 3, isPremium =
 export function getOracleLimitMessage(maxFree, lang = 'pt') {
   if (!isPt(lang)) {
     const greet = contentForLang(lang, {
-      en: { limit: (n) => `✦ You have used your ${n} free questions for today.\n\nActivate Premium below for unlimited guidance from Sidus.` },
-      es: { limit: (n) => `✦ Has usado tus ${n} preguntas gratuitas.\n\nActiva Premium para continuar con orientación ilimitada.` },
-      it: { limit: (n) => `✦ Hai usato le ${n} domande gratuite.\n\nAttiva Premium per continuare con guida illimitata.` },
-      de: { limit: (n) => `✦ Du hast deine ${n} Gratisfragen genutzt.\n\nAktiviere Premium für unbegrenzte Beratung.` },
-      fr: { limit: (n) => `✦ Tu as utilisé tes ${n} questions gratuites.\n\nActive Premium pour un guidage illimité.` },
+      en: { limit: (n) => `You have used your ${n} free questions for today.\n\nActivate Premium below for unlimited guidance from Sidus.` },
+      es: { limit: (n) => `Has usado tus ${n} preguntas gratuitas.\n\nActiva Premium para continuar con orientación ilimitada.` },
+      it: { limit: (n) => `Hai usato le ${n} domande gratuite.\n\nAttiva Premium per continuare con guida illimitata.` },
+      de: { limit: (n) => `Du hast deine ${n} Gratisfragen genutzt.\n\nAktiviere Premium für unbegrenzte Beratung.` },
+      fr: { limit: (n) => `Tu as utilisé tes ${n} questions gratuites.\n\nActive Premium pour un guidage illimité.` },
     })
     return greet.limit(maxFree)
   }
-  return `✦ Usaste as tuas ${maxFree} questões gratuitas.\n\nA tua pergunta foi registada - para continuar com orientação profissional ilimitada do Sidus, activa o Premium abaixo.`
+  return `Usaste as tuas ${maxFree} questões gratuitas.\n\nA tua pergunta foi registada - para continuar com orientação profissional ilimitada do Sidus, activa o Premium abaixo.`
 }

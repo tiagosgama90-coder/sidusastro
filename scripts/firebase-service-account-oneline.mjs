@@ -27,7 +27,7 @@ const oneLine = JSON.stringify(JSON.parse(fs.readFileSync(abs, 'utf8')))
 const outFile = path.join(process.cwd(), 'firebase-service-account-oneline.txt')
 fs.writeFileSync(outFile, oneLine, 'utf8')
 
-console.log('OK — uma linha só,', oneLine.length, 'caracteres')
+console.log('OK - uma linha só,', oneLine.length, 'caracteres')
 console.log('Ficheiro:', outFile)
 console.log('Começa com:', oneLine.slice(0, 40) + '...')
 
@@ -36,7 +36,7 @@ if (process.platform === 'win32') {
     execSync(`powershell -NoProfile -Command "Set-Clipboard -Value (Get-Content -Raw '${outFile.replace(/'/g, "''")}')"`, {
       stdio: 'ignore',
     })
-    console.log('Copiado para o clipboard — cola no Netlify em FIREBASE_SERVICE_ACCOUNT')
+    console.log('Copiado para o clipboard - cola no Netlify em FIREBASE_SERVICE_ACCOUNT')
   } catch {
     console.log('Abre o ficheiro .txt e copia tudo (Ctrl+A, Ctrl+C)')
   }

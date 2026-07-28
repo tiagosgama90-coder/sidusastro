@@ -3144,8 +3144,8 @@ function Chat({ mapaNatal, isPremium, userId, oracleRemotas, onOracleUsada, onUp
         resposta = t('oracle.sessionError')
       } else if (resultado?.servidor) {
         resposta = lang !== 'pt'
-          ? '✦ The oracle is temporarily unavailable. Try again in a moment.'
-          : '✦ O oráculo está temporariamente indisponível. Tenta outra vez dentro de instantes.'
+          ? 'The oracle is temporarily unavailable. Try again in a moment.'
+          : 'O oráculo está temporariamente indisponível. Tenta outra vez dentro de instantes.'
       } else {
         resposta = gerarRespostaOracle(q, mapaNatal, numAtual, lang)
       }
@@ -3183,44 +3183,32 @@ function Chat({ mapaNatal, isPremium, userId, oracleRemotas, onOracleUsada, onUp
   return (
     <div className="oracle-chat">
       {/* Cabeçalho */}
-      <header style={{ padding: '14px 18px', background: 'rgba(11,7,30,0.97)', borderBottom: `1px solid ${CORES.vidroBorda}`, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0, gap: 10 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10, minWidth: 0 }}>
+      <header className="oracle-chat__header">
+        <div className="oracle-chat__header-main">
           <OracleChatAvatar size={40} />
-          <div style={{ minWidth: 0 }}>
+          <div className="oracle-chat__header-copy">
             <h1 className="sidus-page-title oracle-chat__title">{t('oracle.title')}</h1>
             {isPremium && (
-              <div style={{ fontSize: 13, color: CORES.brancoMuted, marginTop: 2 }}>
-                {t('oracle.premiumSubtitle')}
-              </div>
+              <p className="oracle-chat__subtitle">{t('oracle.premiumSubtitle')}</p>
             )}
           </div>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
+        <div className="oracle-chat__header-actions">
           <button
             type="button"
+            className="oracle-chat__header-btn"
             onClick={() => setHistoricoAberto((v) => !v)}
-            style={{
-              display: 'flex', alignItems: 'center', gap: 6,
-              fontSize: 11, color: CORES.dourado,
-              background: historicoAberto ? 'rgba(223,183,108,0.16)' : 'rgba(223,183,108,0.08)',
-              padding: '6px 12px', borderRadius: 20,
-              border: `1px solid rgba(223,183,108,0.35)`,
-              cursor: 'pointer', fontWeight: 600,
-            }}
+            aria-pressed={historicoAberto}
           >
             <History size={14} />
-            {isPremium ? t('oracle.historyOpen') : t('oracle.historyLast')}
+            <span>{isPremium ? t('oracle.historyOpen') : t('oracle.historyLast')}</span>
           </button>
           {!isPremium && (
-          <button type="button" onClick={onUpgrade} style={{
-            fontSize: 11, color: CORES.dourado, background: 'rgba(223,183,108,0.08)',
-            padding: '5px 12px', borderRadius: 20, border: `1px solid rgba(223,183,108,0.3)`,
-            cursor: 'pointer',
-          }}>
-            {restantes > 0
-              ? (restantes === 1 ? t('oracle.freeQuestions', { count: restantes }) : t('oracle.freeQuestionsPlural', { count: restantes }))
-              : t('oracle.premiumBadge', { price: precoVipLabel })}
-          </button>
+            <button type="button" className="oracle-chat__header-btn oracle-chat__header-btn--premium" onClick={onUpgrade}>
+              {restantes > 0
+                ? (restantes === 1 ? t('oracle.freeQuestions', { count: restantes }) : t('oracle.freeQuestionsPlural', { count: restantes }))
+                : t('oracle.premiumBadge', { price: precoVipLabel })}
+            </button>
           )}
         </div>
       </header>
@@ -3307,7 +3295,7 @@ function Chat({ mapaNatal, isPremium, userId, oracleRemotas, onOracleUsada, onUp
         ))}
         {digitando && (
           <div style={{ alignSelf: 'flex-start', padding: '13px 18px', borderRadius: '4px 18px 18px 18px', background: 'rgba(255,255,255,0.055)', border: `1px solid rgba(255,255,255,0.09)` }}>
-            <span style={{ fontSize: 18, letterSpacing: 6, color: CORES.dourado }}>✦ ✦ ✦</span>
+            <span style={{ fontSize: 18, letterSpacing: 4, color: CORES.dourado }}>...</span>
           </div>
         )}
         <div ref={fimRef} />
@@ -3618,7 +3606,7 @@ function Navbar({ passo, setPasso, isDesktop, dados, fotoPerfil }) {
           <AvatarNav foto={fotoPerfil} nome={nomePerfil} size={44} ativo={passo === 'perfil'} />
           <div style={{ flex: 1, minWidth: 0 }}>
             <div style={{ fontSize: 14, fontWeight: 700, color: CORES.branco, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{nomePerfil}</div>
-            <div style={{ fontSize: 11, color: CORES.dourado, marginTop: 2 }}>{t('nav.perfil')} ✦</div>
+            <div style={{ fontSize: 11, color: CORES.dourado, marginTop: 2 }}>{t('nav.perfil')}</div>
           </div>
         </button>
         <div style={{ padding: '8px 16px 12px', borderBottom: `1px solid ${CORES.vidroBorda}` }}>
@@ -3654,7 +3642,7 @@ function Navbar({ passo, setPasso, isDesktop, dados, fotoPerfil }) {
             >
               {Icon ? <Icon size={20} strokeWidth={ativo ? 2.2 : 1.8} /> : <span style={{ width: 20 }} />}
               <span style={{ fontSize: 15, fontWeight: ativo ? 700 : 500, flex: 1 }}>{item.label}</span>
-              {ativo && <span style={{ fontSize: 10, color: CORES.dourado }}>✦</span>}
+              {ativo && <span style={{ fontSize: 10, color: CORES.dourado }}>•</span>}
             </button>
           )
         })}
@@ -4040,7 +4028,7 @@ export default function App() {
     if (urlLang && urlLang !== lang) setLang(urlLang)
   }, [location.pathname, authCarregando, lang, setLang])
 
-  // URL ↔ passo (voltar atrás no browser, links directos) — só reage a mudanças de URL
+  // URL ↔ passo (voltar atrás no browser, links directos) - só reage a mudanças de URL
   useEffect(() => {
     if (authCarregando) return
     const path = stripLangPrefix(location.pathname)

@@ -1,5 +1,5 @@
 /**
- * Capa VIP v8 — thumbnail estilo landing Sidus, bilingue PT/EN, 3D, rodapé VIP.
+ * Capa VIP v8 - thumbnail estilo landing Sidus, bilingue PT/EN, 3D, rodapé VIP.
  *   npx vite-node scripts/generate-pdf-commercial-cover.mjs
  *   npx vite-node scripts/generate-pdf-commercial-cover.mjs --apply
  */

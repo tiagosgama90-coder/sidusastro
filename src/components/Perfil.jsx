@@ -228,7 +228,7 @@ export function Perfil({ utilizador, dados, mapaNatal, isPremium, dadosBloqueado
             borderRadius:12, color:CORES.dourado, fontSize:13, fontWeight:600,
             padding:'13px 16px', cursor:'pointer', textAlign:'left', lineHeight:1.5,
           }}>
-            ✦ {t('vip.promoLink')}
+            {t('vip.promoLink')}
           </button>
         )}
         {emailTemPremiumPrivilegiado(utilizador) && (

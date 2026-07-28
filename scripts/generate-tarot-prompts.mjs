@@ -70,7 +70,7 @@ const rows = slugs.map((slug) => {
 
 const filtered = missingOnly ? rows.filter((r) => !r.exists) : rows
 
-console.log(`# Tarot Mystic — ${filtered.length} cartas${missingOnly ? ' em falta' : ''}\n`)
+console.log(`# Tarot Mystic - ${filtered.length} cartas${missingOnly ? ' em falta' : ''}\n`)
 for (const r of filtered) {
   console.log(`## ${r.slug}${r.exists ? ' ✓' : ''}`)
   console.log(r.prompt)

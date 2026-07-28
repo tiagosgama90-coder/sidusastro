@@ -282,7 +282,7 @@ function FxLayer({ activo }) {
 }
 
 /**
- * Efeito cósmico site-wide — camada fixa no body (fora de stacking contexts).
+ * Efeito cósmico site-wide - camada fixa no body (fora de stacking contexts).
  */
 export function MagicCursorTrail({ activo = true }) {
   const [host, setHost] = useState(null)

@@ -1,5 +1,5 @@
 /**
- * Gera sidus-cosmic-mandala.svg — símbolo dourado com geometria sagrada + 12 signos, fundo transparente.
+ * Gera sidus-cosmic-mandala.svg - símbolo dourado com geometria sagrada + 12 signos, fundo transparente.
  */
 import { writeFileSync } from 'fs'
 import { dirname, join } from 'path'

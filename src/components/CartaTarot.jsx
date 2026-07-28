@@ -126,7 +126,7 @@ function CartaFallbackSVG({ carta, size }) {
         {carta.nome.length > 22 ? `${carta.nome.slice(0, 20)}…` : carta.nome.toUpperCase()}
       </text>
       {[18, 34, 56, 72].map((x) => (
-        <text key={x} x={x} y="134" fontSize="6" fill={CORES.dourado} opacity="0.35" textAnchor="middle">✦</text>
+        <text key={x} x={x} y="134" fontSize="6" fill={CORES.dourado} opacity="0.35" textAnchor="middle"></text>
       ))}
       {carta.invertida && !isLenormand && (
         <text x="45" y="141" fontSize="5" fill="#EF4444" textAnchor="middle" opacity="0.9">
@@ -155,7 +155,7 @@ export function VersoSVG({ w, h, idSuffix = '0' }) {
       <rect width="90" height="144" rx="8" fill={`url(#vd_pt_${idSuffix})`} />
       <rect x="2" y="2" width="86" height="140" rx="7" fill="none" stroke={CORES.dourado} strokeWidth="1.2" opacity="0.5" />
       <rect x="8" y="8" width="74" height="128" rx="5" fill="none" stroke={CORES.dourado} strokeWidth="0.5" opacity="0.22" />
-      <text x="45" y="72" fontSize="22" textAnchor="middle" dominantBaseline="middle" fill={CORES.dourado} opacity="0.38">✦</text>
+      <text x="45" y="72" fontSize="22" textAnchor="middle" dominantBaseline="middle" fill={CORES.dourado} opacity="0.38"></text>
       <text x="45" y="96" fontSize="8" textAnchor="middle" fill={CORES.dourado} opacity="0.28" fontFamily="Georgia,serif" letterSpacing="1.2">SIDUS</text>
     </svg>
   )

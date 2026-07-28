@@ -1,5 +1,5 @@
 /**
- * Avatar do Chat Oráculo — bola de cristal com brilho cósmico.
+ * Avatar do Chat Oráculo - bola de cristal com brilho cósmico.
  */
 export function OracleChatAvatar({ size = 40 }) {
   return (

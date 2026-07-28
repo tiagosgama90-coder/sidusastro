@@ -1,4 +1,4 @@
-/** Preços — espelham src/lib/pricing.js */
+/** Preços - espelham src/lib/pricing.js */
 export const PRECO_TAROT_EUR = 1.99
 export const PRECO_PREMIUM_EUR = 9.99
 export const PRECO_PREMIUM_PIX_BRL = 27
