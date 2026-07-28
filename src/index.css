@@ -4920,6 +4920,14 @@ h1.sidus-page-title {
   background: radial-gradient(circle at 50% 35%, rgba(124, 58, 237, 0.22), rgba(11, 7, 30, 0.5));
   border: 1.5px solid rgba(223, 183, 108, 0.45);
   box-shadow: 0 0 14px rgba(124, 58, 237, 0.25);
+  overflow: hidden;
+}
+
+.oracle-chat-avatar__eye {
+  display: block;
+  width: 72%;
+  height: 72%;
+  object-fit: contain;
 }
 
 .oracle-chat__title {
