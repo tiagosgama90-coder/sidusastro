@@ -83,7 +83,7 @@ function criarCanvasPartilha({ signoSol, signoLua, signoAsc, nome, lang }) {
   ctx.fillStyle = '#DFB76C'
   ctx.font = 'bold 20px Georgia, serif'
   ctx.textAlign = 'center'
-  ctx.fillText('✦ Sidusastro', W / 2, 32)
+  ctx.fillText('Sidusastro', W / 2, 32)
 
   ctx.fillStyle = '#FFFFFF'
   ctx.font = '600 18px system-ui, sans-serif'

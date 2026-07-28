@@ -82,12 +82,12 @@ const RESPOSTA_FORA_EN = [
 
 export function mensagemForaEscopo(lang = 'pt') {
   const msgs = {
-    pt: '✦ Sou Sidus, do Chat Oráculo. Só oriento astrologia, previsões e vida lidas pelo teu mapa natal (amor, carreira, propósito, ciclos, trânsitos, compatibilidade). Reformula a tua pergunta nesse âmbito.',
-    en: '✦ I am Sidus, from Chat Oracle. I only guide astrology, predictions and life read through your natal chart (love, career, purpose, cycles, transits, compatibility). Please rephrase your question in that scope.',
-    es: '✦ Soy Sidus, del Chat Oráculo. Solo oriento astrología, predicciones y vida leídas por tu carta natal. Reformula tu pregunta en ese ámbito.',
-    it: '✦ Sono Sidus, del Chat Oracolo. Guido solo astrologia, previsioni e vita lette dalla tua carta natale. Riformula la domanda in questo ambito.',
-    de: '✦ Ich bin Sidus vom Chat-Orakel. Ich berate nur Astrologie und Lebensthemen über dein Geburtshoroskop. Formuliere deine Frage in diesem Rahmen neu.',
-    fr: '✦ Je suis Sidus, du Chat Oráculo. Je guide uniquement l\'astrologie et la vie lues par ta carte natale. Reformule ta question dans ce cadre.',
+    pt: 'Sou Sidus, do Chat Oráculo. Só oriento astrologia, previsões e vida lidas pelo teu mapa natal (amor, carreira, propósito, ciclos, trânsitos, compatibilidade). Reformula a tua pergunta nesse âmbito.',
+    en: 'I am Sidus, from Chat Oracle. I only guide astrology, predictions and life read through your natal chart (love, career, purpose, cycles, transits, compatibility). Please rephrase your question in that scope.',
+    es: 'Soy Sidus, del Chat Oráculo. Solo oriento astrología, predicciones y vida leídas por tu carta natal. Reformula tu pregunta en ese ámbito.',
+    it: 'Sono Sidus, del Chat Oracolo. Guido solo astrologia, previsioni e vita lette dalla tua carta natale. Riformula la domanda in questo ambito.',
+    de: 'Ich bin Sidus vom Chat-Orakel. Ich berate nur Astrologie und Lebensthemen über dein Geburtshoroskop. Formuliere deine Frage in diesem Rahmen neu.',
+    fr: 'Je suis Sidus, du Chat Oráculo. Je guide uniquement l\'astrologie et la vie lues par ta carte natale. Reformule ta question dans ce cadre.',
   }
   return msgs[lang] || msgs.en
 }

@@ -150,7 +150,7 @@ const CARTAS = [
     conselho: 'Aceita o fardo com dignidade - a cruz mais pesada forja o espírito mais forte.' },
 ]
 
-export const LENORMAND_VERSO = { id: 0, slug: 'verso', nome: 'Verso', tipo: 'lenormand', simb: '✦' }
+export const LENORMAND_VERSO = { id: 0, slug: 'verso', nome: 'Verso', tipo: 'lenormand', simb: '' }
 
 export const LENORMAND_DECK = CARTAS.map((c) => ({
   ...c,

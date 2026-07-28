@@ -613,7 +613,7 @@ function TarotTipoCard({
       onBlur={() => setHover(false)}
       onMouseMove={moverMagia}
     >
-      <div className="tarot-tipo-card__sparkles" aria-hidden>✦</div>
+      <div className="tarot-tipo-card__sparkles" aria-hidden></div>
       <div className="tarot-tipo-card__arte">
         <TarotTipoArte
           tipoId={tipo.id}
@@ -664,7 +664,7 @@ function TelaSeleccionar({ tipos, onSeleccionar, isPremium, gratisEsgotada, rest
       )}
       {!isPremium && (
         <div className="tarot-free-banner" style={{background:'rgba(223,183,108,0.07)',border:`1px solid rgba(223,183,108,0.25)`,borderRadius:10,padding:'8px 14px',marginBottom:18,display:'flex',alignItems:'center',gap:8}}>
-          <span style={{fontSize:16}}>✦</span>
+          <span style={{fontSize:16}}></span>
           <span style={{fontSize:12,color:CORES.brancoMuted}}>
             {gratisEsgotada
               ? <><b style={{color:'#E8A855'}}>{t('tarot.freeExhausted')}</b>{isBrasil ? t('tarot.thenPaidBr', { price: precoLeituraFmt, vipPrice: vipPrecoFmt }) : t('tarot.thenPaid', { price: precoLeituraFmt, vipPrice: vipPrecoFmt })}</>
@@ -958,7 +958,7 @@ function TelaRevelar({ cartas, reveladas = [], onRevelar, posicoes = [], tipo, p
           </p>
           {c.conselho && (
             <div style={{marginTop:10,padding:'8px 12px',background:'rgba(223,183,108,0.07)',borderRadius:8,borderLeft:`2px solid ${CORES.dourado}`}}>
-              <p style={{fontSize:12,color:CORES.dourado,margin:0,fontStyle:'italic'}}>✦ {c.conselho}</p>
+              <p style={{fontSize:12,color:CORES.dourado,margin:0,fontStyle:'italic'}}>{c.conselho}</p>
             </div>
           )}
         </div>
@@ -981,7 +981,7 @@ function TelaRevelar({ cartas, reveladas = [], onRevelar, posicoes = [], tipo, p
           borderRadius: 16, padding: 20, marginTop: 14,
         }}>
           <div style={{ fontSize: 10, color: '#C4B5FD', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 10, fontWeight: 700 }}>
-            ✦ {t('tarot.angelMessage')}
+            {t('tarot.angelMessage')}
           </div>
           <p style={{ fontSize: 14, color: CORES.brancoSuave, lineHeight: 1.75, margin: 0, fontStyle: 'italic' }}>
             {resultado.mensagemAnjos}

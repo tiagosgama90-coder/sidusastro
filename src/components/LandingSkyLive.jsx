@@ -40,7 +40,7 @@ export function LandingSkyLive({ compact = false }) {
               <div className="landing-portal-sky-ticker-track">
                 {[...tickerItems, ...tickerItems].map((item, i) => (
                   <span key={`${item.key}-${i}`} className="landing-portal-sky-ticker-item">
-                    <span className="landing-portal-sky-ticker-dot" aria-hidden>✦</span>
+                    <span className="landing-portal-sky-ticker-dot" aria-hidden></span>
                     {item.label}
                   </span>
                 ))}

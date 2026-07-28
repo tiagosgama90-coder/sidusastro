@@ -1,5 +1,5 @@
 /**
- * Audita packs de locale — conta strings que ainda parecem português.
+ * Audita packs de locale - conta strings que ainda parecem português.
  * Uso: node scripts/audit-locale-packs.mjs
  */
 import { readFileSync, readdirSync, statSync } from 'fs'
@@ -48,7 +48,7 @@ function extractExportedData(text) {
     try {
       out.push(Function(`"use strict"; return (${m[2]})`)())
     } catch {
-      // arrays / large blobs — skip parse errors
+      // arrays / large blobs - skip parse errors
     }
   }
   if (!out.length) {
@@ -71,7 +71,7 @@ function listJsFiles(dir) {
   return files
 }
 
-console.log('Auditoria de locale packs — vazamentos de português\n')
+console.log('Auditoria de locale packs - vazamentos de português\n')
 console.log('Ficheiro'.padEnd(42), 'Strings', 'PT leak', '%')
 console.log('-'.repeat(72))
 

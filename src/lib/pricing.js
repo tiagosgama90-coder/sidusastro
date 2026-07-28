@@ -1,4 +1,4 @@
-/** Preços Sidus — EUR (internacional) e BRL (PIX Brasil). */
+/** Preços Sidus - EUR (internacional) e BRL (PIX Brasil). */
 export const PRECO_TAROT = 1.99
 export const PRECO_MAPA_COMPLETO = 10
 export const PRECO_PREMIUM_UNICO = 9.99
@@ -8,7 +8,7 @@ export const PRECO_PREMIUM_MENSAL = PRECO_PREMIUM_UNICO
 export const STRIPE_MIN_EUR = 0.5
 export const STRIPE_MIN_BRL = 0.5
 
-/** Premium Brasil via PIX — cobrado em reais. */
+/** Premium Brasil via PIX - cobrado em reais. */
 export const PRECO_PREMIUM_BR_PIX_BRL = 27
 /** Leitura Tarot / pergunta Brasil via PIX. */
 export const PRECO_TAROT_BR_PIX_BRL = 4.9

@@ -51,7 +51,7 @@ export function HoroscopoColunasSignos({
     })
     return gerados.map((h, i) => ({
       ...h,
-      simbolo: SIGNOS[i]?.simbolo || '✦',
+      simbolo: SIGNOS[i]?.simbolo || '',
       resumo: h.texto,
       isUser: i === userIdx,
     }))

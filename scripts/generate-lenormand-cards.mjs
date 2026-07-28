@@ -383,7 +383,7 @@ ${Array.from({length:12}, (_,r) => Array.from({length:8}, (_,c) => {
 ${filigree(id)}
 <circle cx="225" cy="360" r="55" fill="url(#gold_${id})" stroke="${GOLD_DARK}" stroke-width="3"/>
 <circle cx="225" cy="360" r="38" fill="${CRIMSON}" opacity="0.8"/>
-<text x="225" y="372" text-anchor="middle" fill="${GOLD}" font-family="Georgia,serif" font-size="28">✦</text>
+<text x="225" y="372" text-anchor="middle" fill="${GOLD}" font-family="Georgia,serif" font-size="28"></text>
 </svg>`,
 }
 

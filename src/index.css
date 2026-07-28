@@ -306,7 +306,7 @@ html.sidus-no-ads .google-auto-placed {
   white-space: nowrap;
 }
 
-/* Títulos de página — mesmo estilo que Mapa Astral */
+/* Títulos de página - mesmo estilo que Mapa Astral */
 h1.sidus-page-title {
   font-family: var(--heading);
   font-size: 22px;
@@ -429,7 +429,7 @@ h1.sidus-page-title {
   white-space: nowrap;
 }
 
-/* —— Logótipo Sidus (constelação S) —— */
+/* -- Logótipo Sidus (constelação S) -- */
 .sidus-logo {
   display: inline-flex;
   align-items: center;
@@ -1693,7 +1693,7 @@ h1.sidus-page-title {
   background: transparent;
   border: none;
 }
-/* Mapa natal premium — landing */
+/* Mapa natal premium - landing */
 .natal-chart-premium--cover {
   width: 100%;
   max-width: 340px;
@@ -2588,7 +2588,7 @@ h1.sidus-page-title {
   isolation: isolate;
 }
 
-/* Camada fixa única: estrelas + hendecagrama — SEMPRE atrás do conteúdo */
+/* Camada fixa única: estrelas + hendecagrama - SEMPRE atrás do conteúdo */
 .sidus-cosmic-backdrop {
   position: fixed;
   inset: 0;
@@ -2604,7 +2604,7 @@ h1.sidus-page-title {
   isolation: isolate;
 }
 
-/* Véu suave entre fundo cósmico e texto — estrela visível mas nunca “em cima” */
+/* Véu suave entre fundo cósmico e texto - estrela visível mas nunca “em cima” */
 .sidus-cosmic-foreground::before {
   content: '';
   position: fixed;
@@ -2621,7 +2621,7 @@ h1.sidus-page-title {
   isolation: isolate;
 }
 
-/* Wrapper de cada página — site todo */
+/* Wrapper de cada página - site todo */
 .sidus-page-root {
   position: relative;
   z-index: 1;
@@ -2687,14 +2687,14 @@ h1.sidus-page-title {
   isolation: isolate;
 }
 
-/* Hendecagrama e estrelas — fundo, nunca por cima */
+/* Hendecagrama e estrelas - fundo, nunca por cima */
 .landing-cosmic-stars-canvas,
 .landing-cosmic-nebula,
 .landing-cosmic-hendecagram-wrap {
   z-index: 0;
 }
 
-/* Efeitos de toque/clique — no body, acima do conteúdo, abaixo da navbar (150) */
+/* Efeitos de toque/clique - no body, acima do conteúdo, abaixo da navbar (150) */
 .sidus-cosmic-fx-layer {
   position: fixed;
   inset: 0;
@@ -4729,7 +4729,7 @@ h1.sidus-page-title {
   display: none;
 }
 
-/* Mobile Tarot — overrides finais (depois dos estilos base) */
+/* Mobile Tarot - overrides finais (depois dos estilos base) */
 @media (max-width: 767px) {
   .tarot-seleccionar-page {
     display: flex;
@@ -4899,7 +4899,7 @@ h1.sidus-page-title {
   }
 }
 
-/* Chat oráculo — preencher área abaixo da navbar (mobile + desktop) */
+/* Chat oráculo - preencher área abaixo da navbar (mobile + desktop) */
 .oracle-chat {
   display: flex;
   flex-direction: column;
@@ -4925,6 +4925,98 @@ h1.sidus-page-title {
 .oracle-chat__title {
   margin: 0;
   line-height: 1.15;
+  font-size: 18px;
+  letter-spacing: 0.1em;
+}
+
+.oracle-chat__header {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 12px;
+  padding: 12px 14px;
+  background: rgba(11, 7, 30, 0.97);
+  border-bottom: 1px solid rgba(223, 183, 108, 0.22);
+  flex-shrink: 0;
+}
+
+.oracle-chat__header-main {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.oracle-chat__header-copy {
+  min-width: 0;
+  flex: 1;
+}
+
+.oracle-chat__subtitle {
+  margin: 4px 0 0;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.oracle-chat__header-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  width: 100%;
+}
+
+.oracle-chat__header-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: 11px;
+  font-weight: 600;
+  color: #DFB76C;
+  background: rgba(223, 183, 108, 0.08);
+  padding: 8px 12px;
+  border-radius: 20px;
+  border: 1px solid rgba(223, 183, 108, 0.35);
+  cursor: pointer;
+  line-height: 1.2;
+  text-align: center;
+}
+
+.oracle-chat__header-btn[aria-pressed='true'] {
+  background: rgba(223, 183, 108, 0.16);
+}
+
+.oracle-chat__header-btn--premium {
+  flex: 1 1 100%;
+}
+
+@media (min-width: 560px) {
+  .oracle-chat__header {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 18px;
+  }
+
+  .oracle-chat__header-actions {
+    width: auto;
+    flex-wrap: nowrap;
+    justify-content: flex-end;
+  }
+
+  .oracle-chat__header-btn {
+    flex: 0 1 auto;
+  }
+
+  .oracle-chat__header-btn--premium {
+    flex: 0 1 auto;
+  }
+
+  .oracle-chat__title {
+    font-size: 22px;
+  }
 }
 
 .oracle-chat__input-bar {
@@ -4940,7 +5032,7 @@ h1.sidus-page-title {
   }
 }
 
-/* Mobile bottom nav — sempre visível e clicável por cima de tudo */
+/* Mobile bottom nav - sempre visível e clicável por cima de tudo */
 .mobile-bottom-nav {
   position: fixed;
   bottom: 0;
@@ -5032,7 +5124,7 @@ html.sidus-mobile-menu-open .mobile-menu-btn {
   min-height: 0;
 }
 
-/* Home — horóscopo signos grid */
+/* Home - horóscopo signos grid */
 .home-signos-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(72px, 1fr));
@@ -5110,7 +5202,7 @@ html.sidus-mobile-menu-open .mobile-menu-btn {
   }
 }
 
-/* Home — Para ti hoje */
+/* Home - Para ti hoje */
 .home-para-ti {
   margin-bottom: 16px;
   padding: 14px;
@@ -5437,11 +5529,11 @@ html.sidus-mobile-menu-open .mobile-menu-btn {
 }
 
 .oracle-upsell-benefits li::before {
-  content: '✦';
+  content: '•';
   position: absolute;
   left: 0;
   color: #DFB76C;
-  font-size: 9px;
+  font-size: 11px;
 }
 
 /* Perfil edit natal */

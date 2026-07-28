@@ -315,7 +315,7 @@ function visaoGeral(nome, mapa, lang) {
 
 export function enriquecerMapaNumerologia(base, nome, lang = 'pt', mapaNatal = null) {
   const pilares = [
-    { id: 'destino', num: base.destino, icone: '✦', cor: '#DFB76C', calculo: base.calculos?.destino },
+    { id: 'destino', num: base.destino, icone: '', cor: '#DFB76C', calculo: base.calculos?.destino },
     { id: 'alma', num: base.alma, icone: '🌙', cor: '#A78BFA', calculo: base.calculos?.alma },
     { id: 'personalidade', num: base.personalidade, icone: '☀', cor: '#34D399', calculo: base.calculos?.personalidade },
   ].map((p) => {

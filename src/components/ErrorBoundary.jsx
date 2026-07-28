@@ -78,7 +78,7 @@ export class ErrorBoundary extends Component {
           borderRadius: 16,
           padding: '28px 24px',
         }}>
-          <div style={{ fontSize: 36, marginBottom: 12 }}>✦</div>
+          <div style={{ fontSize: 36, marginBottom: 12 }}></div>
           <h1 style={{ margin: '0 0 12px', fontSize: 20, fontWeight: 600, color: CORES.dourado }}>
             Algo correu mal
           </h1>
@@ -87,7 +87,7 @@ export class ErrorBoundary extends Component {
           </p>
           {isTranslateCrash && (
             <p style={{ margin: '0 0 16px', fontSize: 13, lineHeight: 1.55, color: 'rgba(223,183,108,0.9)' }}>
-              Se usaste o Tradutor do Google, recarrega a página uma vez — a versão nova já suporta tradução sem bloquear o formulário.
+              Se usaste o Tradutor do Google, recarrega a página uma vez - a versão nova já suporta tradução sem bloquear o formulário.
             </p>
           )}
           {this.state.error?.message && (

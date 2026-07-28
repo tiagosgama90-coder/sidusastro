@@ -1,4 +1,4 @@
-/** Estrela pitagórica — pentagrama linear com números (numerologia). */
+/** Estrela pitagórica - pentagrama linear com números (numerologia). */
 export function PythagoreanStarIcon({
   size = 24,
   color = 'currentColor',

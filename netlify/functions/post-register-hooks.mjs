@@ -52,7 +52,7 @@ export default async (req) => {
     const subject = 'O teu mapa está quase pronto - Sidusastro'
     const html = `<!DOCTYPE html><html><body style="font-family:system-ui,sans-serif;background:#0B071E;color:#fff;padding:24px">
     <div style="max-width:520px;margin:0 auto;background:#1a0d3a;border:1px solid #DFB76C;border-radius:12px;padding:28px">
-      <h1 style="color:#DFB76C;font-size:22px;margin:0 0 16px">✦ Bem-vindo/a ao Sidusastro</h1>
+      <h1 style="color:#DFB76C;font-size:22px;margin:0 0 16px">Bem-vindo/a ao Sidusastro</h1>
       <p style="color:rgba(255,255,255,0.85);line-height:1.6;font-size:15px">A tua conta foi criada. Confirma o e-mail de verificação e completa o teu mapa astral - Sol, Lua, Ascendente e relatório PDF personalizado.</p>
       <p style="margin:24px 0"><a href="${origin}/comecar" style="display:inline-block;background:#DFB76C;color:#0B071E;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:700">Ver o meu mapa</a></p>
       <p style="font-size:12px;color:rgba(255,255,255,0.45)">Sidusastro · sidusastro.com</p>

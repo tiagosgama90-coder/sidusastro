@@ -109,10 +109,10 @@ Use your own accounts. **No seller secrets** are included in this repository.
 | Service | What to configure |
 |---------|-------------------|
 | **Netlify** | Hosting, build \`npm run build\`, env vars from \`.env.example\` |
-| **Firebase** | Auth + Firestore — project ID in \`.firebaserc\` and \`VITE_FIREBASE_*\` |
-| **Stripe** | Checkout + webhook — \`STRIPE_SECRET_KEY\`, \`STRIPE_WEBHOOK_SECRET\` |
-| **Google Analytics** | Optional — \`VITE_GA_MEASUREMENT_ID\` |
-| **Google AdSense** | Optional — \`VITE_ADSENSE_CLIENT\`, \`VITE_ADSENSE_SLOT\`, \`/guia/*.html\` |
+| **Firebase** | Auth + Firestore - project ID in \`.firebaserc\` and \`VITE_FIREBASE_*\` |
+| **Stripe** | Checkout + webhook - \`STRIPE_SECRET_KEY\`, \`STRIPE_WEBHOOK_SECRET\` |
+| **Google Analytics** | Optional - \`VITE_GA_MEASUREMENT_ID\` |
+| **Google AdSense** | Optional - \`VITE_ADSENSE_CLIENT\`, \`VITE_ADSENSE_SLOT\`, \`/guia/*.html\` |
 | **reCAPTCHA v2** | \`VITE_RECAPTCHA_SITE_KEY\` |
 
 See [SETUP.md](./SETUP.md) for step-by-step deployment.

@@ -2,7 +2,7 @@ const CHART_SRC = '/brand/sidus-premium-thin-a-1024.png?v=13'
 const CHART_SRCSET =
   '/brand/sidus-premium-thin-a-512.png?v=13 512w, /brand/sidus-premium-thin-a-1024.png?v=13 1024w, /brand/sidus-premium-thin-a-2048.png?v=13 2048w'
 
-/** Símbolo premium A com brilho central e nos pontos — PNG transparente. */
+/** Símbolo premium A com brilho central e nos pontos - PNG transparente. */
 export function LandingWelcomeSymbol() {
   return (
     <div className="landing-welcome-zodiac notranslate" translate="no" aria-hidden>

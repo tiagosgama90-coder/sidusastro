@@ -1,6 +1,6 @@
 export const FUSO_OFFSET_VALUES = [0, 1, -3, 2]
 
-/** Só para nomes de cidades reais nas sugestões — não traduzir geografia. */
+/** Só para nomes de cidades reais nas sugestões - não traduzir geografia. */
 export const CITY_SUGGESTION_NO_TRANSLATE = {
   translate: 'no',
 }
