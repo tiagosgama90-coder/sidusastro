@@ -98,7 +98,7 @@ html {
 .mobile-menu-overlay {
   position: fixed;
   inset: 0;
-  z-index: 140;
+  z-index: 240;
   background: rgba(0, 0, 0, 0.55);
   border: none;
   padding: 0;
@@ -114,7 +114,7 @@ html {
   bottom: 0;
   width: min(82vw, 300px);
   max-width: 300px;
-  z-index: 160;
+  z-index: 250;
   background: rgba(11, 7, 30, 0.98);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
@@ -123,6 +123,7 @@ html {
   transform: translateX(-105%);
   transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
   padding-top: max(52px, calc(env(safe-area-inset-top, 0px) + 52px));
+  padding-bottom: max(20px, env(safe-area-inset-bottom, 20px));
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
 }
@@ -4928,6 +4929,9 @@ h1.sidus-page-title {
 
 .oracle-chat__input-bar {
   padding-bottom: max(22px, env(safe-area-inset-bottom, 22px));
+  position: relative;
+  z-index: 2;
+  flex-shrink: 0;
 }
 
 @media (max-width: 767px) {
@@ -4993,6 +4997,39 @@ h1.sidus-page-title {
 
 .mobile-shell-pad-bottom {
   padding-bottom: calc(68px + env(safe-area-inset-bottom, 0px));
+}
+
+html.sidus-mobile-menu-open .mobile-bottom-nav {
+  display: none;
+}
+
+html.sidus-mobile-menu-open header {
+  z-index: 260;
+}
+
+html.sidus-mobile-menu-open .mobile-menu-btn {
+  position: relative;
+  z-index: 261;
+}
+
+.sidus-app-content--chat-full {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.sidus-app-content--chat-full .sidus-page-root {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.sidus-app-content--chat-full .oracle-chat {
+  flex: 1;
+  min-height: 0;
 }
 
 /* Home — horóscopo signos grid */
@@ -5265,6 +5302,41 @@ h1.sidus-page-title {
   display: flex;
   flex-direction: column;
   gap: 12px;
+  touch-action: pan-y;
+}
+
+.oracle-chat__paywall-dock {
+  flex-shrink: 0;
+  max-height: min(48vh, 380px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
+  border-top: 1px solid rgba(223, 183, 108, 0.28);
+  background: rgba(11, 7, 30, 0.98);
+  padding: 10px 12px 12px;
+  box-shadow: 0 -10px 28px rgba(0, 0, 0, 0.35);
+}
+
+@media (max-width: 767px) {
+  .oracle-chat__paywall-dock {
+    max-height: min(52vh, 340px);
+    padding: 8px 10px 10px;
+  }
+
+  .oracle-chat-upsell {
+    margin: 0;
+    padding: 12px;
+  }
+
+  .oracle-chat-upsell__price {
+    font-size: 24px;
+    margin-bottom: 10px;
+  }
+
+  .oracle-chat__messages {
+    padding: 12px 10px 8px;
+  }
 }
 
 .oracle-chat-upsell {
