@@ -51,6 +51,8 @@ service cloud.firestore {
         && (
           podeActualizarDadosNatais()
           || request.resource.data.diff(resource.data).affectedKeys().hasOnly(['tarotLeiturasUsadas'])
+          || request.resource.data.diff(resource.data).affectedKeys().hasOnly(['oraclePerguntasUsadas'])
+          || request.resource.data.diff(resource.data).affectedKeys().hasOnly(['tarotLeiturasUsadas', 'oraclePerguntasUsadas'])
         );
 
       // Notificações diárias (Premium) — subcoleção gerida pelo próprio utilizador

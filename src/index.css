@@ -5255,6 +5255,99 @@ h1.sidus-page-title {
   cursor: pointer;
 }
 
+.oracle-chat__messages {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  padding: 16px 14px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.oracle-chat-upsell {
+  align-self: stretch;
+  width: 100%;
+  max-width: 100%;
+  margin: 4px 0 8px;
+  padding: 16px;
+  border-radius: 16px;
+  background: linear-gradient(145deg, rgba(223, 183, 108, 0.14), rgba(109, 40, 217, 0.12));
+  border: 1px solid rgba(223, 183, 108, 0.45);
+  box-shadow: 0 8px 32px rgba(223, 183, 108, 0.12);
+  box-sizing: border-box;
+}
+
+.oracle-chat-upsell__eyebrow {
+  margin: 0 0 8px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #DFB76C;
+  line-height: 1.35;
+}
+
+.oracle-chat-upsell__lead {
+  margin: 0 0 12px;
+  font-size: 12px;
+  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.oracle-chat-upsell__benefits {
+  margin-bottom: 14px !important;
+}
+
+.oracle-chat-upsell__price {
+  text-align: center;
+  font-size: 28px;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 12px;
+}
+
+.oracle-chat-upsell__pix {
+  display: block;
+  margin-top: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #34D399;
+}
+
+.oracle-chat-upsell__cta {
+  width: 100%;
+  padding: 14px 16px;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  background: linear-gradient(135deg, #DFB76C, #B8944F);
+  color: #0B071E;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.oracle-chat-upsell__promo {
+  width: 100%;
+  margin-top: 10px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(223, 183, 108, 0.25);
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+.oracle-chat-upsell__footnote {
+  margin: 10px 0 0;
+  text-align: center;
+  font-size: 10px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.45);
+}
+
 /* Oracle upsell benefits */
 .oracle-upsell-benefits {
   margin: 0 0 12px;
