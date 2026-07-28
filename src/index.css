@@ -4925,9 +4925,9 @@ h1.sidus-page-title {
 
 .oracle-chat-avatar__eye {
   display: block;
-  width: 72%;
-  height: 72%;
-  object-fit: contain;
+  width: 88%;
+  height: 88%;
+  flex-shrink: 0;
 }
 
 .oracle-chat__title {
@@ -4947,7 +4947,7 @@ h1.sidus-page-title {
 
 .oracle-chat__header {
   position: relative;
-  z-index: 2;
+  z-index: 12;
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: 10px;
@@ -5024,22 +5024,51 @@ h1.sidus-page-title {
   z-index: 1;
 }
 
+.oracle-chat__stage {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+
 @media (max-width: 767px) {
   .oracle-chat__header {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
     gap: 8px;
     padding: 8px 10px;
   }
 
   .oracle-chat__header-main {
-    flex: 0 0 auto;
+    flex: 1;
     align-items: center;
+    min-width: 0;
+  }
+
+  .oracle-chat__header-copy {
+    min-width: 0;
+  }
+
+  .oracle-chat__title {
+    font-size: 13px;
+    letter-spacing: 0.06em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .oracle-chat__subtitle {
+    font-size: 11px;
+    margin-top: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .oracle-chat__header-actions {
-    flex: 1;
+    width: 100%;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     gap: 6px;
   }
@@ -5049,7 +5078,7 @@ h1.sidus-page-title {
   }
 }
 
-.oracle-chat--paywall .oracle-chat__body {
+.oracle-chat--paywall .oracle-chat__stage {
   position: relative;
   isolation: isolate;
 }
@@ -5068,7 +5097,7 @@ h1.sidus-page-title {
   left: 0;
   right: 0;
   bottom: 0;
-  z-index: 10;
+  z-index: 30;
   flex: none;
   min-height: 0;
   max-height: min(62vh, 440px);
@@ -5079,6 +5108,7 @@ h1.sidus-page-title {
   background: rgba(11, 7, 30, 0.99);
   border-top: 1px solid rgba(223, 183, 108, 0.35);
   box-shadow: 0 -18px 48px rgba(0, 0, 0, 0.62);
+  pointer-events: auto;
 }
 
 @media (max-width: 767px) {
@@ -5117,7 +5147,7 @@ h1.sidus-page-title {
 .oracle-chat__input-bar {
   padding-bottom: max(22px, env(safe-area-inset-bottom, 22px));
   position: relative;
-  z-index: 2;
+  z-index: 8;
   flex-shrink: 0;
 }
 
