@@ -4924,25 +4924,35 @@ h1.sidus-page-title {
 
 .oracle-chat__title {
   margin: 0;
-  line-height: 1.15;
-  font-size: 18px;
-  letter-spacing: 0.1em;
+  line-height: 1.2;
+  font-size: 16px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.oracle-chat h1.sidus-page-title {
+  margin: 0;
+  text-align: left;
 }
 
 .oracle-chat__header {
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  gap: 12px;
-  padding: 12px 14px;
-  background: rgba(11, 7, 30, 0.97);
+  position: relative;
+  z-index: 4;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 10px;
+  padding: 10px 12px;
+  background: rgba(11, 7, 30, 0.98);
   border-bottom: 1px solid rgba(223, 183, 108, 0.22);
   flex-shrink: 0;
+  isolation: isolate;
 }
 
 .oracle-chat__header-main {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 10px;
   min-width: 0;
 }
@@ -4959,8 +4969,8 @@ h1.sidus-page-title {
 }
 
 .oracle-chat__header-actions {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 8px;
   width: 100%;
 }
@@ -4970,18 +4980,23 @@ h1.sidus-page-title {
   align-items: center;
   justify-content: center;
   gap: 6px;
-  flex: 1 1 auto;
   min-width: 0;
   font-size: 11px;
   font-weight: 600;
   color: #DFB76C;
   background: rgba(223, 183, 108, 0.08);
-  padding: 8px 12px;
+  padding: 8px 10px;
   border-radius: 20px;
   border: 1px solid rgba(223, 183, 108, 0.35);
   cursor: pointer;
-  line-height: 1.2;
+  line-height: 1.25;
   text-align: center;
+}
+
+.oracle-chat__header-btn span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .oracle-chat__header-btn[aria-pressed='true'] {
@@ -4989,33 +5004,98 @@ h1.sidus-page-title {
 }
 
 .oracle-chat__header-btn--premium {
-  flex: 1 1 100%;
+  grid-column: 1 / -1;
+}
+
+.oracle-chat__body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+  z-index: 1;
+}
+
+.oracle-chat--paywall .oracle-chat__header--compact .oracle-chat__header-copy {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.oracle-chat--paywall .oracle-chat__header--compact {
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+}
+
+.oracle-chat--paywall .oracle-chat__header--compact .oracle-chat__header-main {
+  align-items: center;
+}
+
+.oracle-chat--paywall .oracle-chat__header--compact .oracle-chat__header-actions {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+}
+
+.oracle-chat--paywall .oracle-chat__header--compact .oracle-chat__header-btn--premium {
+  grid-column: auto;
+}
+
+.oracle-chat--paywall .oracle-chat__messages {
+  flex: 0 1 auto;
+  max-height: 24vh;
+}
+
+.oracle-chat--paywall .oracle-chat__paywall-dock {
+  flex: 1 1 auto;
+  min-height: 0;
+  max-height: none;
 }
 
 @media (min-width: 560px) {
   .oracle-chat__header {
-    flex-direction: row;
+    grid-template-columns: minmax(0, 1fr) auto;
     align-items: center;
-    justify-content: space-between;
     padding: 14px 18px;
+    gap: 12px;
   }
 
   .oracle-chat__header-actions {
     width: auto;
-    flex-wrap: nowrap;
-    justify-content: flex-end;
-  }
-
-  .oracle-chat__header-btn {
-    flex: 0 1 auto;
+    grid-template-columns: auto auto;
   }
 
   .oracle-chat__header-btn--premium {
-    flex: 0 1 auto;
+    grid-column: auto;
   }
 
   .oracle-chat__title {
-    font-size: 22px;
+    font-size: 20px;
+  }
+
+  .oracle-chat--paywall .oracle-chat__header--compact .oracle-chat__header-copy {
+    position: static;
+    width: auto;
+    height: auto;
+    margin: 0;
+    overflow: visible;
+    clip: auto;
+    white-space: normal;
+  }
+
+  .oracle-chat--paywall .oracle-chat__header--compact {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .oracle-chat--paywall .oracle-chat__messages {
+    max-height: 32vh;
   }
 }
 
@@ -5408,6 +5488,8 @@ html.sidus-mobile-menu-open .mobile-menu-btn {
   background: rgba(11, 7, 30, 0.98);
   padding: 10px 12px 12px;
   box-shadow: 0 -10px 28px rgba(0, 0, 0, 0.35);
+  position: relative;
+  z-index: 2;
 }
 
 @media (max-width: 767px) {

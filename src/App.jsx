@@ -3181,11 +3181,11 @@ function Chat({ mapaNatal, isPremium, userId, oracleRemotas, onOracleUsada, onUp
   }
 
   return (
-    <div className="oracle-chat">
+    <div className={`oracle-chat${paywallVisivel && !isPremium ? ' oracle-chat--paywall' : ''}`}>
       {/* Cabeçalho */}
-      <header className="oracle-chat__header">
+      <header className={`oracle-chat__header${paywallVisivel && !isPremium ? ' oracle-chat__header--compact' : ''}`}>
         <div className="oracle-chat__header-main">
-          <OracleChatAvatar size={40} />
+          <OracleChatAvatar size={paywallVisivel && !isPremium ? 34 : 40} />
           <div className="oracle-chat__header-copy">
             <h1 className="sidus-page-title oracle-chat__title">{t('oracle.title')}</h1>
             {isPremium && (
@@ -3269,6 +3269,7 @@ function Chat({ mapaNatal, isPremium, userId, oracleRemotas, onOracleUsada, onUp
         </div>
       )}
 
+      <div className="oracle-chat__body">
       {/* Mensagens */}
       <div ref={listaRef} className="oracle-chat__messages">
         {mensagens.filter((m) => m.tipo !== 'upsell').map((m) => (
@@ -3313,6 +3314,8 @@ function Chat({ mapaNatal, isPremium, userId, oracleRemotas, onOracleUsada, onUp
           />
         </div>
       )}
+
+      </div>
 
       {/* Input */}
       <div className="oracle-chat__input-bar" style={{ padding: '10px 14px 0', background: 'rgba(11,7,30,0.97)', borderTop: `1px solid ${CORES.vidroBorda}`, flexShrink: 0 }}>
