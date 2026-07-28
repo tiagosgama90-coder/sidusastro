@@ -3050,12 +3050,14 @@ function Chat({ mapaNatal, isPremium, userId, oracleRemotas, onOracleUsada, onUp
     setHistoricoAberto(false)
   }
 
-  const temUpsell = mensagens.some((m) => m.tipo === 'upsell')
-  const upsellScrollFeitoRef = useRef(false)
+  const restantes = isPremium ? Infinity : Math.max(0, MAX_ORACLE_GRATIS - perguntasUsadas)
+  const limiteAtingido = !isPremium && perguntasUsadas >= MAX_ORACLE_GRATIS
+  const [paywallVisivel, setPaywallVisivel] = useState(limiteAtingido)
 
   useEffect(() => {
-    if (!temUpsell) upsellScrollFeitoRef.current = false
-  }, [temUpsell])
+    if (limiteAtingido) setPaywallVisivel(true)
+    else setPaywallVisivel(false)
+  }, [limiteAtingido])
 
   useEffect(() => {
     const el = listaRef.current
@@ -3069,43 +3071,13 @@ function Chat({ mapaNatal, isPremium, userId, oracleRemotas, onOracleUsada, onUp
   }, [])
 
   useEffect(() => {
-    const el = listaRef.current
-    if (!el) return
-
-    if (temUpsell) {
-      if (!upsellScrollFeitoRef.current) {
-        const upsellEl = el.querySelector('.oracle-chat-upsell')
-        if (upsellEl) {
-          upsellScrollFeitoRef.current = true
-          upsellEl.scrollIntoView({ behavior: 'smooth', block: 'start' })
-        }
-      }
-      return
-    }
-
-    if (!seguirFimRef.current) return
+    if (paywallVisivel || !seguirFimRef.current) return
     fimRef.current?.scrollIntoView({ behavior: 'smooth' })
-  }, [mensagens, digitando, temUpsell])
+  }, [mensagens, digitando, paywallVisivel])
 
-  const mostrarUpsell = useCallback(() => {
-    setMensagens((prev) => {
-      if (prev.some((m) => m.tipo === 'upsell')) return prev
-      return [...prev, {
-        id: `upsell-${Date.now()}`,
-        autor: 'ia',
-        tipo: 'upsell',
-      }]
-    })
+  const abrirPaywall = useCallback(() => {
+    setPaywallVisivel(true)
   }, [])
-
-  useEffect(() => {
-    if (!isPremium && perguntasUsadas >= MAX_ORACLE_GRATIS) {
-      mostrarUpsell()
-    }
-  }, [isPremium, perguntasUsadas, mostrarUpsell])
-
-  const restantes = isPremium ? Infinity : Math.max(0, MAX_ORACLE_GRATIS - perguntasUsadas)
-  const limiteAtingido = !isPremium && perguntasUsadas >= MAX_ORACLE_GRATIS
 
   const enviar = async () => {
     if (!texto.trim() || digitando) return
@@ -3115,7 +3087,7 @@ function Chat({ mapaNatal, isPremium, userId, oracleRemotas, onOracleUsada, onUp
     if (limiteAtingido) {
       setMensagens((prev) => [...prev, { id: Date.now(), autor: 'user', texto: q }])
       setTexto('')
-      mostrarUpsell()
+      abrirPaywall()
       return
     }
 
@@ -3155,18 +3127,13 @@ function Chat({ mapaNatal, isPremium, userId, oracleRemotas, onOracleUsada, onUp
       setPerguntasUsadas(synced)
       onOracleUsada?.(synced)
       setDigitando(false)
-      setMensagens((prev) => {
-        const next = [...prev, {
-          id: Date.now() + 1,
-          autor: 'ia',
-          aviso: true,
-          texto: getOracleLimitMessage(MAX_ORACLE_GRATIS, lang),
-        }]
-        if (!next.some((m) => m.tipo === 'upsell')) {
-          next.push({ id: `upsell-${Date.now()}`, autor: 'ia', tipo: 'upsell' })
-        }
-        return next
-      })
+      setMensagens((prev) => [...prev, {
+        id: Date.now() + 1,
+        autor: 'ia',
+        aviso: true,
+        texto: getOracleLimitMessage(MAX_ORACLE_GRATIS, lang),
+      }])
+      abrirPaywall()
       return
     }
 
@@ -3202,18 +3169,13 @@ function Chat({ mapaNatal, isPremium, userId, oracleRemotas, onOracleUsada, onUp
       onOracleUsada?.(total)
 
       if (total >= MAX_ORACLE_GRATIS) {
-        setMensagens((prev) => {
-          const next = [...prev, {
-            id: Date.now() + 99,
-            autor: 'ia',
-            aviso: true,
-            texto: getOracleLimitMessage(MAX_ORACLE_GRATIS, lang),
-          }]
-          if (!next.some((m) => m.tipo === 'upsell')) {
-            next.push({ id: `upsell-${Date.now()}`, autor: 'ia', tipo: 'upsell' })
-          }
-          return next
-        })
+        setMensagens((prev) => [...prev, {
+          id: Date.now() + 99,
+          autor: 'ia',
+          aviso: true,
+          texto: getOracleLimitMessage(MAX_ORACLE_GRATIS, lang),
+        }])
+        abrirPaywall()
       }
     }
   }
@@ -3321,19 +3283,8 @@ function Chat({ mapaNatal, isPremium, userId, oracleRemotas, onOracleUsada, onUp
 
       {/* Mensagens */}
       <div ref={listaRef} className="oracle-chat__messages">
-        {mensagens.map((m) => (
-          m.tipo === 'upsell' ? (
-            <OraclePremiumUpsell
-              key={m.id}
-              onUpgrade={onUpgrade}
-              onPromo={onPromo}
-              variant="chat"
-              isBrasil={isBrasil}
-              oraclePerguntasUsadas={perguntasUsadas}
-              leiturasTarotUsadas={leiturasTarotUsadas}
-            />
-          ) : (
-            <div key={m.id} style={{
+        {mensagens.filter((m) => m.tipo !== 'upsell').map((m) => (
+          <div key={m.id} style={{
               alignSelf: m.autor === 'user' ? 'flex-end' : 'flex-start',
               maxWidth: '86%',
               padding: '13px 16px',
@@ -3353,7 +3304,6 @@ function Chat({ mapaNatal, isPremium, userId, oracleRemotas, onOracleUsada, onUp
             }}>
               {m.texto}
             </div>
-          )
         ))}
         {digitando && (
           <div style={{ alignSelf: 'flex-start', padding: '13px 18px', borderRadius: '4px 18px 18px 18px', background: 'rgba(255,255,255,0.055)', border: `1px solid rgba(255,255,255,0.09)` }}>
@@ -3362,6 +3312,19 @@ function Chat({ mapaNatal, isPremium, userId, oracleRemotas, onOracleUsada, onUp
         )}
         <div ref={fimRef} />
       </div>
+
+      {paywallVisivel && !isPremium && (
+        <div className="oracle-chat__paywall-dock" role="region" aria-label={t('oracle.upsellTitle')}>
+          <OraclePremiumUpsell
+            onUpgrade={onUpgrade}
+            onPromo={onPromo}
+            variant="chat"
+            isBrasil={isBrasil}
+            oraclePerguntasUsadas={perguntasUsadas}
+            leiturasTarotUsadas={leiturasTarotUsadas}
+          />
+        </div>
+      )}
 
       {/* Input */}
       <div className="oracle-chat__input-bar" style={{ padding: '10px 14px 0', background: 'rgba(11,7,30,0.97)', borderTop: `1px solid ${CORES.vidroBorda}`, flexShrink: 0 }}>
@@ -3535,6 +3498,13 @@ function Navbar({ passo, setPasso, isDesktop, dados, fotoPerfil }) {
   useEffect(() => {
     setMenuAberto(false)
   }, [passo])
+
+  useEffect(() => {
+    const root = document.documentElement
+    if (menuAberto) root.classList.add('sidus-mobile-menu-open')
+    else root.classList.remove('sidus-mobile-menu-open')
+    return () => root.classList.remove('sidus-mobile-menu-open')
+  }, [menuAberto])
 
   const itemAtivoNav = itens.find((i) => itemAtivo(i))
   const headerStyle = isDesktop ? estilos.navbarDesktopTop : estilos.navbarMobileTop
@@ -4668,6 +4638,7 @@ export default function App() {
       <div
         className={[
           !utilizador ? 'landing-auth-page-wrap' : 'sidus-app-content',
+          chatFullScreen ? 'sidus-app-content--chat-full' : null,
           mostrarBottomNav ? 'mobile-shell-pad-bottom' : null,
         ].filter(Boolean).join(' ') || undefined}
         style={{
