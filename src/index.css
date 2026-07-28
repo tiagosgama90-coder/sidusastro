@@ -5089,7 +5089,6 @@ h1.sidus-page-title {
   max-height: none;
   position: relative;
   z-index: 1;
-  padding-bottom: min(58vh, 400px);
 }
 
 .oracle-chat--paywall .oracle-chat__paywall-dock {
@@ -5112,13 +5111,43 @@ h1.sidus-page-title {
 }
 
 @media (max-width: 767px) {
+  .oracle-chat--paywall .oracle-chat__stage {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    min-height: 0;
+  }
+
+  .oracle-chat--paywall .oracle-chat__body {
+    flex: 0 0 auto;
+    max-height: 24vh;
+    min-height: 0;
+    overflow: hidden;
+  }
+
   .oracle-chat--paywall .oracle-chat__messages {
-    padding-bottom: min(64vh, 420px);
+    max-height: 24vh;
+    padding-bottom: 10px;
+    flex: none;
   }
 
   .oracle-chat--paywall .oracle-chat__paywall-dock {
-    max-height: min(68vh, 460px);
-    padding: 8px 10px 10px;
+    position: relative;
+    flex: 1 1 auto;
+    min-height: 0;
+    max-height: none;
+    height: auto;
+    overflow-y: scroll;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-y;
+    padding: 8px 10px max(12px, env(safe-area-inset-bottom, 12px));
+  }
+}
+
+@media (min-width: 768px) {
+  .oracle-chat--paywall .oracle-chat__messages {
+    padding-bottom: min(58vh, 400px);
   }
 }
 
