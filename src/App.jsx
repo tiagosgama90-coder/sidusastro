@@ -3185,14 +3185,12 @@ function Chat({ mapaNatal, isPremium, userId, oracleRemotas, onOracleUsada, onUp
       <header className="oracle-chat__header" aria-label={t('oracle.title')}>
         <div className="oracle-chat__header-main">
           <OracleChatAvatar size={isDesktop ? 40 : 34} />
-          {isDesktop ? (
-            <div className="oracle-chat__header-copy">
-              <h1 className="sidus-page-title oracle-chat__title">{t('oracle.title')}</h1>
-              {isPremium && (
-                <p className="oracle-chat__subtitle">{t('oracle.premiumSubtitle')}</p>
-              )}
-            </div>
-          ) : null}
+          <div className="oracle-chat__header-copy">
+            <h1 className="sidus-page-title oracle-chat__title">{t('oracle.title')}</h1>
+            {isPremium && (
+              <p className="oracle-chat__subtitle">{t('oracle.premiumSubtitle')}</p>
+            )}
+          </div>
         </div>
         <div className="oracle-chat__header-actions">
           <button
@@ -3270,6 +3268,7 @@ function Chat({ mapaNatal, isPremium, userId, oracleRemotas, onOracleUsada, onUp
         </div>
       )}
 
+      <div className="oracle-chat__stage">
       <div className="oracle-chat__body">
       {/* Mensagens */}
       <div ref={listaRef} className="oracle-chat__messages">
@@ -3301,6 +3300,7 @@ function Chat({ mapaNatal, isPremium, userId, oracleRemotas, onOracleUsada, onUp
           </div>
         )}
         <div ref={fimRef} />
+      </div>
       </div>
 
       {paywallVisivel && !isPremium && (
