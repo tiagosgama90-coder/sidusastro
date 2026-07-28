@@ -4939,7 +4939,7 @@ h1.sidus-page-title {
 
 .oracle-chat__header {
   position: relative;
-  z-index: 4;
+  z-index: 2;
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: 10px;
@@ -4947,7 +4947,6 @@ h1.sidus-page-title {
   background: rgba(11, 7, 30, 0.98);
   border-bottom: 1px solid rgba(223, 183, 108, 0.22);
   flex-shrink: 0;
-  isolation: isolate;
 }
 
 .oracle-chat__header-main {
@@ -5017,40 +5016,45 @@ h1.sidus-page-title {
   z-index: 1;
 }
 
-.oracle-chat--paywall .oracle-chat__header--compact .oracle-chat__header-copy {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
-}
+@media (max-width: 767px) {
+  .oracle-chat__header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 10px;
+  }
 
-.oracle-chat--paywall .oracle-chat__header--compact {
-  grid-template-columns: auto 1fr;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 10px;
-}
+  .oracle-chat__header-main {
+    flex: 0 0 auto;
+    align-items: center;
+  }
 
-.oracle-chat--paywall .oracle-chat__header--compact .oracle-chat__header-main {
-  align-items: center;
-}
+  .oracle-chat__header-actions {
+    flex: 1;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 6px;
+  }
 
-.oracle-chat--paywall .oracle-chat__header--compact .oracle-chat__header-actions {
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-}
+  .oracle-chat__header-btn--premium {
+    grid-column: auto;
+  }
 
-.oracle-chat--paywall .oracle-chat__header--compact .oracle-chat__header-btn--premium {
-  grid-column: auto;
+  .oracle-chat--paywall .oracle-chat__messages {
+    flex: 0 1 auto;
+    max-height: 20vh;
+  }
+
+  .oracle-chat--paywall .oracle-chat__paywall-dock {
+    flex: 1 1 auto;
+    min-height: 0;
+    max-height: none;
+  }
 }
 
 .oracle-chat--paywall .oracle-chat__messages {
   flex: 0 1 auto;
-  max-height: 24vh;
+  max-height: 28vh;
 }
 
 .oracle-chat--paywall .oracle-chat__paywall-dock {
@@ -5059,7 +5063,7 @@ h1.sidus-page-title {
   max-height: none;
 }
 
-@media (min-width: 560px) {
+@media (min-width: 768px) {
   .oracle-chat__header {
     grid-template-columns: minmax(0, 1fr) auto;
     align-items: center;
@@ -5078,20 +5082,6 @@ h1.sidus-page-title {
 
   .oracle-chat__title {
     font-size: 20px;
-  }
-
-  .oracle-chat--paywall .oracle-chat__header--compact .oracle-chat__header-copy {
-    position: static;
-    width: auto;
-    height: auto;
-    margin: 0;
-    overflow: visible;
-    clip: auto;
-    white-space: normal;
-  }
-
-  .oracle-chat--paywall .oracle-chat__header--compact {
-    grid-template-columns: minmax(0, 1fr) auto;
   }
 
   .oracle-chat--paywall .oracle-chat__messages {
@@ -5494,7 +5484,9 @@ html.sidus-mobile-menu-open .mobile-menu-btn {
 
 @media (max-width: 767px) {
   .oracle-chat__paywall-dock {
-    max-height: min(52vh, 340px);
+    max-height: none;
+    flex: 1 1 auto;
+    min-height: 0;
     padding: 8px 10px 10px;
   }
 
