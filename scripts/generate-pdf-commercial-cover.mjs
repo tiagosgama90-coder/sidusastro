@@ -243,12 +243,12 @@ html,body{width:${W}px;height:${H}px;overflow:hidden;
   box-shadow:0 10px 28px rgba(0,0,0,.4);transform:translateZ(50px)}
 .badge-en{display:block;font-size:6.5px;letter-spacing:.12em;margin-top:2px;opacity:.8;font-weight:700}
 
-/* ── Rodapé VIP ── */
-.vip-foot{margin-top:4px;padding:16px 14px 14px;border-radius:16px;
+/* ── Rodapé Premium ── */
+.premium-foot{margin-top:4px;padding:16px 14px 14px;border-radius:16px;
   border:1px solid rgba(223,183,108,.22);
   background:rgba(11,7,30,.72)}
-.vip-foot__title{margin:0 0 2px;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#DFB76C;text-align:center}
-.vip-foot__title-en{margin:0 0 12px;font-size:9px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.38);text-align:center}
+.premium-foot__title{margin:0 0 2px;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#DFB76C;text-align:center}
+.premium-foot__title-en{margin:0 0 12px;font-size:9px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.38);text-align:center}
 
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .inc{padding:9px 10px;border-radius:10px;background:rgba(0,0,0,.22);border:1px solid rgba(223,183,108,.14)}
@@ -296,9 +296,9 @@ html,body{width:${W}px;height:${H}px;overflow:hidden;
       </div>
     </div>
 
-    <div class="vip-foot">
-      <p class="vip-foot__title">O que recebes ao pagar o Premium</p>
-      <p class="vip-foot__title-en">What you get when you upgrade to Premium</p>
+    <div class="premium-foot">
+      <p class="premium-foot__title">O que recebes ao pagar o Premium</p>
+      <p class="premium-foot__title-en">What you get when you upgrade to Premium</p>
       <div class="grid">${includesHtml}</div>
       <div class="chips">
         <span class="chip">☉ ${esc(labelsPt.labels.sun)}<span>${esc(labelsEn.labels.sun)}</span></span>
