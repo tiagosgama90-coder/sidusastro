@@ -32,8 +32,8 @@ const SPA_ROUTES = [
   { path: '/biorritmo', priority: 0.8, changefreq: 'monthly' },
   { path: '/horas-iguais', priority: 0.78, changefreq: 'monthly' },
   { path: '/diario', priority: 0.78, changefreq: 'weekly' },
-  { path: '/vip', priority: 0.76, changefreq: 'monthly' },
-  { path: '/divulgacao-vip', priority: 0.74, changefreq: 'monthly' },
+  { path: '/premium', priority: 0.76, changefreq: 'monthly' },
+  { path: '/divulgacao-premium', priority: 0.74, changefreq: 'monthly' },
   { path: '/privacidade', priority: 0.5, changefreq: 'yearly' },
   { path: '/comecar', priority: 0.7, changefreq: 'monthly' },
 ]

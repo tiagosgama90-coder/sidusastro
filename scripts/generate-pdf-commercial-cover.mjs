@@ -45,7 +45,7 @@ const PLANETAS = [
 ]
 
 const DADOS_DEMO = {
-  nome: 'Mapa Astral VIP',
+  nome: 'Mapa Astral Premium',
   data: '1990-03-15',
   hora: '14:30',
   cidade: 'Lisboa, Portugal',
@@ -87,8 +87,8 @@ const VIP_INCLUDES = [
   {
     pt: 'PDF completo em português e inglês',
     en: 'Full PDF in Portuguese and English',
-    detailPt: 'Descarrega e recebe por email - o mesmo relatório VIP.',
-    detailEn: 'Download and email delivery - the same VIP report.',
+    detailPt: 'Descarrega e recebe por email - o mesmo relatório Premium.',
+    detailEn: 'Download and email delivery - the same Premium report.',
   },
 ]
 
@@ -276,8 +276,8 @@ html,body{width:${W}px;height:${H}px;overflow:hidden;
     <div class="head">
       <p class="eyebrow">${esc(pt.auth.portal.conversionEyebrow)}</p>
       <p class="eyebrow-en">${esc(en.auth.portal.conversionEyebrow)}</p>
-      <h1 class="title"><span class="glow-word">${esc(mPt.fullChart)}</span> VIP</h1>
-      <p class="title-en">${esc(mEn.fullChart)} VIP</p>
+      <h1 class="title"><span class="glow-word">${esc(mPt.fullChart)}</span> Premium</h1>
+      <p class="title-en">${esc(mEn.fullChart)} Premium</p>
       <p class="sub">${esc(mPt.fullDesc)}</p>
       <p class="sub-en">${esc(mEn.fullDesc)}</p>
     </div>
@@ -292,13 +292,13 @@ html,body{width:${W}px;height:${H}px;overflow:hidden;
           <div class="spine"></div>
           <div class="rim"></div>
         </div>
-        <div class="badge">Sidus VIP<span class="badge-en">Premium</span></div>
+        <div class="badge">Sidus Premium<span class="badge-en">Vitalício</span></div>
       </div>
     </div>
 
     <div class="vip-foot">
-      <p class="vip-foot__title">O que recebes ao pagar o VIP</p>
-      <p class="vip-foot__title-en">What you get when you upgrade to VIP</p>
+      <p class="vip-foot__title">O que recebes ao pagar o Premium</p>
+      <p class="vip-foot__title-en">What you get when you upgrade to Premium</p>
       <div class="grid">${includesHtml}</div>
       <div class="chips">
         <span class="chip">☉ ${esc(labelsPt.labels.sun)}<span>${esc(labelsEn.labels.sun)}</span></span>

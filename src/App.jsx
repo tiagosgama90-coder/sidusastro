@@ -3932,7 +3932,7 @@ export default function App() {
     })
   }, [location.search, navigate, t])
 
-  const rotasPublicasSemAuth = new Set(['/login', '/privacidade', '/divulgacao-vip'])
+  const rotasPublicasSemAuth = new Set(['/login', '/privacidade', '/divulgacao-premium', '/divulgacao-vip'])
 
   // Visitante → /login (exceto rotas públicas)
   useEffect(() => {
@@ -3966,7 +3966,7 @@ export default function App() {
 
     if (!contaConfigurada) {
       const pathSemLang = stripLangPrefix(location.pathname)
-      if (pathSemLang === '/divulgacao-vip') return
+      if (pathSemLang === '/divulgacao-premium' || pathSemLang === '/divulgacao-vip') return
       navigate('/comecar', { replace: true })
       return
     }

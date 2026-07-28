@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useLanguage } from '../lib/i18n/LanguageContext.jsx'
 
-const PDF_COVER_SRC = '/brand/sidus-pdf-vip-commercial-cover.png?v=13'
+const PDF_COVER_SRC = '/brand/sidus-pdf-vip-commercial-cover.png?v=14'
 const GUIDE_WHEELS_SRC = '/brand/sidus-natal-guide-wheels.png?v=1'
 const I18N_PREFIX = 'auth.portal.pdfShowcase'
 

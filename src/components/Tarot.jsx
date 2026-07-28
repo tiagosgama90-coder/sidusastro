@@ -1,7 +1,7 @@
 /**
  * Sistema de Tarot Sidus - baralho profissional de 78 cartas (Mystic Marchetti)
  * ─ Ilustrações + interpretações profissionais
- * ─ 3 leituras gratuitas por conta · depois 0,50 € por leitura (BR: R$ 2,91 PIX) ou Premium
+ * ─ 3 leituras gratuitas por conta · depois 1,99 € por leitura (BR: R$ 4,90 PIX) ou Premium
  * ─ 9 tipos de leitura · interpretações personalizadas com mapa natal
  */
 import { useState, useEffect, useRef } from 'react'
@@ -633,7 +633,7 @@ function colsFromWidth(w) {
   return 1
 }
 
-function TelaSeleccionar({ tipos, onSeleccionar, isPremium, gratisEsgotada, restantes, tick, onVoltar, userId, lang, t, isBrasil = false, precoLeituraFmt = '0,50', vipPrecoFmt = '4,99' }) {
+function TelaSeleccionar({ tipos, onSeleccionar, isPremium, gratisEsgotada, restantes, tick, onVoltar, userId, lang, t, isBrasil = false, precoLeituraFmt = '1,99', vipPrecoFmt = '9,99' }) {
   void tick
   const diariaAtiva = !podeFazerLeituraDiaria(userId)
   const isMobileLayout = useMobileTarotLayout()
@@ -696,7 +696,7 @@ function TelaSeleccionar({ tipos, onSeleccionar, isPremium, gratisEsgotada, rest
   )
 }
 
-function TelaPergunta({ tipo, pergunta, setPergunta, onVoltar, podeLer, leituraPaga = false, isPremium, restantes, onComecar, onPagar, onComecarPago, onPremium, t, aIniciarLeitura = false, isBrasil = false, precoLeitura = PRECO_TAROT, precoLeituraFmt = '0,50', vipPrecoFmt = '4,99' }) {
+function TelaPergunta({ tipo, pergunta, setPergunta, onVoltar, podeLer, leituraPaga = false, isPremium, restantes, onComecar, onPagar, onComecarPago, onPremium, t, aIniciarLeitura = false, isBrasil = false, precoLeitura = PRECO_TAROT, precoLeituraFmt = '1,99', vipPrecoFmt = '9,99' }) {
   const podeIniciar = isPremium || podeLer || leituraPaga
   const [aPagar, setAPagar] = useState(false)
 
