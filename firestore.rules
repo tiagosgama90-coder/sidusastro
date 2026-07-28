@@ -55,7 +55,7 @@ service cloud.firestore {
           || request.resource.data.diff(resource.data).affectedKeys().hasOnly(['tarotLeiturasUsadas', 'oraclePerguntasUsadas'])
         );
 
-      // Notificações diárias (Premium) — subcoleção gerida pelo próprio utilizador
+      // Notificações diárias (Premium) - subcoleção gerida pelo próprio utilizador
       match /notifications/{notificationId} {
         allow read, delete: if request.auth != null && request.auth.uid == userId;
 

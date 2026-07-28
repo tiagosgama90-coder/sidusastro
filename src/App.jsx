@@ -3182,16 +3182,17 @@ function Chat({ mapaNatal, isPremium, userId, oracleRemotas, onOracleUsada, onUp
 
   return (
     <div className={`oracle-chat${paywallVisivel && !isPremium ? ' oracle-chat--paywall' : ''}`}>
-      {/* Cabeçalho */}
-      <header className={`oracle-chat__header${paywallVisivel && !isPremium ? ' oracle-chat__header--compact' : ''}`}>
+      <header className="oracle-chat__header" aria-label={t('oracle.title')}>
         <div className="oracle-chat__header-main">
-          <OracleChatAvatar size={paywallVisivel && !isPremium ? 34 : 40} />
-          <div className="oracle-chat__header-copy">
-            <h1 className="sidus-page-title oracle-chat__title">{t('oracle.title')}</h1>
-            {isPremium && (
-              <p className="oracle-chat__subtitle">{t('oracle.premiumSubtitle')}</p>
-            )}
-          </div>
+          <OracleChatAvatar size={isDesktop ? 40 : 34} />
+          {isDesktop ? (
+            <div className="oracle-chat__header-copy">
+              <h1 className="sidus-page-title oracle-chat__title">{t('oracle.title')}</h1>
+              {isPremium && (
+                <p className="oracle-chat__subtitle">{t('oracle.premiumSubtitle')}</p>
+              )}
+            </div>
+          ) : null}
         </div>
         <div className="oracle-chat__header-actions">
           <button
@@ -3201,13 +3202,13 @@ function Chat({ mapaNatal, isPremium, userId, oracleRemotas, onOracleUsada, onUp
             aria-pressed={historicoAberto}
           >
             <History size={14} />
-            <span>{isPremium ? t('oracle.historyOpen') : t('oracle.historyLast')}</span>
+            <span>{isPremium || isDesktop ? (isPremium ? t('oracle.historyOpen') : t('oracle.historyLast')) : t('oracle.historyOpen')}</span>
           </button>
           {!isPremium && (
             <button type="button" className="oracle-chat__header-btn oracle-chat__header-btn--premium" onClick={onUpgrade}>
               {restantes > 0
                 ? (restantes === 1 ? t('oracle.freeQuestions', { count: restantes }) : t('oracle.freeQuestionsPlural', { count: restantes }))
-                : t('oracle.premiumBadge', { price: precoVipLabel })}
+                : (isDesktop ? t('oracle.premiumBadge', { price: precoVipLabel }) : `🔒 ${t('perfil.premium')}`)}
             </button>
           )}
         </div>
