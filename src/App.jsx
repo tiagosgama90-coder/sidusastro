@@ -47,6 +47,7 @@ import { AstroNewsCarousel } from './components/AstroNewsCarousel'
 import { LandingCosmicBackground } from './components/LandingCosmicBackground.jsx'
 import { LandingBirthPortal } from './components/LandingBirthPortal.jsx'
 import { LandingConversionHead } from './components/LandingConversionHead.jsx'
+import { LandingWhySidus } from './components/LandingWhySidus.jsx'
 import { LandingTopBar } from './components/LandingTopBar.jsx'
 import { SidusLogo } from './components/SidusLogo.jsx'
 import { SidusConstellationMark } from './components/SidusConstellationMark.jsx'
@@ -1465,7 +1466,9 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
         aria-label={t('auth.portal.conversionAria')}
       >
         <LandingConversionHead />
+        <LandingWhySidus />
         <LandingSimplePremium onCta={scrollParaAuth} />
+        <LandingReviews variant="paywall" />
         <div className="landing-auth-grid">
         <LandingBirthPortal isDesktop={isDesktop} onSaved={scrollParaAuth} onScrollToLogin={scrollParaAuth} />
 
@@ -1701,7 +1704,6 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
       <LandingPdfShowcase />
       <LandingGuides />
       <AdSenseBanner />
-      <LandingReviews />
       <LandingFaq />
       <LandingReviewsTicker />
     </div>
