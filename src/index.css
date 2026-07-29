@@ -1670,6 +1670,51 @@ h1.sidus-page-title {
   color: #DFB76C;
   letter-spacing: 0.04em;
 }
+.landing-testimonials-subtitle {
+  margin: -10px 0 16px;
+  text-align: center;
+  font-size: 13px;
+  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.62);
+}
+.landing-testimonials--paywall {
+  max-width: min(640px, 100%);
+  margin: 0 auto 20px;
+  padding: 18px 16px 4px;
+  border-radius: 16px;
+  border: 1px solid rgba(223, 183, 108, 0.22);
+  background: rgba(255, 255, 255, 0.02);
+}
+.landing-testimonials--paywall .landing-testimonials-title {
+  margin-bottom: 8px;
+  font-size: clamp(16px, 4vw, 18px);
+}
+.landing-testimonials--paywall .landing-testimonials-subtitle {
+  margin: 0 0 14px;
+  font-size: 12px;
+}
+.landing-reviews-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.landing-testimonials--paywall .landing-reviews-cards {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+}
+.landing-testimonials--paywall .landing-testimonial-card {
+  flex: 0 0 min(240px, 78vw);
+  scroll-snap-align: start;
+}
+.landing-testimonials--paywall .landing-review-form {
+  margin-top: 0;
+}
 .landing-testimonials-grid {
   display: grid;
   grid-template-columns: minmax(200px, 280px) 1fr;

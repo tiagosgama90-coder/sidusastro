@@ -973,8 +973,9 @@ export default {
     close: 'Close',
   },
   reviews: {
-    ariaLabel: 'Sidusastro user reviews',
-    title: 'Voices of the cosmos',
+    ariaLabel: 'Sidusastro comments and satisfied clients',
+    title: 'Comments and satisfied clients',
+    subtitle: 'Real reviews from people who use Sidus — share your experience too.',
     previewCaption: 'Professional PDF report · Sun, Moon, Ascendant and 10 planets',
     loading: 'Loading reviews…',
     empty: 'No published reviews yet. Be the first to share your experience.',

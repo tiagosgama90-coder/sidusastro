@@ -1000,8 +1000,9 @@ export default {
     close: 'Fechar',
   },
   reviews: {
-    ariaLabel: 'Avaliações de utilizadores Sidusastro',
-    title: 'Vozes do cosmos',
+    ariaLabel: 'Comentários e clientes satisfeitos Sidusastro',
+    title: 'Comentários e clientes satisfeitos',
+    subtitle: 'Avaliações reais de quem já usa o Sidus — partilha também a tua experiência.',
     previewCaption: 'Relatório PDF profissional · Sol, Lua, Ascendente e 10 planetas',
     loading: 'A carregar avaliações…',
     empty: 'Ainda não há avaliações publicadas. Sê o/a primeiro/a a partilhar a tua experiência.',

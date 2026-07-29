@@ -1466,6 +1466,7 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
       >
         <LandingConversionHead />
         <LandingSimplePremium onCta={scrollParaAuth} />
+        <LandingReviews variant="paywall" />
         <div className="landing-auth-grid">
         <LandingBirthPortal isDesktop={isDesktop} onSaved={scrollParaAuth} onScrollToLogin={scrollParaAuth} />
 
@@ -1701,7 +1702,6 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
       <LandingPdfShowcase />
       <LandingGuides />
       <AdSenseBanner />
-      <LandingReviews />
       <LandingFaq />
       <LandingReviewsTicker />
     </div>
