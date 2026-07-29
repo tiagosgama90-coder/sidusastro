@@ -35,6 +35,7 @@ import { Body, GeoVector, Ecliptic, MakeTime, SiderealTime } from 'astronomy-eng
 import { pesquisarCidades, pesquisarFusoHorario, geocodificarCidade } from './lib/geocoding'
 import { ModalPagamento, verificarSessaoPagamento } from './components/Pagamento'
 import { PRECO_MAPA_COMPLETO, PRECO_PREMIUM_UNICO, PRECO_PREMIUM_BR_PIX_BRL, precoPremiumVitrine, formatPrecoEuro, formatPrecoCompleto } from './lib/pricing.js'
+import { getPremiumPriceLabels } from './lib/premiumPricingLabels.js'
 import { useGeoCountry } from './hooks/useGeoCountry.js'
 import { RecaptchaCheckbox } from './components/Recaptcha'
 import { Perfil } from './components/Perfil'
@@ -1357,10 +1358,7 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
 
   const isLogin = tipo === 'login'
   const precisaRecaptcha = !isLogin
-  const precoVitrine = precoPremiumVitrine(isBrasil)
-  const precoCtaLabel = isBrasil
-    ? `R$ ${PRECO_PREMIUM_BR_PIX_BRL}`
-    : `${formatPrecoEuro(precoVitrine.valor)} €`
+  const prices = getPremiumPriceLabels(isBrasil)
 
   useEffect(() => {
     const titulo = emRecuperacao
@@ -1615,7 +1613,7 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
             ? <Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} />
             : emRecuperacao
               ? t('auth.forgot.submit')
-              : (isLogin ? t('auth.login') : t('auth.registerCta', { price: precoCtaLabel }))}
+              : (isLogin ? t('auth.login') : t('auth.registerCta', { price: prices.dualShort }))}
         </button>
 
         {emRecuperacao ? (

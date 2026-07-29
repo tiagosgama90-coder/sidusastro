@@ -3,7 +3,7 @@ import { useLanguage } from '../lib/i18n/LanguageContext.jsx'
 import { MAX_ORACLE_GRATIS } from '../lib/oracleLimit.js'
 import { MAX_LEITURAS_GRATIS } from '../components/Tarot.jsx'
 import { getPremiumTableRows } from '../lib/i18n/premiumBenefits.js'
-import { formatPrecoCompleto, PRECO_PREMIUM_BR_PIX_BRL, PRECO_PREMIUM_UNICO } from '../lib/pricing.js'
+import { PremiumPricingNote } from './PremiumPricingNote.jsx'
 
 export function PremiumComparacao({
   isPremium,
@@ -12,6 +12,7 @@ export function PremiumComparacao({
   isBrasil = false,
   compact = false,
   showFullTable = false,
+  showPricingNote = true,
 }) {
   const { t } = useLanguage()
   const oracleRestantes = Math.max(0, MAX_ORACLE_GRATIS - oracleUsadas)
@@ -26,6 +27,8 @@ export function PremiumComparacao({
 
   return (
     <div className={`premium-comparacao${compact ? ' premium-comparacao--compact' : ''}`}>
+      {showPricingNote && <PremiumPricingNote compact />}
+
       {!isPremium && (oracleUsadas > 0 || tarotUsadas > 0) && (
         <div className="premium-usage">
           {tarotUsadas > 0 && (
@@ -50,20 +53,13 @@ export function PremiumComparacao({
             {visibleRows.map((row) => (
               <tr key={row.feature} className={row.highlight ? 'premium-table-row--highlight' : undefined}>
                 <td>{row.feature}</td>
-                <td>{row.free}</td>
+                <td className="premium-table-free">{row.free}</td>
                 <td className="premium-table-vip">{row.vip}</td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
-
-      {isBrasil && (
-        <p className="premium-br-note">{t('brasil.premiumNote', {
-          preco: formatPrecoCompleto(PRECO_PREMIUM_BR_PIX_BRL, 'brl'),
-          precoEur: formatPrecoCompleto(PRECO_PREMIUM_UNICO, 'eur'),
-        })}</p>
-      )}
     </div>
   )
 }

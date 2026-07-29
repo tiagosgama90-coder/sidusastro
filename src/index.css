@@ -3762,10 +3762,69 @@ h1.sidus-page-title {
   border-radius: 12px;
   background: linear-gradient(135deg, #DFB76C, #B8944F);
   color: #0B071E;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 700;
   cursor: pointer;
   box-shadow: 0 6px 22px rgba(223, 183, 108, 0.28);
+  line-height: 1.4;
+}
+
+/* Preços dual PIX + EUR */
+.premium-pricing-note {
+  text-align: center;
+  margin-bottom: 12px;
+}
+.premium-pricing-note--compact {
+  margin-bottom: 10px;
+}
+.premium-pricing-note__main {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 700;
+  color: #DFB76C;
+  line-height: 1.5;
+}
+.premium-pricing-note--compact .premium-pricing-note__main {
+  font-size: 12px;
+}
+.premium-pricing-note__sub {
+  margin: 4px 0 0;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.landing-premium-benefits__mapa-diff {
+  margin-bottom: 20px;
+  padding: 16px;
+  border-radius: 14px;
+  border: 1px solid rgba(223, 183, 108, 0.25);
+}
+.landing-premium-benefits__mapa-diff h3 {
+  margin: 0 0 10px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #DFB76C;
+}
+.landing-premium-benefits__mapa-diff p {
+  margin: 0 0 8px;
+  font-size: 12px;
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.82);
+}
+.landing-premium-benefits__mapa-diff p:last-child {
+  margin-bottom: 0;
+}
+
+.premium-table-free,
+.premium-table-vip {
+  font-size: 11px !important;
+  line-height: 1.55 !important;
+  max-width: 140px;
+}
+.premium-table td:first-child {
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
 }
 .landing-simple-premium__note {
   margin: 10px 0 0;
