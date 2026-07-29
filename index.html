@@ -2,26 +2,34 @@
 <html lang="pt">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=13" />
+    <link rel="icon" type="image/png" sizes="512x512" href="/apple-touch-icon.png?v=13" />
+    <link rel="apple-touch-icon" sizes="512x512" href="/apple-touch-icon.png?v=13" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="theme-color" content="#0B071E" />
-    <meta name="description" content="Sidusastro - O teu guia cósmico. Mapa astral, tarot, oráculo IA e ferramentas astrológicas com precisão astronómica." />
+    <meta name="description" content="Sidusastro - O teu guia cósmico. Mapa astral, tarot, Chat Oráculo e ferramentas astrológicas com precisão astronómica." />
     <meta name="keywords" content="astrologia, mapa astral, tarot, ascendente, horóscopo, zodíaco, oráculo, signo, sidusastro" />
 
-    <!-- Open Graph / Social (WhatsApp, Facebook, etc.) -->
+    <!-- Preview de link: WhatsApp, Telegram, iMessage, Signal, Facebook, Instagram, X, LinkedIn, Discord, Slack, Teams… -->
     <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Sidusastro" />
     <meta property="og:url" content="https://sidusastro.com/" />
     <meta property="og:title" content="Sidusastro - O Seu Guia Cósmico" />
-    <meta property="og:description" content="Mapa astral, tarot, oráculo IA e ferramentas astrológicas. O teu guia cósmico com precisão astronómica." />
-    <meta property="og:image" content="https://sidusastro.com/og-image.png" />
+    <meta property="og:description" content="Mapa astral, tarot, Chat Oráculo e ferramentas astrológicas. O teu guia cósmico com precisão astronómica." />
+    <meta property="og:image" content="https://sidusastro.com/og-image.png?v=7" />
+    <meta property="og:image:secure_url" content="https://sidusastro.com/og-image.png?v=7" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Sidus - constelação dourada e logotipo SIDUS" />
     <meta property="og:locale" content="pt_PT" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Sidusastro - O Seu Guia Cósmico" />
-    <meta name="twitter:description" content="Mapa astral, tarot, oráculo IA e ferramentas astrológicas." />
-    <meta name="twitter:image" content="https://sidusastro.com/og-image.png" />
+    <meta name="twitter:description" content="Mapa astral, tarot, Chat Oráculo e ferramentas astrológicas." />
+    <meta name="twitter:image" content="https://sidusastro.com/og-image.png?v=7" />
+    <meta name="twitter:image:alt" content="Sidus - constelação dourada e logotipo SIDUS" />
 
-  <!-- Google AdSense — site e guias editoriais (após consentimento cookies) -->
+  <!-- Google AdSense - site e guias editoriais (após consentimento cookies) -->
   <meta name="google-adsense-account" content="ca-pub-2807052149540484" />
 
     <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml" />
@@ -82,9 +90,30 @@
       .adsterra-social-bar.ads-visible {
         display: block;
       }
+      /* Widget Google Translate (oculto - só para re-traduzir conteúdo dinâmico) */
+      #google_translate_element,
+      .goog-te-banner-frame,
+      .skiptranslate iframe,
+      .goog-te-gadget,
+      .goog-te-balloon-frame {
+        display: none !important;
+      }
+      body { top: 0 !important; }
     </style>
+    <script src="/google-translate-compat.js"></script>
+    <script>
+      function googleTranslateElementInit() {
+        new google.translate.TranslateElement({
+          pageLanguage: 'pt',
+          autoDisplay: false,
+          includedLanguages: 'ar,en,es,fr,de,it,zh-CN,ja,ko,ru,hi,tr,pl,nl,uk,ro',
+        }, 'google_translate_element')
+      }
+    </script>
+    <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
   </head>
   <body>
+    <div id="google_translate_element" aria-hidden="true"></div>
     <div id="root"></div>
     <script>
       (function () {

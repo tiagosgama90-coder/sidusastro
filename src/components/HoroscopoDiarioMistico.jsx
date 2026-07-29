@@ -117,7 +117,7 @@ export function HoroscopoDiarioMistico({ signo, dados, compact = false }) {
               boxShadow: '0 0 20px rgba(139, 92, 246, 0.2)',
             }}
           >
-            {signo?.charAt(0) || '✦'}
+            {signo?.charAt(0) || ''}
           </div>
           <div>
             <h3 style={{

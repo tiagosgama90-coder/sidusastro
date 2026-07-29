@@ -1,5 +1,6 @@
-import { useState } from 'react'
+import { useId, useState, useEffect } from 'react'
 import { imagemCartaUrl, imagemVersoUrl } from '../lib/tarot/images.js'
+import { garantirVersoCarregado, versoEstaPronto } from '../lib/tarot/versoCache.js'
 
 const CORES = {
   dourado: '#DFB76C',
@@ -125,7 +126,7 @@ function CartaFallbackSVG({ carta, size }) {
         {carta.nome.length > 22 ? `${carta.nome.slice(0, 20)}…` : carta.nome.toUpperCase()}
       </text>
       {[18, 34, 56, 72].map((x) => (
-        <text key={x} x={x} y="134" fontSize="6" fill={CORES.dourado} opacity="0.35" textAnchor="middle">✦</text>
+        <text key={x} x={x} y="134" fontSize="6" fill={CORES.dourado} opacity="0.35" textAnchor="middle"></text>
       ))}
       {carta.invertida && !isLenormand && (
         <text x="45" y="141" fontSize="5" fill="#EF4444" textAnchor="middle" opacity="0.9">
@@ -136,18 +137,26 @@ function CartaFallbackSVG({ carta, size }) {
   )
 }
 
-function VersoSVG({ w, h }) {
+export function VersoSVG({ w, h, idSuffix = '0' }) {
+  const gradId = `vd_mystic_${idSuffix}`
   return (
-    <svg width={w} height={h} viewBox="0 0 90 144">
+    <svg width={w} height={h} viewBox="0 0 90 144" style={{ display: 'block' }}>
       <defs>
-        <linearGradient id="vd_mystic" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#0d0722" />
-          <stop offset="100%" stopColor="#1a0d3a" />
+        <linearGradient id={gradId} x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#1a0d3a" />
+          <stop offset="50%" stopColor="#0d0722" />
+          <stop offset="100%" stopColor="#12082a" />
         </linearGradient>
+        <pattern id={`vd_pt_${idSuffix}`} x="0" y="0" width="10" height="10" patternUnits="userSpaceOnUse">
+          <circle cx="1.5" cy="1.5" r="0.6" fill={CORES.dourado} opacity="0.14" />
+        </pattern>
       </defs>
-      <rect width="90" height="144" rx="8" fill="url(#vd_mystic)" />
-      <rect x="2" y="2" width="86" height="140" rx="7" fill="none" stroke={CORES.dourado} strokeWidth="1" opacity="0.45" />
-      <text x="45" y="76" fontSize="26" textAnchor="middle" dominantBaseline="middle" fill={CORES.dourado} opacity="0.3">✦</text>
+      <rect width="90" height="144" rx="8" fill={`url(#${gradId})`} />
+      <rect width="90" height="144" rx="8" fill={`url(#vd_pt_${idSuffix})`} />
+      <rect x="2" y="2" width="86" height="140" rx="7" fill="none" stroke={CORES.dourado} strokeWidth="1.2" opacity="0.5" />
+      <rect x="8" y="8" width="74" height="128" rx="5" fill="none" stroke={CORES.dourado} strokeWidth="0.5" opacity="0.22" />
+      <text x="45" y="72" fontSize="22" textAnchor="middle" dominantBaseline="middle" fill={CORES.dourado} opacity="0.38"></text>
+      <text x="45" y="96" fontSize="8" textAnchor="middle" fill={CORES.dourado} opacity="0.28" fontFamily="Georgia,serif" letterSpacing="1.2">SIDUS</text>
     </svg>
   )
 }
@@ -160,16 +169,29 @@ export function dimensoesCarta(size) {
 
 /**
  * Carta de tarot profissional - ilustração Mystic com fallback SVG ornamentado.
- * animarFlip: pop suave ao revelar (sem 3D — evita cartas invisíveis).
+ * animarFlip: pop suave ao revelar (sem 3D - evita cartas invisíveis).
  */
 export function CartaTarot({ carta, size = 110, virada = false, animarFlip = false, className, style }) {
   const [imgOk, setImgOk] = useState(true)
+  const versoId = useId().replace(/:/g, '')
+  const deck = carta?.tipo === 'lenormand' ? 'lenormand' : 'tarot'
+  const [versoReady, setVersoReady] = useState(() => !virada || versoEstaPronto(deck))
+
+  useEffect(() => {
+    if (!virada || !carta) return undefined
+    let cancelled = false
+    garantirVersoCarregado(deck).then((ok) => {
+      if (!cancelled && ok) setVersoReady(true)
+    })
+    return () => { cancelled = true }
+  }, [virada, deck, carta])
+
   if (!carta) return null
   if (animarFlip) ensureFlipCss()
 
   const { w, h } = dimensoesCarta(size)
   const src = virada
-    ? imagemVersoUrl(carta?.tipo === 'lenormand' ? 'lenormand' : 'tarot')
+    ? imagemVersoUrl(deck)
     : imagemCartaUrl(carta)
   const showImg = src && imgOk
   const invertida = carta.invertida && !virada && carta.tipo !== 'lenormand'
@@ -182,6 +204,7 @@ export function CartaTarot({ carta, size = 110, virada = false, animarFlip = fal
     flexShrink: 0,
     display: 'inline-block',
     verticalAlign: 'top',
+    background: virada ? '#1a1208' : '#12082a',
     boxShadow: virada ? '0 4px 16px rgba(223,183,108,0.22)' : '0 4px 24px rgba(223,183,108,0.2)',
     ...style,
   }
@@ -204,32 +227,55 @@ export function CartaTarot({ carta, size = 110, virada = false, animarFlip = fal
 
   const renderFace = () => {
     if (virada) {
-      if (!showImg) return <VersoSVG w={w} h={h} />
       return (
+        <div style={{ position: 'relative', width: '100%', height: '100%', background: '#1a1208' }}>
+          {!versoReady && (
+            <div style={{
+              position: 'absolute',
+              inset: 0,
+              background: 'linear-gradient(145deg, #2a1f0f 0%, #1a1208 55%, #120c06 100%)',
+            }} />
+          )}
+          {showImg ? (
+            <img
+              src={src}
+              alt="Verso"
+              width={w}
+              height={h}
+              loading="eager"
+              decoding="sync"
+              fetchPriority="high"
+              onLoad={() => setVersoReady(true)}
+              onError={() => setImgOk(false)}
+              style={{
+                ...imgStyle,
+                position: 'absolute',
+                inset: 0,
+                opacity: versoReady ? 1 : 0,
+                transition: 'opacity 0.1s ease',
+              }}
+            />
+          ) : (
+            <VersoSVG w={w} h={h} idSuffix={versoId} />
+          )}
+        </div>
+      )
+    }
+    if (!showImg) return <CartaFallbackSVG carta={carta} size={size} />
+    return (
+      <div style={{ position: 'relative', width: '100%', height: '100%', background: '#12082a' }}>
+        <CartaFallbackSVG carta={carta} size={size} />
         <img
           src={src}
-          alt="Verso"
+          alt={carta.nome}
           width={w}
           height={h}
           loading="eager"
           decoding="async"
           onError={() => setImgOk(false)}
-          style={imgStyle}
+          style={{ ...imgStyle, position: 'absolute', inset: 0 }}
         />
-      )
-    }
-    if (!showImg) return <CartaFallbackSVG carta={carta} size={size} />
-    return (
-      <img
-        src={src}
-        alt={carta.nome}
-        width={w}
-        height={h}
-        loading="eager"
-        decoding="async"
-        onError={() => setImgOk(false)}
-        style={imgStyle}
-      />
+      </div>
     )
   }
 

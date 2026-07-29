@@ -27,7 +27,7 @@ export function adsenseEnabled(isPremium = false) {
   return /^\d+$/.test(getAdsenseSlot())
 }
 
-/** Anúncios na app principal (home, tarot, mapa, ferramentas…) — não em paywall/chat/login. */
+/** Anúncios na app principal (home, tarot, mapa, ferramentas…) - não em paywall/chat/login. */
 export function shouldShowAdsOnPasso(passo) {
   return !ADS_BLOCKED_PASSOS.has(passo)
 }

@@ -83,7 +83,7 @@ function criarCanvasPartilha({ signoSol, signoLua, signoAsc, nome, lang }) {
   ctx.fillStyle = '#DFB76C'
   ctx.font = 'bold 20px Georgia, serif'
   ctx.textAlign = 'center'
-  ctx.fillText('✦ Sidusastro', W / 2, 32)
+  ctx.fillText('Sidusastro', W / 2, 32)
 
   ctx.fillStyle = '#FFFFFF'
   ctx.font = '600 18px system-ui, sans-serif'
@@ -302,7 +302,7 @@ export function ShareSigno({ mapaNatal, nome, variant = 'default' }) {
           {estado === 'loading' ? <Loader2 size={14} className="spin-icon" /> : estado === 'done' ? <Check size={14} /> : <Share2 size={14} />}
           {label}
         </button>
-        <button type="button" onClick={handleWhatsApp} disabled={estado === 'loading'} style={{ ...btnStyle, background: 'rgba(37,211,102,0.12)', borderColor: 'rgba(37,211,102,0.35)', color: '#4ADE80' }}>
+        <button type="button" onClick={handleWhatsApp} disabled={estado === 'loading'} style={{ ...btnStyle, background: 'rgba(37,211,102,0.1)', borderColor: 'rgba(37,211,102,0.28)', color: '#25D366' }}>
           <MessageCircle size={14} />
           WhatsApp
         </button>

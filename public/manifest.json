@@ -1,13 +1,19 @@
 {
   "name": "Sidusastro - O Seu Guia Cósmico",
-  "short_name": "Sidusastro",
-  "description": "Mapa Astral, Tarot, Oráculo IA e ferramentas astrológicas.",
+  "short_name": "Sidus",
+  "description": "Mapa Astral, Tarot, Chat Oráculo e ferramentas astrológicas.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#0B071E",
+  "background_color": "#000000",
   "theme_color": "#0B071E",
   "lang": "pt",
   "icons": [
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
     {
       "src": "/favicon.svg",
       "sizes": "any",

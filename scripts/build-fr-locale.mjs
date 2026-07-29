@@ -70,7 +70,7 @@ const ES_FR = [
   ['Cerrar', 'Fermer'],
   ['Donde el mapa del cielo se encuentra con la sabiduría de las cartas para guiar tus pasos.', 'Là où la carte du ciel rencontre la sagesse des cartes pour guider vos pas.'],
   ['Tu carta natal completa.Tu destino, decodificado.', 'Votre carte natale complète. Votre destin, décodé.'],
-  ['Efemérides suizas · Casas Placidus · Oráculo AI · Tarot · Numerología: todo personalizado con tu Sol, Luna y Ascendente.', 'Swiss Ephemeris · maisons Placidus · Oráculo IA · Tarot · Numérologie — tout personnalisé avec votre Soleil, Lune et Ascendant.'],
+  ['Efemérides suizas · Casas Placidus · Oráculo AI · Tarot · Numerología: todo personalizado con tu Sol, Luna y Ascendente.', 'Swiss Ephemeris · maisons Placidus · Oráculo IA · Tarot · Numérologie - tout personnalisé avec votre Soleil, Lune et Ascendant.'],
   ['Utilizamos las cookies necesarias para que Sidus funcione', 'Nous utilisons les cookies nécessaires au fonctionnement de Sidus'],
   ['Puede aceptar todas las cookies o limitarlas a las esenciales (anuncios no personalizados).', 'Vous pouvez tout accepter ou limiter aux cookies essentiels (annonces non personnalisées).'],
   ['Tarot en línea', 'Tarot en ligne'],

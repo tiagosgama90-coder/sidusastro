@@ -82,12 +82,12 @@ const RESPOSTA_FORA_EN = [
 
 export function mensagemForaEscopo(lang = 'pt') {
   const msgs = {
-    pt: '✦ Sou Sidus, Oráculo Astral. Só oriento astrologia, previsões e vida lidas pelo teu mapa natal (amor, carreira, propósito, ciclos, trânsitos, compatibilidade). Reformula a tua pergunta nesse âmbito.',
-    en: '✦ I am Sidus, the Astral Oracle. I only guide astrology, predictions and life read through your natal chart (love, career, purpose, cycles, transits, compatibility). Please rephrase your question in that scope.',
-    es: '✦ Soy Sidus, Oráculo Astral. Solo oriento astrología, predicciones y vida leídas por tu carta natal. Reformula tu pregunta en ese ámbito.',
-    it: '✦ Sono Sidus, Oracolo Astrale. Guido solo astrologia, previsioni e vita lette dalla tua carta natale. Riformula la domanda in questo ambito.',
-    de: '✦ Ich bin Sidus, das Astralorakel. Ich berate nur Astrologie und Lebensthemen über dein Geburtshoroskop. Formuliere deine Frage in diesem Rahmen neu.',
-    fr: '✦ Je suis Sidus, Oracle Astral. Je guide uniquement l\'astrologie et la vie lues par ta carte natale. Reformule ta question dans ce cadre.',
+    pt: 'Sou Sidus, do Chat Oráculo. Só oriento astrologia, previsões e vida lidas pelo teu mapa natal (amor, carreira, propósito, ciclos, trânsitos, compatibilidade). Reformula a tua pergunta nesse âmbito.',
+    en: 'I am Sidus, from Chat Oracle. I only guide astrology, predictions and life read through your natal chart (love, career, purpose, cycles, transits, compatibility). Please rephrase your question in that scope.',
+    es: 'Soy Sidus, del Chat Oráculo. Solo oriento astrología, predicciones y vida leídas por tu carta natal. Reformula tu pregunta en ese ámbito.',
+    it: 'Sono Sidus, del Chat Oracolo. Guido solo astrologia, previsioni e vita lette dalla tua carta natale. Riformula la domanda in questo ambito.',
+    de: 'Ich bin Sidus vom Chat-Orakel. Ich berate nur Astrologie und Lebensthemen über dein Geburtshoroskop. Formuliere deine Frage in diesem Rahmen neu.',
+    fr: 'Je suis Sidus, du Chat Oráculo. Je guide uniquement l\'astrologie et la vie lues par ta carte natale. Reformule ta question dans ce cadre.',
   }
   return msgs[lang] || msgs.en
 }
@@ -99,14 +99,14 @@ export function reforcoInstrucaoGeminiAstrologia(lang = 'pt') {
   if (lang === 'pt') {
     return `
 RESTRIÇÃO GEMINI - OBRIGATÓRIO:
-NÃO és IA genérica. Respondes SÓ a: mapa natal, trânsitos, previsões, sinastria, ciclos planetários e áreas de vida LIDAS PELA ASTROLOGIA.
+NÃO és um chat genérico. Respondes SÓ a: mapa natal, trânsitos, previsões, sinastria, ciclos planetários e áreas de vida LIDAS PELA ASTROLOGIA.
 Se o utilizador pedir outro tema (receitas, código, trivia, medicina, trabalhos escolares, desporto, política, conversa geral), responde APENAS com a frase de recusa do system prompt - NÃO respondas parcialmente ao tema errado.
 Nunca actues como chatbot genérico. Apenas astrologia e previsões via mapa.
 `.trim()
   }
   return `
 GEMINI RESTRICTION - MANDATORY:
-You are NOT a general-purpose AI. You ONLY answer: natal chart, transits, predictions, synastry, planetary cycles, and life areas READ THROUGH astrology.
+You are NOT a general chatbot. You ONLY answer: natal chart, transits, predictions, synastry, planetary cycles, and life areas READ THROUGH astrology.
 If the user asks anything else (recipes, code, trivia, medicine, homework, sports, politics, general chat), reply ONLY with the refusal sentence from your system prompt - do NOT answer the off-topic question even partially.
 ${aiOutputLanguageBlock(lang)}
 ${zodiacNamesInstruction(lang)}

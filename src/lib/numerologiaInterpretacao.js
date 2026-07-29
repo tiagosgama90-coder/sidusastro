@@ -299,12 +299,12 @@ function separarLetras(letras) {
 }
 
 const VISAO_GERAL = {
-  pt: (nome, destino, alma, personalidade) => `O nome «${nome}» revela três camadas de significado. A Expressão ${destino} é como ages no mundo; a Alma ${alma} é o que desejas no profundo; a Personalidade ${personalidade} é como os outros te veem à primeira vista. Funciona com qualquer nome em letras A–Z (inclui acentos portugueses).`,
-  en: (nome, destino, alma, personalidade) => `The name «${nome}» carries three layers of meaning. Expression ${destino} is how you act in the world; Soul ${alma} is what you desire deep inside; Personality ${personalidade} is how others first perceive you. Works with any name using letters A–Z (including accented Portuguese characters).`,
-  es: (nome, destino, alma, personalidade) => `El nombre «${nome}» revela tres capas de significado. La Expresión ${destino} es cómo actúas en el mundo; el Alma ${alma} es lo que deseas en lo profundo; la Personalidad ${personalidade} es cómo te ven los demás a primera vista. Funciona con cualquier nombre en letras A–Z.`,
-  it: (nome, destino, alma, personalidade) => `Il nome «${nome}» rivela tre strati di significato. L'Espressione ${destino} è come agisci nel mondo; l'Anima ${alma} è ciò che desideri nel profondo; la Personalità ${personalidade} è come gli altri ti vedono a prima vista. Funziona con qualsiasi nome in lettere A–Z.`,
-  de: (nome, destino, alma, personalidade) => `Der Name «${nome}» offenbart drei Bedeutungsebenen. Ausdruck ${destino} ist, wie du in der Welt handelst; Seele ${alma} ist, was du tief wünschst; Persönlichkeit ${personalidade} ist, wie andere dich zuerst wahrnehmen. Funktioniert mit jedem Namen in Buchstaben A–Z.`,
-  fr: (nome, destino, alma, personalidade) => `Le nom «${nome}» révèle trois couches de sens. L'Expression ${destino} est comment tu agis dans le monde ; l'Âme ${alma} est ce que tu désires au fond ; la Personnalité ${personalidade} est comment les autres te perçoivent au premier regard. Fonctionne avec tout nom en lettres A–Z.`,
+  pt: (nome, destino, alma, personalidade) => `O nome «${nome}» revela três camadas de significado. A Expressão ${destino} é como ages no mundo; a Alma ${alma} é o que desejas no profundo; a Personalidade ${personalidade} é como os outros te veem à primeira vista. Funciona com qualquer nome em letras A-Z (inclui acentos portugueses).`,
+  en: (nome, destino, alma, personalidade) => `The name «${nome}» carries three layers of meaning. Expression ${destino} is how you act in the world; Soul ${alma} is what you desire deep inside; Personality ${personalidade} is how others first perceive you. Works with any name using letters A-Z (including accented Portuguese characters).`,
+  es: (nome, destino, alma, personalidade) => `El nombre «${nome}» revela tres capas de significado. La Expresión ${destino} es cómo actúas en el mundo; el Alma ${alma} es lo que deseas en lo profundo; la Personalidad ${personalidade} es cómo te ven los demás a primera vista. Funciona con cualquier nombre en letras A-Z.`,
+  it: (nome, destino, alma, personalidade) => `Il nome «${nome}» rivela tre strati di significato. L'Espressione ${destino} è come agisci nel mondo; l'Anima ${alma} è ciò che desideri nel profondo; la Personalità ${personalidade} è come gli altri ti vedono a prima vista. Funziona con qualsiasi nome in lettere A-Z.`,
+  de: (nome, destino, alma, personalidade) => `Der Name «${nome}» offenbart drei Bedeutungsebenen. Ausdruck ${destino} ist, wie du in der Welt handelst; Seele ${alma} ist, was du tief wünschst; Persönlichkeit ${personalidade} ist, wie andere dich zuerst wahrnehmen. Funktioniert mit jedem Namen in Buchstaben A-Z.`,
+  fr: (nome, destino, alma, personalidade) => `Le nom «${nome}» révèle trois couches de sens. L'Expression ${destino} est comment tu agis dans le monde ; l'Âme ${alma} est ce que tu désires au fond ; la Personnalité ${personalidade} est comment les autres te perçoivent au premier regard. Fonctionne avec tout nom en lettres A-Z.`,
 }
 
 function visaoGeral(nome, mapa, lang) {
@@ -315,7 +315,7 @@ function visaoGeral(nome, mapa, lang) {
 
 export function enriquecerMapaNumerologia(base, nome, lang = 'pt', mapaNatal = null) {
   const pilares = [
-    { id: 'destino', num: base.destino, icone: '✦', cor: '#DFB76C', calculo: base.calculos?.destino },
+    { id: 'destino', num: base.destino, icone: '', cor: '#DFB76C', calculo: base.calculos?.destino },
     { id: 'alma', num: base.alma, icone: '🌙', cor: '#A78BFA', calculo: base.calculos?.alma },
     { id: 'personalidade', num: base.personalidade, icone: '☀', cor: '#34D399', calculo: base.calculos?.personalidade },
   ].map((p) => {
@@ -338,7 +338,7 @@ export function enriquecerMapaNumerologia(base, nome, lang = 'pt', mapaNatal = n
       en: 'Expression and Soul align - what you show matches what you desire. Authenticity flows naturally.',
       es: 'Expresión y Alma se alinean: lo que muestras coincide con lo que deseas. La autenticidad fluye con naturalidad.',
       it: 'Espressione e Anima si allineano: ciò che mostri coincide con ciò che desideri. L\'autenticità fluisce naturalmente.',
-      de: 'Ausdruck und Seele sind im Einklang – was du zeigst, entspricht dem, was du wünschst. Authentizität fließt natürlich.',
+      de: 'Ausdruck und Seele sind im Einklang - was du zeigst, entspricht dem, was du wünschst. Authentizität fließt natürlich.',
       fr: 'Expression et Âme s\'alignent : ce que tu montres coïncide avec ce que tu désires. L\'authenticité coule naturellement.',
     },
     diferem: {
@@ -346,7 +346,7 @@ export function enriquecerMapaNumerologia(base, nome, lang = 'pt', mapaNatal = n
       en: 'Expression and Soul differ - inner desire and outer action ask for conscious integration.',
       es: 'Expresión y Alma difieren: el deseo interior y la acción exterior piden integración consciente.',
       it: 'Espressione e Anima differiscono: il desiderio interiore e l\'azione esteriore chiedono integrazione consapevole.',
-      de: 'Ausdruck und Seele unterscheiden sich – inneres Verlangen und äußeres Handeln verlangen bewusste Integration.',
+      de: 'Ausdruck und Seele unterscheiden sich - inneres Verlangen und äußeres Handeln verlangen bewusste Integration.',
       fr: 'Expression et Âme diffèrent : le désir intérieur et l\'action extérieure demandent une intégration consciente.',
     },
     persDist: {
@@ -354,7 +354,7 @@ export function enriquecerMapaNumerologia(base, nome, lang = 'pt', mapaNatal = n
       en: 'Personality and Expression are distinct - others may see you differently from how you act. This is fertile ground for growth.',
       es: 'Personalidad y Expresión son distintas: los demás pueden verte de forma diferente a tu acción. Es terreno fértil para crecer.',
       it: 'Personalità ed Espressione sono distinte: gli altri possono vederti diversamente dalla tua azione. È terreno fertile per crescere.',
-      de: 'Persönlichkeit und Ausdruck sind unterschiedlich – andere sehen dich vielleicht anders als du handelst. Fruchtbarer Boden für Wachstum.',
+      de: 'Persönlichkeit und Ausdruck sind unterschiedlich - andere sehen dich vielleicht anders als du handelst. Fruchtbarer Boden für Wachstum.',
       fr: 'Personnalité et Expression sont distinctes : les autres peuvent te voir différemment de ton action. Terrain fertile pour grandir.',
     },
     caminhoUnido: {
@@ -362,7 +362,7 @@ export function enriquecerMapaNumerologia(base, nome, lang = 'pt', mapaNatal = n
       en: 'Life Path and Expression share the same number - birth mission and name vibration walk in unison.',
       es: 'Camino de Vida y Expresión comparten el mismo número: misión de nacimiento y vibración del nombre caminan al unísono.',
       it: 'Cammino di Vita ed Espressione condividono lo stesso numero: missione di nascita e vibrazione del nome camminano all\'unisono.',
-      de: 'Lebensweg und Ausdruck teilen dieselbe Zahl – Geburtsmission und Namensschwingung gehen im Einklang.',
+      de: 'Lebensweg und Ausdruck teilen dieselbe Zahl - Geburtsmission und Namensschwingung gehen im Einklang.',
       fr: 'Chemin de Vie et Expression partagent le même nombre : mission de naissance et vibration du nom marchent à l\'unisson.',
     },
   }

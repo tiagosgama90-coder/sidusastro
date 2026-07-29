@@ -1,6 +1,6 @@
 // Service Worker para notificações PWA - Sidus Astro
-// v4: HTML sempre pela rede (evita ecrã azul após deploy com chunks antigos em cache)
-const CACHE_NAME = 'sidusastro-v4'
+// v19: efeitos cósmicos site inteiro (desktop + mobile)
+const CACHE_NAME = 'sidusastro-v51'
 const OFFLINE_URLS = ['/manifest.json', '/favicon.svg']
 
 const SIGNO_EMOJI = {
@@ -183,7 +183,7 @@ async function networkFirst(request, { allowCacheFallback = true } = {}) {
 
 function offlineHtml() {
   return new Response(
-    '<!doctype html><html lang="pt"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Sidusastro — offline</title></head><body style="margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:#0B071E;color:#fff;font-family:system-ui,sans-serif;text-align:center;padding:24px"><div><p>Sem ligação à internet.</p><p><a href="/" style="color:#DFB76C">Tentar de novo</a></p></div></body></html>',
+    '<!doctype html><html lang="pt"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Sidusastro - offline</title></head><body style="margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:#0B071E;color:#fff;font-family:system-ui,sans-serif;text-align:center;padding:24px"><div><p>Sem ligação à internet.</p><p><a href="/" style="color:#DFB76C">Tentar de novo</a></p></div></body></html>',
     { headers: { 'Content-Type': 'text/html; charset=utf-8' } },
   )
 }
@@ -200,8 +200,9 @@ self.addEventListener('install', (event) => {
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((cacheNames) =>
-      Promise.all(cacheNames.filter((n) => n !== CACHE_NAME).map((n) => caches.delete(n)))
-    ).then(async () => {
+      Promise.all(cacheNames.map((n) => caches.delete(n)))
+    ).then(() => caches.open(CACHE_NAME).then((cache) => cache.addAll(OFFLINE_URLS)))
+      .then(async () => {
       const prefs = await getPrefs()
       if (prefs?.enabled) iniciarTimer()
       return self.clients.claim()

@@ -164,8 +164,8 @@ function luaNatalTxt(lunar, aspectoLua, lang) {
     en: { high: 'Emotions flow clearly - good for intimate dialogue.', low: 'Heightened sensitivity; protect emotional space.', mid: 'Balance reason and feeling in decisions.' },
     es: { high: 'Las emociones fluyen con claridad: buen momento para diálogo íntimo.', low: 'Sensibilidad amplificada; protege el espacio emocional.', mid: 'Equilibrio entre razón y sentimiento en las decisiones.' },
     it: { high: 'Le emozioni fluiscono con chiarezza: buon momento per dialogo intimo.', low: 'Sensibilità amplificata; proteggi lo spazio emotivo.', mid: 'Equilibrio tra ragione e sentimento nelle decisioni.' },
-    de: { high: 'Emotionen fließen klar – gut für intimen Dialog.', low: 'Erhöhte Sensibilität; schütze den emotionalen Raum.', mid: 'Gleichgewicht zwischen Verstand und Gefühl bei Entscheidungen.' },
-    fr: { high: 'Les émotions coulent avec clarté – bon moment pour un dialogue intime.', low: 'Sensibilité amplifiée ; protège ton espace émotionnel.', mid: 'Équilibre entre raison et sentiment dans les décisions.' },
+    de: { high: 'Emotionen fließen klar - gut für intimen Dialog.', low: 'Erhöhte Sensibilität; schütze den emotionalen Raum.', mid: 'Gleichgewicht zwischen Verstand und Gefühl bei Entscheidungen.' },
+    fr: { high: 'Les émotions coulent avec clarté - bon moment pour un dialogue intime.', low: 'Sensibilité amplifiée ; protège ton espace émotionnel.', mid: 'Équilibre entre raison et sentiment dans les décisions.' },
   }
   const h = harmonia[lang] || harmonia.en
   const nota = aspectoLua.score >= 75 ? h.high : aspectoLua.score <= 45 ? h.low : h.mid
@@ -218,12 +218,12 @@ function estrategiaTxt({ cruzCritica, todosAltos, algumBaixo, fisico, emocional,
   }
   if (todosAltos) {
     return contentForLang(lang, {
-      pt: '✦ Janela de alto rendimento: físico, emocional e intelectual alinhados. O trânsito solar favorável sustenta negociações, apresentações e treino. Aproveita a fase lunar para materializar intenções.',
-      en: '✦ High-performance window: physical, emotional and intellectual cycles aligned. Favourable solar transit supports negotiations, presentations and training. Use the lunar phase to manifest intentions.',
-      es: '✦ Ventana de alto rendimiento: ciclos físico, emocional e intelectual alineados. El tránsito solar favorable sustenta negociaciones, presentaciones y entrenamiento. Aprovecha la fase lunar para materializar intenciones.',
-      it: '✦ Finestra ad alte prestazioni: cicli fisico, emotivo e intellettuale allineati. Il transito solare favorevole sostiene negoziazioni, presentazioni e allenamento. Sfrutta la fase lunare per materializzare le intenzioni.',
-      de: '✦ Hochleistungsfenster: körperliche, emotionale und intellektuelle Zyklen im Einklang. Günstiger Sonnentransit unterstützt Verhandlungen, Präsentationen und Training. Nutze die Mondphase, um Absichten zu manifestieren.',
-      fr: '✦ Fenêtre haute performance : cycles physique, émotionnel et intellectuel alignés. Le transit solaire favorable soutient négociations, présentations et entraînement. Utilise la phase lunaire pour matérialiser tes intentions.',
+      pt: 'Janela de alto rendimento: físico, emocional e intelectual alinhados. O trânsito solar favorável sustenta negociações, apresentações e treino. Aproveita a fase lunar para materializar intenções.',
+      en: 'High-performance window: physical, emotional and intellectual cycles aligned. Favourable solar transit supports negotiations, presentations and training. Use the lunar phase to manifest intentions.',
+      es: 'Ventana de alto rendimiento: ciclos físico, emocional e intelectual alineados. El tránsito solar favorable sustenta negociaciones, presentaciones y entrenamiento. Aprovecha la fase lunar para materializar intenciones.',
+      it: 'Finestra ad alte prestazioni: cicli fisico, emotivo e intellettuale allineati. Il transito solare favorevole sostiene negoziazioni, presentazioni e allenamento. Sfrutta la fase lunare per materializzare le intenzioni.',
+      de: 'Hochleistungsfenster: körperliche, emotionale und intellektuelle Zyklen im Einklang. Günstiger Sonnentransit unterstützt Verhandlungen, Präsentationen und Training. Nutze die Mondphase, um Absichten zu manifestieren.',
+      fr: 'Fenêtre haute performance : cycles physique, émotionnel et intellectuel alignés. Le transit solaire favorable soutient négociations, présentations et entraînement. Utilise la phase lunaire pour matérialiser tes intentions.',
     })
   }
   if (algumBaixo) {
@@ -251,21 +251,21 @@ function estrategiaTxt({ cruzCritica, todosAltos, algumBaixo, fisico, emocional,
         fr: 'Lune décroissante favorise libérer ce qui épuise',
       })
     return contentForLang(lang, {
-      pt: `✦ Recuperação no eixo ${foco}. Delega, reduz estímulos e foca numa prioridade. Astrologia: ${luaTxt}.`,
-      en: `✦ Recovery on the ${foco} axis. Delegate, reduce stimuli and focus on one priority. Astrology: ${luaTxt}.`,
-      es: `✦ Recuperación en el eje ${foco}. Delega, reduce estímulos y enfócate en una prioridad. Astrología: ${luaTxt}.`,
-      it: `✦ Recupero sull'asse ${foco}. Delega, riduci stimoli e concentrati su una priorità. Astrologia: ${luaTxt}.`,
-      de: `✦ Erholung auf der ${foco}-Achse. Delegiere, reduziere Reize und fokussiere eine Priorität. Astrologie: ${luaTxt}.`,
-      fr: `✦ Récupération sur l'axe ${foco}. Délègue, réduis les stimuli et concentre-toi sur une priorité. Astrologie : ${luaTxt}.`,
+      pt: `Recuperação no eixo ${foco}. Delega, reduz estímulos e foca numa prioridade. Astrologia: ${luaTxt}.`,
+      en: `Recovery on the ${foco} axis. Delegate, reduce stimuli and focus on one priority. Astrology: ${luaTxt}.`,
+      es: `Recuperación en el eje ${foco}. Delega, reduce estímulos y enfócate en una prioridad. Astrología: ${luaTxt}.`,
+      it: `Recupero sull'asse ${foco}. Delega, riduci stimoli e concentrati su una priorità. Astrologia: ${luaTxt}.`,
+      de: `Erholung auf der ${foco}-Achse. Delegiere, reduziere Reize und fokussiere eine Priorität. Astrologie: ${luaTxt}.`,
+      fr: `Récupération sur l'axe ${foco}. Délègue, réduis les stimuli et concentre-toi sur une priorité. Astrologie : ${luaTxt}.`,
     })
   }
   return contentForLang(lang, {
-    pt: '✦ Dia misto: usa o pico intelectual para planear, o emocional para relações e o físico para rotinas leves. Sincroniza com o trânsito lunar actual.',
-    en: '✦ Mixed day: use intellectual peak to plan, emotional for relationships and physical for light routines. Sync with the current lunar transit.',
-    es: '✦ Día mixto: usa el pico intelectual para planificar, el emocional para relaciones y el físico para rutinas ligeras. Sincroniza con el tránsito lunar actual.',
-    it: '✦ Giornata mista: usa il picco intellettuale per pianificare, quello emotivo per le relazioni e quello fisico per routine leggere. Sincronizzati con il transito lunare attuale.',
-    de: '✦ Gemischter Tag: nutze intellektuellen Höhepunkt zum Planen, emotional für Beziehungen und körperlich für leichte Routinen. Synchronisiere mit dem aktuellen Mondtransit.',
-    fr: '✦ Journée mixte : utilise le pic intellectuel pour planifier, l\'émotionnel pour les relations et le physique pour des routines légères. Synchronise-toi avec le transit lunaire actuel.',
+    pt: 'Dia misto: usa o pico intelectual para planear, o emocional para relações e o físico para rotinas leves. Sincroniza com o trânsito lunar actual.',
+    en: 'Mixed day: use intellectual peak to plan, emotional for relationships and physical for light routines. Sync with the current lunar transit.',
+    es: 'Día mixto: usa el pico intelectual para planificar, el emocional para relaciones y el físico para rutinas ligeras. Sincroniza con el tránsito lunar actual.',
+    it: 'Giornata mista: usa il picco intellettuale per pianificare, quello emotivo per le relazioni e quello fisico per routine leggere. Sincronizzati con il transito lunare attuale.',
+    de: 'Gemischter Tag: nutze intellektuellen Höhepunkt zum Planen, emotional für Beziehungen und körperlich für leichte Routinen. Synchronisiere mit dem aktuellen Mondtransit.',
+    fr: 'Journée mixte : utilise le pic intellectuel pour planifier, l\'émotionnel pour les relations et le physique pour des routines légères. Synchronise-toi avec le transit lunaire actuel.',
   })
 }
 

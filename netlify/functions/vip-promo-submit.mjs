@@ -7,7 +7,7 @@ const corsHeaders = {
 }
 
 const PLATFORMS = new Set([
-  'instagram', 'tiktok', 'youtube', 'facebook', 'twitter', 'linkedin', 'blog', 'outro',
+  'instagram', 'tiktok', 'youtube', 'facebook', 'blog', 'outro',
 ])
 
 function sanitizarTexto(val, max) {

@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { useLanguage } from '../lib/i18n/LanguageContext.jsx'
-import { inferProductType, precoPremiumEfetivo, precoTarotEfetivo, formatPrecoEuro, PRECO_PREMIUM_UNICO, PRECO_PREMIUM_BR_PIX, PRECO_TAROT_BR_PIX } from '../lib/pricing.js'
+import { inferProductType, precoPremiumEfetivo, precoTarotEfetivo, formatPrecoCompleto, PRECO_PREMIUM_UNICO, PRECO_PREMIUM_BR_PIX_BRL, PRECO_TAROT_BR_PIX_BRL } from '../lib/pricing.js'
 import { metodosParaProduto, metodoPadraoParaPais } from '../lib/paymentMethods.js'
 
 const CORES = {
@@ -74,21 +74,26 @@ export function ModalPagamento({
 
   const metodoActivo = metodosDisponiveis.find((m) => m.stripeType === metodoSelecionado) || metodosDisponiveis[0]
 
-  const valorEfetivo = useMemo(() => {
-    if (isVip) return precoPremiumEfetivo(metodoActivo?.stripeType || 'card')
+  const cobranca = useMemo(() => {
+    if (isVip) return precoPremiumEfetivo(metodoActivo?.stripeType || 'card', isBrasil)
     if (isTarot) return precoTarotEfetivo(metodoActivo?.stripeType || 'card', isBrasil)
-    return valor
+    return { valor, currency: 'eur' }
   }, [isVip, isTarot, isBrasil, metodoActivo?.stripeType, valor])
+
+  const precoPixVip = formatPrecoCompleto(PRECO_PREMIUM_BR_PIX_BRL, 'brl')
+  const precoPixTarot = formatPrecoCompleto(PRECO_TAROT_BR_PIX_BRL, 'brl')
+  const precoPremiumEur = formatPrecoCompleto(PRECO_PREMIUM_UNICO, 'eur')
+  const precoLabel = formatPrecoCompleto(cobranca.valor, cobranca.currency)
 
   const descricaoMetodo = (m) => {
     if (isVip && isBrasil && m.stripeType === 'pix') {
-      return t('pagamento.pixBrOffer', { valor: formatPrecoEuro(PRECO_PREMIUM_BR_PIX) })
+      return t('pagamento.pixBrOffer', { preco: precoPixVip })
     }
     if (isVip && isBrasil && m.stripeType !== 'pix') {
-      return t('pagamento.premiumFullPrice', { valor: formatPrecoEuro(PRECO_PREMIUM_UNICO) })
+      return t('pagamento.premiumFullPrice', { preco: precoPremiumEur })
     }
     if (isTarot && isBrasil && m.stripeType === 'pix') {
-      return t('pagamento.tarotPixBrOffer', { valor: formatPrecoEuro(PRECO_TAROT_BR_PIX) })
+      return t('pagamento.tarotPixBrOffer', { preco: precoPixTarot })
     }
     if (isVip) return t('pagamento.vipMethodDesc')
     return t(`pagamento.methods.${m.i18nKey}.desc`)
@@ -100,6 +105,9 @@ export function ModalPagamento({
       invalidUrl: t('pagamento.invalidUrl'),
       needLogin: t('pagamento.needLogin'),
       selectMethod: t('pagamento.selectMethod'),
+      amount_too_small: t('pagamento.amountTooSmall'),
+      stripe_not_configured: t('pagamento.stripeFail'),
+      missing_params: t('pagamento.sessionFail'),
     }
     return map[code] || code || t('pagamento.stripeFail')
   }
@@ -113,7 +121,7 @@ export function ModalPagamento({
     setProcessando(true)
     try {
       await iniciarCheckoutStripe({
-        valor: valorEfetivo,
+        valor: cobranca.valor,
         descricao,
         userId,
         userEmail,
@@ -139,7 +147,7 @@ export function ModalPagamento({
           <p style={{ margin: 0, color: CORES.brancoMuted, fontSize: 13 }}>{descricao}</p>
         </div>
         <div style={{ fontSize: 24, fontWeight: 700, color: CORES.dourado }}>
-          {formatPrecoEuro(valorEfetivo)} €{isVip ? <span style={{ fontSize: 12, fontWeight: 400 }}> {t('common.oneTime')}</span> : null}
+          {precoLabel}{isVip ? <span style={{ fontSize: 12, fontWeight: 400 }}> {t('common.oneTime')}</span> : null}
         </div>
       </div>
 
@@ -149,7 +157,7 @@ export function ModalPagamento({
           borderRadius: 12, padding: '12px 14px', marginBottom: 16, fontSize: 12,
           color: CORES.brancoSuave, lineHeight: 1.55,
         }}>
-          {t('pagamento.brPixBanner')}
+          {t('pagamento.brPixBanner', { precoPix: precoPixVip, precoEur: precoPremiumEur })}
         </div>
       )}
 
@@ -217,11 +225,11 @@ export function ModalPagamento({
       }}>
         {processando
           ? t('pagamento.redirecting')
-          : t('pagamento.payBtnWithMethod', { valor: formatPrecoEuro(valorEfetivo), method: metodoActivo?.nome || '' })}
+          : t('pagamento.payBtnWithMethod', { preco: precoLabel, method: metodoActivo?.nome || '' })}
       </button>
 
       <p style={{ textAlign: 'center', fontSize: 10, color: CORES.brancoMuted, marginTop: 12, lineHeight: 1.5 }}>
-        {isVip && isBrasil ? t('pagamento.vipBrMethodsFootnote') : (isVip ? t('pagamento.vipMethodsFootnote') : t('pagamento.methodsFootnote'))}
+        {isVip && isBrasil ? t('pagamento.vipBrMethodsFootnote', { precoPix: precoPixVip, precoEur: precoPremiumEur }) : (isVip ? t('pagamento.vipMethodsFootnote') : t('pagamento.methodsFootnote'))}
       </p>
     </Overlay>
   )

@@ -18,7 +18,7 @@ function gravarCache(country) {
   }
 }
 
-/** País ISO (Netlify geo) — cache por sessão. */
+/** País ISO (Netlify geo) - cache por sessão. */
 export function useGeoCountry() {
   const cached = lerCache()
   const [country, setCountry] = useState(cached)

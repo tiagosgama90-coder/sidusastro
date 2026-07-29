@@ -5,6 +5,7 @@ import { calcularFaseLua } from '../lib/faseLua.js'
 import { gerarHoroscopoSignoTransito } from '../lib/horoscopoDiarioTransitos.js'
 import { SIGNOS_PT } from '../lib/i18n/astro.js'
 import { normalizeSignoNome } from '../lib/i18n/astro.js'
+import { ShareWhatsAppButton } from './ShareWhatsAppButton.jsx'
 
 const CORES = {
   dourado: '#DFB76C',
@@ -39,8 +40,11 @@ export function EnergiaDoDia({ mapaNatal, ceuAgora = [], aspetos = [] }) {
 
   if (!energia) return null
 
+  const siteUrl = typeof window !== 'undefined' ? window.location.origin : 'https://sidusastro.com'
+  const textoPartilha = t('share.energyText', { energia: energia.slice(0, 320), url: siteUrl })
+
   return (
-    <div style={{
+    <div className="sidus-glass" style={{
       background: 'linear-gradient(135deg, rgba(139,92,246,0.12) 0%, rgba(223,183,108,0.08) 100%)',
       border: `1px solid ${CORES.vidroBorda}`,
       borderRadius: 16,
@@ -55,6 +59,7 @@ export function EnergiaDoDia({ mapaNatal, ceuAgora = [], aspetos = [] }) {
       </div>
       <p style={{ margin: '0 0 10px', fontSize: 11, color: CORES.brancoMuted, lineHeight: 1.5 }}>{t('home.energySubtitle')}</p>
       <p style={{ margin: 0, fontSize: 14, color: CORES.brancoSuave, lineHeight: 1.65 }}>{energia}</p>
+      <ShareWhatsAppButton texto={textoPartilha} compact />
     </div>
   )
 }
@@ -78,7 +83,7 @@ export function TransitoSemanal({ ceuAgora = [], aspetos = [] }) {
   }, [aspetos, ceuAgora, t, tp, ta, ts])
 
   return (
-    <div style={{
+    <div className="sidus-glass" style={{
       background: 'rgba(255,255,255,0.04)',
       border: `1px solid ${CORES.vidroBorda}`,
       borderRadius: 16,

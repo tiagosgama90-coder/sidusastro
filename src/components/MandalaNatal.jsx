@@ -188,7 +188,7 @@ function TabelaPosicoes({ pontos, translateSign }) {
 }
 
 /**
- * Roda natal profissional — Placidus, aspectos, grelha e tabela de posições.
+ * Roda natal profissional - Placidus, aspectos, grelha e tabela de posições.
  */
 export function MandalaNatal({
   mapaNatal,
@@ -345,7 +345,7 @@ export function MandalaNatal({
           <circle cx={cx} cy={cy} r={rDecor + 4} fill="none" stroke="rgba(223,183,108,0.1)" strokeWidth="1" />
           <circle cx={cx} cy={cy} r={rDecor} fill="none" stroke={`url(#${uid}_ring)`} strokeWidth="1.5" opacity="0.9" />
 
-          {/* Escala de graus — cada 5° */}
+          {/* Escala de graus - cada 5° */}
           {Array.from({ length: 72 }, (_, i) => {
             const lon = i * 5
             const a = anguloCarta(lon, ascLon)
@@ -370,7 +370,7 @@ export function MandalaNatal({
 
           <circle cx={cx} cy={cy} r={rOuter + 2} fill={`url(#${uid}_bg)`} stroke={CORES.douradoSuave} strokeWidth="1.3" />
 
-          {/* Anel de graus interior — cada 5° */}
+          {/* Anel de graus interior - cada 5° */}
           <circle cx={cx} cy={cy} r={rDegreeOut} fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="0.5" />
           <circle cx={cx} cy={cy} r={rDegreeIn} fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="0.5" />
           {Array.from({ length: 72 }, (_, i) => {
@@ -450,7 +450,7 @@ export function MandalaNatal({
           <circle cx={cx} cy={cy} r={rZodiacIn} fill="none" stroke={CORES.douradoSuave} strokeWidth="0.9" />
           <circle cx={cx} cy={cy} r={rHouseOut} fill="rgba(11,7,30,0.78)" stroke={CORES.douradoSuave} strokeWidth="0.7" />
 
-          {/* Casas Placidus — numeração romana */}
+          {/* Casas Placidus - numeração romana */}
           {cusps?.length >= 12 && cusps.map((cusp, i) => {
             const linha = linhaCuspide(cx, cy, rHouseIn, rHouseOut, cusp, ascLon)
             const cuspNext = cusps[(i + 1) % 12]
@@ -489,7 +489,7 @@ export function MandalaNatal({
 
           <circle cx={cx} cy={cy} r={rHouseIn} fill="none" stroke={CORES.douradoSuave} strokeWidth="0.5" opacity="0.4" />
 
-          {/* Aspectos — todos os calculados */}
+          {/* Aspectos - todos os calculados */}
           {aspectosCompletos.map((asp, idx) => {
             const nomeA = typeof asp.planetaA === 'string' ? nomePlanetaDeAspeto(asp.planetaA) : asp.planetaA
             const nomeB = typeof asp.planetaB === 'string' ? nomePlanetaDeAspeto(asp.planetaB) : asp.planetaB

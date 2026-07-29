@@ -42,6 +42,6 @@ for (const [tipo, nums] of Object.entries(EN)) {
   }
 }
 
-const out = `/** Gerado por scripts/gen-numerologia-table.mjs — não editar à mão */\nexport const TABLE = ${JSON.stringify(TABLE, null, 2)}\n`
+const out = `/** Gerado por scripts/gen-numerologia-table.mjs - não editar à mão */\nexport const TABLE = ${JSON.stringify(TABLE, null, 2)}\n`
 writeFileSync(join(__dirname, 'data/numerologia-table.mjs'), out, 'utf8')
 console.log('✓ numerologia-table.mjs', Object.keys(TABLE).length, 'chaves')

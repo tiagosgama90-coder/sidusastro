@@ -413,14 +413,14 @@ export const HORAS_DE = {
   "00:00": {
     "titulo": "Heiliger Neuanfang",
     "anjo": "Schutzengel",
-    "mensagem": "Du bist Eins mit dem Göttlichen. Die Engel bitten um einen Moment innerer Stille, um Absicht und Geist auszurichten. Dies ist das Mitternachtsportal – ideal zum Meditieren und Wünsche mit reiner Hingabe zu säen.",
+    "mensagem": "Du bist Eins mit dem Göttlichen. Die Engel bitten um einen Moment innerer Stille, um Absicht und Geist auszurichten. Dies ist das Mitternachtsportal - ideal zum Meditieren und Wünsche mit reiner Hingabe zu säen.",
     "conselho": "Meditiere 1 Minute in Stille. Bitte um Klarheit für den neuen Zyklus.",
     "palavraChave": "Einheit"
   },
   "01:01": {
     "titulo": "Gedanken manifestieren sich",
     "anjo": "Engel der Schöpfung",
-    "mensagem": "Deine Gedanken materialisieren sich schnell. Doreen Virtue lehrte: 01:01 warnt dich, den Geist auf Positives zu richten – das Universum hört zu.",
+    "mensagem": "Deine Gedanken materialisieren sich schnell. Doreen Virtue lehrte: 01:01 warnt dich, den Geist auf Positives zu richten - das Universum hört zu.",
     "conselho": "Ersetze ängstliche Gedanken in den nächsten Stunden durch Vertrauens-Affirmationen.",
     "palavraChave": "Mentaler Fokus"
   },
@@ -428,7 +428,7 @@ export const HORAS_DE = {
     "titulo": "Glaube und Balance",
     "anjo": "Engel der Harmonie",
     "mensagem": "Bewahre Glauben und Balance. Alles richtet sich hinter den Kulissen aus, auch wenn du noch keine Ergebnisse siehst. Die Engel bitten um Geduld und Vertrauen in göttliches Timing.",
-    "conselho": "Vertraue dem Prozess. Vermeide impulsive Entscheidungen – warte auf Klarheit.",
+    "conselho": "Vertraue dem Prozess. Vermeide impulsive Entscheidungen - warte auf Klarheit.",
     "palavraChave": "Vertrauen"
   },
   "03:03": {
@@ -441,14 +441,14 @@ export const HORAS_DE = {
   "04:04": {
     "titulo": "Engel um dich herum",
     "anjo": "Erzengel Gabriel",
-    "mensagem": "Engel umgeben dich mit Schutz und Liebe. Du bist nicht allein. Doreen Virtue verband 04:04 mit spürbarer Engelpräsenz – sei dankbar für unsichtbare Unterstützung.",
+    "mensagem": "Engel umgeben dich mit Schutz und Liebe. Du bist nicht allein. Doreen Virtue verband 04:04 mit spürbarer Engelpräsenz - sei dankbar für unsichtbare Unterstützung.",
     "conselho": "Danke laut für drei Segnungen des Tages, so klein sie auch sein mögen.",
     "palavraChave": "Schutz"
   },
   "05:05": {
     "titulo": "Positiver Wandel",
     "anjo": "Engel der Transformation",
-    "mensagem": "Große positive Veränderungen stehen bevor. Umarme Transformation mit Flexibilität – was weicht, macht Platz für das, was dir wirklich dient.",
+    "mensagem": "Große positive Veränderungen stehen bevor. Umarme Transformation mit Flexibilität - was weicht, macht Platz für das, was dir wirklich dient.",
     "conselho": "Lass eine Gewohnheit oder Überzeugung los, die nicht mehr zu dir passt.",
     "palavraChave": "Transformation"
   },
@@ -469,7 +469,7 @@ export const HORAS_DE = {
   "08:08": {
     "titulo": "Fülle und Fluss",
     "anjo": "Engel des Wohlstands",
-    "mensagem": "Der Fluss der Fülle öffnet sich, wenn Absicht, Handlung und Dankbarkeit im Einklang sind. Doreen Virtue sah in 08:08 ausgewogenen Wohlstand – materiell und emotional.",
+    "mensagem": "Der Fluss der Fülle öffnet sich, wenn Absicht, Handlung und Dankbarkeit im Einklang sind. Doreen Virtue sah in 08:08 ausgewogenen Wohlstand - materiell und emotional.",
     "conselho": "Ordne einen Lebensbereich mit positiver Absicht.",
     "palavraChave": "Fülle"
   },
@@ -490,7 +490,7 @@ export const HORAS_DE = {
   "11:11": {
     "titulo": "Portal des Erwachens",
     "anjo": "Engel der Erleuchtung",
-    "mensagem": "Die Meisterzahl 11:11 ist Doreen Virtues bekanntestes Portal – ein Zeichen spirituellen Erwachens. Die Engel bitten um Aufmerksamkeit für deine Gedanken: du co-erschaffst jetzt deine Realität.",
+    "mensagem": "Die Meisterzahl 11:11 ist Doreen Virtues bekanntestes Portal - ein Zeichen spirituellen Erwachens. Die Engel bitten um Aufmerksamkeit für deine Gedanken: du co-erschaffst jetzt deine Realität.",
     "conselho": "Bitte das Universum um ein klares Zeichen und beobachte Synchronizitäten in den nächsten 24 Stunden.",
     "palavraChave": "Erwachen"
   },
@@ -532,14 +532,14 @@ export const HORAS_DE = {
   "17:17": {
     "titulo": "Richtiger Weg",
     "anjo": "Engel der Bestätigung",
-    "mensagem": "Du bist auf dem richtigen Weg – Engel bestätigen es. Fahre mit Vertrauen und Dankbarkeit fort.",
+    "mensagem": "Du bist auf dem richtigen Weg - Engel bestätigen es. Fahre mit Vertrauen und Dankbarkeit fort.",
     "conselho": "Notiere drei positive Zeichen, die du kürzlich erhalten hast.",
     "palavraChave": "Bestätigung"
   },
   "18:18": {
     "titulo": "Gebet erhört",
     "anjo": "Engel der Antwort",
-    "mensagem": "Deine Gebete und Absichten werden gehört. Bewahre den Glauben – die Antwort kommt zur perfekten Zeit.",
+    "mensagem": "Deine Gebete und Absichten werden gehört. Bewahre den Glauben - die Antwort kommt zur perfekten Zeit.",
     "conselho": "Danke im Voraus für den Segen, der unterwegs ist.",
     "palavraChave": "Glaube"
   },
@@ -603,7 +603,7 @@ export const ESPELHOS_DE = {
   },
   "21:12": {
     "titulo": "Reflexion und Erneuerung",
-    "mensagem": "Spiegel von 12:21 – erneuere Verpflichtungen dir selbst und dem Heiligen.",
+    "mensagem": "Spiegel von 12:21 - erneuere Verpflichtungen dir selbst und dem Heiligen.",
     "conselho": "Bekräftige ein wichtiges persönliches Versprechen."
   },
   "23:32": {

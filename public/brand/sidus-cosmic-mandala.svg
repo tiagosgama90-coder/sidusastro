@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none" role="img" aria-label="Cosmic mandala">
+  <defs>
+    <filter id="mandala-glow" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="2.2" result="b"/>
+      <feMerge>
+        <feMergeNode in="b"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="mandala-star-glow" x="-100%" y="-100%" width="300%" height="300%">
+      <feGaussianBlur stdDeviation="4" result="b"/>
+      <feMerge>
+        <feMergeNode in="b"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <radialGradient id="mandala-core" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="35%" stop-color="#FFF8E7"/>
+      <stop offset="100%" stop-color="#DFB76C"/>
+    </radialGradient>
+  </defs>
+
+  <circle cx="256" cy="256" r="198" fill="none" stroke="rgba(223,183,108,0.38)" stroke-width="2.2" filter="url(#mandala-glow)"/>
+  <circle cx="256" cy="256" r="162" fill="none" stroke="rgba(223,183,108,0.28)" stroke-width="1.6"/>
+  <circle cx="256" cy="256" r="54" fill="none" stroke="rgba(223,183,108,0.22)" stroke-width="1.2"/>
+
+  <path d="M 256.00 134.00 L 317.00 361.66" stroke="rgba(223,183,108,0.52)" stroke-width="1.15" stroke-linecap="round" filter="url(#mandala-glow)"/>
+  <path d="M 317.00 150.34 L 256.00 378.00" stroke="rgba(223,183,108,0.52)" stroke-width="1.15" stroke-linecap="round" filter="url(#mandala-glow)"/>
+  <path d="M 361.66 195.00 L 195.00 361.66" stroke="rgba(223,183,108,0.52)" stroke-width="1.15" stroke-linecap="round" filter="url(#mandala-glow)"/>
+  <path d="M 378.00 256.00 L 150.34 317.00" stroke="rgba(223,183,108,0.52)" stroke-width="1.15" stroke-linecap="round" filter="url(#mandala-glow)"/>
+  <path d="M 361.66 317.00 L 134.00 256.00" stroke="rgba(223,183,108,0.52)" stroke-width="1.15" stroke-linecap="round" filter="url(#mandala-glow)"/>
+  <path d="M 317.00 361.66 L 150.34 195.00" stroke="rgba(223,183,108,0.52)" stroke-width="1.15" stroke-linecap="round" filter="url(#mandala-glow)"/>
+  <path d="M 256.00 378.00 L 195.00 150.34" stroke="rgba(223,183,108,0.52)" stroke-width="1.15" stroke-linecap="round" filter="url(#mandala-glow)"/>
+  <path d="M 195.00 361.66 L 256.00 134.00" stroke="rgba(223,183,108,0.52)" stroke-width="1.15" stroke-linecap="round" filter="url(#mandala-glow)"/>
+  <path d="M 150.34 317.00 L 317.00 150.34" stroke="rgba(223,183,108,0.52)" stroke-width="1.15" stroke-linecap="round" filter="url(#mandala-glow)"/>
+  <path d="M 134.00 256.00 L 361.66 195.00" stroke="rgba(223,183,108,0.52)" stroke-width="1.15" stroke-linecap="round" filter="url(#mandala-glow)"/>
+  <path d="M 150.34 195.00 L 378.00 256.00" stroke="rgba(223,183,108,0.52)" stroke-width="1.15" stroke-linecap="round" filter="url(#mandala-glow)"/>
+  <path d="M 195.00 150.34 L 361.66 317.00" stroke="rgba(223,183,108,0.52)" stroke-width="1.15" stroke-linecap="round" filter="url(#mandala-glow)"/>
+  <polygon points="256.00,218.00 288.91,237.00 288.91,275.00 256.00,294.00 223.09,275.00 223.09,237.00" fill="none" stroke="rgba(223,183,108,0.35)" stroke-width="0.9"/>
+  <path d="M 256.00 204.00 L 301.03 282.00 L 210.97 282.00 Z" fill="none" stroke="rgba(223,183,108,0.3)" stroke-width="0.85"/>
+  <path d="M 301.03 230.00 L 256.00 308.00 L 210.97 230.00 Z" fill="none" stroke="rgba(223,183,108,0.3)" stroke-width="0.85"/>
+
+  <circle cx="256.00" cy="134.00" r="2.8" fill="#F0D08A" opacity="0.92" filter="url(#mandala-glow)"/>
+      <circle cx="317.00" cy="150.34" r="2.8" fill="#F0D08A" opacity="0.92" filter="url(#mandala-glow)"/>
+      <circle cx="361.66" cy="195.00" r="2.8" fill="#F0D08A" opacity="0.92" filter="url(#mandala-glow)"/>
+      <circle cx="378.00" cy="256.00" r="2.8" fill="#F0D08A" opacity="0.92" filter="url(#mandala-glow)"/>
+      <circle cx="361.66" cy="317.00" r="2.8" fill="#F0D08A" opacity="0.92" filter="url(#mandala-glow)"/>
+      <circle cx="317.00" cy="361.66" r="2.8" fill="#F0D08A" opacity="0.92" filter="url(#mandala-glow)"/>
+      <circle cx="256.00" cy="378.00" r="2.8" fill="#F0D08A" opacity="0.92" filter="url(#mandala-glow)"/>
+      <circle cx="195.00" cy="361.66" r="2.8" fill="#F0D08A" opacity="0.92" filter="url(#mandala-glow)"/>
+      <circle cx="150.34" cy="317.00" r="2.8" fill="#F0D08A" opacity="0.92" filter="url(#mandala-glow)"/>
+      <circle cx="134.00" cy="256.00" r="2.8" fill="#F0D08A" opacity="0.92" filter="url(#mandala-glow)"/>
+      <circle cx="150.34" cy="195.00" r="2.8" fill="#F0D08A" opacity="0.92" filter="url(#mandala-glow)"/>
+      <circle cx="195.00" cy="150.34" r="2.8" fill="#F0D08A" opacity="0.92" filter="url(#mandala-glow)"/>
+
+  <text x="256.00" y="79.00" text-anchor="middle" dominant-baseline="middle" fill="rgba(240,208,138,0.96)" font-size="26" font-family="Segoe UI Symbol, Noto Sans Symbols2, Apple Symbols, sans-serif" filter="url(#mandala-glow)">♈</text>
+      <text x="345.00" y="102.85" text-anchor="middle" dominant-baseline="middle" fill="rgba(240,208,138,0.96)" font-size="26" font-family="Segoe UI Symbol, Noto Sans Symbols2, Apple Symbols, sans-serif" filter="url(#mandala-glow)">♉</text>
+      <text x="410.15" y="168.00" text-anchor="middle" dominant-baseline="middle" fill="rgba(240,208,138,0.96)" font-size="26" font-family="Segoe UI Symbol, Noto Sans Symbols2, Apple Symbols, sans-serif" filter="url(#mandala-glow)">♊</text>
+      <text x="434.00" y="257.00" text-anchor="middle" dominant-baseline="middle" fill="rgba(240,208,138,0.96)" font-size="26" font-family="Segoe UI Symbol, Noto Sans Symbols2, Apple Symbols, sans-serif" filter="url(#mandala-glow)">♋</text>
+      <text x="410.15" y="346.00" text-anchor="middle" dominant-baseline="middle" fill="rgba(240,208,138,0.96)" font-size="26" font-family="Segoe UI Symbol, Noto Sans Symbols2, Apple Symbols, sans-serif" filter="url(#mandala-glow)">♌</text>
+      <text x="345.00" y="411.15" text-anchor="middle" dominant-baseline="middle" fill="rgba(240,208,138,0.96)" font-size="26" font-family="Segoe UI Symbol, Noto Sans Symbols2, Apple Symbols, sans-serif" filter="url(#mandala-glow)">♍</text>
+      <text x="256.00" y="435.00" text-anchor="middle" dominant-baseline="middle" fill="rgba(240,208,138,0.96)" font-size="26" font-family="Segoe UI Symbol, Noto Sans Symbols2, Apple Symbols, sans-serif" filter="url(#mandala-glow)">♎</text>
+      <text x="167.00" y="411.15" text-anchor="middle" dominant-baseline="middle" fill="rgba(240,208,138,0.96)" font-size="26" font-family="Segoe UI Symbol, Noto Sans Symbols2, Apple Symbols, sans-serif" filter="url(#mandala-glow)">♏</text>
+      <text x="101.85" y="346.00" text-anchor="middle" dominant-baseline="middle" fill="rgba(240,208,138,0.96)" font-size="26" font-family="Segoe UI Symbol, Noto Sans Symbols2, Apple Symbols, sans-serif" filter="url(#mandala-glow)">♐</text>
+      <text x="78.00" y="257.00" text-anchor="middle" dominant-baseline="middle" fill="rgba(240,208,138,0.96)" font-size="26" font-family="Segoe UI Symbol, Noto Sans Symbols2, Apple Symbols, sans-serif" filter="url(#mandala-glow)">♑</text>
+      <text x="101.85" y="168.00" text-anchor="middle" dominant-baseline="middle" fill="rgba(240,208,138,0.96)" font-size="26" font-family="Segoe UI Symbol, Noto Sans Symbols2, Apple Symbols, sans-serif" filter="url(#mandala-glow)">♒</text>
+      <text x="167.00" y="102.85" text-anchor="middle" dominant-baseline="middle" fill="rgba(240,208,138,0.96)" font-size="26" font-family="Segoe UI Symbol, Noto Sans Symbols2, Apple Symbols, sans-serif" filter="url(#mandala-glow)">♓</text>
+
+  <g filter="url(#mandala-star-glow)">
+    <line x1="256" y1="228" x2="256" y2="284" stroke="url(#mandala-core)" stroke-width="2.4" stroke-linecap="round"/>
+    <line x1="228" y1="256" x2="284" y2="256" stroke="url(#mandala-core)" stroke-width="2.4" stroke-linecap="round"/>
+    <line x1="236" y1="236" x2="276" y2="276" stroke="rgba(255,248,231,0.55)" stroke-width="1.2" stroke-linecap="round"/>
+    <line x1="276" y1="236" x2="236" y2="276" stroke="rgba(255,248,231,0.55)" stroke-width="1.2" stroke-linecap="round"/>
+    <circle cx="256" cy="256" r="11" fill="url(#mandala-core)"/>
+    <circle cx="256" cy="256" r="5.5" fill="#FFFFFF" opacity="0.95"/>
+  </g>
+</svg>

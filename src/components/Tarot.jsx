@@ -1,22 +1,26 @@
 /**
  * Sistema de Tarot Sidus - baralho profissional de 78 cartas (Mystic Marchetti)
  * ─ Ilustrações + interpretações profissionais
- * ─ 3 leituras gratuitas por conta · depois 2 € por leitura (BR: 1 € PIX) ou Premium
+ * ─ 3 leituras gratuitas por conta · depois 1,99 € por leitura (BR: R$ 4,90 PIX) ou Premium
  * ─ 9 tipos de leitura · interpretações personalizadas com mapa natal
  */
 import { useState, useEffect, useRef } from 'react'
+import { Clock } from 'lucide-react'
 import { useLanguage } from '../lib/i18n/LanguageContext.jsx'
 import { localizeArcano, getTiposTarot, getPosicoesTarot } from '../lib/i18n/tarotArcana.js'
-import { PRECO_TAROT, precoTarotVitrine, precoPremiumVitrine, formatPrecoEuro } from '../lib/pricing.js'
+import { PRECO_TAROT, precoTarotVitrine, precoPremiumVitrine, formatPrecoCompleto } from '../lib/pricing.js'
 import { sortearCartas, getCartaById, MAJOR_ARCANA } from '../lib/tarot/deck.js'
 import { sortearLenormand, LENORMAND_VERSO } from '../lib/tarot/lenormand.js'
 import { interpretarLeitura } from '../lib/tarot/interpretacao.js'
 import { CartaTarot, dimensoesCarta } from './CartaTarot.jsx'
+import { TarotTipoArte } from './TarotTipoArte.jsx'
 import { imagemCartaUrl } from '../lib/tarot/images.js'
+import { garantirVersoCarregado, precarregarVersos } from '../lib/tarot/versoCache.js'
 import {
   leituraDiariaAtiva, podeFazerLeituraDiaria, msAteProximaDiaria,
   formatarTempoRestante, registarLeituraDiaria,
 } from '../lib/tarotDiario.js'
+import { ShareWhatsAppButton } from './ShareWhatsAppButton.jsx'
 
 const CORES = {
   fundo:'#0B071E', dourado:'#DFB76C', douradoEscuro:'#B8944F',
@@ -27,7 +31,7 @@ const CORES = {
 const CARTA_MOBILE = {
   revelar: 94,
   revelarMini: 70,
-  embaralhar: 112,
+  embaralhar: 94,
   distribuir: 94,
   diaria: 132,
 }
@@ -35,8 +39,8 @@ const CARTA_MOBILE = {
 const CARTA_DESKTOP = {
   revelar: 132,
   revelarMini: 96,
-  embaralhar: 142,
-  distribuir: 114,
+  embaralhar: 132,
+  distribuir: 132,
   diaria: 164,
 }
 
@@ -65,9 +69,7 @@ function cartasNoBaralho(tipoId) {
   return tipoId === 'cigano' ? BARALHO_CIGANO_TOTAL : BARALHO_TAROT_TOTAL
 }
 
-function tamanhoCartaEmbaralhar(base, numCartas) {
-  if (numCartas >= 70) return Math.round(base * 0.68)
-  if (numCartas >= 30) return Math.round(base * 0.78)
+function tamanhoCartaEmbaralhar(base) {
   return base
 }
 
@@ -154,7 +156,7 @@ function consumirCreditoTarotPago() {
   return false
 }
 
-export function EcraTarot({ mapaNatal, isPremium, userId, leiturasTarotUsadas = 0, tarotCreditoPago = false, onTarotCreditoConsumido, onLeituraGratisUsada, onPagar, onVoltar, onPremium, isBrasil = false }) {
+export function EcraTarot({ mapaNatal, isPremium, userId, leiturasTarotUsadas = 0, tarotCreditoPago = false, onTarotCreditoConsumido, onLeituraGratisUsada, onLeituraConcluida, onPagar, onVoltar, onPremium, isBrasil = false }) {
   const { lang, t } = useLanguage()
   const [fase, setFase]           = useState('seleccionar')
   const [tipoId, setTipoId]       = useState(null)
@@ -165,6 +167,7 @@ export function EcraTarot({ mapaNatal, isPremium, userId, leiturasTarotUsadas = 
   const [distribuindo, setDistribuindo] = useState(-1)
   const [tick, setTick]           = useState(0)
   const [resultado, setResultado]       = useState(null)
+  const leituraConcluidaRef = useRef(false)
   const [leituraPaga, setLeituraPaga]   = useState(false)
   const [aIniciarLeitura, setAIniciarLeitura] = useState(false)
   const montadoRef = useRef(true)
@@ -185,6 +188,10 @@ export function EcraTarot({ mapaNatal, isPremium, userId, leiturasTarotUsadas = 
       timersRef.current.forEach(clearTimeout)
       timersRef.current = []
     }
+  }, [])
+
+  useEffect(() => {
+    precarregarVersos()
   }, [])
 
   useEffect(() => {
@@ -211,8 +218,9 @@ export function EcraTarot({ mapaNatal, isPremium, userId, leiturasTarotUsadas = 
   const podeLer = podeLerGratis(isPremium, userId, leiturasTarotUsadas)
   const gratisEsgotada = !isPremium && usadas >= maxLeiturasGratis()
   const precoLeitura = precoTarotVitrine(isBrasil)
-  const precoLeituraFmt = formatPrecoEuro(precoLeitura)
-  const vipPrecoFmt = formatPrecoEuro(precoPremiumVitrine(isBrasil))
+  const precoVip = precoPremiumVitrine(isBrasil)
+  const precoLeituraFmt = formatPrecoCompleto(precoLeitura.valor, precoLeitura.currency)
+  const vipPrecoFmt = formatPrecoCompleto(precoVip.valor, precoVip.currency)
 
   const refrescar = () => setTick(n => n + 1)
 
@@ -230,7 +238,7 @@ export function EcraTarot({ mapaNatal, isPremium, userId, leiturasTarotUsadas = 
     setFase('pergunta')
   }
 
-  const comecarEmbaralhar = (tipoEscolhidoId = tipoId) => {
+  const comecarEmbaralhar = async (tipoEscolhidoId = tipoId) => {
     if (aIniciarLeitura || embaralhando || distribuindo >= 0) return
     const tipoAtual = TIPOS.find((x) => x.id === tipoEscolhidoId) || tipo
     if (!tipoAtual?.n) return
@@ -244,6 +252,7 @@ export function EcraTarot({ mapaNatal, isPremium, userId, leiturasTarotUsadas = 
       onLeituraGratisUsada?.(n)
       refrescar()
     }
+    await garantirVersoCarregado(tipoEscolhidoId === 'cigano' ? 'lenormand' : 'tarot')
     setEmbaralhando(true)
     agendar(() => {
       const sel = tipoEscolhidoId === 'cigano'
@@ -291,6 +300,10 @@ export function EcraTarot({ mapaNatal, isPremium, userId, leiturasTarotUsadas = 
       try {
         const res = interpretarLeitura(cartas, tipoId, pergunta, mapaNatal, lang, t, getPosicoesTarot)
         setResultado(res)
+        if (!leituraConcluidaRef.current) {
+          leituraConcluidaRef.current = true
+          onLeituraConcluida?.()
+        }
         if (tipoId === 'diaria') {
           registarLeituraDiaria(userId, {
             cartas: cartas.map((c) => ({ id: c.id, nome: c.nome, invertida: !!c.invertida })),
@@ -317,6 +330,7 @@ export function EcraTarot({ mapaNatal, isPremium, userId, leiturasTarotUsadas = 
     setCartas([])
     setReveladas([])
     setResultado(null)
+    leituraConcluidaRef.current = false
     setEmbaralhando(false)
     setDistribuindo(-1)
     refrescar()
@@ -378,7 +392,7 @@ export function EcraTarot({ mapaNatal, isPremium, userId, leiturasTarotUsadas = 
         if (isPremium || podeLer || leituraPaga) {
           comecarEmbaralhar(tipoId)
         } else {
-          onPagar(t('tarot.payDesc', { tipo: tipo?.nome || '' }), precoLeitura, () => {
+          onPagar(t('tarot.payDesc', { tipo: tipo?.nome || '' }), precoLeitura.valor, () => {
             setLeituraPaga(true)
             comecarEmbaralhar(tipoId)
           }, { productType: 'tarot' })
@@ -414,11 +428,11 @@ function TelaDiariaBloqueada({ t, lang, ativa, msRestante, onVoltar }) {
         background: 'linear-gradient(135deg,rgba(239,68,68,0.08),rgba(223,183,108,0.06))',
         border: '1px solid rgba(239,68,68,0.25)', borderRadius: 14, padding: '16px 18px', marginBottom: 18,
       }}>
-        <div style={{ fontSize: 10, color: '#F87171', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 6, fontWeight: 700 }}>
+        <div style={{ fontSize: 10, color: '#E8A855', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 6, fontWeight: 700 }}>
           {t('tarot.dailyLocked')}
         </div>
         <p style={{ fontSize: 13, color: CORES.brancoMuted, margin: '0 0 10px', lineHeight: 1.65 }}>{t('tarot.dailyLockedDesc')}</p>
-        <p style={{ fontSize: 14, fontWeight: 600, color: CORES.dourado, margin: 0 }}>
+        <p style={{ fontSize: 14, fontWeight: 600, color: '#E8A855', margin: 0 }}>
           {t('tarot.dailyNextIn', { time: formatarTempoRestante(msRestante, lang) })}
         </p>
       </div>
@@ -447,82 +461,242 @@ function TelaDiariaBloqueada({ t, lang, ativa, msRestante, onVoltar }) {
   )
 }
 
-function TelaSeleccionar({ tipos, onSeleccionar, isPremium, gratisEsgotada, restantes, tick, onVoltar, userId, lang, t, isBrasil = false, precoLeituraFmt = '2,00', vipPrecoFmt = '9,99' }) {
+function textoHorizonteTemporal(t, tipoId, campo) {
+  if (!tipoId) return null
+  const val = t(`tarot.types.${tipoId}.${campo}`)
+  if (!val || String(val).startsWith('tarot.types.')) return null
+  return val
+}
+
+function InfoHorizonteTemporal({ tipoId, t, inline = false }) {
+  const prazo = textoHorizonteTemporal(t, tipoId, 'prazo')
+  const foco = textoHorizonteTemporal(t, tipoId, 'foco')
+  if (!prazo) return null
+
+  if (inline) {
+    return (
+      <p style={{
+        fontSize: 10,
+        color: 'rgba(255,255,255,0.42)',
+        margin: '5px 0 0',
+        lineHeight: 1.4,
+      }}>
+        {prazo}{foco ? ` · ${foco}` : ''}
+      </p>
+    )
+  }
+
+  return (
+    <p style={{
+      fontSize: 11,
+      color: 'rgba(255,255,255,0.48)',
+      margin: '10px 0 0',
+      lineHeight: 1.45,
+      maxWidth: 320,
+      marginLeft: 'auto',
+      marginRight: 'auto',
+    }}>
+      <span style={{ fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+        {t('tarot.timeframeCovers')}{' '}
+      </span>
+      {prazo}
+      {foco && (
+        <span style={{ display: 'block', fontSize: 10, marginTop: 3, fontStyle: 'italic' }}>
+          {foco}
+        </span>
+      )}
+    </p>
+  )
+}
+
+function useMobileTarotLayout() {
+  const [mobile, setMobile] = useState(
+    () => typeof window !== 'undefined' && window.matchMedia('(max-width: 767px)').matches,
+  )
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 767px)')
+    const onChange = () => setMobile(mq.matches)
+    mq.addEventListener('change', onChange)
+    return () => mq.removeEventListener('change', onChange)
+  }, [])
+  return mobile
+}
+
+function TarotTipoCard({
+  tipo, bloqueada, onSeleccionar, t, cols, isPremium, gratisEsgotada,
+  diariaAtiva, userId, lang, precoLeituraFmt, isMobileLayout = false,
+}) {
+  const isMobile = isMobileLayout
+  const [hover, setHover] = useState(false)
+  const prazo = textoHorizonteTemporal(t, tipo.id, 'prazo')
+  const foco = textoHorizonteTemporal(t, tipo.id, 'foco')
+
+  const moverMagia = (e) => {
+    const r = e.currentTarget.getBoundingClientRect()
+    e.currentTarget.style.setProperty('--mx', `${e.clientX - r.left}px`)
+    e.currentTarget.style.setProperty('--my', `${e.clientY - r.top}px`)
+  }
+
+  const ctaLabel = t('tarot.startDaily')
+
+  const statusBadge = tipo.id === 'diaria' ? (
+    <div className={`tarot-tipo-card__badge ${diariaAtiva ? 'tarot-tipo-card__badge--warn' : 'tarot-tipo-card__badge--ok'}`}>
+      {diariaAtiva
+        ? t('tarot.dailyNextIn', { time: formatarTempoRestante(msAteProximaDiaria(userId), lang) })
+        : t('tarot.dailyOnce')}
+    </div>
+  ) : !isPremium && (
+    <div className={`tarot-tipo-card__badge ${gratisEsgotada ? 'tarot-tipo-card__badge--warn' : 'tarot-tipo-card__badge--ok'}`}>
+      {gratisEsgotada ? t('tarot.paidOption', { price: precoLeituraFmt }) : t('tarot.includedFree', { max: MAX_LEITURAS_GRATIS })}
+    </div>
+  )
+
+  if (isMobile) {
+    return (
+      <button
+        type="button"
+        className={`tarot-tipo-card tarot-tipo-card--mobile tarot-tipo-card--compact${bloqueada ? ' tarot-tipo-card--bloqueada' : ''}`}
+        onClick={() => onSeleccionar(tipo)}
+      >
+        <div className="tarot-tipo-card__compact-row">
+          <div className="tarot-tipo-card__info">
+            <div className="tarot-tipo-card__nome">{tipo.nome}</div>
+            <div className="tarot-tipo-card__desc tarot-tipo-card__desc--compact">{tipo.desc}</div>
+            {prazo && (
+              <div className="tarot-tipo-card__prazo">
+                <Clock size={11} className="tarot-tipo-card__prazo-icon" aria-hidden />
+                <span>{prazo}</span>
+              </div>
+            )}
+            {foco && (
+              <div className="tarot-tipo-card__foco">
+                <p className="tarot-tipo-card__foco-text">{foco}</p>
+              </div>
+            )}
+            {statusBadge}
+          </div>
+          <div className="tarot-tipo-card__arte">
+            <TarotTipoArte tipoId={tipo.id} size={72} landscape />
+          </div>
+        </div>
+      </button>
+    )
+  }
+
+  const bodyContent = (
+    <>
+      <div className="tarot-tipo-card__nome">{tipo.nome}</div>
+      <div className="tarot-tipo-card__desc">{tipo.desc}</div>
+      {prazo && (
+        <div className="tarot-tipo-card__prazo">
+          <Clock size={12} className="tarot-tipo-card__prazo-icon" aria-hidden />
+          <span>{prazo}</span>
+        </div>
+      )}
+      {foco && (
+        <div className="tarot-tipo-card__foco">
+          <p className="tarot-tipo-card__foco-text">{foco}</p>
+        </div>
+      )}
+      {statusBadge}
+    </>
+  )
+
+  return (
+    <button
+      type="button"
+      className={`tarot-tipo-card tarot-tipo-card--desktop${hover ? ' tarot-tipo-card--magic' : ''}${bloqueada ? ' tarot-tipo-card--bloqueada' : ''}`}
+      onClick={() => onSeleccionar(tipo)}
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+      onFocus={() => setHover(true)}
+      onBlur={() => setHover(false)}
+      onMouseMove={moverMagia}
+    >
+      <div className="tarot-tipo-card__sparkles" aria-hidden></div>
+      <div className="tarot-tipo-card__arte">
+        <TarotTipoArte
+          tipoId={tipo.id}
+          size={84}
+          hovered={hover}
+        />
+      </div>
+      <div className="tarot-tipo-card__body">{bodyContent}</div>
+      <div className="tarot-tipo-card__cta" aria-hidden>{ctaLabel}</div>
+    </button>
+  )
+}
+
+function colsFromWidth(w) {
+  if (w >= 900) return 3
+  if (w >= 768) return 2
+  return 1
+}
+
+function TelaSeleccionar({ tipos, onSeleccionar, isPremium, gratisEsgotada, restantes, tick, onVoltar, userId, lang, t, isBrasil = false, precoLeituraFmt = '1,99', vipPrecoFmt = '9,99' }) {
   void tick
   const diariaAtiva = !podeFazerLeituraDiaria(userId)
+  const isMobileLayout = useMobileTarotLayout()
+  const [cols, setCols] = useState(() => colsFromWidth(typeof window !== 'undefined' ? window.innerWidth : 900))
+  useEffect(() => {
+    const fn = () => setCols(colsFromWidth(window.innerWidth))
+    window.addEventListener('resize', fn)
+    return () => window.removeEventListener('resize', fn)
+  }, [])
+
   return (
-    <div style={{ padding:'20px 20px 110px' }}>
+    <div className={`tarot-seleccionar-page${isMobileLayout ? '' : ' tarot-seleccionar-page--desktop-fit'}`}>
+      <div className="tarot-seleccionar-centro">
       {onVoltar && (
         <button type="button" onClick={onVoltar} style={{ background:'none', border:'none', color:CORES.dourado, cursor:'pointer', marginBottom:12, fontSize:13 }}>
           {t('common.back')}
         </button>
       )}
-      <div style={{
-        background:'linear-gradient(135deg,rgba(223,183,108,0.12),rgba(139,92,246,0.08))',
-        border:`1px solid rgba(223,183,108,0.35)`, borderRadius:14, padding:'14px 18px', marginBottom:16,
-      }}>
-        <div style={{fontSize:10,color:CORES.dourado,textTransform:'uppercase',letterSpacing:'0.12em',marginBottom:4,fontWeight:700}}>
-          {t('tarot.title')}
-        </div>
-        <h2 style={{fontSize:20,fontWeight:700,color:CORES.branco,margin:'0 0 4px'}}>{t('tarot.subtitle')}</h2>
-        <p style={{fontSize:12,color:CORES.brancoMuted,margin:0}}>{t('tarot.desc')}</p>
+      <div className={`tarot-seleccionar-hero${isMobileLayout ? ' tarot-seleccionar-hero--compact' : ''}`}>
+        <div className="tarot-seleccionar-hero__tag">{t('tarot.title')}</div>
+        <h2 className="tarot-seleccionar-hero__title">{t('tarot.subtitle')}</h2>
+        {!isMobileLayout && (
+          <p className="tarot-seleccionar-hero__lead">{t('tarot.desc')}</p>
+        )}
       </div>
+      {isMobileLayout && (
+        <p className="tarot-mobile-list-hint">{t('tarot.gamesCount', { count: tipos.length })}</p>
+      )}
       {!isPremium && (
-        <div style={{background:'rgba(223,183,108,0.07)',border:`1px solid rgba(223,183,108,0.25)`,borderRadius:10,padding:'8px 14px',marginBottom:18,display:'flex',alignItems:'center',gap:8}}>
-          <span style={{fontSize:16}}>✦</span>
+        <div className="tarot-free-banner" style={{background:'rgba(223,183,108,0.07)',border:`1px solid rgba(223,183,108,0.25)`,borderRadius:10,padding:'8px 14px',marginBottom:18,display:'flex',alignItems:'center',gap:8}}>
+          <span style={{fontSize:16}}></span>
           <span style={{fontSize:12,color:CORES.brancoMuted}}>
             {gratisEsgotada
-              ? <><b style={{color:'#EF4444'}}>{t('tarot.freeExhausted')}</b>{isBrasil ? t('tarot.thenPaidBr', { price: precoLeituraFmt, vipPrice: vipPrecoFmt }) : t('tarot.thenPaid', { price: precoLeituraFmt, vipPrice: vipPrecoFmt })}</>
+              ? <><b style={{color:'#E8A855'}}>{t('tarot.freeExhausted')}</b>{isBrasil ? t('tarot.thenPaidBr', { price: precoLeituraFmt, vipPrice: vipPrecoFmt }) : t('tarot.thenPaid', { price: precoLeituraFmt, vipPrice: vipPrecoFmt })}</>
               : <><b style={{color:CORES.dourado}}>{restantes === 1 ? t('tarot.freeRemaining', { count: restantes }) : t('tarot.freeRemainingPlural', { count: restantes })}</b>{isBrasil ? t('tarot.thenPaidShortBr', { price: precoLeituraFmt }) : t('tarot.thenPaidShort', { price: precoLeituraFmt })}</>}
           </span>
         </div>
       )}
-      <div style={{display:'flex',flexDirection:'column',gap:10}}>
-        {tipos.map(tipo=>(
-          <button key={tipo.id} type="button" onClick={()=>onSeleccionar(tipo)} style={{
-            background: tipo.id === 'diaria' && diariaAtiva ? 'rgba(255,255,255,0.02)' : 'rgba(255,255,255,0.04)',
-            border: tipo.id === 'diaria' && diariaAtiva ? '1px solid rgba(239,68,68,0.25)' : '1px solid rgba(223,183,108,0.18)',
-            borderRadius:14,padding:'15px 18px',cursor:'pointer',textAlign:'left',
-            display:'flex',alignItems:'center',gap:14,
-            opacity: tipo.id === 'diaria' && diariaAtiva ? 0.85 : 1,
-          }}>
-            <span style={{fontSize:28}}>{tipo.icone}</span>
-            <div style={{flex:1}}>
-              <div style={{fontSize:14,fontWeight:600,color:CORES.branco}}>{tipo.nome}</div>
-              <div style={{fontSize:11,color:CORES.brancoMuted}}>{tipo.desc}</div>
-              {tipo.prazoKey && (
-                <div style={{fontSize:10,marginTop:5,color:CORES.dourado,fontWeight:600}}>
-                  ⏱ {t(tipo.prazoKey)}
-                </div>
-              )}
-              {tipo.focoKey && (
-                <div style={{fontSize:10,marginTop:3,color:CORES.brancoMuted,lineHeight:1.4}}>
-                  {t(tipo.focoKey)}
-                </div>
-              )}
-              {tipo.id === 'diaria' ? (
-                <div style={{fontSize:10,marginTop:4,color: diariaAtiva ? '#F87171' : '#34D399'}}>
-                  {diariaAtiva
-                    ? t('tarot.dailyNextIn', { time: formatarTempoRestante(msAteProximaDiaria(userId), lang) })
-                    : t('tarot.dailyOnce')}
-                </div>
-              ) : !isPremium && (
-                <div style={{fontSize:10,marginTop:4,color: gratisEsgotada ? '#F87171' : '#34D399'}}>
-                  {gratisEsgotada ? t('tarot.paidOption', { price: precoLeituraFmt }) : t('tarot.includedFree', { max: MAX_LEITURAS_GRATIS })}
-                </div>
-              )}
-            </div>
-            <div style={{fontSize:11,color:CORES.dourado,fontWeight:700}}>
-              {tipo.id === 'diaria' ? t('tarot.dailyBadge') : (tipo.n > 1 ? t('tarot.cardsPlural', { n: tipo.n }) : t('tarot.cards', { n: tipo.n }))}
-            </div>
-          </button>
+      <div className={`tarot-tipo-grid tarot-tipo-grid--cols-${cols}${isMobileLayout ? ' tarot-tipo-grid--mobile' : ' tarot-tipo-grid--desktop-compact'}`}>
+        {tipos.map((tipo) => (
+          <TarotTipoCard
+            key={tipo.id}
+            tipo={tipo}
+            bloqueada={tipo.id === 'diaria' && diariaAtiva}
+            onSeleccionar={onSeleccionar}
+            t={t}
+            cols={cols}
+            isMobileLayout={isMobileLayout}
+            isPremium={isPremium}
+            gratisEsgotada={gratisEsgotada}
+            diariaAtiva={diariaAtiva}
+            userId={userId}
+            lang={lang}
+            precoLeituraFmt={precoLeituraFmt}
+          />
         ))}
+      </div>
       </div>
     </div>
   )
 }
 
-function TelaPergunta({ tipo, pergunta, setPergunta, onVoltar, podeLer, leituraPaga = false, isPremium, restantes, onComecar, onPagar, onComecarPago, onPremium, t, aIniciarLeitura = false, isBrasil = false, precoLeitura = PRECO_TAROT, precoLeituraFmt = '2,00', vipPrecoFmt = '9,99' }) {
+function TelaPergunta({ tipo, pergunta, setPergunta, onVoltar, podeLer, leituraPaga = false, isPremium, restantes, onComecar, onPagar, onComecarPago, onPremium, t, aIniciarLeitura = false, isBrasil = false, precoLeitura = PRECO_TAROT, precoLeituraFmt = '1,99', vipPrecoFmt = '9,99' }) {
   const podeIniciar = isPremium || podeLer || leituraPaga
   const [aPagar, setAPagar] = useState(false)
 
@@ -534,7 +708,7 @@ function TelaPergunta({ tipo, pergunta, setPergunta, onVoltar, podeLer, leituraP
     try {
       await onPagar(
         t('tarot.payDesc', { tipo: tipo?.nome || '' }),
-        precoLeitura,
+        precoLeitura.valor,
         onComecarPago,
         { productType: 'tarot' },
       )
@@ -548,14 +722,9 @@ function TelaPergunta({ tipo, pergunta, setPergunta, onVoltar, podeLer, leituraP
       <button type="button" onClick={onVoltar} style={{background:'none',border:'none',color:CORES.brancoMuted,cursor:'pointer',fontSize:13,marginBottom:20,padding:0}}>{t('common.back')}</button>
       <div style={{textAlign:'center',marginBottom:28}}>
         <div style={{fontSize:44}}>{tipo?.icone}</div>
-        <h2 style={{color:CORES.dourado,margin:'8px 0 4px'}}>{tipo?.nome}</h2>
-        <p style={{fontSize:12,color:CORES.brancoMuted}}>{tipo?.desc}</p>
-        {tipo?.prazoKey && (
-          <p style={{fontSize:11,color:CORES.dourado,margin:'10px 0 0',fontWeight:600}}>⏱ {t(tipo.prazoKey)}</p>
-        )}
-        {tipo?.focoKey && (
-          <p style={{fontSize:11,color:CORES.brancoMuted,margin:'6px 0 0',lineHeight:1.45}}>{t(tipo.focoKey)}</p>
-        )}
+        <h2 style={{color:CORES.dourado,margin:'8px 0 6px'}}>{tipo?.nome}</h2>
+        <p style={{fontSize:15,color:CORES.brancoSuave,lineHeight:1.5,margin:'0 0 4px',fontWeight:500}}>{tipo?.desc}</p>
+        <InfoHorizonteTemporal tipoId={tipo?.id} t={t} />
       </div>
       <div style={{background:'rgba(255,255,255,0.04)',borderRadius:14,border:`1px solid rgba(223,183,108,0.2)`,padding:18,marginBottom:20}}>
         <label style={{fontSize:11,color:CORES.dourado,textTransform:'uppercase',letterSpacing:'0.08em',display:'block',marginBottom:10}}>
@@ -576,7 +745,7 @@ function TelaPergunta({ tipo, pergunta, setPergunta, onVoltar, podeLer, leituraP
         </button>
       ) : (
         <div style={{background:'rgba(223,183,108,0.06)',border:`1px solid ${CORES.dourado}`,borderRadius:14,padding:20,textAlign:'center',position:'relative',zIndex:1}}>
-          <div style={{fontSize:28,fontWeight:700,color:CORES.dourado,marginBottom:8}}>{precoLeituraFmt} €</div>
+          <div style={{fontSize:28,fontWeight:700,color:CORES.dourado,marginBottom:8}}>{precoLeituraFmt}</div>
           <p style={{fontSize:13,color:CORES.brancoMuted,marginBottom:16,lineHeight:1.5}}>
             {isBrasil
               ? t('tarot.paywallTextBr', { max: MAX_LEITURAS_GRATIS, price: precoLeituraFmt, vipPrice: vipPrecoFmt })
@@ -601,81 +770,86 @@ function TelaPergunta({ tipo, pergunta, setPergunta, onVoltar, podeLer, leituraP
   )
 }
 
+function CartaVersoEmbaralhar({ size, layer, cartaVerso }) {
+  const offset = layer * 1.8
+  return (
+    <div
+      style={{
+        position: 'absolute',
+        top: offset,
+        left: offset,
+        zIndex: layer + 1,
+      }}
+    >
+      <CartaTarot carta={cartaVerso} virada size={size} />
+    </div>
+  )
+}
+
 function TelaEmbaralhar({ t, numCartas = BARALHO_TAROT_TOTAL, cartaVerso = MAJOR_ARCANA[0] }) {
   const CARTA = useTamanhoCartas()
-  const cardSize = tamanhoCartaEmbaralhar(CARTA.embaralhar, numCartas)
+  const cardSize = tamanhoCartaEmbaralhar(CARTA.revelar)
   const { w: cardW, h: cardH } = dimensoesCarta(cardSize)
-  const visualCount = Math.min(numCartas, BARALHO_VISUAL_MAX)
-  const offsetY = 2.4
-  const offsetX = 2
-  const stackDepthY = Math.round((visualCount - 1) * offsetY)
-  const stackDepthX = Math.round((visualCount - 1) * offsetX)
-  const layers = Array.from({ length: visualCount })
-  const versoCarta = cartaVerso?.tipo === 'lenormand' ? LENORMAND_VERSO : cartaVerso
+  const pileLayers = 3
+  const pileDepth = Math.round((pileLayers - 1) * 1.8)
+  const stageW = cardW * 2 + 48
+  const stageH = cardH + pileDepth + 20
 
   return (
-    <div style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',minHeight:'50vh',padding:20,gap:16,overflow:'visible'}}>
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '44vh', padding: 20, gap: 14 }}>
       <style>{`
-        @keyframes shuffleRock {
-          0%, 100% { transform: rotate(-3deg) translateY(0); }
-          50% { transform: rotate(3deg) translateY(-5px); }
+        @keyframes tarotShuffleLeft {
+          0%, 100% { transform: translateX(0) rotate(-2deg); }
+          50% { transform: translateX(28px) rotate(3deg) translateY(-4px); }
         }
-        @keyframes pulseFloat { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
-        @keyframes sparkle {
-          0%,100% { opacity: 0.35; transform: scale(0.8); }
-          50% { opacity: 1; transform: scale(1.1); }
+        @keyframes tarotShuffleRight {
+          0%, 100% { transform: translateX(0) rotate(2deg); }
+          50% { transform: translateX(-28px) rotate(-3deg) translateY(4px); }
         }
       `}</style>
-      <div style={{
-        position:'relative',
-        width: cardW + stackDepthX + 40,
-        height: cardH + stackDepthY + 32,
-        overflow:'visible',
-      }}>
-        {layers.map((_, i) => (
-          <div
-            key={i}
-            style={{
-              position:'absolute',
-              top: 6 + i * offsetY,
-              left: 12 + i * offsetX,
-              transformOrigin: 'center center',
-              zIndex: i + 1,
-              animation: `shuffleRock 0.55s ease-in-out ${i * 0.07}s infinite`,
-            }}
-          >
-            <CartaTarot
-              carta={versoCarta}
-              size={cardSize}
-              virada
-              style={{
-                boxShadow: i >= visualCount - 2
-                  ? '0 4px 14px rgba(223,183,108,0.35)'
-                  : '0 2px 6px rgba(223,183,108,0.15)',
-              }}
-            />
-          </div>
-        ))}
-        {[0,1,2,3].map((i)=>(
-          <span key={`spark-${i}`} style={{
-            position:'absolute',
-            top: 4 + (i * 18),
-            right: 2 + ((i % 2) * 10),
-            left: i % 2 === 0 ? 2 + (i * 6) : undefined,
-            color: '#DFB76C',
-            fontSize: 12,
-            animation:`sparkle 0.9s ease-in-out ${i*0.15}s infinite`,
-            userSelect: 'none',
-            pointerEvents: 'none',
-            zIndex: visualCount + 2,
-          }}>✦</span>
-        ))}
+
+      <div
+        style={{
+          position: 'relative',
+          width: stageW,
+          height: stageH,
+        }}
+      >
+        <div
+          style={{
+            position: 'absolute',
+            left: 8,
+            top: 8,
+            width: cardW + pileDepth,
+            height: cardH + pileDepth,
+            animation: 'tarotShuffleLeft 1.1s ease-in-out infinite',
+            transformOrigin: 'center bottom',
+          }}
+        >
+          {Array.from({ length: pileLayers }, (_, layer) => (
+            <CartaVersoEmbaralhar key={`l-${layer}`} size={cardSize} layer={layer} cartaVerso={cartaVerso} />
+          ))}
+        </div>
+
+        <div
+          style={{
+            position: 'absolute',
+            right: 8,
+            top: 8,
+            width: cardW + pileDepth,
+            height: cardH + pileDepth,
+            animation: 'tarotShuffleRight 1.1s ease-in-out infinite',
+            transformOrigin: 'center bottom',
+          }}
+        >
+          {Array.from({ length: pileLayers }, (_, layer) => (
+            <CartaVersoEmbaralhar key={`r-${layer}`} size={cardSize} layer={layer} cartaVerso={cartaVerso} />
+          ))}
+        </div>
       </div>
-      <p style={{fontSize:15,color:CORES.brancoMuted,fontStyle:'italic',textAlign:'center',margin:0,animation:'pulseFloat 1.9s ease-in-out infinite'}}>
+
+      <p style={{ fontSize: 14, color: CORES.brancoMuted, fontStyle: 'italic', textAlign: 'center', margin: 0 }}>
         {t('tarot.shuffling')}
-      </p>
-      <p style={{fontSize:14,color:CORES.dourado,fontWeight:700,margin:0,letterSpacing:'0.04em'}}>
-        {t('tarot.shufflingCount', { count: numCartas })}
       </p>
     </div>
   )
@@ -686,17 +860,19 @@ function TelaDistribuir({ cartas, posicoes, distribuindo, t, cartaVerso = MAJOR_
   return (
     <div style={{padding:'30px 20px',textAlign:'center',overflow:'visible'}}>
       <style>{`
-        @keyframes deal{from{transform:translateY(-16px) scale(0.97);opacity:0.5}to{transform:translateY(0) scale(1);opacity:1}}
+        @keyframes deal{from{transform:translateY(-12px) scale(0.98);opacity:0.85}to{transform:translateY(0) scale(1);opacity:1}}
       `}</style>
       <p style={{fontSize:13,color:CORES.brancoMuted,marginBottom:20}}>{t('tarot.dealing')}</p>
       <div style={{display:'flex',justifyContent:'center',flexWrap:'wrap',gap:10}}>
         {posicoes.map((pos,i)=>(
-          <div key={i} style={{textAlign:'center',
+          <div key={i} style={{
+            textAlign:'center',
             animation: i<=distribuindo ? 'deal 0.22s ease-out forwards' : 'none',
-            opacity: i<=distribuindo ? 1 : 0.35,
+            opacity: i<=distribuindo ? 1 : 0.72,
+            filter: i<=distribuindo ? 'none' : 'brightness(0.82)',
           }}>
-            <CartaTarot carta={cartaVerso} virada size={CARTA.distribuir}/>
-            <div style={{fontSize:9,color:CORES.brancoMuted,marginTop:4,width:CARTA.distribuir}}>{pos}</div>
+            <CartaTarot carta={cartaVerso} virada size={CARTA.revelar}/>
+            <div style={{fontSize:9,color:CORES.brancoMuted,marginTop:4,width:CARTA.revelar}}>{pos}</div>
           </div>
         ))}
       </div>
@@ -707,6 +883,15 @@ function TelaDistribuir({ cartas, posicoes, distribuindo, t, cartaVerso = MAJOR_
 function TelaRevelar({ cartas, reveladas = [], onRevelar, posicoes = [], tipo, pergunta, resultado, onVoltar, t }) {
   const CARTA = useTamanhoCartas()
   const todasReveladas = reveladas.length > 0 && reveladas.length === cartas.length && reveladas.every(Boolean)
+  const siteUrl = typeof window !== 'undefined' ? window.location.origin : 'https://sidusastro.com'
+  const textoPartilha = todasReveladas && resultado
+    ? t('share.tarotText', {
+      tipo: tipo?.nome || 'Tarot',
+      resposta: resultado.resposta || cartas.map((c) => c.nome).join(' · '),
+      detalhe: (resultado.detalhe || '').slice(0, 280),
+      url: siteUrl,
+    })
+    : null
 
   return (
     <div style={{padding:'20px 20px 110px',overflow:'visible'}}>
@@ -773,7 +958,7 @@ function TelaRevelar({ cartas, reveladas = [], onRevelar, posicoes = [], tipo, p
           </p>
           {c.conselho && (
             <div style={{marginTop:10,padding:'8px 12px',background:'rgba(223,183,108,0.07)',borderRadius:8,borderLeft:`2px solid ${CORES.dourado}`}}>
-              <p style={{fontSize:12,color:CORES.dourado,margin:0,fontStyle:'italic'}}>✦ {c.conselho}</p>
+              <p style={{fontSize:12,color:CORES.dourado,margin:0,fontStyle:'italic'}}>{c.conselho}</p>
             </div>
           )}
         </div>
@@ -786,6 +971,7 @@ function TelaRevelar({ cartas, reveladas = [], onRevelar, posicoes = [], tipo, p
             <div style={{fontSize:28,fontWeight:700,textAlign:'center',marginBottom:12}}>{resultado.resposta}</div>
           )}
           <div style={{fontSize:13,color:CORES.brancoSuave,lineHeight:1.8,whiteSpace:'pre-wrap'}}>{resultado.detalhe}</div>
+          <ShareWhatsAppButton texto={textoPartilha} compact />
         </div>
       )}
 
@@ -795,7 +981,7 @@ function TelaRevelar({ cartas, reveladas = [], onRevelar, posicoes = [], tipo, p
           borderRadius: 16, padding: 20, marginTop: 14,
         }}>
           <div style={{ fontSize: 10, color: '#C4B5FD', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 10, fontWeight: 700 }}>
-            ✦ {t('tarot.angelMessage')}
+            {t('tarot.angelMessage')}
           </div>
           <p style={{ fontSize: 14, color: CORES.brancoSuave, lineHeight: 1.75, margin: 0, fontStyle: 'italic' }}>
             {resultado.mensagemAnjos}

@@ -26,7 +26,7 @@ function translateTree(enTree, lang) {
   return out
 }
 
-let out = '/** Gerado por scripts/build-numerologia-from-en.mjs — traduções completas a partir de EN */\n'
+let out = '/** Gerado por scripts/build-numerologia-from-en.mjs - traduções completas a partir de EN */\n'
 for (const lang of ['es', 'it', 'de', 'fr']) {
   const data = translateTree(EN, lang)
   out += `export const INTERPRETACOES_${lang.toUpperCase()} = ${JSON.stringify(data, null, 2)}\n\n`

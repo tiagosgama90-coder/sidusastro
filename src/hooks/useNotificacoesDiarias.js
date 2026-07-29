@@ -3,6 +3,7 @@ import { fetchDailyContent } from '../lib/apiDailyContent.js'
 import { buildLocalDailyContent, signoHoroscopeKey } from '../lib/dailyContentFallback.js'
 import { calcularFaseLua } from '../lib/faseLua.js'
 import { normalizeSignoNome } from '../lib/i18n/astro.js'
+import { sanitizarHoroscopo } from '../lib/textoUtil.js'
 
 const PREFS_KEY = 'sidus_notif_prefs'
 const DISABLED_KEY = 'sidus_notif_desactivado'
@@ -19,10 +20,11 @@ function resolveHoroscopoDoPack(pack, signoSolar, lang) {
   const keyPt = signoHoroscopeKey(signoSolar, 'pt')
   const keyLang = lang === 'pt' ? keyPt : (signoHoroscopeKey(signoSolar, lang) || signoSolar)
 
-  return pack.horoscopes[lang]?.[keyLang]
+  const texto = pack.horoscopes[lang]?.[keyLang]
     || pack.horoscopes.pt?.[keyPt]
     || pack.horoscopes.en?.[signoHoroscopeKey(signoSolar, 'en')]
     || null
+  return texto ? sanitizarHoroscopo(texto, lang) : null
 }
 
 function lerPrefs(uid) {
@@ -148,7 +150,7 @@ async function mostrarNotificacaoViaSW(signoNome, lang, buscarHoroscopoSigno) {
 }
 
 /**
- * Notificações diárias Premium — horóscopo do signo solar às 12:00.
+ * Notificações diárias Premium - horóscopo do signo solar às 12:00.
  * Estado on/off: localStorage (prioridade) + Firestore (sync entre dispositivos).
  */
 export function useNotificacoesDiarias({ user, signoSolar, lang = 'pt', isPremium = false }) {
@@ -277,7 +279,7 @@ export function useNotificacoesDiarias({ user, signoSolar, lang = 'pt', isPremiu
       guardarPrefs({ uid, signo: signoNormalizado, lang, ativo: true })
       const swOk = await syncServiceWorker(true, signoNormalizado, lang)
       if (!swOk) {
-        console.warn('[Notificacoes] Service Worker ainda não controla a página — tenta recarregar.')
+        console.warn('[Notificacoes] Service Worker ainda não controla a página - tenta recarregar.')
       }
 
       const mostrada = await mostrarNotificacaoViaSW(signoNormalizado, lang, buscarHoroscopoSigno)
@@ -300,7 +302,7 @@ export function useNotificacoesDiarias({ user, signoSolar, lang = 'pt', isPremiu
     setErro(null)
     setLoading(true)
 
-    // Marcar desactivado ANTES de tudo — impede reactivação por race conditions
+    // Marcar desactivado ANTES de tudo - impede reactivação por race conditions
     desactivadoRef.current = true
     if (uid) marcarDesactivado(uid)
     limparPrefs()

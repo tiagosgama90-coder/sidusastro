@@ -317,7 +317,7 @@ function blocoBig3(nome, signo, mapaNatal, lang) {
       en: ` This ${nomeTr} placement resonates with your Sun in ${sn(sol, lang)} (${elemSol}) - identity and transpersonal theme speak the same elemental language.`,
       es: ` Este ${nomeTr} resuena con tu Sol en ${sn(sol, lang)} (${elemSol}): identidad y tema transpessoal hablan el mismo lenguaje elemental.`,
       it: ` Questo ${nomeTr} risuona con il tuo Sole in ${sn(sol, lang)} (${elemSol}): identità e tema transpersonale parlano la stessa lingua elementale.`,
-      de: ` Diese ${nomeTr}-Platzierung resoniert mit deiner Sonne in ${sn(sol, lang)} (${elemSol}) – Identität und transpersonales Thema sprechen dieselbe Elementarsprache.`,
+      de: ` Diese ${nomeTr}-Platzierung resoniert mit deiner Sonne in ${sn(sol, lang)} (${elemSol}) - Identität und transpersonales Thema sprechen dieselbe Elementarsprache.`,
       fr: ` Ce ${nomeTr} résonne avec ton Soleil en ${sn(sol, lang)} (${elemSol}) : identité et thème transpersonnel parlent la même langue élémentaire.`,
     })
   }
@@ -327,17 +327,17 @@ function blocoBig3(nome, signo, mapaNatal, lang) {
       en: ` This ${nomeTr} echoes your Moon in ${sn(lua, lang)} (${elemLua}) - the emotional body recognises this frequency instinctively.`,
       es: ` Este ${nomeTr} hace eco a tu Luna en ${sn(lua, lang)} (${elemLua}): el cuerpo emocional reconoce esta frecuencia instintivamente.`,
       it: ` Questo ${nomeTr} riecheggia la tua Luna in ${sn(lua, lang)} (${elemLua}): il corpo emotivo riconosce questa frequenza istintivamente.`,
-      de: ` Dieser ${nomeTr} hallt deinen Mond in ${sn(lua, lang)} (${elemLua}) nach – der emotionale Körper erkennt diese Frequenz instinktiv.`,
+      de: ` Dieser ${nomeTr} hallt deinen Mond in ${sn(lua, lang)} (${elemLua}) nach - der emotionale Körper erkennt diese Frequenz instinktiv.`,
       fr: ` Ce ${nomeTr} fait écho à ta Lune en ${sn(lua, lang)} (${elemLua}) : le corps émotionnel reconnaît cette fréquence instinctivement.`,
     })
   }
   return contentForLang(lang, {
-    pt: ` Frente ao eixo Sol–Lua (${sn(sol, lang)}/${sn(lua, lang)}), este ${nome} em ${sn(chave, lang)} pede tradução consciente entre idiomas internos diferentes.`,
-    en: ` Against your Sun–Moon axis (${sn(sol, lang)}/${sn(lua, lang)}), this ${nomeTr} in ${sn(chave, lang)} asks conscious translation between different inner languages.`,
-    es: ` Frente al eje Sol–Luna (${sn(sol, lang)}/${sn(lua, lang)}), este ${nomeTr} en ${sn(chave, lang)} pide traducción consciente entre idiomas internos distintos.`,
-    it: ` Rispetto all'asse Sole–Luna (${sn(sol, lang)}/${sn(lua, lang)}), questo ${nomeTr} in ${sn(chave, lang)} chiede traduzione consapevole tra linguaggi interiori diversi.`,
-    de: ` Gegenüber der Sonne–Mond-Achse (${sn(sol, lang)}/${sn(lua, lang)}) verlangt dieser ${nomeTr} in ${sn(chave, lang)} bewusste Übersetzung zwischen verschiedenen inneren Sprachen.`,
-    fr: ` Face à l'axe Soleil–Lune (${sn(sol, lang)}/${sn(lua, lang)}), ce ${nomeTr} en ${sn(chave, lang)} demande une traduction consciente entre langages intérieurs différents.`,
+    pt: ` Frente ao eixo Sol-Lua (${sn(sol, lang)}/${sn(lua, lang)}), este ${nome} em ${sn(chave, lang)} pede tradução consciente entre idiomas internos diferentes.`,
+    en: ` Against your Sun-Moon axis (${sn(sol, lang)}/${sn(lua, lang)}), this ${nomeTr} in ${sn(chave, lang)} asks conscious translation between different inner languages.`,
+    es: ` Frente al eje Sol-Luna (${sn(sol, lang)}/${sn(lua, lang)}), este ${nomeTr} en ${sn(chave, lang)} pide traducción consciente entre idiomas internos distintos.`,
+    it: ` Rispetto all'asse Sole-Luna (${sn(sol, lang)}/${sn(lua, lang)}), questo ${nomeTr} in ${sn(chave, lang)} chiede traduzione consapevole tra linguaggi interiori diversi.`,
+    de: ` Gegenüber der Sonne-Mond-Achse (${sn(sol, lang)}/${sn(lua, lang)}) verlangt dieser ${nomeTr} in ${sn(chave, lang)} bewusste Übersetzung zwischen verschiedenen inneren Sprachen.`,
+    fr: ` Face à l'axe Soleil-Lune (${sn(sol, lang)}/${sn(lua, lang)}), ce ${nomeTr} en ${sn(chave, lang)} demande une traduction consciente entre langages intérieurs différents.`,
   })
 }
 
@@ -457,8 +457,8 @@ export function gerarSinteseEvolutiva(mapaNatal, planetas, aspetos, lang = 'pt')
     en: `No dominant square or opposition among major aspects - your growth path is subtler but equally specific. Dominant element: ${elemDomTr} across personal planets. `,
     es: `No hay cuadratura u oposición dominante en los aspectos mayores: tu camino de crecimiento es más sutil pero igualmente específico. Elemento dominante: ${elemDomTr} en los planetas personales. `,
     it: `Non c'è quadratura o opposizione dominante negli aspetti maggiori: il tuo cammino di crescita è più sottile ma ugualmente specifico. Elemento dominante: ${elemDomTr} nei pianeti personali. `,
-    de: `Kein dominantes Quadrat oder Opposition unter den Hauptaspekten – dein Wachstumsweg ist subtiler, aber ebenso spezifisch. Dominantes Element: ${elemDomTr} bei den persönlichen Planeten. `,
-    fr: `Pas de carré ou opposition dominant parmi les aspects majeurs – ton chemin de croissance est plus subtil mais tout aussi spécifique. Élément dominant : ${elemDomTr} chez les planètes personnelles. `,
+    de: `Kein dominantes Quadrat oder Opposition unter den Hauptaspekten - dein Wachstumsweg ist subtiler, aber ebenso spezifisch. Dominantes Element: ${elemDomTr} bei den persönlichen Planeten. `,
+    fr: `Pas de carré ou opposition dominant parmi les aspects majeurs - ton chemin de croissance est plus subtil mais tout aussi spécifique. Élément dominant : ${elemDomTr} chez les planètes personnelles. `,
   })
 
   if (harm) {
@@ -469,8 +469,8 @@ export function gerarSinteseEvolutiva(mapaNatal, planetas, aspetos, lang = 'pt')
       en: `Your greatest natural resource is the ${harm.aspecto} between ${hA} and ${hB} (orb ${harm.orbe}) - lean on this alliance consciously. `,
       es: `Tu mayor recurso natural es el ${harm.aspecto} entre ${hA} y ${hB} (orbe ${harm.orbe}): apóyate conscientemente en esta alianza. `,
       it: `La tua maggiore risorsa naturale è il ${harm.aspecto} tra ${hA} e ${hB} (orbe ${harm.orbe}): appoggiati consapevolmente a questa alleanza. `,
-      de: `Deine größte natürliche Ressource ist das ${harm.aspecto} zwischen ${hA} und ${hB} (Orb ${harm.orbe}) – stütze dich bewusst auf diese Allianz. `,
-      fr: `Ta plus grande ressource naturelle est le ${harm.aspecto} entre ${hA} et ${hB} (orbe ${harm.orbe}) – appuie-toi consciemment sur cette alliance. `,
+      de: `Deine größte natürliche Ressource ist das ${harm.aspecto} zwischen ${hA} und ${hB} (Orb ${harm.orbe}) - stütze dich bewusst auf diese Allianz. `,
+      fr: `Ta plus grande ressource naturelle est le ${harm.aspecto} entre ${hA} et ${hB} (orbe ${harm.orbe}) - appuie-toi consciemment sur cette alliance. `,
     })
   }
   if (hub) {
@@ -479,8 +479,8 @@ export function gerarSinteseEvolutiva(mapaNatal, planetas, aspetos, lang = 'pt')
       en: `${translatePlaneta(hub, lang)} is the most connected planet in your chart - life lessons orbit this archetype. `,
       es: `${translatePlaneta(hub, lang)} es el planeta más conectado de la carta: las lecciones de vida orbitan este arquetipo. `,
       it: `${translatePlaneta(hub, lang)} è il pianeta più connesso della carta: le lezioni di vita orbitano questo archetipo. `,
-      de: `${translatePlaneta(hub, lang)} ist der am meisten verbundene Planet im Horoskop – Lebenslektionen kreisen um diesen Archetyp. `,
-      fr: `${translatePlaneta(hub, lang)} est la planète la plus connectée de la carte – les leçons de vie orbitent cet archétype. `,
+      de: `${translatePlaneta(hub, lang)} ist der am meisten verbundene Planet im Horoskop - Lebenslektionen kreisen um diesen Archetyp. `,
+      fr: `${translatePlaneta(hub, lang)} est la planète la plus connectée de la carte - les leçons de vie orbitent cet archétype. `,
     })
   }
   if (pNod) {
@@ -511,8 +511,8 @@ export function gerarSinteseEvolutiva(mapaNatal, planetas, aspetos, lang = 'pt')
     en: `Practical path: act with ${sn(sol, lang)} courage in ${focoSol}. ${pSat ? `Saturn in ${sn(pSat.signo?.nome, lang)}, House ${pSat.casa}: build patiently here.` : ''} ${pJup ? ` Jupiter in House ${pJup.casa} opens doors when you stretch beyond comfort.` : ''} ${pMar ? ` Mars in ${sn(pMar.signo?.nome, lang)} fuels decisive action in ${getTemaCasa(pMar.casa, lang)?.foco || 'its house'}.` : ''} The ephemerides offer the map - your choices trace the path.`,
     es: `Camino práctico: actúa con coraje de ${sn(sol, lang)} en ${focoSol}. ${pSat ? `Saturno en ${sn(pSat.signo?.nome, lang)}, Casa ${pSat.casa}: construye con paciencia aquí.` : ''} ${pJup ? ` Júpiter en Casa ${pJup.casa} abre puertas cuando te estiras más allá del confort.` : ''} ${pMar ? ` Marte en ${sn(pMar.signo?.nome, lang)} alimenta acción decisiva en ${getTemaCasa(pMar.casa, lang)?.foco || 'su casa'}.` : ''} Las efemérides ofrecen la carta: tus elecciones trazan el camino.`,
     it: `Percorso pratico: agisci con coraggio di ${sn(sol, lang)} in ${focoSol}. ${pSat ? `Saturno in ${sn(pSat.signo?.nome, lang)}, Casa ${pSat.casa}: costruisci con pazienza qui.` : ''} ${pJup ? ` Giove in Casa ${pJup.casa} apre porte quando ti allontani dal comfort.` : ''} ${pMar ? ` Marte in ${sn(pMar.signo?.nome, lang)} alimenta azione decisiva in ${getTemaCasa(pMar.casa, lang)?.foco || 'la sua casa'}.` : ''} Le effemeridi offrono la carta: le tue scelte tracciano il cammino.`,
-    de: `Praktischer Weg: handle mit ${sn(sol, lang)}-Mut in ${focoSol}. ${pSat ? `Saturn in ${sn(pSat.signo?.nome, lang)}, Haus ${pSat.casa}: baue hier geduldig.` : ''} ${pJup ? ` Jupiter im Haus ${pJup.casa} öffnet Türen, wenn du über Komfort hinauswächst.` : ''} ${pMar ? ` Mars in ${sn(pMar.signo?.nome, lang)} speist entschlossenes Handeln in ${getTemaCasa(pMar.casa, lang)?.foco || 'seinem Haus'}.` : ''} Die Ephemeriden bieten die Karte – deine Wahl zeichnet den Weg.`,
-    fr: `Chemin pratique : agis avec le courage de ${sn(sol, lang)} dans ${focoSol}. ${pSat ? `Saturne en ${sn(pSat.signo?.nome, lang)}, Maison ${pSat.casa} : construis patiemment ici.` : ''} ${pJup ? ` Jupiter en Maison ${pJup.casa} ouvre des portes quand tu t'étires au-delà du confort.` : ''} ${pMar ? ` Mars en ${sn(pMar.signo?.nome, lang)} alimente l'action décisive dans ${getTemaCasa(pMar.casa, lang)?.foco || 'sa maison'}.` : ''} Les éphémérides offrent la carte – tes choix tracent le chemin.`,
+    de: `Praktischer Weg: handle mit ${sn(sol, lang)}-Mut in ${focoSol}. ${pSat ? `Saturn in ${sn(pSat.signo?.nome, lang)}, Haus ${pSat.casa}: baue hier geduldig.` : ''} ${pJup ? ` Jupiter im Haus ${pJup.casa} öffnet Türen, wenn du über Komfort hinauswächst.` : ''} ${pMar ? ` Mars in ${sn(pMar.signo?.nome, lang)} speist entschlossenes Handeln in ${getTemaCasa(pMar.casa, lang)?.foco || 'seinem Haus'}.` : ''} Die Ephemeriden bieten die Karte - deine Wahl zeichnet den Weg.`,
+    fr: `Chemin pratique : agis avec le courage de ${sn(sol, lang)} dans ${focoSol}. ${pSat ? `Saturne en ${sn(pSat.signo?.nome, lang)}, Maison ${pSat.casa} : construis patiemment ici.` : ''} ${pJup ? ` Jupiter en Maison ${pJup.casa} ouvre des portes quand tu t'étires au-delà du confort.` : ''} ${pMar ? ` Mars en ${sn(pMar.signo?.nome, lang)} alimente l'action décisive dans ${getTemaCasa(pMar.casa, lang)?.foco || 'sa maison'}.` : ''} Les éphémérides offrent la carte - tes choix tracent le chemin.`,
   })
 
   return { titulo, texto, conselho }

@@ -32,8 +32,8 @@ const SPA_ROUTES = [
   { path: '/biorritmo', priority: 0.8, changefreq: 'monthly' },
   { path: '/horas-iguais', priority: 0.78, changefreq: 'monthly' },
   { path: '/diario', priority: 0.78, changefreq: 'weekly' },
-  { path: '/vip', priority: 0.76, changefreq: 'monthly' },
-  { path: '/divulgacao-vip', priority: 0.74, changefreq: 'monthly' },
+  { path: '/premium', priority: 0.76, changefreq: 'monthly' },
+  { path: '/divulgacao-premium', priority: 0.74, changefreq: 'monthly' },
   { path: '/privacidade', priority: 0.5, changefreq: 'yearly' },
   { path: '/comecar', priority: 0.7, changefreq: 'monthly' },
 ]
@@ -66,6 +66,20 @@ function locForRoute(path, lang) {
   if (path === '/horoscopo' && lang === 'en') return `${BASE}/en/horoscope`
   if (path === '/') return lang ? `${BASE}${langPath(path, lang)}` : `${BASE}/`
   return lang ? `${BASE}${langPath(path, lang)}` : `${BASE}${path}`
+}
+
+function locForGuide(path, lang) {
+  const base = `${BASE}${path}`
+  if (!lang || lang === 'pt') return base
+  return `${base}?lang=${lang}`
+}
+
+function guideAlternateLinks(path) {
+  const lines = LANGS.map(({ code, hreflang }) =>
+    `    <xhtml:link rel="alternate" hreflang="${hreflang}" href="${escapeXml(locForGuide(path, code))}"/>`
+  )
+  lines.push(`    <xhtml:link rel="alternate" hreflang="x-default" href="${escapeXml(locForGuide(path, 'pt'))}"/>`)
+  return lines.join('\n')
 }
 
 function alternateLinks(path) {
@@ -114,11 +128,20 @@ for (const page of STATIC_PAGES) {
 }
 
 for (const guide of GUIDES) {
-  const loc = `${BASE}${guide.path}`
-  entries.push(urlEntry(loc, {
+  const alts = guideAlternateLinks(guide.path)
+  entries.push(urlEntry(locForGuide(guide.path, 'pt'), {
     priority: guide.priority,
     changefreq: guide.changefreq,
+    alternates: alts,
   }))
+  for (const { code } of LANGS) {
+    if (code === 'pt') continue
+    entries.push(urlEntry(locForGuide(guide.path, code), {
+      priority: Math.max(0.4, guide.priority - 0.04),
+      changefreq: guide.changefreq,
+      alternates: alts,
+    }))
+  }
 }
 
 const xml = `<?xml version="1.0" encoding="UTF-8"?>

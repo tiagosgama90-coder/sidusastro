@@ -1,4 +1,4 @@
-/* Guias editoriais Sidusastro — páginas estáticas para SEO e AdSense */
+/* Guias editoriais Sidusastro - páginas estáticas para SEO e AdSense */
 :root {
   --bg: #0B071E;
   --gold: #DFB76C;
@@ -51,19 +51,21 @@ body.guia-has-cosmic-bg {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(ellipse 50% 40% at 50% 45%, rgba(223, 183, 108, 0.04) 0%, transparent 55%),
-    radial-gradient(ellipse 35% 30% at 30% 60%, rgba(67, 56, 202, 0.07) 0%, transparent 50%),
-    radial-gradient(ellipse 35% 30% at 70% 35%, rgba(88, 28, 135, 0.06) 0%, transparent 50%);
+    radial-gradient(ellipse 55% 45% at 50% 42%, rgba(223, 183, 108, 0.09) 0%, transparent 58%),
+    radial-gradient(ellipse 40% 35% at 22% 62%, rgba(67, 56, 202, 0.12) 0%, transparent 52%),
+    radial-gradient(ellipse 40% 35% at 78% 32%, rgba(88, 28, 135, 0.1) 0%, transparent 52%),
+    radial-gradient(ellipse 100% 80% at 50% 100%, rgba(3, 8, 24, 0.85) 0%, transparent 70%);
 }
 
 .guia-cosmic-hendecagram-wrap {
   position: absolute;
   left: 50%;
-  top: 46%;
+  top: 44%;
   transform: translate(-50%, -50%);
-  width: min(92vw, 520px);
-  height: min(92vw, 520px);
-  opacity: 0.78;
+  width: min(105vw, 680px);
+  height: min(105vw, 680px);
+  opacity: 0.94;
+  filter: drop-shadow(0 0 42px rgba(223, 183, 108, 0.22));
 }
 
 .guia-cosmic-hendecagram {
@@ -73,12 +75,23 @@ body.guia-has-cosmic-bg {
 
 .guia-cosmic-star-lines {
   transform-origin: 200px 200px;
-  animation: guiaHendecSpin 140s linear infinite, guiaHendecPulse 8s ease-in-out infinite;
+  animation: guiaHendecSpin 120s linear infinite, guiaHendecPulse 6s ease-in-out infinite;
+}
+
+.guia-cosmic-zodiac-ring {
+  transform-origin: 200px 200px;
+  animation: guiaZodiacRingSpin 88s linear infinite;
+}
+
+.guia-cosmic-zodiac-upright {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: guiaZodiacRingSpin 88s linear infinite reverse;
 }
 
 .guia-cosmic-zodiac {
-  font-size: 15px;
-  fill: rgba(223, 183, 108, 0.55);
+  font-size: 17px;
+  fill: rgba(240, 210, 150, 0.82);
   animation: guiaZodiacShine 4.5s ease-in-out infinite;
 }
 
@@ -87,23 +100,40 @@ body.guia-has-cosmic-bg {
   to { transform: rotate(360deg); }
 }
 
+@keyframes guiaZodiacRingSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
 @keyframes guiaHendecPulse {
-  0%, 100% { opacity: 0.65; }
+  0%, 100% { opacity: 0.82; }
   50% { opacity: 1; }
 }
 
 @keyframes guiaZodiacShine {
-  0%, 100% { fill: rgba(223, 183, 108, 0.45); opacity: 0.7; }
-  50% { fill: rgba(240, 207, 138, 0.95); opacity: 1; }
+  0%, 100% { fill: rgba(223, 183, 108, 0.62); opacity: 0.82; }
+  50% { fill: rgba(255, 232, 170, 1); opacity: 1; }
 }
 
-/* Seletor de idiomas — canto superior direito (como no site) */
+/* Seletor de idiomas - igual ao site React (bandeiras SVG) */
 .guia-lang-switcher-root {
   position: fixed !important;
   top: max(8px, env(safe-area-inset-top, 8px));
   right: max(8px, env(safe-area-inset-right, 8px));
   z-index: 120;
   pointer-events: auto;
+  touch-action: manipulation;
+}
+
+.guia-lang-switcher-outer {
+  display: flex;
+  padding: 2px;
+  border-radius: 6px;
+  background: rgba(11, 7, 30, 0.94);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(223, 183, 108, 0.22);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
 }
 
 .guia-lang-switcher {
@@ -121,15 +151,19 @@ body.guia-has-cosmic-bg {
   background: rgba(255, 255, 255, 0.04);
   color: var(--gold);
   cursor: pointer;
-  font-size: 16px;
-  line-height: 1;
+  line-height: 0;
 }
 
-.guia-lang-flag { font-size: 18px; }
+.guia-lang-flag-img {
+  display: block;
+  border-radius: 2px;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.15);
+}
 
 .guia-lang-caret {
   font-size: 8px;
   opacity: 0.8;
+  line-height: 1;
 }
 
 .guia-lang-menu {
@@ -145,6 +179,7 @@ body.guia-has-cosmic-bg {
   background: rgba(11, 7, 30, 0.98);
   border: 1px solid rgba(223, 183, 108, 0.22);
   box-shadow: 0 8px 22px rgba(0, 0, 0, 0.45);
+  z-index: 180;
 }
 
 .guia-lang-item {
@@ -157,8 +192,7 @@ body.guia-has-cosmic-bg {
   border: 1px solid rgba(223, 183, 108, 0.22);
   background: rgba(255, 255, 255, 0.04);
   cursor: pointer;
-  font-size: 16px;
-  line-height: 1;
+  line-height: 0;
 }
 
 .guia-lang-item--active {
@@ -210,30 +244,53 @@ a { color: var(--gold); }
 }
 
 .guia-logo {
-  font-size: 22px;
-  font-weight: 300;
-  letter-spacing: 0.2em;
-  color: var(--gold);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   text-decoration: none;
+  line-height: 0;
+}
+
+.guia-logo img {
+  display: block;
+  width: min(148px, 52vw);
+  height: auto;
+  filter: drop-shadow(0 0 12px rgba(223, 183, 108, 0.28));
 }
 
 .guia-nav {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px 16px;
+  gap: 8px;
   justify-content: center;
   margin-top: 16px;
-  font-size: 13px;
+  padding: 6px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(223, 183, 108, 0.18);
 }
 
 .guia-nav a {
   text-decoration: none;
   color: var(--muted);
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  border: 1px solid transparent;
 }
 
-.guia-nav a:hover,
-.guia-nav a[aria-current="page"] {
+.guia-nav a:hover {
   color: var(--gold);
+  background: rgba(223, 183, 108, 0.08);
+}
+
+.guia-nav a[aria-current="page"] {
+  color: #0b071e;
+  background: linear-gradient(135deg, #e8c97a, #dfb76c);
+  border-color: rgba(223, 183, 108, 0.5);
+  box-shadow: 0 4px 16px rgba(223, 183, 108, 0.2);
 }
 
 h1 {
@@ -340,6 +397,55 @@ h1 {
   background: rgba(223, 183, 108, 0.1);
 }
 
+.guia-pager {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin: 28px 0 8px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  box-shadow: none;
+}
+
+.guia-pager-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  border-radius: 999px;
+  border: 1px solid rgba(223, 183, 108, 0.32);
+  background: rgba(12, 8, 32, 0.72);
+  color: var(--gold);
+  text-decoration: none;
+  transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.guia-pager-btn:hover {
+  border-color: rgba(223, 183, 108, 0.55);
+  background: rgba(223, 183, 108, 0.12);
+  transform: translateY(-1px);
+  box-shadow: 0 8px 24px rgba(223, 183, 108, 0.12);
+}
+
+.guia-pager-prev {
+  margin-right: auto;
+}
+
+.guia-pager-next {
+  margin-left: auto;
+}
+
+.guia-pager-arrow {
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1;
+  color: rgba(223, 183, 108, 0.95);
+}
+
 .guia-related-cta {
   display: inline-flex;
 }
@@ -384,13 +490,50 @@ h1 {
   }
 
   .guia-nav {
-    gap: 8px 12px;
-    font-size: 12px;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    margin-top: 14px;
+    padding: 10px;
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(223, 183, 108, 0.18);
+  }
+
+  .guia-nav a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 10px 8px;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.25;
+    min-height: 44px;
+    border-radius: 12px;
+    word-break: break-word;
+    hyphens: auto;
+  }
+
+  .guia-related-links {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .guia-related-links a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    min-height: 44px;
+    padding: 10px 8px;
+    line-height: 1.25;
   }
 
   .guia-cosmic-hendecagram-wrap {
-    opacity: 0.52;
-    width: min(110vw, 420px);
-    height: min(110vw, 420px);
+    opacity: 0.78;
+    width: min(118vw, 560px);
+    height: min(118vw, 560px);
   }
 }

@@ -1,6 +1,5 @@
 ﻿import { useState, useEffect, useRef, useCallback, useMemo, lazy, Suspense } from 'react'
 import {
-  Sparkles,
   Moon,
   Star,
   Compass,
@@ -30,11 +29,12 @@ import {
   User,
   Menu,
   X,
+  History,
 } from 'lucide-react'
 import { Body, GeoVector, Ecliptic, MakeTime, SiderealTime } from 'astronomy-engine'
 import { pesquisarCidades, pesquisarFusoHorario, geocodificarCidade } from './lib/geocoding'
 import { ModalPagamento, verificarSessaoPagamento } from './components/Pagamento'
-import { PRECO_MAPA_COMPLETO, precoPremiumVitrine, formatPrecoEuro } from './lib/pricing.js'
+import { PRECO_MAPA_COMPLETO, PRECO_PREMIUM_UNICO, precoPremiumVitrine, formatPrecoEuro, formatPrecoCompleto } from './lib/pricing.js'
 import { useGeoCountry } from './hooks/useGeoCountry.js'
 import { RecaptchaCheckbox } from './components/Recaptcha'
 import { Perfil } from './components/Perfil'
@@ -45,22 +45,28 @@ import { ConteudoDinamicoSidus } from './components/ConteudoDinamicoSidus'
 import { AstroNewsCarousel } from './components/AstroNewsCarousel'
 import { LandingCosmicBackground } from './components/LandingCosmicBackground.jsx'
 import { LandingBirthPortal } from './components/LandingBirthPortal.jsx'
+import { LandingConversionHead } from './components/LandingConversionHead.jsx'
+import { LandingTopBar } from './components/LandingTopBar.jsx'
+import { SidusLogo } from './components/SidusLogo.jsx'
+import { SidusConstellationMark } from './components/SidusConstellationMark.jsx'
 import { LandingFaq } from './components/LandingFaq.jsx'
-import { LandingPortalHero } from './components/LandingPortalHero.jsx'
 import { LandingSkyLive } from './components/LandingSkyLive.jsx'
 import { LandingReviews } from './components/LandingReviews.jsx'
 import { LandingPremiumBenefits } from './components/LandingPremiumBenefits.jsx'
 import { LandingGuides } from './components/LandingGuides.jsx'
+import { LandingPdfShowcase } from './components/LandingPdfShowcase.jsx'
 import { BannerBrasil } from './components/BannerBrasil.jsx'
 import { HeroHomeSidus } from './components/HeroHomeSidus.jsx'
 import { LeituraGratisDiaria } from './components/LeituraGratisDiaria.jsx'
 import { ShareSigno } from './components/ShareSigno.jsx'
 import { EnergiaDoDia, TransitoSemanal } from './components/EnergiaDoDia.jsx'
-import { PremiumComparacao } from './components/PremiumComparacao.jsx'
+import { VipPaywallBody } from './components/VipPaywallBody.jsx'
 import { PremiumHomeTeaser } from './components/PremiumHomeTeaser.jsx'
 import { HomeSkyRadio } from './components/HomeSkyRadio.jsx'
 import { applyRouteSeo } from './lib/routeSeo.js'
 import { ErrorBoundary } from './components/ErrorBoundary.jsx'
+import { MagicCursorTrail } from './components/MagicCursorTrail.jsx'
+import { OracleChatAvatar } from './components/OracleChatAvatar.jsx'
 import { auth, db, firebaseDisponivel, firebaseReady } from './lib/firebase'
 import { enviarEmailVerificacao, enviarEmailRecuperacaoSenha, traduzirErroEmail } from './lib/authEmail'
 import {
@@ -77,6 +83,7 @@ import { doc, getDoc, setDoc, onSnapshot } from 'firebase/firestore'
 import { atribuirCasasPlanetas } from './lib/casasPlacidus.js'
 import { gerarAnaliseCompleta, gerarResumoGratuito, mapaPlanetasProntos } from './lib/mapaInterpretacao.js'
 import { calcularFaseLua } from './lib/faseLua.js'
+import { gerarHoroscopoSignoTransito } from './lib/horoscopoDiarioTransitos.js'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { passoFromPath, pathFromPasso, langFromPath, stripLangPrefix } from './lib/routes.js'
 import { initGoogleAnalytics } from './lib/googleAnalytics.js'
@@ -87,7 +94,10 @@ import { allowsAds, getCookieConsent } from './lib/cookieConsent.js'
 import { LanguageSwitcher } from './components/LanguageSwitcher.jsx'
 import { useLanguage } from './lib/i18n/LanguageContext.jsx'
 import { readLandingDraft, clearLandingDraft, mergeLandingDraft, hasLandingDraft, flushLandingDraft } from './lib/landingDraft.js'
-import { getFerramentas, getBeneficiosVip } from './lib/i18n/ferramentasData.js'
+import { MobileBottomNav } from './components/MobileBottomNav.jsx'
+import { HomeParaTiHoje } from './components/HomeParaTiHoje.jsx'
+import { LandingStickyCta } from './components/LandingStickyCta.jsx'
+import { FerramentasEmptyState } from './components/FerramentasEmptyState.jsx'
 
 const EcraTarotLazy = lazy(() => import('./components/Tarot.jsx').then((m) => ({ default: m.EcraTarot })))
 const MandalaNatalLazy = lazy(() => import('./components/MandalaNatal.jsx').then((m) => ({ default: m.MandalaNatal })))
@@ -109,6 +119,7 @@ function RouteLoader() {
 import { validarOnboarding } from './lib/i18n/validation.js'
 import { traduzirErroAuth } from './lib/i18n/authErrors.js'
 import { labelBarraCurto, tituloSecaoMapa } from './lib/i18n/labelUtil.js'
+import { getFerramentas } from './lib/i18n/ferramentasData.js'
 import {
   validarPerguntaOracle, gerarRespostaOracle,
   getChatGreeting, getOracleLimitMessage,
@@ -122,6 +133,16 @@ import { utilizadorTemPremium, emailTemPremiumPrivilegiado } from './lib/premium
 import {
   MAX_ORACLE_GRATIS, oraclePerguntasUsadas as contarOraclePerguntas, registarOraclePergunta, sincronizarOraclePerguntas,
 } from './lib/oracleLimit.js'
+import {
+  carregarSessoesOracle,
+  criarSessaoOracle,
+  actualizarSessaoOracle,
+  upsertSessaoOracle,
+  guardarSessoesOracle,
+  removerSessaoOracle,
+  temRespostaOracle,
+  formatarDataSessao,
+} from './lib/oracleHistory.js'
 
 const CORES = {
   fundo: '#0B071E',
@@ -174,7 +195,7 @@ const PLANETAS_NATAL = [
 ]
 
 const DESKTOP_BP = 768
-const MOBILE_MAX = 430
+const MOBILE_MAX = 480
 
 function useIsDesktop() {
   const [isDesktop, setIsDesktop] = useState(
@@ -216,7 +237,7 @@ function sweEphemerisPronta() {
 
 // Efemérides Swiss servidas localmente (public/ephe/) - sem CORS, sem CDN externo
 // Ficheiros: sepl_18.se1 (planetas), semo_18.se1 (Lua), seas_18.se1 (asteróides)
-// Cobertura 1800–2400, precisão ≤ 1 arco-segundo (equivalente Astro.com / Astrolink)
+// Cobertura 1800-2400, precisão ≤ 1 arco-segundo (equivalente Astro.com / Astrolink)
 const _EPHE_FILES = [
   { name: 'sepl_18.se1', url: '/ephe/sepl_18.se1' },
   { name: 'semo_18.se1', url: '/ephe/semo_18.se1' },
@@ -321,7 +342,9 @@ const estilos = {
     boxSizing: 'border-box',
   },
   vidro: {
-    background: CORES.vidro,
+    position: 'relative',
+    zIndex: 2,
+    background: 'rgba(11, 7, 30, 0.88)',
     backdropFilter: 'blur(16px)',
     WebkitBackdropFilter: 'blur(16px)',
     border: `1px solid ${CORES.vidroBorda}`,
@@ -916,6 +939,20 @@ function precisaVerificarEmail(user) {
   return !user.emailVerified
 }
 
+function tarotPreVerifyUsado() {
+  try { return sessionStorage.getItem('sidus_preverify_tarot_used') === '1' } catch { return false }
+}
+
+function marcarTarotPreVerifyUsado() {
+  try { sessionStorage.setItem('sidus_preverify_tarot_used', '1') } catch { /* ignore */ }
+}
+
+function bloqueadoPorEmailNaoVerificado(user, passoAtual) {
+  if (!precisaVerificarEmail(user)) return false
+  if (passoAtual === 'tarot' && !tarotPreVerifyUsado()) return false
+  return true
+}
+
 async function inicializarPerfilUsuario(user) {
   if (!db || !firebaseDisponivel || !user?.uid) return
 
@@ -926,13 +963,9 @@ async function inicializarPerfilUsuario(user) {
   }, { merge: true })
 }
 
-function Campo({ label, tipo = 'text', valor, onChange, placeholder, erro, onBlur, noTranslate = false }) {
+function Campo({ label, tipo = 'text', valor, onChange, placeholder, erro, onBlur }) {
   return (
-    <div
-      style={{ marginBottom: 20 }}
-      className={noTranslate ? 'notranslate' : undefined}
-      translate={noTranslate ? 'no' : undefined}
-    >
+    <div style={{ marginBottom: 20 }}>
       <label style={estilos.label}>{label}</label>
       <input
         type={tipo}
@@ -940,8 +973,6 @@ function Campo({ label, tipo = 'text', valor, onChange, placeholder, erro, onBlu
         onChange={(e) => onChange(e.target.value)}
         onBlur={onBlur}
         placeholder={placeholder}
-        className={noTranslate ? 'notranslate' : undefined}
-        translate={noTranslate ? 'no' : undefined}
         style={{ ...estilos.input, borderColor: erro ? 'rgba(248,113,113,0.7)' : CORES.vidroBorda }}
       />
       {erro && <p style={{ margin: '6px 0 0', fontSize: 12, color: '#F87171' }}>{erro}</p>}
@@ -1299,6 +1330,7 @@ function EcraVerificarEmail({ utilizador, isDesktop, onLogout, onVerificado }) {
 function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
   const { lang, t } = useLanguage()
   const authPanelRef = useRef(null)
+  const conversionZoneRef = useRef(null)
   const [email, setEmail]       = useState('')
   const [senha, setSenha]       = useState('')
   const [confirmar, setConfirmar] = useState('')
@@ -1385,6 +1417,14 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
     }
   }
 
+  useEffect(() => {
+    if (window.location.hash !== '#guias') return
+    const scroll = () => document.getElementById('guias')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    requestAnimationFrame(scroll)
+    const t = window.setTimeout(scroll, 400)
+    return () => window.clearTimeout(t)
+  }, [])
+
   const scrollParaAuth = useCallback(() => {
     requestAnimationFrame(() => {
       authPanelRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
@@ -1392,23 +1432,35 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
   }, [])
 
   return (
-    <div className={`landing-auth-layout${isDesktop ? ' landing-auth-layout--desktop' : ' landing-auth-layout--mobile'}`}>
+    <div className={`landing-auth-layout${isDesktop ? ' landing-auth-layout--desktop' : ' landing-auth-layout--mobile'}`} translate="yes">
       <BannerBrasil />
-      <div className={`landing-auth-sticky-top${!isDesktop ? ' landing-auth-sticky-top--mobile' : ''}`}>
-        {!isDesktop && (
-          <div className="landing-lang-bar">
+      <LandingStickyCta targetRef={conversionZoneRef} onCta={scrollParaAuth} />
+      {isDesktop ? (
+        <div className="landing-desktop-top-stack">
+          <LandingTopBar onCta={scrollParaAuth} />
+          <div className="landing-sky-desktop-wrap landing-sky-desktop-wrap--compact">
+            <LandingSkyLive compact />
+          </div>
+        </div>
+      ) : (
+        <>
+          <div className="landing-mobile-logo notranslate" translate="no">
+            <SidusLogo variant="horizontal" markSize={42} glow className="sidus-logo--landing-bar" />
+          </div>
+          <div className="landing-lang-bar landing-lang-bar--standalone">
             <LanguageSwitcher variant="landing-bar" />
           </div>
-        )}
-        <LandingSkyLive />
-      </div>
-      <LandingPortalHero />
-      <section className="landing-conversion-zone" aria-label={t('auth.portal.conversionAria')}>
-        <div className="landing-conversion-zone-head">
-          <p className="landing-conversion-eyebrow">{t('auth.portal.conversionEyebrow')}</p>
-          <h2 className="landing-conversion-title">{t('auth.portal.conversionTitle')}</h2>
-          <p className="landing-conversion-lead">{t('auth.portal.conversionLead')}</p>
-        </div>
+          <div className="landing-sky-mobile-wrap landing-sky-mobile-wrap--compact">
+            <LandingSkyLive compact />
+          </div>
+        </>
+      )}
+      <section
+        ref={conversionZoneRef}
+        className="landing-conversion-zone"
+        aria-label={t('auth.portal.conversionAria')}
+      >
+        <LandingConversionHead />
         <div className="landing-auth-grid">
         <LandingBirthPortal isDesktop={isDesktop} onSaved={scrollParaAuth} onScrollToLogin={scrollParaAuth} />
 
@@ -1453,17 +1505,15 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
         {/* Email */}
         <div className="landing-auth-field" style={{ marginBottom: 16 }}>
           <label style={estilos.label}>{t('auth.email')}</label>
-          <div style={{ position: 'relative' }}>
-            <Mail size={15} color={CORES.brancoMuted} style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }} />
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder={t('auth.emailPlaceholder')}
-              style={{ ...estilos.input, paddingLeft: 40 }}
-              onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
-            />
-          </div>
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder={t('auth.emailPlaceholder')}
+            className="landing-auth-input"
+            style={estilos.input}
+            onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
+          />
         </div>
 
         {/* Senha */}
@@ -1471,13 +1521,13 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
         <div className="landing-auth-field landing-auth-password-block" style={{ marginBottom: tipo === 'register' ? 16 : 20 }}>
           <label style={estilos.label}>{t('auth.password')}</label>
           <div className="landing-auth-password-input">
-            <Lock size={15} color={CORES.brancoMuted} style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }} />
             <input
               type={verSenha ? 'text' : 'password'}
               value={senha}
               onChange={(e) => setSenha(e.target.value)}
               placeholder="••••••••"
-              style={{ ...estilos.input, paddingLeft: 40, paddingRight: 44 }}
+              className="landing-auth-input"
+              style={{ ...estilos.input, paddingRight: 44 }}
               onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
             />
             <button
@@ -1643,6 +1693,7 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
         </div>
       </div>
       </section>
+      <LandingPdfShowcase />
       <LandingGuides />
       <AdSenseBanner />
       <LandingReviews />
@@ -1770,12 +1821,13 @@ function Onboarding({ dados: dadosProp, setDados, onSubmit, isDesktop }) {
   return (
     <div style={layoutConteudo(isDesktop, { paddingTop: 48, paddingBottom: 40, maxWidth: isDesktop ? 520 : undefined, margin: isDesktop ? '0 auto' : undefined })}>
       <div style={{ textAlign: 'center', marginBottom: 40 }}>
-        <Sparkles size={40} color={CORES.dourado} strokeWidth={1.5} style={{ marginBottom: 16 }} />
-        <h1 style={{ ...estilos.titulo, fontSize: 36, letterSpacing: '0.2em' }}>Sidus</h1>
+        <div className="onboarding-logo-wrap notranslate" translate="no">
+          <SidusLogo variant="stacked" markSize={56} glow />
+        </div>
         <p style={estilos.subtitulo}>{t('onboarding.tagline')}</p>
       </div>
 
-      <div style={{ ...estilos.vidro, padding: 24 }} className="notranslate" translate="no">
+      <div style={{ ...estilos.vidro, padding: 24 }}>
         <Campo
           label={t('onboarding.name')}
           valor={dados.nome ?? ''}
@@ -1783,9 +1835,8 @@ function Onboarding({ dados: dadosProp, setDados, onSubmit, isDesktop }) {
           onBlur={tocar('nome')}
           erro={tocado.nome ? erros.nome : null}
           placeholder={t('onboarding.namePlaceholder')}
-          noTranslate
         />
-        <div style={{ marginBottom: 20 }} className="notranslate" translate="no">
+        <div style={{ marginBottom: 20 }}>
           <label style={estilos.label}>{t('onboarding.birthDate')}</label>
           <input
             type="date"
@@ -1793,8 +1844,6 @@ function Onboarding({ dados: dadosProp, setDados, onSubmit, isDesktop }) {
             max={new Date().toISOString().slice(0, 10)}
             onChange={(e) => setDados((p) => ({ ...(p || DADOS_VAZIO), data: e.target.value }))}
             onBlur={tocar('data')}
-            className="notranslate"
-            translate="no"
             style={{
               ...estilos.input,
               borderColor: tocado.data && erros.data ? 'rgba(248,113,113,0.7)' : CORES.vidroBorda,
@@ -1811,7 +1860,6 @@ function Onboarding({ dados: dadosProp, setDados, onSubmit, isDesktop }) {
           onChange={(v) => setDados((p) => ({ ...(p || DADOS_VAZIO), hora: v }))}
           onBlur={tocar('hora')}
           erro={tocado.hora ? erros.hora : null}
-          noTranslate
         />
 
         <CampoCidade
@@ -1902,12 +1950,39 @@ function Onboarding({ dados: dadosProp, setDados, onSubmit, isDesktop }) {
 function Dashboard({ nome, mapaNatal, ceuAgora, aspetos, onOraculo, onPrivacidade, isDesktop, isPremium, onUpgrade, onTarot, onMapa, userEmail, user, oraclePerguntasUsadas, leiturasTarotUsadas, isBrasil }) {
   const { t, ts, te, tp, ta, lang } = useLanguage()
   const faseLua = calcularFaseLua(new Date(), lang)
+
+  const energiaResumo = useMemo(() => {
+    if (!mapaNatal?.solar?.nome || !ceuAgora?.length) return null
+    const signoNome = ts(mapaNatal.solar.nome)
+    const idx = SIGNOS.findIndex((s) => s.nome === mapaNatal.solar.nome || (mapaNatal.solar.nome === 'Áries' && s.nome === 'Carneiro'))
+    if (idx < 0) return null
+    return gerarHoroscopoSignoTransito({
+      signoIndex: idx,
+      signoNome,
+      ceuAgora,
+      aspetos,
+      faseLua,
+      lang,
+    })
+  }, [mapaNatal, ceuAgora, aspetos, faseLua, lang, ts])
+
   return (
     <div style={layoutConteudo(isDesktop)}>
-      <header style={{ textAlign: 'center', marginBottom: 20 }}>
-        <h1 className="notranslate" translate="no" style={estilos.titulo}>Sidus</h1>
-        <p style={{ ...estilos.subtitulo, marginBottom: 0 }}>{nome ? t('home.welcome', { name: nome }) : t('home.skyRealtime')}</p>
+      <header className="sidus-page-header sidus-home-welcome" style={{ textAlign: 'center', marginBottom: 12 }}>
+        <div className="sidus-home-welcome__mark notranslate" translate="no" aria-hidden>
+          <SidusConstellationMark size={88} glow />
+        </div>
+        <p className="sidus-home-welcome__greeting">
+          {nome ? t('home.welcome', { name: nome }) : t('home.skyRealtime')}
+        </p>
       </header>
+
+      <HomeParaTiHoje
+        onTarot={onTarot}
+        onOraculo={onOraculo}
+        onMapa={onMapa}
+        energiaResumo={energiaResumo}
+      />
 
       <HeroHomeSidus mapaNatal={mapaNatal} onMapa={onMapa} isPremium={isPremium} />
 
@@ -2103,7 +2178,7 @@ function BarraElemento({ label, valor, total, cor }) {
   )
 }
 
-function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, isPremium, onUpgrade, onComprarMapa, onMapaGerado, isDesktop, motorAstro, perfilCarregando, reparandoDados, mapaGerado, onCompletarNatal, obterIdToken, interpretacaoPerfil }) {
+function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, isPremium, onUpgrade, onComprarMapa, onMapaGerado, isDesktop, motorAstro, perfilCarregando, reparandoDados, mapaGerado, onCompletarNatal, obterIdToken, interpretacaoPerfil, isBrasil = false }) {
   const { lang, t, ts, tp, te, ta } = useLanguage()
   const [gerandoPdf, setGerandoPdf] = useState(false)
   const [emailEnviado, setEmailEnviado] = useState(false)
@@ -2150,6 +2225,11 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
     () => (planetasComCasa.length > 0 ? calcularAspetos(planetasComCasa) : []),
     [planetasComCasa]
   )
+
+  const precoVipLabel = useMemo(() => {
+    const v = precoPremiumVitrine(isBrasil)
+    return formatPrecoCompleto(v.valor, v.currency)
+  }, [isBrasil])
 
   const planetasProntos = mapaPlanetasProntos(planetasComCasa, mapaNatal)
 
@@ -2335,8 +2415,11 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
     } else if (prontosParaMapa) {
       mostrarCalculando = true
       mensagem = t('mapa.calculating')
-    } else if ((isPremium || mapaGerado) && !temDadosMinimos) {
+    } else if (isPremium && !temDadosMinimos) {
       mensagem = t('mapa.premiumCompleteNatal')
+      mostrarCtaPremium = true
+    } else if (mapaGerado && !temDadosMinimos) {
+      mensagem = t('mapa.fillNatal')
       mostrarCtaPremium = true
     } else if (temDadosMinimos && (mapaGerado || isPremium)) {
       mensagem = t('mapa.repairNatal')
@@ -2381,7 +2464,7 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
   return (
     <div style={layoutConteudo(isDesktop)}>
       <header style={{ marginBottom: 20 }}>
-        <h1 style={{ ...estilos.titulo, textAlign: 'left', fontSize: isDesktop ? 28 : 22 }}>{t('mapa.title')}</h1>
+        <h1 className="sidus-page-title" style={{ textAlign: 'left' }}>{t('mapa.title')}</h1>
         <p style={{ ...estilos.subtitulo, textAlign: 'left', marginBottom: 2 }}>
           {dados.nome} · {formatarData(dados.data)} às {dados.hora}
         </p>
@@ -2631,7 +2714,9 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
               <Crown size={28} color={CORES.dourado} style={{ marginBottom: 10, position: 'relative' }} />
               <h2 className="mapa-paywall-title">{t('mapa.unlockFullChart')}</h2>
               <button type="button" onClick={onUpgrade} style={{ ...estilos.botaoDourado, width: '100%', marginBottom: 14, position: 'relative' }}>
-                {t('mapa.premiumOption')}
+                {isBrasil
+                  ? t('mapa.premiumOptionBr', { preco: precoVipLabel })
+                  : t('mapa.premiumOption', { price: precoVipLabel })}
               </button>
               <p className="mapa-paywall-desc">{t('mapa.fullDesc')}</p>
               <div className="mapa-paywall-pills">
@@ -2705,15 +2790,17 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
   )
 }
 
-function Ferramentas({ onFerramenta, isDesktop, acessoVip }) {
+function Ferramentas({ onFerramenta, isDesktop, acessoVip, mapaNatal, onCompletarMapa }) {
   const { lang, t } = useLanguage()
   const ferramentas = getFerramentas(lang)
+  const semMapa = !mapaNatalValido(mapaNatal)
   return (
     <div style={layoutConteudo(isDesktop)}>
       <header style={{ marginBottom: 28 }}>
-        <h1 style={{ ...estilos.titulo, textAlign: 'left', fontSize: 22 }}>{t('ferramentas.title')}</h1>
+        <h1 className="sidus-page-title" style={{ textAlign: 'left' }}>{t('ferramentas.title')}</h1>
       </header>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+      {semMapa && <FerramentasEmptyState onCompletarMapa={onCompletarMapa} />}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 12, opacity: semMapa ? 0.55 : 1 }}>
         {ferramentas.map((f) => {
           const Icon = f.icon
           const bloqueada = f.premium && !acessoVip
@@ -2736,76 +2823,73 @@ function Ferramentas({ onFerramenta, isDesktop, acessoVip }) {
 }
 
 function Paywall({ onVoltar, onPagar, onSucesso, onPromo, isDesktop, isBrasil, oraclePerguntasUsadas = 0, leiturasTarotUsadas = 0 }) {
-  const { t, lang } = useLanguage()
-  const beneficios = getBeneficiosVip(lang)
+  const { t } = useLanguage()
   const precoVitrine = precoPremiumVitrine(isBrasil)
-  const precoLabel = formatPrecoEuro(precoVitrine)
   return (
     <div style={layoutConteudo(isDesktop, { paddingTop: 16 })}>
       <button type="button" onClick={onVoltar} style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'none', border: 'none', color: CORES.dourado, cursor: 'pointer', marginBottom: 20 }}>
         <ChevronLeft size={20} /> {t('common.back')}
       </button>
-      <div style={{ textAlign: 'center', marginBottom: 24 }}>
-        <div style={{ fontSize: 40, marginBottom: 8 }}>✨</div>
-        <h1 style={{ ...estilos.titulo, fontSize: 24 }}>{t('vip.title')}</h1>
-        <p style={{ color: CORES.brancoMuted, fontSize: 13 }}>{t('vip.subtitle')}</p>
-      </div>
 
-      <PremiumComparacao
-        isPremium={false}
-        oracleUsadas={oraclePerguntasUsadas}
-        tarotUsadas={leiturasTarotUsadas}
+      {isBrasil && <BannerBrasil variant="paywall" />}
+
+      <VipPaywallBody
+        onCta={() => onPagar(t('vip.productName'), precoVitrine.valor, onSucesso, { productType: 'premium' })}
+        onPromo={onPromo}
         isBrasil={isBrasil}
+        oraclePerguntasUsadas={oraclePerguntasUsadas}
+        leiturasTarotUsadas={leiturasTarotUsadas}
+        titleKey="vip.title"
+        subtitleKey="vip.subtitle"
         showFullTable
       />
 
-      <div style={{ ...estilos.vidro, padding: 24, marginBottom: 20, marginTop: 16 }}>
-        {beneficios.map((b) => (
-          <div key={b} style={{ display: 'flex', gap: 10, marginBottom: 12 }}>
-            <Check size={14} color={CORES.dourado} />
-            <span style={{ fontSize: 14, color: CORES.brancoSuave }}>{b}</span>
-          </div>
-        ))}
-      </div>
-      <div style={{ ...estilos.vidro, padding: 24, textAlign: 'center', border: `1px solid ${CORES.dourado}`, marginBottom: 20 }}>
-        <div style={{ fontSize: 40, fontWeight: 700, color: CORES.branco }}>
-          {precoLabel} € <span style={{ fontSize: 16, color: CORES.brancoMuted, fontWeight: 400 }}>{t('common.oneTime')}</span>
-        </div>
-        {isBrasil ? (
-          <p style={{ fontSize: 12, color: '#34D399', marginTop: 8, fontWeight: 600 }}>{t('vip.priceBrPixNote')}</p>
-        ) : null}
-        <p style={{ fontSize: 12, color: CORES.brancoMuted, marginTop: 6 }}>{t('vip.oneTimeAccess')}</p>
-      </div>
-      <button type="button" onClick={() => onPagar(t('vip.productName'), precoVitrine, onSucesso, { productType: 'premium' })} style={estilos.botaoDourado}>
-        {isBrasil ? t('vip.ctaBr') : t('vip.cta')}
-      </button>
-      <p style={{ textAlign: 'center', fontSize: 11, color: CORES.brancoMuted, marginTop: 12 }}>
-        {isBrasil ? t('vip.paymentMethodsBr') : t('vip.paymentMethods')}
-      </p>
       <p style={{ textAlign: 'center', marginTop: 16 }}>
         <button type="button" onClick={onVoltar} style={{ background: 'none', border: 'none', color: CORES.brancoMuted, fontSize: 13, cursor: 'pointer', textDecoration: 'underline', textUnderlineOffset: 3 }}>
           {t('vip.continueFree')}
         </button>
       </p>
-      {onPromo ? (
-        <p style={{ textAlign: 'center', marginTop: 14 }}>
-          <button type="button" onClick={onPromo} style={{
-            background: 'rgba(223,183,108,0.1)', border: `1px solid ${CORES.vidroBorda}`,
-            borderRadius: 12, color: CORES.dourado, fontSize: 13, fontWeight: 600,
-            padding: '12px 16px', cursor: 'pointer', lineHeight: 1.45, maxWidth: '100%',
-          }}>
-            {t('vip.promoLink')}
-          </button>
-        </p>
-      ) : null}
     </div>
   )
 }
 
-function OraclePremiumUpsell({ onUpgrade, compact = false, isBrasil = false }) {
-  const { lang, t } = useLanguage()
-  const beneficios = getBeneficiosVip(lang)
-  const precoLabel = formatPrecoEuro(precoPremiumVitrine(isBrasil))
+function OraclePremiumUpsell({ onUpgrade, onPromo, isBrasil = false, oraclePerguntasUsadas = 0, leiturasTarotUsadas = 0, compact = false, variant = 'default' }) {
+  const { t } = useLanguage()
+  const precoVitrine = precoPremiumVitrine(isBrasil)
+  const precoLabel = formatPrecoCompleto(precoVitrine.valor, precoVitrine.currency)
+  const beneficios = ['oracle.upsellBenefit1', 'oracle.upsellBenefit2', 'oracle.upsellBenefit3', 'oracle.upsellBenefit4']
+  const ctaText = isBrasil ? t('vip.ctaBr', { preco: precoLabel }) : t('oracle.upsellCta', { price: precoLabel })
+
+  if (variant === 'chat') {
+    return (
+      <div className="oracle-chat-upsell">
+        <p className="oracle-chat-upsell__eyebrow">{t('oracle.upsellTitle')}</p>
+        <p className="oracle-chat-upsell__lead">{t('oracle.upsellLeadShort')}</p>
+        <ul className="oracle-upsell-benefits oracle-chat-upsell__benefits">
+          {beneficios.map((key) => (
+            <li key={key}>{t(key)}</li>
+          ))}
+        </ul>
+        <div className="oracle-chat-upsell__price">
+          {precoLabel}
+          {isBrasil ? <span className="oracle-chat-upsell__pix">{t('vip.pixLabel')}</span> : null}
+        </div>
+        <button type="button" className="oracle-chat-upsell__cta" onClick={onUpgrade}>
+          {ctaText}
+        </button>
+        {onPromo ? (
+          <button type="button" className="oracle-chat-upsell__promo" onClick={onPromo}>
+            {t('vipPromo.lead')}
+          </button>
+        ) : null}
+        <p className="oracle-chat-upsell__footnote">
+          {isBrasil
+            ? t('vip.paymentMethodsBr', { precoPix: precoLabel, precoEur: formatPrecoCompleto(PRECO_PREMIUM_UNICO, 'eur') })
+            : t('vip.paymentMethods')}
+        </p>
+      </div>
+    )
+  }
 
   return (
     <div style={{
@@ -2818,44 +2902,22 @@ function OraclePremiumUpsell({ onUpgrade, compact = false, isBrasil = false }) {
       border: `1px solid ${CORES.dourado}`,
       boxShadow: '0 8px 32px rgba(223,183,108,0.12)',
     }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
-        <Crown size={18} color={CORES.dourado} />
-        <span style={{ fontSize: 14, fontWeight: 700, color: CORES.dourado }}>{t('oracle.upsellTitle')}</span>
-      </div>
-      <p style={{ fontSize: 13, color: CORES.brancoSuave, lineHeight: 1.65, margin: '0 0 14px' }}>
-        {t('oracle.upsellLead')}
-      </p>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 16 }}>
-        {beneficios.slice(0, 6).map((b) => (
-          <div key={b} style={{ display: 'flex', gap: 8, alignItems: 'flex-start' }}>
-            <Check size={14} color={CORES.dourado} style={{ flexShrink: 0, marginTop: 2 }} />
-            <span style={{ fontSize: 12, color: CORES.brancoSuave, lineHeight: 1.5 }}>{b}</span>
-          </div>
+      <ul className="oracle-upsell-benefits">
+        {beneficios.map((key) => (
+          <li key={key}>{t(key)}</li>
         ))}
-      </div>
-      <div style={{
-        textAlign: 'center', padding: '10px 12px', marginBottom: 14,
-        background: 'rgba(0,0,0,0.2)', borderRadius: 10,
-        border: '1px solid rgba(223,183,108,0.25)',
-      }}>
-        <span style={{ fontSize: 22, fontWeight: 700, color: CORES.branco }}>{precoLabel} €</span>
-        <span style={{ fontSize: 12, color: CORES.brancoMuted }}> {t('common.oneTime')}</span>
-        {isBrasil ? (
-          <div style={{ fontSize: 11, color: '#34D399', marginTop: 4, fontWeight: 600 }}>{t('vip.priceBrPixNote')}</div>
-        ) : null}
-        <div style={{ fontSize: 11, color: CORES.brancoMuted, marginTop: 4 }}>{t('vip.oneTimeAccess')}</div>
-      </div>
-      <button
-        type="button"
-        onClick={onUpgrade}
-        style={{
-          width: '100%', padding: '14px 20px', border: 'none', borderRadius: 12, cursor: 'pointer',
-          background: `linear-gradient(135deg, ${CORES.dourado}, ${CORES.douradoEscuro})`,
-          color: CORES.fundo, fontSize: 15, fontWeight: 700,
-        }}
-      >
-        {isBrasil ? t('vip.ctaBr') : t('oracle.upsellCta')}
-      </button>
+      </ul>
+      <VipPaywallBody
+        onCta={onUpgrade}
+        onPromo={onPromo}
+        isBrasil={isBrasil}
+        oraclePerguntasUsadas={oraclePerguntasUsadas}
+        leiturasTarotUsadas={leiturasTarotUsadas}
+        titleKey="oracle.upsellTitle"
+        subtitleKey="oracle.upsellLead"
+        ctaText={ctaText}
+        compact
+      />
     </div>
   )
 }
@@ -2865,47 +2927,164 @@ async function consultarSidus(pergunta, mapaNatal, historico, lang, idToken, cli
   return consultarOracleServidor(pergunta, mapaNatal, historico, lang, idToken, clientPremium)
 }
 
-function Chat({ mapaNatal, isPremium, userId, oracleRemotas, onOracleUsada, onUpgrade, obterIdToken, isBrasil = false }) {
+function sanitizarMensagensOracle(mensagens, perguntasUsadas, isPremium) {
+  if (!Array.isArray(mensagens) || !mensagens.length) return mensagens
+  if (isPremium || perguntasUsadas < MAX_ORACLE_GRATIS) {
+    return mensagens.filter((m) => m.tipo !== 'upsell')
+  }
+  return mensagens
+}
+
+function Chat({ mapaNatal, isPremium, userId, oracleRemotas, onOracleUsada, onUpgrade, onPromo, leiturasTarotUsadas = 0, obterIdToken, isBrasil = false, isDesktop = false }) {
   const { lang, t } = useLanguage()
+  const precoVipLabel = useMemo(() => {
+    const v = precoPremiumVitrine(isBrasil)
+    return formatPrecoCompleto(v.valor, v.currency)
+  }, [isBrasil])
   const [perguntasUsadas, setPerguntasUsadas] = useState(() => contarOraclePerguntas(userId, oracleRemotas))
 
-  const [mensagens, setMensagens] = useState(() => [
-    { id: 1, autor: 'ia', texto: getChatGreeting(mapaNatal, 'pt', MAX_ORACLE_GRATIS, isPremium) },
-  ])
+  const chaveSessaoActual = userId ? `sidus_oracle_current_${userId}` : 'sidus_oracle_current_local'
+
+  const saudacaoInicial = useCallback((restantesGratis = MAX_ORACLE_GRATIS) => ([{
+    id: 1,
+    autor: 'ia',
+    texto: getChatGreeting(mapaNatal, lang, restantesGratis, isPremium),
+  }]), [mapaNatal, lang, isPremium])
+
+  const [sessaoId, setSessaoId] = useState(() => `sess-${Date.now()}`)
+  const [sessoes, setSessoes] = useState([])
+  const [historicoAberto, setHistoricoAberto] = useState(false)
+  const [mensagens, setMensagens] = useState(saudacaoInicial)
 
   const [texto, setTexto]       = useState('')
   const [digitando, setDigitando] = useState(false)
   const fimRef = useRef(null)
+  const listaRef = useRef(null)
+  const seguirFimRef = useRef(true)
+
+  const contagemOracle = useCallback(
+    () => contarOraclePerguntas(userId, oracleRemotas),
+    [userId, oracleRemotas],
+  )
 
   useEffect(() => {
-    setPerguntasUsadas(contarOraclePerguntas(userId, oracleRemotas))
-  }, [userId, oracleRemotas])
+    setPerguntasUsadas(contagemOracle())
+  }, [contagemOracle])
 
   useEffect(() => {
-    setMensagens([{ id: 1, autor: 'ia', texto: getChatGreeting(mapaNatal, lang, MAX_ORACLE_GRATIS, isPremium) }])
-  }, [lang, mapaNatal, isPremium])
-
-  useEffect(() => { fimRef.current?.scrollIntoView({ behavior: 'smooth' }) }, [mensagens, digitando])
-
-  const mostrarUpsell = useCallback(() => {
-    setMensagens((prev) => {
-      if (prev.some((m) => m.tipo === 'upsell')) return prev
-      return [...prev, {
-        id: `upsell-${Date.now()}`,
-        autor: 'ia',
-        tipo: 'upsell',
-      }]
-    })
-  }, [])
-
-  useEffect(() => {
-    if (!isPremium && perguntasUsadas >= MAX_ORACLE_GRATIS) {
-      mostrarUpsell()
+    const lista = carregarSessoesOracle(userId)
+    if (isPremium) {
+      setSessoes(lista)
+      const actualId = localStorage.getItem(chaveSessaoActual)
+      const actual = lista.find((s) => s.id === actualId)
+      if (actual?.mensagens?.length) {
+        setSessaoId(actual.id)
+        setMensagens(sanitizarMensagensOracle(actual.mensagens, contagemOracle(), isPremium))
+      } else {
+        const id = `sess-${Date.now()}`
+        setSessaoId(id)
+        setMensagens([{
+          id: 1,
+          autor: 'ia',
+          texto: getChatGreeting(mapaNatal, lang, Math.max(0, MAX_ORACLE_GRATIS - contagemOracle()), isPremium),
+        }])
+        localStorage.setItem(chaveSessaoActual, id)
+      }
+      return
     }
-  }, [isPremium, perguntasUsadas, mostrarUpsell])
+    setSessoes(lista.slice(0, 1))
+    const actualId = localStorage.getItem(chaveSessaoActual)
+    const actual = lista.find((s) => s.id === actualId) || lista[0]
+    if (actual?.mensagens?.length) {
+      setSessaoId(actual.id)
+      setMensagens(sanitizarMensagensOracle(actual.mensagens, contagemOracle(), isPremium))
+    } else {
+      setMensagens([{
+        id: 1,
+        autor: 'ia',
+        texto: getChatGreeting(mapaNatal, lang, Math.max(0, MAX_ORACLE_GRATIS - contagemOracle()), isPremium),
+      }])
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- carregar sessão só ao mudar utilizador/premium
+  }, [isPremium, userId, chaveSessaoActual])
+
+  useEffect(() => {
+    setMensagens((prev) => {
+      if (prev.length === 1 && prev[0]?.autor === 'ia' && !prev[0]?.aviso) {
+        const restantesGratis = Math.max(0, MAX_ORACLE_GRATIS - contagemOracle())
+        return [{ ...prev[0], texto: getChatGreeting(mapaNatal, lang, restantesGratis, isPremium) }]
+      }
+      return prev
+    })
+  }, [lang, mapaNatal, isPremium, contagemOracle])
+
+  useEffect(() => {
+    if (!mensagens.length) return
+    if (!temRespostaOracle(mensagens)) {
+      removerSessaoOracle(userId, sessaoId)
+      setSessoes(carregarSessoesOracle(userId))
+      return
+    }
+    const base = criarSessaoOracle({ mensagens, id: sessaoId, lang })
+    const sessao = actualizarSessaoOracle(base, mensagens)
+    if (isPremium) {
+      upsertSessaoOracle(userId, sessao)
+      localStorage.setItem(chaveSessaoActual, sessao.id)
+      setSessoes(carregarSessoesOracle(userId))
+    } else {
+      guardarSessoesOracle(userId, [sessao])
+      localStorage.setItem(chaveSessaoActual, sessao.id)
+      setSessoes([sessao])
+    }
+  }, [mensagens, isPremium, userId, sessaoId, lang, chaveSessaoActual])
+
+  const iniciarNovaConversa = () => {
+    const id = `sess-${Date.now()}`
+    setSessaoId(id)
+    setMensagens(saudacaoInicial(Math.max(0, MAX_ORACLE_GRATIS - contagemOracle())))
+    localStorage.setItem(chaveSessaoActual, id)
+    setHistoricoAberto(false)
+    seguirFimRef.current = true
+  }
+
+  const abrirSessaoHistorico = (sess) => {
+    if (!sess?.id) return
+    setSessaoId(sess.id)
+    setMensagens(sess.mensagens?.length
+      ? sanitizarMensagensOracle(sess.mensagens, contagemOracle(), isPremium)
+      : saudacaoInicial(Math.max(0, MAX_ORACLE_GRATIS - contagemOracle())))
+    localStorage.setItem(chaveSessaoActual, sess.id)
+    setHistoricoAberto(false)
+  }
 
   const restantes = isPremium ? Infinity : Math.max(0, MAX_ORACLE_GRATIS - perguntasUsadas)
   const limiteAtingido = !isPremium && perguntasUsadas >= MAX_ORACLE_GRATIS
+  const [paywallVisivel, setPaywallVisivel] = useState(limiteAtingido)
+
+  useEffect(() => {
+    if (limiteAtingido) setPaywallVisivel(true)
+    else setPaywallVisivel(false)
+  }, [limiteAtingido])
+
+  useEffect(() => {
+    const el = listaRef.current
+    if (!el) return undefined
+    const onScroll = () => {
+      const distanciaFim = el.scrollHeight - el.scrollTop - el.clientHeight
+      seguirFimRef.current = distanciaFim < 100
+    }
+    el.addEventListener('scroll', onScroll, { passive: true })
+    return () => el.removeEventListener('scroll', onScroll)
+  }, [])
+
+  useEffect(() => {
+    if (paywallVisivel || !seguirFimRef.current) return
+    fimRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }, [mensagens, digitando, paywallVisivel])
+
+  const abrirPaywall = useCallback(() => {
+    setPaywallVisivel(true)
+  }, [])
 
   const enviar = async () => {
     if (!texto.trim() || digitando) return
@@ -2915,7 +3094,7 @@ function Chat({ mapaNatal, isPremium, userId, oracleRemotas, onOracleUsada, onUp
     if (limiteAtingido) {
       setMensagens((prev) => [...prev, { id: Date.now(), autor: 'user', texto: q }])
       setTexto('')
-      mostrarUpsell()
+      abrirPaywall()
       return
     }
 
@@ -2955,18 +3134,13 @@ function Chat({ mapaNatal, isPremium, userId, oracleRemotas, onOracleUsada, onUp
       setPerguntasUsadas(synced)
       onOracleUsada?.(synced)
       setDigitando(false)
-      setMensagens((prev) => {
-        const next = [...prev, {
-          id: Date.now() + 1,
-          autor: 'ia',
-          aviso: true,
-          texto: getOracleLimitMessage(MAX_ORACLE_GRATIS, lang),
-        }]
-        if (!next.some((m) => m.tipo === 'upsell')) {
-          next.push({ id: `upsell-${Date.now()}`, autor: 'ia', tipo: 'upsell' })
-        }
-        return next
-      })
+      setMensagens((prev) => [...prev, {
+        id: Date.now() + 1,
+        autor: 'ia',
+        aviso: true,
+        texto: getOracleLimitMessage(MAX_ORACLE_GRATIS, lang),
+      }])
+      abrirPaywall()
       return
     }
 
@@ -2977,8 +3151,8 @@ function Chat({ mapaNatal, isPremium, userId, oracleRemotas, onOracleUsada, onUp
         resposta = t('oracle.sessionError')
       } else if (resultado?.servidor) {
         resposta = lang !== 'pt'
-          ? '✦ The oracle is temporarily unavailable. Try again in a moment.'
-          : '✦ O oráculo está temporariamente indisponível. Tenta outra vez dentro de instantes.'
+          ? 'The oracle is temporarily unavailable. Try again in a moment.'
+          : 'O oráculo está temporariamente indisponível. Tenta outra vez dentro de instantes.'
       } else {
         resposta = gerarRespostaOracle(q, mapaNatal, numAtual, lang)
       }
@@ -3002,59 +3176,111 @@ function Chat({ mapaNatal, isPremium, userId, oracleRemotas, onOracleUsada, onUp
       onOracleUsada?.(total)
 
       if (total >= MAX_ORACLE_GRATIS) {
-        setMensagens((prev) => {
-          const next = [...prev, {
-            id: Date.now() + 99,
-            autor: 'ia',
-            aviso: true,
-            texto: getOracleLimitMessage(MAX_ORACLE_GRATIS, lang),
-          }]
-          if (!next.some((m) => m.tipo === 'upsell')) {
-            next.push({ id: `upsell-${Date.now()}`, autor: 'ia', tipo: 'upsell' })
-          }
-          return next
-        })
+        setMensagens((prev) => [...prev, {
+          id: Date.now() + 99,
+          autor: 'ia',
+          aviso: true,
+          texto: getOracleLimitMessage(MAX_ORACLE_GRATIS, lang),
+        }])
+        abrirPaywall()
       }
     }
   }
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100svh', maxHeight: '100svh', position: 'relative', zIndex: 1 }}>
-      {/* Cabeçalho */}
-      <header style={{ padding: '14px 18px', background: 'rgba(11,7,30,0.97)', borderBottom: `1px solid ${CORES.vidroBorda}`, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <div style={{ width: 36, height: 36, borderRadius: '50%', background: 'linear-gradient(135deg,#6D28D9,#0B071E)', border: `1.5px solid ${CORES.dourado}`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18 }}>
-            ✦
-          </div>
-          <div>
-            <div style={{ fontSize: 18, fontWeight: 700, color: CORES.dourado }}>{t('oracle.title')}</div>
+    <div className={`oracle-chat${paywallVisivel && !isPremium ? ' oracle-chat--paywall' : ''}`}>
+      <header className="oracle-chat__header" aria-label={t('oracle.title')}>
+        <div className="oracle-chat__header-main">
+          <OracleChatAvatar size={isDesktop ? 40 : 34} />
+          <div className="oracle-chat__header-copy">
+            <h1 className="sidus-page-title oracle-chat__title">{t('oracle.title')}</h1>
             {isPremium && (
-              <div style={{ fontSize: 13, color: CORES.brancoMuted, marginTop: 2 }}>
-                {t('oracle.premiumSubtitle')}
-              </div>
+              <p className="oracle-chat__subtitle">{t('oracle.premiumSubtitle')}</p>
             )}
           </div>
         </div>
-        {!isPremium && (
-          <button type="button" onClick={onUpgrade} style={{
-            fontSize: 11, color: CORES.dourado, background: 'rgba(223,183,108,0.08)',
-            padding: '5px 12px', borderRadius: 20, border: `1px solid rgba(223,183,108,0.3)`,
-            cursor: 'pointer',
-          }}>
-            {restantes > 0
-              ? (restantes === 1 ? t('oracle.freeQuestions', { count: restantes }) : t('oracle.freeQuestionsPlural', { count: restantes }))
-              : t('oracle.premiumBadge')}
+        <div className="oracle-chat__header-actions">
+          <button
+            type="button"
+            className="oracle-chat__header-btn"
+            onClick={() => setHistoricoAberto((v) => !v)}
+            aria-pressed={historicoAberto}
+          >
+            <History size={14} />
+            <span>{isPremium || isDesktop ? (isPremium ? t('oracle.historyOpen') : t('oracle.historyLast')) : t('oracle.historyOpen')}</span>
           </button>
-        )}
+          {!isPremium && (
+            <button type="button" className="oracle-chat__header-btn oracle-chat__header-btn--premium" onClick={onUpgrade}>
+              {restantes > 0
+                ? (restantes === 1 ? t('oracle.freeQuestions', { count: restantes }) : t('oracle.freeQuestionsPlural', { count: restantes }))
+                : (isDesktop ? t('oracle.premiumBadge', { price: precoVipLabel }) : `🔒 ${t('perfil.premium')}`)}
+            </button>
+          )}
+        </div>
       </header>
 
-      {/* Mensagens */}
-      <div style={{ flex: 1, overflowY: 'auto', padding: '16px 14px 10px', display: 'flex', flexDirection: 'column', gap: 12 }}>
-        {mensagens.map((m) => (
-          m.tipo === 'upsell' ? (
-            <OraclePremiumUpsell key={m.id} onUpgrade={onUpgrade} compact isBrasil={isBrasil} />
+      {historicoAberto && (
+        <div style={{
+          flexShrink: 0,
+          maxHeight: '38vh',
+          overflowY: 'auto',
+          borderBottom: `1px solid ${CORES.vidroBorda}`,
+          background: 'rgba(11,7,30,0.98)',
+          padding: '12px 14px',
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
+            <span style={{ fontSize: 12, fontWeight: 700, color: CORES.dourado, letterSpacing: '0.06em', textTransform: 'uppercase' }}>
+              {isPremium ? t('oracle.historyTitle') : t('oracle.historyLastTitle')}
+            </span>
+            {isPremium && (
+            <button type="button" onClick={iniciarNovaConversa} style={{
+              fontSize: 11, color: '#34D399', background: 'rgba(52,211,153,0.1)',
+              border: '1px solid rgba(52,211,153,0.35)', borderRadius: 8,
+              padding: '5px 10px', cursor: 'pointer', fontWeight: 600,
+            }}>
+              + {t('oracle.historyNew')}
+            </button>
+            )}
+          </div>
+          {!isPremium && (
+            <p style={{ fontSize: 11, color: CORES.brancoMuted, margin: '0 0 8px', lineHeight: 1.45 }}>
+              {t('oracle.historyFreeHint')}
+            </p>
+          )}
+          {!sessoes.length ? (
+            <p style={{ fontSize: 12, color: CORES.brancoMuted, margin: 0 }}>{t('oracle.historyEmpty')}</p>
           ) : (
-            <div key={m.id} style={{
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+              {sessoes.map((sess) => (
+                <button
+                  key={sess.id}
+                  type="button"
+                  onClick={() => abrirSessaoHistorico(sess)}
+                  style={{
+                    textAlign: 'left', padding: '10px 12px', borderRadius: 10, cursor: 'pointer',
+                    background: sess.id === sessaoId ? 'rgba(223,183,108,0.14)' : 'rgba(255,255,255,0.04)',
+                    border: `1px solid ${sess.id === sessaoId ? 'rgba(223,183,108,0.4)' : 'rgba(255,255,255,0.08)'}`,
+                  }}
+                >
+                  <div style={{ fontSize: 12, color: CORES.brancoSuave, fontWeight: 600, lineHeight: 1.35, marginBottom: 3 }}>
+                    {sess.title || t('oracle.historyNew')}
+                  </div>
+                  <div style={{ fontSize: 10, color: CORES.brancoMuted }}>
+                    {formatarDataSessao(sess.updatedAt || sess.createdAt, lang)}
+                  </div>
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      <div className="oracle-chat__stage">
+      <div className="oracle-chat__body">
+      {/* Mensagens */}
+      <div ref={listaRef} className="oracle-chat__messages">
+        {mensagens.filter((m) => m.tipo !== 'upsell').map((m) => (
+          <div key={m.id} style={{
               alignSelf: m.autor === 'user' ? 'flex-end' : 'flex-start',
               maxWidth: '86%',
               padding: '13px 16px',
@@ -3074,28 +3300,60 @@ function Chat({ mapaNatal, isPremium, userId, oracleRemotas, onOracleUsada, onUp
             }}>
               {m.texto}
             </div>
-          )
         ))}
-        {limiteAtingido && !mensagens.some((m) => m.tipo === 'upsell') && (
-          <OraclePremiumUpsell onUpgrade={onUpgrade} isBrasil={isBrasil} />
-        )}
         {digitando && (
           <div style={{ alignSelf: 'flex-start', padding: '13px 18px', borderRadius: '4px 18px 18px 18px', background: 'rgba(255,255,255,0.055)', border: `1px solid rgba(255,255,255,0.09)` }}>
-            <span style={{ fontSize: 18, letterSpacing: 6, color: CORES.dourado }}>✦ ✦ ✦</span>
+            <span style={{ fontSize: 18, letterSpacing: 4, color: CORES.dourado }}>...</span>
           </div>
         )}
         <div ref={fimRef} />
       </div>
+      </div>
+
+      {paywallVisivel && !isPremium && (
+        <div className="oracle-chat__paywall-dock" role="region" aria-label={t('oracle.upsellTitle')}>
+          <OraclePremiumUpsell
+            onUpgrade={onUpgrade}
+            onPromo={onPromo}
+            variant="chat"
+            isBrasil={isBrasil}
+            oraclePerguntasUsadas={perguntasUsadas}
+            leiturasTarotUsadas={leiturasTarotUsadas}
+          />
+        </div>
+      )}
+
+      </div>
 
       {/* Input */}
-      <div style={{ padding: '10px 14px 22px', background: 'rgba(11,7,30,0.97)', borderTop: `1px solid ${CORES.vidroBorda}`, display: 'flex', gap: 10, flexShrink: 0 }}>
+      <div className="oracle-chat__input-bar" style={{ padding: '10px 14px 0', background: 'rgba(11,7,30,0.97)', borderTop: `1px solid ${CORES.vidroBorda}`, flexShrink: 0 }}>
+        {!isPremium && (
+          <p style={{
+            fontSize: 11,
+            color: limiteAtingido ? CORES.dourado : CORES.brancoMuted,
+            textAlign: 'center',
+            margin: '0 0 10px',
+            lineHeight: 1.55,
+            padding: limiteAtingido ? '8px 10px' : 0,
+            borderRadius: limiteAtingido ? 10 : 0,
+            background: limiteAtingido ? 'rgba(223,183,108,0.08)' : 'transparent',
+            border: limiteAtingido ? `1px solid rgba(223,183,108,0.25)` : 'none',
+          }}>
+            {limiteAtingido
+              ? t('oracle.limitReachedHint', { max: MAX_ORACLE_GRATIS })
+              : (restantes === 1
+                ? t('oracle.freeRemainingHint', { count: restantes, max: MAX_ORACLE_GRATIS })
+                : t('oracle.freeRemainingHintPlural', { count: restantes, max: MAX_ORACLE_GRATIS }))}
+          </p>
+        )}
+        <div style={{ display: 'flex', gap: 10 }}>
         <input
           value={texto}
           onChange={e => setTexto(e.target.value)}
           onKeyDown={e => e.key === 'Enter' && !e.shiftKey && enviar()}
           placeholder={
             limiteAtingido
-              ? t('oracle.placeholderLocked')
+              ? t('oracle.placeholderLocked', { max: MAX_ORACLE_GRATIS })
               : t('oracle.placeholder')
           }
           style={{
@@ -3121,6 +3379,7 @@ function Chat({ mapaNatal, isPremium, userId, oracleRemotas, onOracleUsada, onUp
         >
           <Send size={18} color={CORES.fundo} />
         </button>
+        </div>
       </div>
     </div>
   )
@@ -3166,26 +3425,13 @@ function RodapeSidus({ isDesktop, mostrarNavbar }) {
 
 function LogoSidus({ onClick, compact = false }) {
   return (
-    <button
-      type="button"
+    <SidusLogo
+      variant="horizontal"
+      markSize={compact ? 30 : 34}
       onClick={onClick}
-      aria-label="Sidus - Home"
-      className="notranslate"
-      translate="no"
-      style={{
-        background: 'none',
-        border: 'none',
-        cursor: 'pointer',
-        display: 'flex',
-        alignItems: 'center',
-        gap: compact ? 8 : 10,
-        padding: compact ? '4px 2px' : '4px 8px',
-        flexShrink: 0,
-      }}
-    >
-      <Sparkles size={compact ? 18 : 20} color={CORES.dourado} strokeWidth={1.5} />
-      <span className="notranslate" translate="no" style={{ fontSize: compact ? 17 : 20, fontWeight: 300, letterSpacing: compact ? '0.18em' : '0.2em', color: CORES.dourado }}>SIDUS</span>
-    </button>
+      glow
+      className={compact ? 'sidus-logo--nav-compact' : 'sidus-logo--nav'}
+    />
   )
 }
 
@@ -3252,6 +3498,13 @@ function Navbar({ passo, setPasso, isDesktop, dados, fotoPerfil }) {
     setMenuAberto(false)
   }, [passo])
 
+  useEffect(() => {
+    const root = document.documentElement
+    if (menuAberto) root.classList.add('sidus-mobile-menu-open')
+    else root.classList.remove('sidus-mobile-menu-open')
+    return () => root.classList.remove('sidus-mobile-menu-open')
+  }, [menuAberto])
+
   const itemAtivoNav = itens.find((i) => itemAtivo(i))
   const headerStyle = isDesktop ? estilos.navbarDesktopTop : estilos.navbarMobileTop
   const perfilAtivo = passo === 'perfil'
@@ -3277,7 +3530,7 @@ function Navbar({ passo, setPasso, isDesktop, dados, fotoPerfil }) {
           <AvatarNav foto={fotoPerfil} nome={nomePerfil} size={34} ativo={perfilAtivo} />
         </button>
       )}
-      <header style={headerStyle}>
+      <header style={headerStyle} className={isDesktop ? 'desktop-nav-header' : undefined}>
         {isDesktop ? (
           <>
             <div className="desktop-nav-brand">
@@ -3294,11 +3547,12 @@ function Navbar({ passo, setPasso, isDesktop, dados, fotoPerfil }) {
                   <button
                     key={item.id}
                     type="button"
-                    className="desktop-nav-item"
+                    className={`desktop-nav-item${passosFerramenta.has(item.id) ? ' desktop-nav-item--tool' : ''}`}
                     onClick={() => navegar(item.id)}
                     onMouseEnter={() => setHover(item.id)}
                     onMouseLeave={() => setHover(null)}
                     title={item.label}
+                    aria-label={item.label}
                     style={{
                       background: ativo ? 'rgba(223,183,108,0.18)' : emHover ? 'rgba(255,255,255,0.06)' : 'transparent',
                       border: `1px solid ${ativo ? CORES.dourado : emHover ? 'rgba(223,183,108,0.3)' : 'transparent'}`,
@@ -3307,7 +3561,7 @@ function Navbar({ passo, setPasso, isDesktop, dados, fotoPerfil }) {
                     }}
                   >
                     <Icon size={12} strokeWidth={ativo ? 2.2 : 1.8} />
-                    <span>{item.label}</span>
+                    <span className="desktop-nav-item__label">{item.label}</span>
                   </button>
                 )
               })}
@@ -3363,7 +3617,7 @@ function Navbar({ passo, setPasso, isDesktop, dados, fotoPerfil }) {
           <AvatarNav foto={fotoPerfil} nome={nomePerfil} size={44} ativo={passo === 'perfil'} />
           <div style={{ flex: 1, minWidth: 0 }}>
             <div style={{ fontSize: 14, fontWeight: 700, color: CORES.branco, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{nomePerfil}</div>
-            <div style={{ fontSize: 11, color: CORES.dourado, marginTop: 2 }}>{t('nav.perfil')} ✦</div>
+            <div style={{ fontSize: 11, color: CORES.dourado, marginTop: 2 }}>{t('nav.perfil')}</div>
           </div>
         </button>
         <div style={{ padding: '8px 16px 12px', borderBottom: `1px solid ${CORES.vidroBorda}` }}>
@@ -3399,7 +3653,7 @@ function Navbar({ passo, setPasso, isDesktop, dados, fotoPerfil }) {
             >
               {Icon ? <Icon size={20} strokeWidth={ativo ? 2.2 : 1.8} /> : <span style={{ width: 20 }} />}
               <span style={{ fontSize: 15, fontWeight: ativo ? 700 : 500, flex: 1 }}>{item.label}</span>
-              {ativo && <span style={{ fontSize: 10, color: CORES.dourado }}>✦</span>}
+              {ativo && <span style={{ fontSize: 10, color: CORES.dourado }}>•</span>}
             </button>
           )
         })}
@@ -3725,7 +3979,7 @@ export default function App() {
     })
   }, [location.search, navigate, t])
 
-  const rotasPublicasSemAuth = new Set(['/login', '/privacidade', '/divulgacao-vip'])
+  const rotasPublicasSemAuth = new Set(['/login', '/privacidade', '/divulgacao-premium', '/divulgacao-vip'])
 
   // Visitante → /login (exceto rotas públicas)
   useEffect(() => {
@@ -3759,7 +4013,7 @@ export default function App() {
 
     if (!contaConfigurada) {
       const pathSemLang = stripLangPrefix(location.pathname)
-      if (pathSemLang === '/divulgacao-vip') return
+      if (pathSemLang === '/divulgacao-premium' || pathSemLang === '/divulgacao-vip') return
       navigate('/comecar', { replace: true })
       return
     }
@@ -3785,7 +4039,7 @@ export default function App() {
     if (urlLang && urlLang !== lang) setLang(urlLang)
   }, [location.pathname, authCarregando, lang, setLang])
 
-  // URL ↔ passo (voltar atrás no browser, links directos)
+  // URL ↔ passo (voltar atrás no browser, links directos) - só reage a mudanças de URL
   useEffect(() => {
     if (authCarregando) return
     const path = stripLangPrefix(location.pathname)
@@ -3793,15 +4047,17 @@ export default function App() {
 
     // Conta já configurada: nunca ficar preso em /comecar (evita loop URL↔redirect)
     if (utilizador && contaConfigurada && (path === '/comecar' || fromUrl === 'onboarding')) {
-      if (path !== '/home' || passo !== 'home') {
+      if (path !== '/home' || passoRef.current !== 'home') {
         setPasso('home')
         navigate('/home', { replace: true })
       }
       return
     }
 
-    if (fromUrl !== passo) setPasso(fromUrl)
-  }, [location.pathname, authCarregando, passo, utilizador, contaConfigurada, navigate])
+    if (fromUrl !== passoRef.current) {
+      setPasso(fromUrl)
+    }
+  }, [location.pathname, authCarregando, utilizador, contaConfigurada, navigate])
 
   // ── Retorno Stripe Checkout (?payment=success&session_id=...) ─────────────
   useEffect(() => {
@@ -3902,7 +4158,7 @@ export default function App() {
   }, [utilizador, authCarregando, location.search, location.pathname, navigate, t, lang, dados, destinoAposPagamento, productTypePagamentoPendente])
 
   // ── Guarda dados natais no Firestore quando o onboarding termina (1x por conta) ──
-  const guardarPerfil = useCallback(async (dadosNovos) => {
+  const guardarPerfil = useCallback(async (dadosNovos, opts = {}) => {
     if (!utilizador || !firebaseDisponivel || !db) return false
     const prontos = dadosProntosParaMapa(dadosNovos)
     if (!prontos) return false
@@ -3913,13 +4169,12 @@ export default function App() {
         const perfil = snap.data()
         const dadosFirestore = normalizarDadosPerfil(perfil.dados)
         const perfilCompleto = perfil.mapaGerado === true && dadosNataisCompletos(dadosFirestore)
-        if (perfilCompleto) return false
+        if (perfilCompleto && !opts.permitirEdicao) return false
       }
-      await setDoc(ref, {
-        dados: prontos,
-        dadosTravados: true,
-        mapaGerado: true,
-      }, { merge: true })
+      const payload = opts.permitirEdicao
+        ? { dados: prontos }
+        : { dados: prontos, dadosTravados: true, mapaGerado: true }
+      await setDoc(ref, payload, { merge: true })
       return true
     } catch (e) {
       console.warn('[Sidus] Não foi possível guardar o perfil:', e?.message)
@@ -4057,6 +4312,22 @@ export default function App() {
     } catch { /* offline */ }
   }, [utilizador])
 
+  const handleEditarDadosNatalis = useCallback(async (parcial) => {
+    const chave = utilizador?.uid ? `sidus_natal_edits_${utilizador.uid}` : 'sidus_natal_edits_local'
+    const usados = parseInt(localStorage.getItem(chave) || '0', 10)
+    if (usados >= 1) return false
+    const novos = { ...dados, ...parcial }
+    setDados(novos)
+    const prontos = dadosProntosParaMapa(novos)
+    if (prontos) {
+      const mapa = calcularMapaNatalMotor(prontos, sweRef.current)
+      if (mapaNatalValido(mapa)) setMapaNatal(mapa)
+    }
+    await guardarPerfil(novos, { permitirEdicao: true })
+    localStorage.setItem(chave, '1')
+    return true
+  }, [dados, utilizador])
+
   const registarOraclePerguntaUsada = useCallback(async (total) => {
     setOraclePerguntasUsadas(total)
     if (!utilizador || !firebaseDisponivel || !db) return
@@ -4123,6 +4394,8 @@ export default function App() {
   const mostrarNavbar = utilizador && contaConfigurada && passo !== 'paywall' && passo !== 'vipPromo'
 
   const chatFullScreen = passo === 'chat'
+  const mostrarBottomNav = !isDesktop && mostrarNavbar && !chatFullScreen
+    && passo !== 'onboarding' && passo !== 'paywall' && passo !== 'vipPromo'
   const linkEmailPendente = (() => {
     const p = new URLSearchParams(location.search)
     return p.get('mode') === 'verifyEmail' && Boolean(p.get('oobCode'))
@@ -4166,7 +4439,7 @@ export default function App() {
       }
       return <EcraAuth tipo={tipoAuth} onMudar={setTipoAuth} isDesktop={isDesktop} firebaseOk={firebaseDisponivel} />
     }
-    if (precisaVerificarEmail(utilizador)) {
+    if (bloqueadoPorEmailNaoVerificado(utilizador, passo)) {
       return (
         <EcraVerificarEmail
           utilizador={utilizador}
@@ -4221,19 +4494,21 @@ export default function App() {
     switch (passo) {
       case 'home':
       case 'dashboard':
-        return <Dashboard nome={dados.nome} mapaNatal={mapaNatal} ceuAgora={ceuAgora} aspetos={aspetosAgora} onOraculo={() => irPara('chat')} onPrivacidade={() => irPara('privacidade')} isDesktop={isDesktop} isPremium={isPremium} onUpgrade={() => irPara('paywall')} onTarot={() => irPara('tarot')} onMapa={() => irPara('mapa')} userEmail={utilizador?.email} user={utilizador} oraclePerguntasUsadas={oraclePerguntasUsadas} leiturasTarotUsadas={leiturasTarotUsadas} isBrasil={isBrasil} />
+        return (
+          <Dashboard nome={dados.nome} mapaNatal={mapaNatal} ceuAgora={ceuAgora} aspetos={aspetosAgora} onOraculo={() => irPara('chat')} onPrivacidade={() => irPara('privacidade')} isDesktop={isDesktop} isPremium={isPremium} onUpgrade={() => irPara('paywall')} onTarot={() => irPara('tarot')} onMapa={() => irPara('mapa')} userEmail={utilizador?.email} user={utilizador} oraclePerguntasUsadas={oraclePerguntasUsadas} leiturasTarotUsadas={leiturasTarotUsadas} isBrasil={isBrasil} />
+        )
       case 'mapa':
-        return <MapaAstral mapaNatal={mapaNatal} dados={dados} planetasNascimento={planetasNascimento} mapaDesbloqueado={isPremium || mapaCompleto} isPremium={isPremium} onUpgrade={() => irPara('paywall')} onComprarMapa={() => abrirPagamento(t('mapa.buyDesc'), PRECO_MAPA_COMPLETO, null, { productType: 'mapa' })} onMapaGerado={handleMapaGerado} isDesktop={isDesktop} motorAstro={motorAstro} perfilCarregando={perfilCarregando} reparandoDados={reparandoDados} mapaGerado={mapaGerado} onCompletarNatal={() => irPara('home')} obterIdToken={obterIdTokenOracle} interpretacaoPerfil={interpretacaoMapa} />
+        return <MapaAstral mapaNatal={mapaNatal} dados={dados} planetasNascimento={planetasNascimento} mapaDesbloqueado={isPremium || mapaCompleto} isPremium={isPremium} onUpgrade={() => irPara('paywall')} onComprarMapa={() => abrirPagamento(t('mapa.buyDesc'), PRECO_MAPA_COMPLETO, null, { productType: 'mapa' })} onMapaGerado={handleMapaGerado} isDesktop={isDesktop} motorAstro={motorAstro} perfilCarregando={perfilCarregando} reparandoDados={reparandoDados} mapaGerado={mapaGerado} onCompletarNatal={() => irPara('home')} obterIdToken={obterIdTokenOracle} interpretacaoPerfil={interpretacaoMapa} isBrasil={isBrasil} />
       case 'tarot':
         return (
           <Suspense fallback={<RouteLoader />}>
-            <EcraTarotLazy mapaNatal={mapaNatal} isPremium={acessoVip} userId={utilizador?.uid} leiturasTarotUsadas={leiturasTarotUsadas} tarotCreditoPago={tarotCreditoPago} onTarotCreditoConsumido={() => setTarotCreditoPago(false)} onLeituraGratisUsada={registarLeituraTarotGratis} onPagar={abrirPagamento} onVoltar={() => irPara('home')} onPremium={() => irPara('paywall')} isBrasil={isBrasil} />
+            <EcraTarotLazy mapaNatal={mapaNatal} isPremium={acessoVip} userId={utilizador?.uid} leiturasTarotUsadas={leiturasTarotUsadas} tarotCreditoPago={tarotCreditoPago} onTarotCreditoConsumido={() => setTarotCreditoPago(false)} onLeituraGratisUsada={registarLeituraTarotGratis} onLeituraConcluida={() => { if (precisaVerificarEmail(utilizador)) marcarTarotPreVerifyUsado() }} onPagar={abrirPagamento} onVoltar={() => irPara('home')} onPremium={() => irPara('paywall')} isBrasil={isBrasil} />
           </Suspense>
         )
       case 'bussola':
         return (
           <Suspense fallback={<RouteLoader />}>
-            <BussolaCosmicaLazy mapaNatal={mapaNatal} onVoltar={() => irPara('home')} />
+            <BussolaCosmicaLazy mapaNatal={mapaNatal} planetasNatal={planetasNascimento} onVoltar={() => irPara('home')} />
           </Suspense>
         )
       case 'sinastria':
@@ -4273,16 +4548,17 @@ export default function App() {
           </Suspense>
         )
       case 'ferramentas':
-        return <Ferramentas onFerramenta={handleFerramenta} isDesktop={isDesktop} acessoVip={acessoVip} />
+        return <Ferramentas onFerramenta={handleFerramenta} isDesktop={isDesktop} acessoVip={acessoVip} mapaNatal={mapaNatal} onCompletarMapa={() => irPara('onboarding')} />
       case 'paywall':
         return <Paywall onVoltar={() => irPara('home')} onPagar={abrirPagamento} onPromo={() => irPara('vipPromo')} onSucesso={() => { setIsPremium(true); setMapaCompleto(true); irPara(dadosNataisMinimos(dados) ? 'mapa' : 'onboarding') }} isDesktop={isDesktop} isBrasil={isBrasil} oraclePerguntasUsadas={oraclePerguntasUsadas} leiturasTarotUsadas={leiturasTarotUsadas} />
       case 'chat':
-        return <Chat mapaNatal={mapaNatal} isPremium={isPremium} userId={utilizador?.uid} oracleRemotas={oraclePerguntasUsadas} onOracleUsada={registarOraclePerguntaUsada} onUpgrade={() => irPara('paywall')} obterIdToken={obterIdTokenOracle} isBrasil={isBrasil} />
+        return <Chat mapaNatal={mapaNatal} isPremium={isPremium} userId={utilizador?.uid} oracleRemotas={oraclePerguntasUsadas} onOracleUsada={registarOraclePerguntaUsada} onUpgrade={() => irPara('paywall')} onPromo={() => irPara('vipPromo')} leiturasTarotUsadas={leiturasTarotUsadas} obterIdToken={obterIdTokenOracle} isBrasil={isBrasil} isDesktop={isDesktop} />
       case 'perfil':
         return <Perfil utilizador={utilizador} dados={dados} mapaNatal={mapaNatal} isPremium={isPremium}
           dadosBloqueados={dadosBloqueados}
           onLogout={handleLogout}
           onVipPromo={() => irPara('vipPromo')}
+          onEditarDados={handleEditarDadosNatalis}
           obterIdToken={obterIdTokenOracle} />
       default:
         return <Dashboard nome={dados.nome} mapaNatal={mapaNatal} ceuAgora={ceuAgora} aspetos={aspetosAgora} onOraculo={() => irPara('chat')} onPrivacidade={() => irPara('privacidade')} isDesktop={isDesktop} isPremium={isPremium} onUpgrade={() => irPara('paywall')} onTarot={() => irPara('tarot')} onMapa={() => irPara('mapa')} userEmail={utilizador?.email} user={utilizador} oraclePerguntasUsadas={oraclePerguntasUsadas} leiturasTarotUsadas={leiturasTarotUsadas} isBrasil={isBrasil} />
@@ -4297,11 +4573,12 @@ export default function App() {
   const margemNav = 0
 
   return (
-    <div className={`sidus-cosmic-shell${!utilizador ? ' sidus-login-shell' : ''}`} style={shellStyle}>
-      <LandingCosmicBackground />
+    <>
+    <div className={`sidus-cosmic-shell${!utilizador ? ' sidus-login-shell' : ' sidus-app-shell'}`} style={shellStyle}>
+      <div className="sidus-cosmic-backdrop" aria-hidden="true">
+        <LandingCosmicBackground />
+      </div>
       <div className="sidus-cosmic-foreground">
-      {!utilizador && isDesktop && <LanguageSwitcher />}
-
       {/* Barra de dev - só visível em localhost */}
       {isDev && contaConfigurada && (
         <div style={{
@@ -4358,25 +4635,36 @@ export default function App() {
       )}
 
       <div
-        className={!utilizador ? 'landing-auth-page-wrap' : undefined}
+        className={[
+          !utilizador ? 'landing-auth-page-wrap' : 'sidus-app-content',
+          chatFullScreen ? 'sidus-app-content--chat-full' : null,
+          mostrarBottomNav ? 'mobile-shell-pad-bottom' : null,
+        ].filter(Boolean).join(' ') || undefined}
         style={{
         paddingTop: paddingTopo,
         marginTop: margemNav,
-        paddingBottom: chatFullScreen && !isDesktop ? 72 : 0,
-        minHeight: chatFullScreen && isDesktop ? 'calc(100vh - 68px)' : undefined,
+        paddingBottom: 0,
+        height: chatFullScreen ? `calc(100svh - ${paddingTopo}px)` : undefined,
+        maxHeight: chatFullScreen ? `calc(100svh - ${paddingTopo}px)` : undefined,
+        overflow: chatFullScreen ? 'hidden' : undefined,
         display: chatFullScreen ? 'flex' : undefined,
         flexDirection: chatFullScreen ? 'column' : undefined,
+        minHeight: chatFullScreen ? 0 : undefined,
         position: 'relative',
         zIndex: 1,
       }}>
         <ErrorBoundary resetKey={passo} compact={passo === 'tarot'}>
-          {renderEcran()}
+          <div className="sidus-page-root">
+            {renderEcran()}
+          </div>
         </ErrorBoundary>
       </div>
       {!isPremium && allowsAds() && shouldShowAdsOnPasso(passo) && (
         <AdSenseBanner key={passo} isPremium={isPremium} />
       )}
-      <RodapeSidus isDesktop={isDesktop} mostrarNavbar={mostrarNavbar} />
+      {!chatFullScreen && (
+        <RodapeSidus isDesktop={isDesktop} mostrarNavbar={mostrarNavbar} />
+      )}
       {mostrarNavbar && (
         <Navbar
           passo={passo}
@@ -4405,7 +4693,13 @@ export default function App() {
         onConsentChange={setCookieConsent}
         onPrivacy={() => irPara('privacidade')}
       />
+
       </div>
+      {mostrarBottomNav && (
+        <MobileBottomNav passo={passo} onNavigate={irPara} />
+      )}
     </div>
+    <MagicCursorTrail />
+    </>
   )
 }

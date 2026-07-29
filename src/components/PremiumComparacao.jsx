@@ -1,8 +1,9 @@
 import { Crown } from 'lucide-react'
 import { useLanguage } from '../lib/i18n/LanguageContext.jsx'
 import { MAX_ORACLE_GRATIS } from '../lib/oracleLimit.js'
-import { MAX_LEITURAS_GRATIS } from './Tarot.jsx'
+import { MAX_LEITURAS_GRATIS } from '../components/Tarot.jsx'
 import { getPremiumTableRows } from '../lib/i18n/premiumBenefits.js'
+import { formatPrecoCompleto, PRECO_PREMIUM_BR_PIX_BRL, PRECO_PREMIUM_UNICO } from '../lib/pricing.js'
 
 export function PremiumComparacao({
   isPremium,
@@ -42,7 +43,7 @@ export function PremiumComparacao({
             <tr>
               <th>{t('premium.table.feature')}</th>
               <th>{t('premium.table.free')}</th>
-              <th><Crown size={14} style={{ verticalAlign: 'middle', marginRight: 4 }} />VIP</th>
+              <th><Crown size={14} style={{ verticalAlign: 'middle', marginRight: 4 }} />Premium</th>
             </tr>
           </thead>
           <tbody>
@@ -58,7 +59,10 @@ export function PremiumComparacao({
       </div>
 
       {isBrasil && (
-        <p className="premium-br-note">{t('brasil.premiumNote')}</p>
+        <p className="premium-br-note">{t('brasil.premiumNote', {
+          preco: formatPrecoCompleto(PRECO_PREMIUM_BR_PIX_BRL, 'brl'),
+          precoEur: formatPrecoCompleto(PRECO_PREMIUM_UNICO, 'eur'),
+        })}</p>
       )}
     </div>
   )

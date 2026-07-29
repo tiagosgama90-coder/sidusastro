@@ -83,7 +83,7 @@ const VENUS_REL = {
   Leão: s6("romantiza com grandiosidade, quer ser admirado e celebrado no amor", "romanticises with grandeur, wants to be admired and celebrated in love", "romantiza con grandiosidad, quiere ser admirado y celebrado en el amor", "romantizza con grandiosità, vuole essere ammirato e celebrato nell'amore", "romantisiert mit Grandiosität, will in der Liebe bewundert und gefeiert werden", "romantise avec grandeur, veut être admiré et célébré dans l'amour"),
   Virgem: s6("demonstra carinho com actos de serviço e atenção aos detalhes", "shows affection through acts of service and attention to detail", "demuestra cariño con actos de servicio y atención al detalle", "dimostra affetto con atti di servizio e attenzione ai dettagli", "zeigt Zuneigung durch Dienste und Liebe zum Detail", "montre son affection par des actes de service et l'attention aux détails"),
   Balança: s6("busca harmonia, beleza e reciprocidade elegante na intimidade", "seeks harmony, beauty and elegant reciprocity in intimacy", "busca armonía, belleza y reciprocidad elegante en la intimidad", "cerca armonia, bellezza e reciprocità elegante nell'intimità", "sucht Harmonie, Schönheit und elegante Gegenseitigkeit in der Intimität", "cherche l'harmonie, la beauté et une réciprocité élégante dans l'intimité"),
-  Escorpião: s6("vive o erotismo como fusão total - tudo ou nada", "lives eroticism as total fusion - all or nothing", "vive el erotismo como fusión total: todo o nada", "vive l'erotismo come fusione totale: tutto o niente", "lebt Erotik als totale Verschmelzung – alles oder nichts", "vit l'érotisme comme une fusion totale : tout ou rien"),
+  Escorpião: s6("vive o erotismo como fusão total - tudo ou nada", "lives eroticism as total fusion - all or nothing", "vive el erotismo como fusión total: todo o nada", "vive l'erotismo come fusione totale: tutto o niente", "lebt Erotik als totale Verschmelzung - alles oder nichts", "vit l'érotisme comme une fusion totale : tout ou rien"),
   Sagitário: s6("precisa de liberdade e aventura para manter a chama viva", "needs freedom and adventure to keep the flame alive", "necesita libertad y aventura para mantener viva la llama", "ha bisogno di libertà e avventura per tenere viva la fiamma", "braucht Freiheit und Abenteuer, um die Flamme am Leben zu halten", "a besoin de liberté et d'aventure pour garder la flamme vivante"),
   Capricórnio: s6("leva tempo a confiar, mas compromete-se com lealdade profunda", "takes time to trust, but commits with deep loyalty", "tarda en confiar, pero se compromete con lealtad profunda", "impiega tempo a fidarsi, ma si impegna con profonda lealtà", "braucht Zeit zum Vertrauen, verpflichtet sich aber mit tiefer Loyalität", "met du temps à faire confiance, mais s'engage avec une loyauté profonde"),
   Aquário: s6("valoriza amizade, originalidade e espaço dentro da paixão", "values friendship, originality and space within passion", "valora la amistad, la originalidad y el espacio dentro de la pasión", "valorizza amicizia, originalità e spazio dentro la passione", "schätzt Freundschaft, Originalität und Raum innerhalb der Leidenschaft", "valorise l'amitié, l'originalité et l'espace au sein de la passion"),
@@ -214,8 +214,8 @@ export function narrativaQuimica(posA, posB, aspectos, lang = 'pt') {
       en: (na, s, d) => `Your Mars in ${s} is **your** desire - how fire moves in your body: ${d}. When honoured, it becomes vitality; when repressed, impatience or frustration.`,
       es: (na, s, d) => `Tu Marte en ${s} es **tu** deseo: cómo se mueve el fuego en tu cuerpo: ${d}. Cuando se honra, se vuelve vitalidad; cuando se reprime, impaciencia o frustración.`,
       it: (na, s, d) => `Il tuo Marte in ${s} è **il tuo** desiderio: come il fuoco si muove nel tuo corpo: ${d}. Quando onorato, diventa vitalità; quando represso, impazienza o frustrazione.`,
-      de: (na, s, d) => `Dein Mars in ${s} ist **dein** Verlangen – wie Feuer sich in deinem Körper bewegt: ${d}. Wenn geehrt, wird es Vitalität; wenn unterdrückt, Ungeduld oder Frustration.`,
-      fr: (na, s, d) => `Ton Mars en ${s} est **ton** désir – comment le feu se déplace dans ton corps : ${d}. Honoré, il devient vitalité ; réprimé, impatience ou frustration.`,
+      de: (na, s, d) => `Dein Mars in ${s} ist **dein** Verlangen - wie Feuer sich in deinem Körper bewegt: ${d}. Wenn geehrt, wird es Vitalität; wenn unterdrückt, Ungeduld oder Frustration.`,
+      fr: (na, s, d) => `Ton Mars en ${s} est **ton** désir - comment le feu se déplace dans ton corps : ${d}. Honoré, il devient vitalité ; réprimé, impatience ou frustration.`,
     }, nomeA, tsSign(marA, lang), pickNarr(MARTE_REL[marA], lang) || sx(lang, { pt: 'com ritmo pessoal', en: 'with personal rhythm', es: 'con ritmo personal', it: 'con ritmo personale', de: 'mit persönlichem Rhythmus', fr: 'avec un rythme personnel' })))
   }
   linhas.push('')
@@ -235,8 +235,8 @@ export function narrativaQuimica(posA, posB, aspectos, lang = 'pt') {
       en: (nb, s, d) => `${nb}'s Mars in ${s} shows how they pursue and defend desire: ${d}. Your chemistry lives in the dance between your Venus and their Mars - and vice versa.`,
       es: (nb, s, d) => `El Marte de ${nb} en ${s} muestra cómo conquista y defiende el deseo: ${d}. Vuestra química vive en la danza entre tu Venus y su Marte, y viceversa.`,
       it: (nb, s, d) => `Il Marte di ${nb} in ${s} mostra come conquista e difende il desiderio: ${d}. La vostra chimica vive nella danza tra la tua Venere e il suo Marte, e viceversa.`,
-      de: (nb, s, d) => `${nb}s Mars in ${s} zeigt, wie Verlangen verfolgt und verteidigt wird: ${d}. Eure Chemie lebt im Tanz zwischen deiner Venus und ihrem/seinem Mars – und umgekehrt.`,
-      fr: (nb, s, d) => `Le Mars de ${nb} en ${s} montre comment il/elle poursuit et défend le désir : ${d}. Votre alchimie vit dans la danse entre ta Vénus et son Mars – et inversement.`,
+      de: (nb, s, d) => `${nb}s Mars in ${s} zeigt, wie Verlangen verfolgt und verteidigt wird: ${d}. Eure Chemie lebt im Tanz zwischen deiner Venus und ihrem/seinem Mars - und umgekehrt.`,
+      fr: (nb, s, d) => `Le Mars de ${nb} en ${s} montre comment il/elle poursuit et défend le désir : ${d}. Votre alchimie vit dans la danse entre ta Vénus et son Mars - et inversement.`,
     }, nomeB, tsSign(marB, lang), pickNarr(MARTE_REL[marB], lang) || sx(lang, { pt: 'ao seu estilo', en: 'in their style', es: 'a su estilo', it: 'al suo stile', de: 'in ihrem/seinem Stil', fr: 'à sa manière' })))
   }
 
@@ -254,12 +254,12 @@ export function narrativaQuimica(posA, posB, aspectos, lang = 'pt') {
     for (const a of top) linhas.push(aspectoNarrativa(a, lang, nomeA, nomeB))
   } else {
     linhas.push(sx(lang, {
-      pt: '\n\nSem aspectos fortes Vénus–Marte cruzados, a vossa química constrói-se pela confiança e escolha repetida - desejo consciente, não magnetismo automático.',
-      en: '\n\nWithout strong Venus–Mars cross-aspects, your chemistry is built through trust and repeated choice - conscious desire rather than automatic magnetism.',
-      es: '\n\nSin aspectos fuertes Venus–Marte cruzados, vuestra química se construye con confianza y elección repetida: deseo consciente, no magnetismo automático.',
-      it: '\n\nSenza forti aspetti incrociati Venere–Marte, la vostra chimica si costruisce con fiducia e scelta ripetuta: desiderio consapevole, non magnetismo automatico.',
-      de: '\n\nOhne starke Venus–Mars-Kreuzaspekte baut sich eure Chemie durch Vertrauen und wiederholte Wahl auf – bewusstes Verlangen statt automatischem Magnetismus.',
-      fr: '\n\nSans aspects croisés Venus–Mars forts, votre alchimie se construit par la confiance et le choix répété – désir conscient plutôt que magnétisme automatique.',
+      pt: '\n\nSem aspectos fortes Vénus-Marte cruzados, a vossa química constrói-se pela confiança e escolha repetida - desejo consciente, não magnetismo automático.',
+      en: '\n\nWithout strong Venus-Mars cross-aspects, your chemistry is built through trust and repeated choice - conscious desire rather than automatic magnetism.',
+      es: '\n\nSin aspectos fuertes Venus-Marte cruzados, vuestra química se construye con confianza y elección repetida: deseo consciente, no magnetismo automático.',
+      it: '\n\nSenza forti aspetti incrociati Venere-Marte, la vostra chimica si costruisce con fiducia e scelta ripetuta: desiderio consapevole, non magnetismo automatico.',
+      de: '\n\nOhne starke Venus-Mars-Kreuzaspekte baut sich eure Chemie durch Vertrauen und wiederholte Wahl auf - bewusstes Verlangen statt automatischem Magnetismus.',
+      fr: '\n\nSans aspects croisés Venus-Mars forts, votre alchimie se construit par la confiance et le choix répété - désir conscient plutôt que magnétisme automatique.',
     }))
   }
   return linhas.filter(Boolean).join('\n')
@@ -283,8 +283,8 @@ export function narrativaEmocao(posA, posB, aspectos, lang = 'pt') {
       en: (na, nb, s) => `Your Sun in ${s} is how **you** shine - your conscious identity. In love, you need ${nb} to see this light, not only your moods.`,
       es: (na, nb, s) => `Tu Sol en ${s} es cómo **tú** brillas: tu identidad consciente. En el amor, necesitas que ${nb} vea esta luz, no solo tus humores.`,
       it: (na, nb, s) => `Il tuo Sole in ${s} è come **tu** brilli: la tua identità conscia. In amore, hai bisogno che ${nb} veda questa luce, non solo i tuoi umori.`,
-      de: (na, nb, s) => `Deine Sonne in ${s} ist, wie **du** strahlst – deine bewusste Identität. In der Liebe brauchst du, dass ${nb} dieses Licht sieht, nicht nur deine Stimmungen.`,
-      fr: (na, nb, s) => `Ton Soleil en ${s} est comment **tu** brilles – ton identité consciente. En amour, tu as besoin que ${nb} voie cette lumière, pas seulement tes humeurs.`,
+      de: (na, nb, s) => `Deine Sonne in ${s} ist, wie **du** strahlst - deine bewusste Identität. In der Liebe brauchst du, dass ${nb} dieses Licht sieht, nicht nur deine Stimmungen.`,
+      fr: (na, nb, s) => `Ton Soleil en ${s} est comment **tu** brilles - ton identité consciente. En amour, tu as besoin que ${nb} voie cette lumière, pas seulement tes humeurs.`,
     }, nomeA, nomeB, tsSign(solA, lang)))
   }
   if (luaA) {
@@ -294,8 +294,8 @@ export function narrativaEmocao(posA, posB, aspectos, lang = 'pt') {
       en: (na, nb, s, d) => `Your Moon in ${s} is your private heart: ${d}. When ${nb} ignores this Moon, you close off - not from malice, from self-protection.`,
       es: (na, nb, s, d) => `Tu Luna en ${s} es tu corazón privado: ${d}. Cuando ${nb} ignora esta Luna, te cierras, no por maldad, sino por autoprotección.`,
       it: (na, nb, s, d) => `La tua Luna in ${s} è il tuo cuore privato: ${d}. Quando ${nb} ignora questa Luna, ti chiudi, non per malizia, ma per autoprotezione.`,
-      de: (na, nb, s, d) => `Dein Mond in ${s} ist dein privates Herz: ${d}. Wenn ${nb} diesen Mond ignoriert, schließt du dich – nicht aus Bosheit, sondern aus Selbstschutz.`,
-      fr: (na, nb, s, d) => `Ta Lune en ${s} est ton cœur privé : ${d}. Quand ${nb} ignore cette Lune, tu te fermes – non par méchanceté, mais par autoprotección.`,
+      de: (na, nb, s, d) => `Dein Mond in ${s} ist dein privates Herz: ${d}. Wenn ${nb} diesen Mond ignoriert, schließt du dich - nicht aus Bosheit, sondern aus Selbstschutz.`,
+      fr: (na, nb, s, d) => `Ta Lune en ${s} est ton cœur privé : ${d}. Quand ${nb} ignore cette Lune, tu te fermes - non par méchanceté, mais par autoprotección.`,
     }, nomeA, nomeB, tsSign(luaA, lang), luaTxt))
   }
   linhas.push('')
@@ -305,8 +305,8 @@ export function narrativaEmocao(posA, posB, aspectos, lang = 'pt') {
       en: (nb, s) => `${nb}'s Sun in ${s} is the identity they defend - respect it even when it clashes with yours.`,
       es: (nb, s) => `El Sol de ${nb} en ${s} es la identidad que defiende: respétala aunque choque con la tuya.`,
       it: (nb, s) => `Il Sole di ${nb} in ${s} è l'identità che difende: rispettala anche quando scontrata con la tua.`,
-      de: (nb, s) => `${nb}s Sonne in ${s} ist die Identität, die sie/er verteidigt – respektiere sie, auch wenn sie mit deiner kollidiert.`,
-      fr: (nb, s) => `Le Soleil de ${nb} en ${s} est l'identité qu'il/elle défend – respecte-la même quand elle heurte la tienne.`,
+      de: (nb, s) => `${nb}s Sonne in ${s} ist die Identität, die sie/er verteidigt - respektiere sie, auch wenn sie mit deiner kollidiert.`,
+      fr: (nb, s) => `Le Soleil de ${nb} en ${s} est l'identité qu'il/elle défend - respecte-la même quand elle heurte la tienne.`,
     }, nomeB, tsSign(solB, lang)))
   }
   if (luaB) {
@@ -342,7 +342,7 @@ export function narrativaEmocao(posA, posB, aspectos, lang = 'pt') {
         en: (na, nb, a, h) => `${na}, your Moon meets ${nb}'s in ${a} - your emotional worlds ${h ? 'recognize each other in silence' : 'must slowly learn each other\'s language'}.`,
         es: (na, nb, a, h) => `${na}, tu Luna encuentra la de ${nb} en ${a}: vuestros mundos emocionales ${h ? 'se reconocen en silencio' : 'deben aprender despacio el idioma del otro'}.`,
         it: (na, nb, a, h) => `${na}, la tua Luna incontra quella di ${nb} in ${a}: i vostri mondi emotivi ${h ? 'si riconoscono in silenzio' : 'devono imparare lentamente la lingua l\'uno dell\'altro'}.`,
-        de: (na, nb, a, h) => `${na}, dein Mond trifft auf den von ${nb} im ${a} – eure emotionalen Welten ${h ? 'erkennen sich im Stillen' : 'müssen langsam die Sprache des anderen lernen'}.`,
+        de: (na, nb, a, h) => `${na}, dein Mond trifft auf den von ${nb} im ${a} - eure emotionalen Welten ${h ? 'erkennen sich im Stillen' : 'müssen langsam die Sprache des anderen lernen'}.`,
         fr: (na, nb, a, h) => `${na}, ta Lune rencontre celle de ${nb} en ${a} : vos mondes émotionnels ${h ? 'se reconnaissent en silence' : 'doivent apprendre lentement la langue de l\'autre'}.`,
       }, nomeA, nomeB, asp, harm))
     }
@@ -352,9 +352,9 @@ export function narrativaEmocao(posA, posB, aspectos, lang = 'pt') {
     pt: (na, nb) => `\n\n${na}, lembra-te: em crise, fala primeiro a Lua. O que precisas emocionalmente raramente é o que o teu Sol mostra ao mundo - e o mesmo vale para ${nb}.`,
     en: (na, nb) => `\n\n${na}, remember: in crisis, the Moon speaks first. What you need emotionally is rarely what your Sun shows the world - and the same is true for ${nb}.`,
     es: (na, nb) => `\n\n${na}, recuerda: en crisis, habla primero la Luna. Lo que necesitas emocionalmente rara vez es lo que tu Sol muestra al mundo, y lo mismo vale para ${nb}.`,
-    it: (na, nb) => `\n\n${na}, ricorda: in crisi parla per prima la Luna. Ciò che ti serve emotivamente raramente è ciò che il tuo Sole mostra al mondo – e lo stesso vale per ${nb}.`,
-    de: (na, nb) => `\n\n${na}, denk daran: in der Krise spricht zuerst der Mond. Was du emotional brauchst, ist selten das, was deine Sonne der Welt zeigt – und dasselbe gilt für ${nb}.`,
-    fr: (na, nb) => `\n\n${na}, rappelle-toi : en crise, la Lune parle la première. Ce dont tu as besoin émotionnellement est rarement ce que ton Soleil montre au monde – et il en va de même pour ${nb}.`,
+    it: (na, nb) => `\n\n${na}, ricorda: in crisi parla per prima la Luna. Ciò che ti serve emotivamente raramente è ciò che il tuo Sole mostra al mondo - e lo stesso vale per ${nb}.`,
+    de: (na, nb) => `\n\n${na}, denk daran: in der Krise spricht zuerst der Mond. Was du emotional brauchst, ist selten das, was deine Sonne der Welt zeigt - und dasselbe gilt für ${nb}.`,
+    fr: (na, nb) => `\n\n${na}, rappelle-toi : en crise, la Lune parle la première. Ce dont tu as besoin émotionnellement est rarement ce que ton Soleil montre au monde - et il en va de même pour ${nb}.`,
   }, nomeA, nomeB))
   return linhas.join('\n')
 }
@@ -375,8 +375,8 @@ export function narrativaComunicacao(posA, posB, aspectos, lang = 'pt') {
       en: (na, s, d) => `Your Mercury in ${s} is **your** mind in conversation: ${d}. Under stress you revert here - for better or sharper.`,
       es: (na, s, d) => `Tu Mercurio en ${s} es **tu** mente en conversación: ${d}. Bajo estrés regresas aquí, para mejor o más cortante.`,
       it: (na, s, d) => `Il tuo Mercurio in ${s} è **la tua** mente in conversazione: ${d}. Sotto stress vi torni, per il meglio o più tagliente.`,
-      de: (na, s, d) => `Dein Merkur in ${s} ist **dein** Geist im Gespräch: ${d}. Unter Stress kehrst du hierher zurück – zum Besseren oder Schärferen.`,
-      fr: (na, s, d) => `Ton Mercure en ${s} est **ton** esprit en conversation : ${d}. Sous stress tu y reviens – pour le mieux ou plus tranchant.`,
+      de: (na, s, d) => `Dein Merkur in ${s} ist **dein** Geist im Gespräch: ${d}. Unter Stress kehrst du hierher zurück - zum Besseren oder Schärferen.`,
+      fr: (na, s, d) => `Ton Mercure en ${s} est **ton** esprit en conversation : ${d}. Sous stress tu y reviens - pour le mieux ou plus tranchant.`,
     }, nomeA, tsSign(merA, lang), pickNarr(MERCURIO_COM[merA], lang) || sx(lang, { pt: 'estilo pessoal', en: 'personal style', es: 'estilo personal', it: 'stile personale', de: 'persönlicher Stil', fr: 'style personnel' })))
   }
   if (merB) {
@@ -434,8 +434,8 @@ export function narrativaFuturo(posA, posB, aspectos, lang = 'pt') {
       en: (na, s) => `Your Saturn in ${s} is where you commit slowly - your walls and non-negotiables in long love.`,
       es: (na, s) => `Tu Saturno en ${s} es donde te comprometes despacio: tus muros y límites en el amor largo.`,
       it: (na, s) => `Il tuo Saturno in ${s} è dove ti impegni lentamente: i tuoi muri e i tuoi limiti nell'amore lungo.`,
-      de: (na, s) => `Dein Saturn in ${s} ist, wo du dich langsam verpflichtest – deine Mauern und Non-Negotiables in langer Liebe.`,
-      fr: (na, s) => `Ton Saturne en ${s} est où tu t'engages lentement – tes murs et tes non-négociables dans l'amour long.`,
+      de: (na, s) => `Dein Saturn in ${s} ist, wo du dich langsam verpflichtest - deine Mauern und Non-Negotiables in langer Liebe.`,
+      fr: (na, s) => `Ton Saturne en ${s} est où tu t'engages lentement - tes murs et tes non-négociables dans l'amour long.`,
     }, nomeA, tsSign(satA, lang)))
   }
   linhas.push('')
@@ -526,7 +526,7 @@ export function narrativaMissaoRelacionamento(resultado, lang = 'pt') {
     en: () => `Beyond your individual charts, ${nomeA}, you and ${nomeB} form a third being: the relationship itself. The lunar nodes reveal the soul contract - why you met, what you came to learn together, and what must be released.`,
     es: () => `Más allá de las cartas individuales, ${nomeA}, tú y ${nomeB} formáis un tercer ser: la relación en sí. Los nodos lunares revelan el contrato del alma: por qué os encontrasteis, qué vinisteis a aprender juntos y qué debéis soltar.`,
     it: () => `Oltre ai temi individuali, ${nomeA}, tu e ${nomeB} formate un terzo essere: la relazione stessa. I nodi lunari rivelano il contratto dell'anima: perché vi siete incontrati, cosa siete venuti a imparare insieme e cosa dovete lasciare.`,
-    de: () => `Jenseits der Einzelhoroskope, ${nomeA}, bilden du und ${nomeB} ein drittes Wesen: die Beziehung selbst. Die Mondknoten offenbaren den Seelenvertrag – warum ihr euch trafet, was ihr gemeinsam lernen sollt und was losgelassen werden muss.`,
+    de: () => `Jenseits der Einzelhoroskope, ${nomeA}, bilden du und ${nomeB} ein drittes Wesen: die Beziehung selbst. Die Mondknoten offenbaren den Seelenvertrag - warum ihr euch trafet, was ihr gemeinsam lernen sollt und was losgelassen werden muss.`,
     fr: () => `Au-delà des thèmes individuels, ${nomeA}, toi et ${nomeB} formez un troisième être : la relation elle-même. Les nœuds lunaires révèlent le contrat d'âme : pourquoi vous vous êtes rencontrés, ce que vous êtes venus apprendre ensemble et ce qu'il faut lâcher.`,
   }))
 
@@ -569,7 +569,7 @@ export function narrativaMissaoRelacionamento(resultado, lang = 'pt') {
       en: () => `${nomeA}, ${n} contact(s) to the South Node suggest familiar territory - past patterns, comfort zones or karmic repetition with ${nomeB}. The mission is not to stay there, but to recognize what was already learned and choose conscious evolution.`,
       es: () => `${nomeA}, ${n} contacto(s) con el Nodo Sur sugieren territorio familiar: patrones pasados, zonas de confort o repetición kármica con ${nomeB}. La misión no es quedarse ahí, sino reconocer lo ya aprendido y elegir evolución consciente.`,
       it: () => `${nomeA}, ${n} contatto/i al Nodo Sud suggeriscono territorio familiare: schemi passati, zone di comfort o ripetizione karmica con ${nomeB}. La missione non è restare lì, ma riconoscere ciò che è già stato imparato e scegliere evoluzione consapevole.`,
-      de: () => `${nomeA}, ${n} Kontakt(e) zum Mondknoten Süd deuten auf vertrautes Terrain hin – vergangene Muster, Komfortzonen oder karmische Wiederholung mit ${nomeB}. Die Mission ist nicht zu verweilen, sondern Gelerntes anzuerkennen und bewusste Evolution zu wählen.`,
+      de: () => `${nomeA}, ${n} Kontakt(e) zum Mondknoten Süd deuten auf vertrautes Terrain hin - vergangene Muster, Komfortzonen oder karmische Wiederholung mit ${nomeB}. Die Mission ist nicht zu verweilen, sondern Gelerntes anzuerkennen und bewusste Evolution zu wählen.`,
       fr: () => `${nomeA}, ${n} contact(s) au Nœud Sud suggèrent un territoire familier : schémas passés, zones de confort ou répétition karmique avec ${nomeB}. La mission n'est pas d'y rester, mais de reconnaître ce qui a déjà été appris et choisir une évolution consciente.`,
     }))
     for (const act of nodosSinastria.activacoesSul.slice(0, 3)) {
@@ -713,7 +713,7 @@ export function narrativaIntroSinastria(nomeA, nomeB, pontuacao, lang = 'pt') {
     en: `${nomeA}, welcome to your personal synastry with ${nomeB}. Every paragraph below was written for **you** - from the exact degrees of your birth sky crossed with theirs. Read as an astrology teacher speaking privately to you: the stars are not judging; they are narrating the story you are living together.\n\nOverall bond tone: **${pontuacao}%** compatibility across chemistry, emotion, communication and future.`,
     es: `${nomeA}, bienvenido/a a tu sinastría personal con ${nomeB}. Cada párrafo fue escrito para **ti** a partir de los grados exactos de tu cielo de nacimiento cruzado con el suyo. Lee como un profesor de astrología hablándote en privado: los astros no juzgan; narran la historia que vives en pareja.\n\nTono general del vínculo: **${pontuacao}%** de compatibilidad en química, emoción, comunicación y futuro.`,
     it: `${nomeA}, benvenuto/a alla tua sinastria personale con ${nomeB}. Ogni paragrafo è stato scritto per **te** dai gradi esatti del tuo cielo natale incrociato con il suo. Leggi come un insegnante di astrologia che ti parla in privato: le stelle non giudicano; narrano la storia che vivi in coppia.\n\nTono generale del legame: **${pontuacao}%** di compatibilità su chimica, emozione, comunicazione e futuro.`,
-    de: `${nomeA}, willkommen zu deiner persönlichen Synastrie mit ${nomeB}. Jeder Absatz wurde für **dich** geschrieben – aus den exakten Graden deines Geburtshimmels gekreuzt mit dem ihrem/seinem. Lies es wie ein Astrologielehrer, der privat mit dir spricht: Die Sterne urteilen nicht; sie erzählen die Geschichte, die ihr gemeinsam lebt.\n\nGesamtton der Verbindung: **${pontuacao}%** Kompatibilität in Chemie, Emotion, Kommunikation und Zukunft.`,
+    de: `${nomeA}, willkommen zu deiner persönlichen Synastrie mit ${nomeB}. Jeder Absatz wurde für **dich** geschrieben - aus den exakten Graden deines Geburtshimmels gekreuzt mit dem ihrem/seinem. Lies es wie ein Astrologielehrer, der privat mit dir spricht: Die Sterne urteilen nicht; sie erzählen die Geschichte, die ihr gemeinsam lebt.\n\nGesamtton der Verbindung: **${pontuacao}%** Kompatibilität in Chemie, Emotion, Kommunikation und Zukunft.`,
     fr: `${nomeA}, bienvenue dans ta synastrie personnelle avec ${nomeB}. Chaque paragraphe a été écrit pour **toi** à partir des degrés exacts de ton ciel de naissance croisé avec le sien. Lis comme un professeur d'astrologie qui te parle en privé : les astres ne jugent pas ; ils racontent l'histoire que tu vis à deux.\n\nTon général du lien : **${pontuacao}%** de compatibilité en chimie, émotion, communication et avenir.`,
   }
   return contentForLang(lang, INTRO) || INTRO.en

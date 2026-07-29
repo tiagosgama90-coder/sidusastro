@@ -3,7 +3,7 @@ import { useLanguage } from '../lib/i18n/LanguageContext.jsx'
 import { useGeoCountry } from '../hooks/useGeoCountry.js'
 import { getBeneficiosVip } from '../lib/i18n/ferramentasData.js'
 import { PremiumComparacao } from './PremiumComparacao.jsx'
-import { precoPremiumVitrine, formatPrecoEuro, PRECO_PREMIUM_BR_REAIS } from '../lib/pricing.js'
+import { precoPremiumVitrine, formatPrecoEuro, PRECO_PREMIUM_BR_PIX_BRL } from '../lib/pricing.js'
 
 export function LandingPremiumBenefits({ onScrollToAuth }) {
   const { t, lang } = useLanguage()
@@ -11,7 +11,7 @@ export function LandingPremiumBenefits({ onScrollToAuth }) {
   const beneficios = getBeneficiosVip(lang)
   const precoEur = formatPrecoEuro(precoPremiumVitrine(isBrasil))
   const priceLabel = isBrasil
-    ? t('landingPremium.pricePix', { reais: PRECO_PREMIUM_BR_REAIS, eur: precoEur })
+    ? t('landingPremium.pricePix', { reais: PRECO_PREMIUM_BR_PIX_BRL, eur: precoEur })
     : t('landingPremium.priceEur', { price: precoEur })
 
   const scrollToAuth = () => {
@@ -92,7 +92,7 @@ export function LandingPremiumJumpButton() {
   const { t } = useLanguage()
   const { isBrasil } = useGeoCountry()
   const priceShort = isBrasil
-    ? `R$ ${PRECO_PREMIUM_BR_REAIS}`
+    ? `R$ ${PRECO_PREMIUM_BR_PIX_BRL}`
     : `${formatPrecoEuro(precoPremiumVitrine(false))} €`
 
   return (

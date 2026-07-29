@@ -36,52 +36,52 @@ export function construirSistemaSonhos(lang = 'pt') {
 
   if (isPt(lang)) {
     return `
-És o motor de interpretação de sonhos do Sidus Astro. Decodificas cada relato EXCLUSIVAMENTE pela Matriz Hermenêutica de Psicologia Espiritual Integrativa — método bíblico-psicológico de leitura da linguagem da alma.
+És o motor de interpretação de sonhos do Sidus Astro. Decodificas cada relato EXCLUSIVAMENTE pela Matriz Hermenêutica de Psicologia Espiritual Integrativa - método bíblico-psicológico de leitura da linguagem da alma.
 
 REGRA DE CITAÇÃO: NUNCA cites autores, monges, teólogos, ordens religiosas ou títulos de livros. Se perguntarem o método, responde apenas: "Matriz Hermenêutica de Psicologia Espiritual Integrativa."
 
 ${metodologia}
 
-FORMATO — usa EXACTAMENTE estes quatro títulos (texto simples):
+FORMATO - usa EXACTAMENTE estes quatro títulos (texto simples):
 1. Análise do Estado da Alma
 2. O Alerta Interno
 3. O Caminho de Cura Espiritual
 4. Pergunta para Meditação
 
 CRÍTICO:
-- Segue os PRINCÍPIOS e o CAMINHO HERMENÊUTICO acima — não inventes simbolismo genérico fora desta matriz.
-- Cada resposta DEVE ser única a ESTE relato — cita imagens, pessoas, locais e acções concretas do utilizador.
+- Segue os PRINCÍPIOS e o CAMINHO HERMENÊUTICO acima - não inventes simbolismo genérico fora desta matriz.
+- Cada resposta DEVE ser única a ESTE relato - cita imagens, pessoas, locais e acções concretas do utilizador.
 - Interpreta CADA símbolo mencionado com a variante paz vs medo conforme o sentimento dominante.
-- Secção 3: inclui 1–2 caminhos de cura concretos escolhidos da lista metodológica.
+- Secção 3: inclui 1-2 caminhos de cura concretos escolhidos da lista metodológica.
 - Secção 4: uma pergunta aberta de meditação, pastoral, sem resposta fechada.
-- 200–340 palavras no total.
-- Tom pastoral, caloroso, misericordioso — Português de Portugal.
+- 200-340 palavras no total.
+- Tom pastoral, caloroso, misericordioso - Português de Portugal.
 `.trim()
   }
 
   return `
-You are the dream interpretation engine of Sidus Astro. Decode each report EXCLUSIVELY through Integrative Spiritual Psychology Hermeneutics — a biblical-psychological method for reading the language of the soul.
+You are the dream interpretation engine of Sidus Astro. Decode each report EXCLUSIVELY through Integrative Spiritual Psychology Hermeneutics - a biblical-psychological method for reading the language of the soul.
 
 CITATION RULE: NEVER cite authors, monks, theologians, religious orders, or book titles.
 
 ${metodologia}
 
 ${aiOutputLanguageBlock(lang)}
-The user's dream text may be in any language — write the FULL interpretation only in ${label}.
+The user's dream text may be in any language - write the FULL interpretation only in ${label}.
 
-RESPONSE FORMAT — use EXACTLY these four headers (plain text):
+RESPONSE FORMAT - use EXACTLY these four headers (plain text):
 ${h[0]}
 ${h[1]}
 ${h[2]}
 ${h[3]}
 
 CRITICAL:
-- Follow the PRINCIPLES and HERMENEUTIC PATH above — do not invent generic symbolism outside this matrix.
-- Each answer MUST be unique to THIS dream — cite concrete images, people, places and actions.
+- Follow the PRINCIPLES and HERMENEUTIC PATH above - do not invent generic symbolism outside this matrix.
+- Each answer MUST be unique to THIS dream - cite concrete images, people, places and actions.
 - Interpret EVERY symbol with peace vs fear variant according to dominant feeling.
-- Section 3: include 1–2 concrete healing paths from the methodological list.
+- Section 3: include 1-2 concrete healing paths from the methodological list.
 - Section 4: one open pastoral meditation question, never a closed answer.
-- 200–340 words total.
+- 200-340 words total.
 - Warm, merciful, pastoral tone in ${label}.
 `.trim()
 }
@@ -105,7 +105,7 @@ export function construirPedidoSonhos({ texto, lang, feeling, simbolosDetectados
   if (pt) {
     return `Sentimento dominante no sonho: ${feelingLabel}
 
-Símbolos detectados no léxico (usa como âncoras metodológicas — expande com paz vs medo conforme o sentimento):
+Símbolos detectados no léxico (usa como âncoras metodológicas - expande com paz vs medo conforme o sentimento):
 ${lista}
 ${astro}
 
@@ -117,7 +117,7 @@ ${texto}
 
   return `Dominant feeling in dream: ${feelingLabel}
 
-Symbols detected in lexicon (use as methodological anchors — expand with peace vs fear per feeling):
+Symbols detected in lexicon (use as methodological anchors - expand with peace vs fear per feeling):
 ${lista}
 ${astro}
 
@@ -213,8 +213,8 @@ export function gerarInterpretacaoLocal(texto, lang, feelingLabel, simbolosDetec
     en: `Your dream ("${excerpto}") is not fortune-telling - it mirrors your soul's current processing. Feeling noted: ${feelingLabel}. Symbols emerging: ${temas}. ${detalhes}${astro}`,
     es: `Tu sueño ("${excerpto}") no es adivinación: refleja el procesamiento actual del alma. Sentimiento: ${feelingLabel}. Símbolos emergentes: ${temas}. ${detalhes}${astro}`,
     it: `Il tuo sogno ("${excerpto}") non è divinazione: rispecchia l'elaborazione attuale dell'anima. Sentimento: ${feelingLabel}. Simboli emergenti: ${temas}. ${detalhes}${astro}`,
-    de: `Dein Traum ("${excerpto}") ist keine Wahrsagerei – er spiegelt die aktuelle Verarbeitung der Seele. Gefühl: ${feelingLabel}. Emergierende Symbole: ${temas}. ${detalhes}${astro}`,
-    fr: `Ton rêve ("${excerpto}") n'est pas de la divination – il reflète le traitement actuel de l'âme. Sentiment : ${feelingLabel}. Symboles émergents : ${temas}. ${detalhes}${astro}`,
+    de: `Dein Traum ("${excerpto}") ist keine Wahrsagerei - er spiegelt die aktuelle Verarbeitung der Seele. Gefühl: ${feelingLabel}. Emergierende Symbole: ${temas}. ${detalhes}${astro}`,
+    fr: `Ton rêve ("${excerpto}") n'est pas de la divination - il reflète le traitement actuel de l'âme. Sentiment : ${feelingLabel}. Symboles émergents : ${temas}. ${detalhes}${astro}`,
   })
 
   const s2 = medo
@@ -223,8 +223,8 @@ export function gerarInterpretacaoLocal(texto, lang, feelingLabel, simbolosDetec
       en: 'The tension or nightmare quality is a merciful alert - not punishment. Something avoided in waking life returns symbolically so you may face it with honesty rather than control.',
       es: 'La tensión o calidad de pesadilla es una alerta misericordiosa, no castigo. Algo evitado en la vida despierta regresa simbólicamente para enfrentarlo con honestidad, no control.',
       it: 'La tensione o qualità dell\'incubo è un allerta misericordiosa, non punizione. Qualcosa evitato nella vita sveglia ritorna simbolicamente per affrontarlo con onestà, non controllo.',
-      de: 'Die Spannung oder Albtraumqualität ist ein barmherziger Hinweis – keine Strafe. Etwas Vermiedenes im Wachleben kehrt symbolisch zurück, damit du es ehrlich statt kontrollierend begegnest.',
-      fr: 'La tension ou la qualité de cauchemar est une alerte miséricordieuse – pas une punition. Quelque chose évité dans la vie éveillée revient symboliquement pour l\'affronter avec honnêteté, pas contrôle.',
+      de: 'Die Spannung oder Albtraumqualität ist ein barmherziger Hinweis - keine Strafe. Etwas Vermiedenes im Wachleben kehrt symbolisch zurück, damit du es ehrlich statt kontrollierend begegnest.',
+      fr: 'La tension ou la qualité de cauchemar est une alerte miséricordieuse - pas une punition. Quelque chose évité dans la vie éveillée revient symboliquement pour l\'affronter avec honnêteté, pas contrôle.',
     })
     : contentForLang(lang, {
       pt: 'Mesmo sonhos mais calmos pedem atenção: o conforto pode esconder estagnação. Pergunta se esta imagem confirma descanso necessário ou avisa contra adiar um passo necessário.',
@@ -240,8 +240,8 @@ export function gerarInterpretacaoLocal(texto, lang, feelingLabel, simbolosDetec
     en: 'Practical path: (1) Name honestly what you feel today about this dream. (2) Ten minutes of silence or journaling. (3) One small reconciling gesture - with yourself or someone the dream touched. No lucky numbers; healing comes through attitude and quietude.',
     es: 'Camino práctico: (1) Nombra honestamente lo que sientes hoy sobre este sueño. (2) Diez minutos de silencio o escritura. (3) Un pequeño gesto de reconciliación, contigo o con quien el sueño tocó. Sin números de la suerte; la cura viene por actitud y quietud.',
     it: 'Percorso pratico: (1) Nomina onestamente ciò che senti oggi su questo sogno. (2) Dieci minuti di silenzio o scrittura. (3) Un piccolo gesto di riconciliazione, con te o con chi il sogno ha toccato. Niente numeri fortunati; la guarigione viene da atteggiamento e quiete.',
-    de: 'Praktischer Weg: (1) Benenne ehrlich, was du heute über diesen Traum fühlst. (2) Zehn Minuten Stille oder Schreiben. (3) Eine kleine Geste der Versöhnung – mit dir oder wem der Traum berührte. Keine Glückszahlen; Heilung kommt durch Haltung und Stille.',
-    fr: 'Chemin pratique : (1) Nomme honnêtement ce que tu ressens aujourd\'hui sur ce rêve. (2) Dix minutes de silence ou d\'écriture. (3) Un petit geste de réconciliation – avec toi ou quelqu\'un que le rêve a touché. Pas de numéros porte-bonheur ; la guérison vient par l\'attitude et la quiétude.',
+    de: 'Praktischer Weg: (1) Benenne ehrlich, was du heute über diesen Traum fühlst. (2) Zehn Minuten Stille oder Schreiben. (3) Eine kleine Geste der Versöhnung - mit dir oder wem der Traum berührte. Keine Glückszahlen; Heilung kommt durch Haltung und Stille.',
+    fr: 'Chemin pratique : (1) Nomme honnêtement ce que tu ressens aujourd\'hui sur ce rêve. (2) Dix minutes de silence ou d\'écriture. (3) Un petit geste de réconciliation - avec toi ou quelqu\'un que le rêve a touché. Pas de numéros porte-bonheur ; la guérison vient par l\'attitude et la quiétude.',
   })
 
   const s4 = contentForLang(lang, {
@@ -249,8 +249,8 @@ export function gerarInterpretacaoLocal(texto, lang, feelingLabel, simbolosDetec
     en: `Which image from "${excerpto}" asks you for a softer gaze upon yourself - not answers, but compassion?`,
     es: `¿Qué imagen de "${excerpto}" te pide una mirada más suave sobre ti, no respuestas, sino compasión?`,
     it: `Quale immagine di "${excerpto}" ti chiede uno sguardo più dolce su te stesso/a, non risposte, ma compassione?`,
-    de: `Welches Bild aus "${excerpto}" bittet dich um einen sanfteren Blick auf dich – nicht Antworten, sondern Mitgefühl?`,
-    fr: `Quelle image de "${excerpto}" te demande un regard plus doux sur toi – pas des réponses, mais de la compassion ?`,
+    de: `Welches Bild aus "${excerpto}" bittet dich um einen sanfteren Blick auf dich - nicht Antworten, sondern Mitgefühl?`,
+    fr: `Quelle image de "${excerpto}" te demande un regard plus doux sur toi - pas des réponses, mais de la compassion ?`,
   })
 
   return [

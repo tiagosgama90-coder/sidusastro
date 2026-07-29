@@ -1,10 +1,11 @@
-import { Compass, Heart, Activity, BookOpen, Moon, Sparkles, Clock } from 'lucide-react'
+import { Compass, Heart, Activity, BookOpen, Moon, Clock } from 'lucide-react'
+import { PythagoreanStarIcon } from '../../components/icons/PythagoreanStarIcon.jsx'
 import { contentForLang } from './langUtil.js'
 
 const FERRAMENTAS_PT = [
-  { id: 'bussola', nome: 'Bússola Cósmica', icon: Compass, premium: true },
+  { id: 'bussola', nome: 'Bússola Cósmica', sub: 'Trânsitos reais · eclipses por casa natal', icon: Compass, premium: true },
   { id: 'sinastria', nome: 'Radar de Afinidades', sub: 'Prévia grátis · Sinastria Pro', icon: Heart, premium: false },
-  { id: 'numerologia', nome: 'Numerologia', sub: 'Vibração espiritual do nome', icon: Sparkles, premium: true },
+  { id: 'numerologia', nome: 'Numerologia', sub: 'Vibração espiritual do nome', icon: PythagoreanStarIcon, premium: true },
   { id: 'sonhos', nome: 'Interpretação de Sonhos', sub: 'Mimo de boas-vindas grátis', icon: Moon, premium: false },
   { id: 'biorritmo', nome: 'Fluxo Vital', sub: 'Biorritmo', icon: Activity, premium: false },
   { id: 'horasIguais', nome: 'Horas Iguais', sub: 'Mensagens angélicas', icon: Clock, premium: false },
@@ -12,50 +13,50 @@ const FERRAMENTAS_PT = [
 ]
 
 const FERRAMENTAS_EN = [
-  { id: 'bussola', nome: 'Cosmic Compass', icon: Compass, premium: true },
+  { id: 'bussola', nome: 'Cosmic Compass', sub: 'Real transits · eclipses by natal house', icon: Compass, premium: true },
   { id: 'sinastria', nome: 'Affinity Radar', sub: 'Free preview · Pro synastry', icon: Heart, premium: false },
-  { id: 'numerologia', nome: 'Numerology', sub: 'Spiritual name vibration', icon: Sparkles, premium: true },
-  { id: 'sonhos', nome: 'Dream Interpretation', sub: 'Symbols & messages', icon: Moon, premium: false },
+  { id: 'numerologia', nome: 'Numerology', sub: 'Spiritual name vibration', icon: PythagoreanStarIcon, premium: true },
+  { id: 'sonhos', nome: 'Dream Interpretation', sub: 'Free welcome gift', icon: Moon, premium: false },
   { id: 'biorritmo', nome: 'Vital Flow', sub: 'Biorhythm', icon: Activity, premium: false },
   { id: 'horasIguais', nome: 'Mirror Hours', sub: 'Angelic messages', icon: Clock, premium: false },
   { id: 'diario', nome: 'Astral Journal', icon: BookOpen, premium: false },
 ]
 
 const FERRAMENTAS_ES = [
-  { id: 'bussola', nome: 'Brújula Cósmica', icon: Compass, premium: true },
+  { id: 'bussola', nome: 'Brújula Cósmica', sub: 'Tránsitos reales · eclipses por casa natal', icon: Compass, premium: true },
   { id: 'sinastria', nome: 'Radar de Afinidades', sub: 'Vista previa gratis · Sinastría Pro', icon: Heart, premium: false },
-  { id: 'numerologia', nome: 'Numerología', sub: 'Vibración espiritual del nombre', icon: Sparkles, premium: true },
-  { id: 'sonhos', nome: 'Interpretación de Sueños', sub: 'Símbolos y mensajes', icon: Moon, premium: false },
+  { id: 'numerologia', nome: 'Numerología', sub: 'Vibración espiritual del nombre', icon: PythagoreanStarIcon, premium: true },
+  { id: 'sonhos', nome: 'Interpretación de Sueños', sub: 'Regalo de bienvenida gratis', icon: Moon, premium: false },
   { id: 'biorritmo', nome: 'Flujo Vital', sub: 'Biorritmo', icon: Activity, premium: false },
   { id: 'horasIguais', nome: 'Horas Espejo', sub: 'Mensajes angélicos', icon: Clock, premium: false },
   { id: 'diario', nome: 'Diario Astral', icon: BookOpen, premium: false },
 ]
 
 const FERRAMENTAS_IT = [
-  { id: 'bussola', nome: 'Bussola Cosmica', icon: Compass, premium: true },
+  { id: 'bussola', nome: 'Bussola Cosmica', sub: 'Transiti reali · eclissi per casa natale', icon: Compass, premium: true },
   { id: 'sinastria', nome: 'Radar delle Affinità', sub: 'Anteprima gratis · Sinastria Pro', icon: Heart, premium: false },
-  { id: 'numerologia', nome: 'Numerologia', sub: 'Vibrazione spirituale del nome', icon: Sparkles, premium: true },
-  { id: 'sonhos', nome: 'Interpretazione dei Sogni', sub: 'Simboli e messaggi', icon: Moon, premium: false },
+  { id: 'numerologia', nome: 'Numerologia', sub: 'Vibrazione spirituale del nome', icon: PythagoreanStarIcon, premium: true },
+  { id: 'sonhos', nome: 'Interpretazione dei Sogni', sub: 'Regalo di benvenuto gratis', icon: Moon, premium: false },
   { id: 'biorritmo', nome: 'Flusso Vitale', sub: 'Bioritmo', icon: Activity, premium: false },
   { id: 'horasIguais', nome: 'Ore Specchio', sub: 'Messaggi angelici', icon: Clock, premium: false },
   { id: 'diario', nome: 'Diario Astrale', icon: BookOpen, premium: false },
 ]
 
 const FERRAMENTAS_DE = [
-  { id: 'bussola', nome: 'Kosmischer Kompass', icon: Compass, premium: true },
+  { id: 'bussola', nome: 'Kosmischer Kompass', sub: 'Echte Transite · Finsternisse nach Geburtshaus', icon: Compass, premium: true },
   { id: 'sinastria', nome: 'Affinitäts-Radar', sub: 'Kostenlose Vorschau · Pro-Synastrie', icon: Heart, premium: false },
-  { id: 'numerologia', nome: 'Numerologie', sub: 'Spirituelle Namensschwingung', icon: Sparkles, premium: true },
-  { id: 'sonhos', nome: 'Traumdeutung', sub: 'Symbole & Botschaften', icon: Moon, premium: false },
+  { id: 'numerologia', nome: 'Numerologie', sub: 'Spirituelle Namensschwingung', icon: PythagoreanStarIcon, premium: true },
+  { id: 'sonhos', nome: 'Traumdeutung', sub: 'Kostenloses Willkommensgeschenk', icon: Moon, premium: false },
   { id: 'biorritmo', nome: 'Vitaler Fluss', sub: 'Biorhythmus', icon: Activity, premium: false },
   { id: 'horasIguais', nome: 'Spiegelstunden', sub: 'Engelsbotschaften', icon: Clock, premium: false },
   { id: 'diario', nome: 'Astraltagebuch', icon: BookOpen, premium: false },
 ]
 
 const FERRAMENTAS_FR = [
-  { id: 'bussola', nome: 'Boussole Cosmique', icon: Compass, premium: true },
+  { id: 'bussola', nome: 'Boussole Cosmique', sub: 'Transits réels · éclipses par maison natale', icon: Compass, premium: true },
   { id: 'sinastria', nome: 'Radar d\'Affinités', sub: 'Aperçu gratuit · Synastrie Pro', icon: Heart, premium: false },
-  { id: 'numerologia', nome: 'Numérologie', sub: 'Vibration spirituelle du nom', icon: Sparkles, premium: true },
-  { id: 'sonhos', nome: 'Interprétation des Rêves', sub: 'Symboles et messages', icon: Moon, premium: false },
+  { id: 'numerologia', nome: 'Numérologie', sub: 'Vibration spirituelle du nom', icon: PythagoreanStarIcon, premium: true },
+  { id: 'sonhos', nome: 'Interprétation des Rêves', sub: 'Cadeau de bienvenue gratuit', icon: Moon, premium: false },
   { id: 'biorritmo', nome: 'Flux Vital', sub: 'Biorythme', icon: Activity, premium: false },
   { id: 'horasIguais', nome: 'Heures Miroirs', sub: 'Messages angéliques', icon: Clock, premium: false },
   { id: 'diario', nome: 'Journal Astral', icon: BookOpen, premium: false },

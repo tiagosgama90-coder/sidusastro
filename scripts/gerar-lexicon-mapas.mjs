@@ -335,66 +335,66 @@ const CASA_TEMA = {
 
 const INTRO_SIGN = {
   pt: (p, s, dom, ess, elem, mod) =>
-    `Com ${p} em ${s}, a tua ${dom} ganha o colorido de ${ess}. Não é um rótulo genérico: é a forma particular como vives esta função psíquica quando o elemento ${elem} e a modalidade ${mod} se encontram no teu mapa. Aqui, a vida pede-te presença concreta — não teorias sobre quem deverias ser, mas a experiência vivida desta combinação única.`,
+    `Com ${p} em ${s}, a tua ${dom} ganha o colorido de ${ess}. Não é um rótulo genérico: é a forma particular como vives esta função psíquica quando o elemento ${elem} e a modalidade ${mod} se encontram no teu mapa. Aqui, a vida pede-te presença concreta - não teorias sobre quem deverias ser, mas a experiência vivida desta combinação única.`,
   en: (p, s, dom, ess, elem, mod) =>
-    `With ${p} in ${s}, your ${dom} takes the colour of ${ess}. This is not a generic label: it is how you live this psychic function when ${elem} and ${mod} modality meet in your chart. Life asks for concrete presence — not theories about who you should be, but lived experience of this unique combination.`,
+    `With ${p} in ${s}, your ${dom} takes the colour of ${ess}. This is not a generic label: it is how you live this psychic function when ${elem} and ${mod} modality meet in your chart. Life asks for concrete presence - not theories about who you should be, but lived experience of this unique combination.`,
   es: (p, s, dom, ess, elem, mod) =>
-    `Con ${p} en ${s}, tu ${dom} adquiere el matiz de ${ess}. No es una etiqueta genérica: es la forma particular en que vives esta función psíquica cuando el elemento ${elem} y la modalidad ${mod} se encuentran en tu carta. La vida te pide presencia concreta — no teorías sobre quién deberías ser, sino la experiencia vivida de esta combinación única.`,
+    `Con ${p} en ${s}, tu ${dom} adquiere el matiz de ${ess}. No es una etiqueta genérica: es la forma particular en que vives esta función psíquica cuando el elemento ${elem} y la modalidad ${mod} se encuentran en tu carta. La vida te pide presencia concreta - no teorías sobre quién deberías ser, sino la experiencia vivida de esta combinación única.`,
   it: (p, s, dom, ess, elem, mod) =>
-    `Con ${p} in ${s}, la tua ${dom} assume la sfumatura di ${ess}. Non è un'etichetta generica: è il modo particolare in cui vivi questa funzione psichica quando l'elemento ${elem} e la modalità ${mod} si incontrano nella tua carta. La vita chiede presenza concreta — non teorie su chi dovresti essere, ma l'esperienza vissuta di questa combinazione unica.`,
+    `Con ${p} in ${s}, la tua ${dom} assume la sfumatura di ${ess}. Non è un'etichetta generica: è il modo particolare in cui vivi questa funzione psichica quando l'elemento ${elem} e la modalità ${mod} si incontrano nella tua carta. La vita chiede presenza concreta - non teorie su chi dovresti essere, ma l'esperienza vissuta di questa combinazione unica.`,
   de: (p, s, dom, ess, elem, mod) =>
-    `Mit ${p} in ${s} erhält deine ${dom} die Färbung von ${ess}. Das ist kein generisches Etikett: Es ist, wie du diese psychische Funktion lebst, wenn ${elem} und ${mod} Modalität in deinem Horoskop zusammentreffen. Das Leben verlangt konkrete Präsenz — keine Theorien darüber, wer du sein solltest, sondern gelebte Erfahrung dieser einzigartigen Kombination.`,
+    `Mit ${p} in ${s} erhält deine ${dom} die Färbung von ${ess}. Das ist kein generisches Etikett: Es ist, wie du diese psychische Funktion lebst, wenn ${elem} und ${mod} Modalität in deinem Horoskop zusammentreffen. Das Leben verlangt konkrete Präsenz - keine Theorien darüber, wer du sein solltest, sondern gelebte Erfahrung dieser einzigartigen Kombination.`,
   fr: (p, s, dom, ess, elem, mod) =>
-    `Avec ${p} en ${s}, ta ${dom} prend la couleur de ${ess}. Ce n'est pas une étiquette générique : c'est la façon particulière dont tu vis cette fonction psychique quand l'élément ${elem} et la modalité ${mod} se rencontrent dans ta carte. La vie demande une présence concrète — pas des théories sur qui tu devrais être, mais l'expérience vécue de cette combinaison unique.`,
+    `Avec ${p} en ${s}, ta ${dom} prend la couleur de ${ess}. Ce n'est pas une étiquette générique : c'est la façon particulière dont tu vis cette fonction psychique quand l'élément ${elem} et la modalité ${mod} se rencontrent dans ta carte. La vie demande une présence concrète - pas des théories sur qui tu devrais être, mais l'expérience vécue de cette combinaison unique.`,
 }
 
 const SHADOW_BLOCK = {
-  pt: (s, l) => `A sombra deste posicionamento manifesta-se como ${s}. Reconhecer estes padrões sem te julgares é o primeiro passo para deixar de repetir dramas inconscientes. A luz, por outro lado, revela ${l} — qualidades que outros frequentemente vêem em ti antes de tu próprio/a as assumires plenamente.`,
-  en: (s, l) => `The shadow of this placement shows as ${s}. Recognising these patterns without self-judgment is the first step to stop repeating unconscious dramas. The light reveals ${l} — qualities others often see in you before you fully claim them.`,
-  es: (s, l) => `La sombra de este posicionamiento se manifiesta como ${s}. Reconocer estos patrones sin juzgarte es el primer paso para dejar de repetir dramas inconscientes. La luz, por otro lado, revela ${l} — cualidades que otros suelen ver en ti antes de que tú mismo/a las asumas plenamente.`,
-  it: (s, l) => `L'ombra di questo posizionamento si manifesta come ${s}. Riconoscere questi schemi senza giudicarti è il primo passo per smettere di ripetere drammi inconsci. La luce, d'altra parte, rivela ${l} — qualità che gli altri spesso vedono in te prima che tu le assuma pienamente.`,
-  de: (s, l) => `Der Schatten dieser Position zeigt sich als ${s}. Diese Muster ohne Selbstverurteilung zu erkennen ist der erste Schritt, unbewusste Dramen nicht zu wiederholen. Das Licht offenbart ${l} — Qualitäten, die andere oft in dir sehen, bevor du sie voll annimmst.`,
-  fr: (s, l) => `L'ombre de cette position se manifeste comme ${s}. Reconnaître ces schémas sans te juger est la première étape pour ne plus répéter des drames inconscients. La lumière révèle ${l} — des qualités que les autres voient souvent en toi avant que tu ne les assumes pleinement.`,
+  pt: (s, l) => `A sombra deste posicionamento manifesta-se como ${s}. Reconhecer estes padrões sem te julgares é o primeiro passo para deixar de repetir dramas inconscientes. A luz, por outro lado, revela ${l} - qualidades que outros frequentemente vêem em ti antes de tu próprio/a as assumires plenamente.`,
+  en: (s, l) => `The shadow of this placement shows as ${s}. Recognising these patterns without self-judgment is the first step to stop repeating unconscious dramas. The light reveals ${l} - qualities others often see in you before you fully claim them.`,
+  es: (s, l) => `La sombra de este posicionamiento se manifiesta como ${s}. Reconocer estos patrones sin juzgarte es el primer paso para dejar de repetir dramas inconscientes. La luz, por otro lado, revela ${l} - cualidades que otros suelen ver en ti antes de que tú mismo/a las asumas plenamente.`,
+  it: (s, l) => `L'ombra di questo posizionamento si manifesta come ${s}. Riconoscere questi schemi senza giudicarti è il primo passo per smettere di ripetere drammi inconsci. La luce, d'altra parte, rivela ${l} - qualità che gli altri spesso vedono in te prima che tu le assuma pienamente.`,
+  de: (s, l) => `Der Schatten dieser Position zeigt sich als ${s}. Diese Muster ohne Selbstverurteilung zu erkennen ist der erste Schritt, unbewusste Dramen nicht zu wiederholen. Das Licht offenbart ${l} - Qualitäten, die andere oft in dir sehen, bevor du sie voll annimmst.`,
+  fr: (s, l) => `L'ombre de cette position se manifeste comme ${s}. Reconnaître ces schémas sans te juger est la première étape pour ne plus répéter des drames inconscients. La lumière révèle ${l} - des qualités que les autres voient souvent en toi avant que tu ne les assumes pleinement.`,
 }
 
 const EVOL_BLOCK = {
-  pt: (modal, p, s) => `No plano evolutivo, ${modal}. Conselho prático: observa onde ${p} em ${s} se activa nos próximos sete dias — nas conversas, nas decisões rápidas, nas reacções emocionais — e escolhe uma acção pequena que honre a luz deste signo sem alimentar a sombra.`,
-  en: (modal, p, s) => `Evolutionarily, ${modal}. Practical counsel: notice where ${p} in ${s} activates in the next seven days — in conversations, quick decisions, emotional reactions — and choose one small action that honours this sign's light without feeding its shadow.`,
-  es: (modal, p, s) => `En el plano evolutivo, ${modal}. Consejo práctico: observa dónde ${p} en ${s} se activa en los próximos siete días — en conversaciones, decisiones rápidas, reacciones emocionales — y elige una acción pequeña que honre la luz de este signo sin alimentar la sombra.`,
-  it: (modal, p, s) => `Sul piano evolutivo, ${modal}. Consiglio pratico: osserva dove ${p} in ${s} si attiva nei prossimi sette giorni — nelle conversazioni, decisioni rapide, reazioni emotive — e scegli una piccola azione che onori la luce di questo segno senza nutrire l'ombra.`,
-  de: (modal, p, s) => `Evolutionär gilt: ${modal}. Praktischer Rat: Beobachte, wo ${p} in ${s} in den nächsten sieben Tagen aktiv wird — in Gesprächen, schnellen Entscheidungen, emotionalen Reaktionen — und wähle eine kleine Handlung, die das Licht dieses Zeichens ehrt, ohne seinen Schatten zu nähren.`,
-  fr: (modal, p, s) => `Sur le plan évolutif, ${modal}. Conseil pratique : observe où ${p} en ${s} s'active dans les sept prochains jours — dans les conversations, décisions rapides, réactions émotionnelles — et choisis une petite action qui honore la lumière de ce signe sans nourrir l'ombre.`,
+  pt: (modal, p, s) => `No plano evolutivo, ${modal}. Conselho prático: observa onde ${p} em ${s} se activa nos próximos sete dias - nas conversas, nas decisões rápidas, nas reacções emocionais - e escolhe uma acção pequena que honre a luz deste signo sem alimentar a sombra.`,
+  en: (modal, p, s) => `Evolutionarily, ${modal}. Practical counsel: notice where ${p} in ${s} activates in the next seven days - in conversations, quick decisions, emotional reactions - and choose one small action that honours this sign's light without feeding its shadow.`,
+  es: (modal, p, s) => `En el plano evolutivo, ${modal}. Consejo práctico: observa dónde ${p} en ${s} se activa en los próximos siete días - en conversaciones, decisiones rápidas, reacciones emocionales - y elige una acción pequeña que honre la luz de este signo sin alimentar la sombra.`,
+  it: (modal, p, s) => `Sul piano evolutivo, ${modal}. Consiglio pratico: osserva dove ${p} in ${s} si attiva nei prossimi sette giorni - nelle conversazioni, decisioni rapide, reazioni emotive - e scegli una piccola azione che onori la luce di questo segno senza nutrire l'ombra.`,
+  de: (modal, p, s) => `Evolutionär gilt: ${modal}. Praktischer Rat: Beobachte, wo ${p} in ${s} in den nächsten sieben Tagen aktiv wird - in Gesprächen, schnellen Entscheidungen, emotionalen Reaktionen - und wähle eine kleine Handlung, die das Licht dieses Zeichens ehrt, ohne seinen Schatten zu nähren.`,
+  fr: (modal, p, s) => `Sur le plan évolutif, ${modal}. Conseil pratique : observe où ${p} en ${s} s'active dans les sept prochains jours - dans les conversations, décisions rapides, réactions émotionnelles - et choisis une petite action qui honore la lumière de ce signe sans nourrir l'ombre.`,
 }
 
 const HOUSE_INTRO = {
   pt: (p, c, dom, tema) => [
     `Quando ${p} ocupa a ${c}ª Casa, a tua ${dom} desenha-se no palco da ${tema}. Esta casa não é cenário decorativo: é o território da vida onde esta energia se torna visível, testada e, com o tempo, dominada ou integrada.`,
-    `Aqui aprendes que o mapa não separa carácter de circunstância — a forma como vives ${dom} molda experiências nesta área, e estas experiências devolvem-te um espelho sobre quem estás a tornar-te. Repetições frustrantes nesta casa são convites à maturidade, não maldições.`,
+    `Aqui aprendes que o mapa não separa carácter de circunstância - a forma como vives ${dom} molda experiências nesta área, e estas experiências devolvem-te um espelho sobre quem estás a tornar-te. Repetições frustrantes nesta casa são convites à maturidade, não maldições.`,
     `Para trabalhar conscientemente este posicionamento, ritualiza uma prática semanal ligada à ${c}ª Casa: um gesto simples, consistente, que alinhe ${p} com intenção e não apenas com hábito automático.`,
   ],
   en: (p, c, dom, tema) => [
     `When ${p} occupies House ${c}, your ${dom} unfolds on the stage of ${tema}. This house is not decorative scenery: it is life's territory where this energy becomes visible, tested and, over time, mastered or integrated.`,
-    `Here you learn the chart does not separate character from circumstance — how you live ${dom} shapes experiences in this area, and those experiences mirror who you are becoming. Frustrating repetitions in this house are invitations to maturity, not curses.`,
+    `Here you learn the chart does not separate character from circumstance - how you live ${dom} shapes experiences in this area, and those experiences mirror who you are becoming. Frustrating repetitions in this house are invitations to maturity, not curses.`,
     `To work this placement consciously, ritualise a weekly practice linked to House ${c}: one simple, consistent gesture aligning ${p} with intention, not mere automatic habit.`,
   ],
   es: (p, c, dom, tema) => [
     `Cuando ${p} ocupa la Casa ${c}, tu ${dom} se dibuja en el escenario de ${tema}. Esta casa no es decorado: es el territorio de la vida donde esta energía se vuelve visible, se prueba y, con el tiempo, se domina o integra.`,
-    `Aquí aprendes que la carta no separa carácter de circunstancia — la forma en que vives ${dom} moldea experiencias en esta área, y estas experiencias te devuelven un espejo de quién te estás convirtiendo. Las repeticiones frustrantes en esta casa son invitaciones a la madurez, no maldiciones.`,
+    `Aquí aprendes que la carta no separa carácter de circunstancia - la forma en que vives ${dom} moldea experiencias en esta área, y estas experiencias te devuelven un espejo de quién te estás convirtiendo. Las repeticiones frustrantes en esta casa son invitaciones a la madurez, no maldiciones.`,
     `Para trabajar conscientemente este posicionamiento, ritualiza una práctica semanal ligada a la Casa ${c}: un gesto simple y constante que alinee ${p} con intención y no solo con hábito automático.`,
   ],
   it: (p, c, dom, tema) => [
     `Quando ${p} occupa la Casa ${c}, la tua ${dom} si disegna sul palco di ${tema}. Questa casa non è scenografia decorativa: è il territorio della vita dove questa energia diventa visibile, viene messa alla prova e, col tempo, dominata o integrata.`,
-    `Qui impari che la carta non separa carattere da circostanza — il modo in cui vivi ${dom} modella esperienze in quest'area, e queste esperienze ti restituiscono uno specchio di chi stai diventando. Le ripetizioni frustranti in questa casa sono inviti alla maturità, non maledizioni.`,
+    `Qui impari che la carta non separa carattere da circostanza - il modo in cui vivi ${dom} modella esperienze in quest'area, e queste esperienze ti restituiscono uno specchio di chi stai diventando. Le ripetizioni frustranti in questa casa sono inviti alla maturità, non maledizioni.`,
     `Per lavorare consapevolmente questo posizionamento, ritualizza una pratica settimanale legata alla Casa ${c}: un gesto semplice e costante che allinei ${p} con intenzione e non solo con abitudine automatica.`,
   ],
   de: (p, c, dom, tema) => [
     `Wenn ${p} das Haus ${c} besetzt, entfaltet sich deine ${dom} auf der Bühne von ${tema}. Dieses Haus ist keine Dekoration: Es ist Lebensgebiet, wo diese Energie sichtbar wird, geprüft und mit der Zeit gemeistert oder integriert wird.`,
-    `Hier lernst du, dass die Karte Charakter und Umstand nicht trennt — wie du ${dom} lebst, formt Erfahrungen in diesem Bereich, und diese Erfahrungen spiegeln, wer du wirst. Frustrierende Wiederholungen in diesem Haus sind Einladungen zur Reife, keine Flüche.`,
+    `Hier lernst du, dass die Karte Charakter und Umstand nicht trennt - wie du ${dom} lebst, formt Erfahrungen in diesem Bereich, und diese Erfahrungen spiegeln, wer du wirst. Frustrierende Wiederholungen in diesem Haus sind Einladungen zur Reife, keine Flüche.`,
     `Um diese Position bewusst zu arbeiten, ritualisiere eine wöchentliche Praxis zum Haus ${c}: eine einfache, beständige Geste, die ${p} mit Absicht ausrichtet, nicht nur mit automatischer Gewohnheit.`,
   ],
   fr: (p, c, dom, tema) => [
     `Quand ${p} occupe la Maison ${c}, ta ${dom} se dessine sur la scène de ${tema}. Cette maison n'est pas un décor : c'est le territoire de la vie où cette énergie devient visible, est éprouvée et, avec le temps, maîtrisée ou intégrée.`,
-    `Ici tu apprends que la carte ne sépare pas caractère et circonstance — la façon dont tu vis ${dom} façonne les expériences dans ce domaine, et ces expériences te renvoient un miroir de qui tu deviens. Les répétitions frustrantes dans cette maison sont des invitations à la maturité, pas des malédictions.`,
+    `Ici tu apprends que la carte ne sépare pas caractère et circonstance - la façon dont tu vis ${dom} façonne les expériences dans ce domaine, et ces expériences te renvoient un miroir de qui tu deviens. Les répétitions frustrantes dans cette maison sont des invitations à la maturité, pas des malédictions.`,
     `Pour travailler consciemment cette position, ritualise une pratique hebdomadaire liée à la Maison ${c} : un geste simple et constant qui aligne ${p} avec intention et pas seulement avec habitude automatique.`,
   ],
 }
@@ -448,7 +448,7 @@ for (const lang of LANGS) {
 mkdirSync(OUT, { recursive: true })
 
 function writeModule(name, varName, data) {
-  const content = `/** Gerado por scripts/gerar-lexicon-mapas.mjs — não editar à mão */\nexport const ${varName} = ${JSON.stringify(data, null, 2)}\n`
+  const content = `/** Gerado por scripts/gerar-lexicon-mapas.mjs - não editar à mão */\nexport const ${varName} = ${JSON.stringify(data, null, 2)}\n`
   writeFileSync(join(OUT, name), content, 'utf8')
 }
 

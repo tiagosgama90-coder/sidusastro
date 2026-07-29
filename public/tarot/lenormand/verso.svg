@@ -35,5 +35,4 @@
     </g>
 <circle cx="225" cy="360" r="55" fill="url(#gold_verso)" stroke="#B8944F" stroke-width="3"/>
 <circle cx="225" cy="360" r="38" fill="#4A0E12" opacity="0.8"/>
-<text x="225" y="372" text-anchor="middle" fill="#DFB76C" font-family="Georgia,serif" font-size="28">✦</text>
 </svg>

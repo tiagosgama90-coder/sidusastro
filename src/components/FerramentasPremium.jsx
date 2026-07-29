@@ -1,6 +1,6 @@
 /**
  * Ferramentas Premium Sidus
- * ─ Bússola Cósmica 2026 (trânsitos planetários para o ano)
+ * ─ Bússola Cósmica (trânsitos mensais com efemérides reais)
  * ─ Sinastria (comparação de dois mapas natais)
  * ─ Biorritmo (ciclos físico/emocional/intelectual)
  * ─ Diário Astral (registo pessoal)
@@ -9,7 +9,7 @@ import { useState, useEffect, useMemo, useCallback, useRef } from 'react'
 import { useLanguage } from '../lib/i18n/LanguageContext.jsx'
 import { dateLocale, isPt } from '../lib/i18n/langUtil.js'
 import {
-  calcularBussola2026Async, relevanciaParaMapa, TIPO_ICO, IMPACTO_COR,
+  calcularBussolaAsync, TIPO_ICO, IMPACTO_COR,
 } from '../lib/bussolaCosmica.js'
 import { calcularSinastriaCompleta } from '../lib/sinastriaEngine.js'
 import { montarRelatorioSinastria, montarResumoGratis, montarSecoesPremium, EIXOS } from '../lib/sinastriaInterpretacao.js'
@@ -53,67 +53,98 @@ const CORES = {
   brancoMuted:'rgba(255,255,255,0.55)', vidroBorda:'rgba(223,183,108,0.22)',
 }
 
-export function BussolaCosmica({ mapaNatal, onVoltar }) {
-  const { lang, t, ts, tp } = useLanguage()
-  const [mesAberto, setMesAberto] = useState(null)
+function PaginaFerramenta({ className = '', children }) {
+  return (
+    <div className={`ferramenta-page${className ? ` ${className}` : ''}`}>
+      {children}
+    </div>
+  )
+}
+
+function TituloPagina({ children }) {
+  return <h1 className="sidus-page-title">{children}</h1>
+}
+
+function CabecalhoFerramenta({ titulo, children }) {
+  return (
+    <header style={{ marginBottom: 20 }}>
+      <TituloPagina>{titulo}</TituloPagina>
+      {children}
+    </header>
+  )
+}
+
+export function BussolaCosmica({ mapaNatal, planetasNatal, onVoltar }) {
+  const { lang, t, ts, tp, tpo, th } = useLanguage()
+  const agora = new Date()
+  const [ano, setAno] = useState(agora.getFullYear())
+  const [mesAberto, setMesAberto] = useState(agora.getMonth())
+  const [transitoAberto, setTransitoAberto] = useState(null)
   const [dados, setDados] = useState(null)
   const [carregando, setCarregando] = useState(true)
-  const locale = dateLocale(lang)
-  const mesAtual = new Date().toLocaleString(locale, { month: 'long' })
 
   useEffect(() => {
     let cancelado = false
     setCarregando(true)
-    calcularBussola2026Async(lang)
+    calcularBussolaAsync({ lang, year: ano, mapaNatal, planetasNatal: planetasNatal })
       .then((r) => { if (!cancelado) setDados(r) })
       .catch(() => { if (!cancelado) setDados(null) })
       .finally(() => { if (!cancelado) setCarregando(false) })
     return () => { cancelado = true }
-  }, [lang])
+  }, [lang, ano, mapaNatal, planetasNatal])
 
-  const transitos = dados?.transitos || []
-  const conceitos = dados?.conceitos || []
+  const meses = dados?.meses || []
+  const mesSel = meses[mesAberto]
+  const anosDisponiveis = useMemo(() => {
+    const y = agora.getFullYear()
+    return [y - 1, y, y + 1, y + 2]
+  }, [agora])
 
   return (
-    <div style={{padding:'20px 20px 110px'}}>
+    <PaginaFerramenta>
       <BotaoVoltar onVoltar={onVoltar} t={t} />
 
-      <div style={{marginBottom:24}}>
-        <h2 style={{fontSize:20,fontWeight:700,color:CORES.dourado,margin:'0 0 4px'}}>{t('ferramentasPremium.bussola.title')}</h2>
-        <p style={{fontSize:13,color:CORES.brancoMuted,margin:0}}>
+      <CabecalhoFerramenta titulo={t('ferramentasPremium.bussola.title')}>
+        <p style={{fontSize:13,color:CORES.brancoMuted,margin:'0 0 8px'}}>
           {t('ferramentasPremium.bussola.subtitle')}
         </p>
+        <p style={{fontSize:11,color:CORES.brancoMuted,margin:0,lineHeight:1.5}}>
+          {t('ferramentasPremium.bussola.methodology')}
+        </p>
+      </CabecalhoFerramenta>
+
+      <div style={{marginBottom:20}}>
+        <div style={{fontSize:12,color:CORES.brancoMuted,marginBottom:8}}>
+          {t('ferramentasPremium.bussola.yearLabel')}
+        </div>
+        <div style={{display:'flex',gap:6,flexWrap:'wrap'}}>
+          {anosDisponiveis.map((y) => {
+            const activo = ano === y
+            return (
+              <button
+                key={y}
+                type="button"
+                onClick={() => { setAno(y); setTransitoAberto(null) }}
+                style={{
+                  padding:'6px 12px',
+                  borderRadius:8,
+                  fontSize:12,
+                  fontWeight:600,
+                  cursor:'pointer',
+                  background:activo?'rgba(223,183,108,0.2)':'rgba(255,255,255,0.04)',
+                  border:`1px solid ${activo?CORES.dourado:'rgba(255,255,255,0.1)'}`,
+                  color:activo?CORES.dourado:CORES.brancoMuted,
+                }}
+              >
+                {y}
+              </button>
+            )
+          })}
+        </div>
       </div>
 
-      {carregando && (
-        <div style={{textAlign:'center',padding:'40px 20px',color:CORES.brancoMuted,fontSize:14}}>
-          {t('ferramentasPremium.bussola.calculating')}
-        </div>
-      )}
-
-      {!carregando && conceitos.length > 0 && (
-        <div style={{marginBottom:24}}>
-          <h3 style={{fontSize:14,fontWeight:700,color:CORES.dourado,margin:'0 0 12px'}}>
-            {t('ferramentasPremium.bussola.conceptsTitle')}
-          </h3>
-          <div style={{display:'flex',flexDirection:'column',gap:10}}>
-            {conceitos.map((c, i) => (
-              <div key={i} style={{
-                background:'rgba(255,255,255,0.04)',border:'1px solid rgba(223,183,108,0.15)',
-                borderRadius:12,padding:'12px 14px',
-              }}>
-                <div style={{fontSize:13,fontWeight:700,color:CORES.branco,marginBottom:6}}>
-                  {c.icon} {c.titulo}
-                </div>
-                <p style={{fontSize:12,color:CORES.brancoSuave,margin:0,lineHeight:1.65}}>{c.texto}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
       {mapaNatal && !carregando && (
-        <div style={{background:'rgba(223,183,108,0.07)',border:`1px solid rgba(223,183,108,0.25)`,borderRadius:12,padding:'12px 16px',marginBottom:20,fontSize:12,color:CORES.brancoSuave}}>
+        <div style={{background:'rgba(223,183,108,0.07)',border:'1px solid rgba(223,183,108,0.25)',borderRadius:12,padding:'12px 16px',marginBottom:20,fontSize:12,color:CORES.brancoSuave}}>
           {t('ferramentasPremium.bussola.personalized', {
             solar: ts(mapaNatal.solar?.nome),
             lunar: ts(mapaNatal.lunar?.nome),
@@ -122,55 +153,135 @@ export function BussolaCosmica({ mapaNatal, onVoltar }) {
         </div>
       )}
 
-      {!carregando && (
-      <div style={{display:'flex',flexDirection:'column',gap:10}}>
-        {transitos.map((transito,i)=>{
-          const esteMs = transito.mes.toLowerCase()===mesAtual.toLowerCase()
-          const relevante = mapaNatal && relevanciaParaMapa(transito, mapaNatal)
-            ? t('ferramentasPremium.bussola.relevant')
-            : ''
-          const aberto = mesAberto===i
-          return (
-            <div key={i} onClick={()=>setMesAberto(aberto?null:i)} style={{
-              background:esteMs?'rgba(223,183,108,0.08)':'rgba(255,255,255,0.03)',
-              border:`1px solid ${esteMs?CORES.dourado:'rgba(255,255,255,0.08)'}`,
-              borderRadius:12,padding:'14px 16px',cursor:'pointer',
-              transition:'all 0.2s',
+      {!mapaNatal && !carregando && (
+        <div style={{background:'rgba(248,113,113,0.08)',border:'1px solid rgba(248,113,113,0.25)',borderRadius:12,padding:'12px 16px',marginBottom:20,fontSize:12,color:'#FCA5A5'}}>
+          {t('ferramentasPremium.bussola.noNatal')}
+        </div>
+      )}
+
+      {carregando && (
+        <div style={{textAlign:'center',padding:'40px 20px',color:CORES.brancoMuted,fontSize:14}}>
+          {t('ferramentasPremium.bussola.calculating')}
+        </div>
+      )}
+
+      {!carregando && meses.length > 0 && (
+        <div style={{display:'flex',gap:6,flexWrap:'wrap',marginBottom:16}}>
+          {meses.map((m, i) => {
+            const activo = mesAberto === i
+            const temEclipse = m.eclipses?.length > 0
+            return (
+              <button
+                key={m.mes}
+                type="button"
+                onClick={() => { setMesAberto(i); setTransitoAberto(null) }}
+                style={{
+                  padding:'6px 10px',borderRadius:8,fontSize:11,fontWeight:600,cursor:'pointer',
+                  background:activo?'rgba(223,183,108,0.2)':'rgba(255,255,255,0.04)',
+                  border:`1px solid ${activo?CORES.dourado:'rgba(255,255,255,0.1)'}`,
+                  color:activo?CORES.dourado:CORES.brancoMuted,
+                }}
+              >
+                {m.mes.slice(0, 3)}{temEclipse ? ' 🌑' : ''}
+              </button>
+            )
+          })}
+        </div>
+      )}
+
+      {!carregando && mesSel?.eclipses?.length > 0 && (
+        <div style={{marginBottom:20}}>
+          <h3 style={{fontSize:14,fontWeight:700,color:'#F87171',margin:'0 0 10px'}}>
+            {t('ferramentasPremium.bussola.eclipseAlert')}
+          </h3>
+          {mesSel.eclipses.map((e, i) => (
+            <div key={i} style={{
+              background:'rgba(248,113,113,0.08)',border:'1px solid rgba(248,113,113,0.3)',
+              borderRadius:12,padding:'12px 14px',marginBottom:8,
             }}>
-              <div style={{display:'flex',alignItems:'center',gap:10}}>
-                <span style={{fontSize:20,width:28,textAlign:'center'}}>{TIPO_ICO[transito.tipo]||'•'}</span>
-                <div style={{flex:1}}>
-                  <div style={{display:'flex',alignItems:'center',gap:8}}>
-                    <span style={{fontSize:13,fontWeight:700,color:CORES.branco}}>{transito.mes}</span>
-                    {esteMs && <span style={{fontSize:10,padding:'2px 8px',borderRadius:10,background:'rgba(223,183,108,0.2)',color:CORES.dourado,fontWeight:700}}>{t('common.now')}</span>}
-                    {relevante && <span style={{fontSize:10,color:'#34D399'}}>{relevante}</span>}
-                  </div>
-                  <div style={{fontSize:12,color:CORES.brancoMuted,marginTop:2}}>
-                    {tp(transito.planeta)} {isPt(lang) ? 'em' : (lang === 'es' || lang === 'fr' ? 'en' : 'in')} {ts(transito.signo)}
-                  </div>
-                </div>
-                <span style={{
-                  fontSize:10,padding:'3px 8px',borderRadius:8,fontWeight:700,
-                  background:`${IMPACTO_COR[transito.impacto]}18`,
-                  color:IMPACTO_COR[transito.impacto],
-                  border:`1px solid ${IMPACTO_COR[transito.impacto]}30`,
-                }}>{transito.impactoLabel}</span>
+              <div style={{fontSize:13,fontWeight:700,color:CORES.branco,marginBottom:6}}>
+                {e.icone} {e.tipo === 'solar' ? t('ferramentasPremium.bussola.eclipseSolar') : t('ferramentasPremium.bussola.eclipseLunar')} {e.kindLabel}
               </div>
-              {aberto && (
-                <div style={{marginTop:12,paddingTop:12,borderTop:`1px solid rgba(255,255,255,0.07)`,fontSize:13,color:CORES.brancoSuave,lineHeight:1.7}}>
-                  {transito.desc}
-                  {mapaNatal && relevante && (
-                    <div style={{marginTop:10,padding:'8px 12px',background:'rgba(52,211,153,0.07)',borderRadius:8,borderLeft:'2px solid #34D399',fontSize:12,color:'#34D399'}}>
-                      {t('ferramentasPremium.bussola.affinity', { signo: ts(mapaNatal.solar?.nome) })}
+              <p style={{fontSize:12,color:CORES.brancoSuave,margin:0,lineHeight:1.65}}>{e.texto}</p>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {!carregando && mesSel && (
+        <div>
+          <h3 style={{fontSize:15,fontWeight:700,color:CORES.branco,margin:'0 0 12px'}}>
+            {mesSel.mes} {ano}
+          </h3>
+
+          {mesSel.eventos?.length > 0 && (
+            <div style={{display:'flex',flexWrap:'wrap',gap:8,marginBottom:16}}>
+              {mesSel.eventos.map((ev, i) => (
+                <span key={i} style={{fontSize:11,padding:'4px 10px',borderRadius:8,background:'rgba(255,255,255,0.05)',border:'1px solid rgba(255,255,255,0.1)',color:CORES.brancoMuted}}>
+                  {TIPO_ICO[ev.tipo] || '•'} {tp(ev.planeta)} {ev.tipo === 'ingresso' ? t('ferramentasPremium.bussola.ingress', { signo: ts(ev.signo) }) : t('ferramentasPremium.bussola.retrograde')} {ev.tipo === 'retrogrado' ? `· ${ts(ev.signo)}` : ''}
+                </span>
+              ))}
+            </div>
+          )}
+
+          {mesSel.transitos?.length === 0 && (
+            <p style={{fontSize:13,color:CORES.brancoMuted,marginBottom:16}}>{t('ferramentasPremium.bussola.noTransits')}</p>
+          )}
+
+          <div style={{display:'flex',flexDirection:'column',gap:10}}>
+            {mesSel.transitos?.map((tr, i) => {
+              const aberto = transitoAberto === `${mesAberto}-${i}`
+              return (
+                <div key={tr.id || i} style={{
+                  background:'rgba(255,255,255,0.03)',
+                  border:'1px solid rgba(255,255,255,0.08)',
+                  borderRadius:12,padding:'14px 16px',
+                }}>
+                  <button
+                    type="button"
+                    onClick={() => setTransitoAberto(aberto ? null : `${mesAberto}-${i}`)}
+                    style={{background:'none',border:'none',padding:0,width:'100%',textAlign:'left',cursor:'pointer'}}
+                  >
+                    <div style={{display:'flex',alignItems:'center',gap:10}}>
+                      <span style={{fontSize:18}}>{tr.icone || tr.simbolo}</span>
+                      <div style={{flex:1}}>
+                        <div style={{fontSize:13,fontWeight:700,color:CORES.branco}}>
+                          {tp(tr.planetaTransito)} {ts(tr.signoTransito)} → {tpo(tr.pontoNatal)}
+                        </div>
+                        <div style={{fontSize:11,color:CORES.brancoMuted,marginTop:2}}>
+                          {t('ferramentasPremium.bussola.houseActivation')}: {th(tr.casaTransit)} · {th(tr.casaNatal)}
+                        </div>
+                      </div>
+                      <span style={{
+                        fontSize:10,padding:'3px 8px',borderRadius:8,fontWeight:700,
+                        background:`${IMPACTO_COR[tr.impacto] || IMPACTO_COR.padrão}18`,
+                        color:IMPACTO_COR[tr.impacto] || IMPACTO_COR.padrão,
+                      }}>{tr.impactoLabel}</span>
+                    </div>
+                  </button>
+                  {aberto && (
+                    <div style={{marginTop:14,paddingTop:14,borderTop:'1px solid rgba(255,255,255,0.07)',display:'flex',flexDirection:'column',gap:12}}>
+                      <SecaoTransito titulo={t('ferramentasPremium.bussola.transitGeometry')} texto={tr.geometria} />
+                      <SecaoTransito titulo={t('ferramentasPremium.bussola.houseActivation')} texto={tr.activacaoCasa} cor="#60A5FA" />
+                      <SecaoTransito titulo={t('ferramentasPremium.bussola.counsel')} texto={tr.conselho} cor="#34D399" />
                     </div>
                   )}
                 </div>
-              )}
-            </div>
-          )
-        })}
-      </div>
+              )
+            })}
+          </div>
+        </div>
       )}
+
+    </PaginaFerramenta>
+  )
+}
+
+function SecaoTransito({ titulo, texto, cor = CORES.dourado }) {
+  return (
+    <div style={{padding:'10px 12px',background:'rgba(255,255,255,0.03)',borderRadius:8,borderLeft:`2px solid ${cor}`}}>
+      <div style={{fontSize:11,fontWeight:700,color:cor,marginBottom:6,textTransform:'uppercase',letterSpacing:'0.04em'}}>{titulo}</div>
+      <p style={{fontSize:12,color:CORES.brancoSuave,margin:0,lineHeight:1.7}}>{texto}</p>
     </div>
   )
 }
@@ -323,10 +434,11 @@ export function Sinastria({ mapaNatal, dadosUtilizador, isPremium = false, onUpg
   }
 
   return (
-    <div style={{ padding: '20px 20px 110px' }}>
+    <PaginaFerramenta>
       <BotaoVoltar onVoltar={onVoltar} t={t} />
-      <h2 style={{ fontSize: 20, fontWeight: 700, color: CORES.dourado, marginBottom: 4 }}>{t('ferramentasPremium.sinastria.title')}</h2>
-      <p style={{ fontSize: 13, color: CORES.brancoMuted, marginBottom: 8 }}>{t('ferramentasPremium.sinastria.subtitlePro')}</p>
+      <CabecalhoFerramenta titulo={t('ferramentasPremium.sinastria.title')}>
+        <p style={{ fontSize: 13, color: CORES.brancoMuted, margin: 0 }}>{t('ferramentasPremium.sinastria.subtitlePro')}</p>
+      </CabecalhoFerramenta>
 
       {mapaNatal && (
         <div style={{ background: 'rgba(255,255,255,0.04)', border: `1px solid ${CORES.vidroBorda}`, borderRadius: 14, padding: 16, marginBottom: 20 }}>
@@ -494,7 +606,7 @@ export function Sinastria({ mapaNatal, dadosUtilizador, isPremium = false, onUpg
           )}
         </div>
       )}
-    </div>
+    </PaginaFerramenta>
   )
 }
 
@@ -513,10 +625,11 @@ export function Biorritmo({ dados, utilizador, mapaNatal, onVoltar }) {
   const diasVida = diasVidaDesdeNascimento(resolvido)
 
   if (!dadosMinimosFerramentas(resolvido) || diasVida == null || diasVida < 0) return (
-    <div style={{ padding: 24 }}>
+    <PaginaFerramenta>
       <BotaoVoltar onVoltar={onVoltar} t={t} />
-      <p style={{ color: CORES.brancoMuted, textAlign: 'center', lineHeight: 1.6 }}>{t('ferramentasPremium.biorritmo.fillNatal')}</p>
-    </div>
+      <CabecalhoFerramenta titulo={t('ferramentasPremium.biorritmo.title')} />
+      <p style={{ color: CORES.brancoMuted, lineHeight: 1.6 }}>{t('ferramentasPremium.biorritmo.fillNatal')}</p>
+    </PaginaFerramenta>
   )
 
   const fisico = valorBiorritmo(diasVida, CICLO_FISICO)
@@ -536,12 +649,13 @@ export function Biorritmo({ dados, utilizador, mapaNatal, onVoltar }) {
   const locale = dateLocale(lang)
 
   return (
-    <div style={{ padding: '20px 20px 110px' }}>
+    <PaginaFerramenta>
       <BotaoVoltar onVoltar={onVoltar} t={t} />
-      <h2 style={{ fontSize: 20, fontWeight: 700, color: CORES.dourado, marginBottom: 4 }}>{t('ferramentasPremium.biorritmo.title')}</h2>
-      <p style={{ fontSize: 13, color: CORES.brancoMuted, marginBottom: 12 }}>
-        {t('ferramentasPremium.biorritmo.subtitle', { days: diasVidaInt.toLocaleString(locale) })}
-      </p>
+      <CabecalhoFerramenta titulo={t('ferramentasPremium.biorritmo.title')}>
+        <p style={{ fontSize: 13, color: CORES.brancoMuted, margin: 0 }}>
+          {t('ferramentasPremium.biorritmo.subtitle', { days: diasVidaInt.toLocaleString(locale) })}
+        </p>
+      </CabecalhoFerramenta>
       {resolvido?.hora && (
         <p style={{ fontSize: 11, color: CORES.brancoMuted, marginBottom: 16, lineHeight: 1.5 }}>
           {t('ferramentasPremium.biorritmo.precisionNote', { time: resolvido.hora })}
@@ -631,7 +745,7 @@ export function Biorritmo({ dados, utilizador, mapaNatal, onVoltar }) {
           }
         </p>
       </div>
-    </div>
+    </PaginaFerramenta>
   )
 }
 
@@ -641,7 +755,7 @@ function carregarDiario() {
   try { return JSON.parse(localStorage.getItem(CHAVE_DIARIO)||'[]') } catch { return [] }
 }
 
-export function DiarioAstral({ mapaNatal }) {
+export function DiarioAstral({ mapaNatal, onVoltar }) {
   const { lang, t, ts } = useLanguage()
   const [entradas, setEntradas] = useState(carregarDiario)
   const [nova, setNova]         = useState('')
@@ -680,9 +794,13 @@ export function DiarioAstral({ mapaNatal }) {
   }
 
   return (
-    <div style={{padding:'20px 20px 110px'}}>
-      <h2 style={{fontSize:20,fontWeight:700,color:CORES.dourado,marginBottom:4}}>{t('ferramentasPremium.diario.title')}</h2>
-      <p style={{fontSize:13,color:CORES.brancoMuted,marginBottom:20}}>{t('ferramentasPremium.diario.subtitle')}</p>
+    <PaginaFerramenta>
+      <BotaoVoltar onVoltar={onVoltar} t={t} />
+      <CabecalhoFerramenta titulo={t('ferramentasPremium.diario.title')}>
+        <p style={{ fontSize: 13, color: CORES.brancoMuted, margin: 0 }}>
+          {t('ferramentasPremium.diario.subtitle')}
+        </p>
+      </CabecalhoFerramenta>
 
       <div style={{background:'rgba(255,255,255,0.04)',border:`1px solid ${CORES.vidroBorda}`,borderRadius:14,padding:18,marginBottom:20}}>
         <div style={{display:'flex',gap:8,marginBottom:12,flexWrap:'wrap'}}>
@@ -730,7 +848,7 @@ export function DiarioAstral({ mapaNatal }) {
           })}
         </div>
       )}
-    </div>
+    </PaginaFerramenta>
   )
 }
 
@@ -756,8 +874,8 @@ function FormularioNumerologia({ t, onCalcular }) {
   const pronto = nome.trim() && dia.length === 2 && mes.length === 2 && ano.length === 4
 
   return (
-    <div style={{ background: 'rgba(255,255,255,0.04)', border: `1px solid ${CORES.vidroBorda}`, borderRadius: 14, padding: 20, maxWidth: 400, margin: '0 auto' }}>
-      <p style={{ fontSize: 13, color: CORES.brancoMuted, textAlign: 'center', marginBottom: 16, lineHeight: 1.6 }}>{t('ferramentasPremium.numerologia.fillForm')}</p>
+    <div className="numerologia-form-card" style={{ background: 'rgba(255,255,255,0.04)', border: `1px solid ${CORES.vidroBorda}`, borderRadius: 14, padding: 20 }}>
+      <p style={{ fontSize: 13, color: CORES.brancoMuted, marginBottom: 16, lineHeight: 1.6 }}>{t('ferramentasPremium.numerologia.fillForm')}</p>
       <label style={{ display: 'block', fontSize: 11, color: CORES.dourado, marginBottom: 6, textTransform: 'uppercase', letterSpacing: '0.06em' }}>{t('ferramentasPremium.numerologia.nameLabel')}</label>
       <input value={nome} onChange={(e) => setNome(e.target.value)} placeholder={t('ferramentasPremium.numerologia.namePlaceholder')} style={{ ...inputStyle, marginBottom: 14 }} />
       <label style={{ display: 'block', fontSize: 11, color: CORES.dourado, marginBottom: 6, textTransform: 'uppercase', letterSpacing: '0.06em' }}>{t('ferramentasPremium.numerologia.dateLabel')}</label>
@@ -788,10 +906,11 @@ export function Numerologia({ dados, utilizador, mapaNatal, onVoltar }) {
   ), [resolvido, lang, mapaNatal])
 
   if (!mapa) return (
-    <div style={{ padding: 24 }}>
+    <PaginaFerramenta className="numerologia-page">
       <BotaoVoltar onVoltar={onVoltar} t={t} />
+      <CabecalhoFerramenta titulo={t('ferramentasPremium.numerologia.title')} />
       <FormularioNumerologia t={t} onCalcular={setManual} />
-    </div>
+    </PaginaFerramenta>
   )
 
   const labelsPilar = {
@@ -806,17 +925,18 @@ export function Numerologia({ dados, utilizador, mapaNatal, onVoltar }) {
   }
 
   return (
-    <div style={{ padding: '20px 20px 110px', maxWidth: 520, margin: '0 auto' }}>
+    <PaginaFerramenta className="numerologia-page">
       <BotaoVoltar onVoltar={onVoltar} t={t} />
-      <h2 style={{ fontSize: 20, fontWeight: 700, color: CORES.dourado, marginBottom: 4 }}>{t('ferramentasPremium.numerologia.title')}</h2>
-      <p style={{ fontSize: 18, fontWeight: 600, color: CORES.branco, marginBottom: 6 }}>{resolvido.nome}</p>
-      <p style={{ fontSize: 12, color: CORES.brancoMuted, lineHeight: 1.65, marginBottom: 16 }}>
-        {t('ferramentasPremium.numerologia.nameSource', { name: resolvido.nome })}
-      </p>
+      <CabecalhoFerramenta titulo={t('ferramentasPremium.numerologia.title')}>
+        <p className="numerologia-nome" style={{ fontSize: 18, fontWeight: 600, color: CORES.branco, margin: '0 0 6px' }}>{resolvido.nome}</p>
+        <p style={{ fontSize: 12, color: CORES.brancoMuted, lineHeight: 1.65, margin: 0 }}>
+          {t('ferramentasPremium.numerologia.nameSource', { name: resolvido.nome })}
+        </p>
+      </CabecalhoFerramenta>
 
       {/* Tabela pitagórica */}
       <SecaoNumerologia titulo={t('ferramentasPremium.numerologia.tablePythagorean')}>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 6 }}>
+        <div className="numerologia-pitagorica" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 6 }}>
           {GRUPOS_PITAGORICOS.map((g) => (
             <div key={g.num} style={{ background: 'rgba(255,255,255,0.03)', borderRadius: 8, padding: '8px 10px', textAlign: 'center' }}>
               <div style={{ fontSize: 18, fontWeight: 700, color: CORES.dourado }}>{g.num}</div>
@@ -832,7 +952,7 @@ export function Numerologia({ dados, utilizador, mapaNatal, onVoltar }) {
       </SecaoNumerologia>
 
       {/* Resumo visual - 3 pilares */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10, marginBottom: 20 }}>
+      <div className="numerologia-pilares" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10, marginBottom: 20 }}>
         {mapa.pilares?.map((p) => (
           <div key={p.id} style={{
             background: 'rgba(255,255,255,0.04)', border: `1px solid ${p.cor}44`,
@@ -887,7 +1007,7 @@ export function Numerologia({ dados, utilizador, mapaNatal, onVoltar }) {
 
       {/* Ritmo actual */}
       <SecaoNumerologia titulo={t('ferramentasPremium.numerologia.sectionRhythm')}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+        <div className="numerologia-ritmo" style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
           {[
             { key: 'anoPessoal', label: t('ferramentasPremium.numerologia.personalYear'), item: mapa.ritmo?.ano, texto: mapa.textos.anoPessoal },
             { key: 'mesPessoal', label: t('ferramentasPremium.numerologia.personalMonth'), item: mapa.ritmo?.mes, texto: mapa.textos.mesPessoal },
@@ -954,14 +1074,14 @@ export function Numerologia({ dados, utilizador, mapaNatal, onVoltar }) {
           </p>
         </div>
       )}
-    </div>
+    </PaginaFerramenta>
   )
 }
 
 function SecaoNumerologia({ titulo, children }) {
   return (
     <div style={{ marginBottom: 24 }}>
-      <div style={{ fontSize: 11, color: CORES.dourado, textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 700, marginBottom: 12, paddingBottom: 8, borderBottom: `1px solid ${CORES.vidroBorda}` }}>
+      <div className="mapa-sec-label" style={{ fontSize: 11, color: CORES.dourado, textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 700, marginBottom: 12, paddingBottom: 8, borderBottom: `1px solid ${CORES.vidroBorda}` }}>
         {titulo}
       </div>
       {children}
@@ -1197,10 +1317,11 @@ export function InterpretacaoSonhos({ mapaNatal, onVoltar }) {
   const pronto = (sonho.trim().length > 2 || chipsSel.length > 0) && !aInterpretar
 
   return (
-    <div style={{ padding: '20px 20px 110px' }}>
+    <PaginaFerramenta>
       <BotaoVoltar onVoltar={onVoltar} t={t} />
-      <h2 style={{ fontSize: 20, fontWeight: 700, color: CORES.dourado, marginBottom: 4 }}>{t('ferramentasPremium.sonhos.title')}</h2>
-      <p style={{ fontSize: 13, color: CORES.brancoMuted, marginBottom: 20, lineHeight: 1.6 }}>{t('ferramentasPremium.sonhos.subtitle')}</p>
+      <CabecalhoFerramenta titulo={t('ferramentasPremium.sonhos.title')}>
+        <p style={{ fontSize: 13, color: CORES.brancoMuted, margin: 0, lineHeight: 1.6 }}>{t('ferramentasPremium.sonhos.subtitle')}</p>
+      </CabecalhoFerramenta>
 
       <div style={{
         background: 'linear-gradient(160deg, rgba(109,40,217,0.12), rgba(11,7,30,0.6))',
@@ -1222,7 +1343,7 @@ export function InterpretacaoSonhos({ mapaNatal, onVoltar }) {
                 color: sel ? CORES.dourado : CORES.brancoMuted,
                 transition: 'all 0.2s',
               }}>
-                {sel ? '✦ ' : ''}{chip}
+                {sel ? '' : ''}{chip}
               </button>
             )
           })}
@@ -1288,7 +1409,7 @@ export function InterpretacaoSonhos({ mapaNatal, onVoltar }) {
           background: 'rgba(109,40,217,0.08)', borderRadius: 16,
           border: '1px solid rgba(139,92,246,0.25)',
         }}>
-          <div style={{ fontSize: 28, marginBottom: 10, animation: 'pulse 2s ease-in-out infinite' }}>✦</div>
+          <div style={{ fontSize: 28, marginBottom: 10, animation: 'pulse 2s ease-in-out infinite' }}></div>
           <p style={{ fontSize: 13, color: '#C4B5FD', margin: 0, lineHeight: 1.6 }}>
             {t('ferramentasPremium.sonhos.decoding')}
           </p>
@@ -1329,7 +1450,7 @@ export function InterpretacaoSonhos({ mapaNatal, onVoltar }) {
           ))}
         </div>
       )}
-    </div>
+    </PaginaFerramenta>
   )
 }
 
@@ -1384,14 +1505,13 @@ export function HorasIguais({ onVoltar }) {
       : t('ferramentasPremium.horasIguais.typeNeutral')
 
   return (
-    <div style={{ padding: '20px 20px 110px' }}>
+    <PaginaFerramenta>
       <BotaoVoltar onVoltar={onVoltar} t={t} />
-      <h2 style={{ fontSize: 20, fontWeight: 700, color: CORES.dourado, marginBottom: 4 }}>
-        {t('ferramentasPremium.horasIguais.title')}
-      </h2>
-      <p style={{ fontSize: 13, color: CORES.brancoMuted, marginBottom: 20, lineHeight: 1.6 }}>
-        {t('ferramentasPremium.horasIguais.subtitle')}
-      </p>
+      <CabecalhoFerramenta titulo={t('ferramentasPremium.horasIguais.title')}>
+        <p style={{ fontSize: 13, color: CORES.brancoMuted, margin: 0, lineHeight: 1.6 }}>
+          {t('ferramentasPremium.horasIguais.subtitle')}
+        </p>
+      </CabecalhoFerramenta>
 
       {/* Relógio vivo - portal do momento */}
       <div style={{
@@ -1442,7 +1562,7 @@ export function HorasIguais({ onVoltar }) {
           </span>
         </div>
         <div style={{ fontSize: 11, color: CORES.dourado, marginBottom: 10 }}>
-          ✦ {t('ferramentasPremium.horasIguais.angel')}: {interpretacao.anjo}
+          {t('ferramentasPremium.horasIguais.angel')}: {interpretacao.anjo}
         </div>
         <p style={{ fontSize: 14, color: CORES.brancoSuave, lineHeight: 1.75, margin: '0 0 14px' }}>
           {interpretacao.mensagem}
@@ -1504,6 +1624,6 @@ export function HorasIguais({ onVoltar }) {
       <p style={{ fontSize: 11, color: CORES.brancoMuted, lineHeight: 1.6, fontStyle: 'italic', margin: '16px 0 0' }}>
         {t('ferramentasPremium.horasIguais.attribution')}
       </p>
-    </div>
+    </PaginaFerramenta>
   )
 }

@@ -10,39 +10,39 @@ const SITE_ORIGIN = () => env('URL') || env('DEPLOY_PRIME_URL') || 'https://sidu
 
 const COPY = {
   pt: {
-    subject: 'O teu mapa está pronto — Sidusastro',
+    subject: 'O teu mapa está pronto - Sidusastro',
     heading: 'Bem-vindo/a ao Sidusastro',
-    body: 'A tua conta foi criada. Confirma o e-mail que enviámos em separado e completa o teu mapa astral — Sol, Lua, Ascendente e relatório PDF personalizado.',
+    body: 'A tua conta foi criada. Confirma o e-mail que enviámos em separado e completa o teu mapa astral - Sol, Lua, Ascendente e relatório PDF personalizado.',
     cta: 'Ver o meu mapa',
   },
   en: {
-    subject: 'Your chart is ready — Sidusastro',
+    subject: 'Your chart is ready - Sidusastro',
     heading: 'Welcome to Sidusastro',
-    body: 'Your account was created. Confirm the separate verification email and complete your birth chart — Sun, Moon, Ascendant and personalised PDF report.',
+    body: 'Your account was created. Confirm the separate verification email and complete your birth chart - Sun, Moon, Ascendant and personalised PDF report.',
     cta: 'View my chart',
   },
   es: {
-    subject: 'Tu carta está lista — Sidusastro',
+    subject: 'Tu carta está lista - Sidusastro',
     heading: 'Bienvenido/a a Sidusastro',
-    body: 'Tu cuenta fue creada. Confirma el e-mail de verificación y completa tu carta natal — Sol, Luna, Ascendente e informe PDF personalizado.',
+    body: 'Tu cuenta fue creada. Confirma el e-mail de verificación y completa tu carta natal - Sol, Luna, Ascendente e informe PDF personalizado.',
     cta: 'Ver mi carta',
   },
   it: {
-    subject: 'Il tuo tema è pronto — Sidusastro',
+    subject: 'Il tuo tema è pronto - Sidusastro',
     heading: 'Benvenuto/a su Sidusastro',
-    body: 'Il tuo account è stato creato. Conferma l\'e-mail di verifica e completa il tema natale — Sole, Luna, Ascendente e report PDF.',
+    body: 'Il tuo account è stato creato. Conferma l\'e-mail di verifica e completa il tema natale - Sole, Luna, Ascendente e report PDF.',
     cta: 'Vedi il mio tema',
   },
   de: {
-    subject: 'Dein Horoskop ist bereit — Sidusastro',
+    subject: 'Dein Horoskop ist bereit - Sidusastro',
     heading: 'Willkommen bei Sidusastro',
-    body: 'Dein Konto wurde erstellt. Bestätige die Verifizierungs-E-Mail und vervollständige dein Geburtshoroskop — Sonne, Mond, Aszendent und PDF-Bericht.',
+    body: 'Dein Konto wurde erstellt. Bestätige die Verifizierungs-E-Mail und vervollständige dein Geburtshoroskop - Sonne, Mond, Aszendent und PDF-Bericht.',
     cta: 'Mein Horoskop ansehen',
   },
   fr: {
-    subject: 'Ton thème est prêt — Sidusastro',
+    subject: 'Ton thème est prêt - Sidusastro',
     heading: 'Bienvenue sur Sidusastro',
-    body: 'Ton compte a été créé. Confirme l\'e-mail de vérification et complète ton thème natal — Soleil, Lune, Ascendant et rapport PDF.',
+    body: 'Ton compte a été créé. Confirme l\'e-mail de vérification et complète ton thème natal - Soleil, Lune, Ascendant et rapport PDF.',
     cta: 'Voir mon thème',
   },
 }
@@ -80,7 +80,7 @@ export default async (req) => {
     const origin = SITE_ORIGIN().replace(/\/$/, '')
 
     if (!resendKey) {
-      console.info('[send-welcome-email] RESEND_API_KEY não configurada — e-mail ignorado')
+      console.info('[send-welcome-email] RESEND_API_KEY não configurada - e-mail ignorado')
       return new Response(JSON.stringify({ ok: true, skipped: true }), {
         status: 200,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },

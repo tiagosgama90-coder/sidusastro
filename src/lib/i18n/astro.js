@@ -158,9 +158,51 @@ export function translateSigno(nome, lang) {
   return list[idx] || SIGNO_PT_TO_EN[base] || base
 }
 
+const PLANETA_KEY_PT = {
+  sol: 'Sol',
+  lua: 'Lua',
+  mercurio: 'Mercúrio',
+  venus: 'Vénus',
+  marte: 'Marte',
+  jupiter: 'Júpiter',
+  saturno: 'Saturno',
+  urano: 'Urano',
+  netuno: 'Neptuno',
+  plutao: 'Plutão',
+  quiron: 'Quíron',
+  nodo: 'Nodo Norte',
+}
+
+const PONTOS_ANGULARES_PT = {
+  Ascendente: 'Ascendente',
+  'Meio-Céu': 'Meio-Céu',
+  Descendente: 'Descendente',
+  'Fundo do Céu': 'Fundo do Céu',
+}
+
+const PONTOS_ANGULARES_BY_LANG = {
+  pt: PONTOS_ANGULARES_PT,
+  en: { Ascendente: 'Ascendant', 'Meio-Céu': 'Midheaven', Descendente: 'Descendant', 'Fundo do Céu': 'IC' },
+  es: { Ascendente: 'Ascendente', 'Meio-Céu': 'Medio Cielo', Descendente: 'Descendente', 'Fundo do Céu': 'Fondo del Cielo' },
+  it: { Ascendente: 'Ascendente', 'Meio-Céu': 'Medio Cielo', Descendente: 'Discendente', 'Fundo do Céu': 'Fondo del Cielo' },
+  de: { Ascendente: 'Aszendent', 'Meio-Céu': 'MC', Descendente: 'Deszendent', 'Fundo do Céu': 'IC' },
+  fr: { Ascendente: 'Ascendant', 'Meio-Céu': 'Milieu du Ciel', Descendente: 'Descendant', 'Fundo do Céu': 'Fond du Ciel' },
+}
+
+const HOUSE_PREFIX = {
+  pt: 'Casa',
+  en: 'House',
+  es: 'Casa',
+  it: 'Casa',
+  de: 'Haus',
+  fr: 'Maison',
+}
+
 export function normalizePlanetaNome(str) {
   const s = normAstro(str)
   if (!s) return ''
+  const lower = s.toLowerCase()
+  if (PLANETA_KEY_PT[lower]) return PLANETA_KEY_PT[lower]
   if (s.startsWith('Nodo Norte') || s.startsWith('North Node') || s.startsWith('Nœud Nord') || s.startsWith('Nodo Nord') || s.startsWith('Mondknoten')) return 'Nodo Norte'
   const first = s.split(/\s+/)[0]
   const enToPt = Object.fromEntries(Object.entries(PLANETAS_PT_TO_EN).map(([pt, en]) => [en, pt]))
@@ -170,7 +212,30 @@ export function normalizePlanetaNome(str) {
       if (translated === first) return pt
     }
   }
-  return PLANETAS_PT_TO_EN[first] ? first : (enToPt[first] || first)
+  if (PLANETAS_PT_TO_EN[first]) return first
+  return enToPt[first] || first
+}
+
+export function translateHouseLabel(numero, lang = 'pt') {
+  const n = Number(numero)
+  if (!Number.isFinite(n) || n < 1 || n > 12) return ''
+  const prefix = HOUSE_PREFIX[lang] || HOUSE_PREFIX.en
+  return `${prefix} ${n}`
+}
+
+export function translatePontoNatal(nome, lang = 'pt') {
+  if (!nome) return ''
+  const casaMatch = String(nome).match(/^(?:Casa|House|Haus|Maison)\s*(\d{1,2})$/i)
+  if (casaMatch) return translateHouseLabel(Number(casaMatch[1]), lang)
+
+  const base = normalizePlanetaNome(nome)
+  const angulares = PONTOS_ANGULARES_BY_LANG[lang] || PONTOS_ANGULARES_BY_LANG.en
+  if (PONTOS_ANGULARES_PT[nome] || PONTOS_ANGULARES_PT[base]) {
+    const chave = PONTOS_ANGULARES_PT[nome] ? nome : base
+    return angulares[chave] || angulares[PONTOS_ANGULARES_PT[chave]] || nome
+  }
+
+  return translatePlaneta(nome, lang)
 }
 
 export const PLANETA_SIMBOLO = {

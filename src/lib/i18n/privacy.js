@@ -9,11 +9,11 @@ const SECTIONS_PT = [
   },
   {
     titulo: '3. Como usamos os seus dados',
-    texto: `Os seus dados são utilizados para:\n\n• Calcular e exibir o seu mapa astral natal com precisão astronómica\n• Personalizar as leituras de tarot e respostas do Oráculo IA\n• Autenticação segura na aplicação\n• Melhorar os nossos serviços e algoritmos de cálculo\n• Comunicar actualizações e novidades relevantes (apenas com o seu consentimento)`,
+    texto: `Os seus dados são utilizados para:\n\n• Calcular e exibir o seu mapa astral natal com precisão astronómica\n• Personalizar as leituras de tarot e respostas do Chat Oráculo\n• Autenticação segura na aplicação\n• Melhorar os nossos serviços e algoritmos de cálculo\n• Comunicar actualizações e novidades relevantes (apenas com o seu consentimento)`,
   },
   {
     titulo: '4. Parceiros e terceiros',
-    texto: `Trabalhamos com os seguintes parceiros:\n\n• Firebase / Google (autenticação e base de dados em nuvem) - Política: firebase.google.com/support/privacy\n• OpenStreetMap Nominatim (geocodificação de cidades) - sem dados pessoais transmitidos\n• Open-Meteo (fuso horário histórico) - sem dados pessoais transmitidos\n• Google Gemini AI (respostas do Oráculo) - as perguntas podem ser processadas pela API do Google\n• Google AdSense (publicidade) - pode utilizar cookies para personalizar anúncios\n• Stripe (pagamentos) - os dados de pagamento são processados directamente pela Stripe`,
+    texto: `Trabalhamos com os seguintes parceiros:\n\n• Firebase / Google (autenticação e base de dados em nuvem) - Política: firebase.google.com/support/privacy\n• OpenStreetMap Nominatim (geocodificação de cidades) - sem dados pessoais transmitidos\n• Open-Meteo (fuso horário histórico) - sem dados pessoais transmitidos\n• Google (processamento das perguntas do Chat Oráculo) - as perguntas podem ser processadas pela API do Google\n• Google AdSense (publicidade) - pode utilizar cookies para personalizar anúncios\n• Stripe (pagamentos) - os dados de pagamento são processados directamente pela Stripe`,
   },
   {
     titulo: '5. Publicidade (Google AdSense)',
@@ -60,11 +60,11 @@ const SECTIONS_EN = [
   },
   {
     titulo: '3. How we use your data',
-    texto: `Your data is used to:\n\n• Calculate and display your natal chart with astronomical precision\n• Personalise tarot readings and AI Oracle responses\n• Secure authentication in the app\n• Improve our services and calculation algorithms\n• Communicate relevant updates and news (only with your consent)`,
+    texto: `Your data is used to:\n\n• Calculate and display your natal chart with astronomical precision\n• Personalise tarot readings and Chat Oracle responses\n• Secure authentication in the app\n• Improve our services and calculation algorithms\n• Communicate relevant updates and news (only with your consent)`,
   },
   {
     titulo: '4. Partners and third parties',
-    texto: `We work with the following partners:\n\n• Firebase / Google (authentication and cloud database) - Policy: firebase.google.com/support/privacy\n• OpenStreetMap Nominatim (city geocoding) - no personal data transmitted\n• Open-Meteo (historical time zone) - no personal data transmitted\n• Google Gemini AI (Oracle responses) - questions may be processed by Google's API\n• Google AdSense (advertising) - may use cookies to personalise ads\n• Stripe (payments) - payment data is processed directly by Stripe`,
+    texto: `We work with the following partners:\n\n• Firebase / Google (authentication and cloud database) - Policy: firebase.google.com/support/privacy\n• OpenStreetMap Nominatim (city geocoding) - no personal data transmitted\n• Open-Meteo (historical time zone) - no personal data transmitted\n• Google (Chat Oracle question processing) - questions may be processed by Google's API\n• Google AdSense (advertising) - may use cookies to personalise ads\n• Stripe (payments) - payment data is processed directly by Stripe`,
   },
   {
     titulo: '5. Advertising (Google AdSense)',
@@ -108,11 +108,11 @@ export function getPrivacyMeta(lang) {
   if (lang !== 'pt') {
     return {
       title: 'Privacy Policy',
-      updated: 'Sidus – Last updated: June 2026',
+      updated: 'Sidus - Last updated: June 2026',
     }
   }
   return {
     title: 'Política de Privacidade',
-    updated: 'Sidus – Última actualização: Junho 2026',
+    updated: 'Sidus - Última actualização: Junho 2026',
   }
 }

@@ -1,5 +1,5 @@
 /**
- * Árvores completas ES/IT/DE/FR — fonte para numerologiaLocales.js
+ * Árvores completas ES/IT/DE/FR - fonte para numerologiaLocales.js
  * Gerado/mantido via: node scripts/compose-numerologia-locales.mjs
  */
 import { readFileSync } from 'fs'

@@ -1,14 +1,17 @@
 import { useState, useEffect, useRef, useMemo } from 'react'
 import {
   Sparkles, MapPin, Clock, User, Check, Loader2, ChevronDown,
-  Star, MessageCircle, Layers, BookOpen, Hash,
+  Star, MessageCircle, Layers, BookOpen,
 } from 'lucide-react'
+import { PythagoreanStarIcon } from './icons/PythagoreanStarIcon.jsx'
 import { useLanguage } from '../lib/i18n/LanguageContext.jsx'
 import { validarOnboarding } from '../lib/i18n/validation.js'
 import { pesquisarCidades, pesquisarFusoHorario } from '../lib/geocoding.js'
 import { readLandingDraft, saveLandingDraft, stageLandingDraft, flushLandingDraft } from '../lib/landingDraft.js'
 import { calcularMapaNatal, calcularSignoSolarPorData } from '../lib/astrologia.js'
 import { LeituraGratisDiaria } from './LeituraGratisDiaria.jsx'
+import { CITY_SUGGESTION_NO_TRANSLATE, fusosFallbackLabels } from '../lib/landingTranslate.js'
+import { useGoogleTranslateRetranslate } from '../hooks/useGoogleTranslateRetranslate.js'
 
 const CORES = {
   dourado: '#DFB76C',
@@ -20,18 +23,11 @@ const CORES = {
   fundo: '#0B071E',
 }
 
-const FUSOS_FALLBACK = [
-  { label: 'UTC+0 (Portugal / UK)', value: 0 },
-  { label: 'UTC+1 (Espanha / França)', value: 1 },
-  { label: 'UTC−3 (Brasil)', value: -3 },
-  { label: 'UTC+2 (Grécia / Egipto)', value: 2 },
-]
-
 const FERRAMENTAS_LANDING = [
   { key: 'mapa', Icon: Star },
   { key: 'oraculo', Icon: MessageCircle },
   { key: 'tarot', Icon: Layers },
-  { key: 'numerologia', Icon: Hash },
+  { key: 'numerologia', Icon: PythagoreanStarIcon },
   { key: 'sonhos', Icon: BookOpen },
 ]
 
@@ -57,6 +53,23 @@ const inputStyle = {
   fontSize: 15,
   outline: 'none',
   boxSizing: 'border-box',
+}
+
+function PortalInputWrap({ children, placeholder, showPlaceholder, placeholderLeft = 42 }) {
+  return (
+    <div className="landing-portal-input-wrap">
+      {children}
+      {showPlaceholder && placeholder ? (
+        <span
+          className="landing-portal-fake-placeholder"
+          style={{ left: placeholderLeft }}
+          aria-hidden="true"
+        >
+          {placeholder}
+        </span>
+      ) : null}
+    </div>
+  )
 }
 
 function CampoDataPortal({ valor, onChange, onBlur, erro, t }) {
@@ -93,20 +106,29 @@ function CampoDataPortal({ valor, onChange, onBlur, erro, t }) {
   const mini = { ...inputStyle, borderColor: borda, textAlign: 'center', padding: '13px 6px' }
 
   return (
-    <div className="landing-portal-field notranslate" translate="no">
+    <div className="landing-portal-field">
       <label style={labelStyle}>{t('onboarding.birthDate')}</label>
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 12px 1fr 12px 1.4fr', alignItems: 'center' }} translate="no">
-        <input ref={diaRef} inputMode="numeric" maxLength={2} placeholder="DD" value={dia}
-          onChange={(e) => { const d = e.target.value.replace(/\D/g, '').slice(0, 2); setDia(d); if (d.length === 2) mesRef.current?.focus() }}
-          onBlur={onBlur} style={mini} className="landing-portal-input notranslate" translate="no" />
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 12px 1fr 12px 1.4fr', alignItems: 'center' }}>
+        <div className="landing-portal-input-wrap landing-portal-input-wrap--mini">
+          <input ref={diaRef} inputMode="numeric" maxLength={2} value={dia}
+            onChange={(e) => { const d = e.target.value.replace(/\D/g, '').slice(0, 2); setDia(d); if (d.length === 2) mesRef.current?.focus() }}
+            onBlur={onBlur} style={mini} className="landing-portal-input" />
+          {!dia && <span className="landing-portal-fake-placeholder landing-portal-fake-placeholder--mini" aria-hidden="true">DD</span>}
+        </div>
         <span style={{ textAlign: 'center', color: CORES.brancoMuted, fontSize: 18 }}>/</span>
-        <input ref={mesRef} inputMode="numeric" maxLength={2} placeholder="MM" value={mes}
-          onChange={(e) => { const m = e.target.value.replace(/\D/g, '').slice(0, 2); setMes(m); if (m.length === 2) anoRef.current?.focus() }}
-          onBlur={onBlur} style={mini} className="landing-portal-input notranslate" translate="no" />
+        <div className="landing-portal-input-wrap landing-portal-input-wrap--mini">
+          <input ref={mesRef} inputMode="numeric" maxLength={2} value={mes}
+            onChange={(e) => { const m = e.target.value.replace(/\D/g, '').slice(0, 2); setMes(m); if (m.length === 2) anoRef.current?.focus() }}
+            onBlur={onBlur} style={mini} className="landing-portal-input" />
+          {!mes && <span className="landing-portal-fake-placeholder landing-portal-fake-placeholder--mini" aria-hidden="true">MM</span>}
+        </div>
         <span style={{ textAlign: 'center', color: CORES.brancoMuted, fontSize: 18 }}>/</span>
-        <input ref={anoRef} inputMode="numeric" maxLength={4} placeholder="AAAA" value={ano}
-          onChange={(e) => setAno(e.target.value.replace(/\D/g, '').slice(0, 4))}
-          onBlur={onBlur} style={mini} className="landing-portal-input notranslate" translate="no" />
+        <div className="landing-portal-input-wrap landing-portal-input-wrap--mini">
+          <input ref={anoRef} inputMode="numeric" maxLength={4} value={ano}
+            onChange={(e) => setAno(e.target.value.replace(/\D/g, '').slice(0, 4))}
+            onBlur={onBlur} style={mini} className="landing-portal-input" />
+          {!ano && <span className="landing-portal-fake-placeholder landing-portal-fake-placeholder--mini" aria-hidden="true">AAAA</span>}
+        </div>
       </div>
       {erro && <p style={{ margin: '6px 0 0', fontSize: 12, color: '#F87171' }}>{erro}</p>}
     </div>
@@ -143,23 +165,27 @@ function CampoCidadePortal({ valor, localizacao, onChange, onSelect, erro, onBlu
   }, [])
 
   return (
-    <div ref={containerRef} className="landing-portal-field notranslate" translate="no" style={{ position: 'relative' }}>
+    <div ref={containerRef} className="landing-portal-field" style={{ position: 'relative' }}>
       <label style={labelStyle}>{t('onboarding.birthCity')}</label>
-      <div style={{ position: 'relative' }} translate="no">
-        <input
-          value={valor}
-          onChange={(e) => onChange(e.target.value)}
-          onBlur={onBlur}
-          onFocus={() => sugestoes.length > 0 && setAberto(true)}
+      <div style={{ position: 'relative' }}>
+        <PortalInputWrap
           placeholder={t('onboarding.citySearchPlaceholder')}
-          className="landing-portal-input notranslate"
-          style={{
-            ...inputStyle,
-            paddingRight: 40,
-            borderColor: erro ? 'rgba(248,113,113,0.7)' : localizacao ? 'rgba(74,222,128,0.5)' : CORES.vidroBorda,
-          }}
-          translate="no"
-        />
+          showPlaceholder={!valor}
+          placeholderLeft={14}
+        >
+          <input
+            value={valor}
+            onChange={(e) => onChange(e.target.value)}
+            onBlur={onBlur}
+            onFocus={() => sugestoes.length > 0 && setAberto(true)}
+            className="landing-portal-input"
+            style={{
+              ...inputStyle,
+              paddingRight: 40,
+              borderColor: erro ? 'rgba(248,113,113,0.7)' : localizacao ? 'rgba(74,222,128,0.5)' : CORES.vidroBorda,
+            }}
+          />
+        </PortalInputWrap>
         <div style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)' }}>
           {aPesquisar ? <Loader2 size={18} color={CORES.dourado} style={{ animation: 'spin 1s linear infinite' }} />
             : localizacao ? <Check size={18} color="#4ADE80" /> : <MapPin size={18} color={CORES.brancoMuted} />}
@@ -171,17 +197,17 @@ function CampoCidadePortal({ valor, localizacao, onChange, onSelect, erro, onBlu
           position: 'absolute', left: 0, right: 0, top: '100%', listStyle: 'none', margin: '4px 0 0', padding: 4,
           background: 'rgba(11,7,30,0.98)', border: `1px solid ${CORES.vidroBorda}`, borderRadius: 12,
           maxHeight: 180, overflowY: 'auto', zIndex: 40, boxShadow: '0 12px 40px rgba(0,0,0,0.5)',
-        }} translate="no">
+        }}>
           {sugestoes.map((s) => (
             <li key={s.placeId}>
-              <button type="button"
+              <button
+                type="button"
+                {...CITY_SUGGESTION_NO_TRANSLATE}
                 onPointerDown={(e) => { e.preventDefault(); onSelect(s); setAberto(false) }}
                 style={{
                   width: '100%', background: 'none', border: 'none', color: CORES.brancoSuave,
                   fontSize: 13, textAlign: 'left', padding: '10px 12px', cursor: 'pointer',
                 }}
-                className="notranslate"
-                translate="no"
               >
                 {s.nome}
               </button>
@@ -208,6 +234,8 @@ export function LandingBirthPortal({ isDesktop, onSaved, onScrollToLogin }) {
   const [aGuardar, setAGuardar] = useState(false)
   const [guardado, setGuardado] = useState(false)
 
+  const fusosFallback = useMemo(() => fusosFallbackLabels(t), [t, lang])
+
   const dados = { nome, data, hora, cidade, localizacao, fuso }
   const erros = validarOnboarding(dados, lang)
   const tocar = (campo) => () => setTocado((p) => ({ ...p, [campo]: true }))
@@ -232,6 +260,8 @@ export function LandingBirthPortal({ isDesktop, onSaved, onScrollToLogin }) {
     return sol ? { solar: sol, lunar: null } : null
   }, [data, hora, localizacao])
 
+  useGoogleTranslateRetranslate(!!previewSignos, [guardado, previewSignos?.solar?.nome, previewSignos?.lunar?.nome])
+
   useEffect(() => {
     const draft = readLandingDraft()
     if (!draft) return
@@ -246,7 +276,6 @@ export function LandingBirthPortal({ isDesktop, onSaved, onScrollToLogin }) {
     if (Object.keys(errosDraft).length === 0) setGuardado(true)
   }, [lang])
 
-  // Mantém rascunho em memória + localStorage enquanto o utilizador preenche
   useEffect(() => {
     stageLandingDraft({
       nome: nome.trim(),
@@ -327,73 +356,82 @@ export function LandingBirthPortal({ isDesktop, onSaved, onScrollToLogin }) {
       <div className="landing-portal-orb landing-portal-orb--2" aria-hidden />
 
       <div style={{ position: 'relative', zIndex: 1 }}>
-        {!guardado && (
-          <p className="landing-portal-form-lead notranslate" translate="no">{t('auth.portal.formLead')}</p>
-        )}
+        <p className={`landing-portal-form-lead${guardado ? ' landing-portal-panel--hidden' : ''}`}>
+          {t('auth.portal.formLead')}
+        </p>
 
-        <div className={`landing-portal-card notranslate${guardado ? ' landing-portal-card--saved' : ''}`} translate="no">
+        <div className="landing-portal-post-save">
+        <div className={`landing-portal-card${guardado ? ' landing-portal-card--saved' : ''}`}>
           <div className="landing-portal-card-shimmer" aria-hidden />
 
-          {guardado ? (
-            <div style={{ textAlign: 'center', padding: '12px 8px 4px' }}>
-              <div style={{
-                width: 56, height: 56, borderRadius: '50%', margin: '0 auto 16px',
-                background: 'rgba(52,211,153,0.15)', border: '1px solid rgba(52,211,153,0.45)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-              }}>
-                <Sparkles size={26} color="#34D399" />
-              </div>
-              <p style={{ margin: '0 0 8px', fontSize: 17, fontWeight: 700, color: CORES.dourado }}>
-                {t('auth.portal.savedTitle')}
-              </p>
-              <p style={{ margin: '0 0 16px', fontSize: 13, color: CORES.brancoMuted, lineHeight: 1.6 }}>
-                {t('auth.portal.savedHint')}
-              </p>
-              <div style={{ display: 'flex', justifyContent: 'center', color: CORES.dourado, opacity: 0.7 }}>
-                <ChevronDown size={22} className="landing-portal-bounce" />
-              </div>
+          <div
+            className={`landing-portal-saved-view${guardado ? '' : ' landing-portal-panel--gt-prerender'}`}
+            aria-hidden={!guardado}
+            style={{ textAlign: 'center', padding: '12px 8px 4px' }}
+          >
+            <div style={{
+              width: 56, height: 56, borderRadius: '50%', margin: '0 auto 16px',
+              background: 'rgba(52,211,153,0.15)', border: '1px solid rgba(52,211,153,0.45)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+            }}>
+              <Sparkles size={26} color="#34D399" />
             </div>
-          ) : (
-            <>
-              <div className="landing-portal-field notranslate" translate="no">
+            <p style={{ margin: '0 0 8px', fontSize: 17, fontWeight: 700, color: CORES.dourado }}>
+              <span>{t('auth.portal.savedTitle')}</span>
+            </p>
+            <p style={{ margin: '0 0 16px', fontSize: 13, color: CORES.brancoMuted, lineHeight: 1.6 }}>
+              <span>{t('auth.portal.savedHint')}</span>
+            </p>
+            <div style={{ display: 'flex', justifyContent: 'center', color: CORES.dourado, opacity: 0.7 }}>
+              <ChevronDown size={22} className="landing-portal-bounce" />
+            </div>
+          </div>
+
+          <div
+            className={`landing-portal-form-view${guardado ? ' landing-portal-panel--hidden' : ''}`}
+            aria-hidden={guardado}
+          >
+              <div className="landing-portal-field">
                 <label style={labelStyle}>{t('onboarding.name')}</label>
-                <div style={{ position: 'relative' }} translate="no">
-                  <User size={16} color={CORES.brancoMuted} style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)' }} />
-                  <input
-                    value={nome}
-                    onChange={(e) => setNome(e.target.value)}
-                    onBlur={tocar('nome')}
+                <div style={{ position: 'relative' }}>
+                  <User size={16} color={CORES.brancoMuted} style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', zIndex: 1, pointerEvents: 'none' }} />
+                  <PortalInputWrap
                     placeholder={t('onboarding.namePlaceholder')}
-                    className="landing-portal-input notranslate"
-                    style={{
-                      ...inputStyle,
-                      paddingLeft: 42,
-                      borderColor: tocado.nome && erros.nome ? 'rgba(248,113,113,0.7)' : CORES.vidroBorda,
-                    }}
-                    translate="no"
-                  />
+                    showPlaceholder={!nome}
+                  >
+                    <input
+                      value={nome}
+                      onChange={(e) => setNome(e.target.value)}
+                      onBlur={tocar('nome')}
+                      className="landing-portal-input"
+                      style={{
+                        ...inputStyle,
+                        paddingLeft: 42,
+                        borderColor: tocado.nome && erros.nome ? 'rgba(248,113,113,0.7)' : CORES.vidroBorda,
+                      }}
+                    />
+                  </PortalInputWrap>
                 </div>
                 {tocado.nome && erros.nome && <p style={{ margin: '6px 0 0', fontSize: 12, color: '#F87171' }}>{erros.nome}</p>}
               </div>
 
               <CampoDataPortal valor={data} onChange={setData} onBlur={tocar('data')} erro={tocado.data ? erros.data : null} t={t} />
 
-              <div className="landing-portal-field notranslate" translate="no">
+              <div className="landing-portal-field">
                 <label style={labelStyle}>{t('onboarding.birthTime')}</label>
-                <div style={{ position: 'relative' }} translate="no">
+                <div style={{ position: 'relative' }}>
                   <Clock size={16} color={CORES.brancoMuted} style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)' }} />
                   <input
                     type="time"
                     value={hora}
                     onChange={(e) => setHora(e.target.value)}
                     onBlur={tocar('hora')}
-                    className="landing-portal-input notranslate"
+                    className="landing-portal-input"
                     style={{
                       ...inputStyle,
                       paddingLeft: 42,
                       borderColor: tocado.hora && erros.hora ? 'rgba(248,113,113,0.7)' : CORES.vidroBorda,
                     }}
-                    translate="no"
                   />
                 </div>
                 {tocado.hora && erros.hora && <p style={{ margin: '6px 0 0', fontSize: 12, color: '#F87171' }}>{erros.hora}</p>}
@@ -411,11 +449,10 @@ export function LandingBirthPortal({ isDesktop, onSaved, onScrollToLogin }) {
 
               {localizacao && (
                 <div
-                  className="landing-portal-field landing-portal-tz-box notranslate"
+                  className="landing-portal-field landing-portal-tz-box"
                   style={{
                     border: `1px solid ${fusoErro ? 'rgba(251,191,36,0.4)' : fuso != null ? 'rgba(52,211,153,0.35)' : CORES.vidroBorda}`,
                   }}
-                  translate="no"
                 >
                   {fusoCarregando && (
                     <p style={{ margin: 0, fontSize: 12, color: CORES.brancoMuted }}>{t('onboarding.detectingTz')}</p>
@@ -432,10 +469,8 @@ export function LandingBirthPortal({ isDesktop, onSaved, onScrollToLogin }) {
                         value={fusoManual}
                         onChange={(e) => { const n = parseFloat(e.target.value); setFusoManual(n); setFuso(n) }}
                         style={{ ...inputStyle, fontSize: 13 }}
-                        className="notranslate"
-                        translate="no"
                       >
-                        {FUSOS_FALLBACK.map((f) => <option key={f.value} value={f.value}>{f.label}</option>)}
+                        {fusosFallback.map((f) => <option key={f.value} value={f.value}>{f.label}</option>)}
                       </select>
                     </>
                   )}
@@ -446,8 +481,7 @@ export function LandingBirthPortal({ isDesktop, onSaved, onScrollToLogin }) {
                 type="button"
                 disabled={aGuardar || fusoCarregando}
                 onClick={handleGuardar}
-                className="landing-portal-cta notranslate"
-                translate="no"
+                className="landing-portal-cta"
               >
                 {aGuardar || fusoCarregando ? (
                   <>
@@ -462,15 +496,18 @@ export function LandingBirthPortal({ isDesktop, onSaved, onScrollToLogin }) {
                 )}
               </button>
               <p className="landing-portal-swiss-note">{t('auth.portal.swissNote')}</p>
-            </>
-          )}
+          </div>
         </div>
 
-        {guardado && previewSignos && (
-          <div style={{ marginTop: 16 }}>
+        {previewSignos && (
+          <div
+            className={`landing-portal-leitura-wrap${guardado ? '' : ' landing-portal-panel--gt-prerender'}`}
+            aria-hidden={!guardado}
+          >
             <LeituraGratisDiaria solar={previewSignos.solar} lunar={previewSignos.lunar} compact />
           </div>
         )}
+        </div>
 
         <footer className="landing-portal-tools-footer" aria-label={t('auth.portal.toolsAria')}>
           <div className="landing-portal-tools-ticker-viewport">

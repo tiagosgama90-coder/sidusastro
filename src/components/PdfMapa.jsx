@@ -14,6 +14,9 @@ import {
   sanitizarTextoPdf,
   escreverLinhasJustificadas,
   escreverParagrafoJustificado,
+  desenharTituloSecao,
+  alturaTituloSecao,
+  desenharLinhaJustificada,
 } from '../lib/pdfTextWrap.js'
 
 const ELEMENTO_DO_SIGNO = {
@@ -78,8 +81,10 @@ export async function gerarPdfMapaAstral(mapaNatal, dados, planetas = [], analis
   doc.setLineWidth(0.5)
   doc.line(L, 58, 210 - L, 58)
 
+  const CORES_SECAO = { DOURADO, ROXO }
+
   if (logoData) {
-    doc.addImage(logoData, 'PNG', CX - 7, 7, 14, 14)
+    doc.addImage(logoData, 'PNG', CX - 5.25, 5, 10.5, 14)
   }
 
   doc.setTextColor(...DOURADO)
@@ -117,8 +122,8 @@ export async function gerarPdfMapaAstral(mapaNatal, dados, planetas = [], analis
 
   yRef.value = 68
 
-  yRef.value = secaoTitulo(doc, yRef.value, labels.fourPillars, DOURADO, ROXO, L, W, TEXT_X, TEXT_W)
-  yRef.value += 4
+  yRef.value = desenharTituloSecao(doc, yRef.value, labels.fourPillars, CORES_SECAO, L, W, TEXT_X, TEXT_W)
+  yRef.value += 2
 
   const ts = (nome) => translateSigno(nome, lang) || nome || '-'
   const pilares = [
@@ -157,44 +162,48 @@ export async function gerarPdfMapaAstral(mapaNatal, dados, planetas = [], analis
   yRef.value += 26
 
   for (const sec of (analiseFinal?.seccoes || [])) {
-    caberNaPagina(22)
-    yRef.value = secaoTitulo(doc, yRef.value, `>> ${sec.id}. ${sanitizarTextoPdf(sec.titulo || '').toUpperCase()}`, DOURADO, ROXO, L, W, TEXT_X, TEXT_W)
-    yRef.value += 4
+    const tituloSec = `>> ${sec.id}. ${sanitizarTextoPdf(sec.titulo || '').toUpperCase()}`
+    caberNaPagina(alturaTituloSecao(doc, tituloSec, TEXT_W) + 8)
+    yRef.value = desenharTituloSecao(doc, yRef.value, tituloSec, CORES_SECAO, L, W, TEXT_X, TEXT_W)
+    yRef.value += 2
 
     for (const bloco of (sec.blocos || [])) {
       const subtitulo = sanitizarTextoPdf(bloco?.subtitulo || '')
       const meta = bloco?.meta ? sanitizarTextoPdf(bloco.meta) : ''
       const texto = sanitizarTextoPdf(bloco?.texto || '')
 
-      doc.setFontSize(10)
-      doc.setFont('helvetica', 'bold')
-      doc.setTextColor(...DOURADO)
-      const tituloLinhas = subtitulo ? wrapPdfText(doc, subtitulo, TEXT_W) : []
-      escreverLinhasJustificadas(doc, tituloLinhas, TEXT_X, TEXT_W, yRef, PAGE_BOTTOM, LINE_H, onNewPage)
+      if (subtitulo) {
+        doc.setFontSize(10)
+        doc.setFont('helvetica', 'bold')
+        doc.setTextColor(...DOURADO)
+        const tituloLinhas = wrapPdfText(doc, subtitulo, TEXT_W)
+        escreverLinhasJustificadas(doc, tituloLinhas, TEXT_X, TEXT_W, yRef, PAGE_BOTTOM, LINE_H, onNewPage, false)
+        yRef.value += 1
+      }
 
       if (meta) {
         doc.setTextColor(...MUTED)
         doc.setFontSize(8)
         doc.setFont('helvetica', 'normal')
         const metaLinhas = wrapPdfText(doc, meta, TEXT_W)
-        escreverLinhasJustificadas(doc, metaLinhas, TEXT_X, TEXT_W, yRef, PAGE_BOTTOM, LINE_H, onNewPage)
+        escreverLinhasJustificadas(doc, metaLinhas, TEXT_X, TEXT_W, yRef, PAGE_BOTTOM, LINE_H, onNewPage, true)
+        yRef.value += 1
       }
 
-      yRef.value += 2
       doc.setFontSize(9)
       doc.setFont('helvetica', 'normal')
       doc.setTextColor(...BRANCO)
       if (texto) {
         escreverParagrafoJustificado(doc, texto, TEXT_X, TEXT_W, yRef, PAGE_BOTTOM, LINE_H, onNewPage)
       }
-      yRef.value += 3
+      yRef.value += 2
     }
-    yRef.value += 4
+    yRef.value += 2
   }
 
-  caberNaPagina(22)
-  yRef.value = secaoTitulo(doc, yRef.value, labels.positions, DOURADO, ROXO, L, W, TEXT_X, TEXT_W)
-  yRef.value += 4
+  caberNaPagina(alturaTituloSecao(doc, labels.positions, TEXT_W) + 8)
+  yRef.value = desenharTituloSecao(doc, yRef.value, labels.positions, CORES_SECAO, L, W, TEXT_X, TEXT_W)
+  yRef.value += 2
 
   if (planetas.length > 0) {
     planetas.forEach((pl, i) => {
@@ -222,9 +231,9 @@ export async function gerarPdfMapaAstral(mapaNatal, dados, planetas = [], analis
     yRef.value += 16
   }
 
-  caberNaPagina(50)
-  yRef.value = secaoTitulo(doc, yRef.value, labels.elements, DOURADO, ROXO, L, W, TEXT_X, TEXT_W)
-  yRef.value += 4
+  caberNaPagina(alturaTituloSecao(doc, labels.elements, TEXT_W) + 8)
+  yRef.value = desenharTituloSecao(doc, yRef.value, labels.elements, CORES_SECAO, L, W, TEXT_X, TEXT_W)
+  yRef.value += 2
 
   if (planetas.length > 0) {
     const balEl = { Fogo: 0, Terra: 0, Ar: 0, Água: 0 }
@@ -253,9 +262,9 @@ export async function gerarPdfMapaAstral(mapaNatal, dados, planetas = [], analis
     })
   }
 
-  caberNaPagina(35)
-  yRef.value = secaoTitulo(doc, yRef.value, labels.technical, DOURADO, ROXO, L, W, TEXT_X, TEXT_W)
-  yRef.value += 4
+  caberNaPagina(alturaTituloSecao(doc, labels.technical, TEXT_W) + 8)
+  yRef.value = desenharTituloSecao(doc, yRef.value, labels.technical, CORES_SECAO, L, W, TEXT_X, TEXT_W)
+  yRef.value += 2
 
   ;[
     [labels.technicalSystem, labels.technicalSystemVal],
@@ -273,15 +282,7 @@ export async function gerarPdfMapaAstral(mapaNatal, dados, planetas = [], analis
     const valorLinhas = wrapPdfText(doc, String(valor), TEXT_W - 38)
     valorLinhas.forEach((l, idx) => {
       if (yRef.value + LINE_H > PAGE_BOTTOM) novaPagina()
-      const ultima = idx === valorLinhas.length - 1
-      try {
-        doc.text(l, TEXT_X + 38, yRef.value, {
-          align: ultima ? 'left' : 'justify',
-          maxWidth: TEXT_W - 38,
-        })
-      } catch {
-        doc.text(l, TEXT_X + 38, yRef.value, { align: 'left', maxWidth: TEXT_W - 38 })
-      }
+      desenharLinhaJustificada(doc, l, TEXT_X + 38, yRef.value, TEXT_W - 38, idx === valorLinhas.length - 1)
       yRef.value += LINE_H
     })
     yRef.value += 2
@@ -290,7 +291,7 @@ export async function gerarPdfMapaAstral(mapaNatal, dados, planetas = [], analis
   if (mandalaPng) {
     try {
       novaPagina()
-      yRef.value = secaoTitulo(doc, yRef.value, labels.mandala, DOURADO, ROXO, L, W, TEXT_X, TEXT_W)
+      yRef.value = desenharTituloSecao(doc, yRef.value, labels.mandala, CORES_SECAO, L, W, TEXT_X, TEXT_W)
       yRef.value += 6
       const { adicionarMandalaAoPdf } = await import('../lib/mandalaPdf.js')
       await adicionarMandalaAoPdf(doc, mandalaPng, { L, W, yStart: yRef.value, pageBottom: PAGE_BOTTOM, ESCURO })
@@ -320,21 +321,8 @@ export async function gerarPdfMapaAstral(mapaNatal, dados, planetas = [], analis
     })
   }
 
+  if (opts.returnDoc) return doc
   doc.save(getPdfFileName(lang, dados.nome))
-}
-
-function secaoTitulo(doc, y, texto, DOURADO, ROXO, L, W, textX, textW) {
-  doc.setFillColor(...ROXO)
-  doc.rect(L, y, W, 9, 'F')
-  doc.setDrawColor(...DOURADO)
-  doc.setLineWidth(0.3)
-  doc.rect(L, y, W, 9, 'S')
-  doc.setTextColor(...DOURADO)
-  doc.setFontSize(8)
-  doc.setFont('helvetica', 'bold')
-  const linhas = wrapPdfText(doc, texto, textW - 4)
-  doc.text(linhas[0] || '', textX + 2, y + 6)
-  return y + 11
 }
 
 function formatarData(iso, lang = 'pt') {

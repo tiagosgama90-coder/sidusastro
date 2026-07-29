@@ -5,7 +5,7 @@ import { calcularResumoCeuAgora } from '../lib/ceuAoVivo.js'
 import { formatSkyPosition } from '../lib/i18n/astro.js'
 import { dateLocale } from '../lib/i18n/langUtil.js'
 
-export function LandingSkyLive() {
+export function LandingSkyLive({ compact = false }) {
   const { lang, t } = useLanguage()
 
   const hoje = new Date().toLocaleDateString(dateLocale(lang), {
@@ -24,8 +24,8 @@ export function LandingSkyLive() {
   ], [ceuAgora, lang])
 
   return (
-    <div className="landing-sky-top" aria-label={t('auth.portal.skyLive')}>
-      <div className="landing-portal-sky-live landing-portal-sky-live--top">
+    <div className={`landing-sky-top${compact ? ' landing-sky-top--compact' : ''}`} aria-label={t('auth.portal.skyLive')}>
+      <div className={`landing-portal-sky-live landing-portal-sky-live--top${compact ? ' landing-portal-sky-live--compact' : ''}`}>
         <div className="landing-portal-sky-stars" aria-hidden />
         <div className="landing-sky-top-inner">
           <div className="landing-sky-top-left">
@@ -40,7 +40,7 @@ export function LandingSkyLive() {
               <div className="landing-portal-sky-ticker-track">
                 {[...tickerItems, ...tickerItems].map((item, i) => (
                   <span key={`${item.key}-${i}`} className="landing-portal-sky-ticker-item">
-                    <span className="landing-portal-sky-ticker-dot" aria-hidden>✦</span>
+                    <span className="landing-portal-sky-ticker-dot" aria-hidden></span>
                     {item.label}
                   </span>
                 ))}

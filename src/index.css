@@ -98,7 +98,7 @@ html {
 .mobile-menu-overlay {
   position: fixed;
   inset: 0;
-  z-index: 140;
+  z-index: 240;
   background: rgba(0, 0, 0, 0.55);
   border: none;
   padding: 0;
@@ -114,7 +114,7 @@ html {
   bottom: 0;
   width: min(82vw, 300px);
   max-width: 300px;
-  z-index: 160;
+  z-index: 250;
   background: rgba(11, 7, 30, 0.98);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
@@ -123,6 +123,7 @@ html {
   transform: translateX(-105%);
   transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
   padding-top: max(52px, calc(env(safe-area-inset-top, 0px) + 52px));
+  padding-bottom: max(20px, env(safe-area-inset-bottom, 20px));
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
 }
@@ -219,10 +220,10 @@ html.sidus-no-ads .google-auto-placed {
   flex: 0 0 auto;
   position: relative;
   z-index: 3;
-  padding-right: 10px;
-  margin-right: 2px;
-  background: rgba(11, 7, 30, 0.98);
-  box-shadow: 10px 0 14px -6px rgba(11, 7, 30, 0.95);
+  padding-right: 8px;
+  margin-right: 0;
+  background: transparent;
+  box-shadow: none;
 }
 
 .desktop-nav-scroll {
@@ -233,9 +234,20 @@ html.sidus-no-ads .google-auto-placed {
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
   display: flex;
-  justify-content: center;
-  padding-left: clamp(28px, 3.2vw, 44px);
-  padding-right: clamp(36px, 4vw, 52px);
+  justify-content: flex-start;
+  padding-left: 4px;
+  padding-right: clamp(48px, 5vw, 56px);
+  position: relative;
+  z-index: 2;
+}
+
+.desktop-nav-scroll::before {
+  display: none;
+}
+
+@keyframes desktopNavShimmer {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
 }
 
 .desktop-nav-scroll::-webkit-scrollbar {
@@ -248,8 +260,10 @@ html.sidus-no-ads .google-auto-placed {
   flex-wrap: nowrap;
   gap: 2px;
   width: max-content;
-  margin-inline: auto;
-  padding-right: 8px;
+  margin-inline: 0;
+  padding-right: 12px;
+  position: relative;
+  z-index: 2;
 }
 
 .desktop-nav-item {
@@ -257,20 +271,27 @@ html.sidus-no-ads .google-auto-placed {
   align-items: center;
   justify-content: center;
   gap: 4px;
-  padding: 5px 7px;
+  padding: 6px 8px;
   flex: 0 0 auto;
   white-space: nowrap;
   cursor: pointer;
-  font-size: 11px;
-  font-weight: 500;
+  font-size: 11.5px;
+  font-weight: 600;
   font-family: inherit;
   line-height: 1.2;
-  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+  border-radius: 10px;
+  position: relative;
+  z-index: 1;
+  transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease, box-shadow 0.18s ease;
   box-sizing: border-box;
 }
 
+.desktop-nav-item:hover {
+  box-shadow: 0 0 14px rgba(223, 183, 108, 0.12);
+}
+
 .desktop-nav-item span {
-  font-size: 11px;
+  font-size: 11.5px;
   font-weight: inherit;
   white-space: nowrap;
 }
@@ -283,6 +304,70 @@ html.sidus-no-ads .google-auto-placed {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+/* Títulos de página - mesmo estilo que Mapa Astral */
+h1.sidus-page-title {
+  font-family: var(--heading);
+  font-size: 22px;
+  font-weight: 300;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #DFB76C;
+  margin: 0 0 4px;
+  text-align: left;
+  line-height: 1.2;
+}
+
+.ferramenta-page {
+  padding: 20px 20px 110px;
+  text-align: left;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+@media (min-width: 900px) {
+  h1.sidus-page-title {
+    font-size: 28px;
+  }
+
+  .ferramenta-page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 32px 40px 48px;
+  }
+
+  .numerologia-page .numerologia-pilares {
+    gap: 12px;
+  }
+
+  .numerologia-page .numerologia-pilares > div {
+    text-align: left;
+    padding: 16px 14px;
+  }
+
+  .numerologia-page .numerologia-pitagorica {
+    max-width: 540px;
+  }
+
+  .numerologia-page .numerologia-pitagorica > div {
+    text-align: left;
+  }
+
+  .numerologia-page .numerologia-nome {
+    font-size: 20px;
+  }
+
+  .numerologia-page .numerologia-ritmo {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .numerologia-form-card {
+    max-width: 480px;
+    margin: 0;
+  }
 }
 
 .mapa-bar-label {
@@ -300,14 +385,280 @@ html.sidus-no-ads .google-auto-placed {
   overflow-x: clip;
 }
 
+.desktop-nav-header {
+  background: linear-gradient(
+    180deg,
+    rgba(14, 9, 34, 0.98) 0%,
+    rgba(11, 7, 30, 0.94) 100%
+  ) !important;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.25);
+}
+
+@media (max-width: 1536px) {
+  .desktop-nav-item {
+    padding: 5px 7px;
+    gap: 3px;
+    font-size: 10.7px;
+  }
+  .desktop-nav-item__label {
+    font-size: 10.7px;
+  }
+  .desktop-nav-scroll {
+    padding-left: 6px;
+    padding-right: 44px;
+  }
+  .desktop-nav-brand .sidus-logo--nav-compact {
+    gap: 6px;
+  }
+}
+
 @media (max-width: 1280px) {
   .desktop-nav-item {
-    padding: 4px 5px;
+    padding: 5px 6px;
     gap: 3px;
-    font-size: 10.5px;
+    font-size: 10.2px;
+  }
+  .desktop-nav-item__label {
+    font-size: 10.2px;
+  }
+}
+
+.desktop-nav-item__label {
+  font-size: inherit;
+  font-weight: inherit;
+  white-space: nowrap;
+}
+
+/* -- Logótipo Sidus (constelação S) -- */
+.sidus-logo {
+  display: inline-flex;
+  align-items: center;
+  border: none;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+
+.sidus-logo--horizontal {
+  flex-direction: row;
+  gap: 10px;
+  align-items: center;
+}
+
+.sidus-logo--stacked {
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+  text-align: center;
+}
+
+.sidus-logo--nav,
+.sidus-logo--nav-compact {
+  gap: 8px;
+}
+
+.sidus-logo__mark {
+  flex-shrink: 0;
+  filter: drop-shadow(0 0 10px rgba(223, 183, 108, 0.35));
+}
+
+.sidus-logo--stacked .sidus-logo__mark {
+  filter: drop-shadow(0 0 18px rgba(223, 183, 108, 0.45));
+}
+
+.sidus-constellation-mark {
+  display: block;
+}
+
+/* Landing top bar */
+.landing-top-bar {
+  position: relative;
+  top: auto;
+  z-index: 150;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+  max-width: 100%;
+  margin: 0 0 8px;
+  padding: 10px 16px;
+  box-sizing: border-box;
+  background: rgba(11, 7, 30, 0.92);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(223, 183, 108, 0.18);
+  border-radius: 14px;
+}
+
+.landing-top-bar__actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.landing-top-bar__cta {
+  border: none;
+  border-radius: 10px;
+  padding: 9px 14px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: #0B071E;
+  background: linear-gradient(180deg, #F0D08A 0%, #DFB76C 50%, #C9A55A 100%);
+  cursor: pointer;
+  white-space: nowrap;
+  box-shadow: 0 4px 18px rgba(223, 183, 108, 0.28);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.landing-top-bar__cta:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 22px rgba(223, 183, 108, 0.38);
+}
+
+.sidus-logo--landing-bar {
+  gap: 12px;
+}
+
+.sidus-logo--landing-bar .sidus-logo__word {
+  font-size: 24px !important;
+  letter-spacing: 0.22em !important;
+}
+
+.sidus-logo--landing-bar .sidus-logo__mark {
+  filter: drop-shadow(0 0 14px rgba(223, 183, 108, 0.42));
+}
+
+.landing-sky-desktop-wrap {
+  width: 100%;
+  max-width: min(1100px, 100%);
+  margin: 0 auto 10px;
+}
+
+.landing-desktop-top-stack {
+  width: 100%;
+  max-width: min(1100px, 100%);
+  margin: 0 auto 8px;
+  padding: 0 16px;
+  box-sizing: border-box;
+}
+
+.landing-sky-desktop-wrap--compact {
+  margin: 0 0 6px;
+}
+
+.landing-sky-mobile-wrap--compact {
+  width: 100%;
+  margin: 0 0 8px;
+  padding: 0 2px;
+}
+
+/* Landing hero místico */
+.landing-auth-hero--mystic {
+  position: relative;
+  max-width: min(640px, 100%);
+  padding: 28px 20px 22px;
+  border: 1px solid rgba(223, 183, 108, 0.28);
+  background: rgba(11, 7, 30, 0.88) !important;
+  box-shadow:
+    0 0 60px rgba(139, 92, 246, 0.12),
+    0 16px 48px rgba(0, 0, 0, 0.35);
+  overflow: hidden;
+}
+
+.landing-auth-hero__glow {
+  position: absolute;
+  inset: -20% 10% auto;
+  height: 55%;
+  background: radial-gradient(ellipse at center, rgba(223, 183, 108, 0.14) 0%, transparent 68%);
+  pointer-events: none;
+}
+
+.landing-portal-welcome-mystic {
+  position: relative;
+  z-index: 1;
+  margin: 0 0 16px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: rgba(196, 181, 253, 0.9);
+}
+
+.landing-portal-logo-showcase {
+  position: relative;
+  z-index: 1;
+  margin: 8px 0 22px;
+  animation: sidusLogoFloat 5s ease-in-out infinite;
+  filter: drop-shadow(0 0 28px rgba(223, 183, 108, 0.35));
+}
+
+.landing-portal-logo-showcase .sidus-logo--stacked .sidus-logo__word {
+  font-size: 38px !important;
+}
+
+@keyframes sidusLogoFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+.landing-portal-title--mystic {
+  position: relative;
+  z-index: 1;
+  font-size: 17px !important;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.82) !important;
+  font-family: Georgia, 'Palatino Linotype', 'Book Antiqua', serif;
+  line-height: 1.5 !important;
+}
+
+/* Home welcome */
+.sidus-home-welcome.sidus-page-header {
+  padding: 2px 0 8px !important;
+  margin-bottom: 12px !important;
+  border: none !important;
+  background: transparent !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+}
+
+.sidus-home-welcome__mark {
+  margin-bottom: 8px;
+  margin-top: -4px;
+  display: flex;
+  justify-content: center;
+  opacity: 0.95;
+  filter: drop-shadow(0 0 28px rgba(223, 183, 108, 0.38));
+  transform: scale(1.08);
+}
+
+.sidus-home-welcome__greeting {
+  margin: 0;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.72);
+  letter-spacing: 0.03em;
+}
+
+.onboarding-logo-wrap {
+  margin-bottom: 14px;
+  display: flex;
+  justify-content: center;
+}
+
+@media (max-width: 1280px) {
+  .desktop-nav-item {
+    padding: 6px 8px;
+    gap: 4px;
+    font-size: 11px;
   }
   .desktop-nav-item span {
-    font-size: 10.5px;
+    font-size: 11px;
   }
 }
 
@@ -411,9 +762,72 @@ html.sidus-no-ads .google-auto-placed {
   pointer-events: none;
 }
 
+.landing-portal-panel--hidden {
+  display: none !important;
+}
+
+.landing-portal-panel--gt-prerender {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+  pointer-events: none !important;
+}
+
+.landing-portal-post-save {
+  position: relative;
+}
+
+.landing-portal-leitura-wrap {
+  margin-top: 16px;
+}
+
+.landing-portal-input {
+  position: relative;
+  z-index: 1;
+}
+
 .landing-portal-input:focus {
   border-color: rgba(223, 183, 108, 0.55) !important;
   box-shadow: 0 0 0 3px rgba(223, 183, 108, 0.12);
+}
+
+.landing-portal-input-wrap {
+  position: relative;
+  width: 100%;
+}
+
+.landing-portal-input-wrap--mini {
+  width: 100%;
+}
+
+.landing-portal-fake-placeholder {
+  position: absolute;
+  top: 50%;
+  right: 14px;
+  transform: translateY(-50%);
+  color: rgba(255, 255, 255, 0.38);
+  pointer-events: none;
+  font-size: 15px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  z-index: 0;
+}
+
+.landing-portal-fake-placeholder--mini {
+  left: 50%;
+  right: auto;
+  transform: translate(-50%, -50%);
+  font-size: 14px;
+  text-align: center;
+  width: 100%;
+  padding: 0 4px;
 }
 
 .landing-portal-cta {
@@ -564,7 +978,7 @@ html.sidus-no-ads .google-auto-placed {
   font-weight: 600;
 }
 
-/* Guias editoriais — landing */
+/* Guias editoriais - landing */
 .landing-guides {
   max-width: 1100px;
   margin: 28px auto 8px;
@@ -576,11 +990,189 @@ html.sidus-no-ads .google-auto-placed {
   padding: 0 16px 4px;
 }
 
+.landing-guides--featured {
+  max-width: min(1100px, calc(100vw - 24px));
+  margin: 36px auto 28px;
+  padding: 28px 22px 26px;
+  border-radius: 24px;
+  border: 1px solid rgba(223, 183, 108, 0.32);
+  background:
+    radial-gradient(ellipse 90% 70% at 50% -10%, rgba(223, 183, 108, 0.14), transparent 58%),
+    radial-gradient(ellipse 60% 50% at 100% 100%, rgba(139, 92, 246, 0.1), transparent 55%),
+    rgba(8, 5, 24, 0.78);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.04) inset,
+    0 28px 72px rgba(0, 0, 0, 0.38);
+}
+
+.landing-guides-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin: 0 0 10px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(223, 183, 108, 0.92);
+  background: rgba(223, 183, 108, 0.1);
+  border: 1px solid rgba(223, 183, 108, 0.24);
+}
+
+.landing-guides-eyebrow svg {
+  flex-shrink: 0;
+  color: #DFB76C;
+}
+
+.landing-guides--featured .landing-guides-header {
+  margin-bottom: 24px;
+}
+
+.landing-guides--featured .landing-guides-title {
+  font-size: clamp(1.35rem, 4.5vw, 1.75rem);
+  margin-bottom: 10px;
+}
+
+.landing-guides--featured .landing-guides-lead {
+  font-size: 14px;
+  max-width: 560px;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.landing-guides-grid--featured {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+}
+
+@media (min-width: 640px) {
+  .landing-guides-grid--featured {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .landing-guides-grid--featured {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .landing-guides--featured {
+    padding: 32px 28px 30px;
+  }
+}
+
+.landing-guide-arrow-featured {
+  display: none;
+}
+
+.landing-guide-card--with-art {
+  padding: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.landing-guide-art {
+  width: 100%;
+  height: 128px;
+  min-height: 128px;
+  max-height: 128px;
+  overflow: hidden;
+  border-bottom: 1px solid rgba(223, 183, 108, 0.14);
+  background:
+    radial-gradient(ellipse 90% 80% at 50% 20%, color-mix(in srgb, var(--guide-accent, #DFB76C) 22%, transparent), transparent 70%),
+    rgba(0, 0, 0, 0.28);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.landing-guide-art--signos {
+  height: 128px;
+  min-height: 128px;
+  max-height: 128px;
+  padding: 0;
+}
+
+.landing-guide-art-photo-wrap {
+  width: 100%;
+  height: 100%;
+  border-radius: 0;
+  overflow: hidden;
+  border: none;
+  box-shadow: none;
+  background: transparent;
+}
+
+.landing-guide-art--mapa {
+  height: 128px;
+  min-height: 128px;
+  max-height: 128px;
+}
+
+.landing-guide-art-photo {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center center;
+}
+
+.landing-guide-art-photo--signos {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 45%;
+  -webkit-mask-image: none;
+  mask-image: none;
+}
+
+.landing-guide-art-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.landing-guides--featured .landing-guide-body {
+  padding: 16px 16px 18px;
+}
+
+.landing-guides--featured .landing-guide-card {
+  min-height: 100%;
+  border-color: rgba(223, 183, 108, 0.24);
+  background: rgba(0, 0, 0, 0.22);
+}
+
+.landing-guides--featured .landing-guide-card:hover {
+  border-color: rgba(223, 183, 108, 0.48);
+  transform: translateY(-3px);
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.35);
+}
+
+.landing-guides--featured .landing-guide-visual {
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.landing-guides--featured .landing-guide-glyph {
+  font-size: 26px;
+  opacity: 1;
+}
+
 .landing-conversion-zone {
   width: 100%;
   max-width: min(900px, calc(100vw - 32px));
   margin: 0 auto 8px;
-  padding: 20px 18px 22px;
+  padding: 16px 18px 20px;
   border-radius: 22px;
   border: 1px solid rgba(223, 183, 108, 0.28);
   background:
@@ -595,7 +1187,92 @@ html.sidus-no-ads .google-auto-placed {
 
 .landing-conversion-zone-head {
   text-align: center;
-  margin-bottom: 18px;
+  margin-bottom: 14px;
+}
+
+.landing-welcome-zodiac {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 192px;
+  height: 192px;
+  margin: 24px auto 8px;
+}
+
+.landing-welcome-zodiac__halo {
+  position: absolute;
+  inset: 4%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 248, 231, 0.22) 0%, rgba(223, 183, 108, 0.14) 38%, rgba(139, 92, 246, 0.06) 58%, transparent 72%);
+  filter: blur(10px);
+  opacity: 0.9;
+  animation: landingZodiacHaloPulse 5s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.landing-welcome-zodiac__core-glow {
+  position: absolute;
+  width: 34%;
+  height: 34%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.55) 0%, rgba(240, 208, 138, 0.42) 35%, rgba(223, 183, 108, 0.12) 65%, transparent 100%);
+  filter: blur(6px);
+  opacity: 0.85;
+  animation: landingZodiacCorePulse 3.6s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.landing-welcome-zodiac__spark {
+  position: absolute;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #fff 0%, #f0d08a 45%, rgba(223, 183, 108, 0) 100%);
+  box-shadow: 0 0 10px rgba(255, 248, 231, 0.75), 0 0 18px rgba(223, 183, 108, 0.45);
+  opacity: 0.75;
+  animation: landingZodiacSparkPulse 4s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.landing-welcome-zodiac__spark--1 { top: 8%; left: 50%; transform: translateX(-50%); animation-delay: 0s; }
+.landing-welcome-zodiac__spark--2 { top: 50%; right: 6%; animation-delay: 0.8s; }
+.landing-welcome-zodiac__spark--3 { bottom: 8%; left: 50%; transform: translateX(-50%); animation-delay: 1.6s; }
+.landing-welcome-zodiac__spark--4 { top: 50%; left: 6%; animation-delay: 2.4s; }
+
+.landing-welcome-zodiac__img {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  opacity: 0.94;
+  filter: drop-shadow(0 0 28px rgba(223, 183, 108, 0.55)) drop-shadow(0 0 52px rgba(223, 183, 108, 0.2));
+  pointer-events: none;
+  user-select: none;
+}
+
+@keyframes landingZodiacHaloPulse {
+  0%, 100% { opacity: 0.72; transform: scale(0.98); }
+  50% { opacity: 1; transform: scale(1.03); }
+}
+
+@keyframes landingZodiacCorePulse {
+  0%, 100% { opacity: 0.65; transform: scale(0.92); }
+  50% { opacity: 1; transform: scale(1.08); }
+}
+
+@keyframes landingZodiacSparkPulse {
+  0%, 100% { opacity: 0.45; }
+  50% { opacity: 1; }
+}
+
+@media (max-width: 640px) {
+  .landing-welcome-zodiac {
+    width: 140px;
+    height: 140px;
+  }
 }
 
 .landing-conversion-eyebrow {
@@ -608,23 +1285,59 @@ html.sidus-no-ads .google-auto-placed {
 }
 
 .landing-conversion-title {
-  margin: 0 0 8px;
-  font-size: clamp(1.25rem, 4vw, 1.55rem);
+  margin: 0 0 12px;
+  font-size: clamp(1.35rem, 4.8vw, 1.85rem);
   font-weight: 700;
-  line-height: 1.25;
+  line-height: 1.28;
   color: #fff;
+  letter-spacing: -0.01em;
 }
 
 .landing-conversion-lead {
   margin: 0 auto;
-  max-width: 520px;
-  font-size: 13px;
-  line-height: 1.55;
-  color: rgba(255, 255, 255, 0.62);
+  max-width: 580px;
+  font-size: 14px;
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.68);
+}
+
+.landing-mystic-glow {
+  background: linear-gradient(
+    180deg,
+    #FFF8E7 0%,
+    #F5DCA0 28%,
+    #DFB76C 58%,
+    #C9A55A 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  filter:
+    drop-shadow(0 0 10px rgba(223, 183, 108, 0.55))
+    drop-shadow(0 0 22px rgba(223, 183, 108, 0.28));
+}
+
+.landing-conversion-pitch {
+  display: none;
+}
+
+.landing-auth-input {
+  width: 100%;
+  box-sizing: border-box;
+  background: rgba(255, 255, 255, 0.04) !important;
+  border: 1px solid rgba(223, 183, 108, 0.2) !important;
+  border-radius: 12px !important;
+}
+
+.landing-auth-input:focus {
+  outline: none;
+  border-color: rgba(223, 183, 108, 0.45) !important;
+  box-shadow: 0 0 0 3px rgba(223, 183, 108, 0.1);
 }
 
 .landing-auth-panel--prominent {
-  border-color: rgba(223, 183, 108, 0.32) !important;
+  border: 1px solid rgba(223, 183, 108, 0.32) !important;
   box-shadow:
     0 0 0 1px rgba(223, 183, 108, 0.08) inset,
     0 16px 48px rgba(0, 0, 0, 0.32) !important;
@@ -859,6 +1572,91 @@ html.sidus-no-ads .google-auto-placed {
 }
 
 /* Testemunhos + preview mapa */
+.landing-pdf-showcase {
+  width: 100%;
+  max-width: 100%;
+  margin: 28px auto 24px;
+  padding: 28px 0 12px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-sizing: border-box;
+  position: relative;
+  z-index: 1;
+}
+
+.landing-pdf-showcase__title {
+  margin: 0 0 12px;
+  padding: 0 12px;
+  font-size: clamp(1.35rem, 4.8vw, 1.95rem);
+  font-weight: 700;
+  line-height: 1.28;
+  color: #fff;
+  letter-spacing: -0.01em;
+  text-align: center;
+  max-width: min(680px, 100%);
+  text-shadow:
+    0 0 24px rgba(223, 183, 108, 0.35),
+    0 0 48px rgba(223, 183, 108, 0.15);
+}
+
+.landing-pdf-showcase__desc {
+  margin: 0 auto 22px;
+  padding: 0 14px;
+  max-width: 54ch;
+  font-size: 14px;
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.76);
+}
+
+.landing-pdf-showcase__visual {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto;
+  padding: 0 10px;
+  box-sizing: border-box;
+}
+
+.landing-pdf-showcase__visual--glow {
+  position: relative;
+  max-width: min(700px, 100%);
+}
+
+.landing-pdf-showcase__visual--glow::before {
+  content: '';
+  position: absolute;
+  inset: 6% 4%;
+  border-radius: 18px;
+  background: radial-gradient(ellipse at 50% 50%, rgba(223, 183, 108, 0.28), transparent 70%);
+  filter: blur(20px);
+  pointer-events: none;
+  z-index: 0;
+  animation: landingPdfGlowPulse 4.2s ease-in-out infinite;
+}
+
+.landing-pdf-showcase__visual--glow > * {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+}
+
+@keyframes landingPdfGlowPulse {
+  0%, 100% { opacity: 0.5; transform: scale(0.97); }
+  50% { opacity: 0.95; transform: scale(1.03); }
+}
+
+.landing-pdf-showcase__caption {
+  margin: 14px auto 0;
+  padding: 0 12px;
+  font-size: 12px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.48);
+  letter-spacing: 0.03em;
+}
+
 .landing-testimonials {
   max-width: 1100px;
   margin: 28px auto 8px;
@@ -878,37 +1676,276 @@ html.sidus-no-ads .google-auto-placed {
   gap: 20px;
   align-items: start;
 }
+
+.landing-testimonials-grid--reviews-only {
+  grid-template-columns: 1fr;
+}
+
+.landing-testimonials-quotes--full {
+  width: 100%;
+}
 .landing-testimonials-visual {
   text-align: center;
 }
 .landing-testimonial-preview {
   border-radius: 14px;
-  padding: 12px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(223, 183, 108, 0.25);
+  padding: 0;
+  background: transparent;
+  border: none;
 }
-.landing-testimonial-preview-inner {
-  position: relative;
-}
-.landing-testimonial-wheel {
+/* Mapa natal premium - landing */
+.natal-chart-premium--cover {
   width: 100%;
-  max-width: 220px;
-  height: auto;
-  display: block;
+  max-width: 340px;
   margin: 0 auto;
 }
-.landing-testimonial-pdf-badge {
+
+.natal-chart-premium--showcase {
+  width: 100%;
+  max-width: min(640px, calc(100vw - 36px));
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.landing-pdf-showcase .landing-testimonial-preview--showcase {
+  width: 100%;
+  max-width: min(640px, calc(100vw - 36px));
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+}
+
+.landing-pdf-showcase .landing-pdf-cover-btn {
+  width: 100%;
+  margin: 0 auto;
+}
+
+.landing-pdf-cover-btn {
+  display: block;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  text-align: inherit;
+  font: inherit;
+  color: inherit;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.landing-pdf-cover-btn:focus-visible {
+  outline: 2px solid rgba(223, 183, 108, 0.65);
+  outline-offset: 4px;
+  border-radius: 14px;
+}
+
+.landing-pdf-cover-hint {
   position: absolute;
-  top: 8px;
-  right: 8px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 10px 12px 12px;
+  background: linear-gradient(180deg, transparent 0%, rgba(3, 1, 8, 0.88) 45%, rgba(3, 1, 8, 0.96) 100%);
+  pointer-events: none;
+}
+
+.landing-pdf-cover-hint__pt {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #DFB76C;
+}
+
+.landing-pdf-cover-hint__en {
+  font-size: 8px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.landing-pdf-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: max(16px, env(safe-area-inset-top, 16px)) 12px max(16px, env(safe-area-inset-bottom, 16px));
+  background: rgba(1, 0, 6, 0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.landing-pdf-lightbox__close {
+  position: fixed;
+  top: max(12px, env(safe-area-inset-top, 12px));
+  right: max(12px, env(safe-area-inset-right, 12px));
+  z-index: 301;
+  width: 44px;
+  height: 44px;
+  border: 1px solid rgba(223, 183, 108, 0.45);
+  border-radius: 50%;
+  background: rgba(11, 7, 30, 0.92);
+  color: #DFB76C;
+  font-size: 28px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.landing-pdf-lightbox__scroll {
+  width: 100%;
+  max-width: min(1080px, 100%);
+  margin: 48px auto 24px;
+}
+
+.landing-pdf-lightbox__img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 12px;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.65);
+  cursor: zoom-out;
+}
+
+@media (min-width: 900px) {
+  .natal-chart-premium--showcase {
+    max-width: min(600px, 72vw);
+  }
+
+  .landing-pdf-showcase {
+    margin-top: 36px;
+    margin-bottom: 28px;
+    padding-top: 28px;
+  }
+}
+
+.natal-chart-premium__frame {
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(201, 162, 77, 0.45);
+  background: linear-gradient(165deg, #120a24 0%, #080512 55%, #050308 100%);
+  box-shadow:
+    0 18px 48px rgba(0, 0, 0, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.natal-chart-premium__cover-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 10px 12px 8px;
+  border-bottom: 1px solid rgba(201, 162, 77, 0.22);
+  background: rgba(0, 0, 0, 0.28);
+}
+
+.natal-chart-premium__brand {
   font-size: 10px;
   font-weight: 800;
-  letter-spacing: 0.08em;
-  padding: 4px 8px;
-  border-radius: 6px;
-  background: rgba(223, 183, 108, 0.2);
+  letter-spacing: 0.22em;
   color: #DFB76C;
-  border: 1px solid rgba(223, 183, 108, 0.45);
+}
+
+.natal-chart-premium__cover-title {
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  color: rgba(255, 255, 255, 0.62);
+  text-transform: uppercase;
+}
+
+.natal-chart-premium__cover-body {
+  position: relative;
+  padding: 10px 12px 6px;
+}
+
+.natal-chart-premium__svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+.natal-chart-premium__pdf-badge {
+  position: absolute;
+  top: 16px;
+  right: 18px;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  padding: 4px 7px;
+  border-radius: 5px;
+  background: rgba(201, 162, 77, 0.18);
+  color: #DFB76C;
+  border: 1px solid rgba(201, 162, 77, 0.5);
+}
+
+.natal-chart-premium__cover-meta {
+  margin: 0;
+  padding: 8px 12px 11px;
+  font-size: 9px;
+  line-height: 1.45;
+  letter-spacing: 0.04em;
+  color: rgba(255, 255, 255, 0.5);
+  text-align: center;
+  border-top: 1px solid rgba(201, 162, 77, 0.14);
+}
+
+.natal-chart-premium__frame--photo {
+  position: relative;
+  padding: 0;
+  background: #030108;
+  border: none;
+  box-shadow: 0 24px 56px rgba(0, 0, 0, 0.5);
+  cursor: pointer;
+}
+
+.natal-chart-premium__photo {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.natal-chart-premium__photo--cover {
+  aspect-ratio: 1080 / 1400;
+  object-fit: contain;
+  object-position: center center;
+  background: #030108;
+}
+
+.natal-chart-premium--guide,
+.natal-chart-premium__photo--guide {
+  width: 100%;
+  height: 100%;
+}
+
+.natal-chart-premium__photo--guide {
+  object-fit: cover;
+  object-position: center center;
+}
+
+.natal-chart-premium--cover .natal-chart-premium__cover-meta {
+  margin-top: 10px;
+  padding: 0 4px;
+  border-top: none;
+}
+
+.landing-guide-art--mapa-wheel {
+  width: 100%;
+  height: 100%;
 }
 .landing-testimonials-caption {
   margin: 10px 0 0;
@@ -1082,17 +2119,58 @@ html.sidus-no-ads .google-auto-placed {
   100% { transform: translateX(-50%); }
 }
 
-/* CÃ©u ao vivo - faixa no topo */
+/* Céu ao vivo - faixa no topo */
 .landing-sky-top {
   width: 100%;
-  margin: 0 0 16px;
+  margin: 0 0 10px;
   position: relative;
   z-index: 1;
 }
+
+.landing-sky-top--compact {
+  margin: 0 0 6px;
+}
+
 .landing-portal-sky-live--top {
   margin-bottom: 0;
   padding: 8px 12px;
   border-radius: 12px;
+}
+
+.landing-portal-sky-live--compact {
+  padding: 5px 10px !important;
+  border-radius: 10px !important;
+  border-color: rgba(223, 183, 108, 0.12) !important;
+  background: rgba(11, 7, 30, 0.72) !important;
+  box-shadow: none !important;
+}
+
+.landing-portal-sky-live--compact .landing-portal-sky-stars {
+  opacity: 0.22;
+}
+
+.landing-portal-sky-live--compact .landing-portal-sky-live-badge {
+  font-size: 9px;
+  letter-spacing: 0.08em;
+}
+
+.landing-portal-sky-live--compact .landing-portal-sky-live-date,
+.landing-portal-sky-live--compact .landing-portal-sky-moon-name--top {
+  font-size: 10px;
+}
+
+.landing-portal-sky-live--compact .landing-portal-sky-moon-emoji--top {
+  font-size: 13px;
+}
+
+.landing-portal-sky-live--compact .landing-portal-sky-ticker-item {
+  font-size: 10px;
+  opacity: 0.78;
+}
+
+.landing-portal-sky-live--compact .landing-portal-pulse-icon {
+  width: 10px;
+  height: 10px;
 }
 .landing-sky-top-inner {
   position: relative;
@@ -1265,6 +2343,14 @@ html.sidus-no-ads .google-auto-placed {
   text-align: center;
   letter-spacing: 0.03em;
 }
+.landing-trust-bar-note {
+  margin: 6px 0 0;
+  font-size: 11px;
+  font-weight: 500;
+  color: #34d399;
+  text-align: center;
+  letter-spacing: 0.02em;
+}
 .landing-portal-form-lead {
   margin: 0 0 14px;
   padding: 0 4px;
@@ -1287,18 +2373,54 @@ html.sidus-no-ads .google-auto-placed {
   background: rgba(255, 255, 255, 0.03);
 }
 
-/* Mobile - hero e welcome iguais ao desktop (abaixo do cÃ©u ao vivo / roda) */
-@media (max-width: 639px) {
+/* Mobile - welcome no topo, céu ao vivo abaixo (sem overlap) */
+@media (max-width: 767px) {
   .landing-auth-layout,
   .landing-auth-layout--mobile {
-    padding-top: calc(108px + env(safe-area-inset-top, 0px)) !important;
+    padding-top: max(6px, env(safe-area-inset-top, 0px)) !important;
     padding-left: 12px !important;
     padding-right: 12px !important;
     padding-bottom: 16px !important;
   }
 
-  .landing-sky-top {
+  .landing-lang-bar--standalone {
+    display: flex;
+    justify-content: flex-end;
+    padding: 2px 2px 8px;
+    margin: 0;
+  }
+
+  .landing-mobile-logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 4px 8px 10px;
+    margin: 0;
+  }
+
+  .landing-mobile-logo .sidus-logo--landing-bar {
+    gap: 10px;
+  }
+
+  .landing-mobile-logo .sidus-logo__word {
+    font-size: 22px !important;
+  }
+
+  .landing-sky-mobile-wrap {
+    width: 100%;
+    margin: 0 0 12px;
+  }
+
+  .landing-sky-mobile-wrap .landing-sky-top {
     margin-bottom: 0;
+  }
+
+  .landing-auth-hero {
+    margin-top: 0;
+    margin-bottom: 14px;
+    scroll-margin-top: 8px;
+    position: relative;
+    z-index: 1;
   }
 
   .landing-portal-sky-live--top {
@@ -1329,13 +2451,9 @@ html.sidus-no-ads .google-auto-placed {
     line-height: 1.45;
   }
 
-  .landing-auth-hero {
-    margin-top: 4px;
-    margin-bottom: 14px;
-  }
-
   .landing-portal-brand-row {
-    gap: 10px;
+    flex-wrap: wrap;
+    gap: 8px 10px;
     margin-bottom: 14px;
   }
 
@@ -1466,13 +2584,133 @@ html.sidus-no-ads .google-auto-placed {
 .sidus-cosmic-shell {
   position: relative;
   min-height: 100svh;
-  background: transparent !important;
+  background: #030818 !important;
+  isolation: isolate;
+}
+
+/* Camada fixa única: estrelas + hendecagrama - SEMPRE atrás do conteúdo */
+.sidus-cosmic-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  overflow: hidden;
 }
 
 .sidus-cosmic-foreground {
   position: relative;
-  z-index: 2;
+  z-index: 1;
   min-height: 100svh;
+  isolation: isolate;
+}
+
+/* Véu suave entre fundo cósmico e texto - estrela visível mas nunca “em cima” */
+.sidus-cosmic-foreground::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: rgba(3, 8, 24, 0.45);
+}
+
+.sidus-app-content,
+.landing-auth-page-wrap {
+  position: relative;
+  z-index: 2;
+  isolation: isolate;
+}
+
+/* Wrapper de cada página - site todo */
+.sidus-page-root {
+  position: relative;
+  z-index: 1;
+  isolation: isolate;
+}
+
+.sidus-page-root > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Cabeçalhos de página (Home, etc.) */
+.sidus-page-header {
+  position: relative;
+  z-index: 1;
+  isolation: isolate;
+  background: rgba(11, 7, 30, 0.88);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(223, 183, 108, 0.18);
+  border-radius: 14px;
+  padding: 14px 16px;
+}
+
+/* Painel vidro padrão Sidus */
+.sidus-glass {
+  position: relative;
+  z-index: 2;
+  isolation: isolate;
+  background: rgba(11, 7, 30, 0.88);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(223, 183, 108, 0.22);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+}
+
+/* Tabelas legíveis em qualquer página */
+.sidus-page-root table,
+.sidus-app-content table {
+  position: relative;
+  z-index: 1;
+  isolation: isolate;
+  background: rgba(11, 7, 30, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.sidus-page-root th,
+.sidus-page-root td,
+.sidus-app-content th,
+.sidus-app-content td {
+  position: relative;
+  z-index: 1;
+  background: rgba(11, 7, 30, 0.7);
+}
+
+/* Páginas lazy (tarot, oráculo, ferramentas) */
+.sidus-page-root .tarot-seleccionar-page,
+.sidus-page-root .oracle-chat {
+  position: relative;
+  z-index: 1;
+  isolation: isolate;
+}
+
+/* Hendecagrama e estrelas - fundo, nunca por cima */
+.landing-cosmic-stars-canvas,
+.landing-cosmic-nebula,
+.landing-cosmic-hendecagram-wrap {
+  z-index: 0;
+}
+
+/* Efeitos de toque/clique - no body, acima do conteúdo, abaixo da navbar (150) */
+.sidus-cosmic-fx-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 140;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+/* Rasto / explosõezinhas cósmicas */
+.magic-cosmic-trail-canvas {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
 }
 
 .sidus-login-shell {
@@ -1483,9 +2721,9 @@ html.sidus-no-ads .google-auto-placed {
   overflow-x: clip;
 }
 
-/* Fundo cÃ³smico - estrelas + hendecagrama (fixo atrÃ¡s do conteÃºdo) */
+/* Fundo cósmico - estrelas + hendecagrama (dentro do backdrop, atrás do conteúdo) */
 .cosmic-bg-root {
-  position: fixed;
+  position: absolute;
   inset: 0;
   z-index: 0;
   pointer-events: none;
@@ -1502,9 +2740,9 @@ html.sidus-no-ads .google-auto-placed {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(ellipse 50% 40% at 50% 45%, rgba(223, 183, 108, 0.04) 0%, transparent 55%),
-    radial-gradient(ellipse 35% 30% at 30% 60%, rgba(67, 56, 202, 0.07) 0%, transparent 50%),
-    radial-gradient(ellipse 35% 30% at 70% 35%, rgba(88, 28, 135, 0.06) 0%, transparent 50%);
+    radial-gradient(ellipse 50% 40% at 50% 45%, rgba(223, 183, 108, 0.09) 0%, transparent 55%),
+    radial-gradient(ellipse 35% 30% at 30% 60%, rgba(67, 56, 202, 0.14) 0%, transparent 50%),
+    radial-gradient(ellipse 35% 30% at 70% 35%, rgba(88, 28, 135, 0.12) 0%, transparent 50%);
 }
 .landing-cosmic-hendecagram-wrap {
   position: absolute;
@@ -1513,7 +2751,7 @@ html.sidus-no-ads .google-auto-placed {
   transform: translate(-50%, -50%);
   width: min(92vw, 520px);
   height: min(92vw, 520px);
-  opacity: 0.58;
+  opacity: 0.82;
 }
 .landing-cosmic-hendecagram {
   width: 100%;
@@ -1523,12 +2761,25 @@ html.sidus-no-ads .google-auto-placed {
   transform-origin: 200px 200px;
   animation: landingHendecSpin 140s linear infinite, landingHendecPulse 8s ease-in-out infinite;
 }
+.landing-cosmic-zodiac-ring {
+  transform-origin: 200px 200px;
+  animation: landingZodiacRingSpin 96s linear infinite;
+}
+.landing-cosmic-zodiac-upright {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: landingZodiacRingSpin 96s linear infinite reverse;
+}
 .landing-cosmic-zodiac {
   font-size: 15px;
-  fill: rgba(223, 183, 108, 0.55);
+  fill: rgba(223, 183, 108, 0.72);
   animation: landingZodiacShine 4.5s ease-in-out infinite;
 }
 @keyframes landingHendecSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+@keyframes landingZodiacRingSpin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
@@ -1537,15 +2788,15 @@ html.sidus-no-ads .google-auto-placed {
   50% { opacity: 1; }
 }
 @keyframes landingZodiacShine {
-  0%, 100% { fill: rgba(223, 183, 108, 0.45); opacity: 0.7; }
-  50% { fill: rgba(240, 207, 138, 0.95); opacity: 1; }
+  0%, 100% { fill: rgba(223, 183, 108, 0.62); opacity: 0.82; }
+  50% { fill: rgba(240, 207, 138, 1); opacity: 1; }
 }
 
 .sidus-login-shell .landing-portal-orb {
   display: none;
 }
 
-/* Topo landing fixo - mesma lÃ³gica que navbar (conteÃºdo/cÃ³smico desfoca ao scroll) */
+/* Topo landing fixo - desktop/tablet; mobile usa fluxo normal em App.jsx */
 .landing-auth-sticky-top {
   position: fixed;
   top: 0;
@@ -1565,10 +2816,12 @@ html.sidus-no-ads .google-auto-placed {
   border-bottom: 1px solid rgba(223, 183, 108, 0.22);
 }
 
-/* Mobile login - idioma fixo acima do cÃ©u ao vivo */
-.landing-auth-sticky-top--mobile {
-  margin: 0 0 10px;
+@media (max-width: 767px) {
+  .landing-auth-sticky-top {
+    display: none;
+  }
 }
+
 .landing-lang-bar {
   display: flex;
   justify-content: flex-end;
@@ -1611,14 +2864,6 @@ html.sidus-no-ads .google-auto-placed {
   max-width: min(480px, calc(100vw - 24px));
   display: flex;
   flex-direction: column;
-}
-
-.landing-auth-layout--mobile .landing-conversion-zone {
-  order: -3;
-}
-
-.landing-auth-layout--mobile .landing-auth-hero {
-  order: -2;
 }
 
 .landing-auth-grid {
@@ -1691,7 +2936,7 @@ html.sidus-no-ads .google-auto-placed {
 
   .landing-auth-layout--desktop {
     max-width: min(900px, calc(100vw - 48px)) !important;
-    padding-top: calc(62px + env(safe-area-inset-top, 0px)) !important;
+    padding-top: calc(12px + env(safe-area-inset-top, 0px)) !important;
     padding-bottom: 16px !important;
     padding-left: 24px !important;
     padding-right: 24px !important;
@@ -2119,6 +3364,16 @@ html.sidus-no-ads .google-auto-placed {
   font-weight: 600;
   color: #34D399;
   text-align: center;
+}
+
+.banner-brasil--paywall {
+  margin: 0 0 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(52, 211, 153, 0.35);
+  background: linear-gradient(135deg, rgba(52, 211, 153, 0.16), rgba(223, 183, 108, 0.1));
+  font-size: 13px;
+  padding: 12px 16px;
+  border-bottom: none;
 }
 
 /* Share prominente */
@@ -2579,11 +3834,72 @@ html.sidus-no-ads .google-auto-placed {
   gap: 8px;
 }
 
+.vip-promo-official {
+  margin-bottom: 22px;
+  padding: 18px 20px;
+  border-radius: 16px;
+  background: linear-gradient(145deg, rgba(225, 48, 108, 0.08), rgba(0, 0, 0, 0.25));
+  border: 1px solid rgba(225, 48, 108, 0.28);
+}
+.vip-promo-official h2 {
+  margin: 0 0 8px;
+  font-size: 15px;
+  font-weight: 700;
+  color: #DFB76C;
+}
+.vip-promo-official-lead {
+  margin: 0 0 14px;
+  font-size: 13px;
+  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.78);
+}
+.vip-promo-official-list {
+  list-style: none;
+  margin: 0 0 12px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.vip-promo-official-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.22);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #fff;
+  text-decoration: none;
+  font-size: 14px;
+}
+.vip-promo-official-link strong {
+  min-width: 88px;
+  color: #DFB76C;
+}
+.vip-promo-official-link span {
+  flex: 1;
+  font-weight: 600;
+}
+.vip-promo-official-note {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.55);
+}
+.vip-promo-field-hint {
+  display: block;
+  margin-top: 4px;
+  font-size: 11px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.45);
+  line-height: 1.4;
+}
+
 /* VIP promo page */
 .vip-promo-guarantees,
 .vip-promo-benefits,
-.vip-promo-how,
-.vip-promo-video-guide {
+.vip-promo-how {
   margin-bottom: 22px;
   padding: 18px 20px;
   border-radius: 16px;
@@ -2669,41 +3985,6 @@ html.sidus-no-ads .google-auto-placed {
   line-height: 1.55;
   color: rgba(255, 255, 255, 0.62);
 }
-.vip-promo-video-toggle {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  background: rgba(139, 92, 246, 0.12);
-  border: 1px solid rgba(223, 183, 108, 0.25);
-  border-radius: 12px;
-  color: #DFB76C;
-  font-size: 13px;
-  font-weight: 600;
-  padding: 12px 16px;
-  cursor: pointer;
-}
-.vip-promo-video-body {
-  margin-top: 14px;
-  font-size: 13px;
-  line-height: 1.6;
-  color: rgba(255, 255, 255, 0.75);
-}
-.vip-promo-video-body blockquote {
-  margin: 12px 0;
-  padding: 14px 16px;
-  border-left: 3px solid #DFB76C;
-  background: rgba(0, 0, 0, 0.22);
-  border-radius: 0 10px 10px 0;
-  font-style: italic;
-  color: rgba(255, 255, 255, 0.88);
-}
-.vip-promo-caption-hint,
-.vip-promo-hashtags {
-  font-size: 12px;
-  color: rgba(255, 255, 255, 0.55);
-}
 .vip-promo-card {
   padding: 22px 20px;
   border-radius: 16px;
@@ -2714,6 +3995,44 @@ html.sidus-no-ads .google-auto-placed {
   margin: 0 0 6px;
   font-size: 18px;
   color: #fff;
+}
+.vip-promo-form-notice {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  margin: 12px 0 16px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: rgba(223, 183, 108, 0.1);
+  border: 1px solid rgba(223, 183, 108, 0.28);
+  color: rgba(255, 255, 255, 0.9);
+}
+.vip-promo-form-notice svg {
+  flex-shrink: 0;
+  margin-top: 2px;
+  color: #DFB76C;
+}
+.vip-promo-form-notice strong {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 14px;
+  color: #DFB76C;
+}
+.vip-promo-form-notice p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.78);
+}
+.vip-promo-form-section {
+  margin: 18px 0 12px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(223, 183, 108, 0.2);
+  font-size: 13px;
+  font-weight: 700;
+  color: #DFB76C;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 .vip-promo-form-hint {
   margin: 0 0 18px;
@@ -2812,6 +4131,79 @@ html.sidus-no-ads .google-auto-placed {
   gap: 8px;
 }
 
+.vip-promo-grant-form {
+  margin-bottom: 16px;
+  padding: 14px;
+  border-radius: 12px;
+  background: rgba(223, 183, 108, 0.08);
+  border: 1px solid rgba(223, 183, 108, 0.22);
+}
+.vip-promo-grant-form label {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #DFB76C;
+}
+.vip-promo-grant-form label svg {
+  vertical-align: middle;
+  margin-right: 6px;
+}
+.vip-promo-grant-form input {
+  display: block;
+  width: 100%;
+  margin-top: 8px;
+  padding: 11px 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(0, 0, 0, 0.25);
+  color: #fff;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+.vip-promo-grant-btn {
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 11px 14px;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #DFB76C, #B8944F);
+  color: #0B071E;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.vip-promo-grant-btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+.vip-promo-grant-hint {
+  margin: 10px 0 0;
+  font-size: 11px;
+  line-height: 1.45;
+  color: rgba(255, 255, 255, 0.5);
+}
+.vip-promo-admin-feedback {
+  margin: 0 0 14px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  font-size: 13px;
+  line-height: 1.5;
+}
+.vip-promo-admin-feedback.sucesso {
+  background: rgba(52, 211, 153, 0.12);
+  border: 1px solid rgba(52, 211, 153, 0.35);
+  color: #6EE7B7;
+}
+.vip-promo-admin-feedback.erro {
+  background: rgba(248, 113, 113, 0.12);
+  border: 1px solid rgba(248, 113, 113, 0.35);
+  color: #FCA5A5;
+}
+
 /* VIP promo admin */
 .vip-promo-admin-panel {
   padding: 16px;
@@ -2905,9 +4297,43 @@ html.sidus-no-ads .google-auto-placed {
   gap: 8px;
 }
 
-@media (max-width: 640px) {
-  .landing-guides-grid {
+@media (max-width: 767px) {
+  .landing-guides-grid:not(.landing-guides-grid--featured) {
     grid-template-columns: 1fr;
+  }
+
+  .landing-guides-grid--featured {
+    display: flex;
+    flex-direction: row;
+    overflow-x: auto;
+    gap: 12px;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 6px;
+    scrollbar-width: thin;
+  }
+
+  .landing-guides-grid--featured .landing-guide-card {
+    flex: 0 0 min(268px, 78vw);
+    scroll-snap-align: start;
+    min-width: 0;
+  }
+
+  .landing-guides--featured .landing-guide-body {
+    padding: 14px 12px 16px;
+  }
+
+  .landing-guides--featured .landing-guide-card-desc {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .landing-guides--featured .landing-guide-meta {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
   }
   .landing-newsletter-row {
     flex-direction: column;
@@ -2916,4 +4342,1667 @@ html.sidus-no-ads .google-auto-placed {
   .landing-newsletter-mail-icon { display: none; }
   .landing-newsletter-btn { width: 100%; justify-content: center; }
   .vip-promo-benefits-grid { grid-template-columns: 1fr; }
+}
+
+/* ── Tarot - selecção de jogos ───────────────────────────────────────────── */
+.tarot-seleccionar-page {
+  padding: 20px 16px 110px;
+  display: flex;
+  justify-content: center;
+}
+
+.tarot-seleccionar-centro {
+  width: 100%;
+  max-width: 980px;
+  margin: 0 auto;
+}
+
+.tarot-seleccionar-hero {
+  text-align: center;
+  margin: 0 auto 20px;
+  max-width: 640px;
+  padding: 18px 20px;
+  border-radius: 18px;
+  background: linear-gradient(135deg, rgba(223, 183, 108, 0.12), rgba(109, 40, 217, 0.1));
+  border: 1px solid rgba(223, 183, 108, 0.32);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.22);
+}
+
+.tarot-seleccionar-hero__tag {
+  font-size: 10px;
+  color: #DFB76C;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.tarot-seleccionar-hero__title {
+  font-size: clamp(1.35rem, 3vw, 1.65rem);
+  font-weight: 700;
+  color: #fff;
+  margin: 0 0 8px;
+  letter-spacing: 0.02em;
+}
+
+.tarot-seleccionar-hero__lead {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.88);
+  margin: 0;
+  line-height: 1.55;
+}
+
+.tarot-tipo-grid {
+  display: grid;
+  gap: 20px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  justify-items: center;
+}
+
+.tarot-tipo-grid--cols-1 {
+  grid-template-columns: 1fr;
+  justify-items: stretch;
+}
+
+.tarot-tipo-grid--cols-3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: stretch;
+}
+
+@media (max-width: 899px) {
+  .tarot-tipo-grid--cols-3 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 767px) {
+  .tarot-tipo-grid,
+  .tarot-tipo-grid--cols-2,
+  .tarot-tipo-grid--cols-3 {
+    grid-template-columns: 1fr;
+    justify-items: stretch;
+    gap: 14px;
+  }
+
+  .tarot-tipo-grid--mobile {
+    gap: 14px;
+  }
+
+  .tarot-tipo-card {
+    max-width: none;
+  }
+
+  .tarot-tipo-card--mobile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 14px 16px 12px;
+    background:
+      radial-gradient(ellipse at 50% 0%, rgba(139, 92, 246, 0.14) 0%, transparent 55%),
+      radial-gradient(ellipse at 50% 100%, rgba(223, 183, 108, 0.1) 0%, transparent 50%),
+      linear-gradient(165deg, rgba(255, 255, 255, 0.07), rgba(88, 28, 135, 0.1));
+    border-color: rgba(223, 183, 108, 0.38);
+    box-shadow:
+      0 0 24px rgba(139, 92, 246, 0.12),
+      0 8px 28px rgba(0, 0, 0, 0.25);
+  }
+
+  .tarot-tipo-card--mobile::after {
+    content: '';
+    position: absolute;
+    inset: 6px;
+    border-radius: 14px;
+    border: 1px solid rgba(223, 183, 108, 0.12);
+    pointer-events: none;
+  }
+
+  .tarot-tipo-card__cosmic {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 14px;
+    width: 100%;
+    margin-bottom: 6px;
+    font-size: 11px;
+    color: rgba(223, 183, 108, 0.45);
+    letter-spacing: 0.2em;
+    pointer-events: none;
+  }
+
+  .tarot-tipo-card--open .tarot-tipo-card__cosmic {
+    color: rgba(223, 183, 108, 0.75);
+    text-shadow: 0 0 10px rgba(223, 183, 108, 0.35);
+  }
+
+  .tarot-tipo-card__peek {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+    text-align: center;
+  }
+
+  .tarot-tipo-card--mobile .tarot-tipo-card__sparkles {
+    top: 8px;
+    right: 50%;
+    transform: translateX(36px);
+    font-size: 13px;
+  }
+
+  .tarot-tipo-card--mobile .tarot-tipo-card__arte {
+    justify-content: center;
+    margin-bottom: 10px;
+    width: 100%;
+  }
+
+  .tarot-tipo-card--mobile .tarot-tipo-arte {
+    margin: 0 auto;
+    box-shadow:
+      0 0 20px rgba(223, 183, 108, 0.2),
+      0 8px 24px rgba(0, 0, 0, 0.35);
+  }
+
+  .tarot-tipo-card--mobile .tarot-tipo-card__body {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .tarot-tipo-card--mobile .tarot-tipo-card__nome {
+    font-size: 14px;
+    margin-bottom: 4px;
+    text-align: center;
+  }
+
+  .tarot-tipo-card--mobile .tarot-tipo-card__desc {
+    font-size: 12px;
+    line-height: 1.45;
+    margin-bottom: 6px;
+    text-align: center;
+    max-width: 92%;
+    color: rgba(255, 255, 255, 0.9);
+  }
+
+  .tarot-tipo-card--mobile .tarot-tipo-card__prazo {
+    justify-content: center;
+    font-size: 10px;
+    margin-bottom: 4px;
+  }
+
+  .tarot-tipo-card--mobile .tarot-tipo-card__foco {
+    display: block;
+    max-height: none;
+    opacity: 1;
+    overflow: visible;
+    text-align: center;
+    max-width: 94%;
+    font-size: 10px;
+    line-height: 1.45;
+    color: rgba(255, 255, 255, 0.46);
+    margin-top: 2px;
+  }
+
+  .tarot-tipo-card--mobile .tarot-tipo-card__foco--open {
+    max-height: 160px;
+    opacity: 1;
+    margin-top: 6px;
+    padding-top: 8px;
+    border-top: 1px solid rgba(223, 183, 108, 0.2);
+  }
+
+  .tarot-tipo-card__reveal-hint {
+    font-size: 10px;
+    color: rgba(223, 183, 108, 0.72);
+    letter-spacing: 0.06em;
+    margin-top: 2px;
+    margin-bottom: 4px;
+    font-weight: 600;
+  }
+
+  .tarot-tipo-card--open .tarot-tipo-card__reveal-hint {
+    display: none;
+  }
+
+  .tarot-tipo-card--mobile .tarot-tipo-card__badge {
+    margin-top: 4px;
+    font-size: 9px;
+    text-align: center;
+  }
+
+  .tarot-tipo-card--mobile .tarot-tipo-card__cta--action {
+    margin-top: 10px;
+    width: 100%;
+    max-width: 280px;
+    cursor: pointer;
+    pointer-events: auto;
+  }
+
+  .tarot-tipo-card--mobile.tarot-tipo-card--magic,
+  .tarot-tipo-card--mobile.tarot-tipo-card--open {
+    transform: none;
+    border-color: rgba(223, 183, 108, 0.65);
+    box-shadow:
+      0 0 28px rgba(223, 183, 108, 0.22),
+      0 0 40px rgba(139, 92, 246, 0.14),
+      0 8px 28px rgba(0, 0, 0, 0.28);
+  }
+
+  .tarot-seleccionar-page {
+    padding-left: 14px;
+    padding-right: 14px;
+    padding-bottom: 96px;
+  }
+
+  .tarot-seleccionar-centro {
+    max-width: 440px;
+  }
+
+  .tarot-seleccionar-hero {
+    padding: 14px 16px;
+    margin-bottom: 14px;
+    background:
+      radial-gradient(ellipse at 50% 0%, rgba(223, 183, 108, 0.14) 0%, transparent 60%),
+      linear-gradient(135deg, rgba(223, 183, 108, 0.1), rgba(109, 40, 217, 0.12));
+    box-shadow: 0 0 32px rgba(139, 92, 246, 0.1);
+  }
+
+  .tarot-seleccionar-hero__title {
+    font-size: 1.25rem;
+    margin-bottom: 6px;
+  }
+
+  .tarot-seleccionar-hero__lead {
+    font-size: 12px;
+    line-height: 1.5;
+  }
+}
+
+.tarot-tipo-card {
+  position: relative;
+  width: 100%;
+  max-width: 300px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid rgba(223, 183, 108, 0.28);
+  border-radius: 18px;
+  padding: 14px 14px 12px;
+  background: linear-gradient(165deg, rgba(255, 255, 255, 0.06), rgba(109, 40, 217, 0.08));
+  transition:
+    transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+  cursor: pointer;
+  text-align: center;
+  font-family: inherit;
+  color: inherit;
+  box-sizing: border-box;
+}
+
+.tarot-tipo-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  background: radial-gradient(circle at var(--mx, 50%) var(--my, 40%), rgba(223, 183, 108, 0.28), transparent 58%);
+  transition: opacity 0.28s ease;
+  pointer-events: none;
+}
+
+.tarot-tipo-card--magic {
+  transform: translateY(-3px);
+  border-color: rgba(223, 183, 108, 0.68);
+  box-shadow:
+    0 0 24px rgba(223, 183, 108, 0.18),
+    0 0 36px rgba(139, 92, 246, 0.1),
+    0 10px 28px rgba(0, 0, 0, 0.24);
+}
+
+.tarot-tipo-card--magic::before {
+  opacity: 1;
+}
+
+.tarot-tipo-card--bloqueada {
+  opacity: 0.8;
+}
+
+.tarot-tipo-card__sparkles {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  color: rgba(223, 183, 108, 0.35);
+  font-size: 14px;
+  transition: transform 0.3s ease, color 0.3s ease, text-shadow 0.3s ease;
+  pointer-events: none;
+}
+
+.tarot-tipo-card--magic .tarot-tipo-card__sparkles {
+  color: #DFB76C;
+  text-shadow: 0 0 12px rgba(223, 183, 108, 0.8);
+  transform: rotate(18deg) scale(1.2);
+}
+
+.tarot-tipo-card__arte {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 10px;
+  flex-shrink: 0;
+  width: 100%;
+}
+
+.tarot-tipo-card__body {
+  width: 100%;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 0;
+  padding-bottom: 4px;
+}
+
+.tarot-tipo-arte {
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid rgba(223, 183, 108, 0.35);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.tarot-tipo-arte img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.tarot-tipo-arte--hover {
+  transform: scale(1.03);
+  box-shadow: 0 0 24px rgba(223, 183, 108, 0.28);
+}
+
+.tarot-tipo-card__nome {
+  font-size: 14px;
+  font-weight: 700;
+  color: #DFB76C;
+  line-height: 1.3;
+  margin-bottom: 6px;
+}
+
+.tarot-tipo-card__desc {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.52);
+  line-height: 1.5;
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+
+.tarot-tipo-card__prazo {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.42);
+  line-height: 1.45;
+  font-weight: 500;
+  margin-bottom: 6px;
+}
+
+.tarot-tipo-card__prazo-icon {
+  flex-shrink: 0;
+  opacity: 0.75;
+  stroke-width: 1.75;
+}
+
+.tarot-tipo-card__foco {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.38);
+  line-height: 1.45;
+  margin-top: 0;
+  margin-bottom: 0;
+  max-height: none;
+  opacity: 1;
+  overflow: visible;
+}
+
+.tarot-tipo-card__foco-text {
+  margin: 0;
+}
+
+.tarot-tipo-card__badge {
+  font-size: 10px;
+  font-weight: 600;
+  margin-top: 6px;
+  margin-bottom: 2px;
+}
+
+.tarot-tipo-card__badge--ok { color: #34D399; }
+.tarot-tipo-card__badge--warn { color: #E8A855; }
+
+.tarot-tipo-card__cta {
+  margin-top: auto;
+  flex-shrink: 0;
+  width: auto;
+  max-width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  color: #1a1008;
+  text-align: center;
+  padding: 7px 14px;
+  padding-top: 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(223, 183, 108, 0.5);
+  background: linear-gradient(135deg, rgba(232, 196, 120, 0.95), rgba(201, 150, 75, 0.88));
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  transition:
+    box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+}
+
+.tarot-tipo-card:not(.tarot-tipo-card--mobile) .tarot-tipo-card__cartas-pill {
+  display: none;
+}
+
+.tarot-tipo-card--magic .tarot-tipo-card__cta {
+  border-color: rgba(255, 220, 150, 0.65);
+  box-shadow:
+    0 0 14px rgba(223, 183, 108, 0.35),
+    0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+@media (min-width: 900px) {
+  .tarot-seleccionar-page {
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+
+  .tarot-seleccionar-page--desktop-fit {
+    padding: 8px 24px 28px;
+    box-sizing: border-box;
+  }
+
+  .tarot-seleccionar-page--desktop-fit .tarot-seleccionar-centro {
+    max-width: 920px;
+  }
+
+  .tarot-seleccionar-page--desktop-fit .tarot-seleccionar-hero {
+    padding: 8px 14px;
+    margin-bottom: 6px;
+  }
+
+  .tarot-seleccionar-page--desktop-fit .tarot-seleccionar-hero__tag {
+    margin-bottom: 4px;
+  }
+
+  .tarot-seleccionar-page--desktop-fit .tarot-seleccionar-hero__title {
+    font-size: 1.1rem;
+    margin-bottom: 2px;
+  }
+
+  .tarot-seleccionar-page--desktop-fit .tarot-seleccionar-hero__lead {
+    font-size: 11px;
+    line-height: 1.3;
+  }
+
+  .tarot-seleccionar-page--desktop-fit .tarot-free-banner {
+    margin-bottom: 6px;
+    padding: 5px 10px;
+    font-size: 11px;
+  }
+
+  .tarot-tipo-grid--desktop-compact {
+    gap: 16px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    align-items: stretch;
+    justify-items: center;
+  }
+
+  .tarot-tipo-card--desktop {
+    max-width: 228px;
+    width: 100%;
+    height: 100%;
+    min-height: 100%;
+    padding: 11px 11px 10px;
+    border-radius: 14px;
+  }
+
+  .tarot-tipo-card--desktop .tarot-tipo-card__arte {
+    margin-bottom: 8px;
+  }
+
+  .tarot-tipo-card--desktop .tarot-tipo-arte {
+    width: 84px;
+    height: 84px;
+    border-radius: 12px;
+  }
+
+  .tarot-tipo-card--desktop .tarot-tipo-card__body {
+    padding-bottom: 6px;
+  }
+
+  .tarot-tipo-card--desktop .tarot-tipo-card__nome {
+    font-size: 12px;
+    line-height: 1.25;
+    margin-bottom: 5px;
+    width: 100%;
+    color: #DFB76C;
+  }
+
+  .tarot-tipo-card--desktop .tarot-tipo-card__desc {
+    font-size: 11px;
+    line-height: 1.4;
+    margin-bottom: 6px;
+    color: rgba(255, 255, 255, 0.52);
+  }
+
+  .tarot-tipo-card--desktop .tarot-tipo-card__prazo {
+    font-size: 10px;
+    margin-bottom: 5px;
+    color: rgba(255, 255, 255, 0.4);
+  }
+
+  .tarot-tipo-card--desktop .tarot-tipo-card__foco {
+    font-size: 10px;
+    line-height: 1.4;
+    color: rgba(255, 255, 255, 0.36);
+  }
+
+  .tarot-tipo-card--desktop .tarot-tipo-card__badge {
+    font-size: 9px;
+    margin-top: 4px;
+    margin-bottom: 4px;
+  }
+
+  .tarot-tipo-card--desktop .tarot-tipo-card__cta {
+    margin-top: auto;
+    padding-top: 12px;
+    padding-bottom: 7px;
+    padding-left: 12px;
+    padding-right: 12px;
+    font-size: 10px;
+    line-height: 1.2;
+  }
+
+  .tarot-tipo-card--desktop.tarot-tipo-card--magic {
+    transform: translateY(-3px);
+    border-color: rgba(223, 183, 108, 0.72);
+    box-shadow:
+      0 0 22px rgba(223, 183, 108, 0.2),
+      0 10px 26px rgba(0, 0, 0, 0.26);
+  }
+}
+
+.tarot-tipo-card__cosmic {
+  display: none;
+}
+
+/* Mobile Tarot - overrides finais (depois dos estilos base) */
+@media (max-width: 767px) {
+  .tarot-seleccionar-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-left: 12px;
+    padding-right: 12px;
+    padding-bottom: 96px;
+  }
+
+  .tarot-seleccionar-centro {
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .tarot-tipo-grid--mobile {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 0;
+    overflow: visible;
+  }
+
+  .tarot-mobile-list-hint,
+  .tarot-mobile-swipe-hint {
+    width: 100%;
+    margin: 0 0 8px;
+    text-align: center;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    color: rgba(223, 183, 108, 0.7);
+    text-transform: uppercase;
+  }
+
+  .tarot-seleccionar-hero--compact {
+    padding: 10px 14px;
+    margin-bottom: 6px;
+  }
+
+  .tarot-seleccionar-hero--compact .tarot-seleccionar-hero__title {
+    margin-bottom: 0;
+    font-size: 1.1rem;
+  }
+
+  .tarot-tipo-card__cartas-pill {
+    display: inline-block;
+    width: fit-content;
+    margin: 0 0 4px;
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: #1a1008;
+    background: linear-gradient(135deg, rgba(232, 196, 120, 0.95), rgba(201, 150, 75, 0.88));
+    border: 1px solid rgba(223, 183, 108, 0.45);
+  }
+
+  .tarot-tipo-card.tarot-tipo-card--mobile.tarot-tipo-card--compact {
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding: 10px 12px;
+    text-align: left;
+    display: block;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.06), rgba(88, 28, 135, 0.09));
+    border-color: rgba(223, 183, 108, 0.32);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  }
+
+  .tarot-tipo-card--compact::after {
+    display: none;
+  }
+
+  .tarot-tipo-card__compact-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+  }
+
+  .tarot-tipo-card__info {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .tarot-tipo-card--compact .tarot-tipo-card__nome {
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1.25;
+    margin-bottom: 2px;
+    text-align: left;
+    color: #DFB76C;
+  }
+
+  .tarot-tipo-card--compact .tarot-tipo-card__desc--compact {
+    display: block;
+    overflow: visible;
+    font-size: 10px;
+    line-height: 1.4;
+    color: rgba(255, 255, 255, 0.5);
+    margin: 0 0 5px;
+    text-align: left;
+  }
+
+  .tarot-tipo-card--compact .tarot-tipo-card__prazo {
+    font-size: 9px;
+    margin-bottom: 3px;
+    justify-content: flex-start;
+    color: rgba(255, 255, 255, 0.4);
+  }
+
+  .tarot-tipo-card--compact .tarot-tipo-card__foco {
+    font-size: 9px;
+    line-height: 1.4;
+    color: rgba(255, 255, 255, 0.36);
+    margin: 0 0 4px;
+    text-align: left;
+    max-height: none;
+    opacity: 1;
+    overflow: visible;
+  }
+
+  .tarot-tipo-card--compact .tarot-tipo-card__foco-text {
+    margin: 0;
+  }
+
+  .tarot-tipo-card--compact .tarot-tipo-card__badge {
+    margin-top: 2px;
+    font-size: 8px;
+    text-align: left;
+    line-height: 1.35;
+  }
+
+  .tarot-tipo-card--compact .tarot-tipo-card__arte {
+    flex-shrink: 0;
+    margin: 0;
+    width: 76px;
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .tarot-tipo-card--compact .tarot-tipo-arte {
+    width: 76px !important;
+    height: 52px !important;
+    border-radius: 8px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+  }
+
+  .tarot-tipo-card--compact .tarot-tipo-card__foco,
+  .tarot-tipo-card--compact .tarot-tipo-card__reveal-hint,
+  .tarot-tipo-card--compact .tarot-tipo-card__cta,
+  .tarot-tipo-card--compact .tarot-tipo-card__cosmic,
+  .tarot-tipo-card--compact .tarot-tipo-card__sparkles {
+    display: none !important;
+  }
+}
+
+/* Chat oráculo - preencher área abaixo da navbar (mobile + desktop) */
+.oracle-chat {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  height: 100%;
+  max-height: 100%;
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.oracle-chat-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 35%, rgba(124, 58, 237, 0.22), rgba(11, 7, 30, 0.5));
+  border: 1.5px solid rgba(223, 183, 108, 0.45);
+  box-shadow: 0 0 14px rgba(124, 58, 237, 0.25);
+  overflow: hidden;
+}
+
+.oracle-chat-avatar__eye {
+  display: block;
+  width: 88%;
+  height: 88%;
+  flex-shrink: 0;
+}
+
+.oracle-chat__title {
+  margin: 0;
+  line-height: 1.2;
+  font-size: 16px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.oracle-chat h1.sidus-page-title {
+  margin: 0;
+  text-align: left;
+}
+
+.oracle-chat__header {
+  position: relative;
+  z-index: 12;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 10px;
+  padding: 10px 12px;
+  background: rgba(11, 7, 30, 0.98);
+  border-bottom: 1px solid rgba(223, 183, 108, 0.22);
+  flex-shrink: 0;
+}
+
+.oracle-chat__header-main {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  min-width: 0;
+}
+
+.oracle-chat__header-copy {
+  min-width: 0;
+  flex: 1;
+}
+
+.oracle-chat__subtitle {
+  margin: 4px 0 0;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.oracle-chat__header-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  width: 100%;
+}
+
+.oracle-chat__header-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-width: 0;
+  font-size: 11px;
+  font-weight: 600;
+  color: #DFB76C;
+  background: rgba(223, 183, 108, 0.08);
+  padding: 8px 10px;
+  border-radius: 20px;
+  border: 1px solid rgba(223, 183, 108, 0.35);
+  cursor: pointer;
+  line-height: 1.25;
+  text-align: center;
+}
+
+.oracle-chat__header-btn span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.oracle-chat__header-btn[aria-pressed='true'] {
+  background: rgba(223, 183, 108, 0.16);
+}
+
+.oracle-chat__header-btn--premium {
+  grid-column: 1 / -1;
+}
+
+.oracle-chat__body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+  z-index: 1;
+}
+
+.oracle-chat__stage {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+
+@media (max-width: 767px) {
+  .oracle-chat__header {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+    padding: 8px 10px;
+  }
+
+  .oracle-chat__header-main {
+    flex: 1;
+    align-items: center;
+    min-width: 0;
+  }
+
+  .oracle-chat__header-copy {
+    min-width: 0;
+  }
+
+  .oracle-chat__title {
+    font-size: 13px;
+    letter-spacing: 0.06em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .oracle-chat__subtitle {
+    font-size: 11px;
+    margin-top: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .oracle-chat__header-actions {
+    width: 100%;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 6px;
+  }
+
+  .oracle-chat__header-btn--premium {
+    grid-column: auto;
+  }
+}
+
+.oracle-chat--paywall .oracle-chat__stage {
+  position: relative;
+  isolation: isolate;
+}
+
+.oracle-chat--paywall .oracle-chat__messages {
+  flex: 1;
+  min-height: 0;
+  max-height: none;
+  position: relative;
+  z-index: 1;
+}
+
+.oracle-chat--paywall .oracle-chat__paywall-dock {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 30;
+  flex: none;
+  min-height: 0;
+  max-height: min(62vh, 440px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
+  background: rgba(11, 7, 30, 0.99);
+  border-top: 1px solid rgba(223, 183, 108, 0.35);
+  box-shadow: 0 -18px 48px rgba(0, 0, 0, 0.62);
+  pointer-events: auto;
+}
+
+@media (max-width: 767px) {
+  .oracle-chat--paywall .oracle-chat__stage {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    min-height: 0;
+  }
+
+  .oracle-chat--paywall .oracle-chat__body {
+    flex: 0 0 auto;
+    max-height: 24vh;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .oracle-chat--paywall .oracle-chat__messages {
+    max-height: 24vh;
+    padding-bottom: 10px;
+    flex: none;
+  }
+
+  .oracle-chat--paywall .oracle-chat__paywall-dock {
+    position: relative;
+    flex: 1 1 auto;
+    min-height: 0;
+    max-height: none;
+    height: auto;
+    overflow-y: scroll;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-y;
+    padding: 8px 10px max(12px, env(safe-area-inset-bottom, 12px));
+  }
+}
+
+@media (min-width: 768px) {
+  .oracle-chat--paywall .oracle-chat__messages {
+    padding-bottom: min(58vh, 400px);
+  }
+}
+
+@media (min-width: 768px) {
+  .oracle-chat__header {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    padding: 14px 18px;
+    gap: 12px;
+  }
+
+  .oracle-chat__header-actions {
+    width: auto;
+    grid-template-columns: auto auto;
+  }
+
+  .oracle-chat__header-btn--premium {
+    grid-column: auto;
+  }
+
+  .oracle-chat__title {
+    font-size: 20px;
+  }
+}
+
+.oracle-chat__input-bar {
+  padding-bottom: max(22px, env(safe-area-inset-bottom, 22px));
+  position: relative;
+  z-index: 8;
+  flex-shrink: 0;
+}
+
+@media (max-width: 767px) {
+  .oracle-chat__input-bar {
+    padding-bottom: max(14px, env(safe-area-inset-bottom, 14px));
+  }
+}
+
+/* Mobile bottom nav - sempre visível e clicável por cima de tudo */
+.mobile-bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 480px;
+  display: flex;
+  justify-content: space-around;
+  align-items: stretch;
+  padding: 8px 6px max(10px, env(safe-area-inset-bottom, 10px));
+  background: rgba(11, 7, 30, 0.98);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-top: 1px solid rgba(223, 183, 108, 0.22);
+  z-index: 220;
+  box-sizing: border-box;
+  pointer-events: auto;
+}
+
+.mobile-bottom-nav__item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 8px 4px;
+  border: none;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  border-radius: 10px;
+  transition: color 0.2s ease, background 0.2s ease;
+  min-height: 44px;
+}
+
+.mobile-bottom-nav__label {
+  font-size: 10px;
+  line-height: 1.1;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mobile-bottom-nav__item--active {
+  color: #DFB76C;
+  background: rgba(223, 183, 108, 0.1);
+}
+
+.mobile-shell-pad-bottom {
+  padding-bottom: calc(68px + env(safe-area-inset-bottom, 0px));
+}
+
+html.sidus-mobile-menu-open .mobile-bottom-nav {
+  display: none;
+}
+
+html.sidus-mobile-menu-open header {
+  z-index: 260;
+}
+
+html.sidus-mobile-menu-open .mobile-menu-btn {
+  position: relative;
+  z-index: 261;
+}
+
+.sidus-app-content--chat-full {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.sidus-app-content--chat-full .sidus-page-root {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.sidus-app-content--chat-full .oracle-chat {
+  flex: 1;
+  min-height: 0;
+}
+
+/* Home - horóscopo signos grid */
+.home-signos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(72px, 1fr));
+  gap: 8px;
+}
+
+.home-signo-btn {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(223, 183, 108, 0.22);
+  border-radius: 12px;
+  padding: 10px 6px;
+  cursor: pointer;
+  text-align: center;
+  transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease, background 0.22s ease;
+}
+
+.home-signo-btn--selected,
+.home-signo-btn--user {
+  background: linear-gradient(145deg, rgba(139, 92, 246, 0.2), rgba(223, 183, 108, 0.12));
+}
+
+.home-signo-btn--selected {
+  border-color: rgba(139, 92, 246, 0.5);
+}
+
+.home-signo-btn--user {
+  border-color: rgba(223, 183, 108, 0.55);
+  box-shadow: 0 0 12px rgba(223, 183, 108, 0.25);
+}
+
+.home-signo-btn__symbol {
+  font-size: 24px;
+  line-height: 1;
+  margin-bottom: 4px;
+  transition: transform 0.22s ease, filter 0.22s ease;
+}
+
+.home-signo-btn--user .home-signo-btn__symbol {
+  filter: drop-shadow(0 0 6px rgba(223, 183, 108, 0.5));
+}
+
+.home-signo-btn__name {
+  font-size: 9px;
+  font-weight: 600;
+  color: #FFFFFF;
+  line-height: 1.2;
+}
+
+.home-signo-btn--user .home-signo-btn__name {
+  font-weight: 700;
+  color: #DFB76C;
+}
+
+@media (hover: hover) and (pointer: fine) and (min-width: 768px) {
+  .home-signo-btn {
+    position: relative;
+    z-index: 0;
+  }
+
+  .home-signo-btn:hover {
+    transform: scale(1.1);
+    z-index: 2;
+    border-color: rgba(223, 183, 108, 0.65) !important;
+    background: linear-gradient(145deg, rgba(139, 92, 246, 0.28), rgba(223, 183, 108, 0.18)) !important;
+    box-shadow: 0 10px 28px rgba(223, 183, 108, 0.28), 0 0 0 1px rgba(223, 183, 108, 0.2);
+  }
+
+  .home-signo-btn:hover .home-signo-btn__symbol {
+    transform: scale(1.14);
+    filter: drop-shadow(0 0 10px rgba(223, 183, 108, 0.65));
+  }
+
+  .home-signo-btn:hover .home-signo-btn__name {
+    color: #DFB76C;
+  }
+}
+
+/* Home - Para ti hoje */
+.home-para-ti {
+  margin-bottom: 16px;
+  padding: 14px;
+  border-radius: 16px;
+  border: 1px solid rgba(223, 183, 108, 0.22);
+  background: rgba(11, 7, 30, 0.72);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  position: relative;
+  z-index: 1;
+  isolation: isolate;
+}
+
+.home-para-ti__header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.home-para-ti__mark {
+  flex-shrink: 0;
+  opacity: 0.95;
+}
+
+.home-para-ti__title {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #DFB76C;
+}
+
+.home-para-ti__energia {
+  margin: 0 0 10px;
+  font-size: 12px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.72);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.home-para-ti__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+}
+
+.home-para-ti__card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(11, 7, 30, 0.65);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  position: relative;
+  z-index: 1;
+  isolation: isolate;
+  cursor: pointer;
+  text-align: left;
+  color: inherit;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.home-para-ti__card:active {
+  background: rgba(223, 183, 108, 0.08);
+  border-color: rgba(223, 183, 108, 0.3);
+}
+
+.home-para-ti__card-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.home-para-ti__card-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.home-para-ti__card-sub {
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.55);
+  line-height: 1.35;
+}
+
+/* Landing sticky CTA */
+.landing-sticky-cta {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 160;
+  padding: 10px 16px max(12px, env(safe-area-inset-bottom, 12px));
+  background: linear-gradient(180deg, transparent, rgba(11, 7, 30, 0.92) 30%);
+  pointer-events: none;
+}
+
+.landing-sticky-cta__btn {
+  pointer-events: auto;
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+  display: block;
+  padding: 14px 20px;
+  border: none;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #DFB76C, #B8944F);
+  color: #0B071E;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 8px 28px rgba(223, 183, 108, 0.35);
+}
+
+/* Share WhatsApp */
+.share-whatsapp-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 12px;
+  padding: 10px 16px;
+  border-radius: 24px;
+  border: 1px solid rgba(37, 211, 102, 0.28);
+  background: rgba(37, 211, 102, 0.1);
+  color: #25D366;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  width: 100%;
+}
+
+.share-whatsapp-btn--compact {
+  margin-top: 8px;
+  padding: 8px 12px;
+  font-size: 11px;
+}
+
+/* Ferramentas empty */
+.ferramentas-empty-state {
+  text-align: center;
+  padding: 32px 20px;
+  margin: 20px 0;
+  border-radius: 16px;
+  border: 1px dashed rgba(223, 183, 108, 0.3);
+  background: rgba(223, 183, 108, 0.05);
+}
+
+.ferramentas-empty-state h3 {
+  margin: 12px 0 8px;
+  font-size: 16px;
+  color: #DFB76C;
+}
+
+.ferramentas-empty-state p {
+  margin: 0 0 16px;
+  font-size: 13px;
+  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.65);
+}
+
+.ferramentas-empty-state__cta {
+  padding: 12px 20px;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #DFB76C, #B8944F);
+  color: #0B071E;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.oracle-chat__messages {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  padding: 16px 14px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  touch-action: pan-y;
+}
+
+.oracle-chat__paywall-dock {
+  flex-shrink: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
+  border-top: 1px solid rgba(223, 183, 108, 0.28);
+  background: rgba(11, 7, 30, 0.98);
+  padding: 10px 12px 12px;
+  box-shadow: 0 -10px 28px rgba(0, 0, 0, 0.35);
+}
+
+@media (max-width: 767px) {
+  .oracle-chat-upsell {
+    margin: 0;
+    padding: 12px;
+  }
+
+  .oracle-chat-upsell__price {
+    font-size: 24px;
+    margin-bottom: 10px;
+  }
+
+  .oracle-chat__messages {
+    padding: 12px 10px 8px;
+  }
+}
+
+.oracle-chat-upsell {
+  align-self: stretch;
+  width: 100%;
+  max-width: 100%;
+  margin: 4px 0 8px;
+  padding: 16px;
+  border-radius: 16px;
+  background: linear-gradient(145deg, rgba(223, 183, 108, 0.14), rgba(109, 40, 217, 0.12));
+  border: 1px solid rgba(223, 183, 108, 0.45);
+  box-shadow: 0 8px 32px rgba(223, 183, 108, 0.12);
+  box-sizing: border-box;
+}
+
+.oracle-chat-upsell__eyebrow {
+  margin: 0 0 8px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #DFB76C;
+  line-height: 1.35;
+}
+
+.oracle-chat-upsell__lead {
+  margin: 0 0 12px;
+  font-size: 12px;
+  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.oracle-chat-upsell__benefits {
+  margin-bottom: 14px !important;
+}
+
+.oracle-chat-upsell__price {
+  text-align: center;
+  font-size: 28px;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 12px;
+}
+
+.oracle-chat-upsell__pix {
+  display: block;
+  margin-top: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #34D399;
+}
+
+.oracle-chat-upsell__cta {
+  width: 100%;
+  padding: 14px 16px;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  background: linear-gradient(135deg, #DFB76C, #B8944F);
+  color: #0B071E;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.oracle-chat-upsell__promo {
+  width: 100%;
+  margin-top: 10px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(223, 183, 108, 0.25);
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+.oracle-chat-upsell__footnote {
+  margin: 10px 0 0;
+  text-align: center;
+  font-size: 10px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+/* Oracle upsell benefits */
+.oracle-upsell-benefits {
+  margin: 0 0 12px;
+  padding: 0;
+  list-style: none;
+}
+
+.oracle-upsell-benefits li {
+  font-size: 11px;
+  line-height: 1.45;
+  color: rgba(255, 255, 255, 0.78);
+  margin-bottom: 6px;
+  padding-left: 16px;
+  position: relative;
+}
+
+.oracle-upsell-benefits li::before {
+  content: '•';
+  position: absolute;
+  left: 0;
+  color: #DFB76C;
+  font-size: 11px;
+}
+
+/* Perfil edit natal */
+.perfil-edit-natal {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(223, 183, 108, 0.2);
+}
+
+.perfil-edit-natal input {
+  width: 100%;
+  box-sizing: border-box;
+  margin-bottom: 8px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(223, 183, 108, 0.25);
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+  font-size: 13px;
+}
+
+.perfil-edit-natal h4 {
+  margin: 0 0 6px;
+  font-size: 14px;
+  color: #DFB76C;
+}
+
+.perfil-edit-natal p {
+  margin: 0 0 12px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.55);
+  line-height: 1.5;
+}
+
+.perfil-edit-natal__label {
+  display: block;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.55);
+  margin-bottom: 6px;
+}
+
+.perfil-edit-natal__input {
+  margin-bottom: 12px !important;
+}
+
+.perfil-edit-natal__btn {
+  margin-top: 10px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(223, 183, 108, 0.35);
+  background: rgba(223, 183, 108, 0.1);
+  color: #DFB76C;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.perfil-edit-natal__actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.perfil-edit-natal__cancel,
+.perfil-edit-natal__save {
+  flex: 1;
+  padding: 10px 12px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.perfil-edit-natal__cancel {
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: transparent;
+  color: rgba(255, 255, 255, 0.65);
+}
+
+.perfil-edit-natal__save {
+  border: none;
+  background: linear-gradient(135deg, #DFB76C, #B8944F);
+  color: #0B071E;
+}
+
+.perfil-edit-natal__save:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.perfil-edit-natal__ok {
+  margin: 10px 0 0;
+  font-size: 12px;
+  color: #34D399;
+}
+
+.perfil-edit-natal__fail {
+  margin: 10px 0 0;
+  font-size: 12px;
+  color: #F87171;
 }
