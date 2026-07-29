@@ -476,6 +476,8 @@ export function Sinastria({ mapaNatal, dadosUtilizador, isPremium = false, onUpg
                 )}
               </div>
 
+              <UpsellSinastriaPremium t={t} onUpgrade={onUpgrade} />
+
               <div style={{ background: 'rgba(255,255,255,0.04)', border: `1px solid ${CORES.vidroBorda}`, borderRadius: 14, padding: 18, marginBottom: 14 }}>
                 <div style={{ fontSize: 11, color: CORES.dourado, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 10 }}>{t('ferramentasPremium.sinastria.freePreview')}</div>
                 <div style={{ fontSize: 13, color: CORES.brancoSuave, lineHeight: 1.75, whiteSpace: 'pre-wrap' }}>
@@ -488,8 +490,6 @@ export function Sinastria({ mapaNatal, dadosUtilizador, isPremium = false, onUpg
                   <RadarAfinidades scores={analise.pilares} labels={radarLabels} total={analise.pontuacao} size={280} />
                 </div>
               </div>
-
-              <UpsellSinastriaPremium t={t} onUpgrade={onUpgrade} />
             </>
           )}
         </div>

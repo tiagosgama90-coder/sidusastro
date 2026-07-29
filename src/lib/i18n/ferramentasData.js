@@ -5,7 +5,7 @@ const FERRAMENTAS_PT = [
   { id: 'bussola', nome: 'Bússola Cósmica', icon: Compass, premium: true },
   { id: 'sinastria', nome: 'Radar de Afinidades', sub: 'Prévia grátis · Sinastria Pro', icon: Heart, premium: false },
   { id: 'numerologia', nome: 'Numerologia', sub: 'Vibração espiritual do nome', icon: Sparkles, premium: true },
-  { id: 'sonhos', nome: 'Interpretação de Sonhos', sub: 'Símbolos e mensagens', icon: Moon, premium: false },
+  { id: 'sonhos', nome: 'Interpretação de Sonhos', sub: 'Mimo de boas-vindas grátis', icon: Moon, premium: false },
   { id: 'biorritmo', nome: 'Fluxo Vital', sub: 'Biorritmo', icon: Activity, premium: false },
   { id: 'horasIguais', nome: 'Horas Iguais', sub: 'Mensagens angélicas', icon: Clock, premium: false },
   { id: 'diario', nome: 'Diário Astral', icon: BookOpen, premium: false },
@@ -62,69 +62,63 @@ const FERRAMENTAS_FR = [
 ]
 
 const BENEFICIOS_VIP_PT = [
-  'Mapa Astral completo - efemérides, Placidus, PDF profissional + email',
-  'Fases da Lua em tempo real no Céu de Hoje',
-  'Mapa de Numerologia com vibração espiritual do nome',
-  'Leituras de Tarot ilimitadas em todos os baralhos',
-  'Bússola Cósmica 2026 com previsões mensais',
-  'Radar de Afinidades e Sinastria completa',
-  'Chat ilimitado com o Oráculo Sidus - astrólogo profissional',
-  'Alertas de trânsitos planetários em tempo real',
+  'Mapa Astral completo - efemérides Swiss Ephemeris, casas Placidus, PDF profissional enviado por email',
+  'Céu de Hoje com fases da Lua em tempo real + Rádio do Céu ao Vivo (posições planetárias)',
+  'Mapa de Numerologia completo - Caminho de Vida, Ano/Mês Pessoal, ciclos de vida e vibração de cada letra do nome',
+  'Leituras de Tarot ilimitadas em todos os baralhos (Rider-Waite, Lenormand, Oracle…)',
+  'Bússola Cósmica - trânsitos reais, eclipses por casa natal e calendário anual personalizado',
+  'Radar de Afinidades - sinastria completa com radar visual, 4 pilares, laço cármico e mapa composto',
+  'Chat ilimitado com o Oráculo Sidus - astrólogo profissional ligado ao teu mapa natal',
 ]
 
 const BENEFICIOS_VIP_EN = [
-  'Complete Natal Chart - ephemerides, Placidus, professional PDF + email',
-  'Real-time Moon phases in Today\'s Sky',
-  'Numerology Chart with spiritual name vibration',
+  'Complete Natal Chart - Swiss Ephemeris, Placidus houses, professional PDF by email',
+  'Today\'s Sky with real-time Moon phases + Live Sky Radio (planetary positions)',
+  'Full Numerology Chart - Life Path, Personal Year/Month, life cycles and letter vibrations',
   'Unlimited Tarot readings across all decks',
-  'Cosmic Compass 2026 with monthly forecasts',
-  'Affinity Radar and full Synastry',
-  'Unlimited chat with Oracle Sidus - professional astrologer',
-  'Real-time planetary transit alerts',
+  'Cosmic Compass - real transits, eclipses by natal house and personalized annual calendar',
+  'Affinity Radar - full synastry with visual radar, 4 pillars, karmic bond and composite chart',
+  'Unlimited chat with Oracle Sidus - professional astrologer linked to your natal chart',
 ]
 
 const BENEFICIOS_VIP_ES = [
-  'Carta Astral completa: efemérides, Placidus, PDF profesional + email',
-  'Fases lunares en tiempo real en el Cielo de Hoy',
-  'Mapa de Numerología con vibración espiritual del nombre',
+  'Carta Astral completa: Swiss Ephemeris, casas Placidus, PDF profesional por email',
+  'Cielo de Hoy con fases lunares en tiempo real + Radio del Cielo en vivo',
+  'Mapa de Numerología completo: Camino de Vida, Año/Mes Personal, ciclos y vibración de letras',
   'Lecturas de Tarot ilimitadas en todos los mazos',
-  'Brújula Cósmica 2026 con previsiones mensuales',
-  'Radar de Afinidades y Sinastría completa',
-  'Chat ilimitado con el Oráculo Sidus - astrólogo profesional',
-  'Alertas de tránsitos planetarios en tiempo real',
+  'Brújula Cósmica: tránsitos reales, eclipses por casa natal y calendario anual personalizado',
+  'Radar de Afinidades: sinastría completa con radar visual, 4 pilares y carta compuesta',
+  'Chat ilimitado con el Oráculo Sidus - astrólogo profesional ligado a tu carta natal',
 ]
 
 const BENEFICIOS_VIP_IT = [
-  'Carta Natale completa: effemeridi, Placidus, PDF professionale + email',
-  'Fasi lunari in tempo reale nel Cielo di Oggi',
-  'Mappa di Numerologia con vibrazione spirituale del nome',
+  'Carta Natale completa: Swiss Ephemeris, case Placidus, PDF professionale via email',
+  'Cielo di Oggi con fasi lunari in tempo reale + Radio del Cielo in diretta',
+  'Mappa di Numerologia completa: Percorso di Vita, Anno/Mese Personale, cicli e vibrazione delle lettere',
   'Letture Tarot illimitate su tutti i mazzi',
-  'Bussola Cosmica 2026 con previsioni mensili',
-  'Radar delle Affinità e Sinastria completa',
-  'Chat illimitata con l\'Oracolo Sidus - astrologo professionista',
-  'Avvisi sui transiti planetari in tempo reale',
+  'Bussola Cosmica: transiti reali, eclissi per casa natale e calendario annuale personalizzato',
+  'Radar delle Affinità: sinastria completa con radar visivo, 4 pilastri e carta composita',
+  'Chat illimitata con l\'Oracolo Sidus - astrologo professionista collegato alla tua carta natale',
 ]
 
 const BENEFICIOS_VIP_DE = [
-  'Vollständiges Geburtshoroskop – Ephemeriden, Placidus, professionelles PDF + E-Mail',
-  'Mondphasen in Echtzeit im Himmel von Heute',
-  'Numerologie-Karte mit spiritueller Namensschwingung',
+  'Vollständiges Geburtshoroskop: Swiss Ephemeris, Placidus-Häuser, professionelles PDF per E-Mail',
+  'Himmel von Heute mit Echtzeit-Mondphasen + Live-Himmel-Radio',
+  'Vollständige Numerologie-Karte: Lebensweg, Persönliches Jahr/Monat, Zyklen und Buchstabenvibrationen',
   'Unbegrenzte Tarot-Lesungen in allen Decks',
-  'Kosmischer Kompass 2026 mit Monatsprognosen',
-  'Affinitäts-Radar und vollständige Synastrie',
-  'Unbegrenzter Chat mit Orakel Sidus – professioneller Astrologe',
-  'Echtzeit-Warnungen bei Planetentransiten',
+  'Kosmischer Kompass: echte Transite, Finsternisse nach Geburtshaus und persönlicher Jahreskalender',
+  'Affinitäts-Radar: vollständige Synastrie mit visuellem Radar, 4 Säulen und Kompositkarte',
+  'Unbegrenzter Chat mit Orakel Sidus - professioneller Astrologe mit deinem Geburtshoroskop',
 ]
 
 const BENEFICIOS_VIP_FR = [
-  'Carte Astrale complète – éphémérides, Placidus, PDF professionnel + email',
-  'Phases lunaires en temps réel dans le Ciel d\'Aujourd\'hui',
-  'Carte de Numérologie avec vibration spirituelle du nom',
+  'Carte Astrale complète : Swiss Ephemeris, maisons Placidus, PDF professionnel par email',
+  'Ciel d\'Aujourd\'hui avec phases lunaires en temps réel + Radio du Ciel en direct',
+  'Carte de Numérologie complète : Chemin de Vie, Année/Mois Personnel, cycles et vibration des lettres',
   'Lectures Tarot illimitées sur tous les jeux',
-  'Boussole Cosmique 2026 avec prévisions mensuelles',
-  'Radar d\'Affinités et Synastrie complète',
-  'Chat illimité avec l\'Oracle Sidus – astrologue professionnel',
-  'Alertes de transits planétaires en temps réel',
+  'Boussole Cosmique : transits réels, éclipses par maison natale et calendrier annuel personnalisé',
+  'Radar d\'Affinités : synastrie complète avec radar visuel, 4 piliers et carte composite',
+  'Chat illimité avec l\'Oracle Sidus - astrologue professionnel lié à votre thème natal',
 ]
 
 export function getFerramentas(lang) {

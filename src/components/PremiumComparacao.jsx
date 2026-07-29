@@ -1,20 +1,27 @@
-import { Crown, Check, X } from 'lucide-react'
+import { Crown } from 'lucide-react'
 import { useLanguage } from '../lib/i18n/LanguageContext.jsx'
 import { MAX_ORACLE_GRATIS } from '../lib/oracleLimit.js'
-import { MAX_LEITURAS_GRATIS } from '../components/Tarot.jsx'
+import { MAX_LEITURAS_GRATIS } from './Tarot.jsx'
+import { getPremiumTableRows } from '../lib/i18n/premiumBenefits.js'
 
-export function PremiumComparacao({ isPremium, oracleUsadas = 0, tarotUsadas = 0, isBrasil = false, compact = false }) {
+export function PremiumComparacao({
+  isPremium,
+  oracleUsadas = 0,
+  tarotUsadas = 0,
+  isBrasil = false,
+  compact = false,
+  showFullTable = false,
+}) {
   const { t } = useLanguage()
   const oracleRestantes = Math.max(0, MAX_ORACLE_GRATIS - oracleUsadas)
   const tarotRestantes = Math.max(0, MAX_LEITURAS_GRATIS - tarotUsadas)
 
-  const rows = [
-    { feature: t('premium.table.horoscope'), free: '✓', vip: '✓' },
-    { feature: t('premium.table.mapa'), free: t('premium.table.mapaFree'), vip: '✓ PDF' },
-    { feature: t('premium.table.tarot'), free: t('premium.table.tarotFree', { n: MAX_LEITURAS_GRATIS }), vip: '∞' },
-    { feature: t('premium.table.oracle'), free: t('premium.table.oracleFree', { n: MAX_ORACLE_GRATIS }), vip: '∞' },
-    { feature: t('premium.table.sinastria'), free: t('premium.table.preview'), vip: '✓' },
-  ]
+  const rows = getPremiumTableRows(t, {
+    maxTarot: MAX_LEITURAS_GRATIS,
+    maxOracle: MAX_ORACLE_GRATIS,
+  })
+
+  const visibleRows = showFullTable ? rows : rows.slice(0, 5)
 
   return (
     <div className={`premium-comparacao${compact ? ' premium-comparacao--compact' : ''}`}>
@@ -39,8 +46,8 @@ export function PremiumComparacao({ isPremium, oracleUsadas = 0, tarotUsadas = 0
             </tr>
           </thead>
           <tbody>
-            {rows.map((row) => (
-              <tr key={row.feature}>
+            {visibleRows.map((row) => (
+              <tr key={row.feature} className={row.highlight ? 'premium-table-row--highlight' : undefined}>
                 <td>{row.feature}</td>
                 <td>{row.free}</td>
                 <td className="premium-table-vip">{row.vip}</td>
@@ -54,14 +61,5 @@ export function PremiumComparacao({ isPremium, oracleUsadas = 0, tarotUsadas = 0
         <p className="premium-br-note">{t('brasil.premiumNote')}</p>
       )}
     </div>
-  )
-}
-
-export function PremiumComparacaoIcons() {
-  return (
-    <span className="premium-icons" aria-hidden="true">
-      <Check size={12} color="#34D399" />
-      <X size={12} color="rgba(248,113,113,0.7)" />
-    </span>
   )
 }

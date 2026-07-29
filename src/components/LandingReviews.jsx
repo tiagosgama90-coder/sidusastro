@@ -1,7 +1,8 @@
 import { useEffect, useState, useCallback } from 'react'
 import { Star, Send, Loader2, Check } from 'lucide-react'
-import { useLanguage } from '../lib/i18n/LanguageContext.jsx'
+import { LandingPremiumJumpButton } from './LandingPremiumBenefits.jsx'
 import { RecaptchaCheckbox } from './Recaptcha.jsx'
+import { useLanguage } from '../lib/i18n/LanguageContext.jsx'
 
 function MapaPreviewMock() {
   const signs = ['♈', '♉', '♊', '♋', '♌', '♍', '♎', '♏', '♐', '♑', '♒', '♓']
@@ -92,6 +93,7 @@ export function LandingReviews() {
         <div className="landing-testimonials-visual">
           <MapaPreviewMock />
           <p className="landing-testimonials-caption">{t('reviews.previewCaption')}</p>
+          <LandingPremiumJumpButton />
         </div>
         <div className="landing-testimonials-quotes">
           {carregando ? (

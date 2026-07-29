@@ -49,6 +49,7 @@ import { LandingFaq } from './components/LandingFaq.jsx'
 import { LandingPortalHero } from './components/LandingPortalHero.jsx'
 import { LandingSkyLive } from './components/LandingSkyLive.jsx'
 import { LandingReviews } from './components/LandingReviews.jsx'
+import { LandingPremiumBenefits } from './components/LandingPremiumBenefits.jsx'
 import { LandingGuides } from './components/LandingGuides.jsx'
 import { BannerBrasil } from './components/BannerBrasil.jsx'
 import { HeroHomeSidus } from './components/HeroHomeSidus.jsx'
@@ -57,6 +58,7 @@ import { ShareSigno } from './components/ShareSigno.jsx'
 import { EnergiaDoDia, TransitoSemanal } from './components/EnergiaDoDia.jsx'
 import { PremiumComparacao } from './components/PremiumComparacao.jsx'
 import { PremiumHomeTeaser } from './components/PremiumHomeTeaser.jsx'
+import { HomeSkyRadio } from './components/HomeSkyRadio.jsx'
 import { applyRouteSeo } from './lib/routeSeo.js'
 import { ErrorBoundary } from './components/ErrorBoundary.jsx'
 import { auth, db, firebaseDisponivel, firebaseReady } from './lib/firebase'
@@ -1418,6 +1420,7 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
           <div
             id="sidus-auth-panel"
             ref={authPanelRef}
+            id="landing-auth-panel"
             className="landing-auth-panel landing-auth-panel--prominent landing-glass"
             style={{
               padding: isDesktop ? 24 : undefined,
@@ -1643,6 +1646,7 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
       <LandingGuides />
       <AdSenseBanner />
       <LandingReviews />
+      <LandingPremiumBenefits onScrollToAuth={scrollParaAuth} />
       <LandingFaq />
     </div>
   )
@@ -1987,6 +1991,8 @@ function Dashboard({ nome, mapaNatal, ceuAgora, aspetos, onOraculo, onPrivacidad
           </div>
           <p style={{ fontSize: 12, color: CORES.brancoSuave, lineHeight: 1.55, margin: 0 }}>{faseLua.desc}</p>
         </div>
+
+        {isPremium && <HomeSkyRadio />}
 
         {(ceuAgora || []).map((p) => (
           <div key={p.key} style={{ fontSize: 14, color: CORES.brancoSuave, padding: '7px 0', borderBottom: `1px solid ${CORES.vidroBorda}` }}>
@@ -2750,6 +2756,7 @@ function Paywall({ onVoltar, onPagar, onSucesso, onPromo, isDesktop, isBrasil, o
         oracleUsadas={oraclePerguntasUsadas}
         tarotUsadas={leiturasTarotUsadas}
         isBrasil={isBrasil}
+        showFullTable
       />
 
       <div style={{ ...estilos.vidro, padding: 24, marginBottom: 20, marginTop: 16 }}>

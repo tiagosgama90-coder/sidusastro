@@ -8,6 +8,8 @@ export const PRECO_PREMIUM_UNICO = 9.99
 export const PRECO_PREMIUM_MENSAL = PRECO_PREMIUM_UNICO
 /** VIP Brasil — exclusivo via PIX (conta bancária BR). */
 export const PRECO_PREMIUM_BR_PIX = 5
+/** Valor de referência em reais para vitrine BR (PIX). */
+export const PRECO_PREMIUM_BR_REAIS = 27
 
 export function formatPrecoEuro(valor) {
   return Number(valor).toFixed(2).replace('.', ',')
