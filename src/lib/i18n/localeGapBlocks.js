@@ -161,6 +161,24 @@ const GAP_BLOCK_ES = {
     errors: {
       apiKeyInvalid: 'Configuración Firebase no válida en este sitio. Actualiza con fuerza (Ctrl+F5) o inténtalo más tarde; si persiste, contacta con soporte.',
     },
+    portal: {
+      whySidus: {
+        ariaLabel: 'Por qué elegir Sidusastro',
+        eyebrow: 'Lo que nos distingue',
+        title: 'Precisión profesional. No horóscopo genérico.',
+        titleHighlight: 'Precisión profesional',
+        lead: 'La mayoría de sitios muestra el mismo texto para todos de tu signo solar. En Sidus, cada carta nace de tu fecha, hora y lugar exactos — con casas Placidus, aspectos y herramientas que hablan contigo, no con un signo genérico.',
+        p1Title: 'Carta calculada para ti',
+        p1Desc: 'Sol, Luna, Ascendente, casas y aspectos generados a partir de tus datos de nacimiento — rigor de efeméride profesional, no frases prefabricadas por signo.',
+        p2Title: 'Herramientas ligadas a tu cielo',
+        p2Desc: 'Oráculo, sinastría, brújula cósmica y numerología cruzan el cielo de hoy con tu carta natal. Orientación personalizada, no predicciones de revista.',
+        p3Title: 'Planes claros, sin sorpresas',
+        p3Desc: 'Comparación transparente Gratis vs Premium. Sabes qué desbloqueas antes de pagar — sin suscripciones ocultas ni letra pequeña.',
+        p4Title: 'Premium de por vida',
+        p4Desc: 'Un pago único para todas las herramientas. Sin renovación mensual como en la mayoría de apps de astrología.',
+        footnote: 'Sidusastro: astrología seria, accesible y hecha para quien quiere ir más allá del horóscopo del periódico.',
+      },
+    },
   },
   common: {
     oneTime: 'pago único',
@@ -308,6 +326,24 @@ const GAP_BLOCK_FR = {
   auth: {
     errors: {
       apiKeyInvalid: 'Configuration Firebase invalide sur ce site. Actualisez avec force (Ctrl+F5) ou réessayez plus tard — si le problème persiste, contactez le support.',
+    },
+    portal: {
+      whySidus: {
+        ariaLabel: 'Pourquoi choisir Sidusastro',
+        eyebrow: 'Ce qui nous distingue',
+        title: 'Précision professionnelle. Pas d\'horoscope générique.',
+        titleHighlight: 'Précision professionnelle',
+        lead: 'La plupart des sites affichent le même texte pour tous les natifs de votre signe solaire. Sur Sidus, chaque thème naît de votre date, heure et lieu exacts — avec maisons Placidus, aspects et outils qui vous parlent, pas un signe générique.',
+        p1Title: 'Thème calculé pour vous',
+        p1Desc: 'Soleil, Lune, Ascendant, maisons et aspects générés à partir de vos données de naissance — rigueur d\'éphéméride professionnelle, pas de textes pré-écrits par signe.',
+        p2Title: 'Outils liés à votre ciel',
+        p2Desc: 'Oracle, synastrie, boussole cosmique et numérologie croisent le ciel du jour avec votre thème natal. Guidance personnalisée, pas de prédictions de magazine.',
+        p3Title: 'Offres claires, sans surprise',
+        p3Desc: 'Comparaison transparente Gratuit vs Premium. Vous savez ce que vous débloquez avant de payer — sans abonnements cachés ni petites lignes.',
+        p4Title: 'Premium à vie',
+        p4Desc: 'Un paiement unique pour tous les outils. Pas de renouvellement mensuel comme sur la plupart des apps d\'astrologie.',
+        footnote: 'Sidusastro : astrologie sérieuse, accessible et faite pour ceux qui veulent aller au-delà de l\'horoscope du journal.',
+      },
     },
   },
   common: {
@@ -457,6 +493,24 @@ const GAP_BLOCK_DE = {
     errors: {
       apiKeyInvalid: 'Ungültige Firebase-Konfiguration auf dieser Website. Hart aktualisieren (Strg+F5) oder später erneut versuchen — wenn es anhält, kontaktieren Sie den Support.',
     },
+    portal: {
+      whySidus: {
+        ariaLabel: 'Warum Sidusastro wählen',
+        eyebrow: 'Was uns unterscheidet',
+        title: 'Professionelle Präzision. Kein generisches Horoskop.',
+        titleHighlight: 'Professionelle Präzision',
+        lead: 'Die meisten Astrologie-Seiten zeigen denselben Text für alle mit Ihrem Sonnenzeichen. Bei Sidus entsteht jedes Horoskop aus Ihrem exakten Geburtsdatum, -zeit und -ort — mit Placidus-Häusern, Aspekten und Tools, die zu Ihnen sprechen, nicht zu einem generischen Zeichen.',
+        p1Title: 'Horoskop für Sie berechnet',
+        p1Desc: 'Sonne, Mond, Aszendent, Häuser und Aspekte aus Ihren Geburtsdaten — professionelle Ephemeriden-Genauigkeit, keine vorgefertigten Sonnenzeichen-Texte.',
+        p2Title: 'Tools verbunden mit Ihrem Himmel',
+        p2Desc: 'Orakel, Synastrie, kosmischer Kompass und Numerologie kreuzen den heutigen Himmel mit Ihrem Geburtshoroskop. Persönliche Orientierung, keine Zeitschriften-Vorhersagen.',
+        p3Title: 'Klare Pläne, keine Überraschungen',
+        p3Desc: 'Transparente Gratis-vs-Premium-Vergleich. Sie wissen vor der Zahlung, was Sie freischalten — ohne versteckte Abos oder Kleingedrucktes.',
+        p4Title: 'Premium lebenslang',
+        p4Desc: 'Eine Einmalzahlung für alle Tools. Keine monatliche Verlängerung wie bei den meisten Astrologie-Apps.',
+        footnote: 'Sidusastro: seriöse Astrologie, zugänglich und gemacht für alle, die mehr wollen als ein Zeitungshoroskop.',
+      },
+    },
   },
   common: {
     oneTime: 'Einmalzahlung',
@@ -604,6 +658,24 @@ const GAP_BLOCK_IT = {
   auth: {
     errors: {
       apiKeyInvalid: 'Configurazione Firebase non valida su questo sito. Aggiorna con forza (Ctrl+F5) o riprova più tardi — se persiste, contatta il supporto.',
+    },
+    portal: {
+      whySidus: {
+        ariaLabel: 'Perché scegliere Sidusastro',
+        eyebrow: 'Cosa ci distingue',
+        title: 'Precisione professionale. Non oroscopo generico.',
+        titleHighlight: 'Precisione professionale',
+        lead: 'La maggior parte dei siti mostra lo stesso testo per tutti del tuo segno solare. Su Sidus, ogni carta nasce dalla tua data, ora e luogo esatti — con case Placidus, aspetti e strumenti che parlano a te, non a un segno generico.',
+        p1Title: 'Carta calcolata per te',
+        p1Desc: 'Sole, Luna, Ascendente, case e aspetti generati dai tuoi dati di nascita — rigore di effemeridi professionali, non frasi pre-scritte per segno.',
+        p2Title: 'Strumenti collegati al tuo cielo',
+        p2Desc: 'Oracolo, sinastria, bussola cosmica e numerologia incrociano il cielo di oggi con la tua carta natale. Guida personalizzata, non previsioni da rivista.',
+        p3Title: 'Piani chiari, senza sorprese',
+        p3Desc: 'Confronto trasparente Gratis vs Premium. Sai cosa sblocchi prima di pagare — senza abbonamenti nascosti né clausole in piccolo.',
+        p4Title: 'Premium a vita',
+        p4Desc: 'Un pagamento unico per tutti gli strumenti. Nessun rinnovo mensile come nella maggior parte delle app di astrologia.',
+        footnote: 'Sidusastro: astrologia seria, accessibile e fatta per chi vuole andare oltre l\'oroscopo del giornale.',
+      },
     },
   },
   common: {
