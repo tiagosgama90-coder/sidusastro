@@ -82,7 +82,7 @@ export function LandingPremiumBenefits({ onScrollToAuth }) {
       </div>
 
       <button type="button" className="landing-premium-benefits__cta" onClick={scrollToAuth}>
-        {t('landingPremium.cta')}
+        {t('landingPremium.cta', { price: isBrasil ? `R$ ${PRECO_PREMIUM_BR_PIX_BRL}` : `${precoEur} €` })}
       </button>
     </section>
   )

@@ -34,7 +34,7 @@ import {
 import { Body, GeoVector, Ecliptic, MakeTime, SiderealTime } from 'astronomy-engine'
 import { pesquisarCidades, pesquisarFusoHorario, geocodificarCidade } from './lib/geocoding'
 import { ModalPagamento, verificarSessaoPagamento } from './components/Pagamento'
-import { PRECO_MAPA_COMPLETO, PRECO_PREMIUM_UNICO, precoPremiumVitrine, formatPrecoEuro, formatPrecoCompleto } from './lib/pricing.js'
+import { PRECO_MAPA_COMPLETO, PRECO_PREMIUM_UNICO, PRECO_PREMIUM_BR_PIX_BRL, precoPremiumVitrine, formatPrecoEuro, formatPrecoCompleto } from './lib/pricing.js'
 import { useGeoCountry } from './hooks/useGeoCountry.js'
 import { RecaptchaCheckbox } from './components/Recaptcha'
 import { Perfil } from './components/Perfil'
@@ -97,6 +97,8 @@ import { readLandingDraft, clearLandingDraft, mergeLandingDraft, hasLandingDraft
 import { MobileBottomNav } from './components/MobileBottomNav.jsx'
 import { HomeParaTiHoje } from './components/HomeParaTiHoje.jsx'
 import { LandingStickyCta } from './components/LandingStickyCta.jsx'
+import { LandingSimplePremium } from './components/LandingSimplePremium.jsx'
+import { LandingReviewsTicker } from './components/LandingReviewsTicker.jsx'
 import { FerramentasEmptyState } from './components/FerramentasEmptyState.jsx'
 
 const EcraTarotLazy = lazy(() => import('./components/Tarot.jsx').then((m) => ({ default: m.EcraTarot })))
@@ -1329,6 +1331,7 @@ function EcraVerificarEmail({ utilizador, isDesktop, onLogout, onVerificado }) {
 
 function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
   const { lang, t } = useLanguage()
+  const { isBrasil } = useGeoCountry()
   const authPanelRef = useRef(null)
   const conversionZoneRef = useRef(null)
   const [email, setEmail]       = useState('')
@@ -1354,6 +1357,10 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
 
   const isLogin = tipo === 'login'
   const precisaRecaptcha = !isLogin
+  const precoVitrine = precoPremiumVitrine(isBrasil)
+  const precoCtaLabel = isBrasil
+    ? `R$ ${PRECO_PREMIUM_BR_PIX_BRL}`
+    : `${formatPrecoEuro(precoVitrine.valor)} €`
 
   useEffect(() => {
     const titulo = emRecuperacao
@@ -1461,6 +1468,7 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
         aria-label={t('auth.portal.conversionAria')}
       >
         <LandingConversionHead />
+        <LandingSimplePremium onCta={scrollParaAuth} />
         <div className="landing-auth-grid">
         <LandingBirthPortal isDesktop={isDesktop} onSaved={scrollParaAuth} onScrollToLogin={scrollParaAuth} />
 
@@ -1607,7 +1615,7 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
             ? <Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} />
             : emRecuperacao
               ? t('auth.forgot.submit')
-              : (isLogin ? t('auth.login') : t('auth.register'))}
+              : (isLogin ? t('auth.login') : t('auth.registerCta', { price: precoCtaLabel }))}
         </button>
 
         {emRecuperacao ? (
@@ -1699,6 +1707,7 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
       <LandingReviews />
       <LandingPremiumBenefits onScrollToAuth={scrollParaAuth} />
       <LandingFaq />
+      <LandingReviewsTicker />
     </div>
   )
 }

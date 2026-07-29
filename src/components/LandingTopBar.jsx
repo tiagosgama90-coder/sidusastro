@@ -1,9 +1,16 @@
 import { SidusLogo } from './SidusLogo.jsx'
 import { LanguageSwitcher } from './LanguageSwitcher.jsx'
 import { useLanguage } from '../lib/i18n/LanguageContext.jsx'
+import { useGeoCountry } from '../hooks/useGeoCountry.js'
+import { PRECO_PREMIUM_BR_PIX_BRL, formatPrecoEuro, precoPremiumVitrine } from '../lib/pricing.js'
 
 export function LandingTopBar({ onCta }) {
   const { t } = useLanguage()
+  const { isBrasil } = useGeoCountry()
+  const precoVitrine = precoPremiumVitrine(isBrasil)
+  const priceLabel = isBrasil
+    ? `R$ ${PRECO_PREMIUM_BR_PIX_BRL}`
+    : `${formatPrecoEuro(precoVitrine.valor)} €`
 
   return (
     <header className="landing-top-bar notranslate" translate="no">
@@ -11,7 +18,7 @@ export function LandingTopBar({ onCta }) {
       <div className="landing-top-bar__actions">
         <LanguageSwitcher variant="landing-bar" />
         <button type="button" className="landing-top-bar__cta" onClick={onCta}>
-          {t('auth.portal.topCta')}
+          {t('auth.portal.topCta', { price: priceLabel })}
         </button>
       </div>
     </header>
