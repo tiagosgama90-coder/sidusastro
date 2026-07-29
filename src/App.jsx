@@ -53,7 +53,6 @@ import { SidusConstellationMark } from './components/SidusConstellationMark.jsx'
 import { LandingFaq } from './components/LandingFaq.jsx'
 import { LandingSkyLive } from './components/LandingSkyLive.jsx'
 import { LandingReviews } from './components/LandingReviews.jsx'
-import { LandingPremiumBenefits } from './components/LandingPremiumBenefits.jsx'
 import { LandingGuides } from './components/LandingGuides.jsx'
 import { LandingPdfShowcase } from './components/LandingPdfShowcase.jsx'
 import { BannerBrasil } from './components/BannerBrasil.jsx'
@@ -1703,7 +1702,6 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
       <LandingGuides />
       <AdSenseBanner />
       <LandingReviews />
-      <LandingPremiumBenefits onScrollToAuth={scrollParaAuth} />
       <LandingFaq />
       <LandingReviewsTicker />
     </div>
@@ -2829,7 +2827,7 @@ function Ferramentas({ onFerramenta, isDesktop, acessoVip, mapaNatal, onCompleta
   )
 }
 
-function Paywall({ onVoltar, onPagar, onSucesso, onPromo, isDesktop, isBrasil, oraclePerguntasUsadas = 0, leiturasTarotUsadas = 0 }) {
+function Paywall({ onVoltar, onPagar, onSucesso, onPromo, isDesktop, isBrasil, oraclePerguntasUsadas = 0, leiturasTarotUsadas = 0, paywallTool = null }) {
   const { t } = useLanguage()
   const precoVitrine = precoPremiumVitrine(isBrasil)
   return (
@@ -2846,9 +2844,9 @@ function Paywall({ onVoltar, onPagar, onSucesso, onPromo, isDesktop, isBrasil, o
         isBrasil={isBrasil}
         oraclePerguntasUsadas={oraclePerguntasUsadas}
         leiturasTarotUsadas={leiturasTarotUsadas}
-        titleKey="vip.title"
-        subtitleKey="vip.subtitle"
-        showFullTable
+        titleKey={paywallTool ? null : 'vip.title'}
+        subtitleKey={paywallTool ? null : 'vip.subtitle'}
+        paywallTool={paywallTool}
       />
 
       <p style={{ textAlign: 'center', marginTop: 16 }}>
@@ -3698,6 +3696,7 @@ export default function App() {
 
   // ── Dados natais ─────────────────────────────────────────────────────────
   const [passo, setPasso] = useState(() => passoFromPath(window.location.pathname))
+  const [paywallTool, setPaywallTool] = useState(null)
   const [dados, setDados] = useState(DADOS_VAZIO)
   const [mapaNatal, setMapaNatal] = useState(null)
   const [planetasNascimento, setPlanetasNascimento] = useState([])
@@ -3723,14 +3722,19 @@ export default function App() {
   const acessoVip = mapaDesbloqueado
   const contaConfigurada = mapaGerado || acessoVip
 
-  const irPara = useCallback((novoPasso, { replace = false } = {}) => {
+  const irPara = useCallback((novoPasso, { replace = false, paywallTool: tool = null } = {}) => {
     setFerramentaAberta(null)
     let destino = novoPasso
     if (destino === 'onboarding' && utilizador && contaConfigurada) {
       destino = 'home'
     }
     if ((destino === 'bussola' || destino === 'numerologia') && !acessoVip) {
+      setPaywallTool(destino)
       destino = 'paywall'
+    } else if (destino === 'paywall' && tool) {
+      setPaywallTool(tool)
+    } else if (destino !== 'paywall') {
+      setPaywallTool(null)
     }
     setPasso(destino)
     navigate(pathFromPasso(destino, lang), { replace })
@@ -4521,7 +4525,7 @@ export default function App() {
       case 'sinastria':
         return (
           <Suspense fallback={<RouteLoader />}>
-            <SinastriaLazy mapaNatal={mapaNatal} dadosUtilizador={dados} isPremium={acessoVip} onUpgrade={() => irPara('paywall')} onVoltar={() => irPara('home')} />
+            <SinastriaLazy mapaNatal={mapaNatal} dadosUtilizador={dados} isPremium={acessoVip} onUpgrade={() => irPara('paywall', { paywallTool: 'sinastria' })} onVoltar={() => irPara('home')} />
           </Suspense>
         )
       case 'biorritmo':
@@ -4557,7 +4561,7 @@ export default function App() {
       case 'ferramentas':
         return <Ferramentas onFerramenta={handleFerramenta} isDesktop={isDesktop} acessoVip={acessoVip} mapaNatal={mapaNatal} onCompletarMapa={() => irPara('onboarding')} />
       case 'paywall':
-        return <Paywall onVoltar={() => irPara('home')} onPagar={abrirPagamento} onPromo={() => irPara('vipPromo')} onSucesso={() => { setIsPremium(true); setMapaCompleto(true); irPara(dadosNataisMinimos(dados) ? 'mapa' : 'onboarding') }} isDesktop={isDesktop} isBrasil={isBrasil} oraclePerguntasUsadas={oraclePerguntasUsadas} leiturasTarotUsadas={leiturasTarotUsadas} />
+        return <Paywall onVoltar={() => irPara('home')} onPagar={abrirPagamento} onPromo={() => irPara('vipPromo')} onSucesso={() => { setIsPremium(true); setMapaCompleto(true); irPara(dadosNataisMinimos(dados) ? 'mapa' : 'onboarding') }} isDesktop={isDesktop} isBrasil={isBrasil} oraclePerguntasUsadas={oraclePerguntasUsadas} leiturasTarotUsadas={leiturasTarotUsadas} paywallTool={paywallTool} />
       case 'chat':
         return <Chat mapaNatal={mapaNatal} isPremium={isPremium} userId={utilizador?.uid} oracleRemotas={oraclePerguntasUsadas} onOracleUsada={registarOraclePerguntaUsada} onUpgrade={() => irPara('paywall')} onPromo={() => irPara('vipPromo')} leiturasTarotUsadas={leiturasTarotUsadas} obterIdToken={obterIdTokenOracle} isBrasil={isBrasil} isDesktop={isDesktop} />
       case 'perfil':
