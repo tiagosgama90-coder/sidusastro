@@ -3,16 +3,14 @@ import { useLanguage } from '../lib/i18n/LanguageContext.jsx'
 import { useGeoCountry } from '../hooks/useGeoCountry.js'
 import { getBeneficiosVip } from '../lib/i18n/ferramentasData.js'
 import { PremiumComparacao } from './PremiumComparacao.jsx'
-import { precoPremiumVitrine, formatPrecoEuro, PRECO_PREMIUM_BR_PIX_BRL } from '../lib/pricing.js'
+import { PremiumPricingNote } from './PremiumPricingNote.jsx'
+import { getPremiumPriceLabels } from '../lib/premiumPricingLabels.js'
 
 export function LandingPremiumBenefits({ onScrollToAuth }) {
   const { t, lang } = useLanguage()
   const { isBrasil } = useGeoCountry()
   const beneficios = getBeneficiosVip(lang)
-  const precoEur = formatPrecoEuro(precoPremiumVitrine(isBrasil))
-  const priceLabel = isBrasil
-    ? t('landingPremium.pricePix', { reais: PRECO_PREMIUM_BR_PIX_BRL, eur: precoEur })
-    : t('landingPremium.priceEur', { price: precoEur })
+  const prices = getPremiumPriceLabels(isBrasil)
 
   const scrollToAuth = () => {
     if (onScrollToAuth) {
@@ -29,12 +27,14 @@ export function LandingPremiumBenefits({ onScrollToAuth }) {
         <h2 className="landing-premium-benefits__title">{t('landingPremium.title')}</h2>
         <p className="landing-premium-benefits__lead">{t('landingPremium.lead')}</p>
         <div className="landing-premium-benefits__price-box landing-glass">
-          <div className="landing-premium-benefits__price-main">{priceLabel}</div>
-          <p className="landing-premium-benefits__price-note">{t('landingPremium.priceNote')}</p>
-          {isBrasil ? (
-            <p className="landing-premium-benefits__price-pix">{t('landingPremium.pixAdvantage')}</p>
-          ) : null}
+          <PremiumPricingNote />
         </div>
+      </div>
+
+      <div className="landing-premium-benefits__mapa-diff landing-glass">
+        <h3>{t('landingPremium.mapaDiffTitle')}</h3>
+        <p>{t('landingPremium.mapaDiffFree')}</p>
+        <p>{t('landingPremium.mapaDiffPremium')}</p>
       </div>
 
       <div className="landing-premium-benefits__focus-grid">
@@ -64,7 +64,7 @@ export function LandingPremiumBenefits({ onScrollToAuth }) {
       </div>
 
       <h3 className="landing-premium-benefits__table-title">{t('landingPremium.tableTitle')}</h3>
-      <PremiumComparacao isBrasil={isBrasil} showFullTable />
+      <PremiumComparacao isBrasil={isBrasil} showFullTable showPricingNote={false} />
 
       <div className="landing-premium-benefits__list landing-glass">
         <h3 className="landing-premium-benefits__list-title">
@@ -82,7 +82,7 @@ export function LandingPremiumBenefits({ onScrollToAuth }) {
       </div>
 
       <button type="button" className="landing-premium-benefits__cta" onClick={scrollToAuth}>
-        {t('landingPremium.cta', { price: isBrasil ? `R$ ${PRECO_PREMIUM_BR_PIX_BRL}` : `${precoEur} €` })}
+        {t('landingPremium.cta', { price: prices.dualShort })}
       </button>
     </section>
   )
@@ -91,13 +91,11 @@ export function LandingPremiumBenefits({ onScrollToAuth }) {
 export function LandingPremiumJumpButton() {
   const { t } = useLanguage()
   const { isBrasil } = useGeoCountry()
-  const priceShort = isBrasil
-    ? `R$ ${PRECO_PREMIUM_BR_PIX_BRL}`
-    : `${formatPrecoEuro(precoPremiumVitrine(false))} €`
+  const prices = getPremiumPriceLabels(isBrasil)
 
   return (
     <a href="#vantagens-premium" className="landing-premium-jump-btn">
-      {t('landingPremium.jumpCta', { price: priceShort })}
+      {t('landingPremium.jumpCta', { price: prices.dualShort })}
     </a>
   )
 }

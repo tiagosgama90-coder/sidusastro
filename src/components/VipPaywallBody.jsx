@@ -1,8 +1,10 @@
 import { Crown, Check } from 'lucide-react'
 import { useLanguage } from '../lib/i18n/LanguageContext.jsx'
 import { getBeneficiosVip } from '../lib/i18n/ferramentasData.js'
-import { formatPrecoCompleto, precoPremiumVitrine, PRECO_PREMIUM_UNICO } from '../lib/pricing.js'
+import { formatPrecoCompleto, precoPremiumVitrine, PRECO_PREMIUM_UNICO, PRECO_PREMIUM_BR_PIX_BRL } from '../lib/pricing.js'
 import { PremiumComparacao } from './PremiumComparacao.jsx'
+import { PremiumPricingNote } from './PremiumPricingNote.jsx'
+import { getPremiumPriceLabels } from '../lib/premiumPricingLabels.js'
 
 const CORES = {
   fundo: '#0B071E',
@@ -35,6 +37,8 @@ export function VipPaywallBody({
   const precoVitrine = precoPremiumVitrine(isBrasil)
   const precoLabel = formatPrecoCompleto(precoVitrine.valor, precoVitrine.currency)
   const precoCartaoBr = formatPrecoCompleto(PRECO_PREMIUM_UNICO, 'eur')
+  const precoPixBr = formatPrecoCompleto(PRECO_PREMIUM_BR_PIX_BRL, 'brl')
+  const prices = getPremiumPriceLabels(isBrasil)
 
   return (
     <>
@@ -62,6 +66,7 @@ export function VipPaywallBody({
         isBrasil={isBrasil}
         compact={compact}
         showFullTable={showFullTable}
+        showPricingNote={false}
       />
 
       <div style={{
@@ -88,13 +93,17 @@ export function VipPaywallBody({
         background: 'rgba(0,0,0,0.2)',
         border: `1px solid ${CORES.dourado}`,
       }}>
-        <div style={{ fontSize: compact ? 26 : 36, fontWeight: 700, color: CORES.branco }}>
-          {precoLabel} {isBrasil ? <span style={{ fontSize: compact ? 12 : 14, color: '#34D399', fontWeight: 600 }}>{t('vip.pixLabel')}</span> : null}
+        <PremiumPricingNote compact />
+        <div style={{ fontSize: compact ? 26 : 36, fontWeight: 700, color: CORES.branco, marginTop: 10 }}>
+          {isBrasil ? precoPixBr : precoCartaoBr}
+          {isBrasil ? <span style={{ fontSize: compact ? 12 : 14, color: '#34D399', fontWeight: 600 }}> {t('vip.pixLabel')}</span> : null}
           {!isBrasil ? <span style={{ fontSize: compact ? 12 : 14, color: CORES.brancoMuted, fontWeight: 400 }}> {t('common.oneTime')}</span> : null}
         </div>
-        {isBrasil ? (
-          <p style={{ fontSize: 11, color: '#34D399', marginTop: 8, fontWeight: 600 }}>{t('vip.priceBrPixNote', { preco: precoLabel, precoEur: precoCartaoBr })}</p>
-        ) : null}
+        <p style={{ fontSize: 11, color: CORES.brancoMuted, marginTop: 8, fontWeight: 500 }}>
+          {isBrasil
+            ? t('vip.priceBrPixNote', { preco: precoPixBr, precoEur: precoCartaoBr })
+            : t('brasil.premiumNote', { preco: precoPixBr, precoEur: precoCartaoBr })}
+        </p>
         <p style={{ fontSize: 11, color: CORES.brancoMuted, marginTop: 6, marginBottom: 0 }}>{t('vip.oneTimeAccess')}</p>
       </div>
 
@@ -113,7 +122,7 @@ export function VipPaywallBody({
           fontWeight: 700,
         }}
       >
-        {ctaText || (isBrasil ? t('vip.ctaBr', { preco: precoLabel }) : t('vip.cta'))}
+        {ctaText || (isBrasil ? t('vip.ctaBr', { preco: prices.dualShort }) : t('vip.cta', { price: prices.dualShort }))}
       </button>
 
       <p style={{ textAlign: 'center', fontSize: 11, color: CORES.brancoMuted, marginTop: 10, marginBottom: 0, lineHeight: 1.5 }}>
