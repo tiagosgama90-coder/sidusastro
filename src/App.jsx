@@ -2657,7 +2657,7 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
                   {t('mapa.mandalaTitle')}
                 </div>
                 <p style={{ fontSize: 12, color: CORES.brancoMuted, margin: 0, lineHeight: 1.6, maxWidth: 420, marginLeft: 'auto', marginRight: 'auto' }}>
-                  {t('mapa.mandalaSubtitle')}
+                  {t('mapa.mandalaSubtitleShort')}
                 </p>
               </div>
               <Suspense fallback={<RouteLoader />}>
