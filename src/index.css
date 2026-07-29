@@ -500,6 +500,18 @@ h1.sidus-page-title {
   flex-shrink: 0;
 }
 
+.landing-top-bar__login {
+  border: 1px solid rgba(223, 183, 108, 0.4);
+  border-radius: 10px;
+  padding: 9px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #DFB76C;
+  background: rgba(255, 255, 255, 0.05);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
 .landing-top-bar__cta {
   border: none;
   border-radius: 10px;
