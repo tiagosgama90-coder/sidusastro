@@ -10,6 +10,7 @@ import {
   TAROT_TYPES_IT, TAROT_TYPES_FR, TAROT_TYPES_DE,
 } from './tarotTypesLocales.js'
 import { PREMIUM_LOCALE_BLOCKS, deepMergeLocale } from './premiumLocaleBlocks.js'
+import { LOCALE_GAP_BLOCKS } from './localeGapBlocks.js'
 import {
   translateSigno, translatePlaneta, translateElemento,
   translateModalidade, translateAspecto, localizeSignoObj,
@@ -36,6 +37,7 @@ mergeTarotTypes(de, TAROT_TYPES_DE)
 
 for (const lang of ['es', 'fr', 'de', 'it']) {
   deepMergeLocale(LOCALES[lang], PREMIUM_LOCALE_BLOCKS[lang])
+  deepMergeLocale(LOCALES[lang], LOCALE_GAP_BLOCKS[lang])
 }
 
 const LanguageContext = createContext(null)

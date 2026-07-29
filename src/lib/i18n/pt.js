@@ -762,6 +762,7 @@ export default {
     bussola: {
       title: 'Bússola Cósmica',
       subtitle: 'Trânsitos reais, eclipses por casa natal e calendário anual personalizado ao teu mapa',
+      methodology: 'Casas whole sign a partir do Ascendente. Interpretação estruturada com trânsitos reais cruzados ao teu mapa natal.',
       personalized: 'Análise personalizada para {solar} Solar · {lunar} Lunar · Asc. {asc}',
       planetIn: '{planeta} em {signo}',
       relevant: '⭐ Relevante para ti',
