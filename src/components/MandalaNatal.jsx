@@ -198,7 +198,6 @@ export function MandalaNatal({
   dataNascimento,
   horaNascimento,
   translateSign = (s) => s,
-  motorAstro,
   size = 400,
   chartOnly = false,
   className,
@@ -237,7 +236,7 @@ export function MandalaNatal({
     )
   }
 
-  const { ascLon, cusps, mcLon, dcLon, icLon, todosPontos, pontosGrelha, tabelaPontos, jd, motor, instanteUTC } = dados
+  const { ascLon, cusps, mcLon, dcLon, icLon, todosPontos, pontosGrelha, tabelaPontos } = dados
 
   const cx = size / 2
   const cy = size / 2
@@ -303,13 +302,6 @@ export function MandalaNatal({
           <div style={{ fontSize: 11, color: CORES.dourado, marginTop: 8, fontWeight: 600 }}>
             ☉ {solSigno || '-'} · ☽ {luaSigno || '-'} · AS {ascSigno || '-'}
           </div>
-          {(mapaNatal?.motor || motorAstro) && (
-            <div style={{ fontSize: 9, color: CORES.muted, marginTop: 6, letterSpacing: '0.04em' }}>
-              {mapaNatal?.motor || motorAstro}
-              {jd != null && ` · JD ${Number(jd).toFixed(8)}`}
-              {instanteUTC && ` · ${instanteUTC.slice(0, 19)} UTC`}
-            </div>
-          )}
         </div>
       )}
 
