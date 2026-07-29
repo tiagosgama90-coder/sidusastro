@@ -6,7 +6,7 @@ const FERRAMENTAS_PT = [
   { id: 'bussola', nome: 'Bússola Cósmica', sub: 'Trânsitos reais · eclipses por casa natal', icon: Compass, premium: true },
   { id: 'sinastria', nome: 'Radar de Afinidades', sub: 'Prévia grátis · Sinastria Pro', icon: Heart, premium: false },
   { id: 'numerologia', nome: 'Numerologia', sub: 'Vibração espiritual do nome', icon: PythagoreanStarIcon, premium: true },
-  { id: 'sonhos', nome: 'Interpretação de Sonhos', sub: 'Mimo de boas-vindas grátis', icon: Moon, premium: false },
+  { id: 'sonhos', nome: 'Interpretação de Sonhos', sub: 'Incluída em todos os planos', icon: Moon, premium: false },
   { id: 'biorritmo', nome: 'Fluxo Vital', sub: 'Biorritmo', icon: Activity, premium: false },
   { id: 'horasIguais', nome: 'Horas Iguais', sub: 'Mensagens angélicas', icon: Clock, premium: false },
   { id: 'diario', nome: 'Diário Astral', icon: BookOpen, premium: false },
@@ -16,7 +16,7 @@ const FERRAMENTAS_EN = [
   { id: 'bussola', nome: 'Cosmic Compass', sub: 'Real transits · eclipses by natal house', icon: Compass, premium: true },
   { id: 'sinastria', nome: 'Affinity Radar', sub: 'Free preview · Pro synastry', icon: Heart, premium: false },
   { id: 'numerologia', nome: 'Numerology', sub: 'Spiritual name vibration', icon: PythagoreanStarIcon, premium: true },
-  { id: 'sonhos', nome: 'Dream Interpretation', sub: 'Free welcome gift', icon: Moon, premium: false },
+  { id: 'sonhos', nome: 'Dream Interpretation', sub: 'Included in all plans', icon: Moon, premium: false },
   { id: 'biorritmo', nome: 'Vital Flow', sub: 'Biorhythm', icon: Activity, premium: false },
   { id: 'horasIguais', nome: 'Mirror Hours', sub: 'Angelic messages', icon: Clock, premium: false },
   { id: 'diario', nome: 'Astral Journal', icon: BookOpen, premium: false },
@@ -63,33 +63,33 @@ const FERRAMENTAS_FR = [
 ]
 
 const BENEFICIOS_VIP_PT = [
-  'Mapa Astral completo - efemérides Swiss Ephemeris, casas Placidus, PDF profissional enviado por email',
-  'Céu de Hoje com fases da Lua em tempo real + Rádio do Céu ao Vivo (posições planetárias)',
-  'Mapa de Numerologia completo - Caminho de Vida, Ano/Mês Pessoal, ciclos de vida e vibração de cada letra do nome',
-  'Leituras de Tarot ilimitadas em todos os baralhos (Rider-Waite, Lenormand, Oracle…)',
-  'Bússola Cósmica - trânsitos reais, eclipses por casa natal e calendário anual personalizado',
-  'Radar de Afinidades - sinastria completa com radar visual, 4 pilares, laço cármico e mapa composto',
-  'Chat ilimitado com o Oráculo Sidus - astrólogo profissional ligado ao teu mapa natal',
+  'Mapa Astral completo — interpretação profissional e PDF enviado por email',
+  'Céu de Hoje com fases da Lua em tempo real + Rádio do Céu ao Vivo',
+  'Mapa de Numerologia completo — Caminho de Vida, Ano/Mês Pessoal, ciclos e vibração de cada letra',
+  'Leituras de Tarot ilimitadas em todos os baralhos',
+  'Bússola Cósmica — trânsitos reais, eclipses por casa natal e calendário anual personalizado',
+  'Radar de Afinidades — sinastria completa com radar visual, pilares e mapa composto',
+  'Chat ilimitado com o Oráculo Sidus — astrólogo profissional ligado ao teu mapa natal',
 ]
 
 const BENEFICIOS_VIP_EN = [
-  'Complete Natal Chart - Swiss Ephemeris, Placidus houses, professional PDF by email',
-  'Today\'s Sky with real-time Moon phases + Live Sky Radio (planetary positions)',
-  'Full Numerology Chart - Life Path, Personal Year/Month, life cycles and letter vibrations',
+  'Complete Natal Chart — professional reading and PDF by email',
+  "Today's Sky with real-time Moon phases + Live Sky Radio",
+  'Full Numerology Chart — Life Path, Personal Year/Month, life cycles and letter vibrations',
   'Unlimited Tarot readings across all decks',
-  'Cosmic Compass - real transits, eclipses by natal house and personalized annual calendar',
-  'Affinity Radar - full synastry with visual radar, 4 pillars, karmic bond and composite chart',
-  'Unlimited chat with Oracle Sidus - professional astrologer linked to your natal chart',
+  'Cosmic Compass — real transits, eclipses by natal house and personalised annual calendar',
+  'Affinity Radar — full synastry with visual radar, pillars and composite chart',
+  'Unlimited chat with Oracle Sidus — professional astrologer linked to your natal chart',
 ]
 
 const BENEFICIOS_VIP_ES = [
-  'Carta Astral completa: Swiss Ephemeris, casas Placidus, PDF profesional por email',
+  'Carta Astral completa — lectura profesional, 10 planetas y PDF por email',
   'Cielo de Hoy con fases lunares en tiempo real + Radio del Cielo en vivo',
-  'Mapa de Numerología completo: Camino de Vida, Año/Mes Personal, ciclos y vibración de letras',
+  'Mapa de Numerología completo — Camino de Vida, Año/Mes Personal, ciclos y vibración de letras',
   'Lecturas de Tarot ilimitadas en todos los mazos',
-  'Brújula Cósmica: tránsitos reales, eclipses por casa natal y calendario anual personalizado',
-  'Radar de Afinidades: sinastría completa con radar visual, 4 pilares y carta compuesta',
-  'Chat ilimitado con el Oráculo Sidus - astrólogo profesional ligado a tu carta natal',
+  'Brújula Cósmica — tránsitos reales, eclipses por casa natal y calendario anual personalizado',
+  'Radar de Afinidades — sinastría completa: química, emoción, comunicación, proyectos, misión de vida y carta compuesta',
+  'Chat ilimitado con el Oráculo Sidus — astrólogo profesional ligado a tu carta natal',
 ]
 
 const BENEFICIOS_VIP_IT = [

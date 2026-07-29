@@ -316,6 +316,18 @@ function CartaoSecao({ titulo, score, texto, cor = CORES.dourado }) {
 }
 
 function UpsellSinastriaPremium({ t, onUpgrade }) {
+  const items = [
+    t('ferramentasPremium.sinastria.paywallItem1'),
+    t('ferramentasPremium.sinastria.paywallItem2'),
+    t('ferramentasPremium.sinastria.paywallItem3'),
+    t('ferramentasPremium.sinastria.paywallItem4'),
+    t('ferramentasPremium.sinastria.paywallItem5'),
+    t('ferramentasPremium.sinastria.paywallItem6'),
+    t('ferramentasPremium.sinastria.paywallItem7'),
+    t('ferramentasPremium.sinastria.paywallItem8'),
+    t('ferramentasPremium.sinastria.paywallItem9'),
+  ]
+
   return (
     <div style={{
       background: 'linear-gradient(135deg, rgba(139,92,246,0.12), rgba(223,183,108,0.08))',
@@ -325,11 +337,7 @@ function UpsellSinastriaPremium({ t, onUpgrade }) {
       <div style={{ fontSize: 15, fontWeight: 700, color: CORES.dourado, marginBottom: 8 }}>{t('ferramentasPremium.sinastria.premiumTitle')}</div>
       <p style={{ fontSize: 13, color: CORES.brancoSuave, lineHeight: 1.65, margin: '0 0 16px' }}>{t('ferramentasPremium.sinastria.premiumDesc')}</p>
       <ul style={{ textAlign: 'left', fontSize: 12, color: CORES.brancoMuted, lineHeight: 1.8, margin: '0 0 16px', paddingLeft: 20 }}>
-        <li>{t('ferramentasPremium.sinastria.premiumItem1')}</li>
-        <li>{t('ferramentasPremium.sinastria.premiumItem2')}</li>
-        <li>{t('ferramentasPremium.sinastria.premiumItem3')}</li>
-        <li>{t('ferramentasPremium.sinastria.premiumItem4')}</li>
-        <li>{t('ferramentasPremium.sinastria.premiumItem5')}</li>
+        {items.map((item) => <li key={item}>{item}</li>)}
       </ul>
       {onUpgrade && (
         <button type="button" onClick={onUpgrade} style={{
@@ -578,9 +586,9 @@ export function Sinastria({ mapaNatal, dadosUtilizador, isPremium = false, onUpg
             <>
               <div style={{ background: 'rgba(255,255,255,0.04)', border: `1px solid ${CORES.vidroBorda}`, borderRadius: 16, padding: 24, marginBottom: 16, textAlign: 'center' }}>
                 <div style={{ fontSize: 48, fontWeight: 700, color: CORES.dourado, lineHeight: 1 }}>
-                  ~{Math.round(analise.pontuacao / 5) * 5}%
+                  {Math.round(analise.pontuacao)}%
                 </div>
-                <div style={{ fontSize: 12, color: CORES.brancoMuted, marginTop: 6 }}>{t('ferramentasPremium.sinastria.compatibilityApprox')}</div>
+                <div style={{ fontSize: 12, color: CORES.brancoMuted, marginTop: 6 }}>{t('ferramentasPremium.sinastria.compatibility')}</div>
                 {analise.parceiroSol && (
                   <div style={{ fontSize: 13, color: CORES.brancoSuave, marginTop: 14 }}>
                     {ts(mapaNatal?.solar?.nome)} ❤ {ts(analise.parceiroSol)}

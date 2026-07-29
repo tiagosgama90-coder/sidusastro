@@ -2,9 +2,10 @@ import { Crown, Check } from 'lucide-react'
 import { useLanguage } from '../lib/i18n/LanguageContext.jsx'
 import { getBeneficiosVip } from '../lib/i18n/ferramentasData.js'
 import { formatPrecoCompleto, precoPremiumVitrine, PRECO_PREMIUM_UNICO, PRECO_PREMIUM_BR_PIX_BRL } from '../lib/pricing.js'
-import { PremiumComparacao } from './PremiumComparacao.jsx'
+import { LandingPremiumCompare } from './LandingPremiumCompare.jsx'
 import { PremiumPricingNote } from './PremiumPricingNote.jsx'
 import { getPremiumPriceLabels } from '../lib/premiumPricingLabels.js'
+import { getPaywallToolItems, getPaywallToolTitle } from '../lib/paywallToolBenefits.js'
 
 const CORES = {
   fundo: '#0B071E',
@@ -17,7 +18,8 @@ const CORES = {
 }
 
 /**
- * Conteúdo VIP partilhado: comparação grátis/VIP, benefícios completos, preço e programa de afiliados.
+ * Conteúdo VIP partilhado: benefícios, preço e CTA.
+ * paywallTool: 'sinastria' | 'bussola' | 'numerologia' — lista focada na ferramenta.
  */
 export function VipPaywallBody({
   onCta,
@@ -30,15 +32,20 @@ export function VipPaywallBody({
   subtitleKey = 'vip.subtitle',
   showHeader = true,
   compact = false,
-  showFullTable = false,
+  paywallTool = null,
 }) {
   const { t, lang } = useLanguage()
-  const beneficios = getBeneficiosVip(lang)
+  const toolItems = paywallTool ? getPaywallToolItems(paywallTool, t) : null
+  const beneficios = toolItems || getBeneficiosVip(lang)
   const precoVitrine = precoPremiumVitrine(isBrasil)
   const precoLabel = formatPrecoCompleto(precoVitrine.valor, precoVitrine.currency)
   const precoCartaoBr = formatPrecoCompleto(PRECO_PREMIUM_UNICO, 'eur')
   const precoPixBr = formatPrecoCompleto(PRECO_PREMIUM_BR_PIX_BRL, 'brl')
   const prices = getPremiumPriceLabels(isBrasil)
+  const headerTitle = paywallTool ? getPaywallToolTitle(paywallTool, t) : t(titleKey)
+  const headerSubtitle = paywallTool
+    ? t('vip.toolPaywallLead')
+    : (subtitleKey ? t(subtitleKey) : null)
 
   return (
     <>
@@ -48,30 +55,26 @@ export function VipPaywallBody({
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, justifyContent: compact ? 'flex-start' : 'center', marginBottom: 6 }}>
             <Crown size={compact ? 18 : 22} color={CORES.dourado} />
             <h2 style={{ fontSize: compact ? 15 : 22, fontWeight: 700, color: CORES.dourado, margin: 0 }}>
-              {t(titleKey)}
+              {headerTitle}
             </h2>
           </div>
-          {subtitleKey && (
+          {headerSubtitle && (
             <p style={{ fontSize: compact ? 12 : 13, color: CORES.brancoMuted, margin: 0, lineHeight: 1.55 }}>
-              {t(subtitleKey)}
+              {headerSubtitle}
             </p>
           )}
         </div>
       )}
 
-      <PremiumComparacao
-        isPremium={false}
-        oracleUsadas={oraclePerguntasUsadas}
-        tarotUsadas={leiturasTarotUsadas}
-        isBrasil={isBrasil}
-        compact={compact}
-        showFullTable={showFullTable}
-        showPricingNote={false}
-      />
+      {!paywallTool && !compact && (
+        <div style={{ marginBottom: 16 }}>
+          <LandingPremiumCompare />
+        </div>
+      )}
 
       <div style={{
         padding: compact ? '14px 16px' : 24,
-        marginTop: 14,
+        marginTop: paywallTool || compact ? 0 : 4,
         marginBottom: 14,
         borderRadius: 14,
         background: 'rgba(255,255,255,0.04)',
