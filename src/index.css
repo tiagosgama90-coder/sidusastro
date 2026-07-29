@@ -4121,6 +4121,67 @@ h1.sidus-page-title {
 .landing-compare {
   margin-bottom: 14px;
 }
+
+/* Mobile: cartões empilhados (sem scroll horizontal) */
+.landing-compare__cards {
+  display: none;
+  flex-direction: column;
+  gap: 10px;
+}
+.landing-compare__card {
+  padding: 14px 16px;
+  border-radius: 14px;
+  border: 1px solid rgba(223, 183, 108, 0.22);
+  background: linear-gradient(160deg, rgba(223, 183, 108, 0.06) 0%, rgba(11, 7, 30, 0.92) 55%);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.22);
+}
+.landing-compare__card-feature {
+  margin: 0 0 12px;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.35;
+  color: rgba(255, 255, 255, 0.95);
+  letter-spacing: 0.01em;
+}
+.landing-compare__card-row {
+  display: grid;
+  grid-template-columns: minmax(72px, 28%) 1fr;
+  gap: 10px 12px;
+  align-items: start;
+  padding: 9px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+.landing-compare__card-row:first-of-type {
+  border-top: none;
+  padding-top: 0;
+}
+.landing-compare__card-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.48);
+  line-height: 1.35;
+  padding-top: 2px;
+}
+.landing-compare__card-row--premium .landing-compare__card-label {
+  color: #DFB76C;
+}
+.landing-compare__card-value {
+  font-size: 12px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.78);
+  word-break: break-word;
+}
+.landing-compare__card-row--premium .landing-compare__card-value {
+  color: #DFB76C;
+  font-weight: 600;
+}
+
+/* Desktop: tabela clássica */
 .landing-compare__scroll {
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
@@ -4130,7 +4191,7 @@ h1.sidus-page-title {
 }
 .landing-compare__table {
   width: 100%;
-  min-width: 480px;
+  min-width: 520px;
   border-collapse: collapse;
   font-size: 13px;
 }
@@ -4181,6 +4242,34 @@ h1.sidus-page-title {
   font-size: 11px;
   color: rgba(255, 255, 255, 0.45);
   line-height: 1.5;
+}
+
+@media (max-width: 639px) {
+  .landing-compare__cards {
+    display: flex;
+  }
+  .landing-compare__scroll {
+    display: none;
+  }
+  .premium-comparacao--compact .landing-compare__card {
+    padding: 12px 14px;
+  }
+  .premium-comparacao--compact .landing-compare__card-feature {
+    font-size: 13px;
+    margin-bottom: 10px;
+  }
+  .premium-comparacao--compact .landing-compare__card-value {
+    font-size: 11px;
+  }
+}
+
+@media (min-width: 640px) {
+  .landing-compare__cards {
+    display: none !important;
+  }
+  .landing-compare__scroll {
+    display: block;
+  }
 }
 
 /* Landing - tabela simples Grátis vs Premium */
