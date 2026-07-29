@@ -1804,6 +1804,268 @@ h1.sidus-page-title {
 .landing-testimonials--paywall .landing-review-form {
   margin-top: 0;
 }
+
+/* Carrossel lento de comentários */
+.landing-reviews-carousel {
+  margin-bottom: 14px;
+}
+.landing-reviews-carousel__viewport {
+  overflow: hidden;
+  mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+}
+.landing-reviews-carousel__track {
+  display: flex;
+  gap: 12px;
+  width: max-content;
+  animation: landingReviewsCarousel 58s linear infinite;
+}
+.landing-reviews-carousel__card {
+  flex: 0 0 min(280px, 82vw);
+  margin: 0;
+}
+@keyframes landingReviewsCarousel {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .landing-reviews-carousel__track {
+    animation: none;
+    flex-wrap: wrap;
+    width: 100%;
+  }
+  .landing-reviews-carousel__card {
+    flex: 1 1 min(240px, 100%);
+  }
+}
+
+/* Convite login/registo destacado */
+.landing-auth-gateway {
+  max-width: min(640px, 100%);
+  margin: 0 auto 16px;
+  padding: 18px 16px;
+  border-radius: 16px;
+  text-align: center;
+  border: 1px solid rgba(223, 183, 108, 0.38);
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(223, 183, 108, 0.14), transparent 62%),
+    rgba(255, 255, 255, 0.04);
+}
+.landing-auth-gateway__magic {
+  margin: 0 0 14px;
+  font-family: var(--heading);
+  font-size: clamp(15px, 4.2vw, 18px);
+  font-weight: 600;
+  line-height: 1.45;
+  color: #fff;
+}
+.landing-auth-gateway__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.landing-auth-gateway__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 14px 16px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.landing-auth-gateway__btn:active {
+  transform: scale(0.98);
+}
+.landing-auth-gateway__btn--primary {
+  border: none;
+  color: #0B071E;
+  background: linear-gradient(135deg, #FFF8E7 0%, #DFB76C 55%, #B8944F 100%);
+  box-shadow: 0 8px 28px rgba(223, 183, 108, 0.35);
+}
+.landing-auth-gateway__btn--secondary {
+  border: 1px solid rgba(223, 183, 108, 0.45);
+  color: #DFB76C;
+  background: rgba(255, 255, 255, 0.05);
+}
+.landing-auth-gateway__hint {
+  margin: 12px 0 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.55);
+}
+.landing-auth-grid--prominent {
+  margin-bottom: 18px;
+  padding: 14px;
+  border-radius: 18px;
+  border: 1px solid rgba(223, 183, 108, 0.28);
+  background: rgba(0, 0, 0, 0.18);
+}
+.landing-auth-column--primary {
+  min-width: 0;
+}
+.landing-auth-invite-mobile,
+.landing-auth-panel-magic {
+  margin: 0 0 14px;
+  text-align: center;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(196, 181, 253, 0.95);
+  line-height: 1.45;
+}
+@media (max-width: 639px) {
+  .landing-auth-column--primary { order: 1; }
+  .landing-birth-wrap { order: 2; }
+}
+@media (min-width: 640px) {
+  .landing-birth-wrap { order: 1; }
+  .landing-auth-column--primary { order: 2; }
+  .landing-auth-gateway__actions {
+    flex-direction: row;
+  }
+  .landing-auth-gateway__btn {
+    flex: 1;
+  }
+}
+
+/* Mapa Premium na landing */
+.landing-mapa-premium {
+  max-width: min(640px, 100%);
+  margin: 0 auto 18px;
+  padding: 18px 16px;
+  border-radius: 16px;
+  border: 1px solid rgba(223, 183, 108, 0.25);
+}
+.landing-mapa-premium__eyebrow {
+  margin: 0 0 6px;
+  text-align: center;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(196, 181, 253, 0.9);
+}
+.landing-mapa-premium__title {
+  margin: 0 0 8px;
+  text-align: center;
+  font-family: var(--heading);
+  font-size: clamp(16px, 4.2vw, 19px);
+  font-weight: 700;
+  color: #DFB76C;
+}
+.landing-mapa-premium__lead {
+  margin: 0 0 14px;
+  text-align: center;
+  font-size: 12px;
+  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.68);
+}
+.landing-mapa-premium__mandala-wrap {
+  text-align: center;
+  margin-bottom: 14px;
+}
+.landing-mapa-premium__mandala {
+  width: min(200px, 56vw);
+  height: auto;
+  margin: 0 auto;
+  display: block;
+  filter: drop-shadow(0 8px 24px rgba(223, 183, 108, 0.2));
+}
+.landing-mapa-premium__mandala-caption {
+  margin: 10px auto 0;
+  max-width: 420px;
+  font-size: 11px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.55);
+}
+.landing-mapa-premium__sections {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+.landing-mapa-premium__section {
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(223, 183, 108, 0.15);
+  background: rgba(255, 255, 255, 0.03);
+}
+.landing-mapa-premium__section-title {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #DFB76C;
+  margin-bottom: 4px;
+}
+.landing-mapa-premium__section-desc {
+  display: block;
+  font-size: 11px;
+  line-height: 1.45;
+  color: rgba(255, 255, 255, 0.62);
+}
+
+/* Paywall mapa: mandala + secções */
+.mapa-paywall-sections {
+  margin-top: 14px;
+  text-align: left;
+}
+.mapa-paywall-mandala {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(223, 183, 108, 0.25);
+  background: rgba(223, 183, 108, 0.06);
+}
+.mapa-paywall-mandala__img {
+  width: 72px;
+  height: 72px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+.mapa-paywall-mandala__text {
+  min-width: 0;
+}
+.mapa-paywall-mandala__desc {
+  margin: 4px 0 0;
+  font-size: 11px;
+  line-height: 1.45;
+  color: rgba(255, 255, 255, 0.62);
+}
+.mapa-paywall-section-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: #DFB76C;
+}
+.mapa-paywall-sections__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.mapa-paywall-sections__item {
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(223, 183, 108, 0.12);
+}
 .landing-testimonials-grid {
   display: grid;
   grid-template-columns: minmax(200px, 280px) 1fr;

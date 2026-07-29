@@ -178,6 +178,34 @@ const GAP_BLOCK_ES = {
         p4Desc: 'Un pago único para todas las herramientas. Sin renovación mensual como en la mayoría de apps de astrología.',
         footnote: 'Sidusastro: astrología seria, accesible y hecha para quien quiere ir más allá del horóscopo del periódico.',
       },
+      authGateway: {
+        ariaLabel: 'Entrar o crear cuenta en Sidus',
+        magic: 'Las estrellas ya conocen tu momento. Revela tu carta.',
+        register: 'Crear cuenta gratis',
+        login: 'Ya tengo cuenta · Entrar',
+        hint: 'Carta natal gratis en minutos. Sin tarjeta.',
+        panelLead: 'Tu portal cósmico está aquí',
+      },
+    },
+  },
+  landing: {
+    mapaPremium: {
+      ariaLabel: 'Carta natal Premium Sidus',
+      eyebrow: 'Carta Natal Completa',
+      title: 'Qué incluye tu carta Premium',
+      lead: 'Mandala personalizada y lectura profesional calculada para tu hora y lugar exactos de nacimiento.',
+      mandalaCaption: 'Rueda natal con casas Placidus, planetas y aspectos. Única como tu firma cósmica.',
+    },
+  },
+  mapa: {
+    mandalaSubtitleShort: 'Rueda natal calculada para tu momento exacto. Planetas, casas Placidus, aspectos y ángulos con rigor profesional.',
+    premiumSectionDesc: {
+      mandalaTitle: 'Tu rueda natal completa, generada en tiempo real.',
+      interpTitle: 'Lectura por áreas de vida y síntesis evolutiva.',
+      positions: '10 planetas en las 12 casas Placidus.',
+      aspects: 'Trígonos, cuadraturas, conjunciones y más.',
+      lifeSpheres: 'Amor, carrera y espiritualidad ligados a tu cielo.',
+      export: 'PDF profesional y envío por correo.',
     },
   },
   common: {
@@ -344,6 +372,34 @@ const GAP_BLOCK_FR = {
         p4Desc: 'Un paiement unique pour tous les outils. Pas de renouvellement mensuel comme sur la plupart des apps d\'astrologie.',
         footnote: 'Sidusastro : astrologie sérieuse, accessible et faite pour ceux qui veulent aller au-delà de l\'horoscope du journal.',
       },
+      authGateway: {
+        ariaLabel: 'Se connecter ou créer un compte Sidus',
+        magic: 'Les étoiles connaissent déjà votre moment. Révélez votre thème.',
+        register: 'Créer un compte gratuit',
+        login: 'J\'ai déjà un compte · Connexion',
+        hint: 'Thème natal gratuit en quelques minutes. Sans carte.',
+        panelLead: 'Votre portail cosmique est ici',
+      },
+    },
+  },
+  landing: {
+    mapaPremium: {
+      ariaLabel: 'Thème natal Premium Sidus',
+      eyebrow: 'Thème Natal Complet',
+      title: 'Ce que comprend votre thème Premium',
+      lead: 'Mandala personnalisée et lecture professionnelle calculée pour votre heure et lieu exacts de naissance.',
+      mandalaCaption: 'Roue natale avec maisons Placidus, planètes et aspects. Unique comme votre signature cosmique.',
+    },
+  },
+  mapa: {
+    mandalaSubtitleShort: 'Roue natale calculée pour votre moment exact. Planètes, maisons Placidus, aspects et angles avec rigueur professionnelle.',
+    premiumSectionDesc: {
+      mandalaTitle: 'Votre roue natale complète, générée en temps réel.',
+      interpTitle: 'Lecture par domaines de vie et synthèse évolutive.',
+      positions: '10 planètes dans les 12 maisons Placidus.',
+      aspects: 'Trigones, carrés, conjonctions et plus.',
+      lifeSpheres: 'Amour, carrière et spiritualité liés à votre ciel.',
+      export: 'PDF professionnel et envoi par e-mail.',
     },
   },
   common: {
@@ -510,6 +566,34 @@ const GAP_BLOCK_DE = {
         p4Desc: 'Eine Einmalzahlung für alle Tools. Keine monatliche Verlängerung wie bei den meisten Astrologie-Apps.',
         footnote: 'Sidusastro: seriöse Astrologie, zugänglich und gemacht für alle, die mehr wollen als ein Zeitungshoroskop.',
       },
+      authGateway: {
+        ariaLabel: 'Anmelden oder Sidus-Konto erstellen',
+        magic: 'Die Sterne kennen Ihren Moment bereits. Enthüllen Sie Ihr Horoskop.',
+        register: 'Kostenloses Konto erstellen',
+        login: 'Ich habe ein Konto · Anmelden',
+        hint: 'Kostenloses Geburtshoroskop in Minuten. Keine Karte nötig.',
+        panelLead: 'Ihr kosmisches Portal ist hier',
+      },
+    },
+  },
+  landing: {
+    mapaPremium: {
+      ariaLabel: 'Sidus Premium Geburtshoroskop',
+      eyebrow: 'Vollständiges Geburtshoroskop',
+      title: 'Was Ihr Premium-Horoskop enthält',
+      lead: 'Personalisierte Mandala und professionelle Deutung für Ihre exakte Geburtszeit und Ihren Geburtsort.',
+      mandalaCaption: 'Geburtshoroskop-Rad mit Placidus-Häusern, Planeten und Aspekten. Einzigartig wie Ihre kosmische Signatur.',
+    },
+  },
+  mapa: {
+    mandalaSubtitleShort: 'Geburtshoroskop-Rad für Ihren exakten Moment. Planeten, Placidus-Häuser, Aspekte und Winkel mit professioneller Genauigkeit.',
+    premiumSectionDesc: {
+      mandalaTitle: 'Ihr vollständiges Horoskop-Rad, in Echtzeit generiert.',
+      interpTitle: 'Deutung nach Lebensbereichen und evolutionärer Synthese.',
+      positions: '10 Planeten in 12 Placidus-Häusern.',
+      aspects: 'Trigon, Quadrate, Konjunktionen und mehr.',
+      lifeSpheres: 'Liebe, Karriere und Spiritualität verbunden mit Ihrem Himmel.',
+      export: 'Professionelles PDF und Versand per E-Mail.',
     },
   },
   common: {
@@ -676,6 +760,34 @@ const GAP_BLOCK_IT = {
         p4Desc: 'Un pagamento unico per tutti gli strumenti. Nessun rinnovo mensile come nella maggior parte delle app di astrologia.',
         footnote: 'Sidusastro: astrologia seria, accessibile e fatta per chi vuole andare oltre l\'oroscopo del giornale.',
       },
+      authGateway: {
+        ariaLabel: 'Accedi o crea un account Sidus',
+        magic: 'Le stelle conoscono già il tuo momento. Rivela la tua carta.',
+        register: 'Crea account gratuito',
+        login: 'Ho già un account · Accedi',
+        hint: 'Carta natale gratis in pochi minuti. Senza carta.',
+        panelLead: 'Il tuo portale cosmico è qui',
+      },
+    },
+  },
+  landing: {
+    mapaPremium: {
+      ariaLabel: 'Carta natale Premium Sidus',
+      eyebrow: 'Carta Natale Completa',
+      title: 'Cosa include la tua carta Premium',
+      lead: 'Mandala personalizzata e lettura professionale calcolata per la tua ora e luogo esatti di nascita.',
+      mandalaCaption: 'Ruota natale con case Placidus, pianeti e aspetti. Unica come la tua firma cosmica.',
+    },
+  },
+  mapa: {
+    mandalaSubtitleShort: 'Ruota natale calcolata per il tuo momento esatto. Pianeti, case Placidus, aspetti e angoli con rigore professionale.',
+    premiumSectionDesc: {
+      mandalaTitle: 'La tua ruota natale completa, generata in tempo reale.',
+      interpTitle: 'Lettura per aree di vita e sintesi evolutiva.',
+      positions: '10 pianeti nelle 12 case Placidus.',
+      aspects: 'Trigoni, quadrature, congiunzioni e altro.',
+      lifeSpheres: 'Amore, carriera e spiritualità legati al tuo cielo.',
+      export: 'PDF professionale e invio via email.',
     },
   },
   common: {

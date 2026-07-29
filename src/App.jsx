@@ -48,6 +48,8 @@ import { LandingCosmicBackground } from './components/LandingCosmicBackground.js
 import { LandingBirthPortal } from './components/LandingBirthPortal.jsx'
 import { LandingConversionHead } from './components/LandingConversionHead.jsx'
 import { LandingWhySidus } from './components/LandingWhySidus.jsx'
+import { LandingAuthGateway } from './components/LandingAuthGateway.jsx'
+import { LandingMapaPremium } from './components/LandingMapaPremium.jsx'
 import { LandingTopBar } from './components/LandingTopBar.jsx'
 import { SidusLogo } from './components/SidusLogo.jsx'
 import { SidusConstellationMark } from './components/SidusConstellationMark.jsx'
@@ -99,7 +101,7 @@ import { MobileBottomNav } from './components/MobileBottomNav.jsx'
 import { HomeParaTiHoje } from './components/HomeParaTiHoje.jsx'
 import { LandingStickyCta } from './components/LandingStickyCta.jsx'
 import { LandingSimplePremium } from './components/LandingSimplePremium.jsx'
-import { LandingReviewsTicker } from './components/LandingReviewsTicker.jsx'
+import { MapaPaywallSections } from './components/MapaPaywallSections.jsx'
 import { FerramentasEmptyState } from './components/FerramentasEmptyState.jsx'
 
 const EcraTarotLazy = lazy(() => import('./components/Tarot.jsx').then((m) => ({ default: m.EcraTarot })))
@@ -1436,13 +1438,23 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
     })
   }, [])
 
+  const scrollParaLogin = useCallback(() => {
+    onMudar('login')
+    scrollParaAuth()
+  }, [onMudar, scrollParaAuth])
+
+  const scrollParaRegister = useCallback(() => {
+    onMudar('register')
+    scrollParaAuth()
+  }, [onMudar, scrollParaAuth])
+
   return (
     <div className={`landing-auth-layout${isDesktop ? ' landing-auth-layout--desktop' : ' landing-auth-layout--mobile'}`} translate="yes">
       <BannerBrasil />
       <LandingStickyCta targetRef={conversionZoneRef} onCta={scrollParaAuth} />
       {isDesktop ? (
         <div className="landing-desktop-top-stack">
-          <LandingTopBar onCta={scrollParaAuth} />
+          <LandingTopBar onCta={scrollParaRegister} onLogin={scrollParaLogin} />
           <div className="landing-sky-desktop-wrap landing-sky-desktop-wrap--compact">
             <LandingSkyLive compact />
           </div>
@@ -1466,15 +1478,11 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
         aria-label={t('auth.portal.conversionAria')}
       >
         <LandingConversionHead />
-        <LandingWhySidus />
-        <LandingSimplePremium onCta={scrollParaAuth} />
-        <LandingReviews variant="paywall" />
-        <div className="landing-auth-grid">
-        <LandingBirthPortal isDesktop={isDesktop} onSaved={scrollParaAuth} onScrollToLogin={scrollParaAuth} />
-
-        <div className="landing-auth-column">
+        <LandingAuthGateway onLogin={scrollParaLogin} onRegister={scrollParaRegister} />
+        <div className="landing-auth-grid landing-auth-grid--prominent">
+        <div className="landing-auth-column landing-auth-column--primary">
           {!isDesktop && (
-            <p className="landing-auth-divider-mobile">{t('auth.portal.authDivider')}</p>
+            <p className="landing-auth-invite-mobile">{t('auth.portal.authGateway.panelLead')}</p>
           )}
 
           <div
@@ -1488,11 +1496,8 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
             }}
           >
             {isDesktop && (
-              <p className="landing-auth-divider-desktop" style={{
-                margin: '0 0 18px', fontSize: 11, fontWeight: 700, letterSpacing: '0.1em',
-                textTransform: 'uppercase', color: CORES.dourado, textAlign: 'center',
-              }}>
-                {t('auth.portal.authDivider')}
+              <p className="landing-auth-divider-desktop landing-auth-panel-magic">
+                {t('auth.portal.authGateway.panelLead')}
               </p>
             )}
         {!firebaseOk && (
@@ -1699,7 +1704,14 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
         )}
           </div>
         </div>
+        <div className="landing-birth-wrap">
+          <LandingBirthPortal isDesktop={isDesktop} onSaved={scrollParaAuth} onScrollToLogin={scrollParaLogin} />
+        </div>
       </div>
+        <LandingWhySidus />
+        <LandingMapaPremium />
+        <LandingSimplePremium onCta={scrollParaRegister} />
+        <LandingReviews variant="paywall" />
       </section>
       <LandingPdfShowcase />
       <LandingGuides />
@@ -2726,11 +2738,7 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
                   : t('mapa.premiumOption', { price: precoVipLabel })}
               </button>
               <p className="mapa-paywall-desc">{t('mapa.fullDesc')}</p>
-              <div className="mapa-paywall-pills">
-                {['☀ Essência', '☿♀♂ Pessoais', '♃♄ Karma', '⊕ MC', '🌙 Fases Lua', '📄 PDF'].map((item) => (
-                  <span key={item} className="mapa-paywall-pill">{item}</span>
-                ))}
-              </div>
+              <MapaPaywallSections />
             </div>
           </div>
 

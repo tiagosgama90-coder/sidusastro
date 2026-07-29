@@ -87,6 +87,14 @@ export default {
       conversionTitleHighlight: 'destino cósmico',
       conversionLead: 'Entra no teu universo pessoal e descobre o que o teu mapa astral revela. Explora a astrologia, a numerologia e o tarot através de ferramentas de alta precisão desenhadas para guiar os teus próximos passos.',
       conversionLeadHighlight: 'mapa astral',
+      authGateway: {
+        ariaLabel: 'Entrar ou criar conta Sidus',
+        magic: 'As estrelas já conhecem o teu momento. Revela o teu mapa.',
+        register: 'Criar conta grátis',
+        login: 'Já tenho conta · Entrar',
+        hint: 'Mapa astral grátis em minutos. Sem cartão.',
+        panelLead: 'O teu portal cósmico está aqui',
+      },
       whySidus: {
         ariaLabel: 'Porquê escolher o Sidusastro',
         eyebrow: 'O que nos distingue',
@@ -333,6 +341,13 @@ export default {
     stickyCta: 'Criar conta e desbloquear — {price}',
     stickyCtaAria: 'Criar conta e desbloquear o Premium',
     reviewsTickerAria: 'Comentários de utilizadores Sidus',
+    mapaPremium: {
+      ariaLabel: 'Mapa astral Premium Sidus',
+      eyebrow: 'Mapa Astral Completo',
+      title: 'O que inclui o teu mapa Premium',
+      lead: 'Mandala personalizada e leitura profissional calculada para a tua hora e local exactos de nascimento.',
+      mandalaCaption: 'Roda natal com casas Placidus, planetas e aspectos. Única como a tua assinatura cósmica.',
+    },
     simplePremium: {
       ariaLabel: 'Comparação Grátis vs Premium',
       eyebrow: 'Planos Sidus',
@@ -394,7 +409,16 @@ export default {
     freeBlurTeaser: 'Interpretação profissional, esferas de vida, exportação PDF e muito mais…',
     mandalaTitle: 'Mandala Astrológica',
     mandalaSubtitle: 'Roda calculada com Swiss Ephemeris para o teu momento de nascimento - planetas, casas Placidus, aspectos e ângulos com precisão profissional.',
+    mandalaSubtitleShort: 'Roda natal calculada para o teu momento exacto. Planetas, casas Placidus, aspectos e ângulos com rigor profissional.',
     mandalaUnavailable: 'A mandala será gerada assim que as posições planetárias estiverem disponíveis.',
+    premiumSectionDesc: {
+      mandalaTitle: 'A tua roda natal completa, gerada em tempo real.',
+      interpTitle: 'Leitura por áreas da vida e síntese evolutiva.',
+      positions: '10 planetas nas 12 casas Placidus.',
+      aspects: 'Trígonos, quadraturas, conjunções e mais.',
+      lifeSpheres: 'Amor, carreira e espiritualidade ligados ao teu céu.',
+      export: 'PDF profissional e envio por email.',
+    },
   },
   cartaoDia: {
     title: 'Carta do Dia · {date}',

@@ -87,6 +87,14 @@ export default {
       conversionTitleHighlight: 'cosmic destiny',
       conversionLead: 'Enter your personal universe and discover what your birth chart reveals. Explore astrology, numerology and tarot through high-precision tools designed to guide your next steps.',
       conversionLeadHighlight: 'birth chart',
+      authGateway: {
+        ariaLabel: 'Sign in or create a Sidus account',
+        magic: 'The stars already know your moment. Reveal your chart.',
+        register: 'Create free account',
+        login: 'I have an account · Sign in',
+        hint: 'Free birth chart in minutes. No card required.',
+        panelLead: 'Your cosmic portal is right here',
+      },
       whySidus: {
         ariaLabel: 'Why choose Sidusastro',
         eyebrow: 'What sets us apart',
@@ -333,6 +341,13 @@ export default {
     stickyCta: 'Create account and unlock — {price}',
     stickyCtaAria: 'Create account and unlock Premium',
     reviewsTickerAria: 'Sidus user reviews',
+    mapaPremium: {
+      ariaLabel: 'Sidus Premium natal chart',
+      eyebrow: 'Complete Natal Chart',
+      title: 'What your Premium chart includes',
+      lead: 'Personalised mandala and professional reading calculated for your exact birth time and place.',
+      mandalaCaption: 'Natal wheel with Placidus houses, planets and aspects. Unique as your cosmic signature.',
+    },
     simplePremium: {
       ariaLabel: 'Free vs Premium comparison',
       eyebrow: 'Sidus plans',
@@ -394,7 +409,16 @@ export default {
     freeBlurTeaser: 'Professional interpretation, life spheres, PDF export and much more…',
     mandalaTitle: 'Astrological Mandala',
     mandalaSubtitle: 'Your unique celestial wheel - exact positions, Placidus houses and aspects calculated for your birth moment.',
+    mandalaSubtitleShort: 'Natal wheel calculated for your exact birth moment. Planets, Placidus houses, aspects and angles with professional rigour.',
     mandalaUnavailable: 'The mandala will appear once planetary positions are available.',
+    premiumSectionDesc: {
+      mandalaTitle: 'Your complete natal wheel, generated in real time.',
+      interpTitle: 'Reading by life areas and evolutionary synthesis.',
+      positions: '10 planets in 12 Placidus houses.',
+      aspects: 'Trines, squares, conjunctions and more.',
+      lifeSpheres: 'Love, career and spirituality linked to your sky.',
+      export: 'Professional PDF and email delivery.',
+    },
   },
   cartaoDia: {
     title: 'Card of the Day · {date}',
