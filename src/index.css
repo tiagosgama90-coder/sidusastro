@@ -3709,6 +3709,137 @@ h1.sidus-page-title {
   border-color: rgba(223, 183, 108, 0.65);
 }
 
+/* Landing - tabela simples Grátis vs Premium */
+.landing-simple-premium {
+  max-width: 520px;
+  margin: 0 auto 20px;
+  padding: 18px 16px;
+  border-radius: 16px;
+  border: 1px solid rgba(223, 183, 108, 0.28);
+}
+.landing-simple-premium__title {
+  margin: 0 0 14px;
+  text-align: center;
+  font-size: 15px;
+  font-weight: 700;
+  color: #DFB76C;
+  letter-spacing: 0.04em;
+}
+.landing-simple-premium__table-wrap {
+  overflow-x: auto;
+  margin-bottom: 14px;
+}
+.landing-simple-premium__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+.landing-simple-premium__table th,
+.landing-simple-premium__table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid rgba(223, 183, 108, 0.15);
+  text-align: left;
+  vertical-align: top;
+}
+.landing-simple-premium__table th {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: rgba(255, 255, 255, 0.55);
+}
+.landing-simple-premium__table th:last-child,
+.landing-simple-premium__table td:last-child {
+  color: #DFB76C;
+  font-weight: 600;
+}
+.landing-simple-premium__table tbody tr:last-child td {
+  border-bottom: none;
+}
+.landing-simple-premium__cta {
+  width: 100%;
+  padding: 14px 16px;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #DFB76C, #B8944F);
+  color: #0B071E;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 6px 22px rgba(223, 183, 108, 0.28);
+}
+.landing-simple-premium__note {
+  margin: 10px 0 0;
+  text-align: center;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+/* Landing - ticker de comentários no rodapé */
+.landing-reviews-ticker {
+  margin-top: 8px;
+  padding: 12px 0 max(14px, env(safe-area-inset-bottom, 14px));
+  border-top: 1px solid rgba(223, 183, 108, 0.12);
+  background: linear-gradient(180deg, transparent, rgba(11, 7, 30, 0.65));
+}
+.landing-reviews-ticker__viewport {
+  overflow: hidden;
+  mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+}
+.landing-reviews-ticker__track {
+  display: flex;
+  align-items: stretch;
+  gap: 28px;
+  width: max-content;
+  animation: landingReviewsTicker 52s linear infinite;
+  will-change: transform;
+}
+.landing-reviews-ticker__item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 240px;
+  max-width: 300px;
+  margin: 0;
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(223, 183, 108, 0.2);
+  flex-shrink: 0;
+}
+.landing-reviews-ticker__stars {
+  display: flex;
+  gap: 2px;
+}
+.landing-reviews-ticker__quote {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.88);
+  font-style: italic;
+}
+.landing-reviews-ticker__author {
+  font-size: 10px;
+  font-weight: 600;
+  color: #DFB76C;
+  letter-spacing: 0.03em;
+}
+
+@keyframes landingReviewsTicker {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .landing-reviews-ticker__track {
+    animation: none;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%;
+    gap: 12px;
+  }
+}
+
 /* Home - rádio do céu ao vivo (Premium) */
 .home-sky-radio {
   margin-bottom: 14px;

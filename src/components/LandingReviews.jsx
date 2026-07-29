@@ -1,7 +1,8 @@
-import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useState, useCallback, useMemo } from 'react'
 import { Star, Send, Loader2 } from 'lucide-react'
 import { RecaptchaCheckbox } from './Recaptcha.jsx'
 import { useLanguage } from '../lib/i18n/LanguageContext.jsx'
+import { LANDING_SEED_REVIEWS } from '../lib/landingSeedReviews.js'
 
 export function LandingReviews() {
   const { t } = useLanguage()
@@ -60,6 +61,11 @@ export function LandingReviews() {
     }
   }, [recaptchaOk, enviando, nome, email, texto, honeypot, t])
 
+  const reviewsVisiveis = useMemo(
+    () => (reviews.length > 0 ? reviews : LANDING_SEED_REVIEWS),
+    [reviews],
+  )
+
   return (
     <section className="landing-testimonials" aria-label={t('reviews.ariaLabel')}>
       <h2 className="landing-testimonials-title">{t('reviews.title')}</h2>
@@ -67,10 +73,8 @@ export function LandingReviews() {
         <div className="landing-testimonials-quotes landing-testimonials-quotes--full">
           {carregando ? (
             <p className="landing-review-empty">{t('reviews.loading')}</p>
-          ) : reviews.length === 0 ? (
-            <p className="landing-review-empty">{t('reviews.empty')}</p>
           ) : (
-            reviews.map((r) => (
+            reviewsVisiveis.map((r) => (
               <blockquote key={r.id} className="landing-testimonial-card landing-glass">
                 <div className="landing-review-stars" aria-hidden="true">
                   {Array.from({ length: r.rating || 5 }).map((_, i) => (
