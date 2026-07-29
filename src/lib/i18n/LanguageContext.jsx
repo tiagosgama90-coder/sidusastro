@@ -9,6 +9,7 @@ import {
   TAROT_TYPES_PT, TAROT_TYPES_EN, TAROT_TYPES_ES,
   TAROT_TYPES_IT, TAROT_TYPES_FR, TAROT_TYPES_DE,
 } from './tarotTypesLocales.js'
+import { PREMIUM_LOCALE_BLOCKS, deepMergeLocale } from './premiumLocaleBlocks.js'
 import {
   translateSigno, translatePlaneta, translateElemento,
   translateModalidade, translateAspecto, localizeSignoObj,
@@ -32,6 +33,10 @@ mergeTarotTypes(es, TAROT_TYPES_ES)
 mergeTarotTypes(it, TAROT_TYPES_IT)
 mergeTarotTypes(fr, TAROT_TYPES_FR)
 mergeTarotTypes(de, TAROT_TYPES_DE)
+
+for (const lang of ['es', 'fr', 'de', 'it']) {
+  deepMergeLocale(LOCALES[lang], PREMIUM_LOCALE_BLOCKS[lang])
+}
 
 const LanguageContext = createContext(null)
 

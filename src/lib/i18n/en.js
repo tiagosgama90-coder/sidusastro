@@ -990,6 +990,7 @@ export default {
   premium: {
     lifetimeNote: 'One-time payment · lifetime access, no renewals',
     pricingLifetime: 'One-time payment · lifetime access to all tools',
+    pricingDualLine: '{precoBrl} with PIX · {precoEur} card/PayPal',
     tarotUsed: 'Tarot: {used} of {max} free readings · {left} left',
     oracleUsed: 'Oracle: {used} of {max} free questions · {left} left',
     unlimited: 'Unlimited',

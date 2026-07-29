@@ -1022,6 +1022,7 @@ export default {
   premium: {
     lifetimeNote: 'Pagamento único · acesso vitalício sem renovações',
     pricingLifetime: 'Pagamento único · acesso vitalício a todas as ferramentas',
+    pricingDualLine: '{precoBrl} com PIX · {precoEur} cartão/PayPal',
     tarotUsed: 'Tarot: {used} de {max} leituras grátis · restam {left}',
     oracleUsed: 'Oráculo: {used} de {max} perguntas grátis · restam {left}',
     unlimited: 'Ilimitado',
