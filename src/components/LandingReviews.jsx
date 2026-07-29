@@ -66,6 +66,11 @@ export function LandingReviews({ variant = 'default' }) {
     [reviews],
   )
 
+  const carouselItems = useMemo(
+    () => [...reviewsVisiveis, ...reviewsVisiveis],
+    [reviewsVisiveis],
+  )
+
   const sectionClass = [
     'landing-testimonials',
     variant === 'paywall' ? 'landing-testimonials--paywall' : '',
@@ -76,24 +81,31 @@ export function LandingReviews({ variant = 'default' }) {
       <h2 className="landing-testimonials-title">{t('reviews.title')}</h2>
       <p className="landing-testimonials-subtitle">{t('reviews.subtitle')}</p>
 
-      <div className="landing-reviews-cards">
+      <div className="landing-reviews-carousel" aria-live="polite">
         {carregando ? (
           <p className="landing-review-empty">{t('reviews.loading')}</p>
         ) : (
-          reviewsVisiveis.map((r) => (
-            <blockquote key={r.id} className="landing-testimonial-card landing-glass">
-              <div className="landing-review-stars" aria-hidden="true">
-                {Array.from({ length: r.rating || 5 }).map((_, i) => (
-                  <Star key={i} size={12} fill="#DFB76C" color="#DFB76C" />
-                ))}
-              </div>
-              <p className="landing-testimonial-text">&ldquo;{r.text}&rdquo;</p>
-              <footer className="landing-testimonial-author">
-                <span className="landing-testimonial-name">{r.name}</span>
-                {r.meta && <span className="landing-testimonial-meta">{r.meta}</span>}
-              </footer>
-            </blockquote>
-          ))
+          <div className="landing-reviews-carousel__viewport">
+            <div className="landing-reviews-carousel__track">
+              {carouselItems.map((r, i) => (
+                <blockquote
+                  key={`${r.id}-${i}`}
+                  className="landing-testimonial-card landing-glass landing-reviews-carousel__card"
+                >
+                  <div className="landing-review-stars" aria-hidden="true">
+                    {Array.from({ length: r.rating || 5 }).map((_, j) => (
+                      <Star key={j} size={12} fill="#DFB76C" color="#DFB76C" />
+                    ))}
+                  </div>
+                  <p className="landing-testimonial-text">&ldquo;{r.text}&rdquo;</p>
+                  <footer className="landing-testimonial-author">
+                    <span className="landing-testimonial-name">{r.name}</span>
+                    {r.meta && <span className="landing-testimonial-meta">{r.meta}</span>}
+                  </footer>
+                </blockquote>
+              ))}
+            </div>
+          </div>
         )}
       </div>
 
