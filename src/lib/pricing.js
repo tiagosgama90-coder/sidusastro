@@ -10,6 +10,8 @@ export const STRIPE_MIN_BRL = 0.5
 
 /** Premium Brasil via PIX - cobrado em reais. */
 export const PRECO_PREMIUM_BR_PIX_BRL = 27
+/** Alias para copy de vitrine (R$ 27). */
+export const PRECO_PREMIUM_BR_REAIS = PRECO_PREMIUM_BR_PIX_BRL
 /** Leitura Tarot / pergunta Brasil via PIX. */
 export const PRECO_TAROT_BR_PIX_BRL = 4.9
 

@@ -28,6 +28,7 @@ export function VipPaywallBody({
   subtitleKey = 'vip.subtitle',
   showHeader = true,
   compact = false,
+  showFullTable = false,
 }) {
   const { t, lang } = useLanguage()
   const beneficios = getBeneficiosVip(lang)
@@ -60,6 +61,7 @@ export function VipPaywallBody({
         tarotUsadas={leiturasTarotUsadas}
         isBrasil={isBrasil}
         compact={compact}
+        showFullTable={showFullTable}
       />
 
       <div style={{

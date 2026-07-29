@@ -3524,12 +3524,235 @@ h1.sidus-page-title {
 }
 .premium-table td { color: rgba(255, 255, 255, 0.75); }
 .premium-table-vip { color: #DFB76C !important; font-weight: 600; }
+.premium-table-row--highlight td { background: rgba(223, 183, 108, 0.06); }
 .premium-br-note {
   margin: 12px 0 0;
   font-size: 11px;
   color: #34D399;
   text-align: center;
   font-weight: 600;
+}
+
+/* Landing - vantagens Premium */
+.landing-premium-benefits {
+  max-width: min(920px, 100%);
+  margin: 0 auto 32px;
+  padding: 0 16px 8px;
+}
+.landing-premium-benefits__eyebrow {
+  margin: 0 0 8px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(196, 181, 253, 0.9);
+  text-align: center;
+}
+.landing-premium-benefits__title {
+  margin: 0 0 10px;
+  font-family: var(--heading);
+  font-size: clamp(22px, 5vw, 30px);
+  font-weight: 300;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #DFB76C;
+  text-align: center;
+  line-height: 1.25;
+}
+.landing-premium-benefits__lead {
+  margin: 0 auto 18px;
+  max-width: 640px;
+  font-size: 14px;
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.72);
+  text-align: center;
+}
+.landing-premium-benefits__price-box {
+  max-width: 420px;
+  margin: 0 auto 22px;
+  padding: 16px 18px;
+  border-radius: 14px;
+  text-align: center;
+  border: 1px solid rgba(223, 183, 108, 0.35);
+}
+.landing-premium-benefits__price-main {
+  font-size: clamp(22px, 5vw, 28px);
+  font-weight: 700;
+  color: #fff;
+}
+.landing-premium-benefits__price-note {
+  margin: 6px 0 0;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.55);
+}
+.landing-premium-benefits__price-pix {
+  margin: 8px 0 0;
+  font-size: 12px;
+  font-weight: 600;
+  color: #34D399;
+}
+.landing-premium-benefits__focus-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.landing-premium-benefits__focus-card {
+  padding: 16px;
+  border-radius: 14px;
+  border: 1px solid rgba(223, 183, 108, 0.22);
+}
+.landing-premium-benefits__focus-card--oracle {
+  border-color: rgba(52, 211, 153, 0.28);
+}
+.landing-premium-benefits__focus-card h3 {
+  margin: 10px 0 6px;
+  font-size: 15px;
+  color: #DFB76C;
+}
+.landing-premium-benefits__focus-card p {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.7);
+}
+.landing-premium-benefits__signup {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  padding: 16px;
+  border-radius: 14px;
+  margin-bottom: 20px;
+  border: 1px solid rgba(52, 211, 153, 0.25);
+  background: rgba(52, 211, 153, 0.06);
+}
+.landing-premium-benefits__signup-title {
+  margin: 0 0 8px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #34D399;
+}
+.landing-premium-benefits__signup-list {
+  margin: 0;
+  padding: 0 0 0 16px;
+  font-size: 12px;
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.78);
+}
+.landing-premium-benefits__table-title {
+  margin: 0 0 12px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.55);
+  text-align: center;
+}
+.landing-premium-benefits__list {
+  margin-top: 18px;
+  padding: 16px;
+  border-radius: 14px;
+}
+.landing-premium-benefits__list-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 12px;
+  font-size: 14px;
+  color: #DFB76C;
+}
+.landing-premium-benefits__list ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.landing-premium-benefits__list li {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  margin-bottom: 10px;
+  font-size: 12px;
+  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.8);
+}
+.landing-premium-benefits__cta {
+  display: block;
+  width: 100%;
+  max-width: 420px;
+  margin: 20px auto 0;
+  padding: 14px 20px;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #DFB76C, #B8944F);
+  color: #0B071E;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.landing-premium-jump-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 14px;
+  padding: 10px 16px;
+  border-radius: 10px;
+  border: 1px solid rgba(223, 183, 108, 0.45);
+  background: rgba(223, 183, 108, 0.1);
+  color: #DFB76C;
+  font-size: 12px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+.landing-premium-jump-btn:hover {
+  background: rgba(223, 183, 108, 0.18);
+  border-color: rgba(223, 183, 108, 0.65);
+}
+
+/* Home - rádio do céu ao vivo (Premium) */
+.home-sky-radio {
+  margin-bottom: 14px;
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(52, 211, 153, 0.3);
+  background: rgba(52, 211, 153, 0.08);
+  overflow: hidden;
+}
+.home-sky-radio__header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+}
+.home-sky-radio__badge {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #34D399;
+}
+.home-sky-radio__moon {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.65);
+}
+.home-sky-radio__pulse {
+  animation: landingPulse 2s ease-in-out infinite;
+}
+.home-sky-radio__ticker {
+  overflow: hidden;
+  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+.home-sky-radio__track {
+  display: flex;
+  gap: 20px;
+  width: max-content;
+  animation: landingSkyTicker 40s linear infinite;
+}
+.home-sky-radio__item {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.75);
+  white-space: nowrap;
 }
 
 /* Reviews admin */

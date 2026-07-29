@@ -1,5 +1,6 @@
 import { useLanguage } from '../lib/i18n/LanguageContext.jsx'
 import { LandingMapaPreview } from './LandingMapaPreview.jsx'
+import { LandingPremiumJumpButton } from './LandingPremiumBenefits.jsx'
 
 export function LandingTestimonials() {
   const { t } = useLanguage()
@@ -12,6 +13,7 @@ export function LandingTestimonials() {
         <div className="landing-testimonials-visual">
           <LandingMapaPreview />
           <p className="landing-testimonials-caption">{t('auth.portal.testimonials.previewCaption')}</p>
+          <LandingPremiumJumpButton />
         </div>
         <div className="landing-testimonials-quotes">
           {items.map((n) => (

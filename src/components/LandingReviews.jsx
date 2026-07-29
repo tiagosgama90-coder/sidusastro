@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback } from 'react'
-import { Star, Send, Loader2, Check } from 'lucide-react'
-import { useLanguage } from '../lib/i18n/LanguageContext.jsx'
+import { Star, Send, Loader2 } from 'lucide-react'
 import { RecaptchaCheckbox } from './Recaptcha.jsx'
+import { useLanguage } from '../lib/i18n/LanguageContext.jsx'
 
 export function LandingReviews() {
   const { t } = useLanguage()
