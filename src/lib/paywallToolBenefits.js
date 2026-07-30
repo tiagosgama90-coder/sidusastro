@@ -37,10 +37,22 @@ export function getNumerologiaPaywallItems(t) {
   ]
 }
 
+export function getMapaPaywallItems(t) {
+  return [
+    t('mapa.paywallItem1'),
+    t('mapa.paywallItem2'),
+    t('mapa.paywallItem3'),
+    t('mapa.paywallItem4'),
+    t('mapa.paywallItem5'),
+    t('mapa.paywallItem6'),
+  ]
+}
+
 export function getPaywallToolItems(tool, t) {
   if (tool === 'sinastria') return getSinastriaPaywallItems(t)
   if (tool === 'bussola') return getBussolaPaywallItems(t)
   if (tool === 'numerologia') return getNumerologiaPaywallItems(t)
+  if (tool === 'mapa') return getMapaPaywallItems(t)
   return null
 }
 
@@ -48,5 +60,6 @@ export function getPaywallToolTitle(tool, t) {
   if (tool === 'sinastria') return t('ferramentasPremium.sinastria.paywallTitle')
   if (tool === 'bussola') return t('ferramentasPremium.bussola.paywallTitle')
   if (tool === 'numerologia') return t('ferramentasPremium.numerologia.paywallTitle')
+  if (tool === 'mapa') return t('mapa.unlockFullChart')
   return null
 }

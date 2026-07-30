@@ -14,6 +14,8 @@ import {
 import { calcularSinastriaCompleta } from '../lib/sinastriaEngine.js'
 import { montarRelatorioSinastria, montarResumoGratis, montarSecoesPremium, EIXOS } from '../lib/sinastriaInterpretacao.js'
 import { RadarAfinidades } from './RadarAfinidades.jsx'
+import { ToolInlinePaywall } from './ToolInlinePaywall.jsx'
+import { getSinastriaPaywallItems } from '../lib/paywallToolBenefits.js'
 import { CampoCidadeField } from './CampoCidadeField.jsx'
 import { pesquisarFusoHorario } from '../lib/geocoding.js'
 import { diasVidaDesdeNascimento } from '../lib/datetime.js'
@@ -316,39 +318,15 @@ function CartaoSecao({ titulo, score, texto, cor = CORES.dourado }) {
 }
 
 function UpsellSinastriaPremium({ t, onUpgrade }) {
-  const items = [
-    t('ferramentasPremium.sinastria.paywallItem1'),
-    t('ferramentasPremium.sinastria.paywallItem2'),
-    t('ferramentasPremium.sinastria.paywallItem3'),
-    t('ferramentasPremium.sinastria.paywallItem4'),
-    t('ferramentasPremium.sinastria.paywallItem5'),
-    t('ferramentasPremium.sinastria.paywallItem6'),
-    t('ferramentasPremium.sinastria.paywallItem7'),
-    t('ferramentasPremium.sinastria.paywallItem8'),
-    t('ferramentasPremium.sinastria.paywallItem9'),
-  ]
-
   return (
-    <div style={{
-      background: 'linear-gradient(135deg, rgba(139,92,246,0.12), rgba(223,183,108,0.08))',
-      border: '1px solid rgba(223,183,108,0.35)', borderRadius: 16, padding: 20, marginTop: 16, textAlign: 'center',
-    }}>
-      <div style={{ fontSize: 28, marginBottom: 8 }}>👑</div>
-      <div style={{ fontSize: 15, fontWeight: 700, color: CORES.dourado, marginBottom: 8 }}>{t('ferramentasPremium.sinastria.premiumTitle')}</div>
-      <p style={{ fontSize: 13, color: CORES.brancoSuave, lineHeight: 1.65, margin: '0 0 16px' }}>{t('ferramentasPremium.sinastria.premiumDesc')}</p>
-      <ul style={{ textAlign: 'left', fontSize: 12, color: CORES.brancoMuted, lineHeight: 1.8, margin: '0 0 16px', paddingLeft: 20 }}>
-        {items.map((item) => <li key={item}>{item}</li>)}
-      </ul>
-      {onUpgrade && (
-        <button type="button" onClick={onUpgrade} style={{
-          width: '100%', padding: '14px', borderRadius: 12, border: 'none',
-          background: 'linear-gradient(135deg,#DFB76C,#B8944F)', color: '#0B071E',
-          fontSize: 14, fontWeight: 700, cursor: 'pointer',
-        }}>
-          {t('ferramentasPremium.sinastria.premiumBtn')}
-        </button>
-      )}
-    </div>
+    <ToolInlinePaywall
+      title={t('ferramentasPremium.sinastria.premiumTitle')}
+      lead={t('ferramentasPremium.sinastria.premiumDesc')}
+      items={getSinastriaPaywallItems(t)}
+      ctaLabel={t('ferramentasPremium.sinastria.premiumBtn')}
+      onCta={onUpgrade}
+      className="sinastria-inline-paywall"
+    />
   )
 }
 
@@ -596,14 +574,14 @@ export function Sinastria({ mapaNatal, dadosUtilizador, isPremium = false, onUpg
                 )}
               </div>
 
-              <UpsellSinastriaPremium t={t} onUpgrade={onUpgrade} />
-
               <div style={{ background: 'rgba(255,255,255,0.04)', border: `1px solid ${CORES.vidroBorda}`, borderRadius: 14, padding: 18, marginBottom: 14 }}>
                 <div style={{ fontSize: 11, color: CORES.dourado, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 10 }}>{t('ferramentasPremium.sinastria.freePreview')}</div>
                 <div style={{ fontSize: 13, color: CORES.brancoSuave, lineHeight: 1.75, whiteSpace: 'pre-wrap' }}>
-                  {analise.relatorio}
+                  {renderTextoMarkdown(analise.relatorio)}
                 </div>
               </div>
+
+              <UpsellSinastriaPremium t={t} onUpgrade={onUpgrade} />
 
               <div style={{ position: 'relative', borderRadius: 14, overflow: 'hidden', marginBottom: 8 }}>
                 <div style={{ filter: 'blur(6px)', pointerEvents: 'none', userSelect: 'none', opacity: 0.55 }}>

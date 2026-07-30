@@ -2434,31 +2434,6 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
             </div>
           )}
 
-          {!mapaCompletoDesbloqueado && (
-            <div style={{
-              ...estilos.vidro,
-              padding: isDesktop ? 24 : 18,
-              marginBottom: 14,
-              background: 'linear-gradient(160deg, rgba(223,183,108,0.06) 0%, rgba(11,7,30,0.95) 40%, rgba(139,92,246,0.05) 100%)',
-              border: '1px solid rgba(223,183,108,0.22)',
-            }}>
-              <div style={{ textAlign: 'center', marginBottom: 16 }}>
-                <div style={{ fontSize: 12, color: CORES.dourado, textTransform: 'uppercase', letterSpacing: '0.12em', fontWeight: 700 }}>
-                  {t('mapa.mandalaTitle')}
-                </div>
-              </div>
-              <Suspense fallback={<RouteLoader />}>
-                <MandalaNatalLazy
-                  chartOnly
-                  mapaNatal={mapaNatal}
-                  planetas={planetasComCasa}
-                  aspectos={aspetosNatais}
-                  translateSign={ts}
-                  size={isDesktop ? 480 : 300}
-                />
-              </Suspense>
-            </div>
-          )}
         </>
       )}
 
@@ -2588,15 +2563,13 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
           <div className="mapa-paywall-inline" role="region" aria-label={t('mapa.unlockFullChart')}>
             <div className="mapa-paywall-card">
               <div className="mapa-paywall-card-pattern" aria-hidden />
-              <Crown size={28} color={CORES.dourado} style={{ marginBottom: 10, position: 'relative' }} />
-              <h2 className="mapa-paywall-title">{t('mapa.unlockFullChart')}</h2>
-              <button type="button" onClick={onUpgrade} style={{ ...estilos.botaoDourado, width: '100%', marginBottom: 14, position: 'relative' }}>
-                {isBrasil
+              <MapaPaywallSections
+                onUpgrade={onUpgrade}
+                ctaLabel={isBrasil
                   ? t('mapa.premiumOptionBr', { preco: precoVipLabel })
                   : t('mapa.premiumOption', { price: precoVipLabel })}
-              </button>
-              <p className="mapa-paywall-desc">{t('mapa.fullDesc')}</p>
-              <MapaPaywallSections />
+                showCta
+              />
             </div>
           </div>
 
@@ -3357,22 +3330,17 @@ function Navbar({ passo, setPasso, isDesktop, dados, fotoPerfil }) {
     setMenuAberto(false)
   }
 
-  const ferramentasNav = getFerramentas(lang).map((f) => ({
-    id: f.id,
-    label: f.nome,
-    icon: f.icon,
-    glow: f.premium ? CORES.dourado : '#93C5FD',
-  }))
+  const ferramentasLista = getFerramentas(lang)
 
   const itens = [
     { id: 'home',        label: t('nav.home'),    icon: Home,          glow: '#DFB76C' },
     { id: 'mapa',        label: t('nav.mapa'),    icon: Map,           glow: '#C4B5FD' },
     { id: 'tarot',       label: t('nav.tarot'),   icon: Layers,        glow: '#F472B6' },
-    ...ferramentasNav,
+    { id: 'ferramentas', label: t('nav.ferramentas'), icon: Grid3x3,   glow: '#93C5FD' },
     { id: 'chat',        label: t('nav.oraculo'), icon: MessageCircle, glow: '#34D399' },
   ]
 
-  const passosFerramenta = new Set(ferramentasNav.map((f) => f.id))
+  const passosFerramenta = new Set(ferramentasLista.map((f) => f.id))
 
   const navegar = (id) => {
     setPasso(id)
@@ -3434,7 +3402,7 @@ function Navbar({ passo, setPasso, isDesktop, dados, fotoPerfil }) {
                   <button
                     key={item.id}
                     type="button"
-                    className={`desktop-nav-item${passosFerramenta.has(item.id) ? ' desktop-nav-item--tool' : ''}`}
+                    className={`desktop-nav-item${item.id === 'ferramentas' ? ' desktop-nav-item--tool' : ''}`}
                     onClick={() => navegar(item.id)}
                     onMouseEnter={() => setHover(item.id)}
                     onMouseLeave={() => setHover(null)}
