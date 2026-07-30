@@ -176,7 +176,8 @@ const GAP_BLOCK_ES = {
         p3Desc: 'Comparación transparente Gratis vs Premium. Sabes qué desbloqueas antes de pagar — sin suscripciones ocultas ni letra pequeña.',
         p4Title: 'Premium de por vida',
         p4Desc: 'Un pago único para todas las herramientas. Sin renovación mensual como en la mayoría de apps de astrología.',
-        sonhosHighlight: 'Interpretación de Sueños: descifra símbolos nocturnos y conéctalos con tu carta natal — incluido en todos los planes, sin límite.',
+        p5Title: 'Interpretación de Sueños',
+        p5Desc: 'Descifra símbolos nocturnos y conéctalos con tu carta natal — incluido en todos los planes, sin límite.',
         footnote: 'Sidusastro: astrología seria, accesible y hecha para quien quiere ir más allá del horóscopo del periódico.',
       },
       authGateway: {
@@ -405,7 +406,8 @@ const GAP_BLOCK_FR = {
         p3Desc: 'Comparaison transparente Gratuit vs Premium. Vous savez ce que vous débloquez avant de payer — sans abonnements cachés ni petites lignes.',
         p4Title: 'Premium à vie',
         p4Desc: 'Un paiement unique pour tous les outils. Pas de renouvellement mensuel comme sur la plupart des apps d\'astrologie.',
-        sonhosHighlight: 'Interprétation des Rêves : déchiffrez les symboles nocturnes et reliez-les à votre thème natal — inclus dans tous les plans, sans limite.',
+        p5Title: 'Interprétation des Rêves',
+        p5Desc: 'Déchiffrez les symboles nocturnes et reliez-les à votre thème natal — inclus dans tous les plans, sans limite.',
         footnote: 'Sidusastro : astrologie sérieuse, accessible et faite pour ceux qui veulent aller au-delà de l\'horoscope du journal.',
       },
       authGateway: {
@@ -634,7 +636,8 @@ const GAP_BLOCK_DE = {
         p3Desc: 'Transparente Gratis-vs-Premium-Vergleich. Sie wissen vor der Zahlung, was Sie freischalten — ohne versteckte Abos oder Kleingedrucktes.',
         p4Title: 'Premium lebenslang',
         p4Desc: 'Eine Einmalzahlung für alle Tools. Keine monatliche Verlängerung wie bei den meisten Astrologie-Apps.',
-        sonhosHighlight: 'Traumdeutung: Entschlüsselt nächtliche Symbole und verbindet sie mit Ihrem Geburtshoroskop — in allen Plänen enthalten, ohne Limit.',
+        p5Title: 'Traumdeutung',
+        p5Desc: 'Entschlüsselt nächtliche Symbole und verbindet sie mit Ihrem Geburtshoroskop — in allen Plänen enthalten, ohne Limit.',
         footnote: 'Sidusastro: seriöse Astrologie, zugänglich und gemacht für alle, die mehr wollen als ein Zeitungshoroskop.',
       },
       authGateway: {
@@ -863,7 +866,8 @@ const GAP_BLOCK_IT = {
         p3Desc: 'Confronto trasparente Gratis vs Premium. Sai cosa sblocchi prima di pagare — senza abbonamenti nascosti né clausole in piccolo.',
         p4Title: 'Premium a vita',
         p4Desc: 'Un pagamento unico per tutti gli strumenti. Nessun rinnovo mensile come nella maggior parte delle app di astrologia.',
-        sonhosHighlight: 'Interpretazione dei Sogni: decifra i simboli notturni e collegali alla tua carta natale — incluso in tutti i piani, senza limiti.',
+        p5Title: 'Interpretazione dei Sogni',
+        p5Desc: 'Decifra i simboli notturni e collegali alla tua carta natale — incluso in tutti i piani, senza limiti.',
         footnote: 'Sidusastro: astrologia seria, accessibile e fatta per chi vuole andare oltre l\'oroscopo del giornale.',
       },
       authGateway: {

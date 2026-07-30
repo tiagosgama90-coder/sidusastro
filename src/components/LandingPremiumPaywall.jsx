@@ -1,7 +1,7 @@
 import { forwardRef } from 'react'
 import { Crown, Eye, EyeOff, Loader2, Lock } from 'lucide-react'
 import { useLanguage } from '../lib/i18n/LanguageContext.jsx'
-import { LandingPremiumPriceCard, LandingPaywallCtaButton } from './LandingPremiumPriceCard.jsx'
+import { LandingPremiumPriceCard, LandingSimpleCtaButton } from './LandingPremiumPriceCard.jsx'
 import { RecaptchaCheckbox } from './Recaptcha.jsx'
 
 const MANDALA_SRC = '/brand/sidus-natal-guide-wheels.png?v=1'
@@ -82,10 +82,11 @@ export const LandingPremiumPaywall = forwardRef(function LandingPremiumPaywall({
 
         <div className="landing-premium-paywall__unlock landing-glass">
           <p className="landing-premium-paywall__eyebrow">{t('landing.funnel.paywallEyebrow')}</p>
-          <h2 className="landing-premium-paywall__title">{t('landing.funnel.paywallTitle')}</h2>
-          <p className="landing-premium-paywall__subtitle">{t('landing.funnel.paywallSubtitle')}</p>
 
           <LandingPremiumPriceCard className="landing-premium-paywall__price" />
+
+          <h2 className="landing-premium-paywall__title">{t('landing.funnel.paywallTitle')}</h2>
+          <p className="landing-premium-paywall__subtitle">{t('landing.funnel.paywallSubtitle')}</p>
 
           <p className="landing-premium-paywall__account-lead">{t('landing.funnel.accountLead')}</p>
 
@@ -145,12 +146,12 @@ export const LandingPremiumPaywall = forwardRef(function LandingPremiumPaywall({
             <RecaptchaCheckbox onChange={setRecaptchaOk} resetKey={recaptchaKey} />
           </div>
 
-          <LandingPaywallCtaButton
+          <LandingSimpleCtaButton
             className="landing-premium-paywall__cta"
             onClick={onSubmit}
             disabled={carregando || !recaptchaOk}
             loading={carregando}
-            ariaLabel={t('landing.funnel.ctaUnlock')}
+            ariaLabel={t('auth.register')}
           />
 
           <div className="landing-premium-paywall__divider">

@@ -59,7 +59,7 @@ const estilos = {
   },
 }
 
-export function LandingAuthModal({ open, onClose, onRegister, firebaseOk = true }) {
+export function LandingAuthModal({ open, onClose, onRegister, firebaseOk = true, variant = 'modal' }) {
   const { lang, t } = useLanguage()
   const [email, setEmail] = useState('')
   const [senha, setSenha] = useState('')
@@ -76,17 +76,20 @@ export function LandingAuthModal({ open, onClose, onRegister, firebaseOk = true 
     setErro(null)
     setInfo(null)
     setEmRecuperacao(false)
-    const prev = document.body.style.overflow
-    document.body.style.overflow = 'hidden'
-    return () => { document.body.style.overflow = prev }
-  }, [open])
+    if (variant === 'modal') {
+      const prev = document.body.style.overflow
+      document.body.style.overflow = 'hidden'
+      return () => { document.body.style.overflow = prev }
+    }
+    return undefined
+  }, [open, variant])
 
   useEffect(() => {
-    if (!open) return undefined
+    if (!open || variant === 'inline') return undefined
     const onKey = (e) => { if (e.key === 'Escape') onClose?.() }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [open, onClose])
+  }, [open, onClose, variant])
 
   const handleRecuperarSenha = async () => {
     setErro(null)
@@ -147,15 +150,17 @@ export function LandingAuthModal({ open, onClose, onRegister, firebaseOk = true 
 
   if (!open) return null
 
+  const isInline = variant === 'inline'
+
   return (
     <div
-      className="landing-auth-modal"
-      role="dialog"
-      aria-modal="true"
+      className={`landing-auth-modal${isInline ? ' landing-auth-modal--inline' : ''}`}
+      role={isInline ? 'region' : 'dialog'}
+      aria-modal={isInline ? undefined : 'true'}
       aria-label={t('auth.portal.loginModal.ariaLabel')}
-      onClick={(e) => { if (e.target === e.currentTarget) onClose?.() }}
+      onClick={isInline ? undefined : (e) => { if (e.target === e.currentTarget) onClose?.() }}
     >
-      <div className="landing-auth-modal__panel">
+      <div className={`landing-auth-modal__panel${isInline ? ' landing-auth-modal__panel--inline landing-glass' : ''}`}>
         <button
           type="button"
           className="landing-auth-modal__close"
