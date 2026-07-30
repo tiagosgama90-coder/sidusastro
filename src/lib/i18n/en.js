@@ -442,6 +442,7 @@ export default {
       paywallSimpleCta: 'Create free account',
       paywallPremiumNote: 'Premium (PDF, Oracle, synastry) is optional — one-time payment, no subscription.',
       signsLabel: 'Your chart',
+      signsLoading: 'Calculating Sun, Moon and Ascendant…',
       signsAria: 'Calculated signs from your natal chart',
     },
     reviewsTickerAria: 'Sidus user reviews',

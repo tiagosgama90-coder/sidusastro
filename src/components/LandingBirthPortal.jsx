@@ -8,9 +8,9 @@ import { useLanguage } from '../lib/i18n/LanguageContext.jsx'
 import { validarOnboarding } from '../lib/i18n/validation.js'
 import { pesquisarCidades, pesquisarFusoHorario } from '../lib/geocoding.js'
 import { readLandingDraft, saveLandingDraft, stageLandingDraft, flushLandingDraft } from '../lib/landingDraft.js'
-import { calcularMapaNatal, calcularSignoSolarPorData } from '../lib/astrologia.js'
 import { CITY_SUGGESTION_NO_TRANSLATE, fusosFallbackLabels } from '../lib/landingTranslate.js'
-import { useGoogleTranslateRetranslate } from '../hooks/useGoogleTranslateRetranslate.js'
+import { useLandingMapaPreview } from '../hooks/useLandingMapaPreview.js'
+import { LandingNatalPreview } from './LandingNatalPreview.jsx'
 
 const CORES = {
   dourado: '#DFB76C',
@@ -222,7 +222,6 @@ export function LandingBirthPortal({
   isDesktop,
   onSaved,
   onOpenLogin,
-  ctaLabel,
   onCtaClick,
 }) {
   const { lang, t } = useLanguage()
@@ -254,20 +253,7 @@ export function LandingBirthPortal({
     }))
   }, [isDesktop, lang, t])
 
-  const previewSignos = useMemo(() => {
-    if (!data) return null
-    if (localizacao && hora && fuso != null) {
-      return calcularMapaNatal({ data, hora, localizacao, fuso })
-    }
-    const sol = calcularSignoSolarPorData(data)
-    return sol ? { solar: sol } : null
-  }, [data, hora, localizacao, fuso])
-
-  useGoogleTranslateRetranslate(!!previewSignos, [
-    previewSignos?.solar?.nome,
-    previewSignos?.lunar?.nome,
-    previewSignos?.ascendente?.nome,
-  ])
+  const { mapa: previewMapa, carregando: previewCarregando } = useLandingMapaPreview(dados)
 
   useEffect(() => {
     const draft = readLandingDraft()
@@ -461,6 +447,12 @@ export function LandingBirthPortal({
                 </div>
               )}
 
+              <LandingNatalPreview
+                mapa={previewMapa}
+                carregando={previewCarregando}
+                className="landing-portal-natal-preview"
+              />
+
               <button
                 type="button"
                 disabled={aGuardar || fusoCarregando}
@@ -475,7 +467,7 @@ export function LandingBirthPortal({
                 ) : (
                   <>
                     <Sparkles size={18} />
-                    {ctaLabel || t('auth.portal.ctaCalculateMap')}
+                    {t('auth.register')}
                   </>
                 )}
               </button>
@@ -492,7 +484,7 @@ export function LandingBirthPortal({
 
         </div>
 
-        <footer className="landing-portal-tools-footer" aria-label={t('auth.portal.toolsAria')}>
+        <footer className={`landing-portal-tools-footer${isDesktop ? ' landing-portal-tools-footer--mobile-only' : ''}`} aria-label={t('auth.portal.toolsAria')}>
           <div className="landing-portal-tools-ticker-viewport">
             <div className="landing-portal-tools-ticker-track">
               {[...ferramentasTicker, ...ferramentasTicker].map(({ key, Icon, label }, i) => (

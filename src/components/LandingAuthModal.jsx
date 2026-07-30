@@ -12,6 +12,7 @@ import { enviarEmailRecuperacaoSenha, traduzirErroEmail } from '../lib/authEmail
 import { traduzirErroAuth } from '../lib/i18n/authErrors.js'
 import { flushLandingDraft } from '../lib/landingDraft.js'
 import { RecaptchaCheckbox } from './Recaptcha.jsx'
+import { LandingNatalPreview } from './LandingNatalPreview.jsx'
 
 const CORES = {
   dourado: '#DFB76C',
@@ -59,8 +60,73 @@ const estilos = {
   },
 }
 
-export function LandingAuthModal({ open, onClose, onRegister, firebaseOk = true }) {
+function PasswordField({
+  label,
+  value,
+  onChange,
+  verSenha,
+  setVerSenha,
+  autoComplete,
+  onEnter,
+  style,
+}) {
+  return (
+    <div className="landing-auth-field landing-auth-password-block" style={style}>
+      <label style={estilos.label}>{label}</label>
+      <div className="landing-auth-password-input">
+        <input
+          type={verSenha ? 'text' : 'password'}
+          value={value}
+          onChange={onChange}
+          placeholder="••••••••"
+          className="landing-auth-input"
+          style={{ ...estilos.input, paddingRight: 44 }}
+          autoComplete={autoComplete}
+          onKeyDown={(e) => e.key === 'Enter' && onEnter?.()}
+        />
+        <button
+          type="button"
+          onClick={() => setVerSenha((v) => !v)}
+          className="landing-auth-modal__eye"
+          aria-label={verSenha ? 'Hide password' : 'Show password'}
+        >
+          {verSenha ? <EyeOff size={16} /> : <Eye size={16} />}
+        </button>
+      </div>
+    </div>
+  )
+}
+
+export function LandingAuthModal({
+  open,
+  onClose,
+  mode = 'login',
+  onSwitchMode,
+  onRegisterNavigate,
+  firebaseOk = true,
+  mapaPreview = null,
+  mapaCarregando = false,
+  registerEmail = '',
+  setRegisterEmail,
+  registerSenha = '',
+  setRegisterSenha,
+  registerSenhaConfirm = '',
+  setRegisterSenhaConfirm,
+  registerVerSenha = false,
+  setRegisterVerSenha,
+  registerVerSenhaConfirm = false,
+  setRegisterVerSenhaConfirm,
+  recaptchaOk = false,
+  setRecaptchaOk,
+  recaptchaKey = 0,
+  registerErro = null,
+  registerInfo = null,
+  registerCarregando = false,
+  onSignup,
+  onGoogleSignup,
+}) {
   const { lang, t } = useLanguage()
+  const isRegister = mode === 'register'
   const [email, setEmail] = useState('')
   const [senha, setSenha] = useState('')
   const [verSenha, setVerSenha] = useState(false)
@@ -73,9 +139,11 @@ export function LandingAuthModal({ open, onClose, onRegister, firebaseOk = true 
 
   useEffect(() => {
     if (!open) return undefined
-    setErro(null)
-    setInfo(null)
-    setEmRecuperacao(false)
+    if (!isRegister) {
+      setErro(null)
+      setInfo(null)
+      setEmRecuperacao(false)
+    }
     const scrollY = window.scrollY
     const prevOverflow = document.body.style.overflow
     document.body.style.overflow = 'hidden'
@@ -93,7 +161,7 @@ export function LandingAuthModal({ open, onClose, onRegister, firebaseOk = true 
       document.body.style.width = ''
       window.scrollTo(0, scrollY)
     }
-  }, [open])
+  }, [open, isRegister])
 
   useEffect(() => {
     if (!open) return undefined
@@ -141,7 +209,7 @@ export function LandingAuthModal({ open, onClose, onRegister, firebaseOk = true 
     }
   }
 
-  const handleGoogle = async () => {
+  const handleGoogleLogin = async () => {
     if (!auth) { setErro(t('auth.firebaseMissing')); return }
     flushLandingDraft()
     setErro(null)
@@ -161,14 +229,55 @@ export function LandingAuthModal({ open, onClose, onRegister, firebaseOk = true 
 
   if (!open) return null
 
+  const modalAria = isRegister
+    ? t('auth.portal.registerModal.ariaLabel')
+    : t('auth.portal.loginModal.ariaLabel')
+
+  const modalTitle = isRegister
+    ? t('auth.portal.registerModal.title')
+    : emRecuperacao
+      ? t('auth.forgot.title')
+      : t('auth.portal.loginModal.title')
+
+  const activeEmail = isRegister ? registerEmail : email
+  const setActiveEmail = isRegister ? setRegisterEmail : setEmail
+  const activeSenha = isRegister ? registerSenha : senha
+  const setActiveSenha = isRegister ? setRegisterSenha : setSenha
+  const activeVerSenha = isRegister ? registerVerSenha : verSenha
+  const setActiveVerSenha = isRegister ? setRegisterVerSenha : setVerSenha
+  const activeErro = isRegister ? registerErro : erro
+  const activeInfo = isRegister ? registerInfo : info
+  const activeLoading = isRegister ? registerCarregando : carregando
+
+  const handlePrimary = () => {
+    if (isRegister) {
+      onSignup?.()
+      return
+    }
+    handleLogin()
+  }
+
+  const handleGoogle = () => {
+    if (isRegister) {
+      onGoogleSignup?.()
+      return
+    }
+    handleGoogleLogin()
+  }
+
+  const primaryDisabled = isRegister
+    ? (activeLoading || !recaptchaOk)
+    : activeLoading
+
   return (
     <div
-      className="landing-auth-modal"
+      className={`landing-auth-modal${isRegister ? ' landing-auth-modal--register' : ''}`}
       role="dialog"
       aria-modal="true"
-      aria-label={t('auth.portal.loginModal.ariaLabel')}
+      aria-label={modalAria}
       onClick={(e) => { if (e.target === e.currentTarget) onClose?.() }}
     >
+      <div className="landing-auth-modal__stars" aria-hidden />
       <div className="landing-auth-modal__panel">
         <button
           type="button"
@@ -179,11 +288,21 @@ export function LandingAuthModal({ open, onClose, onRegister, firebaseOk = true 
           <X size={20} />
         </button>
 
-        <h2 className="landing-auth-modal__title">
-          {emRecuperacao ? t('auth.forgot.title') : t('auth.portal.loginModal.title')}
-        </h2>
+        <h2 className="landing-auth-modal__title">{modalTitle}</h2>
 
-        {emRecuperacao && (
+        {isRegister && (
+          <>
+            <p className="landing-auth-modal__intro">{t('auth.portal.registerModal.lead')}</p>
+            <LandingNatalPreview
+              mapa={mapaPreview}
+              carregando={mapaCarregando}
+              className="landing-auth-modal__preview"
+              compact
+            />
+          </>
+        )}
+
+        {emRecuperacao && !isRegister && (
           <p className="landing-auth-modal__intro">{t('auth.forgot.intro')}</p>
         )}
 
@@ -197,76 +316,87 @@ export function LandingAuthModal({ open, onClose, onRegister, firebaseOk = true 
           <label style={estilos.label}>{t('auth.email')}</label>
           <input
             type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            value={activeEmail}
+            onChange={(e) => setActiveEmail?.(e.target.value)}
             placeholder={t('auth.emailPlaceholder')}
             className="landing-auth-input"
             style={estilos.input}
             autoComplete="email"
-            onKeyDown={(e) => e.key === 'Enter' && handleLogin()}
+            onKeyDown={(e) => e.key === 'Enter' && handlePrimary()}
           />
         </div>
 
-        {!emRecuperacao && (
-          <div className="landing-auth-field landing-auth-password-block" style={{ marginBottom: 20 }}>
-            <label style={estilos.label}>{t('auth.password')}</label>
-            <div className="landing-auth-password-input">
-              <input
-                type={verSenha ? 'text' : 'password'}
-                value={senha}
-                onChange={(e) => setSenha(e.target.value)}
-                placeholder="••••••••"
-                className="landing-auth-input"
-                style={{ ...estilos.input, paddingRight: 44 }}
-                autoComplete="current-password"
-                onKeyDown={(e) => e.key === 'Enter' && handleLogin()}
-              />
-              <button
-                type="button"
-                onClick={() => setVerSenha((v) => !v)}
-                className="landing-auth-modal__eye"
-                aria-label={verSenha ? 'Hide password' : 'Show password'}
-              >
-                {verSenha ? <EyeOff size={16} /> : <Eye size={16} />}
-              </button>
-            </div>
-            <div className="landing-auth-forgot-wrap">
-              <button
-                type="button"
-                className="landing-auth-forgot"
-                onClick={() => {
-                  setEmRecuperacao(true)
-                  setErro(null)
-                  setInfo(null)
-                }}
-              >
-                {t('auth.forgotPassword')}
-              </button>
-            </div>
+        {(!emRecuperacao || isRegister) && (
+          <PasswordField
+            label={t('auth.password')}
+            value={activeSenha}
+            onChange={(e) => setActiveSenha?.(e.target.value)}
+            verSenha={activeVerSenha}
+            setVerSenha={setActiveVerSenha}
+            autoComplete={isRegister ? 'new-password' : 'current-password'}
+            onEnter={handlePrimary}
+            style={{ marginBottom: isRegister ? 12 : 20 }}
+          />
+        )}
+
+        {isRegister && (
+          <PasswordField
+            label={t('auth.confirmPassword')}
+            value={registerSenhaConfirm}
+            onChange={(e) => setRegisterSenhaConfirm?.(e.target.value)}
+            verSenha={registerVerSenhaConfirm}
+            setVerSenha={setRegisterVerSenhaConfirm}
+            autoComplete="new-password"
+            onEnter={handlePrimary}
+            style={{ marginBottom: 12 }}
+          />
+        )}
+
+        {!isRegister && !emRecuperacao && (
+          <div className="landing-auth-forgot-wrap">
+            <button
+              type="button"
+              className="landing-auth-forgot"
+              onClick={() => {
+                setEmRecuperacao(true)
+                setErro(null)
+                setInfo(null)
+              }}
+            >
+              {t('auth.forgotPassword')}
+            </button>
           </div>
         )}
 
-        {erro && (
-          <div className="landing-auth-modal__alert landing-auth-modal__alert--error">{erro}</div>
+        {isRegister && (
+          <div className="landing-auth-modal__recaptcha" style={{ marginBottom: 16 }}>
+            <RecaptchaCheckbox onChange={setRecaptchaOk} resetKey={recaptchaKey} />
+          </div>
         )}
-        {info && (
-          <div className="landing-auth-modal__alert landing-auth-modal__alert--ok">{info}</div>
+
+        {activeErro && (
+          <div className="landing-auth-modal__alert landing-auth-modal__alert--error">{activeErro}</div>
+        )}
+        {activeInfo && (
+          <div className="landing-auth-modal__alert landing-auth-modal__alert--ok">{activeInfo}</div>
         )}
 
         <button
           type="button"
-          disabled={carregando}
-          onClick={handleLogin}
-          style={{ ...estilos.botaoDourado, opacity: carregando ? 0.6 : 1 }}
+          disabled={primaryDisabled}
+          onClick={handlePrimary}
+          style={{ ...estilos.botaoDourado, opacity: primaryDisabled ? 0.6 : 1 }}
         >
-          {carregando
+          {activeLoading
             ? <Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} />
-            : emRecuperacao
-              ? t('auth.forgot.submit')
-              : t('auth.login')}
+            : isRegister
+              ? t('auth.register')
+              : emRecuperacao
+                ? t('auth.forgot.submit')
+                : t('auth.login')}
         </button>
 
-        {emRecuperacao ? (
+        {emRecuperacao && !isRegister ? (
           <p className="landing-auth-modal__switch">
             <button
               type="button"
@@ -280,7 +410,12 @@ export function LandingAuthModal({ open, onClose, onRegister, firebaseOk = true 
             <div className="landing-auth-modal__divider">
               <span>{t('auth.or')}</span>
             </div>
-            <button type="button" disabled={carregando} onClick={handleGoogle} className="landing-auth-modal__google">
+            <button
+              type="button"
+              disabled={primaryDisabled}
+              onClick={handleGoogle}
+              className="landing-auth-modal__google"
+            >
               <svg width="18" height="18" viewBox="0 0 48 48" aria-hidden>
                 <path fill="#FFC107" d="M43.6 20.1H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.1 7.9 3l5.7-5.7C34.1 6.5 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.7-.4-3.9z"/>
                 <path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 16.1 19 13 24 13c3.1 0 5.8 1.1 7.9 3l5.7-5.7C34.1 6.5 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/>
@@ -290,15 +425,19 @@ export function LandingAuthModal({ open, onClose, onRegister, firebaseOk = true 
               {t('auth.google')}
             </button>
             <p className="landing-auth-modal__switch">
-              {t('auth.noAccount')}{' '}
+              {isRegister ? t('auth.hasAccount') : t('auth.noAccount')}{' '}
               <button
                 type="button"
                 onClick={() => {
-                  onClose?.()
-                  onRegister?.()
+                  if (isRegister) {
+                    onSwitchMode?.('login')
+                  } else {
+                    onSwitchMode?.('register')
+                    onRegisterNavigate?.()
+                  }
                 }}
               >
-                {t('auth.createHere')}
+                {isRegister ? t('auth.loginHere') : t('auth.createHere')}
               </button>
             </p>
           </>

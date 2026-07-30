@@ -7,17 +7,16 @@ const PILLARS = [
   { icon: Link2, titleKey: 'auth.portal.whySidus.p2Title', descKey: 'auth.portal.whySidus.p2Desc' },
   { icon: ShieldCheck, titleKey: 'auth.portal.whySidus.p3Title', descKey: 'auth.portal.whySidus.p3Desc' },
   { icon: Sparkles, titleKey: 'auth.portal.whySidus.p4Title', descKey: 'auth.portal.whySidus.p4Desc' },
-  { icon: Moon, titleKey: 'auth.portal.whySidus.sonhosTitle', descKey: 'auth.portal.whySidus.sonhosDesc', fullWidth: true },
+  { icon: Moon, titleKey: 'auth.portal.whySidus.sonhosTitle', descKey: 'auth.portal.whySidus.sonhosDesc' },
 ]
 
-/** Destaque profissional: precisão e diferenciação do Sidus na landing. */
-export function LandingWhySidus({ compact = false }) {
+/** Destaque profissional — faixa horizontal compacta. */
+export function LandingWhySidus() {
   const { t } = useLanguage()
-  const pillars = compact ? PILLARS.slice(0, 2) : PILLARS
 
   return (
     <section
-      className={`landing-why-sidus landing-glass${compact ? ' landing-why-sidus--compact' : ''}`}
+      className="landing-why-sidus landing-glass landing-why-sidus--horizontal"
       aria-label={t('auth.portal.whySidus.ariaLabel')}
     >
       <p className="landing-why-sidus__eyebrow">{t('auth.portal.whySidus.eyebrow')}</p>
@@ -27,14 +26,10 @@ export function LandingWhySidus({ compact = false }) {
           highlight={t('auth.portal.whySidus.titleHighlight')}
         />
       </h2>
-      {!compact && <p className="landing-why-sidus__lead">{t('auth.portal.whySidus.lead')}</p>}
 
-      <ul className="landing-why-sidus__grid">
-        {pillars.map(({ icon: Icon, titleKey, descKey, fullWidth }) => (
-          <li
-            key={titleKey}
-            className={`landing-why-sidus__card${fullWidth ? ' landing-why-sidus__card--full' : ''}`}
-          >
+      <ul className="landing-why-sidus__grid landing-why-sidus__grid--horizontal">
+        {PILLARS.map(({ icon: Icon, titleKey, descKey }) => (
+          <li key={titleKey} className="landing-why-sidus__card">
             <div className="landing-why-sidus__icon" aria-hidden="true">
               <Icon size={18} strokeWidth={2} />
             </div>
@@ -43,8 +38,6 @@ export function LandingWhySidus({ compact = false }) {
           </li>
         ))}
       </ul>
-
-      {!compact && <p className="landing-why-sidus__footnote">{t('auth.portal.whySidus.footnote')}</p>}
     </section>
   )
 }

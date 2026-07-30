@@ -442,6 +442,7 @@ export default {
       paywallSimpleCta: 'Criar conta grátis',
       paywallPremiumNote: 'Premium (PDF, Oráculo, sinastria) é opcional — pagamento único, sem mensalidade.',
       signsLabel: 'O teu mapa',
+      signsLoading: 'A calcular Sol, Lua e Ascendente…',
       signsAria: 'Signos calculados do teu mapa astral',
     },
     reviewsTickerAria: 'Comentários de utilizadores Sidus',
