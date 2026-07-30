@@ -201,10 +201,10 @@ const GAP_BLOCK_ES = {
       mandalaCaption: 'Rueda natal con casas Placidus, planetas y aspectos. Única como tu firma cósmica.',
     },
     plansOverview: {
-      ariaLabel: 'Planes y beneficios Sidus Premium',
-      eyebrow: 'Sidus Premium',
-      title: 'Todo en un solo lugar',
-      lead: 'Carta completa, oráculo, tarot y herramientas. Comparación simple Gratis vs Premium.',
+      ariaLabel: 'Planes Sidus Gratis vs Premium',
+      eyebrow: 'Planes',
+      title: 'Gratis vs Premium',
+      lead: 'Comparación directa. Pago único en Premium, sin suscripción mensual.',
     },
   },
   mapa: {
@@ -405,10 +405,10 @@ const GAP_BLOCK_FR = {
       mandalaCaption: 'Roue natale avec maisons Placidus, planètes et aspects. Unique comme votre signature cosmique.',
     },
     plansOverview: {
-      ariaLabel: 'Offres et avantages Sidus Premium',
-      eyebrow: 'Sidus Premium',
-      title: 'Tout au même endroit',
-      lead: 'Carte complète, oracle, tarot et outils. Comparaison simple Gratuit vs Premium.',
+      ariaLabel: 'Offres Sidus Gratuit vs Premium',
+      eyebrow: 'Offres',
+      title: 'Gratuit vs Premium',
+      lead: 'Comparaison directe. Paiement unique Premium, sans abonnement mensuel.',
     },
   },
   mapa: {
@@ -609,10 +609,10 @@ const GAP_BLOCK_DE = {
       mandalaCaption: 'Geburtshoroskop-Rad mit Placidus-Häusern, Planeten und Aspekten. Einzigartig wie Ihre kosmische Signatur.',
     },
     plansOverview: {
-      ariaLabel: 'Sidus Premium Pläne und Vorteile',
-      eyebrow: 'Sidus Premium',
-      title: 'Alles an einem Ort',
-      lead: 'Vollständiges Horoskop, Orakel, Tarot und Tools. Einfacher Gratis vs Premium Vergleich.',
+      ariaLabel: 'Sidus Gratis vs Premium Pläne',
+      eyebrow: 'Pläne',
+      title: 'Gratis vs Premium',
+      lead: 'Direkter Vergleich. Einmalzahlung Premium, kein Monatsabo.',
     },
   },
   mapa: {
@@ -813,10 +813,10 @@ const GAP_BLOCK_IT = {
       mandalaCaption: 'Ruota natale con case Placidus, pianeti e aspetti. Unica come la tua firma cosmica.',
     },
     plansOverview: {
-      ariaLabel: 'Piani e vantaggi Sidus Premium',
-      eyebrow: 'Sidus Premium',
-      title: 'Tutto in un unico posto',
-      lead: 'Carta completa, oracolo, tarocchi e strumenti. Confronto semplice Gratis vs Premium.',
+      ariaLabel: 'Piani Sidus Gratis vs Premium',
+      eyebrow: 'Piani',
+      title: 'Gratis vs Premium',
+      lead: 'Confronto diretto. Pagamento unico Premium, nessun abbonamento mensile.',
     },
   },
   mapa: {
