@@ -1333,7 +1333,6 @@ function EcraVerificarEmail({ utilizador, isDesktop, onLogout, onVerificado }) {
 
 function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
   const { lang, t } = useLanguage()
-  const { isBrasil } = useGeoCountry()
   const authPanelRef = useRef(null)
   const conversionZoneRef = useRef(null)
   const [loginModalOpen, setLoginModalOpen] = useState(false)
