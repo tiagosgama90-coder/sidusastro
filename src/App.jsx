@@ -106,6 +106,8 @@ import { MobileBottomNav } from './components/MobileBottomNav.jsx'
 import { HomeParaTiHoje } from './components/HomeParaTiHoje.jsx'
 import { LandingStickyCta } from './components/LandingStickyCta.jsx'
 import { LandingHowItWorks } from './components/LandingHowItWorks.jsx'
+import { LandingFunnelPreview } from './components/LandingFunnelPreview.jsx'
+import { LandingPremiumPriceCard } from './components/LandingPremiumPriceCard.jsx'
 import { LandingExitIntent } from './components/LandingExitIntent.jsx'
 import { useLandingCtaVariant } from './hooks/useLandingCtaVariant.js'
 import { MapaPaywallSections } from './components/MapaPaywallSections.jsx'
@@ -1342,6 +1344,7 @@ function EcraVerificarEmail({ utilizador, isDesktop, onLogout, onVerificado }) {
 function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
   const { lang, t } = useLanguage()
   const birthRef = useRef(null)
+  const birthFormRef = useRef(null)
   const paywallRef = useRef(null)
   const conversionZoneRef = useRef(null)
   const [funnelStep, setFunnelStep] = useState('birth')
@@ -1444,11 +1447,18 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
     trackMapaConversion()
     setFunnelStep('loading')
     window.setTimeout(() => {
-      setFunnelStep('paywall')
+      setFunnelStep('preview')
       requestAnimationFrame(() => {
         paywallRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
       })
     }, 2000)
+  }, [])
+
+  const handlePreviewContinue = useCallback(() => {
+    setFunnelStep('paywall')
+    requestAnimationFrame(() => {
+      paywallRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    })
   }, [])
 
   const openLoginModal = useCallback((e) => {
@@ -1486,11 +1496,16 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
       <div className={`landing-auth-layout${isDesktop ? ' landing-auth-layout--desktop' : ' landing-auth-layout--mobile'}`} translate="yes">
         <BannerBrasil />
         <LandingAdsPromoBar />
-        <LandingStickyCta targetRef={conversionZoneRef} onCta={handleFunnelCta} ctaLabel={ctaLabel} />
+        <LandingStickyCta
+          targetRef={conversionZoneRef}
+          hideWhenRef={birthFormRef}
+          onCta={handleFunnelCta}
+          ctaLabel={ctaLabel}
+        />
         <div className="landing-top-stack">
           <LandingTopBar onLogin={openLoginModal} />
           <div className={`${isDesktop ? 'landing-sky-desktop-wrap landing-sky-desktop-wrap--compact' : 'landing-sky-mobile-wrap landing-sky-mobile-wrap--compact'}`}>
-            <LandingSkyLive compact />
+            <LandingSkyLive compact={isDesktop} mobileLineOnly={!isDesktop} />
           </div>
         </div>
         <section
@@ -1500,26 +1515,37 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
         >
           <div className="landing-conversion-zone__hero">
             <LandingConversionHead compact={funnelStep !== 'birth'} />
+            <LandingHowItWorks variant="strip" />
           </div>
 
-          {(funnelStep === 'birth' || isDesktop) && funnelStep !== 'loading' && (
+          {(funnelStep === 'birth' || isDesktop) && funnelStep !== 'loading' && funnelStep !== 'preview' && (
             <div className="landing-conversion-zone__why">
               <LandingWhySidus compact={!isDesktop} />
             </div>
           )}
 
           <div className="landing-conversion-zone__funnel">
-            <div className={`landing-hero-stack landing-hero-stack--funnel${funnelStep === 'paywall' ? ' landing-hero-stack--funnel-wide' : ''}`}>
+            <div className={`landing-hero-stack landing-hero-stack--funnel${funnelStep === 'paywall' || funnelStep === 'preview' ? ' landing-hero-stack--funnel-wide' : ''}`}>
               {funnelStep === 'birth' && (
-                <LandingBirthPortal
-                  isDesktop={isDesktop}
-                  onSaved={handleBirthComplete}
-                  onOpenLogin={openLoginModal}
-                  ctaLabel={ctaLabel}
-                  onCtaClick={() => trackCtaClick('birth_form')}
-                />
+                <div className="landing-funnel-birth-duo">
+                  <div ref={birthFormRef} className="landing-funnel-birth-duo__form">
+                    <LandingBirthPortal
+                      isDesktop={isDesktop}
+                      onSaved={handleBirthComplete}
+                      onOpenLogin={openLoginModal}
+                      ctaLabel={ctaLabel}
+                      onCtaClick={() => trackCtaClick('birth_form')}
+                    />
+                  </div>
+                  <LandingPremiumPriceCard className="landing-funnel-birth-duo__price landing-premium-price--funnel" />
+                </div>
               )}
               {funnelStep === 'loading' && <LandingFunnelLoading />}
+              {funnelStep === 'preview' && (
+                <div ref={paywallRef}>
+                  <LandingFunnelPreview onContinue={handlePreviewContinue} />
+                </div>
+              )}
               {funnelStep === 'paywall' && (
                 <LandingPremiumPaywall
                   ref={paywallRef}
@@ -1545,21 +1571,17 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
           </div>
 
           {funnelStep === 'birth' && (
-            <>
-              <LandingPlansOverview className="landing-conversion-zone__plans" onCta={goToBirthForm} />
-              <div className="landing-conversion-zone__steps">
-                <LandingHowItWorks />
-              </div>
-            </>
+            <LandingPlansOverview className="landing-conversion-zone__plans" onCta={goToBirthForm} />
           )}
 
         </section>
         <div className="landing-showcase-duo">
           <LandingPdfShowcase />
-          <LandingReviews variant="paywall" />
+          <LandingReviews variant="paywall" featuredOnly />
         </div>
         <LandingGuides />
         <AdSenseBanner />
+        <LandingReviews formOnly />
         <LandingFaq />
       </div>
     </>
