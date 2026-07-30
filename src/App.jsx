@@ -1563,7 +1563,11 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
           </div>
 
           {funnelStep === 'birth' && (
-            <LandingPlansOverview className="landing-conversion-zone__plans" onCta={goToBirthForm} />
+            <LandingPlansOverview
+              className="landing-conversion-zone__plans"
+              onCta={goToBirthForm}
+              isDesktop={isDesktop}
+            />
           )}
 
         </section>

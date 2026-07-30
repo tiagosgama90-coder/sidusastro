@@ -8518,6 +8518,19 @@ html.sidus-mobile-menu-open .mobile-menu-btn {
   font-size: 10px;
 }
 
+.landing-plans-overview__paywall--collapsed {
+  gap: 0;
+}
+
+@media (max-width: 767px) {
+  .landing-plans-overview__paywall--collapsed .landing-plans-overview__expand {
+    margin-top: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-size: 12px;
+  }
+}
+
 .landing-plans-overview__expand {
   display: inline-flex;
   align-items: center;
