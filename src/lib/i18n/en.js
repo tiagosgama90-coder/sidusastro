@@ -93,7 +93,11 @@ export default {
         register: 'Create free account',
         login: 'I have an account · Sign in',
         hint: 'Free birth chart in minutes. No card required.',
-        panelLead: 'Your cosmic portal is right here',
+        panelLead: 'Create your account to save your chart',
+      },
+      loginModal: {
+        ariaLabel: 'Sign in to your Sidus account',
+        title: 'Welcome back',
       },
       whySidus: {
         ariaLabel: 'Why choose Sidusastro',
@@ -357,6 +361,12 @@ export default {
       premiumCol: 'Premium',
       cta: 'Create account and unlock — {price}',
       ctaAria: 'Go to sign-up form',
+    },
+    plansOverview: {
+      ariaLabel: 'Sidus Premium plans and benefits',
+      eyebrow: 'Sidus Premium',
+      title: 'Everything in one place',
+      lead: 'Full chart, oracle, tarot and tools. Simple Free vs Premium comparison.',
     },
   },
   mapa: {
