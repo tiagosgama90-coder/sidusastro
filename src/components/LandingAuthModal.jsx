@@ -106,6 +106,7 @@ export function LandingAuthModal({
   firebaseOk = true,
   mapaPreview = null,
   mapaCarregando = false,
+  nomeUtilizador = '',
   registerEmail = '',
   setRegisterEmail,
   registerSenha = '',
@@ -277,8 +278,7 @@ export function LandingAuthModal({
       aria-label={modalAria}
       onClick={(e) => { if (e.target === e.currentTarget) onClose?.() }}
     >
-      <div className="landing-auth-modal__stars" aria-hidden />
-      <div className="landing-auth-modal__panel">
+      <div className={`landing-auth-modal__panel${isRegister ? ' landing-auth-modal__panel--register' : ''}`}>
         <button
           type="button"
           className="landing-auth-modal__close"
@@ -296,8 +296,8 @@ export function LandingAuthModal({
             <LandingNatalPreview
               mapa={mapaPreview}
               carregando={mapaCarregando}
+              nomeUtilizador={nomeUtilizador}
               className="landing-auth-modal__preview"
-              compact
             />
           </>
         )}

@@ -443,6 +443,8 @@ export default {
       paywallPremiumNote: 'Premium (PDF, Oracle, synastry) is optional — one-time payment, no subscription.',
       signsLabel: 'Your chart',
       signsLoading: 'Calculating Sun, Moon and Ascendant…',
+      signsRefining: 'Refining your Ascendant…',
+      previewFootnote: 'Calculated with Swiss Ephemeris · exact time and place',
       signsAria: 'Calculated signs from your natal chart',
     },
     reviewsTickerAria: 'Sidus user reviews',

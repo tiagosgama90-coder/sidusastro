@@ -223,6 +223,7 @@ export function LandingBirthPortal({
   onSaved,
   onOpenLogin,
   onCtaClick,
+  hidePreview = false,
 }) {
   const { lang, t } = useLanguage()
   const [nome, setNome] = useState('')
@@ -447,11 +448,14 @@ export function LandingBirthPortal({
                 </div>
               )}
 
-              <LandingNatalPreview
-                mapa={previewMapa}
-                carregando={previewCarregando}
-                className="landing-portal-natal-preview"
-              />
+              {!hidePreview && (
+                <LandingNatalPreview
+                  mapa={previewMapa}
+                  carregando={previewCarregando}
+                  nomeUtilizador={nome.trim()}
+                  className="landing-portal-natal-preview"
+                />
+              )}
 
               <button
                 type="button"

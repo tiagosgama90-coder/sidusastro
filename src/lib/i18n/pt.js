@@ -443,6 +443,8 @@ export default {
       paywallPremiumNote: 'Premium (PDF, Oráculo, sinastria) é opcional — pagamento único, sem mensalidade.',
       signsLabel: 'O teu mapa',
       signsLoading: 'A calcular Sol, Lua e Ascendente…',
+      signsRefining: 'A refinar o teu Ascendente…',
+      previewFootnote: 'Calculado com Swiss Ephemeris · hora e local exactos',
       signsAria: 'Signos calculados do teu mapa astral',
     },
     reviewsTickerAria: 'Comentários de utilizadores Sidus',

@@ -49,7 +49,6 @@ import { LandingBirthPortal } from './components/LandingBirthPortal.jsx'
 import { LandingConversionHead } from './components/LandingConversionHead.jsx'
 import { LandingWhySidus } from './components/LandingWhySidus.jsx'
 import { LandingAuthModal } from './components/LandingAuthModal.jsx'
-import { LandingFunnelLoading } from './components/LandingFunnelLoading.jsx'
 import { LandingPlansOverview } from './components/LandingPlansOverview.jsx'
 import { LandingTopBar } from './components/LandingTopBar.jsx'
 import { SidusLogo } from './components/SidusLogo.jsx'
@@ -107,6 +106,7 @@ import { LandingPdfShowcase } from './components/LandingPdfShowcase.jsx'
 import { LandingExitIntent } from './components/LandingExitIntent.jsx'
 import { useLandingCtaVariant } from './hooks/useLandingCtaVariant.js'
 import { useLandingMapaPreview } from './hooks/useLandingMapaPreview.js'
+import { warmupLandingMapaMotor } from './lib/landingMapaMotor.js'
 import { MapaPaywallSections } from './components/MapaPaywallSections.jsx'
 import { FerramentasEmptyState } from './components/FerramentasEmptyState.jsx'
 
@@ -1365,6 +1365,7 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
   useEffect(() => {
     onMudar('register')
     captureLandingAdsAttribution()
+    warmupLandingMapaMotor()
     setRecaptchaOk(false)
     setRecaptchaKey((k) => k + 1)
     setErro(null)
@@ -1443,13 +1444,9 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
 
   const handleBirthComplete = useCallback(() => {
     trackMapaConversion()
-    setFunnelStep('loading')
-    window.setTimeout(() => {
-      setDraftTick((n) => n + 1)
-      setAuthModalMode('register')
-      setAuthModalOpen(true)
-      setFunnelStep('birth')
-    }, 1800)
+    setDraftTick((n) => n + 1)
+    setAuthModalMode('register')
+    setAuthModalOpen(true)
   }, [])
 
   const openLoginModal = useCallback((e) => {
@@ -1482,8 +1479,7 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
     goToBirthForm()
   }, [goToBirthForm, trackCtaClick])
 
-  const authModalActive = authModalOpen
-  const hideFunnelContent = authModalActive && authModalMode === 'register'
+  const registerModalOpen = authModalOpen && authModalMode === 'register'
 
   return (
     <>
@@ -1496,6 +1492,7 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
         firebaseOk={firebaseOk}
         mapaPreview={mapaPreview}
         mapaCarregando={mapaCarregando}
+        nomeUtilizador={draftRegisto?.nome || ''}
         registerEmail={email}
         setRegisterEmail={setEmail}
         registerSenha={senha}
@@ -1519,7 +1516,7 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
         enabled={funnelStep === 'birth'}
         onContinue={goToBirthForm}
       />
-      <div className={`landing-auth-layout${isDesktop ? ' landing-auth-layout--desktop' : ' landing-auth-layout--mobile'}${hideFunnelContent ? ' landing-auth-layout--register-modal' : ''}`} translate="yes">
+      <div className={`landing-auth-layout${isDesktop ? ' landing-auth-layout--desktop' : ' landing-auth-layout--mobile'}`} translate="yes">
         <BannerBrasil />
         <LandingAdsPromoBar />
         <LandingStickyCta
@@ -1544,29 +1541,29 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
             <LandingConversionHead compact={funnelStep !== 'birth'} />
           </div>
 
-          {(funnelStep === 'birth' || isDesktop) && funnelStep !== 'loading' && !hideFunnelContent && (
+          {(funnelStep === 'birth' || isDesktop) && (
             <div className="landing-conversion-zone__why">
               <LandingWhySidus />
             </div>
           )}
 
-          <div className={`landing-conversion-zone__funnel${hideFunnelContent ? ' landing-conversion-zone__funnel--hidden' : ''}`}>
+          <div className="landing-conversion-zone__funnel">
             <div className="landing-hero-stack landing-hero-stack--funnel">
-              {funnelStep === 'birth' && !hideFunnelContent && (
+              {funnelStep === 'birth' && (
                 <div ref={birthFormRef}>
                   <LandingBirthPortal
                     isDesktop={isDesktop}
                     onSaved={handleBirthComplete}
                     onOpenLogin={openLoginModal}
                     onCtaClick={() => trackCtaClick('birth_form')}
+                    hidePreview={registerModalOpen}
                   />
                 </div>
               )}
-              {funnelStep === 'loading' && !hideFunnelContent && <LandingFunnelLoading />}
             </div>
           </div>
 
-          {funnelStep === 'birth' && !hideFunnelContent && (
+          {funnelStep === 'birth' && (
             <LandingPlansOverview className="landing-conversion-zone__plans" onCta={goToBirthForm} />
           )}
 

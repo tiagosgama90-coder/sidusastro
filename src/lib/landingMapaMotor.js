@@ -92,6 +92,11 @@ function calcularMapaSwe(swe, dados) {
   }
 }
 
+/** Pré-carrega Swiss Ephemeris para preview mais rápida. */
+export function warmupLandingMapaMotor() {
+  obterSwe().catch(() => {})
+}
+
 /** Mapa Sol/Lua/Asc — SWE prioritário, fallback Meeus (igual ao motor principal). */
 export async function calcularMapaLanding(dados) {
   if (!dados?.data || !dados?.hora || !dados?.localizacao) return null

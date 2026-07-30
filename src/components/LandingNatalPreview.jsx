@@ -1,53 +1,113 @@
-import { Loader2 } from 'lucide-react'
+import { Loader2, Sparkles } from 'lucide-react'
 import { useLanguage } from '../lib/i18n/LanguageContext.jsx'
+import { SIGNOS } from '../lib/astrologia.js'
 import { translateSigno } from '../lib/i18n/astro.js'
 import { prepInSign } from '../lib/i18n/langUtil.js'
 
-function Pillar({ simbolo, label, nome, lang, destacado = false }) {
+function signGlyph(nome) {
+  return SIGNOS.find((s) => s.nome === nome)?.simbolo || '✦'
+}
+
+function MysticPillar({ kind, simbolo, label, nome, lang, pulse = false }) {
   if (!nome) return null
   const signo = translateSigno(nome, lang)
   const prep = prepInSign(lang)
+  const glyph = signGlyph(nome)
+
   return (
-    <li className={`landing-natal-preview__pillar${destacado ? ' landing-natal-preview__pillar--highlight' : ''}`}>
-      <span className="landing-natal-preview__sym" aria-hidden>{simbolo}</span>
-      <span className="landing-natal-preview__label">{label}</span>
-      <span className="landing-natal-preview__sign">{prep} {signo}</span>
+    <li className={`landing-mystic-preview__pillar landing-mystic-preview__pillar--${kind}${pulse ? ' landing-mystic-preview__pillar--pulse' : ''}`}>
+      <div className="landing-mystic-preview__orb" aria-hidden>
+        <span className="landing-mystic-preview__ring landing-mystic-preview__ring--outer" />
+        <span className="landing-mystic-preview__ring landing-mystic-preview__ring--inner" />
+        <span className="landing-mystic-preview__glyph">{glyph}</span>
+      </div>
+      <p className="landing-mystic-preview__kind">
+        <span className="landing-mystic-preview__kind-sym" aria-hidden>{simbolo}</span>
+        {label}
+      </p>
+      <p className="landing-mystic-preview__sign">
+        {prep} <strong>{signo}</strong>
+      </p>
     </li>
   )
 }
 
-/** Sol, Lua e Ascendente — visível no formulário e no modal de registo. */
-export function LandingNatalPreview({ mapa, carregando = false, className = '', compact = false }) {
+/** Preview místico Sol · Lua · Ascendente — form + modal de registo. */
+export function LandingNatalPreview({
+  mapa,
+  carregando = false,
+  className = '',
+  variant = 'mystic',
+  nomeUtilizador = '',
+}) {
   const { lang, t } = useLanguage()
-
-  if (!mapa && !carregando) return null
+  const mystic = variant === 'mystic'
 
   const pillars = [
-    { key: 'sol', simbolo: '☉', label: t('mapa.sunSign'), nome: mapa?.solar?.nome },
-    { key: 'lua', simbolo: '☽', label: t('mapa.moonSign'), nome: mapa?.lunar?.nome },
-    { key: 'asc', simbolo: '↑', label: t('mapa.ascendant'), nome: mapa?.ascendente?.nome, destacado: true },
-  ].filter((p) => p.nome)
+    { kind: 'sol', simbolo: '☉', label: t('mapa.sunSign'), nome: mapa?.solar?.nome },
+    { kind: 'lua', simbolo: '☽', label: t('mapa.moonSign'), nome: mapa?.lunar?.nome },
+    { kind: 'asc', simbolo: '↑', label: t('mapa.ascendant'), nome: mapa?.ascendente?.nome, pulse: true },
+  ]
+
+  const hasPillars = pillars.some((p) => p.nome)
+  if (!hasPillars && !carregando) return null
+
+  const rootClass = [
+    mystic ? 'landing-mystic-preview' : 'landing-natal-preview',
+    carregando ? 'landing-mystic-preview--loading' : '',
+    className,
+  ].filter(Boolean).join(' ')
 
   return (
-    <div
-      className={`landing-natal-preview${compact ? ' landing-natal-preview--compact' : ''}${className ? ` ${className}` : ''}`}
-      aria-label={t('landing.funnel.signsAria')}
-      aria-busy={carregando}
-    >
-      <p className="landing-natal-preview__title">{t('landing.funnel.signsLabel')}</p>
-      {carregando && pillars.length < 3 ? (
-        <p className="landing-natal-preview__loading">
-          <Loader2 size={16} className="spin-icon" aria-hidden />
-          {t('landing.funnel.signsLoading')}
+    <div className={rootClass} aria-label={t('landing.funnel.signsAria')} aria-busy={carregando}>
+      <div className="landing-mystic-preview__glow" aria-hidden />
+      <div className="landing-mystic-preview__sparkles" aria-hidden>
+        <span /><span /><span /><span />
+      </div>
+
+      <header className="landing-mystic-preview__head">
+        <p className="landing-mystic-preview__eyebrow">
+          <Sparkles size={13} aria-hidden />
+          {t('landing.funnel.previewEyebrow')}
         </p>
-      ) : null}
-      {pillars.length > 0 ? (
-        <ul className="landing-natal-preview__list">
-          {pillars.map(({ key, simbolo, label, nome, destacado }) => (
-            <Pillar key={key} simbolo={simbolo} label={label} nome={nome} lang={lang} destacado={destacado} />
+        <h3 className="landing-mystic-preview__title">
+          {nomeUtilizador
+            ? t('landing.funnel.previewTitleNamed', { nome: nomeUtilizador })
+            : t('landing.funnel.signsLabel')}
+        </h3>
+      </header>
+
+      {carregando && !hasPillars ? (
+        <div className="landing-mystic-preview__calculating" role="status">
+          <div className="landing-mystic-preview__calculating-orb">
+            <Loader2 size={28} className="spin-icon" aria-hidden />
+          </div>
+          <p className="landing-mystic-preview__calculating-text">{t('landing.funnel.signsLoading')}</p>
+        </div>
+      ) : (
+        <ul className="landing-mystic-preview__list">
+          {pillars.map(({ kind, simbolo, label, nome, pulse }) => (
+            <MysticPillar
+              key={kind}
+              kind={kind}
+              simbolo={simbolo}
+              label={label}
+              nome={nome}
+              lang={lang}
+              pulse={pulse}
+            />
           ))}
         </ul>
+      )}
+
+      {carregando && hasPillars ? (
+        <p className="landing-mystic-preview__refining">
+          <Loader2 size={12} className="spin-icon" aria-hidden />
+          {t('landing.funnel.signsRefining')}
+        </p>
       ) : null}
+
+      <p className="landing-mystic-preview__footnote">{t('landing.funnel.previewFootnote')}</p>
     </div>
   )
 }
