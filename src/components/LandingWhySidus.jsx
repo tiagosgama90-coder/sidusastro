@@ -7,6 +7,7 @@ const PILLARS = [
   { icon: Link2, titleKey: 'auth.portal.whySidus.p2Title', descKey: 'auth.portal.whySidus.p2Desc' },
   { icon: ShieldCheck, titleKey: 'auth.portal.whySidus.p3Title', descKey: 'auth.portal.whySidus.p3Desc' },
   { icon: Sparkles, titleKey: 'auth.portal.whySidus.p4Title', descKey: 'auth.portal.whySidus.p4Desc' },
+  { icon: Moon, titleKey: 'auth.portal.whySidus.sonhosTitle', descKey: 'auth.portal.whySidus.sonhosDesc', fullWidth: true },
 ]
 
 /** Destaque profissional: precisão e diferenciação do Sidus na landing. */
@@ -29,8 +30,11 @@ export function LandingWhySidus({ compact = false }) {
       {!compact && <p className="landing-why-sidus__lead">{t('auth.portal.whySidus.lead')}</p>}
 
       <ul className="landing-why-sidus__grid">
-        {pillars.map(({ icon: Icon, titleKey, descKey }) => (
-          <li key={titleKey} className="landing-why-sidus__card">
+        {pillars.map(({ icon: Icon, titleKey, descKey, fullWidth }) => (
+          <li
+            key={titleKey}
+            className={`landing-why-sidus__card${fullWidth ? ' landing-why-sidus__card--full' : ''}`}
+          >
             <div className="landing-why-sidus__icon" aria-hidden="true">
               <Icon size={18} strokeWidth={2} />
             </div>
@@ -39,13 +43,6 @@ export function LandingWhySidus({ compact = false }) {
           </li>
         ))}
       </ul>
-
-      <div className="landing-why-sidus__dream">
-        <div className="landing-why-sidus__dream-icon" aria-hidden="true">
-          <Moon size={18} strokeWidth={2} />
-        </div>
-        <p className="landing-why-sidus__dream-text">{t('auth.portal.whySidus.sonhosHighlight')}</p>
-      </div>
 
       {!compact && <p className="landing-why-sidus__footnote">{t('auth.portal.whySidus.footnote')}</p>}
     </section>

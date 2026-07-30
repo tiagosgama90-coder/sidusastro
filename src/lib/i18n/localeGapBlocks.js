@@ -176,7 +176,8 @@ const GAP_BLOCK_ES = {
         p3Desc: 'Comparación transparente Gratis vs Premium. Sabes qué desbloqueas antes de pagar — sin suscripciones ocultas ni letra pequeña.',
         p4Title: 'Premium de por vida',
         p4Desc: 'Un pago único para todas las herramientas. Sin renovación mensual como en la mayoría de apps de astrología.',
-        sonhosHighlight: 'Interpretación de Sueños: descifra símbolos nocturnos y conéctalos con tu carta natal — incluido en todos los planes, sin límite.',
+        sonhosTitle: 'Interpretación de Sueños',
+        sonhosDesc: 'Descifra símbolos nocturnos y conéctalos con tu carta natal - incluido en todos los planes, sin límite.',
         footnote: 'Sidusastro: astrología seria, accesible y hecha para quien quiere ir más allá del horóscopo del periódico.',
       },
       authGateway: {
@@ -194,7 +195,7 @@ const GAP_BLOCK_ES = {
       adsCopy: {
         eyebrow: 'Oferta Google Ads · Carta natal profesional',
         promoBar: 'Carta natal gratis · Premium de por vida con pago único',
-        defaultTitle: 'Carta natal completa en segundos',
+        defaultTitle: 'Carta natal completa',
         defaultBenefit: 'Calcula Sol, Luna y Ascendente con precisión profesional. Gratis para empezar.',
         defaultCta: 'Ver mi carta natal',
         completoTitle: 'Tu carta natal completa',
@@ -427,7 +428,8 @@ const GAP_BLOCK_FR = {
         p3Desc: 'Comparaison transparente Gratuit vs Premium. Vous savez ce que vous débloquez avant de payer — sans abonnements cachés ni petites lignes.',
         p4Title: 'Premium à vie',
         p4Desc: 'Un paiement unique pour tous les outils. Pas de renouvellement mensuel comme sur la plupart des apps d\'astrologie.',
-        sonhosHighlight: 'Interprétation des Rêves : déchiffrez les symboles nocturnes et reliez-les à votre thème natal — inclus dans tous les plans, sans limite.',
+        sonhosTitle: 'Interprétation des Rêves',
+        sonhosDesc: 'Déchiffrez les symboles nocturnes et reliez-les à votre thème natal - inclus dans tous les plans, sans limite.',
         footnote: 'Sidusastro : astrologie sérieuse, accessible et faite pour ceux qui veulent aller au-delà de l\'horoscope du journal.',
       },
       authGateway: {
@@ -445,7 +447,7 @@ const GAP_BLOCK_FR = {
       adsCopy: {
         eyebrow: 'Offre Google Ads · Thème natal professionnel',
         promoBar: 'Thème natal gratuit · Premium à vie en paiement unique',
-        defaultTitle: 'Thème natal complet en quelques secondes',
+        defaultTitle: 'Thème natal complet',
         defaultBenefit: 'Calculez Soleil, Lune et Ascendant avec précision professionnelle. Gratuit pour commencer.',
         defaultCta: 'Voir mon thème natal',
         completoTitle: 'Votre thème natal complet',
@@ -678,7 +680,8 @@ const GAP_BLOCK_DE = {
         p3Desc: 'Transparente Gratis-vs-Premium-Vergleich. Sie wissen vor der Zahlung, was Sie freischalten — ohne versteckte Abos oder Kleingedrucktes.',
         p4Title: 'Premium lebenslang',
         p4Desc: 'Eine Einmalzahlung für alle Tools. Keine monatliche Verlängerung wie bei den meisten Astrologie-Apps.',
-        sonhosHighlight: 'Traumdeutung: Entschlüsselt nächtliche Symbole und verbindet sie mit Ihrem Geburtshoroskop — in allen Plänen enthalten, ohne Limit.',
+        sonhosTitle: 'Traumdeutung',
+        sonhosDesc: 'Entschlüsselt nächtliche Symbole und verbindet sie mit Ihrem Geburtshoroskop - in allen Plänen enthalten, ohne Limit.',
         footnote: 'Sidusastro: seriöse Astrologie, zugänglich und gemacht für alle, die mehr wollen als ein Zeitungshoroskop.',
       },
       authGateway: {
@@ -696,7 +699,7 @@ const GAP_BLOCK_DE = {
       adsCopy: {
         eyebrow: 'Google Ads Angebot · Professionelles Geburtshoroskop',
         promoBar: 'Gratis Geburtshoroskop · Lebenslanges Premium mit Einmalzahlung',
-        defaultTitle: 'Vollständiges Geburtshoroskop in Sekunden',
+        defaultTitle: 'Vollständiges Geburtshoroskop',
         defaultBenefit: 'Berechnen Sie Sonne, Mond und Aszendent mit professioneller Präzision. Gratis zum Start.',
         defaultCta: 'Mein Geburtshoroskop ansehen',
         completoTitle: 'Ihr vollständiges Geburtshoroskop',
@@ -929,7 +932,8 @@ const GAP_BLOCK_IT = {
         p3Desc: 'Confronto trasparente Gratis vs Premium. Sai cosa sblocchi prima di pagare — senza abbonamenti nascosti né clausole in piccolo.',
         p4Title: 'Premium a vita',
         p4Desc: 'Un pagamento unico per tutti gli strumenti. Nessun rinnovo mensile come nella maggior parte delle app di astrologia.',
-        sonhosHighlight: 'Interpretazione dei Sogni: decifra i simboli notturni e collegali alla tua carta natale — incluso in tutti i piani, senza limiti.',
+        sonhosTitle: 'Interpretazione dei Sogni',
+        sonhosDesc: 'Decifra i simboli notturni e collegali alla tua carta natale - incluso in tutti i piani, senza limiti.',
         footnote: 'Sidusastro: astrologia seria, accessibile e fatta per chi vuole andare oltre l\'oroscopo del giornale.',
       },
       authGateway: {
@@ -947,7 +951,7 @@ const GAP_BLOCK_IT = {
       adsCopy: {
         eyebrow: 'Offerta Google Ads · Carta natale professionale',
         promoBar: 'Carta natale gratis · Premium a vita con pagamento unico',
-        defaultTitle: 'Carta natale completa in pochi secondi',
+        defaultTitle: 'Carta natale completa',
         defaultBenefit: 'Calcola Sole, Luna e Ascendente con precisione professionale. Gratis per iniziare.',
         defaultCta: 'Vedi la mia carta natale',
         completoTitle: 'La tua carta natale completa',
