@@ -3,7 +3,7 @@ import { useLanguage } from '../lib/i18n/LanguageContext.jsx'
 import { LandingPremiumCompare } from './LandingPremiumCompare.jsx'
 import { LandingPremiumPriceCard, LandingSimpleCtaButton } from './LandingPremiumPriceCard.jsx'
 
-export function LandingPlansOverview({ onCta }) {
+export function LandingPlansOverview({ onCta, className = '' }) {
   const { t } = useLanguage()
   const sectionRef = useRef(null)
   const [ctaInView, setCtaInView] = useState(false)
@@ -26,7 +26,7 @@ export function LandingPlansOverview({ onCta }) {
     <section
       ref={sectionRef}
       id="comparar-planos"
-      className="landing-plans-overview landing-glass"
+      className={`landing-plans-overview landing-glass${className ? ` ${className}` : ''}`}
       aria-label={t('landing.plansOverview.ariaLabel')}
     >
       <header className="landing-plans-overview__head">

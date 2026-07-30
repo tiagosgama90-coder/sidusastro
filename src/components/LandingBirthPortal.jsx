@@ -222,7 +222,7 @@ function CampoCidadePortal({ valor, localizacao, onChange, onSelect, erro, onBlu
 export function LandingBirthPortal({
   isDesktop,
   onSaved,
-  onScrollToLogin,
+  onOpenLogin,
   ctaLabel,
   onCtaClick,
 }) {
@@ -357,7 +357,7 @@ export function LandingBirthPortal({
   const handleLoginClick = (e) => {
     e.preventDefault()
     e.stopPropagation()
-    onScrollToLogin?.()
+    onOpenLogin?.(e)
   }
 
   return (
@@ -477,7 +477,7 @@ export function LandingBirthPortal({
                   </>
                 )}
               </button>
-              {onScrollToLogin && (
+              {onOpenLogin && (
                 <p className="landing-portal-login-link">
                   {t('auth.portal.mobileLoginPrompt')}{' '}
                   <button type="button" onClick={handleLoginClick}>

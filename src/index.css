@@ -7994,6 +7994,113 @@ html.sidus-mobile-menu-open .mobile-menu-btn {
   text-wrap: balance;
 }
 
+/* Landing desktop — hero + distingue à esquerda, funil à direita */
+@media (min-width: 1024px) {
+  .landing-auth-layout--desktop {
+    max-width: min(1280px, calc(100vw - 48px)) !important;
+  }
+
+  .landing-conversion-zone--desktop {
+    max-width: min(1240px, calc(100vw - 48px));
+    padding: 28px 32px 36px;
+    display: grid;
+    grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
+    grid-template-areas:
+      "intro funnel"
+      "plans plans"
+      "steps steps"
+      "reviews reviews";
+    gap: 20px 28px;
+    align-items: start;
+  }
+
+  .landing-conversion-zone__intro {
+    grid-area: intro;
+    min-width: 0;
+  }
+
+  .landing-conversion-zone__intro .landing-conversion-zone-head {
+    text-align: left;
+    margin-bottom: 8px;
+  }
+
+  .landing-conversion-zone__intro .landing-conversion-eyebrow,
+  .landing-conversion-zone__intro .landing-conversion-title,
+  .landing-conversion-zone__intro .landing-conversion-lead {
+    text-align: left;
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  .landing-conversion-zone__intro .landing-welcome-zodiac {
+    margin-left: 0;
+    margin-right: auto;
+    width: 168px;
+    height: 168px;
+  }
+
+  .landing-conversion-zone__intro .landing-why-sidus {
+    margin-top: 6px;
+    padding: 14px 16px;
+  }
+
+  .landing-conversion-zone__intro .landing-why-sidus__title {
+    font-size: 1.05rem;
+    text-align: left;
+  }
+
+  .landing-conversion-zone__intro .landing-why-sidus__lead {
+    text-align: left;
+    font-size: 12px;
+  }
+
+  .landing-conversion-zone__intro .landing-why-sidus__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .landing-conversion-zone__funnel {
+    grid-area: funnel;
+    position: sticky;
+    top: 12px;
+    align-self: start;
+    min-width: 0;
+  }
+
+  .landing-conversion-zone__plans {
+    grid-area: plans;
+  }
+
+  .landing-conversion-zone__steps {
+    grid-area: steps;
+  }
+
+  .landing-conversion-zone__reviews {
+    grid-area: reviews;
+  }
+
+  .landing-conversion-zone--desktop .landing-how-it-works__list {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .landing-conversion-zone--desktop .landing-how-it-works__item {
+    height: 100%;
+  }
+
+  .landing-conversion-zone--desktop .landing-plans-overview__head {
+    text-align: left;
+  }
+
+  .landing-conversion-zone--desktop .landing-hero-stack--funnel {
+    margin: 0;
+  }
+}
+
 /* Oracle suggestion chips */
 .oracle-chat__suggestions {
   display: flex;
