@@ -1,7 +1,6 @@
 import { useLanguage } from '../lib/i18n/LanguageContext.jsx'
 import { LandingMysticHighlight } from './LandingMysticHighlight.jsx'
 import { LandingWelcomeSymbol } from './LandingWelcomeSymbol.jsx'
-import { LandingTrustBadges } from './LandingTrustBadges.jsx'
 import { useLandingAdsMessage } from '../hooks/useLandingAdsMessage.js'
 
 export function LandingConversionHead({ compact = false }) {
@@ -43,7 +42,6 @@ export function LandingConversionHead({ compact = false }) {
         )}
       </p>
       <LandingWelcomeSymbol />
-      <LandingTrustBadges compact />
     </div>
   )
 }
