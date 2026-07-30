@@ -11,7 +11,6 @@ import { readLandingDraft, saveLandingDraft, stageLandingDraft, flushLandingDraf
 import { calcularMapaNatal, calcularSignoSolarPorData } from '../lib/astrologia.js'
 import { CITY_SUGGESTION_NO_TRANSLATE, fusosFallbackLabels } from '../lib/landingTranslate.js'
 import { useGoogleTranslateRetranslate } from '../hooks/useGoogleTranslateRetranslate.js'
-import { LandingNatalSignsBar } from './LandingNatalSignsBar.jsx'
 
 const CORES = {
   dourado: '#DFB76C',
@@ -223,8 +222,6 @@ export function LandingBirthPortal({
   isDesktop,
   onSaved,
   onOpenLogin,
-  onOpenRegister,
-  mapCalculated = false,
   ctaLabel,
   onCtaClick,
 }) {
@@ -365,12 +362,6 @@ export function LandingBirthPortal({
     onOpenLogin?.(e)
   }
 
-  const handleRegisterClick = (e) => {
-    e.preventDefault()
-    e.stopPropagation()
-    onOpenRegister?.(e)
-  }
-
   return (
     <section id="landing-birth-portal" className="landing-portal-root" aria-label={t('auth.portal.ariaLabel')}>
       <div className="landing-portal-orb landing-portal-orb--1" aria-hidden />
@@ -499,19 +490,6 @@ export function LandingBirthPortal({
           </div>
         </div>
 
-        {mapCalculated && (
-          <div className="landing-portal-leitura-wrap">
-            <LandingNatalSignsBar />
-            {onOpenRegister && (
-              <p className="landing-portal-register-link">
-                {t('auth.noAccount')}{' '}
-                <button type="button" onClick={handleRegisterClick}>
-                  {t('auth.createHere')}
-                </button>
-              </p>
-            )}
-          </div>
-        )}
         </div>
 
         <footer className="landing-portal-tools-footer" aria-label={t('auth.portal.toolsAria')}>

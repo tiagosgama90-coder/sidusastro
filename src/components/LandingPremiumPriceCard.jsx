@@ -9,7 +9,6 @@ export function LandingPremiumPriceCard({ className = '', showSocialProof = fals
 
   return (
     <div className={`landing-premium-price${className ? ` ${className}` : ''}`}>
-      <p className="landing-premium-price__badge">{t('landing.funnel.priceLifetime')}</p>
       <div className="landing-premium-price__grid">
         <div className="landing-premium-price__option landing-premium-price__option--pix">
           <span className="landing-premium-price__label">{t('landing.funnel.pricePixRegion')}</span>
