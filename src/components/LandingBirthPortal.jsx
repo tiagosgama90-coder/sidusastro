@@ -219,7 +219,13 @@ function CampoCidadePortal({ valor, localizacao, onChange, onSelect, erro, onBlu
   )
 }
 
-export function LandingBirthPortal({ isDesktop, onSaved, onScrollToLogin }) {
+export function LandingBirthPortal({
+  isDesktop,
+  onSaved,
+  onScrollToLogin,
+  ctaLabel,
+  onCtaClick,
+}) {
   const { lang, t } = useLanguage()
   const [nome, setNome] = useState('')
   const [data, setData] = useState('')
@@ -316,6 +322,7 @@ export function LandingBirthPortal({ isDesktop, onSaved, onScrollToLogin }) {
   }
 
   const handleGuardar = async () => {
+    onCtaClick?.()
     tocarTodos()
 
     let fusoFinal = fuso
@@ -466,7 +473,7 @@ export function LandingBirthPortal({ isDesktop, onSaved, onScrollToLogin }) {
                 ) : (
                   <>
                     <Sparkles size={18} />
-                    {t('auth.portal.ctaCalculateMap')}
+                    {ctaLabel || t('auth.portal.ctaCalculateMap')}
                   </>
                 )}
               </button>

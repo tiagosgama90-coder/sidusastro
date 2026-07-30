@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react'
 import { useLanguage } from '../lib/i18n/LanguageContext.jsx'
 
-export function LandingStickyCta({ onCta, targetRef }) {
+export function LandingStickyCta({ onCta, targetRef, ctaLabel }) {
   const { t } = useLanguage()
+  const label = ctaLabel || t('landing.stickyCtaStart')
   const [visivel, setVisivel] = useState(false)
 
   useEffect(() => {
@@ -22,7 +23,7 @@ export function LandingStickyCta({ onCta, targetRef }) {
   return (
     <div className="landing-sticky-cta" role="region" aria-label={t('landing.stickyCtaAria')}>
       <button type="button" className="landing-sticky-cta__btn" onClick={onCta}>
-        {t('landing.stickyCta')}
+        {label}
       </button>
     </div>
   )

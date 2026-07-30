@@ -92,6 +92,7 @@ import { gerarHoroscopoSignoTransito } from './lib/horoscopoDiarioTransitos.js'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { passoFromPath, pathFromPasso, langFromPath, stripLangPrefix } from './lib/routes.js'
 import { initGoogleAnalytics } from './lib/googleAnalytics.js'
+import { trackMapaConversion } from './lib/googleAds.js'
 import { initAdSense, shouldShowAdsOnPasso } from './lib/adsense.js'
 import { AdSenseBanner } from './components/AdSenseBanner.jsx'
 import { CookieConsent } from './components/CookieConsent.jsx'
@@ -102,6 +103,9 @@ import { readLandingDraft, clearLandingDraft, mergeLandingDraft, hasLandingDraft
 import { MobileBottomNav } from './components/MobileBottomNav.jsx'
 import { HomeParaTiHoje } from './components/HomeParaTiHoje.jsx'
 import { LandingStickyCta } from './components/LandingStickyCta.jsx'
+import { LandingHowItWorks } from './components/LandingHowItWorks.jsx'
+import { LandingExitIntent } from './components/LandingExitIntent.jsx'
+import { useLandingCtaVariant } from './hooks/useLandingCtaVariant.js'
 import { MapaPaywallSections } from './components/MapaPaywallSections.jsx'
 import { FerramentasEmptyState } from './components/FerramentasEmptyState.jsx'
 
@@ -1348,6 +1352,7 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
   const [info, setInfo]         = useState(null)
   const [recaptchaOk, setRecaptchaOk] = useState(false)
   const [recaptchaKey, setRecaptchaKey] = useState(0)
+  const { label: ctaLabel, trackClick: trackCtaClick } = useLandingCtaVariant()
 
   const traduzirErro = (code) => traduzirErroAuth(code, lang)
 
@@ -1431,6 +1436,7 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
   }, [])
 
   const handleBirthComplete = useCallback(() => {
+    trackMapaConversion()
     setFunnelStep('loading')
     window.setTimeout(() => {
       setFunnelStep('paywall')
@@ -1457,8 +1463,9 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
   }, [closeLoginModal, goToBirthForm])
 
   const handleFunnelCta = useCallback(() => {
+    trackCtaClick('funnel')
     goToBirthForm()
-  }, [goToBirthForm])
+  }, [goToBirthForm, trackCtaClick])
 
   return (
     <>
@@ -1468,11 +1475,15 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
         onRegister={handleModalRegister}
         firebaseOk={firebaseOk}
       />
+      <LandingExitIntent
+        enabled={isDesktop && funnelStep === 'birth'}
+        onContinue={goToBirthForm}
+      />
       <div className={`landing-auth-layout${isDesktop ? ' landing-auth-layout--desktop' : ' landing-auth-layout--mobile'}`} translate="yes">
         <BannerBrasil />
-        <LandingStickyCta targetRef={conversionZoneRef} onCta={handleFunnelCta} />
+        <LandingStickyCta targetRef={conversionZoneRef} onCta={handleFunnelCta} ctaLabel={ctaLabel} />
         <div className="landing-top-stack">
-          <LandingTopBar onLogin={openLoginModal} onStart={handleFunnelCta} />
+          <LandingTopBar onLogin={openLoginModal} onStart={handleFunnelCta} ctaLabel={ctaLabel} />
           <div className={`${isDesktop ? 'landing-sky-desktop-wrap landing-sky-desktop-wrap--compact' : 'landing-sky-mobile-wrap landing-sky-mobile-wrap--compact'}`}>
             <LandingSkyLive compact />
           </div>
@@ -1483,12 +1494,16 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
           aria-label={t('auth.portal.conversionAria')}
         >
           <LandingConversionHead compact={funnelStep !== 'birth'} />
+          {isDesktop && <LandingPlansOverview onCta={goToBirthForm} />}
+          <LandingHowItWorks />
           <div className={`landing-hero-stack landing-hero-stack--funnel${funnelStep === 'paywall' ? ' landing-hero-stack--funnel-wide' : ''}`}>
             {funnelStep === 'birth' && (
               <LandingBirthPortal
                 isDesktop={isDesktop}
                 onSaved={handleBirthComplete}
                 onScrollToLogin={openLoginModal}
+                ctaLabel={ctaLabel}
+                onCtaClick={() => trackCtaClick('birth_form')}
               />
             )}
             {funnelStep === 'loading' && <LandingFunnelLoading />}
@@ -1514,7 +1529,7 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
               />
             )}
           </div>
-          <LandingPlansOverview onCta={goToBirthForm} />
+          {!isDesktop && <LandingPlansOverview onCta={goToBirthForm} />}
           <LandingWhySidus compact />
           <LandingReviews variant="paywall" />
         </section>

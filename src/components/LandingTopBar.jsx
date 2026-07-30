@@ -2,8 +2,9 @@ import { SidusLogo } from './SidusLogo.jsx'
 import { LanguageSwitcher } from './LanguageSwitcher.jsx'
 import { useLanguage } from '../lib/i18n/LanguageContext.jsx'
 
-export function LandingTopBar({ onLogin, onStart }) {
+export function LandingTopBar({ onLogin, onStart, ctaLabel }) {
   const { t } = useLanguage()
+  const startLabel = ctaLabel || t('auth.portal.topCtaShort')
 
   const handleLogin = (e) => {
     e.preventDefault()
@@ -21,7 +22,7 @@ export function LandingTopBar({ onLogin, onStart }) {
         </button>
         {onStart && (
           <button type="button" className="landing-top-bar__cta" onClick={onStart}>
-            {t('auth.portal.topCtaShort')}
+            {startLabel}
           </button>
         )}
       </div>
