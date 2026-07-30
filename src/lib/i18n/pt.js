@@ -381,6 +381,7 @@ export default {
       eyebrow: 'Planos',
       title: 'Grátis vs Premium',
       lead: 'Comparação directa. Pagamento único no Premium, sem subscrição mensal.',
+      ctaAria: 'Ir para o formulário de nascimento e desbloquear Premium',
     },
   },
   mapa: {

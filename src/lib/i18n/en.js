@@ -381,6 +381,7 @@ export default {
       eyebrow: 'Plans',
       title: 'Free vs Premium',
       lead: 'Straight comparison. One-time Premium payment, no monthly subscription.',
+      ctaAria: 'Go to birth form and unlock Premium',
     },
   },
   mapa: {
