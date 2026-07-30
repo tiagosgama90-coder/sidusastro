@@ -1,13 +1,11 @@
 import { Loader2 } from 'lucide-react'
 import { useLanguage } from '../lib/i18n/LanguageContext.jsx'
-import { useGeoCountry } from '../hooks/useGeoCountry.js'
 import { getPremiumPriceLabels } from '../lib/premiumPricingLabels.js'
 
-/** Preço Premium formatado para landing — PIX e EUR separados e legíveis. */
-export function LandingPremiumPriceCard({ className = '' }) {
+/** Preço Premium formatado para landing. */
+export function LandingPremiumPriceCard({ className = '', showSocialProof = false }) {
   const { t } = useLanguage()
-  const { isBrasil } = useGeoCountry()
-  const prices = getPremiumPriceLabels(isBrasil, t)
+  const prices = getPremiumPriceLabels(false, t)
 
   return (
     <div className={`landing-premium-price${className ? ` ${className}` : ''}`}>
@@ -27,12 +25,41 @@ export function LandingPremiumPriceCard({ className = '' }) {
           <span className="landing-premium-price__method">{t('landing.funnel.priceCardMethod')}</span>
         </div>
       </div>
+      {showSocialProof && (
+        <p className="landing-premium-price__social">{t('landing.plansOverview.socialProof')}</p>
+      )}
       <p className="landing-premium-price__footnote">{t('landing.funnel.priceSub')}</p>
     </div>
   )
 }
 
-/** Botão paywall com título + dois preços em linhas separadas. */
+export function LandingSimpleCtaButton({
+  className = '',
+  onClick,
+  ariaLabel,
+  disabled = false,
+  loading = false,
+  pulse = false,
+  children,
+}) {
+  const { t } = useLanguage()
+
+  return (
+    <button
+      type="button"
+      className={`landing-paywall-cta landing-paywall-cta--simple${pulse ? ' landing-paywall-cta--pulse' : ''}${className ? ` ${className}` : ''}`}
+      onClick={onClick}
+      disabled={disabled || loading}
+      aria-label={ariaLabel}
+    >
+      {loading
+        ? <Loader2 size={20} className="landing-paywall-cta__spin" aria-hidden />
+        : (children ?? t('auth.register'))}
+    </button>
+  )
+}
+
+/** Botão paywall com título + dois preços (funil paywall). */
 export function LandingPaywallCtaButton({
   className = '',
   onClick,
