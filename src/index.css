@@ -7600,25 +7600,6 @@ html.sidus-mobile-menu-open .mobile-menu-btn {
   margin-inline: auto;
 }
 
-.landing-hero-pro__art {
-  width: min(520px, 94vw);
-  margin: 0 auto;
-  border-radius: 14px;
-  overflow: hidden;
-  border: 1px solid rgba(223, 183, 108, 0.22);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
-}
-
-.landing-hero-pro__guide-art {
-  width: 100%;
-  aspect-ratio: 5 / 1;
-}
-
-.landing-hero-pro__guide-art .natal-chart-premium__photo--guide {
-  object-fit: cover;
-  object-position: center center;
-}
-
 .landing-mandala-reveal {
   position: relative;
   width: min(280px, 72vw);

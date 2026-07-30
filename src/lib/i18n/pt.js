@@ -110,7 +110,7 @@ export default {
         sinastriaBenefit: 'Sinastria e radar de afinidades com o teu parceiro. Incluído no Premium vitalício.',
         sinastriaCta: 'Ver compatibilidade no mapa',
       },
-      conversionTitleHighlight: 'mapa natal',
+      conversionTitleHighlight: 'mapa astral',
       conversionLead: 'Entra no teu universo pessoal e descobre o que o teu mapa astral revela. Explora a astrologia, a numerologia e o tarot através de ferramentas de alta precisão desenhadas para guiar os teus próximos passos.',
       conversionLeadHighlight: 'mapa astral',
       ctaVariantA: 'Criar conta grátis',
