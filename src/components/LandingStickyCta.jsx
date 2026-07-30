@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react'
 import { useLanguage } from '../lib/i18n/LanguageContext.jsx'
 
-export function LandingStickyCta({ onCta, targetRef, ctaLabel }) {
+export function LandingStickyCta({ onCta, targetRef, hideWhenRef, ctaLabel }) {
   const { t } = useLanguage()
   const label = ctaLabel || t('landing.stickyCtaStart')
   const [visivel, setVisivel] = useState(false)
+  const [formVisivel, setFormVisivel] = useState(false)
 
   useEffect(() => {
     const alvo = targetRef?.current
@@ -18,7 +19,19 @@ export function LandingStickyCta({ onCta, targetRef, ctaLabel }) {
     return () => observer.disconnect()
   }, [targetRef])
 
-  if (!visivel) return null
+  useEffect(() => {
+    const form = hideWhenRef?.current ?? document.getElementById('landing-birth-portal')
+    if (!form) return undefined
+
+    const observer = new IntersectionObserver(
+      ([entry]) => setFormVisivel(entry.isIntersecting),
+      { threshold: 0.12, rootMargin: '0px 0px -72px 0px' },
+    )
+    observer.observe(form)
+    return () => observer.disconnect()
+  }, [hideWhenRef])
+
+  if (!visivel || formVisivel) return null
 
   return (
     <div className="landing-sticky-cta" role="region" aria-label={t('landing.stickyCtaAria')}>

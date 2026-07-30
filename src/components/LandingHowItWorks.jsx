@@ -7,8 +7,29 @@ const STEPS = [
   { icon: Crown, titleKey: 'auth.portal.steps.s3Title', descKey: 'auth.portal.steps.s3Desc' },
 ]
 
-export function LandingHowItWorks() {
+export function LandingHowItWorks({ variant = 'default' }) {
   const { t } = useLanguage()
+
+  if (variant === 'strip') {
+    return (
+      <section
+        className="landing-how-it-works landing-how-it-works--strip"
+        aria-label={t('auth.portal.steps.ariaLabel')}
+      >
+        <ol className="landing-how-it-works__strip">
+          {STEPS.map(({ icon: Icon, titleKey }, index) => (
+            <li key={titleKey} className="landing-how-it-works__strip-item">
+              <span className="landing-how-it-works__strip-num" aria-hidden>{index + 1}</span>
+              <span className="landing-how-it-works__strip-icon" aria-hidden>
+                <Icon size={17} strokeWidth={1.75} />
+              </span>
+              <span className="landing-how-it-works__strip-label">{t(titleKey)}</span>
+            </li>
+          ))}
+        </ol>
+      </section>
+    )
+  }
 
   return (
     <section className="landing-how-it-works" aria-label={t('auth.portal.steps.ariaLabel')}>

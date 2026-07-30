@@ -1,12 +1,16 @@
 import { useEffect, useRef, useState } from 'react'
+import { ChevronDown } from 'lucide-react'
 import { useLanguage } from '../lib/i18n/LanguageContext.jsx'
 import { LandingPremiumCompare } from './LandingPremiumCompare.jsx'
 import { LandingPremiumPriceCard, LandingSimpleCtaButton } from './LandingPremiumPriceCard.jsx'
+
+const COMPARE_PREVIEW_ROWS = 4
 
 export function LandingPlansOverview({ onCta, className = '' }) {
   const { t } = useLanguage()
   const sectionRef = useRef(null)
   const [ctaInView, setCtaInView] = useState(false)
+  const [compareExpanded, setCompareExpanded] = useState(false)
 
   useEffect(() => {
     const node = sectionRef.current
@@ -38,7 +42,21 @@ export function LandingPlansOverview({ onCta, className = '' }) {
       <LandingPremiumPriceCard className="landing-plans-overview__price" showSocialProof />
 
       <div className="landing-plans-overview__paywall">
-        <LandingPremiumCompare interactive />
+        <LandingPremiumCompare
+          interactive
+          maxRows={compareExpanded ? undefined : COMPARE_PREVIEW_ROWS}
+        />
+        {!compareExpanded && (
+          <button
+            type="button"
+            className="landing-plans-overview__expand"
+            onClick={() => setCompareExpanded(true)}
+            aria-expanded={false}
+          >
+            {t('landing.plansOverview.compareExpand')}
+            <ChevronDown size={16} aria-hidden />
+          </button>
+        )}
       </div>
 
       {onCta && (

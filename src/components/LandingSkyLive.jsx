@@ -5,7 +5,7 @@ import { calcularResumoCeuAgora } from '../lib/ceuAoVivo.js'
 import { formatSkyPosition } from '../lib/i18n/astro.js'
 import { dateLocale } from '../lib/i18n/langUtil.js'
 
-export function LandingSkyLive({ compact = false }) {
+export function LandingSkyLive({ compact = false, mobileLineOnly = false }) {
   const { lang, t } = useLanguage()
 
   const hoje = new Date().toLocaleDateString(dateLocale(lang), {
@@ -14,14 +14,27 @@ export function LandingSkyLive({ compact = false }) {
 
   const ceuAgora = useMemo(() => calcularResumoCeuAgora(new Date(), lang), [lang])
 
+  const solLine = formatSkyPosition({ key: 'sol', nome: 'Sol', simbolo: '☉', signo: ceuAgora.sol }, lang)
+  const luaLine = formatSkyPosition({ key: 'lua', nome: 'Lua', simbolo: '☽', signo: ceuAgora.lua }, lang)
+
   const tickerItems = useMemo(() => [
-    { key: 'sol', label: formatSkyPosition({ key: 'sol', nome: 'Sol', simbolo: '☉', signo: ceuAgora.sol }, lang) },
-    { key: 'lua', label: formatSkyPosition({ key: 'lua', nome: 'Lua', simbolo: '☽', signo: ceuAgora.lua }, lang) },
+    { key: 'sol', label: solLine },
+    { key: 'lua', label: luaLine },
     ...ceuAgora.planetas.map((p) => ({
       key: p.key,
       label: formatSkyPosition(p, lang),
     })),
-  ], [ceuAgora, lang])
+  ], [ceuAgora, lang, solLine, luaLine])
+
+  if (mobileLineOnly) {
+    return (
+      <div className="landing-sky-line" aria-label={t('auth.portal.skyLive')}>
+        <span className="landing-sky-line__item">{solLine}</span>
+        <span className="landing-sky-line__sep" aria-hidden>·</span>
+        <span className="landing-sky-line__item">{luaLine}</span>
+      </div>
+    )
+  }
 
   return (
     <div className={`landing-sky-top${compact ? ' landing-sky-top--compact' : ''}`} aria-label={t('auth.portal.skyLive')}>
