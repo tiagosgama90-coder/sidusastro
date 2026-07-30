@@ -13,7 +13,6 @@ import {
   ChevronLeft,
   Home,
   Map,
-  Grid3x3,
   MessageCircle,
   Sun,
   ArrowUp,
@@ -108,7 +107,6 @@ import { useLandingCtaVariant } from './hooks/useLandingCtaVariant.js'
 import { useLandingMapaPreview } from './hooks/useLandingMapaPreview.js'
 import { warmupLandingMapaMotor } from './lib/landingMapaMotor.js'
 import { MapaPaywallSections } from './components/MapaPaywallSections.jsx'
-import { FerramentasEmptyState } from './components/FerramentasEmptyState.jsx'
 import { lazyWithRetry, importWithRetry } from './lib/lazyWithRetry.js'
 
 const EcraTarotLazy = lazyWithRetry(() => import('./components/Tarot.jsx').then((m) => ({ default: m.EcraTarot })))
@@ -2636,38 +2634,6 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
   )
 }
 
-function Ferramentas({ onFerramenta, isDesktop, acessoVip, mapaNatal, onCompletarMapa }) {
-  const { lang, t } = useLanguage()
-  const ferramentas = getFerramentas(lang)
-  const semMapa = !mapaNatalValido(mapaNatal)
-  return (
-    <div style={layoutConteudo(isDesktop)}>
-      <header style={{ marginBottom: 28 }}>
-        <h1 className="sidus-page-title" style={{ textAlign: 'left' }}>{t('ferramentas.title')}</h1>
-      </header>
-      {semMapa && <FerramentasEmptyState onCompletarMapa={onCompletarMapa} />}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 12, opacity: semMapa ? 0.55 : 1 }}>
-        {ferramentas.map((f) => {
-          const Icon = f.icon
-          const bloqueada = f.premium && !acessoVip
-          return (
-            <button key={f.id} type="button" onClick={() => onFerramenta(f)} style={{ ...estilos.vidro, padding: '18px 20px', display: 'flex', alignItems: 'center', gap: 16, cursor: 'pointer', width: '100%', textAlign: 'left', opacity: bloqueada ? 0.85 : 1 }}>
-              <div style={{ width: 48, height: 48, borderRadius: 12, background: f.premium ? 'rgba(223,183,108,0.12)' : CORES.roxoClaro, border: `1px solid ${f.premium ? CORES.dourado : CORES.vidroBorda}`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <Icon size={22} color={f.premium ? CORES.dourado : CORES.brancoSuave} />
-              </div>
-              <div style={{ flex: 1 }}>
-                <div style={{ fontSize: 15, color: CORES.branco }}>{f.nome}</div>
-                {f.sub && <div style={{ fontSize: 12, color: CORES.brancoMuted }}>{f.sub}</div>}
-              </div>
-              {f.premium && !acessoVip && <Crown size={16} color={CORES.dourado} />}
-            </button>
-          )
-        })}
-      </div>
-    </div>
-  )
-}
-
 function Paywall({ onVoltar, onPagar, onSucesso, onPromo, isDesktop, isBrasil, oraclePerguntasUsadas = 0, leiturasTarotUsadas = 0, paywallTool = null }) {
   const { t } = useLanguage()
   const precoVitrine = precoPremiumVitrine(isBrasil)
@@ -3330,24 +3296,29 @@ function Navbar({ passo, setPasso, isDesktop, dados, fotoPerfil }) {
     setMenuAberto(false)
   }
 
-  const ferramentasLista = getFerramentas(lang)
+  const ferramentasNav = getFerramentas(lang).map((f) => ({
+    id: f.id,
+    label: f.nome,
+    icon: f.icon,
+    glow: f.premium ? CORES.dourado : '#93C5FD',
+  }))
 
   const itens = [
     { id: 'home',        label: t('nav.home'),    icon: Home,          glow: '#DFB76C' },
     { id: 'mapa',        label: t('nav.mapa'),    icon: Map,           glow: '#C4B5FD' },
     { id: 'tarot',       label: t('nav.tarot'),   icon: Layers,        glow: '#F472B6' },
-    { id: 'ferramentas', label: t('nav.ferramentas'), icon: Grid3x3,   glow: '#93C5FD' },
+    ...ferramentasNav,
     { id: 'chat',        label: t('nav.oraculo'), icon: MessageCircle, glow: '#34D399' },
   ]
 
-  const passosFerramenta = new Set(ferramentasLista.map((f) => f.id))
+  const passosFerramenta = new Set(ferramentasNav.map((f) => f.id))
 
   const navegar = (id) => {
     setPasso(id)
     setMenuAberto(false)
   }
 
-  const itemAtivo = (item) => passo === item.id || (item.id === 'ferramentas' && passosFerramenta.has(passo))
+  const itemAtivo = (item) => passo === item.id
 
   useEffect(() => {
     setMenuAberto(false)
@@ -3402,7 +3373,7 @@ function Navbar({ passo, setPasso, isDesktop, dados, fotoPerfil }) {
                   <button
                     key={item.id}
                     type="button"
-                    className={`desktop-nav-item${item.id === 'ferramentas' ? ' desktop-nav-item--tool' : ''}`}
+                    className={`desktop-nav-item${passosFerramenta.has(item.id) ? ' desktop-nav-item--tool' : ''}`}
                     onClick={() => navegar(item.id)}
                     onMouseEnter={() => setHover(item.id)}
                     onMouseLeave={() => setHover(null)}
@@ -4216,10 +4187,6 @@ export default function App() {
     setPasso('login')
   }
 
-  const handleFerramenta = (f) => {
-    irPara(f.id)
-  }
-
   const abrirPagamento = (descricao, valor, onSucesso, opts = {}) => {
     if (!utilizador?.uid) {
       setPagamentoMsg({ tipo: 'erro', texto: t('pagamento.needLogin') })
@@ -4410,8 +4377,6 @@ export default function App() {
             <DiarioAstralLazy mapaNatal={mapaNatal} onVoltar={() => irPara('home')} />
           </Suspense>
         )
-      case 'ferramentas':
-        return <Ferramentas onFerramenta={handleFerramenta} isDesktop={isDesktop} acessoVip={acessoVip} mapaNatal={mapaNatal} onCompletarMapa={() => irPara('onboarding')} />
       case 'paywall':
         return <Paywall onVoltar={() => irPara('home')} onPagar={abrirPagamento} onPromo={() => irPara('vipPromo')} onSucesso={() => { setIsPremium(true); setMapaCompleto(true); irPara(dadosNataisMinimos(dados) ? 'mapa' : 'onboarding') }} isDesktop={isDesktop} isBrasil={isBrasil} oraclePerguntasUsadas={oraclePerguntasUsadas} leiturasTarotUsadas={leiturasTarotUsadas} paywallTool={paywallTool} />
       case 'chat':

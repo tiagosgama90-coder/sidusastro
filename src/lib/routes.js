@@ -4,7 +4,6 @@ export const PASSO_TO_PATH = {
   home: '/home',
   mapa: '/mapaastral',
   tarot: '/tarot',
-  ferramentas: '/ferramentas',
   bussola: '/bussola',
   sinastria: '/sinastria',
   numerologia: '/numerologia',
@@ -28,6 +27,7 @@ const PATH_TO_PASSO = Object.fromEntries(
 PATH_TO_PASSO['/'] = 'login'
 PATH_TO_PASSO['/inicio'] = 'home'
 PATH_TO_PASSO['/mapa'] = 'mapa'
+PATH_TO_PASSO['/ferramentas'] = 'home'
 PATH_TO_PASSO['/chat'] = 'chat'
 PATH_TO_PASSO['/premium'] = 'paywall'
 PATH_TO_PASSO['/vip'] = 'paywall'

@@ -27,7 +27,6 @@ const SPA_ROUTES = [
   { path: '/sinastria', priority: 0.86, changefreq: 'weekly' },
   { path: '/bussola', priority: 0.85, changefreq: 'weekly' },
   { path: '/numerologia', priority: 0.84, changefreq: 'monthly' },
-  { path: '/ferramentas', priority: 0.82, changefreq: 'monthly' },
   { path: '/sonhos', priority: 0.8, changefreq: 'monthly' },
   { path: '/biorritmo', priority: 0.8, changefreq: 'monthly' },
   { path: '/horas-iguais', priority: 0.78, changefreq: 'monthly' },
