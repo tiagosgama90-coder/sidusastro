@@ -51,6 +51,7 @@ import { LandingWhySidus } from './components/LandingWhySidus.jsx'
 import { LandingAuthModal } from './components/LandingAuthModal.jsx'
 import { LandingPremiumPaywall } from './components/LandingPremiumPaywall.jsx'
 import { LandingFunnelLoading } from './components/LandingFunnelLoading.jsx'
+import { LandingPlansOverview } from './components/LandingPlansOverview.jsx'
 import { LandingTopBar } from './components/LandingTopBar.jsx'
 import { SidusLogo } from './components/SidusLogo.jsx'
 import { SidusConstellationMark } from './components/SidusConstellationMark.jsx'
@@ -1514,6 +1515,7 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
               />
             )}
           </div>
+          <LandingPlansOverview onCta={scrollToBirth} />
           <LandingWhySidus compact />
           <LandingReviews variant="paywall" />
         </section>

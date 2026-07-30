@@ -3,7 +3,6 @@ import { Crown, Eye, EyeOff, Loader2, Lock } from 'lucide-react'
 import { useLanguage } from '../lib/i18n/LanguageContext.jsx'
 import { useGeoCountry } from '../hooks/useGeoCountry.js'
 import { getPremiumPriceLabels } from '../lib/premiumPricingLabels.js'
-import { LandingPremiumCompare } from './LandingPremiumCompare.jsx'
 import { RecaptchaCheckbox } from './Recaptcha.jsx'
 
 const MANDALA_SRC = '/brand/sidus-natal-guide-wheels.png?v=1'
@@ -63,7 +62,7 @@ export const LandingPremiumPaywall = forwardRef(function LandingPremiumPaywall({
   return (
     <section
       ref={ref}
-      id="comparar-planos"
+      id="desbloquear-premium"
       className="landing-premium-paywall"
       aria-label={t('landing.funnel.paywallAria')}
     >
@@ -95,8 +94,6 @@ export const LandingPremiumPaywall = forwardRef(function LandingPremiumPaywall({
             </p>
             <p className="landing-premium-paywall__price-sub">{t('landing.funnel.priceSub')}</p>
           </div>
-
-          <LandingPremiumCompare maxRows={5} showNote={false} className="landing-premium-paywall__compare" />
 
           <p className="landing-premium-paywall__account-lead">{t('landing.funnel.accountLead')}</p>
 

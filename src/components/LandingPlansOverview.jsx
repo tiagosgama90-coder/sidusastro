@@ -1,6 +1,5 @@
 import { useLanguage } from '../lib/i18n/LanguageContext.jsx'
 import { LandingPremiumCompare } from './LandingPremiumCompare.jsx'
-import { PremiumPricingNote } from './PremiumPricingNote.jsx'
 
 export function LandingPlansOverview({ onCta }) {
   const { t } = useLanguage()
@@ -18,18 +17,19 @@ export function LandingPlansOverview({ onCta }) {
       </header>
 
       <div className="landing-plans-overview__paywall">
-        <PremiumPricingNote compact />
         <LandingPremiumCompare maxRows={6} showNote={false} />
       </div>
 
-      <button
-        type="button"
-        className="landing-plans-overview__cta"
-        onClick={onCta}
-        aria-label={t('landing.simplePremium.ctaAria')}
-      >
-        {t('auth.register')}
-      </button>
+      {onCta && (
+        <button
+          type="button"
+          className="landing-plans-overview__cta"
+          onClick={onCta}
+          aria-label={t('landing.stickyCtaAria')}
+        >
+          {t('auth.portal.ctaCalculateMap')}
+        </button>
+      )}
     </section>
   )
 }
