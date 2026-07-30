@@ -6,11 +6,14 @@ import { LandingPremiumPriceCard, LandingSimpleCtaButton } from './LandingPremiu
 
 const COMPARE_PREVIEW_ROWS = 4
 
-export function LandingPlansOverview({ onCta, className = '' }) {
+export function LandingPlansOverview({ onCta, className = '', isDesktop = true }) {
   const { t } = useLanguage()
   const sectionRef = useRef(null)
   const [ctaInView, setCtaInView] = useState(false)
   const [compareExpanded, setCompareExpanded] = useState(false)
+
+  const showCompareTable = isDesktop || compareExpanded
+  const comparePreviewRows = isDesktop && !compareExpanded ? COMPARE_PREVIEW_ROWS : undefined
 
   useEffect(() => {
     const node = sectionRef.current
@@ -41,17 +44,19 @@ export function LandingPlansOverview({ onCta, className = '' }) {
 
       <LandingPremiumPriceCard className="landing-plans-overview__price" showSocialProof />
 
-      <div className="landing-plans-overview__paywall">
-        <LandingPremiumCompare
-          interactive
-          maxRows={compareExpanded ? undefined : COMPARE_PREVIEW_ROWS}
-        />
+      <div className={`landing-plans-overview__paywall${!isDesktop && !compareExpanded ? ' landing-plans-overview__paywall--collapsed' : ''}`}>
+        {showCompareTable && (
+          <LandingPremiumCompare
+            interactive
+            maxRows={comparePreviewRows}
+          />
+        )}
         {!compareExpanded && (
           <button
             type="button"
             className="landing-plans-overview__expand"
             onClick={() => setCompareExpanded(true)}
-            aria-expanded={false}
+            aria-expanded={compareExpanded}
           >
             {t('landing.plansOverview.compareExpand')}
             <ChevronDown size={16} aria-hidden />
