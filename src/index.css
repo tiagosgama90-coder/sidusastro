@@ -7957,3 +7957,58 @@ html.sidus-mobile-menu-open .mobile-menu-btn {
     padding: 36px 24px 44px;
   }
 }
+
+/* Google Ads landing */
+.landing-ads-promo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 14px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: rgba(223, 183, 108, 0.95);
+  background: linear-gradient(90deg, rgba(223, 183, 108, 0.1), rgba(223, 183, 108, 0.04));
+  border-bottom: 1px solid rgba(223, 183, 108, 0.18);
+  text-align: center;
+  line-height: 1.4;
+}
+.landing-ads-promo__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #34d399;
+  box-shadow: 0 0 8px rgba(52, 211, 153, 0.6);
+  flex-shrink: 0;
+}
+.landing-hero-pro--ads .landing-conversion-eyebrow {
+  color: rgba(52, 211, 153, 0.9);
+}
+.landing-hero-pro--ads .landing-conversion-title--pro {
+  text-wrap: balance;
+}
+
+/* Oracle suggestion chips */
+.oracle-chat__suggestions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0 0 10px;
+}
+.oracle-chat__suggestion-chip {
+  padding: 7px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(223, 183, 108, 0.28);
+  background: rgba(223, 183, 108, 0.08);
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 11px;
+  line-height: 1.35;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+.oracle-chat__suggestion-chip:hover {
+  background: rgba(223, 183, 108, 0.16);
+  border-color: rgba(223, 183, 108, 0.45);
+}

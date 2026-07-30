@@ -92,7 +92,9 @@ import { gerarHoroscopoSignoTransito } from './lib/horoscopoDiarioTransitos.js'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { passoFromPath, pathFromPasso, langFromPath, stripLangPrefix } from './lib/routes.js'
 import { initGoogleAnalytics } from './lib/googleAnalytics.js'
-import { trackMapaConversion } from './lib/googleAds.js'
+import { trackMapaConversion, trackSignupConversion, trackPurchaseConversion } from './lib/googleAds.js'
+import { captureLandingAdsAttribution } from './lib/landingAdsContext.js'
+import { LandingAdsPromoBar } from './components/LandingAdsPromoBar.jsx'
 import { initAdSense, shouldShowAdsOnPasso } from './lib/adsense.js'
 import { AdSenseBanner } from './components/AdSenseBanner.jsx'
 import { CookieConsent } from './components/CookieConsent.jsx'
@@ -1358,6 +1360,7 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
 
   useEffect(() => {
     onMudar('register')
+    captureLandingAdsAttribution()
     setRecaptchaOk(false)
     setRecaptchaKey((k) => k + 1)
     setErro(null)
@@ -1387,6 +1390,7 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
         console.warn('[Sidus Auth] Email verificação:', emailErr?.code, emailErr?.message)
       }
       setInfo(t('auth.accountCreated'))
+      trackSignupConversion()
     } catch (e) {
       console.error('[Sidus Auth] Erro:', e.code, e.message)
       setErro(traduzirErro(e.code) + (e.code ? ` [${e.code}]` : ''))
@@ -1405,6 +1409,7 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
     setCarregando(true)
     try {
       await signInWithPopup(auth, new GoogleAuthProvider())
+      trackSignupConversion('google')
     } catch (e) {
       console.error('[Sidus Google] Erro:', e.code, e.message)
       if (e.code !== 'auth/popup-closed-by-user') setErro(traduzirErro(e.code) + ` [${e.code}]`)
@@ -1476,11 +1481,12 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
         firebaseOk={firebaseOk}
       />
       <LandingExitIntent
-        enabled={isDesktop && funnelStep === 'birth'}
+        enabled={funnelStep === 'birth'}
         onContinue={goToBirthForm}
       />
       <div className={`landing-auth-layout${isDesktop ? ' landing-auth-layout--desktop' : ' landing-auth-layout--mobile'}`} translate="yes">
         <BannerBrasil />
+        <LandingAdsPromoBar />
         <LandingStickyCta targetRef={conversionZoneRef} onCta={handleFunnelCta} ctaLabel={ctaLabel} />
         <div className="landing-top-stack">
           <LandingTopBar onLogin={openLoginModal} onStart={handleFunnelCta} ctaLabel={ctaLabel} />
@@ -1494,7 +1500,7 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
           aria-label={t('auth.portal.conversionAria')}
         >
           <LandingConversionHead compact={funnelStep !== 'birth'} />
-          {isDesktop && <LandingPlansOverview onCta={goToBirthForm} />}
+          <LandingPlansOverview onCta={goToBirthForm} />
           <LandingHowItWorks />
           <div className={`landing-hero-stack landing-hero-stack--funnel${funnelStep === 'paywall' ? ' landing-hero-stack--funnel-wide' : ''}`}>
             {funnelStep === 'birth' && (
@@ -1529,7 +1535,6 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
               />
             )}
           </div>
-          {!isDesktop && <LandingPlansOverview onCta={goToBirthForm} />}
           <LandingWhySidus compact />
           <LandingReviews variant="paywall" />
         </section>
@@ -3180,6 +3185,20 @@ function Chat({ mapaNatal, isPremium, userId, oracleRemotas, onOracleUsada, onUp
                 : t('oracle.freeRemainingHintPlural', { count: restantes, max: MAX_ORACLE_GRATIS }))}
           </p>
         )}
+        {!isPremium && !limiteAtingido && texto.trim() === '' && (
+          <div className="oracle-chat__suggestions" role="group" aria-label={t('oracle.suggestionsAria')}>
+            {['suggestion1', 'suggestion2', 'suggestion3', 'suggestion4'].map((key) => (
+              <button
+                key={key}
+                type="button"
+                className="oracle-chat__suggestion-chip"
+                onClick={() => setTexto(t(`oracle.${key}`))}
+              >
+                {t(`oracle.${key}`)}
+              </button>
+            ))}
+          </div>
+        )}
         <div style={{ display: 'flex', gap: 10 }}>
         <input
           value={texto}
@@ -3959,6 +3978,7 @@ export default function App() {
         sessionStorage.removeItem('sidus_stripe_session')
 
         if (result.productType === 'premium') {
+          trackPurchaseConversion('premium', PRECO_PREMIUM_UNICO)
           setIsPremium(true)
           setMapaCompleto(true)
           const destino = destinoAposPagamento('premium')
@@ -3966,6 +3986,7 @@ export default function App() {
           navigate(pathFromPasso(destino, lang), { replace: true })
           setPagamentoMsg({ tipo: 'sucesso', texto: t('payment.premiumWelcome') })
         } else if (result.productType === 'mapa') {
+          trackPurchaseConversion('mapa', PRECO_MAPA_COMPLETO)
           setMapaCompleto(true)
           const destino = destinoAposPagamento('mapa')
           setPasso(destino)

@@ -21,7 +21,7 @@ function gtagSafe() {
   return typeof window !== 'undefined' && typeof window.gtag === 'function'
 }
 
-/** Conversão Google Ads + evento GA4 (após consentimento cookies). */
+/** Conversão Google Ads + evento GA4. GA4 dispara sempre que gtag existir. */
 export function trackGoogleAdsConversion(action, ga4Event = null, ga4Params = {}) {
   if (!gtagSafe()) return
 
@@ -31,14 +31,13 @@ export function trackGoogleAdsConversion(action, ga4Event = null, ga4Params = {}
     window.gtag('event', 'conversion', { send_to: `${adsId}/${label}` })
   }
 
-  const gaId = getGaMeasurementId()
-  if (gaId && ga4Event) {
+  if (ga4Event) {
     window.gtag('event', ga4Event, ga4Params)
   }
 }
 
-export function trackSignupConversion() {
-  trackGoogleAdsConversion('signup', 'sign_up', { method: 'email' })
+export function trackSignupConversion(method = 'email') {
+  trackGoogleAdsConversion('signup', 'sign_up', { method })
 }
 
 export function trackMapaConversion() {

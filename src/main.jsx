@@ -3,8 +3,11 @@ import { createRoot } from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
 import { LanguageProvider } from './lib/i18n/LanguageContext.jsx'
 import { ErrorBoundary } from './components/ErrorBoundary.jsx'
+import { captureLandingAdsAttribution } from './lib/landingAdsContext.js'
 import './index.css'
 import App from './App.jsx'
+
+captureLandingAdsAttribution()
 
 // ─── Service Worker para notificações PWA ───────────────────────────────────
 if ('serviceWorker' in navigator) {
