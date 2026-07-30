@@ -176,7 +176,8 @@ const GAP_BLOCK_ES = {
         p3Desc: 'Comparación transparente Gratis vs Premium. Sabes qué desbloqueas antes de pagar — sin suscripciones ocultas ni letra pequeña.',
         p4Title: 'Premium de por vida',
         p4Desc: 'Un pago único para todas las herramientas. Sin renovación mensual como en la mayoría de apps de astrología.',
-        sonhosHighlight: 'Interpretación de Sueños: descifra símbolos nocturnos y conéctalos con tu carta natal — incluido en todos los planes, sin límite.',
+        p5Title: 'Interpretación de Sueños',
+        p5Desc: 'Descifra símbolos nocturnos y conéctalos con tu carta natal — incluido en todos los planes, sin límite.',
         footnote: 'Sidusastro: astrología seria, accesible y hecha para quien quiere ir más allá del horóscopo del periódico.',
       },
       authGateway: {
@@ -190,6 +191,11 @@ const GAP_BLOCK_ES = {
       loginModal: {
         ariaLabel: 'Entrar en tu cuenta Sidus',
         title: 'Bienvenido de nuevo',
+        visualTitle: 'Tu cielo te espera',
+        visualLead: 'Entra para acceder a tu carta, oráculo y herramientas premium.',
+        continueGoogle: 'Continuar con Google',
+        subtitle: 'Bienvenido de nuevo a tu cielo',
+        backToHome: 'Volver al inicio',
       },
       ctaCalculateMap: 'Calcular Mi Carta Natal Gratis',
       topCtaShort: 'Empezar gratis',
@@ -197,9 +203,13 @@ const GAP_BLOCK_ES = {
   },
   landing: {
     stickyCta: 'Calcular carta gratis',
+    stickyCtaStart: 'Empezar',
     stickyCtaAria: 'Ir al formulario de nacimiento',
     funnel: {
       aligningStars: 'Alineando los astros y efemérides...',
+      loadingStep1: 'Calculando tu Ascendente...',
+      loadingStep2: 'Posicionando los planetas en tu cielo natal...',
+      loadingStep3: 'Preparando tu rueda astrológica...',
       paywallAria: 'Desbloquear el universo Premium Sidus',
       paywallEyebrow: 'Premium',
       paywallTitle: 'Desbloquea Tu Universo Completo',
@@ -230,6 +240,7 @@ const GAP_BLOCK_ES = {
       eyebrow: 'Planes',
       title: 'Gratis vs Premium',
       lead: 'Comparación directa. Pago único en Premium, sin suscripción mensual.',
+      socialProof: 'Más de 12.000 mapas generados · 4,9★ en valoraciones',
     },
   },
   mapa: {
@@ -405,7 +416,8 @@ const GAP_BLOCK_FR = {
         p3Desc: 'Comparaison transparente Gratuit vs Premium. Vous savez ce que vous débloquez avant de payer — sans abonnements cachés ni petites lignes.',
         p4Title: 'Premium à vie',
         p4Desc: 'Un paiement unique pour tous les outils. Pas de renouvellement mensuel comme sur la plupart des apps d\'astrologie.',
-        sonhosHighlight: 'Interprétation des Rêves : déchiffrez les symboles nocturnes et reliez-les à votre thème natal — inclus dans tous les plans, sans limite.',
+        p5Title: 'Interprétation des Rêves',
+        p5Desc: 'Déchiffrez les symboles nocturnes et reliez-les à votre thème natal — inclus dans tous les plans, sans limite.',
         footnote: 'Sidusastro : astrologie sérieuse, accessible et faite pour ceux qui veulent aller au-delà de l\'horoscope du journal.',
       },
       authGateway: {
@@ -419,6 +431,11 @@ const GAP_BLOCK_FR = {
       loginModal: {
         ariaLabel: 'Connexion à votre compte Sidus',
         title: 'Bon retour',
+        visualTitle: 'Votre ciel vous attend',
+        visualLead: 'Connectez-vous pour accéder à votre thème, oracle et outils premium.',
+        continueGoogle: 'Continuer avec Google',
+        subtitle: 'Bon retour dans votre ciel',
+        backToHome: 'Retour à l\'accueil',
       },
       ctaCalculateMap: 'Calculer Ma Carte Natale Gratuite',
       topCtaShort: 'Commencer gratuitement',
@@ -426,9 +443,13 @@ const GAP_BLOCK_FR = {
   },
   landing: {
     stickyCta: 'Calculer carte gratuite',
+    stickyCtaStart: 'Commencer',
     stickyCtaAria: 'Aller au formulaire de naissance',
     funnel: {
       aligningStars: 'Alignement des astres et des éphémérides...',
+      loadingStep1: 'Calcul de votre Ascendant...',
+      loadingStep2: 'Positionnement des planètes sur votre ciel natal...',
+      loadingStep3: 'Préparation de votre roue astrologique...',
       paywallAria: 'Débloquer l\'univers Premium Sidus',
       paywallEyebrow: 'Premium',
       paywallTitle: 'Débloquez Votre Univers Complet',
@@ -459,6 +480,7 @@ const GAP_BLOCK_FR = {
       eyebrow: 'Offres',
       title: 'Gratuit vs Premium',
       lead: 'Comparaison directe. Paiement unique Premium, sans abonnement mensuel.',
+      socialProof: 'Plus de 12 000 thèmes générés · 4,9★ dans les avis',
     },
   },
   mapa: {
@@ -634,7 +656,8 @@ const GAP_BLOCK_DE = {
         p3Desc: 'Transparente Gratis-vs-Premium-Vergleich. Sie wissen vor der Zahlung, was Sie freischalten — ohne versteckte Abos oder Kleingedrucktes.',
         p4Title: 'Premium lebenslang',
         p4Desc: 'Eine Einmalzahlung für alle Tools. Keine monatliche Verlängerung wie bei den meisten Astrologie-Apps.',
-        sonhosHighlight: 'Traumdeutung: Entschlüsselt nächtliche Symbole und verbindet sie mit Ihrem Geburtshoroskop — in allen Plänen enthalten, ohne Limit.',
+        p5Title: 'Traumdeutung',
+        p5Desc: 'Entschlüsselt nächtliche Symbole und verbindet sie mit Ihrem Geburtshoroskop — in allen Plänen enthalten, ohne Limit.',
         footnote: 'Sidusastro: seriöse Astrologie, zugänglich und gemacht für alle, die mehr wollen als ein Zeitungshoroskop.',
       },
       authGateway: {
@@ -648,6 +671,11 @@ const GAP_BLOCK_DE = {
       loginModal: {
         ariaLabel: 'Bei Ihrem Sidus-Konto anmelden',
         title: 'Willkommen zurück',
+        visualTitle: 'Ihr Himmel wartet',
+        visualLead: 'Melden Sie sich an, um auf Ihr Horoskop, Orakel und Premium-Tools zuzugreifen.',
+        continueGoogle: 'Mit Google fortfahren',
+        subtitle: 'Willkommen zurück in Ihrem Himmel',
+        backToHome: 'Zur Startseite',
       },
       ctaCalculateMap: 'Mein Gratis-Geburtshoroskop Berechnen',
       topCtaShort: 'Kostenlos starten',
@@ -655,9 +683,13 @@ const GAP_BLOCK_DE = {
   },
   landing: {
     stickyCta: 'Gratis-Horoskop berechnen',
+    stickyCtaStart: 'Starten',
     stickyCtaAria: 'Zum Geburtsdaten-Formular',
     funnel: {
       aligningStars: 'Sterne und Ephemeriden werden ausgerichtet...',
+      loadingStep1: 'Ihr Aszendent wird berechnet...',
+      loadingStep2: 'Planeten werden auf Ihrem Geburtshimmel platziert...',
+      loadingStep3: 'Ihr astrologisches Rad wird vorbereitet...',
       paywallAria: 'Sidus Premium-Universum freischalten',
       paywallEyebrow: 'Premium',
       paywallTitle: 'Schalten Sie Ihr Komplettes Universum Frei',
@@ -688,6 +720,7 @@ const GAP_BLOCK_DE = {
       eyebrow: 'Pläne',
       title: 'Gratis vs Premium',
       lead: 'Direkter Vergleich. Einmalzahlung Premium, kein Monatsabo.',
+      socialProof: 'Über 12.000 Horoskope erstellt · 4,9★ in Bewertungen',
     },
   },
   mapa: {
@@ -863,7 +896,8 @@ const GAP_BLOCK_IT = {
         p3Desc: 'Confronto trasparente Gratis vs Premium. Sai cosa sblocchi prima di pagare — senza abbonamenti nascosti né clausole in piccolo.',
         p4Title: 'Premium a vita',
         p4Desc: 'Un pagamento unico per tutti gli strumenti. Nessun rinnovo mensile come nella maggior parte delle app di astrologia.',
-        sonhosHighlight: 'Interpretazione dei Sogni: decifra i simboli notturni e collegali alla tua carta natale — incluso in tutti i piani, senza limiti.',
+        p5Title: 'Interpretazione dei Sogni',
+        p5Desc: 'Decifra i simboli notturni e collegali alla tua carta natale — incluso in tutti i piani, senza limiti.',
         footnote: 'Sidusastro: astrologia seria, accessibile e fatta per chi vuole andare oltre l\'oroscopo del giornale.',
       },
       authGateway: {
@@ -877,6 +911,11 @@ const GAP_BLOCK_IT = {
       loginModal: {
         ariaLabel: 'Accedi al tuo account Sidus',
         title: 'Bentornato',
+        visualTitle: 'Il tuo cielo ti aspetta',
+        visualLead: 'Accedi per usare la tua carta, oracolo e strumenti premium.',
+        continueGoogle: 'Continua con Google',
+        subtitle: 'Bentornato nel tuo cielo',
+        backToHome: 'Torna all\'inizio',
       },
       ctaCalculateMap: 'Calcola la Mia Carta Natale Gratuita',
       topCtaShort: 'Inizia gratis',
@@ -884,9 +923,13 @@ const GAP_BLOCK_IT = {
   },
   landing: {
     stickyCta: 'Calcola carta gratis',
+    stickyCtaStart: 'Inizia',
     stickyCtaAria: 'Vai al modulo di nascita',
     funnel: {
       aligningStars: 'Allineamento degli astri e delle effemeridi...',
+      loadingStep1: 'Calcolo del tuo Ascendente...',
+      loadingStep2: 'Posizionamento dei pianeti sul tuo cielo natale...',
+      loadingStep3: 'Preparazione della tua ruota astrologica...',
       paywallAria: 'Sblocca l\'universo Premium Sidus',
       paywallEyebrow: 'Premium',
       paywallTitle: 'Sblocca il Tuo Universo Completo',
@@ -917,6 +960,7 @@ const GAP_BLOCK_IT = {
       eyebrow: 'Piani',
       title: 'Gratis vs Premium',
       lead: 'Confronto diretto. Pagamento unico Premium, nessun abbonamento mensile.',
+      socialProof: 'Oltre 12.000 mappe generate · 4,9★ nelle recensioni',
     },
   },
   mapa: {

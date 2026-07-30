@@ -11,7 +11,6 @@ import { auth } from '../lib/firebase'
 import { enviarEmailRecuperacaoSenha, traduzirErroEmail } from '../lib/authEmail'
 import { traduzirErroAuth } from '../lib/i18n/authErrors.js'
 import { flushLandingDraft } from '../lib/landingDraft.js'
-import { RecaptchaCheckbox } from './Recaptcha.jsx'
 
 const CORES = {
   dourado: '#DFB76C',
@@ -45,7 +44,7 @@ const estilos = {
   botaoDourado: {
     width: '100%',
     padding: '14px 16px',
-    borderRadius: 12,
+    borderRadius: 999,
     border: 'none',
     background: 'linear-gradient(135deg, #DFB76C 0%, #B8944F 100%)',
     color: CORES.fundo,
@@ -155,140 +154,186 @@ export function LandingAuthModal({ open, onClose, onRegister, firebaseOk = true 
       aria-label={t('auth.portal.loginModal.ariaLabel')}
       onClick={(e) => { if (e.target === e.currentTarget) onClose?.() }}
     >
-      <div className="landing-auth-modal__panel">
-        <button
-          type="button"
-          className="landing-auth-modal__close"
-          onClick={onClose}
-          aria-label={t('common.close')}
-        >
-          <X size={20} />
-        </button>
-
-        <h2 className="landing-auth-modal__title">
-          {emRecuperacao ? t('auth.forgot.title') : t('auth.portal.loginModal.title')}
-        </h2>
-
-        {emRecuperacao && (
-          <p className="landing-auth-modal__intro">{t('auth.forgot.intro')}</p>
-        )}
-
-        {!firebaseOk && (
-          <div className="landing-auth-modal__alert landing-auth-modal__alert--warn">
-            {t('auth.firebaseNotConfigured')}
-          </div>
-        )}
-
-        <div className="landing-auth-field" style={{ marginBottom: 16 }}>
-          <label style={estilos.label}>{t('auth.email')}</label>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder={t('auth.emailPlaceholder')}
-            className="landing-auth-input"
-            style={estilos.input}
-            autoComplete="email"
-            onKeyDown={(e) => e.key === 'Enter' && handleLogin()}
+      <div className="landing-auth-modal__shell">
+        <aside className="landing-auth-modal__visual" aria-hidden="true">
+          <div className="landing-auth-modal__visual-glow" />
+          <img
+            src="/brand/sidus-cosmic-mandala.svg"
+            alt=""
+            className="landing-auth-modal__visual-mandala"
+            width={280}
+            height={280}
+            decoding="async"
           />
-        </div>
-
-        {!emRecuperacao && (
-          <div className="landing-auth-field landing-auth-password-block" style={{ marginBottom: 20 }}>
-            <label style={estilos.label}>{t('auth.password')}</label>
-            <div className="landing-auth-password-input">
-              <input
-                type={verSenha ? 'text' : 'password'}
-                value={senha}
-                onChange={(e) => setSenha(e.target.value)}
-                placeholder="••••••••"
-                className="landing-auth-input"
-                style={{ ...estilos.input, paddingRight: 44 }}
-                autoComplete="current-password"
-                onKeyDown={(e) => e.key === 'Enter' && handleLogin()}
-              />
-              <button
-                type="button"
-                onClick={() => setVerSenha((v) => !v)}
-                className="landing-auth-modal__eye"
-                aria-label={verSenha ? 'Hide password' : 'Show password'}
-              >
-                {verSenha ? <EyeOff size={16} /> : <Eye size={16} />}
-              </button>
-            </div>
-            <div className="landing-auth-forgot-wrap">
-              <button
-                type="button"
-                className="landing-auth-forgot"
-                onClick={() => {
-                  setEmRecuperacao(true)
-                  setErro(null)
-                  setInfo(null)
-                }}
-              >
-                {t('auth.forgotPassword')}
-              </button>
-            </div>
+          <div className="landing-auth-modal__visual-content">
+            <img
+              src="/brand/sidus-logo-stacked.svg"
+              alt=""
+              className="landing-auth-modal__visual-logo"
+              width={120}
+              height={48}
+              decoding="async"
+            />
+            <p className="landing-auth-modal__visual-title">{t('auth.portal.loginModal.visualTitle')}</p>
+            <p className="landing-auth-modal__visual-lead">{t('auth.portal.loginModal.visualLead')}</p>
           </div>
-        )}
+        </aside>
 
-        {erro && (
-          <div className="landing-auth-modal__alert landing-auth-modal__alert--error">{erro}</div>
-        )}
-        {info && (
-          <div className="landing-auth-modal__alert landing-auth-modal__alert--ok">{info}</div>
-        )}
+        <div className="landing-auth-modal__form">
+          <button
+            type="button"
+            className="landing-auth-modal__close"
+            onClick={onClose}
+            aria-label={t('common.close')}
+          >
+            <X size={18} strokeWidth={2} />
+          </button>
 
-        <button
-          type="button"
-          disabled={carregando}
-          onClick={handleLogin}
-          style={{ ...estilos.botaoDourado, opacity: carregando ? 0.6 : 1 }}
-        >
-          {carregando
-            ? <Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} />
-            : emRecuperacao
-              ? t('auth.forgot.submit')
-              : t('auth.login')}
-        </button>
+          <h2 className="landing-auth-modal__title">
+            {emRecuperacao ? t('auth.forgot.title') : t('auth.portal.loginModal.title')}
+          </h2>
 
-        {emRecuperacao ? (
-          <p className="landing-auth-modal__switch">
-            <button
-              type="button"
-              onClick={() => { setEmRecuperacao(false); setErro(null); setInfo(null) }}
-            >
-              ← {t('auth.forgot.backToLogin')}
-            </button>
-          </p>
-        ) : (
-          <>
-            <div className="landing-auth-modal__divider">
-              <span>{t('auth.or')}</span>
+          {!emRecuperacao && (
+            <p className="landing-auth-modal__subtitle">{t('auth.portal.loginModal.subtitle')}</p>
+          )}
+
+          {emRecuperacao && (
+            <p className="landing-auth-modal__intro">{t('auth.forgot.intro')}</p>
+          )}
+
+          {!firebaseOk && (
+            <div className="landing-auth-modal__alert landing-auth-modal__alert--warn">
+              {t('auth.firebaseNotConfigured')}
             </div>
-            <button type="button" disabled={carregando} onClick={handleGoogle} className="landing-auth-modal__google">
-              <svg width="18" height="18" viewBox="0 0 48 48" aria-hidden>
-                <path fill="#FFC107" d="M43.6 20.1H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.1 7.9 3l5.7-5.7C34.1 6.5 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.7-.4-3.9z"/>
-                <path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 16.1 19 13 24 13c3.1 0 5.8 1.1 7.9 3l5.7-5.7C34.1 6.5 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/>
-                <path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.3 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-8H6.1C9.5 35.7 16.2 44 24 44z"/>
-                <path fill="#1976D2" d="M43.6 20.1H42V20H24v8h11.3c-.8 2.3-2.3 4.3-4.3 5.6l6.2 5.2C40.9 35.6 44 30.2 44 24c0-1.3-.1-2.7-.4-3.9z"/>
-              </svg>
-              {t('auth.google')}
-            </button>
-            <p className="landing-auth-modal__switch">
-              {t('auth.noAccount')}{' '}
+          )}
+
+          {!emRecuperacao && (
+            <>
               <button
                 type="button"
-                onClick={() => {
-                  onClose?.()
-                  onRegister?.()
-                }}
+                disabled={carregando}
+                onClick={handleGoogle}
+                className="landing-auth-modal__google landing-auth-modal__google--pill"
               >
-                {t('auth.createHere')}
+                <svg width="18" height="18" viewBox="0 0 48 48" aria-hidden>
+                  <path fill="#FFC107" d="M43.6 20.1H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.1 7.9 3l5.7-5.7C34.1 6.5 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.7-.4-3.9z"/>
+                  <path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 16.1 19 13 24 13c3.1 0 5.8 1.1 7.9 3l5.7-5.7C34.1 6.5 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/>
+                  <path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.3 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-8H6.1C9.5 35.7 16.2 44 24 44z"/>
+                  <path fill="#1976D2" d="M43.6 20.1H42V20H24v8h11.3c-.8 2.3-2.3 4.3-4.3 5.6l6.2 5.2C40.9 35.6 44 30.2 44 24c0-1.3-.1-2.7-.4-3.9z"/>
+                </svg>
+                {t('auth.portal.loginModal.continueGoogle')}
+              </button>
+
+              <div className="landing-auth-modal__divider">
+                <span>{t('auth.or')}</span>
+              </div>
+            </>
+          )}
+
+          <div className="landing-auth-field" style={{ marginBottom: 16 }}>
+            <label style={estilos.label}>{t('auth.email')}</label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder={t('auth.emailPlaceholder')}
+              className="landing-auth-input"
+              style={estilos.input}
+              autoComplete="email"
+              onKeyDown={(e) => e.key === 'Enter' && handleLogin()}
+            />
+          </div>
+
+          {!emRecuperacao && (
+            <div className="landing-auth-field landing-auth-password-block" style={{ marginBottom: 20 }}>
+              <label style={estilos.label}>{t('auth.password')}</label>
+              <div className="landing-auth-password-input">
+                <input
+                  type={verSenha ? 'text' : 'password'}
+                  value={senha}
+                  onChange={(e) => setSenha(e.target.value)}
+                  placeholder="••••••••"
+                  className="landing-auth-input"
+                  style={{ ...estilos.input, paddingRight: 44 }}
+                  autoComplete="current-password"
+                  onKeyDown={(e) => e.key === 'Enter' && handleLogin()}
+                />
+                <button
+                  type="button"
+                  onClick={() => setVerSenha((v) => !v)}
+                  className="landing-auth-modal__eye"
+                  aria-label={verSenha ? 'Hide password' : 'Show password'}
+                >
+                  {verSenha ? <EyeOff size={16} /> : <Eye size={16} />}
+                </button>
+              </div>
+              <div className="landing-auth-forgot-wrap">
+                <button
+                  type="button"
+                  className="landing-auth-forgot"
+                  onClick={() => {
+                    setEmRecuperacao(true)
+                    setErro(null)
+                    setInfo(null)
+                  }}
+                >
+                  {t('auth.forgotPassword')}
+                </button>
+              </div>
+            </div>
+          )}
+
+          {erro && (
+            <div className="landing-auth-modal__alert landing-auth-modal__alert--error">{erro}</div>
+          )}
+          {info && (
+            <div className="landing-auth-modal__alert landing-auth-modal__alert--ok">{info}</div>
+          )}
+
+          <button
+            type="button"
+            disabled={carregando}
+            onClick={handleLogin}
+            style={{ ...estilos.botaoDourado, opacity: carregando ? 0.6 : 1 }}
+          >
+            {carregando
+              ? <Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} />
+              : emRecuperacao
+                ? t('auth.forgot.submit')
+                : t('auth.login')}
+          </button>
+
+          {emRecuperacao ? (
+            <p className="landing-auth-modal__switch">
+              <button
+                type="button"
+                onClick={() => { setEmRecuperacao(false); setErro(null); setInfo(null) }}
+              >
+                ← {t('auth.forgot.backToLogin')}
               </button>
             </p>
-          </>
-        )}
+          ) : (
+            <>
+              <p className="landing-auth-modal__switch">
+                {t('auth.noAccount')}{' '}
+                <button
+                  type="button"
+                  onClick={() => {
+                    onClose?.()
+                    onRegister?.()
+                  }}
+                >
+                  {t('auth.createHere')}
+                </button>
+              </p>
+              <p className="landing-auth-modal__back">
+                <button type="button" onClick={onClose}>
+                  ← {t('auth.portal.loginModal.backToHome')}
+                </button>
+              </p>
+            </>
+          )}
+        </div>
       </div>
     </div>
   )

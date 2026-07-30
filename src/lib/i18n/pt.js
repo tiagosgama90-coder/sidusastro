@@ -100,6 +100,11 @@ export default {
       loginModal: {
         ariaLabel: 'Entrar na tua conta Sidus',
         title: 'Bem-vindo de volta',
+        visualTitle: 'O teu céu à tua espera',
+        visualLead: 'Entra para acederes ao mapa, oráculo e ferramentas premium.',
+        continueGoogle: 'Continuar com Google',
+        subtitle: 'Bem-vindo de volta ao teu céu',
+        backToHome: 'Voltar ao início',
       },
       whySidus: {
         ariaLabel: 'Porquê escolher o Sidusastro',
@@ -115,7 +120,8 @@ export default {
         p3Desc: 'Comparação transparente Grátis vs Premium. Sabes o que desbloqueias antes de pagar — sem subscrições escondidas nem letras pequenas.',
         p4Title: 'Premium vitalício',
         p4Desc: 'Um pagamento único para todas as ferramentas. Sem renovação mensal como na maioria das apps de astrologia.',
-        sonhosHighlight: 'Interpretação de Sonhos: decifra símbolos nocturnos e liga-os ao teu mapa natal — incluído em todos os planos, sem limite.',
+        p5Title: 'Interpretação de Sonhos',
+        p5Desc: 'Decifra símbolos nocturnos e liga-os ao teu mapa natal — incluído em todos os planos, sem limite.',
         footnote: 'Sidusastro: astrologia séria, acessível e feita para quem quer ir além do horóscopo do jornal.',
       },
       faq: {
@@ -133,6 +139,8 @@ export default {
         a5: 'Sim. Cada roda é gerada em tempo real com Swiss Ephemeris a partir da data, hora e local exactos de nascimento - planetas, casas Placidus, aspectos e ângulos (ASC/MC) com precisão de efemérides profissionais.',
         q6: 'Preciso de hora exacta de nascimento?',
         a6: 'Para Ascendente, casas e Lua precisos, sim. Sem hora exacta ainda calculamos Sol e planetas lentos; a mandala e o mapa completo usam a hora que indicares.',
+        q7: 'É subscrição mensal?',
+        a7: 'Não. É pagamento único vitalício. Pagas uma vez e tens acesso permanente ao Premium, sem renovação mensal.',
       },
       pdfShowcase: {
         ariaLabel: 'Pré-visualização do relatório PDF do mapa astral Premium',
@@ -346,9 +354,13 @@ export default {
   },
   landing: {
     stickyCta: 'Calcular mapa grátis',
+    stickyCtaStart: 'Começar',
     stickyCtaAria: 'Ir para o formulário de nascimento',
     funnel: {
       aligningStars: 'A alinhar os astros e efemérides...',
+      loadingStep1: 'A calcular o teu Ascendente...',
+      loadingStep2: 'A posicionar os planetas no céu natal...',
+      loadingStep3: 'A preparar a tua roda astrológica...',
       paywallAria: 'Desbloquear o universo Premium Sidus',
       paywallEyebrow: 'Premium',
       paywallTitle: 'Desbloqueie o Seu Universo Completo',
@@ -390,6 +402,7 @@ export default {
       eyebrow: 'Planos',
       title: 'Grátis vs Premium',
       lead: 'Comparação directa. Pagamento único no Premium, sem subscrição mensal.',
+      socialProof: 'Mais de 12.000 mapas gerados · 4,9★ nas avaliações',
       ctaAria: 'Ir para o formulário de nascimento e desbloquear Premium',
     },
   },
@@ -1160,8 +1173,7 @@ export default {
       numerologiaFree: '—',
       numerologiaVip: 'Mapa completo · Caminho de Vida',
       sonhos: 'Interpretação de Sonhos',
-      sonhosFree: 'Incluído',
-      sonhosVip: 'Ilimitado',
+      sonhosAllPlans: 'Incluído em todos os planos',
       locked: '—',
       preview: 'Prévia',
     },

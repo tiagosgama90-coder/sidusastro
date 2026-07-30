@@ -52,11 +52,18 @@ export function LandingPremiumCompare({
 
       <ul className="premium-paywall__rows">
         {visibleRows.map((row) => (
-          <li key={row.feature} className="premium-paywall__row">
-            <span className="premium-paywall__feature">{row.feature}</span>
-            <CellValue text={row.free} tier="free" />
-            <CellValue text={row.premium} tier="premium" />
-          </li>
+          row.allPlans ? (
+            <li key={row.feature} className="premium-paywall__row premium-paywall__row--all-plans">
+              <span className="premium-paywall__feature">{row.feature}</span>
+              <span className="premium-paywall__all-plans">{row.allPlans}</span>
+            </li>
+          ) : (
+            <li key={row.feature} className="premium-paywall__row">
+              <span className="premium-paywall__feature">{row.feature}</span>
+              <CellValue text={row.free} tier="free" />
+              <CellValue text={row.premium} tier="premium" />
+            </li>
+          )
         ))}
       </ul>
 

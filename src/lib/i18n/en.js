@@ -100,6 +100,11 @@ export default {
       loginModal: {
         ariaLabel: 'Sign in to your Sidus account',
         title: 'Welcome back',
+        visualTitle: 'Your sky awaits',
+        visualLead: 'Sign in to access your chart, oracle and premium tools.',
+        continueGoogle: 'Continue with Google',
+        subtitle: 'Welcome back to your sky',
+        backToHome: 'Back to home',
       },
       whySidus: {
         ariaLabel: 'Why choose Sidusastro',
@@ -115,7 +120,8 @@ export default {
         p3Desc: 'Transparent Free vs Premium comparison. You know what you unlock before you pay — no hidden subscriptions or fine print.',
         p4Title: 'Lifetime Premium',
         p4Desc: 'One payment for every tool. No monthly renewal like most astrology apps.',
-        sonhosHighlight: 'Dream interpretation: decode night symbols and link them to your natal chart — included in every plan, with no limit.',
+        p5Title: 'Dream interpretation',
+        p5Desc: 'Decode night symbols and link them to your natal chart — included in every plan, with no limit.',
         footnote: 'Sidusastro: serious astrology, accessible and built for anyone who wants more than a newspaper horoscope.',
       },
       faq: {
@@ -133,6 +139,8 @@ export default {
         a5: 'Yes. Every wheel is generated in real time with Swiss Ephemeris from your exact birth date, time and place - planets, Placidus houses, aspects and angles (ASC/MC) at professional ephemeris precision.',
         q6: 'Do I need an exact birth time?',
         a6: 'For an accurate Ascendant, houses and Moon, yes. Without an exact time we still calculate the Sun and outer planets; the mandala and full chart use the time you provide.',
+        q7: 'Is it a monthly subscription?',
+        a7: 'No. It is a one-time lifetime payment. You pay once and keep permanent Premium access with no monthly renewal.',
       },
       pdfShowcase: {
         ariaLabel: 'Premium natal chart PDF report preview',
@@ -346,9 +354,13 @@ export default {
   },
   landing: {
     stickyCta: 'Calculate free chart',
+    stickyCtaStart: 'Get started',
     stickyCtaAria: 'Go to birth data form',
     funnel: {
       aligningStars: 'Aligning the stars and ephemerides...',
+      loadingStep1: 'Calculating your Ascendant...',
+      loadingStep2: 'Placing planets on your natal sky...',
+      loadingStep3: 'Preparing your astrological wheel...',
       paywallAria: 'Unlock the Sidus Premium universe',
       paywallEyebrow: 'Premium',
       paywallTitle: 'Unlock Your Complete Universe',
@@ -390,6 +402,7 @@ export default {
       eyebrow: 'Plans',
       title: 'Free vs Premium',
       lead: 'Straight comparison. One-time Premium payment, no monthly subscription.',
+      socialProof: 'Over 12,000 charts generated · 4.9★ in reviews',
       ctaAria: 'Go to birth form and unlock Premium',
     },
   },
@@ -1133,8 +1146,7 @@ export default {
       numerologiaFree: '—',
       numerologiaVip: 'Full chart · Life Path',
       sonhos: 'Dream interpretation',
-      sonhosFree: 'Included',
-      sonhosVip: 'Unlimited',
+      sonhosAllPlans: 'Included in every plan',
       locked: '—',
       preview: 'Preview',
     },
