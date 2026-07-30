@@ -116,7 +116,9 @@ export default {
         q5: "La mandala astrologique est-elle calculée pour chaque personne ?",
         a5: "Oui. Chaque roue est générée en temps réel avec Swiss Ephemeris à partir de la date, heure et lieu exacts de naissance - planètes, maisons Placidus, aspects et angles (ASC/MC) avec précision d'éphémérides professionnelles.",
         q6: "Ai-je besoin de l'heure exacte de naissance ?",
-        a6: "Pour un Ascendant, des maisons et une Lune précis, oui. Sans heure exacte, nous calculons quand même le Soleil et les planètes lentes ; la mandala et le thème complet utilisent l'heure que vous indiquerez."
+        a6: "Pour un Ascendant, des maisons et une Lune précis, oui. Sans heure exacte, nous calculons quand même le Soleil et les planètes lentes ; la mandala et le thème complet utilisent l'heure que vous indiquerez.",
+        q7: "Est-ce un abonnement mensuel ?",
+        a7: "Non. C'est un paiement unique à vie. Vous payez une fois et gardez l'accès Premium permanent, sans renouvellement mensuel."
       },
       pdfShowcase: {
         ariaLabel: 'Aperçu du rapport PDF de la carte natale Premium',

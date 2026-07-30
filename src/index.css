@@ -781,6 +781,33 @@ h1.sidus-page-title {
   letter-spacing: 0.01em;
 }
 
+.landing-auth-modal__subtitle {
+  margin: -14px 0 22px;
+  text-align: center;
+  font-size: 14px;
+  line-height: 1.45;
+  color: rgba(223, 183, 108, 0.88);
+}
+
+.landing-auth-modal__back {
+  margin: 10px 0 0;
+  text-align: center;
+}
+
+.landing-auth-modal__back button {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.42);
+  font-size: 12px;
+  cursor: pointer;
+  padding: 4px 8px;
+  transition: color 0.2s ease;
+}
+
+.landing-auth-modal__back button:hover {
+  color: rgba(223, 183, 108, 0.85);
+}
+
 .landing-auth-modal__intro {
   margin: -12px 0 20px;
   font-size: 13px;
@@ -1966,6 +1993,19 @@ h1.sidus-page-title {
 .landing-premium-paywall__cta.landing-paywall-cta,
 .landing-plans-overview__cta.landing-paywall-cta {
   width: 100%;
+}
+
+@keyframes landing-cta-glow {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(223, 183, 108, 0);
+  }
+  50% {
+    box-shadow: 0 0 22px 2px rgba(223, 183, 108, 0.3);
+  }
+}
+
+.landing-paywall-cta--pulse {
+  animation: landing-cta-glow 2.8s ease-in-out infinite;
 }
 
 .landing-why-sidus__footnote {
@@ -4773,6 +4813,17 @@ h1.sidus-page-title {
   border-bottom: none;
 }
 
+.premium-paywall__row--all-plans {
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 2fr);
+}
+
+.premium-paywall__all-plans {
+  text-align: center;
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(223, 183, 108, 0.92);
+}
+
 .premium-paywall__row:nth-child(even) {
   background: rgba(255, 255, 255, 0.02);
 }
@@ -4911,6 +4962,18 @@ h1.sidus-page-title {
   line-height: 1.55;
   color: rgba(255, 255, 255, 0.78);
   letter-spacing: 0.02em;
+  animation: landing-loading-fade 0.35s ease;
+}
+
+@keyframes landing-loading-fade {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* Landing funnel — single centered column (birth form / loading) */
@@ -5098,6 +5161,16 @@ h1.sidus-page-title {
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: rgba(255, 255, 255, 0.35);
+}
+
+.landing-premium-price__social {
+  margin: 10px 0 4px;
+  text-align: center;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.45;
+  color: rgba(223, 183, 108, 0.9);
+  letter-spacing: 0.02em;
 }
 
 .landing-premium-price__footnote {

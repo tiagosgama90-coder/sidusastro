@@ -22,7 +22,7 @@ export function LandingStickyCta({ onCta, targetRef }) {
   return (
     <div className="landing-sticky-cta" role="region" aria-label={t('landing.stickyCtaAria')}>
       <button type="button" className="landing-sticky-cta__btn" onClick={onCta}>
-        {t('landing.stickyCta')}
+        {t('landing.stickyCtaStart')}
       </button>
     </div>
   )

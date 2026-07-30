@@ -23,8 +23,7 @@ export function getPremiumCompareRows(t, { maxTarot, maxOracle }) {
     },
     {
       feature: t('premium.table.sonhos'),
-      free: t('premium.table.sonhosFree'),
-      premium: t('premium.table.sonhosVip'),
+      allPlans: t('premium.table.sonhosAllPlans'),
     },
     {
       feature: t('premium.table.skyLive'),

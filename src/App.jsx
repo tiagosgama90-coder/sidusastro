@@ -1484,6 +1484,7 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
           aria-label={t('auth.portal.conversionAria')}
         >
           <LandingConversionHead compact={funnelStep !== 'birth'} />
+          {isDesktop && <LandingPlansOverview onCta={goToBirthForm} />}
           <div className={`landing-hero-stack landing-hero-stack--funnel${funnelStep === 'paywall' ? ' landing-hero-stack--funnel-wide' : ''}`}>
             {funnelStep === 'birth' && (
               <LandingBirthPortal
@@ -1515,7 +1516,7 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
               />
             )}
           </div>
-          <LandingPlansOverview onCta={goToBirthForm} />
+          {!isDesktop && <LandingPlansOverview onCta={goToBirthForm} />}
           <LandingWhySidus compact />
           <LandingReviews variant="paywall" />
         </section>

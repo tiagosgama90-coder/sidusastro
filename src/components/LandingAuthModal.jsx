@@ -193,6 +193,10 @@ export function LandingAuthModal({ open, onClose, onRegister, firebaseOk = true 
             {emRecuperacao ? t('auth.forgot.title') : t('auth.portal.loginModal.title')}
           </h2>
 
+          {!emRecuperacao && (
+            <p className="landing-auth-modal__subtitle">{t('auth.portal.loginModal.subtitle')}</p>
+          )}
+
           {emRecuperacao && (
             <p className="landing-auth-modal__intro">{t('auth.forgot.intro')}</p>
           )}
@@ -309,18 +313,25 @@ export function LandingAuthModal({ open, onClose, onRegister, firebaseOk = true 
               </button>
             </p>
           ) : (
-            <p className="landing-auth-modal__switch">
-              {t('auth.noAccount')}{' '}
-              <button
-                type="button"
-                onClick={() => {
-                  onClose?.()
-                  onRegister?.()
-                }}
-              >
-                {t('auth.createHere')}
-              </button>
-            </p>
+            <>
+              <p className="landing-auth-modal__switch">
+                {t('auth.noAccount')}{' '}
+                <button
+                  type="button"
+                  onClick={() => {
+                    onClose?.()
+                    onRegister?.()
+                  }}
+                >
+                  {t('auth.createHere')}
+                </button>
+              </p>
+              <p className="landing-auth-modal__back">
+                <button type="button" onClick={onClose}>
+                  ← {t('auth.portal.loginModal.backToHome')}
+                </button>
+              </p>
+            </>
           )}
         </div>
       </div>
