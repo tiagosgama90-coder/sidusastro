@@ -7,6 +7,11 @@ export function getPremiumCompareRows(t, { maxTarot, maxOracle }) {
       premium: t('premium.table.mapaVip'),
     },
     {
+      feature: t('premium.table.sinastria'),
+      free: t('premium.table.sinastriaFree'),
+      premium: t('premium.table.sinastriaVip'),
+    },
+    {
       feature: t('premium.table.oracle'),
       free: t('premium.table.oracleFree', { n: maxOracle }),
       premium: t('premium.table.oracleVip'),
@@ -15,6 +20,11 @@ export function getPremiumCompareRows(t, { maxTarot, maxOracle }) {
       feature: t('premium.table.tarot'),
       free: t('premium.table.tarotFree', { n: maxTarot }),
       premium: t('premium.table.tarotVip'),
+    },
+    {
+      feature: t('premium.table.sonhos'),
+      free: t('premium.table.sonhosFree'),
+      premium: t('premium.table.sonhosVip'),
     },
     {
       feature: t('premium.table.skyLive'),
@@ -30,11 +40,6 @@ export function getPremiumCompareRows(t, { maxTarot, maxOracle }) {
       feature: t('premium.table.numerologia'),
       free: t('premium.table.numerologiaFree'),
       premium: t('premium.table.numerologiaVip'),
-    },
-    {
-      feature: t('premium.table.sinastria'),
-      free: t('premium.table.sinastriaFree'),
-      premium: t('premium.table.sinastriaVip'),
     },
   ]
 }
