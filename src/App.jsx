@@ -56,7 +56,6 @@ import { SidusConstellationMark } from './components/SidusConstellationMark.jsx'
 import { LandingFaq } from './components/LandingFaq.jsx'
 import { LandingSkyLive } from './components/LandingSkyLive.jsx'
 import { LandingReviews } from './components/LandingReviews.jsx'
-import { LandingReviewsTicker } from './components/LandingReviewsTicker.jsx'
 import { LandingGuides } from './components/LandingGuides.jsx'
 import { LandingPdfShowcase } from './components/LandingPdfShowcase.jsx'
 import { BannerBrasil } from './components/BannerBrasil.jsx'
@@ -1349,7 +1348,6 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
   const [recaptchaKey, setRecaptchaKey] = useState(0)
 
   const traduzirErro = (code) => traduzirErroAuth(code, lang)
-  const prices = getPremiumPriceLabels(isBrasil)
 
   useEffect(() => {
     onMudar('register')
@@ -1544,7 +1542,7 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
               >
                 {carregando
                   ? <Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} />
-                  : t('auth.registerCta', { price: prices.dualShort })}
+                  : t('auth.register')}
               </button>
 
               <div style={{ display: 'flex', alignItems: 'center', gap: 10, margin: '20px 0' }}>
@@ -1614,9 +1612,8 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
         <LandingPdfShowcase />
         <LandingGuides />
         <AdSenseBanner />
-        <LandingFaq />
-        <LandingReviewsTicker />
-      </div>
+      <LandingFaq />
+    </div>
     </>
   )
 }
