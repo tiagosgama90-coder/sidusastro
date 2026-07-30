@@ -25,8 +25,8 @@ const PREMIUM_TABLE_ES = {
   numerologiaFree: '—',
   numerologiaVip: 'Mapa completo · Camino de Vida',
   sonhos: 'Interpretación de Sueños',
-  sonhosFree: 'IA simbólica · gratis',
-  sonhosVip: 'IA que descifra el inconsciente',
+  sonhosFree: 'Incluido',
+  sonhosVip: 'Ilimitado',
   locked: '—',
   preview: 'Vista previa',
 }
@@ -56,8 +56,8 @@ const PREMIUM_TABLE_FR = {
   numerologiaFree: '—',
   numerologiaVip: 'Carte complète · Chemin de Vie',
   sonhos: 'Interprétation des Rêves',
-  sonhosFree: 'IA symbolique · gratuite',
-  sonhosVip: 'IA qui décode l\'inconscient',
+  sonhosFree: 'Inclus',
+  sonhosVip: 'Illimité',
   locked: '—',
   preview: 'Aperçu',
 }
@@ -87,8 +87,8 @@ const PREMIUM_TABLE_DE = {
   numerologiaFree: '—',
   numerologiaVip: 'Vollständige Karte · Lebensweg',
   sonhos: 'Traumdeutung',
-  sonhosFree: 'Symbolische KI · gratis',
-  sonhosVip: 'KI die das Unbewusste entschlüsselt',
+  sonhosFree: 'Enthalten',
+  sonhosVip: 'Unbegrenzt',
   locked: '—',
   preview: 'Vorschau',
 }
@@ -118,8 +118,8 @@ const PREMIUM_TABLE_IT = {
   numerologiaFree: '—',
   numerologiaVip: 'Mappa completa · Percorso di Vita',
   sonhos: 'Interpretazione dei Sogni',
-  sonhosFree: 'IA simbolica · gratis',
-  sonhosVip: 'IA che decifra l\'inconscio',
+  sonhosFree: 'Incluso',
+  sonhosVip: 'Illimitato',
   locked: '—',
   preview: 'Anteprima',
 }
@@ -304,7 +304,7 @@ export const PREMIUM_LOCALE_BLOCKS = {
       plans: {
         freeSub: 'Para empezar',
         premiumSub: 'Pago único · de por vida',
-        sonhosNote: 'Intérprete inteligente: lee los símbolos de tus sueños y los conecta con tu carta — incluido en todos los planes.',
+        sonhosNote: 'Incluido en todos los planes.',
       },
     },
     ferramentasPremium: FERRAMENTAS_PAYWALL_ES,
@@ -378,7 +378,7 @@ export const PREMIUM_LOCALE_BLOCKS = {
       plans: {
         freeSub: 'Pour démarrer',
         premiumSub: 'Paiement unique · à vie',
-        sonhosNote: 'Interprète intelligent : lit les symboles de vos rêves et les relie à votre thème — inclus dans tous les plans.',
+        sonhosNote: 'Inclus dans tous les plans.',
       },
     },
     ferramentasPremium: FERRAMENTAS_PAYWALL_FR,
@@ -452,7 +452,7 @@ export const PREMIUM_LOCALE_BLOCKS = {
       plans: {
         freeSub: 'Zum Einstieg',
         premiumSub: 'Einmalig · lebenslang',
-        sonhosNote: 'Intelligenter Traumdeuter: liest Traumsymbole und verbindet sie mit Ihrem Horoskop — in allen Plänen enthalten.',
+        sonhosNote: 'In allen Plänen enthalten.',
       },
     },
     ferramentasPremium: FERRAMENTAS_PAYWALL_DE,
@@ -526,7 +526,7 @@ export const PREMIUM_LOCALE_BLOCKS = {
       plans: {
         freeSub: 'Per iniziare',
         premiumSub: 'Pagamento unico · a vita',
-        sonhosNote: 'Interprete intelligente: legge i simboli dei sogni e li collega alla tua carta — incluso in tutti i piani.',
+        sonhosNote: 'Incluso in tutti i piani.',
       },
     },
     ferramentasPremium: FERRAMENTAS_PAYWALL_IT,
