@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from 'react'
 import { useLanguage } from '../lib/i18n/LanguageContext.jsx'
 import { LandingPremiumCompare } from './LandingPremiumCompare.jsx'
 import { LandingPremiumPriceCard, LandingSimpleCtaButton } from './LandingPremiumPriceCard.jsx'
-import { LandingTrustBadges } from './LandingTrustBadges.jsx'
 
 export function LandingPlansOverview({ onCta }) {
   const { t } = useLanguage()
@@ -37,7 +36,6 @@ export function LandingPlansOverview({ onCta }) {
       </header>
 
       <LandingPremiumPriceCard className="landing-plans-overview__price" showSocialProof />
-      <LandingTrustBadges />
 
       <div className="landing-plans-overview__paywall">
         <LandingPremiumCompare interactive />
