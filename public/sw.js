@@ -1,6 +1,6 @@
 // Service Worker para notificações PWA - Sidus Astro
 // v20: assets network-first (evita chunks antigos após deploy)
-const CACHE_NAME = 'sidusastro-v52'
+const CACHE_NAME = 'sidusastro-v53'
 const OFFLINE_URLS = ['/manifest.json', '/favicon.svg']
 
 const SIGNO_EMOJI = {
