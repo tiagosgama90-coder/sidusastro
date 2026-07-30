@@ -1417,10 +1417,11 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
     return () => window.clearTimeout(timer)
   }, [])
 
-  const scrollToBirth = useCallback(() => {
-    requestAnimationFrame(() => {
+  const goToBirthForm = useCallback(() => {
+    setFunnelStep('birth')
+    window.setTimeout(() => {
       document.getElementById('landing-birth-portal')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-    })
+    }, 80)
   }, [])
 
   const scrollToPaywall = useCallback(() => {
@@ -1452,14 +1453,12 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
 
   const handleModalRegister = useCallback(() => {
     closeLoginModal()
-    if (funnelStep === 'paywall') scrollToPaywall()
-    else scrollToBirth()
-  }, [closeLoginModal, funnelStep, scrollToPaywall, scrollToBirth])
+    goToBirthForm()
+  }, [closeLoginModal, goToBirthForm])
 
   const handleFunnelCta = useCallback(() => {
-    if (funnelStep === 'paywall') scrollToPaywall()
-    else scrollToBirth()
-  }, [funnelStep, scrollToPaywall, scrollToBirth])
+    goToBirthForm()
+  }, [goToBirthForm])
 
   return (
     <>
@@ -1515,7 +1514,7 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
               />
             )}
           </div>
-          <LandingPlansOverview onCta={scrollToBirth} />
+          <LandingPlansOverview onCta={goToBirthForm} />
           <LandingWhySidus compact />
           <LandingReviews variant="paywall" />
         </section>
