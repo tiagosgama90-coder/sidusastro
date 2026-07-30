@@ -21,7 +21,7 @@ export function LandingPlansOverview({ onCta }) {
       </header>
 
       <div className="landing-plans-overview__paywall">
-        <LandingPremiumCompare maxRows={6} showNote={false} />
+        <LandingPremiumCompare showNote />
       </div>
 
       {onCta && (
