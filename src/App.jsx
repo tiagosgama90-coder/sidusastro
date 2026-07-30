@@ -1356,13 +1356,6 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
     setRecaptchaKey((k) => k + 1)
     setErro(null)
     setInfo(null)
-    const draft = readLandingDraft()
-    if (draft) {
-      try {
-        const errosDraft = validarOnboarding(draft, lang)
-        if (Object.keys(errosDraft).length === 0) setFunnelStep('paywall')
-      } catch { /* ignore */ }
-    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -1490,7 +1483,7 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
           aria-label={t('auth.portal.conversionAria')}
         >
           <LandingConversionHead compact={funnelStep !== 'birth'} />
-          <div className="landing-hero-stack landing-hero-stack--funnel">
+          <div className={`landing-hero-stack landing-hero-stack--funnel${funnelStep === 'paywall' ? ' landing-hero-stack--funnel-wide' : ''}`}>
             {funnelStep === 'birth' && (
               <LandingBirthPortal
                 isDesktop={isDesktop}
@@ -1521,12 +1514,8 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
               />
             )}
           </div>
-          {funnelStep === 'paywall' && (
-            <>
-              <LandingWhySidus compact />
-              <LandingReviews variant="paywall" />
-            </>
-          )}
+          <LandingWhySidus compact />
+          <LandingReviews variant="paywall" />
         </section>
         <LandingPdfShowcase />
         <LandingGuides />
