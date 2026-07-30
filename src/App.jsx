@@ -1488,7 +1488,7 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
         <LandingAdsPromoBar />
         <LandingStickyCta targetRef={conversionZoneRef} onCta={handleFunnelCta} ctaLabel={ctaLabel} />
         <div className="landing-top-stack">
-          <LandingTopBar onLogin={openLoginModal} onStart={handleFunnelCta} ctaLabel={ctaLabel} />
+          <LandingTopBar onLogin={openLoginModal} />
           <div className={`${isDesktop ? 'landing-sky-desktop-wrap landing-sky-desktop-wrap--compact' : 'landing-sky-mobile-wrap landing-sky-mobile-wrap--compact'}`}>
             <LandingSkyLive compact />
           </div>
@@ -1498,12 +1498,15 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
           className={`landing-conversion-zone${isDesktop ? ' landing-conversion-zone--desktop' : ''}`}
           aria-label={t('auth.portal.conversionAria')}
         >
-          <div className="landing-conversion-zone__intro">
+          <div className="landing-conversion-zone__hero">
             <LandingConversionHead compact={funnelStep !== 'birth'} />
-            {(funnelStep === 'birth' || isDesktop) && (
-              <LandingWhySidus compact={!isDesktop} />
-            )}
           </div>
+
+          {(funnelStep === 'birth' || isDesktop) && funnelStep !== 'loading' && (
+            <div className="landing-conversion-zone__why">
+              <LandingWhySidus compact={!isDesktop} />
+            </div>
+          )}
 
           <div className="landing-conversion-zone__funnel">
             <div className={`landing-hero-stack landing-hero-stack--funnel${funnelStep === 'paywall' ? ' landing-hero-stack--funnel-wide' : ''}`}>
