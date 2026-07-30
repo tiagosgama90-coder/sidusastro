@@ -1,4 +1,5 @@
 import { Component } from 'react'
+import { tryReloadOnChunkError } from '../lib/chunkReload.js'
 
 const CORES = {
   fundo: '#0B071E',
@@ -23,6 +24,7 @@ export class ErrorBoundary extends Component {
   }
 
   componentDidCatch(error, info) {
+    if (tryReloadOnChunkError(error)) return
     if (isTranslateDomError(error?.message) && this._translateRetries < 2) {
       this._translateRetries += 1
       window.setTimeout(() => {

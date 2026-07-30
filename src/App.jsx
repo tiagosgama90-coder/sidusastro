@@ -112,9 +112,9 @@ import { LandingExitIntent } from './components/LandingExitIntent.jsx'
 import { useLandingCtaVariant } from './hooks/useLandingCtaVariant.js'
 import { MapaPaywallSections } from './components/MapaPaywallSections.jsx'
 import { FerramentasEmptyState } from './components/FerramentasEmptyState.jsx'
+import { MandalaNatal } from './components/MandalaNatal.jsx'
 
 const EcraTarotLazy = lazy(() => import('./components/Tarot.jsx').then((m) => ({ default: m.EcraTarot })))
-const MandalaNatalLazy = lazy(() => import('./components/MandalaNatal.jsx').then((m) => ({ default: m.MandalaNatal })))
 const BussolaCosmicaLazy = lazy(() => import('./components/FerramentasPremium.jsx').then((m) => ({ default: m.BussolaCosmica })))
 const SinastriaLazy = lazy(() => import('./components/FerramentasPremium.jsx').then((m) => ({ default: m.Sinastria })))
 const BiorritmoLazy = lazy(() => import('./components/FerramentasPremium.jsx').then((m) => ({ default: m.Biorritmo })))
@@ -2454,8 +2454,7 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
                   {t('mapa.mandalaTitle')}
                 </div>
               </div>
-              <Suspense fallback={<RouteLoader />}>
-                <MandalaNatalLazy
+              <MandalaNatal
                   chartOnly
                   mapaNatal={mapaNatal}
                   planetas={planetasComCasa}
@@ -2463,7 +2462,6 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
                   translateSign={ts}
                   size={isDesktop ? 480 : 300}
                 />
-              </Suspense>
             </div>
           )}
         </>
@@ -2526,8 +2524,7 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
                   {t('mapa.mandalaSubtitleShort')}
                 </p>
               </div>
-              <Suspense fallback={<RouteLoader />}>
-                <MandalaNatalLazy
+              <MandalaNatal
                   mapaNatal={mapaNatal}
                   planetas={planetasComCasa}
                   aspectos={aspetosCompletos}
@@ -2538,7 +2535,6 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
                   size={isDesktop ? 480 : 300}
                   unavailableLabel={t('mapa.mandalaUnavailable')}
                 />
-              </Suspense>
             </div>
           )}
 

@@ -4,10 +4,22 @@ import { BrowserRouter } from 'react-router-dom'
 import { LanguageProvider } from './lib/i18n/LanguageContext.jsx'
 import { ErrorBoundary } from './components/ErrorBoundary.jsx'
 import { captureLandingAdsAttribution } from './lib/landingAdsContext.js'
+import { clearChunkReloadFlag, tryReloadOnChunkError } from './lib/chunkReload.js'
 import './index.css'
 import App from './App.jsx'
 
 captureLandingAdsAttribution()
+
+window.addEventListener('vite:preloadError', (event) => {
+  event.preventDefault()
+  tryReloadOnChunkError(event.payload)
+})
+
+window.addEventListener('unhandledrejection', (event) => {
+  if (tryReloadOnChunkError(event.reason)) {
+    event.preventDefault()
+  }
+})
 
 // ─── Service Worker para notificações PWA ───────────────────────────────────
 if ('serviceWorker' in navigator) {
@@ -74,6 +86,7 @@ if ('serviceWorker' in navigator) {
 if (sessionStorage.getItem('sidus_sw_reload')) {
   sessionStorage.removeItem('sidus_sw_reload')
 }
+clearChunkReloadFlag()
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
