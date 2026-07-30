@@ -1,12 +1,10 @@
 import { useLanguage } from '../lib/i18n/LanguageContext.jsx'
-import { useGeoCountry } from '../hooks/useGeoCountry.js'
-import { getPremiumPriceLabels } from '../lib/premiumPricingLabels.js'
 import { LandingPremiumCompare } from './LandingPremiumCompare.jsx'
+import { useLandingCtaPrice } from './LandingPremiumPriceCard.jsx'
 
 export function LandingPlansOverview({ onCta }) {
   const { t } = useLanguage()
-  const { isBrasil } = useGeoCountry()
-  const prices = getPremiumPriceLabels(isBrasil, t)
+  const ctaPrice = useLandingCtaPrice()
 
   return (
     <section
@@ -31,7 +29,7 @@ export function LandingPlansOverview({ onCta }) {
           onClick={onCta}
           aria-label={t('landing.plansOverview.ctaAria')}
         >
-          {t('auth.registerCta', { price: prices.dualShort })}
+          {t('auth.registerCta', { price: ctaPrice })}
         </button>
       )}
     </section>
