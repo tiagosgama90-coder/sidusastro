@@ -2217,6 +2217,92 @@ h1.sidus-page-title {
   letter-spacing: 0.03em;
 }
 
+/* PDF + comentários lado a lado */
+.landing-showcase-duo {
+  width: 100%;
+  max-width: min(1240px, calc(100vw - 32px));
+  margin: 20px auto 8px;
+  padding: 0 16px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  position: relative;
+  z-index: 1;
+}
+
+.landing-showcase-duo .landing-pdf-showcase {
+  margin: 0;
+  padding: 20px 0 8px;
+  max-width: none;
+}
+
+.landing-showcase-duo .landing-testimonials {
+  margin: 0;
+  max-width: none;
+}
+
+.landing-showcase-duo .landing-testimonials--paywall {
+  margin: 0;
+  max-width: none;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+@media (min-width: 1024px) {
+  .landing-showcase-duo {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 24px;
+    align-items: stretch;
+    max-width: min(1240px, calc(100vw - 48px));
+    padding: 0 24px;
+  }
+
+  .landing-showcase-duo .landing-pdf-showcase {
+    text-align: left;
+    align-items: flex-start;
+    padding: 16px 0;
+  }
+
+  .landing-showcase-duo .landing-pdf-showcase__title,
+  .landing-showcase-duo .landing-pdf-showcase__desc,
+  .landing-showcase-duo .landing-pdf-showcase__caption {
+    text-align: left;
+    margin-left: 0;
+    margin-right: 0;
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .landing-showcase-duo .landing-pdf-showcase__visual {
+    justify-content: flex-start;
+    padding: 0;
+  }
+
+  .landing-showcase-duo .landing-pdf-showcase__visual--glow {
+    max-width: 100%;
+  }
+
+  .landing-showcase-duo .landing-testimonials--paywall {
+    padding: 20px 18px 12px;
+  }
+
+  .landing-showcase-duo .landing-testimonials-title {
+    text-align: left;
+  }
+
+  .landing-showcase-duo .landing-testimonials-subtitle {
+    text-align: left;
+  }
+
+  .landing-showcase-duo .landing-testimonials--paywall .landing-reviews-cards {
+    flex: 1;
+    min-height: 0;
+  }
+}
+
 .landing-testimonials {
   max-width: 1100px;
   margin: 28px auto 8px;
@@ -8023,8 +8109,7 @@ html.sidus-mobile-menu-open .mobile-menu-btn {
       "hero hero"
       "why funnel"
       "plans plans"
-      "steps steps"
-      "reviews reviews";
+      "steps steps";
     gap: 20px 28px;
     align-items: start;
   }
@@ -8096,10 +8181,6 @@ html.sidus-mobile-menu-open .mobile-menu-btn {
 
   .landing-conversion-zone__steps {
     grid-area: steps;
-  }
-
-  .landing-conversion-zone__reviews {
-    grid-area: reviews;
   }
 
   .landing-conversion-zone--desktop .landing-how-it-works__list {
