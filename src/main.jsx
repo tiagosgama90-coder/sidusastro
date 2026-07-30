@@ -4,7 +4,7 @@ import { BrowserRouter } from 'react-router-dom'
 import { LanguageProvider } from './lib/i18n/LanguageContext.jsx'
 import { ErrorBoundary } from './components/ErrorBoundary.jsx'
 import { captureLandingAdsAttribution } from './lib/landingAdsContext.js'
-import { clearChunkReloadFlag, isChunkLoadError, reloadForStaleChunks } from './lib/lazyWithRetry.js'
+import { clearChunkReloadFlag } from './lib/lazyWithRetry.js'
 import './index.css'
 import App from './App.jsx'
 
@@ -13,14 +13,6 @@ captureLandingAdsAttribution()
 if (sessionStorage.getItem('sidus_sw_reload')) {
   sessionStorage.removeItem('sidus_sw_reload')
 }
-clearChunkReloadFlag()
-
-window.addEventListener('unhandledrejection', (event) => {
-  if (!isChunkLoadError(event.reason)) return
-  event.preventDefault()
-  reloadForStaleChunks()
-})
-
 // ─── Service Worker para notificações PWA ───────────────────────────────────
 if ('serviceWorker' in navigator) {
   const syncNotifPrefsComSW = () => {
@@ -83,7 +75,10 @@ if ('serviceWorker' in navigator) {
   })
 }
 
-createRoot(document.getElementById('root')).render(
+const rootEl = document.getElementById('root')
+const root = createRoot(rootEl)
+
+root.render(
   <StrictMode>
     <ErrorBoundary>
       <LanguageProvider>
@@ -94,3 +89,8 @@ createRoot(document.getElementById('root')).render(
     </ErrorBoundary>
   </StrictMode>,
 )
+
+// Só limpa o guard de reload após montagem bem-sucedida (evita loop infinito).
+requestAnimationFrame(() => {
+  if (rootEl?.childNodes.length) clearChunkReloadFlag()
+})
