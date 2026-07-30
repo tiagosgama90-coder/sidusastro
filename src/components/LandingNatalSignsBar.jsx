@@ -21,6 +21,7 @@ export function LandingNatalSignsBar({ className = '' }) {
       data: draft.data,
       hora: draft.hora,
       localizacao: draft.localizacao,
+      fuso: draft.fuso,
     })
     if (!mapa) return []
     return [

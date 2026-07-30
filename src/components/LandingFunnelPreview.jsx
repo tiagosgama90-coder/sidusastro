@@ -21,8 +21,13 @@ export function LandingFunnelPreview({ onContinue }) {
   const { nome, mapa } = useMemo(() => {
     const draft = readLandingDraft()
     if (!draft?.data) return { nome: '', mapa: null }
-    const m = draft.localizacao && draft.hora
-      ? calcularMapaNatal({ data: draft.data, hora: draft.hora, localizacao: draft.localizacao })
+    const m = draft.localizacao && draft.hora && draft.fuso != null
+      ? calcularMapaNatal({
+        data: draft.data,
+        hora: draft.hora,
+        localizacao: draft.localizacao,
+        fuso: draft.fuso,
+      })
       : null
     return { nome: (draft.nome || '').trim(), mapa: m }
   }, [])

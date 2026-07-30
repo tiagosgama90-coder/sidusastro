@@ -259,12 +259,12 @@ export function LandingBirthPortal({
 
   const previewSignos = useMemo(() => {
     if (!data) return null
-    if (localizacao && hora) {
-      return calcularMapaNatal({ data, hora, localizacao })
+    if (localizacao && hora && fuso != null) {
+      return calcularMapaNatal({ data, hora, localizacao, fuso })
     }
     const sol = calcularSignoSolarPorData(data)
     return sol ? { solar: sol } : null
-  }, [data, hora, localizacao])
+  }, [data, hora, localizacao, fuso])
 
   useGoogleTranslateRetranslate(!!previewSignos, [
     previewSignos?.solar?.nome,

@@ -1,4 +1,6 @@
 import { Body, Ecliptic, GeoVector, MakeTime } from 'astronomy-engine'
+import { criarDataUTCporLocal } from './datetime.js'
+import { calcularAngulosCasasMeeus } from './natalHouses.js'
 
 export const SIGNOS = [
   { nome: 'Carneiro', simbolo: '♈', elemento: 'Fogo' },
@@ -55,79 +57,29 @@ export function longitudeParaSigno(longitude) {
   return { ...SIGNOS[indice], graus: normalizada % 30 }
 }
 
-function ajustarDataUTC(ano, mes, dia, horasUTC) {
-  let y = ano
-  let m = mes
-  let d = dia
-  let h = horasUTC
-
-  while (h < 0) {
-    h += 24
-    d -= 1
-    if (d < 1) {
-      m -= 1
-      if (m < 1) { m = 12; y -= 1 }
-      d = new Date(y, m, 0).getDate()
-    }
-  }
-  while (h >= 24) {
-    h -= 24
-    d += 1
-    const diasMes = new Date(y, m, 0).getDate()
-    if (d > diasMes) { d = 1; m += 1; if (m > 12) { m = 1; y += 1 } }
-  }
-
-  return { y, m, d, h }
-}
-
-/** Converte hora local no local de nascimento para AstroTime (UTC via longitude) */
-function criarAstroTime(dataISO, horaHHMM, longitude) {
-  const [ano, mes, dia] = dataISO.split('-').map(Number)
-  const [h, min] = horaHHMM.split(':').map(Number)
-  const horaLocal = h + min / 60
-  const horaUTC = horaLocal - longitude / 15
-  const { y, m, d, h: hu } = ajustarDataUTC(ano, mes, dia, horaUTC)
-  const minutos = Math.round((hu % 1) * 60)
-  const horasInt = Math.floor(hu)
-
-  return MakeTime(new Date(Date.UTC(y, m - 1, d, horasInt, minutos, 0)))
-}
-
 function longitudeEcliptica(corpo, time) {
   const vetor = GeoVector(corpo, time, true)
   return Ecliptic(vetor).elon
 }
 
-function calcularAscendente(time, latitude, longitude) {
-  const jd = time.ut + 2451545.0
-  const T = (jd - 2451545.0) / 36525
-  let gmst = 280.46061837 + 360.98564736629 * (jd - 2451545.0) + 0.000387933 * T * T
-  gmst = ((gmst % 360) + 360) % 360
-  const lst = (gmst + longitude) % 360
-  const lstRad = (lst * Math.PI) / 180
-  const latRad = (latitude * Math.PI) / 180
-  const obliquity = ((23.439291 - 0.0130042 * T) * Math.PI) / 180
-
-  const y = Math.cos(lstRad)
-  const x = -(Math.sin(lstRad) * Math.cos(obliquity) + Math.tan(latRad) * Math.sin(obliquity))
-  let asc = (Math.atan2(y, x) * 180) / Math.PI
-  if (asc < 0) asc += 360
-  return asc
-}
-
-export function calcularMapaNatal({ data, hora, localizacao }) {
+export function calcularMapaNatal({ data, hora, localizacao, fuso }) {
   if (!data || !hora || !localizacao) return null
+  if (fuso == null || fuso === '') return null
 
   const { lat, lon } = localizacao
-  const time = criarAstroTime(data, hora, lon)
+  const dataUTC = criarDataUTCporLocal(data, hora, fuso)
+  if (!dataUTC) return null
+  const time = MakeTime(dataUTC)
 
   const lonSol = longitudeEcliptica(Body.Sun, time)
   const lonLua = longitudeEcliptica(Body.Moon, time)
-  const lonAsc = calcularAscendente(time, lat, lon)
+
+  const angulos = calcularAngulosCasasMeeus(dataUTC, lat, lon)
+  if (!angulos) return null
 
   const solar = longitudeParaSigno(lonSol)
   const lunar = longitudeParaSigno(lonLua)
-  const ascendente = longitudeParaSigno(lonAsc)
+  const ascendente = longitudeParaSigno(angulos.ascendant)
 
   const solarData = calcularSignoSolarPorData(data)
 
