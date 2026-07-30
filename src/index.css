@@ -871,7 +871,7 @@ h1.sidus-page-title {
 }
 
 @media (min-width: 720px) {
-  .landing-hero-stack {
+  .landing-hero-stack:not(.landing-hero-stack--funnel) {
     display: grid;
     grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
     gap: 20px;
@@ -4668,6 +4668,7 @@ h1.sidus-page-title {
   justify-content: center;
   min-height: 280px;
   padding: 48px 20px;
+  width: 100%;
 }
 
 .landing-funnel-loading__inner {
@@ -4691,10 +4692,26 @@ h1.sidus-page-title {
   letter-spacing: 0.02em;
 }
 
-/* Landing funnel — premium paywall step */
+/* Landing funnel — single centered column (birth form / loading) */
 .landing-hero-stack--funnel {
-  max-width: min(820px, 100%);
-  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: min(560px, 100%);
+  margin: 0 auto 20px;
+}
+
+.landing-hero-stack--funnel > * {
+  width: 100%;
+}
+
+.landing-hero-stack--funnel-wide {
+  max-width: min(880px, 100%);
+}
+
+.landing-portal-root {
+  width: 100%;
 }
 
 .landing-premium-paywall {
