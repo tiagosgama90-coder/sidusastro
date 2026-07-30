@@ -267,8 +267,8 @@ export const PREMIUM_LOCALE_BLOCKS = {
       portal: { topCta: 'Premium — {price}' },
     },
     landing: {
-      stickyCta: 'Crear cuenta y desbloquear — {price}',
-      stickyCtaAria: 'Crear cuenta y desbloquear Premium',
+      stickyCta: 'Calcular carta gratis',
+      stickyCtaAria: 'Ir al formulario de nacimiento',
       reviewsTickerAria: 'Comentarios de usuarios de Sidus',
       simplePremium: {
         ariaLabel: 'Comparación Gratis vs Premium',
@@ -341,8 +341,8 @@ export const PREMIUM_LOCALE_BLOCKS = {
       portal: { topCta: 'Premium — {price}' },
     },
     landing: {
-      stickyCta: 'Créer un compte et débloquer — {price}',
-      stickyCtaAria: 'Créer un compte et débloquer Premium',
+      stickyCta: 'Calculer carte gratuite',
+      stickyCtaAria: 'Aller au formulaire de naissance',
       reviewsTickerAria: 'Avis des utilisateurs Sidus',
       simplePremium: {
         ariaLabel: 'Comparaison Gratuit vs Premium',
@@ -415,8 +415,8 @@ export const PREMIUM_LOCALE_BLOCKS = {
       portal: { topCta: 'Premium — {price}' },
     },
     landing: {
-      stickyCta: 'Konto erstellen und freischalten — {price}',
-      stickyCtaAria: 'Konto erstellen und Premium freischalten',
+      stickyCta: 'Gratis-Horoskop berechnen',
+      stickyCtaAria: 'Zum Geburtsdaten-Formular',
       reviewsTickerAria: 'Sidus-Nutzerbewertungen',
       simplePremium: {
         ariaLabel: 'Vergleich Gratis vs Premium',
@@ -489,8 +489,8 @@ export const PREMIUM_LOCALE_BLOCKS = {
       portal: { topCta: 'Premium — {price}' },
     },
     landing: {
-      stickyCta: 'Crea account e sblocca — {price}',
-      stickyCtaAria: 'Crea account e sblocca Premium',
+      stickyCta: 'Calcola carta gratis',
+      stickyCtaAria: 'Vai al modulo di nascita',
       reviewsTickerAria: 'Recensioni utenti Sidus',
       simplePremium: {
         ariaLabel: 'Confronto Gratis vs Premium',
