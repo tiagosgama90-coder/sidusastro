@@ -184,7 +184,11 @@ const GAP_BLOCK_ES = {
         register: 'Crear cuenta gratis',
         login: 'Ya tengo cuenta · Entrar',
         hint: 'Carta natal gratis en minutos. Sin tarjeta.',
-        panelLead: 'Tu portal cósmico está aquí',
+        panelLead: 'Crea tu cuenta para guardar la carta',
+      },
+      loginModal: {
+        ariaLabel: 'Entrar en tu cuenta Sidus',
+        title: 'Bienvenido de nuevo',
       },
     },
   },
@@ -195,6 +199,12 @@ const GAP_BLOCK_ES = {
       title: 'Qué incluye tu carta Premium',
       lead: 'Mandala personalizada y lectura profesional calculada para tu hora y lugar exactos de nacimiento.',
       mandalaCaption: 'Rueda natal con casas Placidus, planetas y aspectos. Única como tu firma cósmica.',
+    },
+    plansOverview: {
+      ariaLabel: 'Planes y beneficios Sidus Premium',
+      eyebrow: 'Sidus Premium',
+      title: 'Todo en un solo lugar',
+      lead: 'Carta completa, oráculo, tarot y herramientas. Comparación simple Gratis vs Premium.',
     },
   },
   mapa: {
@@ -378,7 +388,11 @@ const GAP_BLOCK_FR = {
         register: 'Créer un compte gratuit',
         login: 'J\'ai déjà un compte · Connexion',
         hint: 'Thème natal gratuit en quelques minutes. Sans carte.',
-        panelLead: 'Votre portail cosmique est ici',
+        panelLead: 'Créez votre compte pour enregistrer la carte',
+      },
+      loginModal: {
+        ariaLabel: 'Connexion à votre compte Sidus',
+        title: 'Bon retour',
       },
     },
   },
@@ -389,6 +403,12 @@ const GAP_BLOCK_FR = {
       title: 'Ce que comprend votre thème Premium',
       lead: 'Mandala personnalisée et lecture professionnelle calculée pour votre heure et lieu exacts de naissance.',
       mandalaCaption: 'Roue natale avec maisons Placidus, planètes et aspects. Unique comme votre signature cosmique.',
+    },
+    plansOverview: {
+      ariaLabel: 'Offres et avantages Sidus Premium',
+      eyebrow: 'Sidus Premium',
+      title: 'Tout au même endroit',
+      lead: 'Carte complète, oracle, tarot et outils. Comparaison simple Gratuit vs Premium.',
     },
   },
   mapa: {
@@ -572,7 +592,11 @@ const GAP_BLOCK_DE = {
         register: 'Kostenloses Konto erstellen',
         login: 'Ich habe ein Konto · Anmelden',
         hint: 'Kostenloses Geburtshoroskop in Minuten. Keine Karte nötig.',
-        panelLead: 'Ihr kosmisches Portal ist hier',
+        panelLead: 'Erstellen Sie Ihr Konto, um die Karte zu speichern',
+      },
+      loginModal: {
+        ariaLabel: 'Bei Ihrem Sidus-Konto anmelden',
+        title: 'Willkommen zurück',
       },
     },
   },
@@ -583,6 +607,12 @@ const GAP_BLOCK_DE = {
       title: 'Was Ihr Premium-Horoskop enthält',
       lead: 'Personalisierte Mandala und professionelle Deutung für Ihre exakte Geburtszeit und Ihren Geburtsort.',
       mandalaCaption: 'Geburtshoroskop-Rad mit Placidus-Häusern, Planeten und Aspekten. Einzigartig wie Ihre kosmische Signatur.',
+    },
+    plansOverview: {
+      ariaLabel: 'Sidus Premium Pläne und Vorteile',
+      eyebrow: 'Sidus Premium',
+      title: 'Alles an einem Ort',
+      lead: 'Vollständiges Horoskop, Orakel, Tarot und Tools. Einfacher Gratis vs Premium Vergleich.',
     },
   },
   mapa: {
@@ -766,7 +796,11 @@ const GAP_BLOCK_IT = {
         register: 'Crea account gratuito',
         login: 'Ho già un account · Accedi',
         hint: 'Carta natale gratis in pochi minuti. Senza carta.',
-        panelLead: 'Il tuo portale cosmico è qui',
+        panelLead: 'Crea il tuo account per salvare la carta',
+      },
+      loginModal: {
+        ariaLabel: 'Accedi al tuo account Sidus',
+        title: 'Bentornato',
       },
     },
   },
@@ -777,6 +811,12 @@ const GAP_BLOCK_IT = {
       title: 'Cosa include la tua carta Premium',
       lead: 'Mandala personalizzata e lettura professionale calcolata per la tua ora e luogo esatti di nascita.',
       mandalaCaption: 'Ruota natale con case Placidus, pianeti e aspetti. Unica come la tua firma cosmica.',
+    },
+    plansOverview: {
+      ariaLabel: 'Piani e vantaggi Sidus Premium',
+      eyebrow: 'Sidus Premium',
+      title: 'Tutto in un unico posto',
+      lead: 'Carta completa, oracolo, tarocchi e strumenti. Confronto semplice Gratis vs Premium.',
     },
   },
   mapa: {

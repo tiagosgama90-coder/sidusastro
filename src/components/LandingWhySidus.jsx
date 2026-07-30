@@ -10,11 +10,15 @@ const PILLARS = [
 ]
 
 /** Destaque profissional: precisão e diferenciação do Sidus na landing. */
-export function LandingWhySidus() {
+export function LandingWhySidus({ compact = false }) {
   const { t } = useLanguage()
+  const pillars = compact ? PILLARS.slice(0, 2) : PILLARS
 
   return (
-    <section className="landing-why-sidus landing-glass" aria-label={t('auth.portal.whySidus.ariaLabel')}>
+    <section
+      className={`landing-why-sidus landing-glass${compact ? ' landing-why-sidus--compact' : ''}`}
+      aria-label={t('auth.portal.whySidus.ariaLabel')}
+    >
       <p className="landing-why-sidus__eyebrow">{t('auth.portal.whySidus.eyebrow')}</p>
       <h2 className="landing-why-sidus__title">
         <LandingMysticHighlight
@@ -22,10 +26,10 @@ export function LandingWhySidus() {
           highlight={t('auth.portal.whySidus.titleHighlight')}
         />
       </h2>
-      <p className="landing-why-sidus__lead">{t('auth.portal.whySidus.lead')}</p>
+      {!compact && <p className="landing-why-sidus__lead">{t('auth.portal.whySidus.lead')}</p>}
 
       <ul className="landing-why-sidus__grid">
-        {PILLARS.map(({ icon: Icon, titleKey, descKey }) => (
+        {pillars.map(({ icon: Icon, titleKey, descKey }) => (
           <li key={titleKey} className="landing-why-sidus__card">
             <div className="landing-why-sidus__icon" aria-hidden="true">
               <Icon size={18} strokeWidth={2} />
@@ -36,7 +40,7 @@ export function LandingWhySidus() {
         ))}
       </ul>
 
-      <p className="landing-why-sidus__footnote">{t('auth.portal.whySidus.footnote')}</p>
+      {!compact && <p className="landing-why-sidus__footnote">{t('auth.portal.whySidus.footnote')}</p>}
     </section>
   )
 }

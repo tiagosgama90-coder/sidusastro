@@ -48,8 +48,8 @@ import { LandingCosmicBackground } from './components/LandingCosmicBackground.js
 import { LandingBirthPortal } from './components/LandingBirthPortal.jsx'
 import { LandingConversionHead } from './components/LandingConversionHead.jsx'
 import { LandingWhySidus } from './components/LandingWhySidus.jsx'
-import { LandingAuthGateway } from './components/LandingAuthGateway.jsx'
-import { LandingMapaPremium } from './components/LandingMapaPremium.jsx'
+import { LandingAuthModal } from './components/LandingAuthModal.jsx'
+import { LandingPlansOverview } from './components/LandingPlansOverview.jsx'
 import { LandingTopBar } from './components/LandingTopBar.jsx'
 import { SidusLogo } from './components/SidusLogo.jsx'
 import { SidusConstellationMark } from './components/SidusConstellationMark.jsx'
@@ -101,7 +101,6 @@ import { readLandingDraft, clearLandingDraft, mergeLandingDraft, hasLandingDraft
 import { MobileBottomNav } from './components/MobileBottomNav.jsx'
 import { HomeParaTiHoje } from './components/HomeParaTiHoje.jsx'
 import { LandingStickyCta } from './components/LandingStickyCta.jsx'
-import { LandingSimplePremium } from './components/LandingSimplePremium.jsx'
 import { MapaPaywallSections } from './components/MapaPaywallSections.jsx'
 import { FerramentasEmptyState } from './components/FerramentasEmptyState.jsx'
 
@@ -1338,6 +1337,7 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
   const { isBrasil } = useGeoCountry()
   const authPanelRef = useRef(null)
   const conversionZoneRef = useRef(null)
+  const [loginModalOpen, setLoginModalOpen] = useState(false)
   const [email, setEmail]       = useState('')
   const [senha, setSenha]       = useState('')
   const [confirmar, setConfirmar] = useState('')
@@ -1347,75 +1347,42 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
   const [info, setInfo]         = useState(null)
   const [recaptchaOk, setRecaptchaOk] = useState(false)
   const [recaptchaKey, setRecaptchaKey] = useState(0)
-  const [emRecuperacao, setEmRecuperacao] = useState(false)
-
-  useEffect(() => {
-    setRecaptchaOk(false)
-    setRecaptchaKey((k) => k + 1)
-    setEmRecuperacao(false)
-    setErro(null)
-    setInfo(null)
-  }, [tipo])
 
   const traduzirErro = (code) => traduzirErroAuth(code, lang)
-
-  const isLogin = tipo === 'login'
-  const precisaRecaptcha = !isLogin
   const prices = getPremiumPriceLabels(isBrasil)
 
   useEffect(() => {
-    const titulo = emRecuperacao
-      ? t('auth.forgot.title')
-      : (isLogin ? t('auth.login') : t('auth.register'))
-    document.title = `Sidusastro - ${titulo}`
-    return () => { document.title = 'Sidusastro - O Seu Guia Cósmico' }
-  }, [isLogin, emRecuperacao, t])
-
-  const handleRecuperarSenha = async () => {
+    onMudar('register')
+    setRecaptchaOk(false)
+    setRecaptchaKey((k) => k + 1)
     setErro(null)
     setInfo(null)
-    if (!email?.trim()) { setErro(t('auth.errors.auth/missing-email')); return }
-    if (!auth) { setErro(t('auth.firebaseMissing')); return }
-    setCarregando(true)
-    try {
-      const addr = await enviarEmailRecuperacaoSenha(email)
-      setInfo(`${t('auth.forgot.sent', { email: addr })}\n\n${t('auth.forgot.checkSpam')}`)
-    } catch (e) {
-      console.error('[Sidus Auth] Recuperar senha:', e?.code, e?.message)
-      setErro(traduzirErroEmail(e?.code, e?.message, lang))
-    } finally {
-      setCarregando(false)
-    }
-  }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- forçar registo na landing
+  }, [])
+
+  useEffect(() => {
+    document.title = `Sidusastro - ${t('auth.register')}`
+    return () => { document.title = 'Sidusastro - O Seu Guia Cósmico' }
+  }, [t])
 
   const handleSubmit = async () => {
-    if (emRecuperacao) {
-      await handleRecuperarSenha()
-      return
-    }
     setErro(null)
     setInfo(null)
     if (!email || !senha) { setErro(t('auth.fillAll')); return }
-    if (precisaRecaptcha && !recaptchaOk) { setErro(t('auth.confirmRobot')); return }
-    if (tipo === 'register' && senha !== confirmar) { setErro(t('auth.passwordsMismatch')); return }
-    if (tipo === 'register' && senha.length < 6) { setErro(t('auth.passwordMin')); return }
+    if (!recaptchaOk) { setErro(t('auth.confirmRobot')); return }
+    if (senha !== confirmar) { setErro(t('auth.passwordsMismatch')); return }
+    if (senha.length < 6) { setErro(t('auth.passwordMin')); return }
     if (!auth) { setErro(t('auth.firebaseMissing')); return }
     flushLandingDraft()
     setCarregando(true)
     try {
-      if (tipo === 'register') {
-        const cred = await createUserWithEmailAndPassword(auth, email, senha)
-        try {
-          await enviarEmailVerificacao(cred.user, lang)
-        } catch (emailErr) {
-          console.warn('[Sidus Auth] Email verificação:', emailErr?.code, emailErr?.message)
-        }
-        setInfo(t('auth.accountCreated'))
-      } else {
-        const cred = await signInWithEmailAndPassword(auth, email, senha)
-        await reload(cred.user)
-        await cred.user.getIdToken(true)
+      const cred = await createUserWithEmailAndPassword(auth, email, senha)
+      try {
+        await enviarEmailVerificacao(cred.user, lang)
+      } catch (emailErr) {
+        console.warn('[Sidus Auth] Email verificação:', emailErr?.code, emailErr?.message)
       }
+      setInfo(t('auth.accountCreated'))
     } catch (e) {
       console.error('[Sidus Auth] Erro:', e.code, e.message)
       setErro(traduzirErro(e.code) + (e.code ? ` [${e.code}]` : ''))
@@ -1429,8 +1396,8 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
     if (window.location.hash !== '#guias') return
     const scroll = () => document.getElementById('guias')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
     requestAnimationFrame(scroll)
-    const t = window.setTimeout(scroll, 400)
-    return () => window.clearTimeout(t)
+    const timer = window.setTimeout(scroll, 400)
+    return () => window.clearTimeout(timer)
   }, [])
 
   const scrollParaAuth = useCallback(() => {
@@ -1439,287 +1406,218 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
     })
   }, [])
 
-  const scrollParaLogin = useCallback(() => {
-    onMudar('login')
-    scrollParaAuth()
-  }, [onMudar, scrollParaAuth])
-
   const scrollParaRegister = useCallback(() => {
     onMudar('register')
     scrollParaAuth()
   }, [onMudar, scrollParaAuth])
 
+  const openLoginModal = useCallback(() => {
+    onMudar('login')
+    setLoginModalOpen(true)
+  }, [onMudar])
+
+  const closeLoginModal = useCallback(() => {
+    setLoginModalOpen(false)
+  }, [])
+
+  const scrollParaPlans = useCallback(() => {
+    document.getElementById('comparar-planos')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }, [])
+
   return (
-    <div className={`landing-auth-layout${isDesktop ? ' landing-auth-layout--desktop' : ' landing-auth-layout--mobile'}`} translate="yes">
-      <BannerBrasil />
-      <LandingStickyCta targetRef={conversionZoneRef} onCta={scrollParaAuth} />
-      {isDesktop ? (
-        <div className="landing-desktop-top-stack">
-          <LandingTopBar onCta={scrollParaRegister} onLogin={scrollParaLogin} />
-          <div className="landing-sky-desktop-wrap landing-sky-desktop-wrap--compact">
-            <LandingSkyLive compact />
-          </div>
-        </div>
-      ) : (
-        <>
-          <div className="landing-mobile-logo notranslate" translate="no">
-            <SidusLogo variant="horizontal" markSize={42} glow className="sidus-logo--landing-bar" />
-          </div>
-          <div className="landing-lang-bar landing-lang-bar--standalone">
-            <LanguageSwitcher variant="landing-bar" />
-          </div>
-          <div className="landing-sky-mobile-wrap landing-sky-mobile-wrap--compact">
-            <LandingSkyLive compact />
-          </div>
-        </>
-      )}
-      <section
-        ref={conversionZoneRef}
-        className="landing-conversion-zone"
-        aria-label={t('auth.portal.conversionAria')}
-      >
-        <LandingConversionHead />
-        <LandingAuthGateway onLogin={scrollParaLogin} onRegister={scrollParaRegister} />
-        <div className="landing-auth-grid landing-auth-grid--prominent">
-        <div className="landing-auth-column landing-auth-column--primary">
-          {!isDesktop && (
-            <p className="landing-auth-invite-mobile">{t('auth.portal.authGateway.panelLead')}</p>
-          )}
-
-          <div
-            id="sidus-auth-panel"
-            ref={authPanelRef}
-            id="landing-auth-panel"
-            className="landing-auth-panel landing-auth-panel--prominent landing-glass"
-            style={{
-              padding: isDesktop ? 24 : undefined,
-              ...(isDesktop ? { position: 'sticky', top: 24, borderRadius: 16, boxShadow: CORES.sombra } : { borderRadius: 16, boxShadow: CORES.sombra }),
-            }}
-          >
-            {isDesktop && (
-              <p className="landing-auth-divider-desktop landing-auth-panel-magic">
-                {t('auth.portal.authGateway.panelLead')}
-              </p>
-            )}
-        {!firebaseOk && (
-          <div style={{ marginBottom: 16, padding: '10px 14px', borderRadius: 10, background: 'rgba(251,191,36,0.1)', border: '1px solid rgba(251,191,36,0.35)', fontSize: 12, color: '#FCD34D', lineHeight: 1.5 }}>
-            {t('auth.firebaseNotConfigured')}
-          </div>
-        )}
-        <h2 className="landing-auth-heading" style={{ margin: '0 0 24px', fontSize: 18, fontWeight: 600, color: CORES.branco, textAlign: 'center' }}>
-          {emRecuperacao ? t('auth.forgot.title') : (isLogin ? t('auth.login') : t('auth.register'))}
-        </h2>
-
-        {emRecuperacao && (
-          <p style={{ margin: '0 0 20px', fontSize: 13, color: CORES.brancoMuted, lineHeight: 1.6, textAlign: 'center' }}>
-            {t('auth.forgot.intro')}
-          </p>
-        )}
-
-        {/* Email */}
-        <div className="landing-auth-field" style={{ marginBottom: 16 }}>
-          <label style={estilos.label}>{t('auth.email')}</label>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder={t('auth.emailPlaceholder')}
-            className="landing-auth-input"
-            style={estilos.input}
-            onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
+    <>
+      <LandingAuthModal
+        open={loginModalOpen}
+        onClose={closeLoginModal}
+        onRegister={scrollParaRegister}
+        firebaseOk={firebaseOk}
+      />
+      <div className={`landing-auth-layout${isDesktop ? ' landing-auth-layout--desktop' : ' landing-auth-layout--mobile'}`} translate="yes">
+        <BannerBrasil />
+        <LandingStickyCta targetRef={conversionZoneRef} onCta={scrollParaRegister} />
+        <div className="landing-top-stack">
+          <LandingTopBar
+            onLogin={openLoginModal}
+            onRegister={scrollParaRegister}
+            onPremium={scrollParaPlans}
           />
+          <div className={`${isDesktop ? 'landing-sky-desktop-wrap landing-sky-desktop-wrap--compact' : 'landing-sky-mobile-wrap landing-sky-mobile-wrap--compact'}`}>
+            <LandingSkyLive compact />
+          </div>
         </div>
-
-        {/* Senha */}
-        {!emRecuperacao && (
-        <div className="landing-auth-field landing-auth-password-block" style={{ marginBottom: tipo === 'register' ? 16 : 20 }}>
-          <label style={estilos.label}>{t('auth.password')}</label>
-          <div className="landing-auth-password-input">
-            <input
-              type={verSenha ? 'text' : 'password'}
-              value={senha}
-              onChange={(e) => setSenha(e.target.value)}
-              placeholder="••••••••"
-              className="landing-auth-input"
-              style={{ ...estilos.input, paddingRight: 44 }}
-              onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
+        <section
+          ref={conversionZoneRef}
+          className="landing-conversion-zone"
+          aria-label={t('auth.portal.conversionAria')}
+        >
+          <LandingConversionHead />
+          <div className="landing-hero-stack">
+            <LandingBirthPortal
+              isDesktop={isDesktop}
+              onSaved={scrollParaRegister}
+              onScrollToLogin={openLoginModal}
             />
-            <button
-              type="button"
-              onClick={() => setVerSenha((v) => !v)}
-              style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: CORES.brancoMuted, padding: 4 }}
+            <div
+              id="sidus-auth-panel"
+              ref={authPanelRef}
+              className="landing-auth-panel landing-auth-panel--prominent landing-glass landing-auth-panel--register"
             >
-              {verSenha ? <EyeOff size={16} /> : <Eye size={16} />}
-            </button>
-          </div>
-          <div
-            className="landing-auth-forgot-wrap"
-            style={{ display: 'block', width: '100%', marginTop: 10, marginBottom: 6, textAlign: 'right', clear: 'both' }}
-          >
-            <button
-              type="button"
-              className="landing-auth-forgot"
-              style={{ display: 'inline-block', color: CORES.dourado, fontSize: 13, fontWeight: 600, textDecoration: 'underline', background: 'none', border: 'none', cursor: 'pointer', padding: '4px 0' }}
-              onClick={() => {
-                if (tipo === 'register') onMudar('login')
-                setEmRecuperacao(true)
-                setErro(null)
-                setInfo(null)
-              }}
-            >
-              {t('auth.forgotPassword')}
-            </button>
-          </div>
-        </div>
-        )}
+              <p className="landing-auth-panel-magic">{t('auth.portal.authGateway.panelLead')}</p>
+              {!firebaseOk && (
+                <div className="landing-auth-modal__alert landing-auth-modal__alert--warn" style={{ marginBottom: 16 }}>
+                  {t('auth.firebaseNotConfigured')}
+                </div>
+              )}
+              <h2 className="landing-auth-heading">{t('auth.register')}</h2>
 
-        {emRecuperacao && <div style={{ marginBottom: 24 }} />}
+              <div className="landing-auth-field" style={{ marginBottom: 16 }}>
+                <label style={estilos.label}>{t('auth.email')}</label>
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder={t('auth.emailPlaceholder')}
+                  className="landing-auth-input"
+                  style={estilos.input}
+                  onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
+                />
+              </div>
 
-        {/* Confirmar senha (só no registo) */}
-        {tipo === 'register' && !emRecuperacao && (
-          <div className="landing-auth-field landing-auth-field--last" style={{ marginBottom: 24 }}>
-            <label style={estilos.label}>{t('auth.confirmPassword')}</label>
-            <div style={{ position: 'relative' }}>
-              <Lock size={15} color={CORES.brancoMuted} style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }} />
-              <input
-                type={verSenha ? 'text' : 'password'}
-                value={confirmar}
-                onChange={(e) => setConfirmar(e.target.value)}
-                placeholder="••••••••"
-                style={{ ...estilos.input, paddingLeft: 40 }}
-                onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
-              />
+              <div className="landing-auth-field landing-auth-password-block" style={{ marginBottom: 16 }}>
+                <label style={estilos.label}>{t('auth.password')}</label>
+                <div className="landing-auth-password-input">
+                  <input
+                    type={verSenha ? 'text' : 'password'}
+                    value={senha}
+                    onChange={(e) => setSenha(e.target.value)}
+                    placeholder="••••••••"
+                    className="landing-auth-input"
+                    style={{ ...estilos.input, paddingRight: 44 }}
+                    onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setVerSenha((v) => !v)}
+                    style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: CORES.brancoMuted, padding: 4 }}
+                  >
+                    {verSenha ? <EyeOff size={16} /> : <Eye size={16} />}
+                  </button>
+                </div>
+              </div>
+
+              <div className="landing-auth-field landing-auth-field--last" style={{ marginBottom: 24 }}>
+                <label style={estilos.label}>{t('auth.confirmPassword')}</label>
+                <div style={{ position: 'relative' }}>
+                  <Lock size={15} color={CORES.brancoMuted} style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }} />
+                  <input
+                    type={verSenha ? 'text' : 'password'}
+                    value={confirmar}
+                    onChange={(e) => setConfirmar(e.target.value)}
+                    placeholder="••••••••"
+                    style={{ ...estilos.input, paddingLeft: 40 }}
+                    onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
+                  />
+                </div>
+              </div>
+
+              {erro && (
+                <div style={{ marginBottom: 16, padding: '10px 14px', borderRadius: 10, background: 'rgba(248,113,113,0.1)', border: '1px solid rgba(248,113,113,0.3)', fontSize: 13, color: '#F87171' }}>
+                  {erro}
+                </div>
+              )}
+
+              {info && (
+                <div style={{ marginBottom: 16, padding: '10px 14px', borderRadius: 10, background: 'rgba(52,211,153,0.1)', border: '1px solid rgba(52,211,153,0.3)', fontSize: 13, color: '#34D399', lineHeight: 1.5, whiteSpace: 'pre-line' }}>
+                  {info}
+                </div>
+              )}
+
+              <div style={{ marginBottom: 16 }}>
+                <RecaptchaCheckbox onChange={setRecaptchaOk} resetKey={recaptchaKey} />
+              </div>
+
+              <button
+                type="button"
+                disabled={carregando || !recaptchaOk}
+                onClick={handleSubmit}
+                style={{ ...estilos.botaoDourado, opacity: carregando ? 0.6 : 1, cursor: carregando ? 'default' : 'pointer' }}
+              >
+                {carregando
+                  ? <Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} />
+                  : t('auth.registerCta', { price: prices.dualShort })}
+              </button>
+
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10, margin: '20px 0' }}>
+                <div style={{ flex: 1, height: 1, background: CORES.vidroBorda }} />
+                <span style={{ fontSize: 11, color: CORES.brancoMuted, textTransform: 'uppercase', letterSpacing: '0.1em' }}>{t('auth.or')}</span>
+                <div style={{ flex: 1, height: 1, background: CORES.vidroBorda }} />
+              </div>
+
+              <button
+                type="button"
+                disabled={carregando || !recaptchaOk}
+                onClick={async () => {
+                  if (!auth) { setErro(t('auth.firebaseMissing')); return }
+                  if (!recaptchaOk) { setErro(t('auth.confirmRobot')); return }
+                  flushLandingDraft()
+                  setErro(null)
+                  setInfo(null)
+                  setCarregando(true)
+                  try {
+                    await signInWithPopup(auth, new GoogleAuthProvider())
+                  } catch (e) {
+                    console.error('[Sidus Google] Erro:', e.code, e.message)
+                    if (e.code !== 'auth/popup-closed-by-user') setErro(traduzirErro(e.code) + ` [${e.code}]`)
+                    setRecaptchaKey((k) => k + 1)
+                  } finally {
+                    setCarregando(false)
+                  }
+                }}
+                style={{
+                  width: '100%',
+                  padding: '13px 16px',
+                  borderRadius: 12,
+                  border: `1px solid ${CORES.vidroBorda}`,
+                  background: 'rgba(255,255,255,0.05)',
+                  color: CORES.branco,
+                  fontSize: 14,
+                  fontWeight: 600,
+                  cursor: carregando ? 'default' : 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: 10,
+                  opacity: carregando ? 0.6 : 1,
+                }}
+              >
+                <svg width="18" height="18" viewBox="0 0 48 48" aria-hidden>
+                  <path fill="#FFC107" d="M43.6 20.1H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.1 7.9 3l5.7-5.7C34.1 6.5 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.7-.4-3.9z"/>
+                  <path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 16.1 19 13 24 13c3.1 0 5.8 1.1 7.9 3l5.7-5.7C34.1 6.5 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/>
+                  <path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.3 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-8H6.1C9.5 35.7 16.2 44 24 44z"/>
+                  <path fill="#1976D2" d="M43.6 20.1H42V20H24v8h11.3c-.8 2.3-2.3 4.3-4.3 5.6l6.2 5.2C40.9 35.6 44 30.2 44 24c0-1.3-.1-2.7-.4-3.9z"/>
+                </svg>
+                {t('auth.google')}
+              </button>
+
+              <p className="landing-auth-register-switch">
+                {t('auth.hasAccount')}{' '}
+                <button type="button" onClick={openLoginModal}>
+                  {t('auth.loginHere')}
+                </button>
+              </p>
             </div>
           </div>
-        )}
-
-        {erro && (
-          <div style={{ marginBottom: 16, padding: '10px 14px', borderRadius: 10, background: 'rgba(248,113,113,0.1)', border: '1px solid rgba(248,113,113,0.3)', fontSize: 13, color: '#F87171' }}>
-            {erro}
-          </div>
-        )}
-
-        {info && (
-          <div style={{ marginBottom: 16, padding: '10px 14px', borderRadius: 10, background: 'rgba(52,211,153,0.1)', border: '1px solid rgba(52,211,153,0.3)', fontSize: 13, color: '#34D399', lineHeight: 1.5, whiteSpace: 'pre-line' }}>
-            {info}
-          </div>
-        )}
-
-        {precisaRecaptcha && (
-          <div style={{ marginBottom: 16 }}>
-            <RecaptchaCheckbox onChange={setRecaptchaOk} resetKey={recaptchaKey} />
-          </div>
-        )}
-
-        <button
-          type="button"
-          disabled={carregando || (precisaRecaptcha && !recaptchaOk)}
-          onClick={handleSubmit}
-          style={{ ...estilos.botaoDourado, opacity: carregando ? 0.6 : 1, cursor: carregando ? 'default' : 'pointer' }}
-        >
-          {carregando
-            ? <Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} />
-            : emRecuperacao
-              ? t('auth.forgot.submit')
-              : (isLogin ? t('auth.login') : t('auth.registerCta', { price: prices.dualShort }))}
-        </button>
-
-        {emRecuperacao ? (
-          <p style={{ textAlign: 'center', marginTop: 20, fontSize: 13, color: CORES.brancoMuted }}>
-            <button
-              type="button"
-              onClick={() => { setEmRecuperacao(false); setErro(null); setInfo(null) }}
-              style={{ background: 'none', border: 'none', color: CORES.dourado, cursor: 'pointer', fontSize: 13, fontWeight: 600, padding: 0 }}
-            >
-              ← {t('auth.forgot.backToLogin')}
-            </button>
-          </p>
-        ) : (
-        <>
-        {/* Divisor */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10, margin: '20px 0' }}>
-          <div style={{ flex: 1, height: 1, background: CORES.vidroBorda }} />
-          <span style={{ fontSize: 11, color: CORES.brancoMuted, textTransform: 'uppercase', letterSpacing: '0.1em' }}>{t('auth.or')}</span>
-          <div style={{ flex: 1, height: 1, background: CORES.vidroBorda }} />
-        </div>
-
-        {/* Google */}
-        <button
-          type="button"
-          disabled={carregando}
-          onClick={async () => {
-            if (!auth) { setErro(t('auth.firebaseMissing')); return }
-            if (precisaRecaptcha && !recaptchaOk) { setErro(t('auth.confirmRobot')); return }
-            flushLandingDraft()
-            setErro(null)
-            setInfo(null)
-            setCarregando(true)
-            try {
-              await signInWithPopup(auth, new GoogleAuthProvider())
-            } catch (e) {
-              console.error('[Sidus Google] Erro:', e.code, e.message)
-              if (e.code !== 'auth/popup-closed-by-user') setErro(traduzirErro(e.code) + ` [${e.code}]`)
-              setRecaptchaKey((k) => k + 1)
-            } finally {
-              setCarregando(false)
-            }
-          }}
-          style={{
-            width: '100%',
-            padding: '13px 16px',
-            borderRadius: 12,
-            border: `1px solid ${CORES.vidroBorda}`,
-            background: 'rgba(255,255,255,0.05)',
-            color: CORES.branco,
-            fontSize: 14,
-            fontWeight: 600,
-            cursor: carregando ? 'default' : 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: 10,
-            opacity: carregando ? 0.6 : 1,
-          }}
-        >
-          {/* SVG logo Google */}
-          <svg width="18" height="18" viewBox="0 0 48 48">
-            <path fill="#FFC107" d="M43.6 20.1H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.1 7.9 3l5.7-5.7C34.1 6.5 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.7-.4-3.9z"/>
-            <path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 16.1 19 13 24 13c3.1 0 5.8 1.1 7.9 3l5.7-5.7C34.1 6.5 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/>
-            <path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.3 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-8H6.1C9.5 35.7 16.2 44 24 44z"/>
-            <path fill="#1976D2" d="M43.6 20.1H42V20H24v8h11.3c-.8 2.3-2.3 4.3-4.3 5.6l6.2 5.2C40.9 35.6 44 30.2 44 24c0-1.3-.1-2.7-.4-3.9z"/>
-          </svg>
-          {t('auth.google')}
-        </button>
-
-        <p style={{ textAlign: 'center', marginTop: 20, fontSize: 13, color: CORES.brancoMuted }}>
-          {isLogin ? t('auth.noAccount') : t('auth.hasAccount')}{' '}
-          <button
-            type="button"
-            onClick={() => onMudar(isLogin ? 'register' : 'login')}
-            style={{ background: 'none', border: 'none', color: CORES.dourado, cursor: 'pointer', fontSize: 13, fontWeight: 600, padding: 0 }}
-          >
-            {isLogin ? t('auth.createHere') : t('auth.loginHere')}
-          </button>
-        </p>
-        </>
-        )}
-          </div>
-        </div>
-        <div className="landing-birth-wrap">
-          <LandingBirthPortal isDesktop={isDesktop} onSaved={scrollParaAuth} onScrollToLogin={scrollParaLogin} />
-        </div>
+          <LandingPlansOverview onCta={scrollParaRegister} />
+          <LandingWhySidus compact />
+          <LandingReviews variant="paywall" />
+        </section>
+        <LandingPdfShowcase />
+        <LandingGuides />
+        <AdSenseBanner />
+        <LandingFaq />
+        <LandingReviewsTicker />
       </div>
-        <LandingWhySidus />
-        <LandingMapaPremium />
-        <LandingSimplePremium onCta={scrollParaRegister} />
-        <LandingReviews variant="paywall" />
-      </section>
-      <LandingPdfShowcase />
-      <LandingGuides />
-      <AdSenseBanner />
-      <LandingFaq />
-      <LandingReviewsTicker />
-    </div>
+    </>
   )
 }
 
@@ -3689,7 +3587,7 @@ export default function App() {
   const { country, isBrasil } = useGeoCountry()
   const [utilizador, setUtilizador] = useState(null)
   const [authCarregando, setAuthCarregando] = useState(true)
-  const [tipoAuth, setTipoAuth] = useState('login') // 'login' | 'register'
+  const [tipoAuth, setTipoAuth] = useState('register') // 'login' | 'register'
   const [isPremium, setIsPremium] = useState(false)
   const [mapaCompleto, setMapaCompleto] = useState(false)
   const [interpretacaoMapa, setInterpretacaoMapa] = useState(null)

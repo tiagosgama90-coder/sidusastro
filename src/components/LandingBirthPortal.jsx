@@ -495,6 +495,14 @@ export function LandingBirthPortal({ isDesktop, onSaved, onScrollToLogin }) {
                   </>
                 )}
               </button>
+              {onScrollToLogin && (
+                <p className="landing-portal-login-link">
+                  {t('auth.portal.mobileLoginPrompt')}{' '}
+                  <button type="button" onClick={onScrollToLogin}>
+                    {t('auth.portal.mobileLoginLink')}
+                  </button>
+                </p>
+              )}
               <p className="landing-portal-swiss-note">{t('auth.portal.swissNote')}</p>
           </div>
         </div>

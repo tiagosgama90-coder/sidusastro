@@ -93,7 +93,11 @@ export default {
         register: 'Criar conta grátis',
         login: 'Já tenho conta · Entrar',
         hint: 'Mapa astral grátis em minutos. Sem cartão.',
-        panelLead: 'O teu portal cósmico está aqui',
+        panelLead: 'Cria a tua conta para guardar o mapa',
+      },
+      loginModal: {
+        ariaLabel: 'Entrar na tua conta Sidus',
+        title: 'Bem-vindo de volta',
       },
       whySidus: {
         ariaLabel: 'Porquê escolher o Sidusastro',
@@ -357,6 +361,12 @@ export default {
       premiumCol: 'Premium',
       cta: 'Criar conta e desbloquear — {price}',
       ctaAria: 'Ir para o formulário de registo',
+    },
+    plansOverview: {
+      ariaLabel: 'Planos e benefícios Sidus Premium',
+      eyebrow: 'Sidus Premium',
+      title: 'Tudo num só lugar',
+      lead: 'Mapa completo, oráculo, tarot e ferramentas. Comparação simples Grátis vs Premium.',
     },
   },
   mapa: {
