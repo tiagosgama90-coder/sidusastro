@@ -174,7 +174,7 @@ export const LandingPremiumPaywall = forwardRef(function LandingPremiumPaywall({
 
           <p className="landing-auth-register-switch">
             {t('auth.hasAccount')}{' '}
-            <button type="button" onClick={onLogin}>
+            <button type="button" onClick={(e) => onLogin?.(e)}>
               {t('auth.loginHere')}
             </button>
           </p>

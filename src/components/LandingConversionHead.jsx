@@ -1,6 +1,6 @@
 import { useLanguage } from '../lib/i18n/LanguageContext.jsx'
-import { LandingMapaGuideArt } from './LandingMapaPreview.jsx'
-import { LandingTrustBadges } from './LandingTrustBadges.jsx'
+import { LandingMysticHighlight } from './LandingMysticHighlight.jsx'
+import { LandingWelcomeSymbol } from './LandingWelcomeSymbol.jsx'
 import { useLandingAdsMessage } from '../hooks/useLandingAdsMessage.js'
 
 export function LandingConversionHead({ compact = false }) {
@@ -19,18 +19,29 @@ export function LandingConversionHead({ compact = false }) {
   }
 
   return (
-    <div className={`landing-hero-pro${ads.fromAds ? ' landing-hero-pro--ads' : ''}`}>
-      <div className="landing-hero-pro__content">
-        <p className="landing-conversion-eyebrow">{ads.eyebrow}</p>
-        <h1 className="landing-conversion-title landing-conversion-title--pro">
-          {ads.title}
-        </h1>
-        <p className="landing-hero-pro__benefit">{ads.benefit}</p>
-        <LandingTrustBadges compact />
-      </div>
-      <div className="landing-hero-pro__art">
-        <LandingMapaGuideArt className="landing-hero-pro__guide-art" />
-      </div>
+    <div className={`landing-conversion-zone-head${ads.fromAds ? ' landing-hero-pro--ads' : ''}`}>
+      <p className="landing-conversion-eyebrow">{ads.eyebrow}</p>
+      <h1 className="landing-conversion-title">
+        {ads.fromAds ? (
+          ads.title
+        ) : (
+          <LandingMysticHighlight
+            text={t('auth.portal.conversionTitle')}
+            highlight={t('auth.portal.conversionTitleHighlight')}
+          />
+        )}
+      </h1>
+      <p className="landing-conversion-lead">
+        {ads.fromAds ? (
+          ads.benefit
+        ) : (
+          <LandingMysticHighlight
+            text={t('auth.portal.conversionLead')}
+            highlight={t('auth.portal.conversionLeadHighlight')}
+          />
+        )}
+      </p>
+      <LandingWelcomeSymbol />
     </div>
   )
 }

@@ -1454,9 +1454,8 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
   const openLoginModal = useCallback((e) => {
     e?.preventDefault?.()
     e?.stopPropagation?.()
-    onMudar('login')
     setLoginModalOpen(true)
-  }, [onMudar])
+  }, [])
 
   const closeLoginModal = useCallback(() => {
     setLoginModalOpen(false)
@@ -1496,47 +1495,64 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
         </div>
         <section
           ref={conversionZoneRef}
-          className="landing-conversion-zone"
+          className={`landing-conversion-zone${isDesktop ? ' landing-conversion-zone--desktop' : ''}`}
           aria-label={t('auth.portal.conversionAria')}
         >
-          <LandingConversionHead compact={funnelStep !== 'birth'} />
-          <LandingPlansOverview onCta={goToBirthForm} />
-          <LandingHowItWorks />
-          <div className={`landing-hero-stack landing-hero-stack--funnel${funnelStep === 'paywall' ? ' landing-hero-stack--funnel-wide' : ''}`}>
-            {funnelStep === 'birth' && (
-              <LandingBirthPortal
-                isDesktop={isDesktop}
-                onSaved={handleBirthComplete}
-                onScrollToLogin={openLoginModal}
-                ctaLabel={ctaLabel}
-                onCtaClick={() => trackCtaClick('birth_form')}
-              />
-            )}
-            {funnelStep === 'loading' && <LandingFunnelLoading />}
-            {funnelStep === 'paywall' && (
-              <LandingPremiumPaywall
-                ref={paywallRef}
-                firebaseOk={firebaseOk}
-                email={email}
-                setEmail={setEmail}
-                senha={senha}
-                setSenha={setSenha}
-                verSenha={verSenha}
-                setVerSenha={setVerSenha}
-                erro={erro}
-                info={info}
-                recaptchaOk={recaptchaOk}
-                setRecaptchaOk={setRecaptchaOk}
-                recaptchaKey={recaptchaKey}
-                carregando={carregando}
-                onSubmit={handleSubmit}
-                onGoogleSignup={handleGoogleSignup}
-                onLogin={openLoginModal}
-              />
+          <div className="landing-conversion-zone__intro">
+            <LandingConversionHead compact={funnelStep !== 'birth'} />
+            {(funnelStep === 'birth' || isDesktop) && (
+              <LandingWhySidus compact={!isDesktop} />
             )}
           </div>
-          <LandingWhySidus compact />
-          <LandingReviews variant="paywall" />
+
+          <div className="landing-conversion-zone__funnel">
+            <div className={`landing-hero-stack landing-hero-stack--funnel${funnelStep === 'paywall' ? ' landing-hero-stack--funnel-wide' : ''}`}>
+              {funnelStep === 'birth' && (
+                <LandingBirthPortal
+                  isDesktop={isDesktop}
+                  onSaved={handleBirthComplete}
+                  onOpenLogin={openLoginModal}
+                  ctaLabel={ctaLabel}
+                  onCtaClick={() => trackCtaClick('birth_form')}
+                />
+              )}
+              {funnelStep === 'loading' && <LandingFunnelLoading />}
+              {funnelStep === 'paywall' && (
+                <LandingPremiumPaywall
+                  ref={paywallRef}
+                  firebaseOk={firebaseOk}
+                  email={email}
+                  setEmail={setEmail}
+                  senha={senha}
+                  setSenha={setSenha}
+                  verSenha={verSenha}
+                  setVerSenha={setVerSenha}
+                  erro={erro}
+                  info={info}
+                  recaptchaOk={recaptchaOk}
+                  setRecaptchaOk={setRecaptchaOk}
+                  recaptchaKey={recaptchaKey}
+                  carregando={carregando}
+                  onSubmit={handleSubmit}
+                  onGoogleSignup={handleGoogleSignup}
+                  onLogin={openLoginModal}
+                />
+              )}
+            </div>
+          </div>
+
+          {funnelStep === 'birth' && (
+            <>
+              <LandingPlansOverview className="landing-conversion-zone__plans" onCta={goToBirthForm} />
+              <div className="landing-conversion-zone__steps">
+                <LandingHowItWorks />
+              </div>
+            </>
+          )}
+
+          <div className="landing-conversion-zone__reviews">
+            <LandingReviews variant="paywall" />
+          </div>
         </section>
         <LandingPdfShowcase />
         <LandingGuides />

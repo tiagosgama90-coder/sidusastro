@@ -2,9 +2,8 @@ import { useEffect, useRef, useState } from 'react'
 import { useLanguage } from '../lib/i18n/LanguageContext.jsx'
 import { LandingPremiumCompare } from './LandingPremiumCompare.jsx'
 import { LandingPremiumPriceCard, LandingSimpleCtaButton } from './LandingPremiumPriceCard.jsx'
-import { LandingTrustBadges } from './LandingTrustBadges.jsx'
 
-export function LandingPlansOverview({ onCta }) {
+export function LandingPlansOverview({ onCta, className = '' }) {
   const { t } = useLanguage()
   const sectionRef = useRef(null)
   const [ctaInView, setCtaInView] = useState(false)
@@ -27,7 +26,7 @@ export function LandingPlansOverview({ onCta }) {
     <section
       ref={sectionRef}
       id="comparar-planos"
-      className="landing-plans-overview landing-glass"
+      className={`landing-plans-overview landing-glass${className ? ` ${className}` : ''}`}
       aria-label={t('landing.plansOverview.ariaLabel')}
     >
       <header className="landing-plans-overview__head">
@@ -37,7 +36,6 @@ export function LandingPlansOverview({ onCta }) {
       </header>
 
       <LandingPremiumPriceCard className="landing-plans-overview__price" showSocialProof />
-      <LandingTrustBadges />
 
       <div className="landing-plans-overview__paywall">
         <LandingPremiumCompare interactive />
