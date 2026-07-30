@@ -100,6 +100,9 @@ export default {
       loginModal: {
         ariaLabel: 'Entrar na tua conta Sidus',
         title: 'Bem-vindo de volta',
+        visualTitle: 'O teu céu à tua espera',
+        visualLead: 'Entra para acederes ao mapa, oráculo e ferramentas premium.',
+        continueGoogle: 'Continuar com Google',
       },
       whySidus: {
         ariaLabel: 'Porquê escolher o Sidusastro',
@@ -115,7 +118,8 @@ export default {
         p3Desc: 'Comparação transparente Grátis vs Premium. Sabes o que desbloqueias antes de pagar — sem subscrições escondidas nem letras pequenas.',
         p4Title: 'Premium vitalício',
         p4Desc: 'Um pagamento único para todas as ferramentas. Sem renovação mensal como na maioria das apps de astrologia.',
-        sonhosHighlight: 'Interpretação de Sonhos: decifra símbolos nocturnos e liga-os ao teu mapa natal — incluído em todos os planos, sem limite.',
+        p5Title: 'Interpretação de Sonhos',
+        p5Desc: 'Decifra símbolos nocturnos e liga-os ao teu mapa natal — incluído em todos os planos, sem limite.',
         footnote: 'Sidusastro: astrologia séria, acessível e feita para quem quer ir além do horóscopo do jornal.',
       },
       faq: {
@@ -1161,7 +1165,7 @@ export default {
       numerologiaVip: 'Mapa completo · Caminho de Vida',
       sonhos: 'Interpretação de Sonhos',
       sonhosFree: 'Incluído',
-      sonhosVip: 'Ilimitado',
+      sonhosVip: 'Decifra sonhos no teu mapa',
       locked: '—',
       preview: 'Prévia',
     },

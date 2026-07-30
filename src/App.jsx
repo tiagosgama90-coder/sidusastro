@@ -1477,6 +1477,7 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
             <LandingSkyLive compact />
           </div>
         </div>
+
         <section
           ref={conversionZoneRef}
           className="landing-conversion-zone"

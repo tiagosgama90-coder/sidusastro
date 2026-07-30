@@ -7,12 +7,15 @@ const PILLARS = [
   { icon: Link2, titleKey: 'auth.portal.whySidus.p2Title', descKey: 'auth.portal.whySidus.p2Desc' },
   { icon: ShieldCheck, titleKey: 'auth.portal.whySidus.p3Title', descKey: 'auth.portal.whySidus.p3Desc' },
   { icon: Sparkles, titleKey: 'auth.portal.whySidus.p4Title', descKey: 'auth.portal.whySidus.p4Desc' },
+  { icon: Moon, titleKey: 'auth.portal.whySidus.p5Title', descKey: 'auth.portal.whySidus.p5Desc' },
 ]
 
 /** Destaque profissional: precisão e diferenciação do Sidus na landing. */
 export function LandingWhySidus({ compact = false }) {
   const { t } = useLanguage()
-  const pillars = compact ? PILLARS.slice(0, 2) : PILLARS
+  const pillars = compact
+    ? [PILLARS[0], PILLARS[1], PILLARS[4]]
+    : PILLARS
 
   return (
     <section
@@ -39,13 +42,6 @@ export function LandingWhySidus({ compact = false }) {
           </li>
         ))}
       </ul>
-
-      <div className="landing-why-sidus__dream">
-        <div className="landing-why-sidus__dream-icon" aria-hidden="true">
-          <Moon size={18} strokeWidth={2} />
-        </div>
-        <p className="landing-why-sidus__dream-text">{t('auth.portal.whySidus.sonhosHighlight')}</p>
-      </div>
 
       {!compact && <p className="landing-why-sidus__footnote">{t('auth.portal.whySidus.footnote')}</p>}
     </section>

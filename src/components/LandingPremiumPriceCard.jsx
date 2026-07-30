@@ -1,13 +1,11 @@
 import { Loader2 } from 'lucide-react'
 import { useLanguage } from '../lib/i18n/LanguageContext.jsx'
-import { useGeoCountry } from '../hooks/useGeoCountry.js'
 import { getPremiumPriceLabels } from '../lib/premiumPricingLabels.js'
 
 /** Preço Premium formatado para landing — PIX e EUR separados e legíveis. */
 export function LandingPremiumPriceCard({ className = '' }) {
   const { t } = useLanguage()
-  const { isBrasil } = useGeoCountry()
-  const prices = getPremiumPriceLabels(isBrasil, t)
+  const prices = getPremiumPriceLabels(false, t)
 
   return (
     <div className={`landing-premium-price${className ? ` ${className}` : ''}`}>
@@ -32,36 +30,28 @@ export function LandingPremiumPriceCard({ className = '' }) {
   )
 }
 
-/** Botão paywall com título + dois preços em linhas separadas. */
-export function LandingPaywallCtaButton({
+/** Botão dourado simples — sem preço (preço fica no cartão acima). */
+export function LandingSimpleCtaButton({
   className = '',
   onClick,
   ariaLabel,
   disabled = false,
   loading = false,
+  children,
 }) {
   const { t } = useLanguage()
-  const prices = getPremiumPriceLabels(false, t)
 
   return (
     <button
       type="button"
-      className={`landing-paywall-cta${className ? ` ${className}` : ''}`}
+      className={`landing-paywall-cta landing-paywall-cta--simple${className ? ` ${className}` : ''}`}
       onClick={onClick}
       disabled={disabled || loading}
       aria-label={ariaLabel}
     >
-      {loading ? (
-        <Loader2 size={20} className="landing-paywall-cta__spin" aria-hidden />
-      ) : (
-        <>
-          <span className="landing-paywall-cta__title">{t('landing.funnel.ctaUnlock')}</span>
-          <span className="landing-paywall-cta__line">{t('landing.funnel.ctaPixLine', { preco: prices.precoBrl })}</span>
-          <span className="landing-paywall-cta__line landing-paywall-cta__line--alt">
-            {t('landing.funnel.ctaEurLine', { or: t('landing.funnel.priceOr'), preco: prices.precoEur })}
-          </span>
-        </>
-      )}
+      {loading
+        ? <Loader2 size={20} className="landing-paywall-cta__spin" aria-hidden />
+        : (children ?? t('auth.register'))}
     </button>
   )
 }

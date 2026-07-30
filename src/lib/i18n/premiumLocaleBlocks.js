@@ -26,7 +26,7 @@ const PREMIUM_TABLE_ES = {
   numerologiaVip: 'Mapa completo · Camino de Vida',
   sonhos: 'Interpretación de Sueños',
   sonhosFree: 'Incluido',
-  sonhosVip: 'Ilimitado',
+  sonhosVip: 'Descifra sueños en tu carta',
   locked: '—',
   preview: 'Vista previa',
 }
@@ -57,7 +57,7 @@ const PREMIUM_TABLE_FR = {
   numerologiaVip: 'Carte complète · Chemin de Vie',
   sonhos: 'Interprétation des Rêves',
   sonhosFree: 'Inclus',
-  sonhosVip: 'Illimité',
+  sonhosVip: 'Déchiffre les rêves sur votre thème',
   locked: '—',
   preview: 'Aperçu',
 }
@@ -88,7 +88,7 @@ const PREMIUM_TABLE_DE = {
   numerologiaVip: 'Vollständige Karte · Lebensweg',
   sonhos: 'Traumdeutung',
   sonhosFree: 'Enthalten',
-  sonhosVip: 'Unbegrenzt',
+  sonhosVip: 'Entschlüsselt Träume im Horoskop',
   locked: '—',
   preview: 'Vorschau',
 }
@@ -119,7 +119,7 @@ const PREMIUM_TABLE_IT = {
   numerologiaVip: 'Mappa completa · Percorso di Vita',
   sonhos: 'Interpretazione dei Sogni',
   sonhosFree: 'Incluso',
-  sonhosVip: 'Illimitato',
+  sonhosVip: 'Decifra i sogni sulla tua carta',
   locked: '—',
   preview: 'Anteprima',
 }

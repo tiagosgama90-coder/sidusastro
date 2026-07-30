@@ -100,6 +100,9 @@ export default {
       loginModal: {
         ariaLabel: 'Sign in to your Sidus account',
         title: 'Welcome back',
+        visualTitle: 'Your sky awaits',
+        visualLead: 'Sign in to access your chart, oracle and premium tools.',
+        continueGoogle: 'Continue with Google',
       },
       whySidus: {
         ariaLabel: 'Why choose Sidusastro',
@@ -115,7 +118,8 @@ export default {
         p3Desc: 'Transparent Free vs Premium comparison. You know what you unlock before you pay — no hidden subscriptions or fine print.',
         p4Title: 'Lifetime Premium',
         p4Desc: 'One payment for every tool. No monthly renewal like most astrology apps.',
-        sonhosHighlight: 'Dream interpretation: decode night symbols and link them to your natal chart — included in every plan, with no limit.',
+        p5Title: 'Dream interpretation',
+        p5Desc: 'Decode night symbols and link them to your natal chart — included in every plan, with no limit.',
         footnote: 'Sidusastro: serious astrology, accessible and built for anyone who wants more than a newspaper horoscope.',
       },
       faq: {
@@ -1134,7 +1138,7 @@ export default {
       numerologiaVip: 'Full chart · Life Path',
       sonhos: 'Dream interpretation',
       sonhosFree: 'Included',
-      sonhosVip: 'Unlimited',
+      sonhosVip: 'Deciphers dreams on your chart',
       locked: '—',
       preview: 'Preview',
     },
