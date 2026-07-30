@@ -428,6 +428,7 @@ export default {
       previewTitle: 'Here is your natal chart',
       previewTitleNamed: '{nome}, your chart is ready',
       previewLead: 'We calculated Sun, Moon and Ascendant with Swiss Ephemeris. Create a free account to save and unlock the full PDF.',
+      previewSaved: 'Your birth data is already saved on this device — when you create an account, your chart is pre-filled automatically.',
       previewFallback: 'Your chart was calculated. Create an account to see all details.',
       previewNote: 'Professional PDF, unlimited Oracle, Sky Radio and Affinity Radar are Premium — one-time lifetime payment.',
       previewCta: 'Create account and see full chart',

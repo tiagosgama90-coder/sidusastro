@@ -27,7 +27,6 @@ export default defineConfig({
         manualChunks(id) {
           if (id.includes('node_modules/@swisseph/browser')) return 'swisseph'
           if (id.includes('/components/Tarot')) return 'tarot'
-          if (id.includes('MandalaNatal') || id.includes('mandalaNatal')) return 'mandala'
           if (id.includes('FerramentasPremium')) return 'ferramentas'
           if (id.includes('jspdf') || id.includes('html2canvas')) return 'pdf'
         },

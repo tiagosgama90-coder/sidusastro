@@ -112,9 +112,9 @@ import { LandingExitIntent } from './components/LandingExitIntent.jsx'
 import { useLandingCtaVariant } from './hooks/useLandingCtaVariant.js'
 import { MapaPaywallSections } from './components/MapaPaywallSections.jsx'
 import { FerramentasEmptyState } from './components/FerramentasEmptyState.jsx'
+import { MandalaNatal } from './components/MandalaNatal.jsx'
 
 const EcraTarotLazy = lazy(() => import('./components/Tarot.jsx').then((m) => ({ default: m.EcraTarot })))
-const MandalaNatalLazy = lazy(() => import('./components/MandalaNatal.jsx').then((m) => ({ default: m.MandalaNatal })))
 const BussolaCosmicaLazy = lazy(() => import('./components/FerramentasPremium.jsx').then((m) => ({ default: m.BussolaCosmica })))
 const SinastriaLazy = lazy(() => import('./components/FerramentasPremium.jsx').then((m) => ({ default: m.Sinastria })))
 const BiorritmoLazy = lazy(() => import('./components/FerramentasPremium.jsx').then((m) => ({ default: m.Biorritmo })))
@@ -1481,6 +1481,8 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
     goToBirthForm()
   }, [goToBirthForm, trackCtaClick])
 
+  const funnelSolo = funnelStep === 'loading' || funnelStep === 'preview'
+
   return (
     <>
       <LandingAuthModal
@@ -1510,7 +1512,7 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
         </div>
         <section
           ref={conversionZoneRef}
-          className={`landing-conversion-zone${isDesktop ? ' landing-conversion-zone--desktop' : ''}`}
+          className={`landing-conversion-zone${isDesktop ? ' landing-conversion-zone--desktop' : ''}${funnelSolo ? ' landing-conversion-zone--funnel-solo' : ''}`}
           aria-label={t('auth.portal.conversionAria')}
         >
           <div className="landing-conversion-zone__hero">
@@ -1525,7 +1527,7 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
           )}
 
           <div className="landing-conversion-zone__funnel">
-            <div className={`landing-hero-stack landing-hero-stack--funnel${funnelStep === 'paywall' || funnelStep === 'preview' ? ' landing-hero-stack--funnel-wide' : ''}`}>
+            <div className={`landing-hero-stack landing-hero-stack--funnel${funnelStep === 'paywall' ? ' landing-hero-stack--funnel-wide' : ''}${funnelStep === 'preview' ? ' landing-hero-stack--funnel-preview' : ''}`}>
               {funnelStep === 'birth' && (
                 <div className="landing-funnel-birth-duo">
                   <div ref={birthFormRef} className="landing-funnel-birth-duo__form">
@@ -1542,9 +1544,7 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
               )}
               {funnelStep === 'loading' && <LandingFunnelLoading />}
               {funnelStep === 'preview' && (
-                <div ref={paywallRef}>
-                  <LandingFunnelPreview onContinue={handlePreviewContinue} />
-                </div>
+                <LandingFunnelPreview ref={paywallRef} onContinue={handlePreviewContinue} />
               )}
               {funnelStep === 'paywall' && (
                 <LandingPremiumPaywall
@@ -2454,8 +2454,7 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
                   {t('mapa.mandalaTitle')}
                 </div>
               </div>
-              <Suspense fallback={<RouteLoader />}>
-                <MandalaNatalLazy
+              <MandalaNatal
                   chartOnly
                   mapaNatal={mapaNatal}
                   planetas={planetasComCasa}
@@ -2463,7 +2462,6 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
                   translateSign={ts}
                   size={isDesktop ? 480 : 300}
                 />
-              </Suspense>
             </div>
           )}
         </>
@@ -2526,8 +2524,7 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
                   {t('mapa.mandalaSubtitleShort')}
                 </p>
               </div>
-              <Suspense fallback={<RouteLoader />}>
-                <MandalaNatalLazy
+              <MandalaNatal
                   mapaNatal={mapaNatal}
                   planetas={planetasComCasa}
                   aspectos={aspetosCompletos}
@@ -2538,7 +2535,6 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
                   size={isDesktop ? 480 : 300}
                   unavailableLabel={t('mapa.mandalaUnavailable')}
                 />
-              </Suspense>
             </div>
           )}
 
