@@ -1,5 +1,5 @@
 import { useLanguage } from '../lib/i18n/LanguageContext.jsx'
-import { LandingMandalaReveal } from './LandingMandalaReveal.jsx'
+import { LandingMapaGuideArt } from './LandingMapaPreview.jsx'
 import { LandingTrustBadges } from './LandingTrustBadges.jsx'
 import { useLandingAdsMessage } from '../hooks/useLandingAdsMessage.js'
 
@@ -28,7 +28,9 @@ export function LandingConversionHead({ compact = false }) {
         <p className="landing-hero-pro__benefit">{ads.benefit}</p>
         <LandingTrustBadges compact />
       </div>
-      <LandingMandalaReveal />
+      <div className="landing-hero-pro__art">
+        <LandingMapaGuideArt className="landing-hero-pro__guide-art" />
+      </div>
     </div>
   )
 }
