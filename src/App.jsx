@@ -1551,7 +1551,7 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
           )}
 
           <div className={`landing-conversion-zone__funnel${hideFunnelContent ? ' landing-conversion-zone__funnel--hidden' : ''}`}>
-            <div className="landing-hero-stack landing-hero-stack--funnel landing-hero-stack--funnel-centered">
+            <div className="landing-hero-stack landing-hero-stack--funnel">
               {funnelStep === 'birth' && !hideFunnelContent && (
                 <div ref={birthFormRef}>
                   <LandingBirthPortal
