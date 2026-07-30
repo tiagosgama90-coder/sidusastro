@@ -2,11 +2,11 @@ import { useLanguage } from '../lib/i18n/LanguageContext.jsx'
 import { LandingMysticHighlight } from './LandingMysticHighlight.jsx'
 import { LandingWelcomeSymbol } from './LandingWelcomeSymbol.jsx'
 
-export function LandingConversionHead() {
+export function LandingConversionHead({ compact = false }) {
   const { t } = useLanguage()
 
   return (
-    <div className="landing-conversion-zone-head">
+    <div className={`landing-conversion-zone-head${compact ? ' landing-conversion-zone-head--compact' : ''}`}>
       <p className="landing-conversion-eyebrow">{t('auth.portal.conversionEyebrow')}</p>
       <h1 className="landing-conversion-title">
         <LandingMysticHighlight
@@ -20,7 +20,7 @@ export function LandingConversionHead() {
           highlight={t('auth.portal.conversionLeadHighlight')}
         />
       </p>
-      <LandingWelcomeSymbol />
+      {!compact && <LandingWelcomeSymbol />}
     </div>
   )
 }

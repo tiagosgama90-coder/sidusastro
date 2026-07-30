@@ -49,7 +49,8 @@ import { LandingBirthPortal } from './components/LandingBirthPortal.jsx'
 import { LandingConversionHead } from './components/LandingConversionHead.jsx'
 import { LandingWhySidus } from './components/LandingWhySidus.jsx'
 import { LandingAuthModal } from './components/LandingAuthModal.jsx'
-import { LandingPlansOverview } from './components/LandingPlansOverview.jsx'
+import { LandingPremiumPaywall } from './components/LandingPremiumPaywall.jsx'
+import { LandingFunnelLoading } from './components/LandingFunnelLoading.jsx'
 import { LandingTopBar } from './components/LandingTopBar.jsx'
 import { SidusLogo } from './components/SidusLogo.jsx'
 import { SidusConstellationMark } from './components/SidusConstellationMark.jsx'
@@ -1333,12 +1334,13 @@ function EcraVerificarEmail({ utilizador, isDesktop, onLogout, onVerificado }) {
 
 function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
   const { lang, t } = useLanguage()
-  const authPanelRef = useRef(null)
+  const birthRef = useRef(null)
+  const paywallRef = useRef(null)
   const conversionZoneRef = useRef(null)
+  const [funnelStep, setFunnelStep] = useState('birth')
   const [loginModalOpen, setLoginModalOpen] = useState(false)
   const [email, setEmail]       = useState('')
   const [senha, setSenha]       = useState('')
-  const [confirmar, setConfirmar] = useState('')
   const [verSenha, setVerSenha] = useState(false)
   const [carregando, setCarregando] = useState(false)
   const [erro, setErro]         = useState(null)
@@ -1354,7 +1356,14 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
     setRecaptchaKey((k) => k + 1)
     setErro(null)
     setInfo(null)
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- forçar registo na landing
+    const draft = readLandingDraft()
+    if (draft) {
+      try {
+        const errosDraft = validarOnboarding(draft, lang)
+        if (Object.keys(errosDraft).length === 0) setFunnelStep('paywall')
+      } catch { /* ignore */ }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {
@@ -1367,7 +1376,6 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
     setInfo(null)
     if (!email || !senha) { setErro(t('auth.fillAll')); return }
     if (!recaptchaOk) { setErro(t('auth.confirmRobot')); return }
-    if (senha !== confirmar) { setErro(t('auth.passwordsMismatch')); return }
     if (senha.length < 6) { setErro(t('auth.passwordMin')); return }
     if (!auth) { setErro(t('auth.firebaseMissing')); return }
     flushLandingDraft()
@@ -1389,6 +1397,24 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
     }
   }
 
+  const handleGoogleSignup = async () => {
+    if (!auth) { setErro(t('auth.firebaseMissing')); return }
+    if (!recaptchaOk) { setErro(t('auth.confirmRobot')); return }
+    flushLandingDraft()
+    setErro(null)
+    setInfo(null)
+    setCarregando(true)
+    try {
+      await signInWithPopup(auth, new GoogleAuthProvider())
+    } catch (e) {
+      console.error('[Sidus Google] Erro:', e.code, e.message)
+      if (e.code !== 'auth/popup-closed-by-user') setErro(traduzirErro(e.code) + ` [${e.code}]`)
+      setRecaptchaKey((k) => k + 1)
+    } finally {
+      setCarregando(false)
+    }
+  }
+
   useEffect(() => {
     if (window.location.hash !== '#guias') return
     const scroll = () => document.getElementById('guias')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
@@ -1397,18 +1423,31 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
     return () => window.clearTimeout(timer)
   }, [])
 
-  const scrollParaAuth = useCallback(() => {
+  const scrollToBirth = useCallback(() => {
     requestAnimationFrame(() => {
-      authPanelRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      document.getElementById('landing-birth-portal')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
     })
   }, [])
 
-  const scrollParaRegister = useCallback(() => {
-    onMudar('register')
-    scrollParaAuth()
-  }, [onMudar, scrollParaAuth])
+  const scrollToPaywall = useCallback(() => {
+    requestAnimationFrame(() => {
+      paywallRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    })
+  }, [])
 
-  const openLoginModal = useCallback(() => {
+  const handleBirthComplete = useCallback(() => {
+    setFunnelStep('loading')
+    window.setTimeout(() => {
+      setFunnelStep('paywall')
+      requestAnimationFrame(() => {
+        paywallRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      })
+    }, 2000)
+  }, [])
+
+  const openLoginModal = useCallback((e) => {
+    e?.preventDefault?.()
+    e?.stopPropagation?.()
     onMudar('login')
     setLoginModalOpen(true)
   }, [onMudar])
@@ -1417,27 +1456,30 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
     setLoginModalOpen(false)
   }, [])
 
-  const scrollParaPlans = useCallback(() => {
-    document.getElementById('comparar-planos')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-  }, [])
+  const handleModalRegister = useCallback(() => {
+    closeLoginModal()
+    if (funnelStep === 'paywall') scrollToPaywall()
+    else scrollToBirth()
+  }, [closeLoginModal, funnelStep, scrollToPaywall, scrollToBirth])
+
+  const handleFunnelCta = useCallback(() => {
+    if (funnelStep === 'paywall') scrollToPaywall()
+    else scrollToBirth()
+  }, [funnelStep, scrollToPaywall, scrollToBirth])
 
   return (
     <>
       <LandingAuthModal
         open={loginModalOpen}
         onClose={closeLoginModal}
-        onRegister={scrollParaRegister}
+        onRegister={handleModalRegister}
         firebaseOk={firebaseOk}
       />
       <div className={`landing-auth-layout${isDesktop ? ' landing-auth-layout--desktop' : ' landing-auth-layout--mobile'}`} translate="yes">
         <BannerBrasil />
-        <LandingStickyCta targetRef={conversionZoneRef} onCta={scrollParaRegister} />
+        <LandingStickyCta targetRef={conversionZoneRef} onCta={handleFunnelCta} />
         <div className="landing-top-stack">
-          <LandingTopBar
-            onLogin={openLoginModal}
-            onRegister={scrollParaRegister}
-            onPremium={scrollParaPlans}
-          />
+          <LandingTopBar onLogin={openLoginModal} onStart={handleFunnelCta} />
           <div className={`${isDesktop ? 'landing-sky-desktop-wrap landing-sky-desktop-wrap--compact' : 'landing-sky-mobile-wrap landing-sky-mobile-wrap--compact'}`}>
             <LandingSkyLive compact />
           </div>
@@ -1447,172 +1489,50 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
           className="landing-conversion-zone"
           aria-label={t('auth.portal.conversionAria')}
         >
-          <LandingConversionHead />
-          <div className="landing-hero-stack">
-            <LandingBirthPortal
-              isDesktop={isDesktop}
-              onSaved={scrollParaRegister}
-              onScrollToLogin={openLoginModal}
-            />
-            <div
-              id="sidus-auth-panel"
-              ref={authPanelRef}
-              className="landing-auth-panel landing-auth-panel--prominent landing-glass landing-auth-panel--register"
-            >
-              <p className="landing-auth-panel-magic">{t('auth.portal.authGateway.panelLead')}</p>
-              {!firebaseOk && (
-                <div className="landing-auth-modal__alert landing-auth-modal__alert--warn" style={{ marginBottom: 16 }}>
-                  {t('auth.firebaseNotConfigured')}
-                </div>
-              )}
-              <h2 className="landing-auth-heading">{t('auth.register')}</h2>
-
-              <div className="landing-auth-field" style={{ marginBottom: 16 }}>
-                <label style={estilos.label}>{t('auth.email')}</label>
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder={t('auth.emailPlaceholder')}
-                  className="landing-auth-input"
-                  style={estilos.input}
-                  onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
-                />
-              </div>
-
-              <div className="landing-auth-field landing-auth-password-block" style={{ marginBottom: 16 }}>
-                <label style={estilos.label}>{t('auth.password')}</label>
-                <div className="landing-auth-password-input">
-                  <input
-                    type={verSenha ? 'text' : 'password'}
-                    value={senha}
-                    onChange={(e) => setSenha(e.target.value)}
-                    placeholder="••••••••"
-                    className="landing-auth-input"
-                    style={{ ...estilos.input, paddingRight: 44 }}
-                    onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setVerSenha((v) => !v)}
-                    style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: CORES.brancoMuted, padding: 4 }}
-                  >
-                    {verSenha ? <EyeOff size={16} /> : <Eye size={16} />}
-                  </button>
-                </div>
-              </div>
-
-              <div className="landing-auth-field landing-auth-field--last" style={{ marginBottom: 24 }}>
-                <label style={estilos.label}>{t('auth.confirmPassword')}</label>
-                <div style={{ position: 'relative' }}>
-                  <Lock size={15} color={CORES.brancoMuted} style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }} />
-                  <input
-                    type={verSenha ? 'text' : 'password'}
-                    value={confirmar}
-                    onChange={(e) => setConfirmar(e.target.value)}
-                    placeholder="••••••••"
-                    style={{ ...estilos.input, paddingLeft: 40 }}
-                    onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
-                  />
-                </div>
-              </div>
-
-              {erro && (
-                <div style={{ marginBottom: 16, padding: '10px 14px', borderRadius: 10, background: 'rgba(248,113,113,0.1)', border: '1px solid rgba(248,113,113,0.3)', fontSize: 13, color: '#F87171' }}>
-                  {erro}
-                </div>
-              )}
-
-              {info && (
-                <div style={{ marginBottom: 16, padding: '10px 14px', borderRadius: 10, background: 'rgba(52,211,153,0.1)', border: '1px solid rgba(52,211,153,0.3)', fontSize: 13, color: '#34D399', lineHeight: 1.5, whiteSpace: 'pre-line' }}>
-                  {info}
-                </div>
-              )}
-
-              <div style={{ marginBottom: 16 }}>
-                <RecaptchaCheckbox onChange={setRecaptchaOk} resetKey={recaptchaKey} />
-              </div>
-
-              <button
-                type="button"
-                disabled={carregando || !recaptchaOk}
-                onClick={handleSubmit}
-                style={{ ...estilos.botaoDourado, opacity: carregando ? 0.6 : 1, cursor: carregando ? 'default' : 'pointer' }}
-              >
-                {carregando
-                  ? <Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} />
-                  : t('auth.register')}
-              </button>
-
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10, margin: '20px 0' }}>
-                <div style={{ flex: 1, height: 1, background: CORES.vidroBorda }} />
-                <span style={{ fontSize: 11, color: CORES.brancoMuted, textTransform: 'uppercase', letterSpacing: '0.1em' }}>{t('auth.or')}</span>
-                <div style={{ flex: 1, height: 1, background: CORES.vidroBorda }} />
-              </div>
-
-              <button
-                type="button"
-                disabled={carregando || !recaptchaOk}
-                onClick={async () => {
-                  if (!auth) { setErro(t('auth.firebaseMissing')); return }
-                  if (!recaptchaOk) { setErro(t('auth.confirmRobot')); return }
-                  flushLandingDraft()
-                  setErro(null)
-                  setInfo(null)
-                  setCarregando(true)
-                  try {
-                    await signInWithPopup(auth, new GoogleAuthProvider())
-                  } catch (e) {
-                    console.error('[Sidus Google] Erro:', e.code, e.message)
-                    if (e.code !== 'auth/popup-closed-by-user') setErro(traduzirErro(e.code) + ` [${e.code}]`)
-                    setRecaptchaKey((k) => k + 1)
-                  } finally {
-                    setCarregando(false)
-                  }
-                }}
-                style={{
-                  width: '100%',
-                  padding: '13px 16px',
-                  borderRadius: 12,
-                  border: `1px solid ${CORES.vidroBorda}`,
-                  background: 'rgba(255,255,255,0.05)',
-                  color: CORES.branco,
-                  fontSize: 14,
-                  fontWeight: 600,
-                  cursor: carregando ? 'default' : 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: 10,
-                  opacity: carregando ? 0.6 : 1,
-                }}
-              >
-                <svg width="18" height="18" viewBox="0 0 48 48" aria-hidden>
-                  <path fill="#FFC107" d="M43.6 20.1H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.1 7.9 3l5.7-5.7C34.1 6.5 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.7-.4-3.9z"/>
-                  <path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 16.1 19 13 24 13c3.1 0 5.8 1.1 7.9 3l5.7-5.7C34.1 6.5 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/>
-                  <path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.3 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-8H6.1C9.5 35.7 16.2 44 24 44z"/>
-                  <path fill="#1976D2" d="M43.6 20.1H42V20H24v8h11.3c-.8 2.3-2.3 4.3-4.3 5.6l6.2 5.2C40.9 35.6 44 30.2 44 24c0-1.3-.1-2.7-.4-3.9z"/>
-                </svg>
-                {t('auth.google')}
-              </button>
-
-              <p className="landing-auth-register-switch">
-                {t('auth.hasAccount')}{' '}
-                <button type="button" onClick={openLoginModal}>
-                  {t('auth.loginHere')}
-                </button>
-              </p>
-            </div>
+          <LandingConversionHead compact={funnelStep !== 'birth'} />
+          <div className="landing-hero-stack landing-hero-stack--funnel">
+            {funnelStep === 'birth' && (
+              <LandingBirthPortal
+                isDesktop={isDesktop}
+                onSaved={handleBirthComplete}
+                onScrollToLogin={openLoginModal}
+              />
+            )}
+            {funnelStep === 'loading' && <LandingFunnelLoading />}
+            {funnelStep === 'paywall' && (
+              <LandingPremiumPaywall
+                ref={paywallRef}
+                firebaseOk={firebaseOk}
+                email={email}
+                setEmail={setEmail}
+                senha={senha}
+                setSenha={setSenha}
+                verSenha={verSenha}
+                setVerSenha={setVerSenha}
+                erro={erro}
+                info={info}
+                recaptchaOk={recaptchaOk}
+                setRecaptchaOk={setRecaptchaOk}
+                recaptchaKey={recaptchaKey}
+                carregando={carregando}
+                onSubmit={handleSubmit}
+                onGoogleSignup={handleGoogleSignup}
+                onLogin={openLoginModal}
+              />
+            )}
           </div>
-          <LandingPlansOverview onCta={scrollParaRegister} />
-          <LandingWhySidus compact />
-          <LandingReviews variant="paywall" />
+          {funnelStep === 'paywall' && (
+            <>
+              <LandingWhySidus compact />
+              <LandingReviews variant="paywall" />
+            </>
+          )}
         </section>
         <LandingPdfShowcase />
         <LandingGuides />
         <AdSenseBanner />
-      <LandingFaq />
-    </div>
+        <LandingFaq />
+      </div>
     </>
   )
 }

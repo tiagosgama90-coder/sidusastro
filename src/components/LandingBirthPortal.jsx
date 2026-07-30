@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useMemo } from 'react'
 import {
-  Sparkles, MapPin, Clock, User, Check, Loader2, ChevronDown,
+  Sparkles, MapPin, Clock, User, Check, Loader2,
   Star, MessageCircle, Layers, BookOpen,
 } from 'lucide-react'
 import { PythagoreanStarIcon } from './icons/PythagoreanStarIcon.jsx'
@@ -232,7 +232,6 @@ export function LandingBirthPortal({ isDesktop, onSaved, onScrollToLogin }) {
   const [fusoManual, setFusoManual] = useState(0)
   const [tocado, setTocado] = useState({})
   const [aGuardar, setAGuardar] = useState(false)
-  const [guardado, setGuardado] = useState(false)
 
   const fusosFallback = useMemo(() => fusosFallbackLabels(t), [t, lang])
 
@@ -260,7 +259,7 @@ export function LandingBirthPortal({ isDesktop, onSaved, onScrollToLogin }) {
     return sol ? { solar: sol, lunar: null } : null
   }, [data, hora, localizacao])
 
-  useGoogleTranslateRetranslate(!!previewSignos, [guardado, previewSignos?.solar?.nome, previewSignos?.lunar?.nome])
+  useGoogleTranslateRetranslate(!!previewSignos, [previewSignos?.solar?.nome, previewSignos?.lunar?.nome])
 
   useEffect(() => {
     const draft = readLandingDraft()
@@ -273,7 +272,7 @@ export function LandingBirthPortal({ isDesktop, onSaved, onScrollToLogin }) {
     if (draft.fuso != null) setFuso(draft.fuso)
     if (typeof draft.fuso === 'number') setFusoManual(draft.fuso)
     const errosDraft = validarOnboarding(draft, lang)
-    if (Object.keys(errosDraft).length === 0) setGuardado(true)
+    if (Object.keys(errosDraft).length === 0) { /* draft válido */ }
   }, [lang])
 
   useEffect(() => {
@@ -318,7 +317,6 @@ export function LandingBirthPortal({ isDesktop, onSaved, onScrollToLogin }) {
 
   const handleGuardar = async () => {
     tocarTodos()
-    setGuardado(false)
 
     let fusoFinal = fuso
     if (localizacao && fusoFinal == null && !fusoCarregando) {
@@ -343,54 +341,31 @@ export function LandingBirthPortal({ isDesktop, onSaved, onScrollToLogin }) {
     try {
       flushLandingDraft()
       saveLandingDraft(payload)
-      setGuardado(true)
       onSaved?.()
     } finally {
       setAGuardar(false)
     }
   }
 
+  const handleLoginClick = (e) => {
+    e.preventDefault()
+    e.stopPropagation()
+    onScrollToLogin?.()
+  }
+
   return (
-    <section className="landing-portal-root" aria-label={t('auth.portal.ariaLabel')}>
+    <section id="landing-birth-portal" className="landing-portal-root" aria-label={t('auth.portal.ariaLabel')}>
       <div className="landing-portal-orb landing-portal-orb--1" aria-hidden />
       <div className="landing-portal-orb landing-portal-orb--2" aria-hidden />
 
       <div style={{ position: 'relative', zIndex: 1 }}>
-        <p className={`landing-portal-form-lead${guardado ? ' landing-portal-panel--hidden' : ''}`}>
-          {t('auth.portal.formLead')}
-        </p>
+        <p className="landing-portal-form-lead">{t('auth.portal.formLead')}</p>
 
         <div className="landing-portal-post-save">
-        <div className={`landing-portal-card${guardado ? ' landing-portal-card--saved' : ''}`}>
+        <div className="landing-portal-card">
           <div className="landing-portal-card-shimmer" aria-hidden />
 
-          <div
-            className={`landing-portal-saved-view${guardado ? '' : ' landing-portal-panel--gt-prerender'}`}
-            aria-hidden={!guardado}
-            style={{ textAlign: 'center', padding: '12px 8px 4px' }}
-          >
-            <div style={{
-              width: 56, height: 56, borderRadius: '50%', margin: '0 auto 16px',
-              background: 'rgba(52,211,153,0.15)', border: '1px solid rgba(52,211,153,0.45)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-            }}>
-              <Sparkles size={26} color="#34D399" />
-            </div>
-            <p style={{ margin: '0 0 8px', fontSize: 17, fontWeight: 700, color: CORES.dourado }}>
-              <span>{t('auth.portal.savedTitle')}</span>
-            </p>
-            <p style={{ margin: '0 0 16px', fontSize: 13, color: CORES.brancoMuted, lineHeight: 1.6 }}>
-              <span>{t('auth.portal.savedHint')}</span>
-            </p>
-            <div style={{ display: 'flex', justifyContent: 'center', color: CORES.dourado, opacity: 0.7 }}>
-              <ChevronDown size={22} className="landing-portal-bounce" />
-            </div>
-          </div>
-
-          <div
-            className={`landing-portal-form-view${guardado ? ' landing-portal-panel--hidden' : ''}`}
-            aria-hidden={guardado}
-          >
+          <div className="landing-portal-form-view">
               <div className="landing-portal-field">
                 <label style={labelStyle}>{t('onboarding.name')}</label>
                 <div style={{ position: 'relative' }}>
@@ -491,27 +466,23 @@ export function LandingBirthPortal({ isDesktop, onSaved, onScrollToLogin }) {
                 ) : (
                   <>
                     <Sparkles size={18} />
-                    {t('auth.portal.cta')}
+                    {t('auth.portal.ctaCalculateMap')}
                   </>
                 )}
               </button>
               {onScrollToLogin && (
                 <p className="landing-portal-login-link">
                   {t('auth.portal.mobileLoginPrompt')}{' '}
-                  <button type="button" onClick={onScrollToLogin}>
+                  <button type="button" onClick={handleLoginClick}>
                     {t('auth.portal.mobileLoginLink')}
                   </button>
                 </p>
               )}
-              <p className="landing-portal-swiss-note">{t('auth.portal.swissNote')}</p>
           </div>
         </div>
 
         {previewSignos && (
-          <div
-            className={`landing-portal-leitura-wrap${guardado ? '' : ' landing-portal-panel--gt-prerender'}`}
-            aria-hidden={!guardado}
-          >
+          <div className="landing-portal-leitura-wrap">
             <LeituraGratisDiaria solar={previewSignos.solar} lunar={previewSignos.lunar} compact />
           </div>
         )}
