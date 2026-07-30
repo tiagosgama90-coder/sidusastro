@@ -1797,6 +1797,45 @@ h1.sidus-page-title {
   color: rgba(255, 255, 255, 0.48);
   font-style: italic;
 }
+
+.landing-why-sidus__dream {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-top: 16px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: rgba(139, 92, 246, 0.08);
+  border: 1px solid rgba(139, 92, 246, 0.18);
+}
+
+.landing-why-sidus__dream-icon {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: rgba(139, 92, 246, 0.14);
+  color: #C4B5FD;
+}
+
+.landing-why-sidus__dream-text {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.landing-paywall-cta__spin {
+  animation: spin 1s linear infinite;
+}
+
+.landing-premium-paywall__cta.landing-paywall-cta {
+  width: 100%;
+}
+
 @media (max-width: 560px) {
   .landing-why-sidus__grid {
     grid-template-columns: 1fr;

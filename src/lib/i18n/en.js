@@ -115,6 +115,7 @@ export default {
         p3Desc: 'Transparent Free vs Premium comparison. You know what you unlock before you pay — no hidden subscriptions or fine print.',
         p4Title: 'Lifetime Premium',
         p4Desc: 'One payment for every tool. No monthly renewal like most astrology apps.',
+        sonhosHighlight: 'Dream interpretation: decode night symbols and link them to your natal chart — included in every plan, with no limit.',
         footnote: 'Sidusastro: serious astrology, accessible and built for anyone who wants more than a newspaper horoscope.',
       },
       faq: {
@@ -1132,15 +1133,15 @@ export default {
       numerologiaFree: '—',
       numerologiaVip: 'Full chart · Life Path',
       sonhos: 'Dream interpretation',
-      sonhosFree: 'Symbolic AI · free',
-      sonhosVip: 'AI that decodes your unconscious',
+      sonhosFree: 'Included',
+      sonhosVip: 'Unlimited',
       locked: '—',
       preview: 'Preview',
     },
     plans: {
       freeSub: 'To get started',
       premiumSub: 'One-time · lifetime',
-      sonhosNote: 'Smart dream interpreter: reads your dream symbols and links them to your chart — included in every plan.',
+      sonhosNote: 'Included in every plan.',
     },
   },
   landingPremium: {
