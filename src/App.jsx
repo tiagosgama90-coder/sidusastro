@@ -1481,6 +1481,8 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
     goToBirthForm()
   }, [goToBirthForm, trackCtaClick])
 
+  const funnelSolo = funnelStep === 'loading' || funnelStep === 'preview'
+
   return (
     <>
       <LandingAuthModal
@@ -1510,7 +1512,7 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
         </div>
         <section
           ref={conversionZoneRef}
-          className={`landing-conversion-zone${isDesktop ? ' landing-conversion-zone--desktop' : ''}`}
+          className={`landing-conversion-zone${isDesktop ? ' landing-conversion-zone--desktop' : ''}${funnelSolo ? ' landing-conversion-zone--funnel-solo' : ''}`}
           aria-label={t('auth.portal.conversionAria')}
         >
           <div className="landing-conversion-zone__hero">
@@ -1525,7 +1527,7 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
           )}
 
           <div className="landing-conversion-zone__funnel">
-            <div className={`landing-hero-stack landing-hero-stack--funnel${funnelStep === 'paywall' || funnelStep === 'preview' ? ' landing-hero-stack--funnel-wide' : ''}`}>
+            <div className={`landing-hero-stack landing-hero-stack--funnel${funnelStep === 'paywall' ? ' landing-hero-stack--funnel-wide' : ''}${funnelStep === 'preview' ? ' landing-hero-stack--funnel-preview' : ''}`}>
               {funnelStep === 'birth' && (
                 <div className="landing-funnel-birth-duo">
                   <div ref={birthFormRef} className="landing-funnel-birth-duo__form">
@@ -1542,9 +1544,7 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
               )}
               {funnelStep === 'loading' && <LandingFunnelLoading />}
               {funnelStep === 'preview' && (
-                <div ref={paywallRef}>
-                  <LandingFunnelPreview onContinue={handlePreviewContinue} />
-                </div>
+                <LandingFunnelPreview ref={paywallRef} onContinue={handlePreviewContinue} />
               )}
               {funnelStep === 'paywall' && (
                 <LandingPremiumPaywall

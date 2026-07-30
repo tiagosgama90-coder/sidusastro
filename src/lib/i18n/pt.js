@@ -428,6 +428,7 @@ export default {
       previewTitle: 'Aqui está o teu mapa astral',
       previewTitleNamed: '{nome}, o teu mapa está pronto',
       previewLead: 'Calculámos Sol, Lua e Ascendente com Swiss Ephemeris. Cria conta grátis para guardar e desbloquear o PDF completo.',
+      previewSaved: 'Os teus dados de nascimento já estão guardados neste dispositivo — ao criar conta, o mapa fica pré-preenchido automaticamente.',
       previewFallback: 'O teu mapa foi calculado. Cria conta para ver todos os detalhes.',
       previewNote: 'PDF profissional, Oráculo ilimitado, Rádio do Céu e Radar de Afinidades são Premium — pagamento único vitalício.',
       previewCta: 'Criar conta e ver mapa completo',

@@ -4887,6 +4887,38 @@ h1.sidus-page-title {
   max-width: min(880px, 100%);
 }
 
+.landing-hero-stack--funnel-preview {
+  max-width: min(480px, 100%);
+  margin-inline: auto;
+}
+
+.landing-conversion-zone--funnel-solo .landing-conversion-zone__funnel {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.landing-conversion-zone--funnel-solo .landing-hero-stack--funnel {
+  margin-inline: auto;
+}
+
+@media (min-width: 1024px) {
+  .landing-conversion-zone--desktop.landing-conversion-zone--funnel-solo {
+    grid-template-areas:
+      "hero hero"
+      "funnel funnel"
+      "plans plans";
+  }
+
+  .landing-conversion-zone--desktop.landing-conversion-zone--funnel-solo .landing-conversion-zone__funnel {
+    position: static;
+    justify-self: center;
+    width: 100%;
+    max-width: min(520px, 100%);
+    margin-inline: auto;
+  }
+}
+
 .landing-portal-root {
   width: 100%;
 }
@@ -8359,10 +8391,13 @@ html.sidus-mobile-menu-open .mobile-menu-btn {
 
 .landing-funnel-preview {
   width: 100%;
+  max-width: min(480px, 100%);
+  margin-inline: auto;
   padding: 22px 18px 20px;
   border-radius: 16px;
   border: 1px solid rgba(223, 183, 108, 0.22);
   text-align: center;
+  box-sizing: border-box;
 }
 
 .landing-funnel-preview__head {
@@ -8418,6 +8453,17 @@ html.sidus-mobile-menu-open .mobile-menu-btn {
   margin: 0 0 14px;
   font-size: 13px;
   color: rgba(255, 255, 255, 0.65);
+}
+
+.landing-funnel-preview__saved {
+  margin: 0 0 10px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: rgba(52, 211, 153, 0.08);
+  border: 1px solid rgba(52, 211, 153, 0.22);
+  font-size: 11px;
+  line-height: 1.45;
+  color: rgba(167, 243, 208, 0.92);
 }
 
 .landing-funnel-preview__note {

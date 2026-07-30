@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { forwardRef, useMemo } from 'react'
 import { Sparkles } from 'lucide-react'
 import { useLanguage } from '../lib/i18n/LanguageContext.jsx'
 import { readLandingDraft } from '../lib/landingDraft.js'
@@ -15,7 +15,7 @@ function formatPillar(simbolo, label, signoNome, lang) {
 }
 
 /** Pré-visualização grátis do mapa antes do paywall de conta. */
-export function LandingFunnelPreview({ onContinue }) {
+export const LandingFunnelPreview = forwardRef(function LandingFunnelPreview({ onContinue }, ref) {
   const { lang, t } = useLanguage()
 
   const { nome, mapa } = useMemo(() => {
@@ -37,7 +37,11 @@ export function LandingFunnelPreview({ onContinue }) {
   }, [mapa, lang, t])
 
   return (
-    <section className="landing-funnel-preview landing-glass" aria-label={t('landing.funnel.previewAria')}>
+    <section
+      ref={ref}
+      className="landing-funnel-preview landing-glass"
+      aria-label={t('landing.funnel.previewAria')}
+    >
       <header className="landing-funnel-preview__head">
         <p className="landing-funnel-preview__eyebrow">
           <Sparkles size={14} aria-hidden />
@@ -63,6 +67,7 @@ export function LandingFunnelPreview({ onContinue }) {
         <p className="landing-funnel-preview__fallback">{t('landing.funnel.previewFallback')}</p>
       )}
 
+      <p className="landing-funnel-preview__saved">{t('landing.funnel.previewSaved')}</p>
       <p className="landing-funnel-preview__note">{t('landing.funnel.previewNote')}</p>
 
       <LandingSimpleCtaButton
@@ -75,4 +80,4 @@ export function LandingFunnelPreview({ onContinue }) {
       </LandingSimpleCtaButton>
     </section>
   )
-}
+})
