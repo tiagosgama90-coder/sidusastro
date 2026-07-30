@@ -1,8 +1,7 @@
 import { forwardRef } from 'react'
 import { Crown, Eye, EyeOff, Loader2, Lock } from 'lucide-react'
 import { useLanguage } from '../lib/i18n/LanguageContext.jsx'
-import { useGeoCountry } from '../hooks/useGeoCountry.js'
-import { getPremiumPriceLabels } from '../lib/premiumPricingLabels.js'
+import { LandingPremiumPriceCard } from './LandingPremiumPriceCard.jsx'
 import { RecaptchaCheckbox } from './Recaptcha.jsx'
 
 const MANDALA_SRC = '/brand/sidus-natal-guide-wheels.png?v=1'
@@ -56,8 +55,6 @@ export const LandingPremiumPaywall = forwardRef(function LandingPremiumPaywall({
   onLogin,
 }, ref) {
   const { t } = useLanguage()
-  const { isBrasil } = useGeoCountry()
-  const prices = getPremiumPriceLabels(isBrasil, t)
 
   return (
     <section
@@ -88,12 +85,7 @@ export const LandingPremiumPaywall = forwardRef(function LandingPremiumPaywall({
           <h2 className="landing-premium-paywall__title">{t('landing.funnel.paywallTitle')}</h2>
           <p className="landing-premium-paywall__subtitle">{t('landing.funnel.paywallSubtitle')}</p>
 
-          <div className="landing-premium-paywall__price">
-            <p className="landing-premium-paywall__price-main">
-              {t('landing.funnel.priceMain', { precoBrl: prices.precoBrl, precoEur: prices.precoEur })}
-            </p>
-            <p className="landing-premium-paywall__price-sub">{t('landing.funnel.priceSub')}</p>
-          </div>
+          <LandingPremiumPriceCard className="landing-premium-paywall__price" />
 
           <p className="landing-premium-paywall__account-lead">{t('landing.funnel.accountLead')}</p>
 
