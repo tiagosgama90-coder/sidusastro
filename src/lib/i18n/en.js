@@ -432,6 +432,10 @@ export default {
       previewNote: 'Professional PDF, unlimited Oracle, Sky Radio and Affinity Radar are Premium — one-time lifetime payment.',
       previewCta: 'Create account and see full chart',
       previewCtaAria: 'Continue to create account and unlock Premium',
+      paywallSimpleTitle: 'Create free account',
+      paywallSimpleLead: 'Email and password — your chart is saved automatically.',
+      paywallSimpleCta: 'Create free account',
+      paywallPremiumNote: 'Premium (PDF, Oracle, synastry) is optional — one-time payment, no subscription.',
     },
     reviewsTickerAria: 'Sidus user reviews',
     mapaPremium: {

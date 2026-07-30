@@ -432,6 +432,10 @@ export default {
       previewNote: 'PDF profissional, Oráculo ilimitado, Rádio do Céu e Radar de Afinidades são Premium — pagamento único vitalício.',
       previewCta: 'Criar conta e ver mapa completo',
       previewCtaAria: 'Continuar para criar conta e desbloquear Premium',
+      paywallSimpleTitle: 'Cria conta grátis',
+      paywallSimpleLead: 'Email e palavra-passe — o teu mapa fica guardado automaticamente.',
+      paywallSimpleCta: 'Criar conta grátis',
+      paywallPremiumNote: 'Premium (PDF, Oráculo, sinastria) é opcional — pagamento único, sem mensalidade.',
     },
     reviewsTickerAria: 'Comentários de utilizadores Sidus',
     mapaPremium: {
