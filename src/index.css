@@ -1605,6 +1605,20 @@ h1.sidus-page-title {
   margin-bottom: 14px;
 }
 
+.landing-conversion-zone__hero {
+  width: 100%;
+  text-align: center;
+}
+
+.landing-conversion-zone__hero .landing-conversion-zone-head {
+  text-align: center;
+}
+
+.landing-conversion-zone__hero .landing-welcome-zodiac {
+  margin-left: auto;
+  margin-right: auto;
+}
+
 .landing-welcome-zodiac {
   position: relative;
   display: flex;
@@ -7994,7 +8008,7 @@ html.sidus-mobile-menu-open .mobile-menu-btn {
   text-wrap: balance;
 }
 
-/* Landing desktop — hero + distingue à esquerda, funil à direita */
+/* Landing desktop — hero centrado, distingue + formulário lado a lado */
 @media (min-width: 1024px) {
   .landing-auth-layout--desktop {
     max-width: min(1280px, calc(100vw - 48px)) !important;
@@ -8004,9 +8018,10 @@ html.sidus-mobile-menu-open .mobile-menu-btn {
     max-width: min(1240px, calc(100vw - 48px));
     padding: 28px 32px 36px;
     display: grid;
-    grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     grid-template-areas:
-      "intro funnel"
+      "hero hero"
+      "why funnel"
       "plans plans"
       "steps steps"
       "reviews reviews";
@@ -8014,47 +8029,46 @@ html.sidus-mobile-menu-open .mobile-menu-btn {
     align-items: start;
   }
 
-  .landing-conversion-zone__intro {
-    grid-area: intro;
-    min-width: 0;
+  .landing-conversion-zone__hero {
+    grid-area: hero;
+    text-align: center;
   }
 
-  .landing-conversion-zone__intro .landing-conversion-zone-head {
-    text-align: left;
-    margin-bottom: 8px;
+  .landing-conversion-zone__hero .landing-conversion-eyebrow,
+  .landing-conversion-zone__hero .landing-conversion-title,
+  .landing-conversion-zone__hero .landing-conversion-lead {
+    text-align: center;
+    margin-inline: auto;
   }
 
-  .landing-conversion-zone__intro .landing-conversion-eyebrow,
-  .landing-conversion-zone__intro .landing-conversion-title,
-  .landing-conversion-zone__intro .landing-conversion-lead {
-    text-align: left;
-    margin-left: 0;
-    margin-right: 0;
-  }
-
-  .landing-conversion-zone__intro .landing-welcome-zodiac {
-    margin-left: 0;
-    margin-right: auto;
+  .landing-conversion-zone__hero .landing-welcome-zodiac {
+    margin-inline: auto;
     width: 168px;
     height: 168px;
   }
 
-  .landing-conversion-zone__intro .landing-why-sidus {
-    margin-top: 6px;
+  .landing-conversion-zone__why {
+    grid-area: why;
+    min-width: 0;
+    align-self: stretch;
+  }
+
+  .landing-conversion-zone__why .landing-why-sidus {
+    height: 100%;
     padding: 14px 16px;
   }
 
-  .landing-conversion-zone__intro .landing-why-sidus__title {
+  .landing-conversion-zone__why .landing-why-sidus__title {
     font-size: 1.05rem;
     text-align: left;
   }
 
-  .landing-conversion-zone__intro .landing-why-sidus__lead {
+  .landing-conversion-zone__why .landing-why-sidus__lead {
     text-align: left;
     font-size: 12px;
   }
 
-  .landing-conversion-zone__intro .landing-why-sidus__grid {
+  .landing-conversion-zone__why .landing-why-sidus__grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 8px;
   }
@@ -8065,6 +8079,15 @@ html.sidus-mobile-menu-open .mobile-menu-btn {
     top: 12px;
     align-self: start;
     min-width: 0;
+  }
+
+  .landing-conversion-zone__funnel .landing-portal-form-lead {
+    text-align: left;
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: #f5f0e8;
+    margin: 0 0 12px;
+    line-height: 1.35;
   }
 
   .landing-conversion-zone__plans {
