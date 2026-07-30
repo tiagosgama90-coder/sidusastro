@@ -1,10 +1,9 @@
 import { useLanguage } from '../lib/i18n/LanguageContext.jsx'
 import { LandingPremiumCompare } from './LandingPremiumCompare.jsx'
-import { useLandingCtaPrice } from './LandingPremiumPriceCard.jsx'
+import { LandingPaywallCtaButton } from './LandingPremiumPriceCard.jsx'
 
 export function LandingPlansOverview({ onCta }) {
   const { t } = useLanguage()
-  const ctaPrice = useLandingCtaPrice()
 
   return (
     <section
@@ -23,14 +22,11 @@ export function LandingPlansOverview({ onCta }) {
       </div>
 
       {onCta && (
-        <button
-          type="button"
+        <LandingPaywallCtaButton
           className="landing-plans-overview__cta"
           onClick={onCta}
-          aria-label={t('landing.plansOverview.ctaAria')}
-        >
-          {t('auth.registerCta', { price: ctaPrice })}
-        </button>
+          ariaLabel={t('landing.plansOverview.ctaAria')}
+        />
       )}
     </section>
   )

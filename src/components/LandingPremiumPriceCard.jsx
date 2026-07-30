@@ -31,13 +31,23 @@ export function LandingPremiumPriceCard({ className = '' }) {
   )
 }
 
-/** Uma linha de preço para botões CTA (geo-aware). */
-export function useLandingCtaPrice() {
+/** Botão paywall com título + dois preços em linhas separadas. */
+export function LandingPaywallCtaButton({ className = '', onClick, ariaLabel }) {
   const { t } = useLanguage()
-  const { isBrasil } = useGeoCountry()
-  const prices = getPremiumPriceLabels(isBrasil, t)
+  const prices = getPremiumPriceLabels(false, t)
 
-  return isBrasil
-    ? t('landing.funnel.ctaPricePix', { preco: prices.precoBrl })
-    : t('landing.funnel.ctaPriceEur', { preco: prices.precoEur })
+  return (
+    <button
+      type="button"
+      className={`landing-paywall-cta${className ? ` ${className}` : ''}`}
+      onClick={onClick}
+      aria-label={ariaLabel}
+    >
+      <span className="landing-paywall-cta__title">{t('landing.funnel.ctaUnlock')}</span>
+      <span className="landing-paywall-cta__line">{t('landing.funnel.ctaPixLine', { preco: prices.precoBrl })}</span>
+      <span className="landing-paywall-cta__line landing-paywall-cta__line--alt">
+        {t('landing.funnel.ctaEurLine', { or: t('landing.funnel.priceOr'), preco: prices.precoEur })}
+      </span>
+    </button>
+  )
 }
