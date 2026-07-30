@@ -1553,11 +1553,11 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
             </>
           )}
 
-          <div className="landing-conversion-zone__reviews">
-            <LandingReviews variant="paywall" />
-          </div>
         </section>
-        <LandingPdfShowcase />
+        <div className="landing-showcase-duo">
+          <LandingPdfShowcase />
+          <LandingReviews variant="paywall" />
+        </div>
         <LandingGuides />
         <AdSenseBanner />
         <LandingFaq />
