@@ -1,4 +1,4 @@
-import { Crosshair, Link2, ShieldCheck, Sparkles } from 'lucide-react'
+import { Crosshair, Link2, Moon, ShieldCheck, Sparkles } from 'lucide-react'
 import { useLanguage } from '../lib/i18n/LanguageContext.jsx'
 import { LandingMysticHighlight } from './LandingMysticHighlight.jsx'
 
@@ -39,6 +39,13 @@ export function LandingWhySidus({ compact = false }) {
           </li>
         ))}
       </ul>
+
+      <div className="landing-why-sidus__dream">
+        <div className="landing-why-sidus__dream-icon" aria-hidden="true">
+          <Moon size={18} strokeWidth={2} />
+        </div>
+        <p className="landing-why-sidus__dream-text">{t('auth.portal.whySidus.sonhosHighlight')}</p>
+      </div>
 
       {!compact && <p className="landing-why-sidus__footnote">{t('auth.portal.whySidus.footnote')}</p>}
     </section>
