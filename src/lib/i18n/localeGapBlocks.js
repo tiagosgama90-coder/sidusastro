@@ -191,6 +191,9 @@ const GAP_BLOCK_ES = {
       loginModal: {
         ariaLabel: 'Entrar en tu cuenta Sidus',
         title: 'Bienvenido de nuevo',
+        visualTitle: 'Tu cielo te espera',
+        visualLead: 'Entra para acceder a tu carta, oráculo y herramientas premium.',
+        continueGoogle: 'Continuar con Google',
       },
       ctaCalculateMap: 'Calcular Mi Carta Natal Gratis',
       topCtaShort: 'Empezar gratis',
@@ -421,6 +424,9 @@ const GAP_BLOCK_FR = {
       loginModal: {
         ariaLabel: 'Connexion à votre compte Sidus',
         title: 'Bon retour',
+        visualTitle: 'Votre ciel vous attend',
+        visualLead: 'Connectez-vous pour accéder à votre thème, oracle et outils premium.',
+        continueGoogle: 'Continuer avec Google',
       },
       ctaCalculateMap: 'Calculer Ma Carte Natale Gratuite',
       topCtaShort: 'Commencer gratuitement',
@@ -651,6 +657,9 @@ const GAP_BLOCK_DE = {
       loginModal: {
         ariaLabel: 'Bei Ihrem Sidus-Konto anmelden',
         title: 'Willkommen zurück',
+        visualTitle: 'Ihr Himmel wartet',
+        visualLead: 'Melden Sie sich an, um auf Ihr Horoskop, Orakel und Premium-Tools zuzugreifen.',
+        continueGoogle: 'Mit Google fortfahren',
       },
       ctaCalculateMap: 'Mein Gratis-Geburtshoroskop Berechnen',
       topCtaShort: 'Kostenlos starten',
@@ -881,6 +890,9 @@ const GAP_BLOCK_IT = {
       loginModal: {
         ariaLabel: 'Accedi al tuo account Sidus',
         title: 'Bentornato',
+        visualTitle: 'Il tuo cielo ti aspetta',
+        visualLead: 'Accedi per usare la tua carta, oracolo e strumenti premium.',
+        continueGoogle: 'Continua con Google',
       },
       ctaCalculateMap: 'Calcola la Mia Carta Natale Gratuita',
       topCtaShort: 'Inizia gratis',

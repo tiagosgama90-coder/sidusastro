@@ -100,6 +100,9 @@ export default {
       loginModal: {
         ariaLabel: 'Entrar na tua conta Sidus',
         title: 'Bem-vindo de volta',
+        visualTitle: 'O teu céu à tua espera',
+        visualLead: 'Entra para acederes ao mapa, oráculo e ferramentas premium.',
+        continueGoogle: 'Continuar com Google',
       },
       whySidus: {
         ariaLabel: 'Porquê escolher o Sidusastro',
@@ -1162,7 +1165,7 @@ export default {
       numerologiaVip: 'Mapa completo · Caminho de Vida',
       sonhos: 'Interpretação de Sonhos',
       sonhosFree: 'Incluído',
-      sonhosVip: 'Lê símbolos e o inconsciente',
+      sonhosVip: 'Decifra sonhos no teu mapa',
       locked: '—',
       preview: 'Prévia',
     },

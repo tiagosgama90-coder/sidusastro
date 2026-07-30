@@ -100,6 +100,9 @@ export default {
       loginModal: {
         ariaLabel: 'Sign in to your Sidus account',
         title: 'Welcome back',
+        visualTitle: 'Your sky awaits',
+        visualLead: 'Sign in to access your chart, oracle and premium tools.',
+        continueGoogle: 'Continue with Google',
       },
       whySidus: {
         ariaLabel: 'Why choose Sidusastro',
@@ -1135,7 +1138,7 @@ export default {
       numerologiaVip: 'Full chart · Life Path',
       sonhos: 'Dream interpretation',
       sonhosFree: 'Included',
-      sonhosVip: 'Reads symbols and the unconscious',
+      sonhosVip: 'Deciphers dreams on your chart',
       locked: '—',
       preview: 'Preview',
     },

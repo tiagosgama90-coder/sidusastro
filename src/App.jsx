@@ -1337,7 +1337,6 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
   const { lang, t } = useLanguage()
   const birthRef = useRef(null)
   const paywallRef = useRef(null)
-  const loginRef = useRef(null)
   const conversionZoneRef = useRef(null)
   const [funnelStep, setFunnelStep] = useState('birth')
   const [loginModalOpen, setLoginModalOpen] = useState(false)
@@ -1446,12 +1445,7 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
     e?.stopPropagation?.()
     onMudar('login')
     setLoginModalOpen(true)
-    if (isDesktop) {
-      window.setTimeout(() => {
-        loginRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-      }, 80)
-    }
-  }, [onMudar, isDesktop])
+  }, [onMudar])
 
   const closeLoginModal = useCallback(() => {
     setLoginModalOpen(false)
@@ -1468,14 +1462,12 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
 
   return (
     <>
-      {!isDesktop && (
-        <LandingAuthModal
-          open={loginModalOpen}
-          onClose={closeLoginModal}
-          onRegister={handleModalRegister}
-          firebaseOk={firebaseOk}
-        />
-      )}
+      <LandingAuthModal
+        open={loginModalOpen}
+        onClose={closeLoginModal}
+        onRegister={handleModalRegister}
+        firebaseOk={firebaseOk}
+      />
       <div className={`landing-auth-layout${isDesktop ? ' landing-auth-layout--desktop' : ' landing-auth-layout--mobile'}`} translate="yes">
         <BannerBrasil />
         <LandingStickyCta targetRef={conversionZoneRef} onCta={handleFunnelCta} />
@@ -1486,22 +1478,6 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
           </div>
         </div>
 
-        {isDesktop && loginModalOpen && (
-          <section
-            id="landing-login"
-            ref={loginRef}
-            className="landing-login-section"
-            aria-label={t('auth.portal.loginModal.ariaLabel')}
-          >
-            <LandingAuthModal
-              open
-              variant="inline"
-              onClose={closeLoginModal}
-              onRegister={handleModalRegister}
-              firebaseOk={firebaseOk}
-            />
-          </section>
-        )}
         <section
           ref={conversionZoneRef}
           className="landing-conversion-zone"
