@@ -1,4 +1,4 @@
-import { Component } from 'react'
+import { isChunkLoadError, reloadForStaleChunks } from '../lib/lazyWithRetry.js'
 
 const CORES = {
   fundo: '#0B071E',
@@ -23,6 +23,9 @@ export class ErrorBoundary extends Component {
   }
 
   componentDidCatch(error, info) {
+    if (isChunkLoadError(error) && reloadForStaleChunks()) {
+      return
+    }
     if (isTranslateDomError(error?.message) && this._translateRetries < 2) {
       this._translateRetries += 1
       window.setTimeout(() => {
@@ -54,6 +57,7 @@ export class ErrorBoundary extends Component {
     if (!this.state.hasError) return this.props.children
 
     const isTranslateCrash = isTranslateDomError(this.state.error?.message)
+    const isChunkCrash = isChunkLoadError(this.state.error)
 
     return (
       <div style={{
@@ -83,7 +87,9 @@ export class ErrorBoundary extends Component {
             Algo correu mal
           </h1>
           <p style={{ margin: '0 0 20px', fontSize: 14, lineHeight: 1.6, color: CORES.brancoMuted }}>
-            A interface encontrou um erro inesperado. Podes tentar de novo ou recarregar a página.
+            {isChunkCrash
+              ? 'Há uma versão nova do site. A recarregar automaticamente…'
+              : 'A interface encontrou um erro inesperado. Podes tentar de novo ou recarregar a página.'}
           </p>
           {isTranslateCrash && (
             <p style={{ margin: '0 0 16px', fontSize: 13, lineHeight: 1.55, color: 'rgba(223,183,108,0.9)' }}>

@@ -1,4 +1,4 @@
-﻿import { useState, useEffect, useRef, useCallback, useMemo, lazy, Suspense } from 'react'
+﻿import { useState, useEffect, useRef, useCallback, useMemo, Suspense } from 'react'
 import {
   Moon,
   Star,
@@ -109,16 +109,17 @@ import { useLandingMapaPreview } from './hooks/useLandingMapaPreview.js'
 import { warmupLandingMapaMotor } from './lib/landingMapaMotor.js'
 import { MapaPaywallSections } from './components/MapaPaywallSections.jsx'
 import { FerramentasEmptyState } from './components/FerramentasEmptyState.jsx'
+import { lazyWithRetry, importWithRetry } from './lib/lazyWithRetry.js'
 
-const EcraTarotLazy = lazy(() => import('./components/Tarot.jsx').then((m) => ({ default: m.EcraTarot })))
-const MandalaNatalLazy = lazy(() => import('./components/MandalaNatal.jsx').then((m) => ({ default: m.MandalaNatal })))
-const BussolaCosmicaLazy = lazy(() => import('./components/FerramentasPremium.jsx').then((m) => ({ default: m.BussolaCosmica })))
-const SinastriaLazy = lazy(() => import('./components/FerramentasPremium.jsx').then((m) => ({ default: m.Sinastria })))
-const BiorritmoLazy = lazy(() => import('./components/FerramentasPremium.jsx').then((m) => ({ default: m.Biorritmo })))
-const DiarioAstralLazy = lazy(() => import('./components/FerramentasPremium.jsx').then((m) => ({ default: m.DiarioAstral })))
-const NumerologiaLazy = lazy(() => import('./components/FerramentasPremium.jsx').then((m) => ({ default: m.Numerologia })))
-const InterpretacaoSonhosLazy = lazy(() => import('./components/FerramentasPremium.jsx').then((m) => ({ default: m.InterpretacaoSonhos })))
-const HorasIguaisLazy = lazy(() => import('./components/FerramentasPremium.jsx').then((m) => ({ default: m.HorasIguais })))
+const EcraTarotLazy = lazyWithRetry(() => import('./components/Tarot.jsx').then((m) => ({ default: m.EcraTarot })))
+const MandalaNatalLazy = lazyWithRetry(() => import('./components/MandalaNatal.jsx').then((m) => ({ default: m.MandalaNatal })))
+const BussolaCosmicaLazy = lazyWithRetry(() => import('./components/FerramentasPremium.jsx').then((m) => ({ default: m.BussolaCosmica })))
+const SinastriaLazy = lazyWithRetry(() => import('./components/FerramentasPremium.jsx').then((m) => ({ default: m.Sinastria })))
+const BiorritmoLazy = lazyWithRetry(() => import('./components/FerramentasPremium.jsx').then((m) => ({ default: m.Biorritmo })))
+const DiarioAstralLazy = lazyWithRetry(() => import('./components/FerramentasPremium.jsx').then((m) => ({ default: m.DiarioAstral })))
+const NumerologiaLazy = lazyWithRetry(() => import('./components/FerramentasPremium.jsx').then((m) => ({ default: m.Numerologia })))
+const InterpretacaoSonhosLazy = lazyWithRetry(() => import('./components/FerramentasPremium.jsx').then((m) => ({ default: m.InterpretacaoSonhos })))
+const HorasIguaisLazy = lazyWithRetry(() => import('./components/FerramentasPremium.jsx').then((m) => ({ default: m.HorasIguais })))
 
 function RouteLoader() {
   return (
@@ -2239,8 +2240,8 @@ function MapaAstral({ mapaNatal, dados, planetasNascimento, mapaDesbloqueado, is
     const scrollY = window.scrollY
     setGerandoPdf(true)
     try {
-      const { gerarPdfMapaAstral } = await import('./components/PdfMapa.jsx')
-      const { capturarMandalaParaPdf } = await import('./lib/mandalaPdf.js')
+      const { gerarPdfMapaAstral } = await importWithRetry(() => import('./components/PdfMapa.jsx'))
+      const { capturarMandalaParaPdf } = await importWithRetry(() => import('./lib/mandalaPdf.js'))
       const mandalaPng = mapaCompletoDesbloqueado
         ? await capturarMandalaParaPdf().catch(() => null)
         : null
