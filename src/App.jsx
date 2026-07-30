@@ -49,7 +49,6 @@ import { LandingBirthPortal } from './components/LandingBirthPortal.jsx'
 import { LandingConversionHead } from './components/LandingConversionHead.jsx'
 import { LandingWhySidus } from './components/LandingWhySidus.jsx'
 import { LandingAuthModal } from './components/LandingAuthModal.jsx'
-import { LandingPremiumPaywall } from './components/LandingPremiumPaywall.jsx'
 import { LandingFunnelLoading } from './components/LandingFunnelLoading.jsx'
 import { LandingPlansOverview } from './components/LandingPlansOverview.jsx'
 import { LandingTopBar } from './components/LandingTopBar.jsx'
@@ -59,7 +58,6 @@ import { LandingFaq } from './components/LandingFaq.jsx'
 import { LandingSkyLive } from './components/LandingSkyLive.jsx'
 import { LandingReviews } from './components/LandingReviews.jsx'
 import { LandingGuides } from './components/LandingGuides.jsx'
-import { LandingPdfShowcase } from './components/LandingPdfShowcase.jsx'
 import { BannerBrasil } from './components/BannerBrasil.jsx'
 import { HeroHomeSidus } from './components/HeroHomeSidus.jsx'
 import { LeituraGratisDiaria } from './components/LeituraGratisDiaria.jsx'
@@ -1344,10 +1342,11 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
   const { lang, t } = useLanguage()
   const birthRef = useRef(null)
   const birthFormRef = useRef(null)
-  const paywallRef = useRef(null)
   const conversionZoneRef = useRef(null)
   const [funnelStep, setFunnelStep] = useState('birth')
-  const [loginModalOpen, setLoginModalOpen] = useState(false)
+  const [mapCalculated, setMapCalculated] = useState(false)
+  const [authModalOpen, setAuthModalOpen] = useState(false)
+  const [authModalMode, setAuthModalMode] = useState('login')
   const [email, setEmail]       = useState('')
   const [senha, setSenha]       = useState('')
   const [verSenha, setVerSenha] = useState(false)
@@ -1393,6 +1392,7 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
       }
       setInfo(t('auth.accountCreated'))
       trackSignupConversion()
+      setAuthModalOpen(false)
     } catch (e) {
       console.error('[Sidus Auth] Erro:', e.code, e.message)
       setErro(traduzirErro(e.code) + (e.code ? ` [${e.code}]` : ''))
@@ -1412,6 +1412,7 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
     try {
       await signInWithPopup(auth, new GoogleAuthProvider())
       trackSignupConversion('google')
+      setAuthModalOpen(false)
     } catch (e) {
       console.error('[Sidus Google] Erro:', e.code, e.message)
       if (e.code !== 'auth/popup-closed-by-user') setErro(traduzirErro(e.code) + ` [${e.code}]`)
@@ -1436,52 +1437,79 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
     }, 80)
   }, [])
 
-  const scrollToPaywall = useCallback(() => {
-    requestAnimationFrame(() => {
-      paywallRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-    })
-  }, [])
-
   const handleBirthComplete = useCallback(() => {
     trackMapaConversion()
     setFunnelStep('loading')
     window.setTimeout(() => {
-      setFunnelStep('paywall')
-      requestAnimationFrame(() => {
-        paywallRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-      })
+      setMapCalculated(true)
+      setFunnelStep('birth')
+      setAuthModalMode('register')
+      setAuthModalOpen(true)
     }, 2000)
   }, [])
 
   const openLoginModal = useCallback((e) => {
     e?.preventDefault?.()
     e?.stopPropagation?.()
-    setLoginModalOpen(true)
+    setAuthModalMode('login')
+    setAuthModalOpen(true)
   }, [])
 
-  const closeLoginModal = useCallback(() => {
-    setLoginModalOpen(false)
+  const openRegisterModal = useCallback((e) => {
+    e?.preventDefault?.()
+    e?.stopPropagation?.()
+    setAuthModalMode('register')
+    setAuthModalOpen(true)
   }, [])
 
-  const handleModalRegister = useCallback(() => {
-    closeLoginModal()
-    goToBirthForm()
-  }, [closeLoginModal, goToBirthForm])
+  const closeAuthModal = useCallback(() => {
+    setAuthModalOpen(false)
+  }, [])
+
+  const handleAuthSwitchMode = useCallback((mode) => {
+    setAuthModalMode(mode)
+  }, [])
+
+  const handleRegisterNavigate = useCallback(() => {
+    if (hasLandingDraft()) {
+      setAuthModalMode('register')
+      setAuthModalOpen(true)
+    } else {
+      setAuthModalOpen(false)
+      goToBirthForm()
+    }
+  }, [goToBirthForm])
 
   const handleFunnelCta = useCallback(() => {
     trackCtaClick('funnel')
     goToBirthForm()
   }, [goToBirthForm, trackCtaClick])
 
-  const funnelSolo = funnelStep === 'loading' || funnelStep === 'paywall'
+  const funnelSolo = funnelStep === 'loading'
 
   return (
     <>
       <LandingAuthModal
-        open={loginModalOpen}
-        onClose={closeLoginModal}
-        onRegister={handleModalRegister}
+        open={authModalOpen}
+        mode={authModalMode}
+        onClose={closeAuthModal}
+        onSwitchMode={handleAuthSwitchMode}
+        onRegisterNavigate={handleRegisterNavigate}
         firebaseOk={firebaseOk}
+        registerEmail={email}
+        setRegisterEmail={setEmail}
+        registerSenha={senha}
+        setRegisterSenha={setSenha}
+        registerVerSenha={verSenha}
+        setRegisterVerSenha={setVerSenha}
+        recaptchaOk={recaptchaOk}
+        setRecaptchaOk={setRecaptchaOk}
+        recaptchaKey={recaptchaKey}
+        registerErro={erro}
+        registerInfo={info}
+        registerCarregando={carregando}
+        onSignup={handleSubmit}
+        onGoogleSignup={handleGoogleSignup}
       />
       <LandingExitIntent
         enabled={funnelStep === 'birth'}
@@ -1495,6 +1523,7 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
           hideWhenRef={birthFormRef}
           onCta={handleFunnelCta}
           ctaLabel={ctaLabel}
+          enabled={funnelStep === 'birth'}
         />
         <div className="landing-top-stack">
           <LandingTopBar onLogin={openLoginModal} />
@@ -1521,7 +1550,7 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
           )}
 
           <div className="landing-conversion-zone__funnel">
-            <div className={`landing-hero-stack landing-hero-stack--funnel${funnelStep === 'paywall' ? ' landing-hero-stack--funnel-simple' : ''}`}>
+            <div className={`landing-hero-stack landing-hero-stack--funnel`}>
               {funnelStep === 'birth' && (
                 <div className="landing-funnel-birth-duo">
                   <div ref={birthFormRef} className="landing-funnel-birth-duo__form">
@@ -1529,35 +1558,18 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
                       isDesktop={isDesktop}
                       onSaved={handleBirthComplete}
                       onOpenLogin={openLoginModal}
+                      onOpenRegister={openRegisterModal}
+                      mapCalculated={mapCalculated}
                       ctaLabel={ctaLabel}
                       onCtaClick={() => trackCtaClick('birth_form')}
                     />
                   </div>
-                  <LandingPremiumPriceCard className="landing-funnel-birth-duo__price landing-premium-price--funnel" />
+                  {!mapCalculated && (
+                    <LandingPremiumPriceCard className="landing-funnel-birth-duo__price landing-premium-price--funnel" />
+                  )}
                 </div>
               )}
               {funnelStep === 'loading' && <LandingFunnelLoading />}
-              {funnelStep === 'paywall' && (
-                <LandingPremiumPaywall
-                  ref={paywallRef}
-                  firebaseOk={firebaseOk}
-                  email={email}
-                  setEmail={setEmail}
-                  senha={senha}
-                  setSenha={setSenha}
-                  verSenha={verSenha}
-                  setVerSenha={setVerSenha}
-                  erro={erro}
-                  info={info}
-                  recaptchaOk={recaptchaOk}
-                  setRecaptchaOk={setRecaptchaOk}
-                  recaptchaKey={recaptchaKey}
-                  carregando={carregando}
-                  onSubmit={handleSubmit}
-                  onGoogleSignup={handleGoogleSignup}
-                  onLogin={openLoginModal}
-                />
-              )}
             </div>
           </div>
 
@@ -1566,10 +1578,7 @@ function EcraAuth({ onMudar, tipo, isDesktop, firebaseOk = true }) {
           )}
 
         </section>
-        <div className="landing-showcase-duo">
-          <LandingPdfShowcase />
-          <LandingReviews variant="paywall" featuredOnly />
-        </div>
+        <LandingReviews variant="paywall" featuredOnly />
         <LandingGuides />
         <AdSenseBanner />
         <LandingReviews formOnly />

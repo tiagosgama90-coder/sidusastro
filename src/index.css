@@ -8314,6 +8314,65 @@ html.sidus-mobile-menu-open .mobile-menu-btn {
   border-color: rgba(223, 183, 108, 0.45);
 }
 
+.landing-natal-signs {
+  padding: 14px 16px;
+  border-radius: 12px;
+  border: 1px solid rgba(52, 211, 153, 0.28);
+  background: rgba(52, 211, 153, 0.06);
+}
+
+.landing-natal-signs__label {
+  margin: 0 0 10px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(52, 211, 153, 0.9);
+}
+
+.landing-natal-signs__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 6px;
+}
+
+.landing-natal-signs__item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #f5f0e8;
+}
+
+.landing-natal-signs__sym {
+  color: #dfb76c;
+  font-size: 15px;
+  width: 18px;
+  text-align: center;
+}
+
+.landing-portal-register-link {
+  margin: 12px 0 0;
+  text-align: center;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.62);
+}
+
+.landing-portal-register-link button {
+  background: none;
+  border: none;
+  padding: 0;
+  color: #dfb76c;
+  font-size: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
 /* Landing growth polish */
 .landing-sky-line {
   display: flex;

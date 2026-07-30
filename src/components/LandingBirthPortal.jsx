@@ -9,9 +9,9 @@ import { validarOnboarding } from '../lib/i18n/validation.js'
 import { pesquisarCidades, pesquisarFusoHorario } from '../lib/geocoding.js'
 import { readLandingDraft, saveLandingDraft, stageLandingDraft, flushLandingDraft } from '../lib/landingDraft.js'
 import { calcularMapaNatal, calcularSignoSolarPorData } from '../lib/astrologia.js'
-import { LeituraGratisDiaria } from './LeituraGratisDiaria.jsx'
 import { CITY_SUGGESTION_NO_TRANSLATE, fusosFallbackLabels } from '../lib/landingTranslate.js'
 import { useGoogleTranslateRetranslate } from '../hooks/useGoogleTranslateRetranslate.js'
+import { LandingNatalSignsBar } from './LandingNatalSignsBar.jsx'
 
 const CORES = {
   dourado: '#DFB76C',
@@ -223,6 +223,8 @@ export function LandingBirthPortal({
   isDesktop,
   onSaved,
   onOpenLogin,
+  onOpenRegister,
+  mapCalculated = false,
   ctaLabel,
   onCtaClick,
 }) {
@@ -257,15 +259,18 @@ export function LandingBirthPortal({
 
   const previewSignos = useMemo(() => {
     if (!data) return null
-    const mapa = localizacao && hora
-      ? calcularMapaNatal({ data, hora, localizacao })
-      : null
-    if (mapa?.solar) return { solar: mapa.solar, lunar: mapa.lunar }
+    if (localizacao && hora) {
+      return calcularMapaNatal({ data, hora, localizacao })
+    }
     const sol = calcularSignoSolarPorData(data)
-    return sol ? { solar: sol, lunar: null } : null
+    return sol ? { solar: sol } : null
   }, [data, hora, localizacao])
 
-  useGoogleTranslateRetranslate(!!previewSignos, [previewSignos?.solar?.nome, previewSignos?.lunar?.nome])
+  useGoogleTranslateRetranslate(!!previewSignos, [
+    previewSignos?.solar?.nome,
+    previewSignos?.lunar?.nome,
+    previewSignos?.ascendente?.nome,
+  ])
 
   useEffect(() => {
     const draft = readLandingDraft()
@@ -358,6 +363,12 @@ export function LandingBirthPortal({
     e.preventDefault()
     e.stopPropagation()
     onOpenLogin?.(e)
+  }
+
+  const handleRegisterClick = (e) => {
+    e.preventDefault()
+    e.stopPropagation()
+    onOpenRegister?.(e)
   }
 
   return (
@@ -479,18 +490,26 @@ export function LandingBirthPortal({
               </button>
               {onOpenLogin && (
                 <p className="landing-portal-login-link">
-                  {t('auth.portal.mobileLoginPrompt')}{' '}
+                  {t('auth.hasAccount')}{' '}
                   <button type="button" onClick={handleLoginClick}>
-                    {t('auth.portal.mobileLoginLink')}
+                    {t('auth.loginHere')}
                   </button>
                 </p>
               )}
           </div>
         </div>
 
-        {previewSignos && (
+        {mapCalculated && (
           <div className="landing-portal-leitura-wrap">
-            <LeituraGratisDiaria solar={previewSignos.solar} lunar={previewSignos.lunar} compact />
+            <LandingNatalSignsBar />
+            {onOpenRegister && (
+              <p className="landing-portal-register-link">
+                {t('auth.noAccount')}{' '}
+                <button type="button" onClick={handleRegisterClick}>
+                  {t('auth.createHere')}
+                </button>
+              </p>
+            )}
           </div>
         )}
         </div>

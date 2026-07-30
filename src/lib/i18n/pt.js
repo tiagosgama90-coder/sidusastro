@@ -151,6 +151,11 @@ export default {
         ariaLabel: 'Entrar na tua conta Sidus',
         title: 'Bem-vindo de volta',
       },
+      registerModal: {
+        ariaLabel: 'Criar conta Sidus',
+        title: 'Cria conta grátis',
+        lead: 'Email e palavra-passe para guardar o teu mapa.',
+      },
       whySidus: {
         ariaLabel: 'Porquê escolher o Sidusastro',
         eyebrow: 'O que nos distingue',
@@ -436,6 +441,8 @@ export default {
       paywallSimpleLead: 'Email e palavra-passe — o teu mapa fica guardado automaticamente.',
       paywallSimpleCta: 'Criar conta grátis',
       paywallPremiumNote: 'Premium (PDF, Oráculo, sinastria) é opcional — pagamento único, sem mensalidade.',
+      signsLabel: 'O teu mapa',
+      signsAria: 'Signos calculados do teu mapa astral',
     },
     reviewsTickerAria: 'Comentários de utilizadores Sidus',
     mapaPremium: {

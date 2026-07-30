@@ -151,6 +151,11 @@ export default {
         ariaLabel: 'Sign in to your Sidus account',
         title: 'Welcome back',
       },
+      registerModal: {
+        ariaLabel: 'Create Sidus account',
+        title: 'Create free account',
+        lead: 'Email and password to save your chart.',
+      },
       whySidus: {
         ariaLabel: 'Why choose Sidusastro',
         eyebrow: 'What sets us apart',
@@ -436,6 +441,8 @@ export default {
       paywallSimpleLead: 'Email and password — your chart is saved automatically.',
       paywallSimpleCta: 'Create free account',
       paywallPremiumNote: 'Premium (PDF, Oracle, synastry) is optional — one-time payment, no subscription.',
+      signsLabel: 'Your chart',
+      signsAria: 'Calculated signs from your natal chart',
     },
     reviewsTickerAria: 'Sidus user reviews',
     mapaPremium: {
