@@ -20,7 +20,10 @@ export function metodosParaProduto(country = '') {
 }
 
 export function metodoPadraoParaPais(country = '') {
-  return String(country).toUpperCase() === 'BR' ? 'pix' : 'card'
+  const c = String(country).toUpperCase()
+  if (c === 'BR') return 'pix'
+  if (c === 'PT') return 'mb_way'
+  return 'card'
 }
 
 export function metodoUsaSubscricaoRecorrente() {

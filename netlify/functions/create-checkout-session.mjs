@@ -20,6 +20,24 @@ function tiposPagamentoCheckout(metodo) {
   return [metodo]
 }
 
+function toStripeCents(amount) {
+  const n = Number(amount)
+  if (!Number.isFinite(n)) throw new Error('invalid_amount')
+  return Math.round(Number(n.toFixed(2)) * 100)
+}
+
+/** Cartão: métodos dinâmicos (3DS, Apple Pay, MB Way no PT). Redirects: só o método escolhido. */
+function aplicarMetodosPagamento(sessionParams, metodo) {
+  if (metodo === 'card') {
+    sessionParams.automatic_payment_methods = { enabled: true, allow_redirects: 'always' }
+    sessionParams.payment_method_options = {
+      card: { request_three_d_secure: 'automatic' },
+    }
+    return
+  }
+  sessionParams.payment_method_types = tiposPagamentoCheckout(metodo)
+}
+
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'Content-Type',
@@ -115,6 +133,7 @@ export default async (req) => {
 
     const returnPath = pathComIdioma(RETURN_PATH[productType] || '/tarot', langRaw)
     const cancelPath = pathComIdioma(CANCEL_PATH[productType] || '/tarot', langRaw)
+    const pais = String(country || '').trim().toUpperCase()
 
     const nomeProduto = isPremium
       ? (descricao || 'Sidus Premium - Acesso completo')
@@ -125,20 +144,25 @@ export default async (req) => {
       customer_email: userEmail || undefined,
       client_reference_id: String(userId),
       metadata,
-      locale: cobranca.currency === 'brl' ? 'pt-BR' : 'pt',
+      locale: cobranca.currency === 'brl' ? 'pt-BR' : (pais === 'PT' || !pais ? 'pt' : 'auto'),
       success_url: `${origin}${returnPath}?payment=success&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}${cancelPath}?payment=cancelled`,
+      billing_address_collection: 'auto',
       line_items: [{
         quantity: 1,
         price_data: {
           currency: cobranca.currency,
           product_data: { name: nomeProduto },
-          unit_amount: Math.round(cobranca.amount * 100),
+          unit_amount: toStripeCents(cobranca.amount),
         },
       }],
-      payment_method_types: tiposPagamentoCheckout(metodo),
-      payment_intent_data: { metadata },
+      payment_intent_data: {
+        metadata,
+        description: String(nomeProduto).slice(0, 200),
+      },
     }
+
+    aplicarMetodosPagamento(sessionParams, metodo)
 
     const session = await stripe.checkout.sessions.create(sessionParams)
 
