@@ -4515,7 +4515,7 @@ export default function App() {
           userId={utilizador?.uid}
           userEmail={utilizador?.email}
           productType={modalPagamento.productType}
-          country={country}
+          country={isBrasil ? 'BR' : country}
           onSucesso={() => { modalPagamento.onSucesso?.(); setModalPagamento(null) }}
           onFechar={() => setModalPagamento(null)}
         />
