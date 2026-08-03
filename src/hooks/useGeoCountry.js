@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+import { readBrazilHeuristicFromNavigator, resolveIsBrasil } from '../lib/brazilGeo.js'
 
 const STORAGE_KEY = 'sidus_geo_country'
 
@@ -23,6 +24,7 @@ export function useGeoCountry() {
   const cached = lerCache()
   const [country, setCountry] = useState(cached)
   const [loaded, setLoaded] = useState(Boolean(cached))
+  const heuristicBrasil = useMemo(() => readBrazilHeuristicFromNavigator(), [])
 
   useEffect(() => {
     if (cached) return undefined
@@ -46,7 +48,7 @@ export function useGeoCountry() {
 
   return {
     country,
-    isBrasil: country === 'BR',
+    isBrasil: resolveIsBrasil(country, heuristicBrasil),
     loaded,
   }
 }
