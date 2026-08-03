@@ -15,8 +15,15 @@ function resolverMetodoPagamento(raw) {
 }
 
 /** Stripe Checkout: Link exige card na mesma sessão. */
-function tiposPagamentoCheckout(metodo) {
+function tiposPagamentoCheckout(metodo, { pais, currency }) {
+  if (currency === 'brl') {
+    return metodo === 'pix' ? ['pix'] : ['card', 'paypal', 'link']
+  }
+  const ptPool = ['card', 'mb_way', 'multibanco', 'paypal', 'link']
+  const intlPool = ['card', 'paypal', 'link']
+  const pool = pais === 'BR' ? intlPool : (pais === 'PT' || !pais) ? ptPool : intlPool
   if (metodo === 'link') return ['link', 'card']
+  if (pool.includes(metodo)) return pool
   return [metodo]
 }
 
@@ -26,12 +33,12 @@ function toStripeCents(amount) {
   return Math.round(Number(n.toFixed(2)) * 100)
 }
 
-/** Aplica tipos de pagamento ao Checkout Session (não suporta automatic_payment_methods). */
-function aplicarMetodosPagamento(sessionParams, metodo) {
-  sessionParams.payment_method_types = tiposPagamentoCheckout(metodo)
-  if (metodo === 'card') {
+/** Todos os métodos activos na região + 3DS reforçado para reduzir bloqueios Radar. */
+function aplicarMetodosPagamento(sessionParams, metodo, ctx) {
+  sessionParams.payment_method_types = tiposPagamentoCheckout(metodo, ctx)
+  if (sessionParams.payment_method_types.includes('card')) {
     sessionParams.payment_method_options = {
-      card: { request_three_d_secure: 'automatic' },
+      card: { request_three_d_secure: 'any' },
     }
   }
 }
@@ -140,27 +147,35 @@ export default async (req) => {
     const sessionParams = {
       mode: 'payment',
       customer_email: userEmail || undefined,
+      customer_creation: userEmail ? 'always' : undefined,
       client_reference_id: String(userId),
       metadata,
       locale: cobranca.currency === 'brl' ? 'pt-BR' : (pais === 'PT' || !pais ? 'pt' : 'auto'),
       success_url: `${origin}${returnPath}?payment=success&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}${cancelPath}?payment=cancelled`,
-      billing_address_collection: 'auto',
+      billing_address_collection: 'required',
+      phone_number_collection: { enabled: true },
       line_items: [{
         quantity: 1,
         price_data: {
           currency: cobranca.currency,
-          product_data: { name: nomeProduto },
+          product_data: {
+            name: nomeProduto,
+            description: isPremium
+              ? 'Acesso Premium vitalício — mapa astral, oráculo, tarot e ferramentas'
+              : String(descricao).slice(0, 200),
+          },
           unit_amount: toStripeCents(cobranca.amount),
         },
       }],
       payment_intent_data: {
         metadata,
         description: String(nomeProduto).slice(0, 200),
+        statement_descriptor: 'SIDUS ASTRO',
       },
     }
 
-    aplicarMetodosPagamento(sessionParams, metodo)
+    aplicarMetodosPagamento(sessionParams, metodo, { pais, currency: cobranca.currency })
 
     const session = await stripe.checkout.sessions.create(sessionParams)
 
