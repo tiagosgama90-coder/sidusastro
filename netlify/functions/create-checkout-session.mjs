@@ -153,7 +153,7 @@ export default async (req) => {
       locale: cobranca.currency === 'brl' ? 'pt-BR' : (pais === 'PT' || !pais ? 'pt' : 'auto'),
       success_url: `${origin}${returnPath}?payment=success&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}${cancelPath}?payment=cancelled`,
-      billing_address_collection: 'required',
+      billing_address_collection: cobranca.currency === 'brl' ? 'auto' : 'required',
       phone_number_collection: { enabled: true },
       line_items: [{
         quantity: 1,
@@ -173,6 +173,10 @@ export default async (req) => {
         description: String(nomeProduto).slice(0, 200),
         statement_descriptor: 'SIDUS ASTRO',
       },
+    }
+
+    if (cobranca.currency === 'brl') {
+      sessionParams.tax_id_collection = { enabled: true }
     }
 
     aplicarMetodosPagamento(sessionParams, metodo, { pais, currency: cobranca.currency })
