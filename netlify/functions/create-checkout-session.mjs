@@ -26,16 +26,14 @@ function toStripeCents(amount) {
   return Math.round(Number(n.toFixed(2)) * 100)
 }
 
-/** Cartão: métodos dinâmicos (3DS, Apple Pay, MB Way no PT). Redirects: só o método escolhido. */
+/** Aplica tipos de pagamento ao Checkout Session (não suporta automatic_payment_methods). */
 function aplicarMetodosPagamento(sessionParams, metodo) {
+  sessionParams.payment_method_types = tiposPagamentoCheckout(metodo)
   if (metodo === 'card') {
-    sessionParams.automatic_payment_methods = { enabled: true, allow_redirects: 'always' }
     sessionParams.payment_method_options = {
       card: { request_three_d_secure: 'automatic' },
     }
-    return
   }
-  sessionParams.payment_method_types = tiposPagamentoCheckout(metodo)
 }
 
 const corsHeaders = {
