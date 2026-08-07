@@ -19,6 +19,10 @@ const SKIP_DIRS = new Set([
 const SKIP_FILES = new Set([
   'App.jsx.bak', 'test-swe.mjs', 'test-vite-swe.jsx', '.env', '.env.example.remote', 'export-sale-package.mjs',
   'REPOS-AND-DEPLOY.md', 'GOOGLE-ADS-SETUP.md', 'firebase-service-account-oneline.txt',
+  // Internal seller docs — not for the buyer handover package.
+  'ADSENSE-POLICY-FIX.md', 'TODO.md',
+  // Seller-side packaging templates — re-emitted with clean names by writeDocs()/sanitize().
+  'sale-README.md', 'sale-SETUP.md', 'sale-NOTES.md', 'sale-DOMAIN-TRANSFER.md', 'sale-env.example',
 ])
 
 function shouldSkip(rel) {
@@ -97,7 +101,11 @@ function patchAllI18nSupportEmail() {
   if (!existsSync(i18nDir)) return
   for (const file of readdirSafe(i18nDir)) {
     if (!/\.(js|jsx)$/.test(file)) continue
-    patchFile(join('src', 'lib', 'i18n', file), [['suporte.sidusapp@gmail.com', SUPPORT_EMAIL]])
+    // Order matters: replace the longer "suporte." variant before the bare one.
+    patchFile(join('src', 'lib', 'i18n', file), [
+      ['suporte.sidusapp@gmail.com', SUPPORT_EMAIL],
+      ['sidusapp@gmail.com', SUPPORT_EMAIL],
+    ])
   }
 }
 
@@ -127,6 +135,12 @@ function sanitize() {
   writeOut('src/lib/premiumAccess.js', readFileSync(join(ROOT, 'src/lib/premiumAccess.js'), 'utf8')
     .replace(/\/\*\* Contas com Premium[\s\S]*?const EMAILS_PREMIUM_PRIVILEGIADOS = \[[\s\S]*?\]/m, `/** Optional lifetime premium whitelist (buyer configures). */
 const EMAILS_PREMIUM_PRIVILEGIADOS = [
+  // 'admin@yourdomain.com',
+]`))
+
+  // Remove seller personal admin emails — buyer configures their own.
+  writeOut('src/lib/adminEmails.js', readFileSync(join(ROOT, 'src/lib/adminEmails.js'), 'utf8')
+    .replace(/export const ADMIN_EMAILS = \[[\s\S]*?\]/m, `export const ADMIN_EMAILS = [
   // 'admin@yourdomain.com',
 ]`))
 
@@ -178,6 +192,11 @@ const EMAILS_PREMIUM_PRIVILEGIADOS = [
   patchFile('public/privacy.html', [['suporte.sidusapp@gmail.com', SUPPORT_EMAIL]])
 
   patchFile('netlify/functions/geocode-city.mjs', [
+    [/https:\/\/sidusastro\.com/g, 'https://yourdomain.com'],
+    [/support@sidusastro\.com/g, 'support@yourdomain.com'],
+  ])
+
+  patchFile('src/lib/geocoding.js', [
     [/https:\/\/sidusastro\.com/g, 'https://yourdomain.com'],
     [/support@sidusastro\.com/g, 'support@yourdomain.com'],
   ])
