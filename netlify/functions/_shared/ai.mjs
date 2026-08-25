@@ -29,8 +29,8 @@ function allowPaidOpenAI() {
 }
 
 const GROQ_MODELS = {
-  free: 'llama-3.3-70b-versatile',
-  premium: 'llama-3.3-70b-versatile',
+  free: 'llama3-70b-8192',
+  premium: 'llama3-70b-8192',
 }
 
 const OPENROUTER_FREE = [
