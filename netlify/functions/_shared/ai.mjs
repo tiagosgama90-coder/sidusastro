@@ -43,7 +43,7 @@ const OPENROUTER_FREE = [
   'minimax/minimax-m2.7:free',
 ]
 
-function fetchComTimeout(url, options = {}, timeoutMs = 25000) {
+function fetchComTimeout(url, options = {}, timeoutMs = 14000) {
   const controller = new AbortController()
   const timer = setTimeout(() => controller.abort(), timeoutMs)
   return fetch(url, { ...options, signal: controller.signal }).finally(() => clearTimeout(timer))
@@ -97,7 +97,7 @@ export async function chatCompletion({
 
 async function callPollinations(messages, { temperature }) {
   try {
-    const res = await fetch('https://text.pollinations.ai/', {
+    const res = await fetchComTimeout('https://text.pollinations.ai/', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -107,7 +107,7 @@ async function callPollinations(messages, { temperature }) {
         temperature,
         private: true,
       }),
-    })
+    }, 12000)
     if (res.ok) {
       const texto = (await res.text())?.trim()
       if (texto && texto.length > 40) return texto
@@ -120,9 +120,9 @@ async function callPollinations(messages, { temperature }) {
     const sys = messages.find((m) => m.role === 'system')?.content || ''
     const user = messages.filter((m) => m.role === 'user').map((m) => m.content).join('\n')
     const prompt = `${sys}\n\n${user}`.slice(0, 6000)
-    const res = await fetch(`https://text.pollinations.ai/${encodeURIComponent(prompt)}`, {
+    const res = await fetchComTimeout(`https://text.pollinations.ai/${encodeURIComponent(prompt)}`, {
       headers: { Accept: 'text/plain' },
-    })
+    }, 10000)
     if (!res.ok) return null
     const texto = (await res.text())?.trim()
     return texto && texto.length > 40 ? texto : null

@@ -18,6 +18,16 @@
 [functions."astro-news"]
   timeout = 26
 
+# IA pode precisar de percorrer vários fornecedores antes de responder
+[functions."oracle-chat"]
+  timeout = 26
+
+[functions."interpret-sonho"]
+  timeout = 26
+
+[functions."interpret-mapa"]
+  timeout = 26
+
 [[headers]]
   for = "/index.html"
   [headers.values]
