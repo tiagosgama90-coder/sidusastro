@@ -28,16 +28,26 @@ function allowPaidOpenAI() {
   return env('ALLOW_PAID_OPENAI') === 'true'
 }
 
+// Modelos Groq activos (llama-3.3-70b-specdec foi desativado em 04/2025).
+// Cadeia com fallback: se um modelo falhar (desativado/quota), tenta o seguinte.
 const GROQ_MODELS = {
-  free: 'llama-3.3-70b-specdec',
-  premium: 'llama-3.3-70b-specdec',
+  free: ['llama-3.3-70b-versatile', 'llama-3.1-8b-instant'],
+  premium: ['llama-3.3-70b-versatile', 'llama-3.1-8b-instant'],
 }
 
+// Modelos gratuitos OpenRouter verificados activos (lista antiga já removida).
 const OPENROUTER_FREE = [
-  'google/gemma-2-9b-it:free',
-  'meta-llama/llama-3.2-3b-instruct:free',
-  'qwen/qwen-2.5-7b-instruct:free',
+  'google/gemma-4-31b-it:free',
+  'google/gemma-4-26b-a4b-it:free',
+  'z-ai/glm-5.2:free',
+  'minimax/minimax-m2.7:free',
 ]
+
+function fetchComTimeout(url, options = {}, timeoutMs = 25000) {
+  const controller = new AbortController()
+  const timer = setTimeout(() => controller.abort(), timeoutMs)
+  return fetch(url, { ...options, signal: controller.signal }).finally(() => clearTimeout(timer))
+}
 
 export async function chatCompletion({
   system,
@@ -125,31 +135,34 @@ async function callPollinations(messages, { temperature }) {
 async function callGroq(messages, { maxTokens, temperature, tier }) {
   const apiKey = groqKey()
   if (!apiKey) return null
-  const model = tier === 'premium' ? GROQ_MODELS.premium : GROQ_MODELS.free
-  try {
-    const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${apiKey}`,
-      },
-      body: JSON.stringify({
-        model,
-        messages,
-        max_tokens: maxTokens,
-        temperature,
-      }),
-    })
-    if (!res.ok) {
-      console.warn('[AI] Groq:', res.status, await res.text())
-      return null
+  const models = tier === 'premium' ? GROQ_MODELS.premium : GROQ_MODELS.free
+  for (const model of models) {
+    try {
+      const res = await fetchComTimeout('https://api.groq.com/openai/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${apiKey}`,
+        },
+        body: JSON.stringify({
+          model,
+          messages,
+          max_tokens: maxTokens,
+          temperature,
+        }),
+      })
+      if (!res.ok) {
+        console.warn('[AI] Groq:', model, res.status, (await res.text()).slice(0, 200))
+        continue // tenta próximo modelo da cadeia
+      }
+      const d = await res.json()
+      const txt = d.choices?.[0]?.message?.content?.trim()
+      if (txt) return txt
+    } catch (e) {
+      console.warn('[AI] Groq fetch:', model, e?.message)
     }
-    const d = await res.json()
-    return d.choices?.[0]?.message?.content?.trim() || null
-  } catch (e) {
-    console.warn('[AI] Groq fetch:', e?.message)
-    return null
   }
+  return null
 }
 
 async function callGemini(system, messages, { maxTokens, temperature }) {
@@ -160,7 +173,7 @@ async function callGemini(system, messages, { maxTokens, temperature }) {
     parts: [{ text: m.content }],
   }))
   try {
-    const res = await fetch(
+    const res = await fetchComTimeout(
       `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
       {
         method: 'POST',
@@ -173,8 +186,8 @@ async function callGemini(system, messages, { maxTokens, temperature }) {
       }
     )
     if (!res.ok) {
-      const res2 = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`,
+      const res2 = await fetchComTimeout(
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${apiKey}`,
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -201,7 +214,7 @@ async function callOpenRouter(messages, { maxTokens, temperature }) {
   if (!apiKey) return null
   for (const model of OPENROUTER_FREE) {
     try {
-      const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+      const res = await fetchComTimeout('https://openrouter.ai/api/v1/chat/completions', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -231,7 +244,7 @@ async function callOpenAI(messages, { maxTokens, temperature, model }) {
   const apiKey = openaiKey()
   if (!apiKey) return null
   try {
-    const res = await fetch('https://api.openai.com/v1/chat/completions', {
+    const res = await fetchComTimeout('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

@@ -92,8 +92,20 @@ export default async (req) => {
     let fonte = 'ia'
 
     if (!respostaFinal) {
-      respostaFinal = gerarRespostaOracle(pergunta.trim(), mapaNatal, usadas, lang)
-      fonte = 'mapa'
+      try {
+        respostaFinal = gerarRespostaOracle(pergunta.trim(), mapaNatal, usadas, lang)
+        fonte = 'mapa'
+      } catch (e) {
+        console.error('[oracle-chat] fallback local falhou:', e?.message)
+      }
+    }
+
+    // Garantia final: o oráculo NUNCA fica sem resposta.
+    if (!respostaFinal) {
+      respostaFinal = lang === 'pt'
+        ? 'Sou Sidus. Neste momento não consigo ler as estrelas com clareza - tenta a tua pergunta outra vez dentro de instantes.'
+        : 'I am Sidus. I cannot read the stars clearly right now - please ask your question again in a moment.'
+      fonte = 'emergencia'
     }
 
     if (!premiumActivo) {

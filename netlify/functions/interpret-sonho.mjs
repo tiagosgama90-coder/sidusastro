@@ -69,8 +69,20 @@ export default async (req) => {
     const idiomaOk = raw ? respostaSonhosNoIdioma(raw, lang) : false
 
     if (!seccoesValidas || !idiomaOk) {
-      seccoes = gerarInterpretacaoLocal(textoEfetivo, lang, feelingLabel, simbolosDetectados, mapaNatal)
-      fonte = 'lexicon'
+      try {
+        seccoes = gerarInterpretacaoLocal(textoEfetivo, lang, feelingLabel, simbolosDetectados, mapaNatal)
+        fonte = 'lexicon'
+      } catch (e) {
+        // Rede de segurança: o fallback local nunca pode derrubar a função com 500.
+        console.error('[interpret-sonho] fallback local falhou:', e?.message)
+        seccoes = [{
+          key: 'section1',
+          texto: lang === 'pt'
+            ? `O teu sonho ("${textoEfetivo.slice(0, 120)}") foi registado. A interpretação detalhada está temporariamente indisponível - tenta novamente dentro de instantes.`
+            : `Your dream ("${textoEfetivo.slice(0, 120)}") was registered. The detailed interpretation is temporarily unavailable - please try again shortly.`,
+        }]
+        fonte = 'emergencia'
+      }
     }
 
     return new Response(JSON.stringify({ ok: true, seccoes, simbolos, fonte }), {

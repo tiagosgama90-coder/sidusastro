@@ -209,12 +209,12 @@ export function gerarInterpretacaoLocal(texto, lang, feelingLabel, simbolosDetec
     : ''
 
   const s1 = contentForLang(lang, {
-    pt: `O teu sonho ("${excerpto}") não é adivinhação - espelha o processamento actual da alma. Sentimento: ${feelingLabel}. Símbolos emergentes: ${temas}. ${detalhes}${astro}`,
-    en: `Your dream ("${excerpto}") is not fortune-telling - it mirrors your soul's current processing. Feeling noted: ${feelingLabel}. Symbols emerging: ${temas}. ${detalhes}${astro}`,
-    es: `Tu sueño ("${excerpto}") no es adivinación: refleja el procesamiento actual del alma. Sentimiento: ${feelingLabel}. Símbolos emergentes: ${temas}. ${detalhes}${astro}`,
-    it: `Il tuo sogno ("${excerpto}") non è divinazione: rispecchia l'elaborazione attuale dell'anima. Sentimento: ${feelingLabel}. Simboli emergenti: ${temas}. ${detalhes}${astro}`,
-    de: `Dein Traum ("${excerpto}") ist keine Wahrsagerei - er spiegelt die aktuelle Verarbeitung der Seele. Gefühl: ${feelingLabel}. Emergierende Symbole: ${temas}. ${detalhes}${astro}`,
-    fr: `Ton rêve ("${excerpto}") n'est pas de la divination - il reflète le traitement actuel de l'âme. Sentiment : ${feelingLabel}. Symboles émergents : ${temas}. ${detalhes}${astro}`,
+    pt: `O teu sonho ("${excerto}") não é adivinhação - espelha o processamento actual da alma. Sentimento: ${feelingLabel}. Símbolos emergentes: ${temas}. ${detalhes}${astro}`,
+    en: `Your dream ("${excerto}") is not fortune-telling - it mirrors your soul's current processing. Feeling noted: ${feelingLabel}. Symbols emerging: ${temas}. ${detalhes}${astro}`,
+    es: `Tu sueño ("${excerto}") no es adivinación: refleja el procesamiento actual del alma. Sentimiento: ${feelingLabel}. Símbolos emergentes: ${temas}. ${detalhes}${astro}`,
+    it: `Il tuo sogno ("${excerto}") non è divinazione: rispecchia l'elaborazione attuale dell'anima. Sentimento: ${feelingLabel}. Simboli emergenti: ${temas}. ${detalhes}${astro}`,
+    de: `Dein Traum ("${excerto}") ist keine Wahrsagerei - er spiegelt die aktuelle Verarbeitung der Seele. Gefühl: ${feelingLabel}. Emergierende Symbole: ${temas}. ${detalhes}${astro}`,
+    fr: `Ton rêve ("${excerto}") n'est pas de la divination - il reflète le traitement actuel de l'âme. Sentiment : ${feelingLabel}. Symboles émergents : ${temas}. ${detalhes}${astro}`,
   })
 
   const s2 = medo
@@ -245,12 +245,12 @@ export function gerarInterpretacaoLocal(texto, lang, feelingLabel, simbolosDetec
   })
 
   const s4 = contentForLang(lang, {
-    pt: `Que imagem de "${excerpto}" te pede um olhar mais suave sobre ti - não respostas, mas compaixão?`,
-    en: `Which image from "${excerpto}" asks you for a softer gaze upon yourself - not answers, but compassion?`,
-    es: `¿Qué imagen de "${excerpto}" te pide una mirada más suave sobre ti, no respuestas, sino compasión?`,
-    it: `Quale immagine di "${excerpto}" ti chiede uno sguardo più dolce su te stesso/a, non risposte, ma compassione?`,
-    de: `Welches Bild aus "${excerpto}" bittet dich um einen sanfteren Blick auf dich - nicht Antworten, sondern Mitgefühl?`,
-    fr: `Quelle image de "${excerpto}" te demande un regard plus doux sur toi - pas des réponses, mais de la compassion ?`,
+    pt: `Que imagem de "${excerto}" te pede um olhar mais suave sobre ti - não respostas, mas compaixão?`,
+    en: `Which image from "${excerto}" asks you for a softer gaze upon yourself - not answers, but compassion?`,
+    es: `¿Qué imagen de "${excerto}" te pide una mirada más suave sobre ti, no respuestas, sino compasión?`,
+    it: `Quale immagine di "${excerto}" ti chiede uno sguardo più dolce su te stesso/a, non risposte, ma compassione?`,
+    de: `Welches Bild aus "${excerto}" bittet dich um einen sanfteren Blick auf dich - nicht Antworten, sondern Mitgefühl?`,
+    fr: `Quelle image de "${excerto}" te demande un regard plus doux sur toi - pas des réponses, mais de la compassion ?`,
   })
 
   return [
