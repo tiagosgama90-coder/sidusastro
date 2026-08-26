@@ -318,6 +318,8 @@ function buildRespostas(lang, sol, lua, asc, mc) {
     ],
     geral: [
       `Lendo o teu mapa (Sol ${sol}, Lua ${lua}, Asc ${asc}): estás numa fase em que a voz interior é mais alta que o ruído externo - e isso é intencional. A situação que descreves não é aleatória; activa temas de identidade (Sol), verdade emocional (Lua) e modo de estar no mundo (Ascendente).\n\nNão te apresses a resolver. Observa três dias o que se repete - palavras, humores, encontros. Essa repetição é a mensagem.\n\nQue parte desta situação pede compaixão em vez de controlo?`,
+      `O teu Sol em ${sol} mostra a direção que queres afirmar, enquanto a Lua em ${lua} revela o que precisas para te sentires seguro/a. Com Ascendente em ${asc}, a tua primeira reação pode esconder uma necessidade mais funda.\n\nA pergunta que trazes pede discernimento, não uma resposta automática: separa hoje o que sabes do que estás a recear. Depois escolhe um gesto pequeno que respeite essa diferença.\n\nQue facto concreto o teu mapa te convida a encarar agora?`,
+      `No teu mapa, Sol em ${sol}, Lua em ${lua} e Ascendente em ${asc} formam uma conversa entre vontade, emoção e presença. O desconforto atual pode ser um sinal de que estás a viver para corresponder, em vez de agir a partir do que realmente valorizas.\n\nAntes de procurar confirmação fora, escreve duas linhas sobre o que mudarias se ninguém te julgasse. A resposta ajuda a distinguir intuição de pressão.\n\nOnde estás a pedir permissão para seres fiel ao teu próprio ritmo?`,
     ],
   }
 }

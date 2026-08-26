@@ -53,7 +53,8 @@ const SIGNO_INDICE = {
 
 const ORDEM_GRELHA = [
   'Sol', 'Lua', 'Mercúrio', 'Vénus', 'Marte', 'Júpiter', 'Saturno',
-  'Urano', 'Neptuno', 'Plutão', 'Ascendente', 'Meio do Céu',
+  'Urano', 'Neptuno', 'Plutão', 'Nodo Norte', 'Lilith', 'Quíron',
+  'Ascendente', 'Meio do Céu',
 ]
 
 export function longitudeDeSigno(nomeSigno, grausNoSigno) {
@@ -263,7 +264,7 @@ export function normalizarLongitude(lon) {
 }
 
 export function anguloCarta(longitude, ascendant) {
-  return normalizarLongitude(ascendant - longitude + 180)
+  return normalizarLongitude(longitude - ascendant + 180)
 }
 
 export function polarParaXY(deg, r, cx, cy) {
@@ -282,7 +283,7 @@ export function arcoSvg(cx, cy, r, lonInicio, lonFim, ascendant) {
   const large = sweep > 180 ? 1 : 0
   const p1 = polarParaXY(a1, r, cx, cy)
   const p2 = polarParaXY(a1 + sweep, r, cx, cy)
-  return `M ${cx} ${cy} L ${p1.x} ${p1.y} A ${r} ${r} 0 ${large} 0 ${p2.x} ${p2.y} Z`
+  return `M ${cx} ${cy} L ${p1.x} ${p1.y} A ${r} ${r} 0 ${large} 1 ${p2.x} ${p2.y} Z`
 }
 
 export function corElementoSigno(indiceSigno) {

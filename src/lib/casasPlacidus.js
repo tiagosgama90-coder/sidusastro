@@ -105,6 +105,7 @@ const CHAVE_POR_NOME = {
   Neptuno: 'netuno',
   Plutão: 'plutao',
   'Nodo Norte': 'nodo',
+  Lilith: 'lilith',
   Quíron: 'quiron',
 }
 

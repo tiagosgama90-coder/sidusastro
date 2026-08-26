@@ -183,7 +183,7 @@ const SIGNOS = [
   { nome: 'Peixes', simbolo: '♓', elemento: 'Água' },
 ]
 
-// sweId = Planet enum de @swisseph/core (Sun=0, Moon=1, …, Saturn=6)
+// sweId = Planet enum de @swisseph/core (Sun=0, Moon=1, …, Saturn=6; Lilith=12)
 const PLANETAS_AGORA = [
   { key: 'sol',      nome: 'Sol',      corpo: Body.Sun,     sweId: 0, simbolo: '☉' },
   { key: 'lua',      nome: 'Lua',      corpo: Body.Moon,    sweId: 1, simbolo: '☽' },
@@ -201,6 +201,7 @@ const PLANETAS_NATAL = [
   { key: 'netuno',   nome: 'Neptuno',    corpo: Body.Neptune, sweId: 8,  simbolo: '♆' },
   { key: 'plutao',   nome: 'Plutão',     corpo: Body.Pluto,   sweId: 9,  simbolo: '♇' },
   { key: 'nodo',     nome: 'Nodo Norte', corpo: null,         sweId: 11, simbolo: '☊' },
+  { key: 'lilith',   nome: 'Lilith',     corpo: null,         sweId: 12, simbolo: '⚸' },
   { key: 'quiron',   nome: 'Quíron',     corpo: null,         sweId: 15, simbolo: '⚷' },
 ]
 

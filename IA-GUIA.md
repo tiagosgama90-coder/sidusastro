@@ -106,6 +106,12 @@ Correção: editar `GROQ_MODELS` em `netlify/functions/_shared/ai.mjs` com o mod
    ```
    Deve devolver HTTP 200 com `"ok":true`.
 
+## Pontos apresentados no mapa natal
+
+A mandala usa o mesmo instante UTC, zodíaco tropical e casas Placidus do cálculo natal. Mostra os sete planetas pessoais e sociais (Sol, Lua, Mercúrio, Vénus, Marte, Júpiter e Saturno), os planetas exteriores (Urano, Neptuno e Plutão), Nodo Norte, Lilith e Quíron, além de Ascendente, Descendente, Meio do Céu e Fundo do Céu.
+
+Vénus e Marte já faziam parte do cálculo; Lilith é calculada pelo Swiss Ephemeris como Black Moon/Lilith (id 12). Se o Swiss Ephemeris não carregar, a aplicação mantém o mapa básico com o motor de fallback e não inventa uma posição de Lilith.
+
 ## Histórico desta avaria (2026-08-26)
 
 - Bug `excerpto`/`excerto` causava 500 no interpretador de sonhos → corrigido.
