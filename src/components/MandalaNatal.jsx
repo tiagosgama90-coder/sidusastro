@@ -9,7 +9,6 @@ import {
   calcularAspetosPontos,
   construirMatrizAspectos,
   corAspecto,
-  corElementoSigno,
   corPonto,
   formatarGrauDecimal,
   formatarGrauDms,
@@ -183,6 +182,54 @@ function TabelaPosicoes({ pontos, translateSign }) {
           })}
         </tbody>
       </table>
+    </div>
+  )
+}
+
+function TabelaCasas({ cusps, translateSign }) {
+  return (
+    <div style={{ border: `1px solid ${CORES.borda}`, borderRadius: 8, overflow: 'hidden', background: 'rgba(0,0,0,0.35)' }}>
+      <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 11 }}>
+        <thead>
+          <tr style={{ borderBottom: `1px solid ${CORES.borda}`, background: 'rgba(223,183,108,0.06)' }}>
+            <th style={{ padding: '6px 8px', textAlign: 'left', color: CORES.muted, fontSize: 9 }}>CASA</th>
+            <th style={{ padding: '6px 8px', textAlign: 'right', color: CORES.muted, fontSize: 9 }}>CÚSPIDE</th>
+            <th style={{ padding: '6px 8px', textAlign: 'right', color: CORES.muted, fontSize: 9 }}>LONGITUDE</th>
+          </tr>
+        </thead>
+        <tbody>
+          {cusps.map((cusp, index) => {
+            const longitude = normalizarLongitude(cusp)
+            const signo = SIGNOS_ZODIACO[indiceSignoDePonto({ longitude })]
+            return (
+              <tr key={`cusp-${index}`} style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
+                <td style={{ padding: '5px 8px', color: CORES.branco, fontWeight: 600 }}>{ROMANOS_CASA[index]}</td>
+                <td style={{ padding: '5px 8px', textAlign: 'right', whiteSpace: 'nowrap' }}>
+                  <span style={{ color: CORES.dourado, fontFamily: 'Georgia, serif', marginRight: 4 }}>{signo?.simbolo}</span>
+                  <span style={{ color: CORES.douradoClaro, fontWeight: 600 }}>{formatarGrauDms(longitude)}</span>
+                  <span style={{ color: CORES.muted, fontSize: 9, marginLeft: 4 }}>{translateSign(signo?.nome)}</span>
+                </td>
+                <td style={{ padding: '5px 8px', textAlign: 'right', color: CORES.muted, fontSize: 10 }}>{formatarLongitudeEcliptica(longitude)}</td>
+              </tr>
+            )
+          })}
+        </tbody>
+      </table>
+    </div>
+  )
+}
+
+function ListaAspetos({ aspectos }) {
+  if (!aspectos.length) return <p style={{ color: CORES.muted, fontSize: 11, margin: 0 }}>Sem aspectos dentro do orbe definido.</p>
+  return (
+    <div style={{ display: 'grid', gap: 5 }}>
+      {aspectos.map((asp, index) => (
+        <div key={`aspecto-${index}`} style={{ display: 'flex', alignItems: 'center', gap: 7, color: CORES.branco, fontSize: 11 }}>
+          <span style={{ color: corAspecto(asp.aspecto), fontFamily: 'Georgia, serif', fontSize: 14 }}>{SIMBOLO_ASPECTO[asp.aspecto] || '·'}</span>
+          <span>{asp.planetaA} {SIMBOLO_ASPECTO[asp.aspecto] || asp.aspecto} {asp.planetaB}</span>
+          <span style={{ color: CORES.muted, marginLeft: 'auto' }}>orbe {Number(asp.orbe).toFixed(2)}°</span>
+        </div>
+      ))}
     </div>
   )
 }
@@ -396,7 +443,7 @@ export function MandalaNatal({
               <g key={signo.simbolo}>
                 <path
                   d={arcoSvg(cx, cy, rZodiacOut, lon0, lon1, ascLon)}
-                  fill={destaque ? 'rgba(223,183,108,0.2)' : corElementoSigno(i)}
+                  fill="rgba(11,7,30,0.12)"
                   stroke={destaque ? 'rgba(223,183,108,0.4)' : 'rgba(255,255,255,0.04)'}
                   strokeWidth="0.5"
                 />
@@ -485,8 +532,8 @@ export function MandalaNatal({
           {aspectosCompletos.map((asp, idx) => {
             const nomeA = typeof asp.planetaA === 'string' ? nomePlanetaDeAspeto(asp.planetaA) : asp.planetaA
             const nomeB = typeof asp.planetaB === 'string' ? nomePlanetaDeAspeto(asp.planetaB) : asp.planetaB
-            const pa = mapaPos.get(nomeA)
-            const pb = mapaPos.get(nomeB)
+            const pa = mapaPos.get(nomeA) || mapaPos.get(asp.planetaA)
+            const pb = mapaPos.get(nomeB) || mapaPos.get(asp.planetaB)
             if (!pa || !pb) return null
             const orbe = parseFloat(asp.orbe) || 6
             const opac = Math.max(0.2, 0.8 - orbe * 0.08)
@@ -647,15 +694,30 @@ export function MandalaNatal({
         }}>
           <div>
             <div style={{ fontSize: 10, color: CORES.dourado, textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 700, marginBottom: 8 }}>
-              Grelha de aspectos
+              Grelha de aspectos completa
             </div>
             <GrelhaAspectos pontos={pontosGrelha} matriz={matrizAspectos} cellSize={size > 400 ? 24 : 20} />
           </div>
           <div>
             <div style={{ fontSize: 10, color: CORES.dourado, textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 700, marginBottom: 8 }}>
-              Posições planetárias
+              Posições planetárias completas · Casas Placidus
             </div>
             <TabelaPosicoes pontos={tabelaPontos} translateSign={translateSign} />
+          </div>
+        </div>
+
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 16, alignItems: 'start' }}>
+          <div>
+            <div style={{ fontSize: 10, color: CORES.dourado, textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 700, marginBottom: 8 }}>
+              Todas as casas · Placidus
+            </div>
+            <TabelaCasas cusps={cusps} translateSign={translateSign} />
+          </div>
+          <div>
+            <div style={{ fontSize: 10, color: CORES.dourado, textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 700, marginBottom: 8 }}>
+              Aspectos principais no mapa natal
+            </div>
+            <ListaAspetos aspectos={aspectosCompletos} />
           </div>
         </div>
 
