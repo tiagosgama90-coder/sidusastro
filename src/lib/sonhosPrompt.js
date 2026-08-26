@@ -219,25 +219,25 @@ export function gerarInterpretacaoLocal(texto, lang, feelingLabel, simbolosDetec
 
   const s2 = medo
     ? contentForLang(lang, {
-      pt: 'A tensão ou qualidade de pesadelo é um alerta misericordioso - não castigo. Algo evitado na vida acordada regressa simbolicamente para o enfrentares com honestidade, não controlo.',
-      en: 'The tension or nightmare quality is a merciful alert - not punishment. Something avoided in waking life returns symbolically so you may face it with honesty rather than control.',
-      es: 'La tensión o calidad de pesadilla es una alerta misericordiosa, no castigo. Algo evitado en la vida despierta regresa simbólicamente para enfrentarlo con honestidad, no control.',
-      it: 'La tensione o qualità dell\'incubo è un allerta misericordiosa, non punizione. Qualcosa evitato nella vita sveglia ritorna simbolicamente per affrontarlo con onestà, non controllo.',
-      de: 'Die Spannung oder Albtraumqualität ist ein barmherziger Hinweis - keine Strafe. Etwas Vermiedenes im Wachleben kehrt symbolisch zurück, damit du es ehrlich statt kontrollierend begegnest.',
-      fr: 'La tension ou la qualité de cauchemar est une alerte miséricordieuse - pas une punition. Quelque chose évité dans la vie éveillée revient symboliquement pour l\'affronter avec honnêteté, pas contrôle.',
+      pt: `No relato "${excerto}", a tensão ou qualidade de pesadelo é um alerta misericordioso - não castigo. Algo evitado na vida acordada regressa simbolicamente para o enfrentares com honestidade, não controlo. Os símbolos centrais são ${temas}.`,
+      en: `In the report "${excerto}", the tension or nightmare quality is a merciful alert - not punishment. Something avoided in waking life returns symbolically so you may face it with honesty rather than control. The central symbols are ${temas}.`,
+      es: `En el relato "${excerto}", la tensión o calidad de pesadilla es una alerta misericordiosa, no castigo. Algo evitado en la vida despierta regresa simbólicamente para enfrentarlo con honestidad, no control. Los símbolos centrales son ${temas}.`,
+      it: `Nel racconto "${excerto}", la tensione o qualità dell'incubo è un allerta misericordiosa, non punizione. Qualcosa evitato nella vita sveglia ritorna simbolicamente per affrontarlo con onestà, non controllo. I simboli centrali sono ${temas}.`,
+      de: `Im Bericht "${excerto}" ist die Spannung oder Albtraumqualität ein barmherziger Hinweis - keine Strafe. Etwas Vermiedenes kehrt symbolisch zurück, damit du es ehrlich statt kontrollierend begegnest. Die zentralen Symbole sind ${temas}.`,
+      fr: `Dans le récit "${excerto}", la tension ou la qualité de cauchemar est une alerte miséricordieuse, pas une punition. Quelque chose d'évité revient symboliquement pour être affronté avec honnêteté, pas contrôle. Les symboles centraux sont ${temas}.`,
     })
     : contentForLang(lang, {
-      pt: 'Mesmo sonhos mais calmos pedem atenção: o conforto pode esconder estagnação. Pergunta se esta imagem confirma descanso necessário ou avisa contra adiar um passo necessário.',
-      en: 'Even calmer dreams invite attention: comfort may hide stagnation. Ask whether this image confirms needed rest or gently warns against postponing a necessary step.',
-      es: 'Incluso sueños más calmados piden atención: el confort puede esconder estancamiento. Pregunta si esta imagen confirma descanso necesario o avisa contra posponer un paso necesario.',
-      it: 'Anche sogni più calmi chiedono attenzione: il comfort può nascondere stagnazione. Chiediti se questa immagine conferma riposo necessario o avvisa contro rimandare un passo necessario.',
-      de: 'Selbst ruhigere Träume verlangen Aufmerksamkeit: Komfort kann Stagnation verbergen. Frage, ob dieses Bild nötige Ruhe bestätigt oder sanft vor dem Aufschieben eines nötigen Schritts warnt.',
-      fr: 'Même les rêves plus calmes demandent attention : le confort peut cacher la stagnation. Demande si cette image confirme le repos nécessaire ou avertit contre reporter un pas nécessaire.',
+      pt: `No relato "${excerto}", mesmo os sonhos mais calmos pedem atenção: o conforto pode esconder estagnação. Pergunta se esta imagem confirma descanso necessário ou avisa contra adiar um passo necessário. Os símbolos centrais são ${temas}.`,
+      en: `In the report "${excerto}", even calmer dreams invite attention: comfort may hide stagnation. Ask whether this image confirms needed rest or gently warns against postponing a necessary step. The central symbols are ${temas}.`,
+      es: `En el relato "${excerto}", incluso los sueños más calmados piden atención: el confort puede esconder estancamiento. Pregunta si esta imagen confirma descanso necesario o avisa contra posponer un paso necesario. Los símbolos centrales son ${temas}.`,
+      it: `Nel racconto "${excerto}", anche sogni più calmi chiedono attenzione: il comfort può nascondere stagnazione. Chiediti se questa immagine conferma riposo necessario o avvisa contro rimandare un passo necessario. I simboli centrali sono ${temas}.`,
+      de: `Im Bericht "${excerto}" verlangen selbst ruhigere Träume Aufmerksamkeit: Komfort kann Stagnation verbergen. Frage, ob dieses Bild nötige Ruhe bestätigt oder vor dem Aufschieben warnt. Die zentralen Symbole sind ${temas}.`,
+      fr: `Dans le récit "${excerto}", même les rêves plus calmes demandent attention : le confort peut cacher la stagnation. Demande si cette image confirme le repos nécessaire ou avertit contre le report. Les symboles centraux sont ${temas}.`,
     })
 
   const s3 = contentForLang(lang, {
-    pt: 'Caminho prático: (1) Nomeia honestamente o que sentes hoje sobre este sonho. (2) Dez minutos de silêncio ou escrita. (3) Um pequeno gesto de reconciliação - contigo ou com quem o sonho tocou. Sem números da sorte; a cura vem pela actitude e quietude.',
-    en: 'Practical path: (1) Name honestly what you feel today about this dream. (2) Ten minutes of silence or journaling. (3) One small reconciling gesture - with yourself or someone the dream touched. No lucky numbers; healing comes through attitude and quietude.',
+    pt: `Para este sonho ("${excerto}"), caminho prático: (1) Nomeia honestamente o que sentes hoje. (2) Dez minutos de silêncio ou escrita sobre ${temas}. (3) Um pequeno gesto de reconciliação - contigo ou com quem o sonho tocou. Sem números da sorte; a cura vem pela atitude e quietude.`,
+    en: `For this dream ("${excerto}"), practical path: (1) Name honestly what you feel today. (2) Ten minutes of silence or journaling about ${temas}. (3) One small reconciling gesture - with yourself or someone the dream touched. No lucky numbers; healing comes through attitude and quietude.`,
     es: 'Camino práctico: (1) Nombra honestamente lo que sientes hoy sobre este sueño. (2) Diez minutos de silencio o escritura. (3) Un pequeño gesto de reconciliación, contigo o con quien el sueño tocó. Sin números de la suerte; la cura viene por actitud y quietud.',
     it: 'Percorso pratico: (1) Nomina onestamente ciò che senti oggi su questo sogno. (2) Dieci minuti di silenzio o scrittura. (3) Un piccolo gesto di riconciliazione, con te o con chi il sogno ha toccato. Niente numeri fortunati; la guarigione viene da atteggiamento e quiete.',
     de: 'Praktischer Weg: (1) Benenne ehrlich, was du heute über diesen Traum fühlst. (2) Zehn Minuten Stille oder Schreiben. (3) Eine kleine Geste der Versöhnung - mit dir oder wem der Traum berührte. Keine Glückszahlen; Heilung kommt durch Haltung und Stille.',

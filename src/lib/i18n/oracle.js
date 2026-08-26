@@ -353,7 +353,14 @@ export function gerarRespostaOracle(pergunta, mapaNatal, numeroPergunta, lang = 
 
   const respostas = buildRespostas(lang, sol, lua, asc, mc)
   const arr = respostas[tema] || respostas.geral
-  return arr[numeroPergunta % arr.length]
+  let hash = 0
+  for (const char of p) hash = (hash * 31 + char.charCodeAt(0)) >>> 0
+  const resposta = arr[(hash + Number(numeroPergunta || 0)) % arr.length]
+  const foco = pergunta.trim().slice(0, 160)
+  if (isPt(lang)) {
+    return `${resposta}\n\nLeitura focada na tua pergunta: “${foco}”. Repara em que parte desta situação sentes vontade de agir, e em que parte estás apenas a tentar obter garantias.`
+  }
+  return `${resposta}\n\nFocused on your question: “${foco}”. Notice which part of this situation calls for action and which part is only seeking certainty.`
 }
 
 export function getChatGreeting(mapaNatal, lang = 'pt', maxFree = 3, isPremium = false) {
