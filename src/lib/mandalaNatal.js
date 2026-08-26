@@ -54,7 +54,7 @@ const SIGNO_INDICE = {
 const ORDEM_GRELHA = [
   'Sol', 'Lua', 'Mercúrio', 'Vénus', 'Marte', 'Júpiter', 'Saturno',
   'Urano', 'Neptuno', 'Plutão', 'Nodo Norte', 'Lilith', 'Quíron',
-  'Ascendente', 'Meio do Céu',
+  'Ascendente', 'Meio do Céu', 'Descendente', 'Fundo do Céu',
 ]
 
 export function longitudeDeSigno(nomeSigno, grausNoSigno) {
@@ -204,19 +204,21 @@ export function prepararDadosMandala(mapaNatal, planetas = []) {
     criarPontoAngular('ic', 'Fundo do Céu', 'IC', 'Ic', icLon, mapa?.ic, 4),
   ].filter(Boolean)
 
-  const todosPontos = [...planetasNorm, ...angulares.filter((a) => ['asc', 'mc'].includes(a.key))]
+  const todosPontos = [...planetasNorm, ...angulares]
 
   const pontosGrelha = ORDEM_GRELHA
     .map((nome) => {
       if (nome === 'Ascendente') return angulares.find((a) => a.key === 'asc')
       if (nome === 'Meio do Céu') return angulares.find((a) => a.key === 'mc')
+      if (nome === 'Descendente') return angulares.find((a) => a.key === 'dc')
+      if (nome === 'Fundo do Céu') return angulares.find((a) => a.key === 'ic')
       return planetasNorm.find((p) => p.nome === nome)
     })
     .filter(Boolean)
 
   const tabelaPontos = [
     ...planetasNorm,
-    ...angulares.filter((a) => ['asc', 'mc'].includes(a.key)),
+    ...angulares,
   ]
 
   return {
