@@ -37,6 +37,12 @@ Abre no browser:
 https://sidusastro.com/api/ai-status
 ```
 
+Para um **teste ao vivo** (faz uma chamada real de IA e diz quem respondeu e em quanto tempo):
+
+```
+https://sidusastro.com/api/ai-status?ping=1
+```
+
 Resposta exemplo:
 
 ```json
@@ -57,6 +63,8 @@ Resposta exemplo:
 - `configurado` / `activo` = pronto a usar
 - `configurado:suspenso` = falhou há pouco, em pausa 5 min (recupera sozinho)
 - `sem_chave` = não está configurado no Netlify
+
+Se `?ping=1` devolver `"IA A RESPONDER"` → tudo bem. Se devolver `"todos os fornecedores falharam"` mas os fornecedores aparecem como `configurado` → as chaves existem mas são inválidas/expiradas: regenera-as (receita abaixo).
 
 ---
 
