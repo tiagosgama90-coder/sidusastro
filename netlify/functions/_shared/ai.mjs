@@ -107,7 +107,7 @@ async function callPollinations(messages, { temperature }) {
         temperature,
         private: true,
       }),
-    }, 12000)
+    }, 8000)
     if (res.ok) {
       const texto = (await res.text())?.trim()
       if (texto && texto.length > 40) return texto
@@ -122,7 +122,7 @@ async function callPollinations(messages, { temperature }) {
     const prompt = `${sys}\n\n${user}`.slice(0, 6000)
     const res = await fetchComTimeout(`https://text.pollinations.ai/${encodeURIComponent(prompt)}`, {
       headers: { Accept: 'text/plain' },
-    }, 10000)
+    }, 6000)
     if (!res.ok) return null
     const texto = (await res.text())?.trim()
     return texto && texto.length > 40 ? texto : null
