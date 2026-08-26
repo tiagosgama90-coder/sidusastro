@@ -237,47 +237,53 @@ async function callGemini(system, messages, { maxTokens, temperature }) {
 }
 
 async function callPollinations(messages, { temperature }) {
-  try {
-    const res = await fetchComTimeout('https://text.pollinations.ai/', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'openai',
-        messages,
-        seed: Math.floor(Math.random() * 99999),
-        temperature,
-        private: true,
-      }),
-    }, 6000)
-    if (res.ok) {
-      const texto = (await res.text())?.trim()
-      if (texto && texto.length > 40) {
-        marcarSucesso('pollinations')
-        return texto
-      }
-    }
-  } catch (e) {
-    console.warn('[AI] Pollinations POST:', e?.message)
-  }
+  // POST e GET correm EM PARALELO - pior caso = 6s em vez de 11s.
+  const sys = messages.find((m) => m.role === 'system')?.content || ''
+  const user = messages.filter((m) => m.role === 'user').map((m) => m.content).join('\n')
+  const prompt = `${sys}\n\n${user}`.slice(0, 6000)
 
-  try {
-    const sys = messages.find((m) => m.role === 'system')?.content || ''
-    const user = messages.filter((m) => m.role === 'user').map((m) => m.content).join('\n')
-    const prompt = `${sys}\n\n${user}`.slice(0, 6000)
-    const res = await fetchComTimeout(`https://text.pollinations.ai/${encodeURIComponent(prompt)}`, {
-      headers: { Accept: 'text/plain' },
-    }, 5000)
-    if (res.ok) {
-      const texto = (await res.text())?.trim()
-      if (texto && texto.length > 40) {
-        marcarSucesso('pollinations')
-        return texto
+  const [viaPost, viaGet] = await Promise.all([
+    (async () => {
+      try {
+        const res = await fetchComTimeout('https://text.pollinations.ai/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            model: 'openai',
+            messages,
+            seed: Math.floor(Math.random() * 99999),
+            temperature,
+            private: true,
+          }),
+        }, 6000)
+        if (!res.ok) return null
+        const texto = (await res.text())?.trim()
+        return texto && texto.length > 40 ? texto : null
+      } catch (e) {
+        console.warn('[AI] Pollinations POST:', e?.message)
+        return null
       }
-    }
-  } catch (e) {
-    console.warn('[AI] Pollinations GET:', e?.message)
-  }
+    })(),
+    (async () => {
+      try {
+        const res = await fetchComTimeout(`https://text.pollinations.ai/${encodeURIComponent(prompt)}`, {
+          headers: { Accept: 'text/plain' },
+        }, 5000)
+        if (!res.ok) return null
+        const texto = (await res.text())?.trim()
+        return texto && texto.length > 40 ? texto : null
+      } catch (e) {
+        console.warn('[AI] Pollinations GET:', e?.message)
+        return null
+      }
+    })(),
+  ])
 
+  const texto = viaPost || viaGet
+  if (texto) {
+    marcarSucesso('pollinations')
+    return texto
+  }
   marcarFalha('pollinations')
   return null
 }
