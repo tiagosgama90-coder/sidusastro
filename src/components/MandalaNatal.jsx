@@ -251,7 +251,7 @@ export function MandalaNatal({
   unavailableLabel,
 }) {
   const uid = useId().replace(/:/g, '')
-  const listaPontosNatal = [...(Array.isArray(mapaNatal?.planetas) ? mapaNatal.planetas : []), ...planetas]
+  const listaPontosNatal = [...planetas, ...(Array.isArray(mapaNatal?.planetas) ? mapaNatal.planetas : [])]
   const vistosPontos = new Set()
   const pontosNatal = listaPontosNatal.filter((p) => {
     const chave = p?.key || p?.nome
