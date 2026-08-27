@@ -212,6 +212,15 @@ export function BussolaCosmica({ mapaNatal, planetasNatal, onVoltar }) {
 
       {!carregando && mesSel && (
         <div>
+          {dados?.diario && (
+            <div style={{background:'rgba(96,165,250,0.08)',border:'1px solid rgba(96,165,250,0.28)',borderRadius:12,padding:'14px 16px',marginBottom:18}}>
+              <h3 style={{fontSize:14,fontWeight:700,color:'#93C5FD',margin:'0 0 8px'}}>{dados.diario.titulo}</h3>
+              <p style={{fontSize:12,color:CORES.brancoSuave,lineHeight:1.7,margin:'0 0 8px'}}>{dados.diario.texto}</p>
+              <p style={{fontSize:12,color:CORES.brancoSuave,lineHeight:1.7,margin:'0 0 6px'}}>{dados.diario.carreira}</p>
+              <p style={{fontSize:12,color:CORES.brancoSuave,lineHeight:1.7,margin:'0 0 6px'}}>{dados.diario.amor}</p>
+              <p style={{fontSize:12,color:CORES.brancoSuave,lineHeight:1.7,margin:0}}>{dados.diario.corpo}</p>
+            </div>
+          )}
           <h3 style={{fontSize:15,fontWeight:700,color:CORES.branco,margin:'0 0 12px'}}>
             {mesSel.mes} {ano}
           </h3>

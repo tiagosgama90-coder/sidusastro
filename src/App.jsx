@@ -765,6 +765,7 @@ function calcularMapaNatalComSwe(swe, dados) {
     const sunPos  = swe.calculatePosition(jd, 0)
     const moonPos = swe.calculatePosition(jd, 1)
     const planetas = calcularPlanetasComSwe(swe, dateUTC, PLANETAS_NATAL)
+    const pontoPorChave = (key) => planetas.find((p) => p.key === key) || null
 
     const motorLabel =
       _motorStatus === 'swisseph-full'
@@ -793,6 +794,9 @@ function calcularMapaNatalComSwe(swe, dados) {
       lat, lon, fuso,
       motor: motorLabel,
       planetas,
+      nodoNorte: pontoPorChave('nodo'),
+      lilith: pontoPorChave('lilith'),
+      quiron: pontoPorChave('quiron'),
     }
   } catch (e) {
     console.warn('[Sidus] Swiss Ephemeris mapa natal falhou:', e?.message)
