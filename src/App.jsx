@@ -764,6 +764,7 @@ function calcularMapaNatalComSwe(swe, dados) {
     const jd = angulos.jd ?? swe.dateToJulianDay(dateUTC)
     const sunPos  = swe.calculatePosition(jd, 0)
     const moonPos = swe.calculatePosition(jd, 1)
+    const planetas = calcularPlanetasComSwe(swe, dateUTC, PLANETAS_NATAL)
 
     const motorLabel =
       _motorStatus === 'swisseph-full'
@@ -791,6 +792,7 @@ function calcularMapaNatalComSwe(swe, dados) {
       instanteUTC: dateUTC.toISOString(),
       lat, lon, fuso,
       motor: motorLabel,
+      planetas,
     }
   } catch (e) {
     console.warn('[Sidus] Swiss Ephemeris mapa natal falhou:', e?.message)
@@ -3106,26 +3108,7 @@ function Chat({ mapaNatal, isPremium, userId, oracleRemotas, onOracleUsada, onUp
 
       {/* Input */}
       <div className="oracle-chat__input-bar" style={{ padding: '10px 14px 0', background: 'rgba(11,7,30,0.97)', borderTop: `1px solid ${CORES.vidroBorda}`, flexShrink: 0 }}>
-        {!isPremium && (
-          <p style={{
-            fontSize: 11,
-            color: limiteAtingido ? CORES.dourado : CORES.brancoMuted,
-            textAlign: 'center',
-            margin: '0 0 10px',
-            lineHeight: 1.55,
-            padding: limiteAtingido ? '8px 10px' : 0,
-            borderRadius: limiteAtingido ? 10 : 0,
-            background: limiteAtingido ? 'rgba(223,183,108,0.08)' : 'transparent',
-            border: limiteAtingido ? `1px solid rgba(223,183,108,0.25)` : 'none',
-          }}>
-            {limiteAtingido
-              ? t('oracle.limitReachedHint', { max: MAX_ORACLE_GRATIS })
-              : (restantes === 1
-                ? t('oracle.freeRemainingHint', { count: restantes, max: MAX_ORACLE_GRATIS })
-                : t('oracle.freeRemainingHintPlural', { count: restantes, max: MAX_ORACLE_GRATIS }))}
-          </p>
-        )}
-        {!isPremium && !limiteAtingido && texto.trim() === '' && (
+        {!isPremium && texto.trim() === '' && (
           <div className="oracle-chat__suggestions" role="group" aria-label={t('oracle.suggestionsAria')}>
             {['suggestion1', 'suggestion2', 'suggestion3', 'suggestion4'].map((key) => (
               <button
@@ -3144,17 +3127,13 @@ function Chat({ mapaNatal, isPremium, userId, oracleRemotas, onOracleUsada, onUp
           value={texto}
           onChange={e => setTexto(e.target.value)}
           onKeyDown={e => e.key === 'Enter' && !e.shiftKey && enviar()}
-          placeholder={
-            limiteAtingido
-              ? t('oracle.placeholderLocked', { max: MAX_ORACLE_GRATIS })
-              : t('oracle.placeholder')
-          }
+          placeholder={t('oracle.placeholder')}
           style={{
             ...estilos.input,
             flex: 1,
             borderRadius: 24,
             padding: '12px 18px',
-            opacity: limiteAtingido ? 0.85 : 1,
+            opacity: 1,
           }}
         />
         <button
@@ -3163,9 +3142,7 @@ function Chat({ mapaNatal, isPremium, userId, oracleRemotas, onOracleUsada, onUp
           disabled={digitando}
           style={{
             width: 44, height: 44, borderRadius: '50%', border: 'none', flexShrink: 0,
-            background: digitando ? 'rgba(223,183,108,0.25)'
-              : limiteAtingido ? `linear-gradient(135deg,${CORES.dourado},${CORES.douradoEscuro})`
-              : `linear-gradient(135deg,${CORES.dourado},${CORES.douradoEscuro})`,
+            background: digitando ? 'rgba(223,183,108,0.25)' : `linear-gradient(135deg,${CORES.dourado},${CORES.douradoEscuro})`,
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             cursor: digitando ? 'default' : 'pointer',
           }}

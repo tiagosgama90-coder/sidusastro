@@ -10,7 +10,6 @@ import {
   construirMatrizAspectos,
   corAspecto,
   corPonto,
-  formatarGrauDecimal,
   formatarGrauDms,
   formatarLongitudeEcliptica,
   indiceSignoDePonto,
@@ -252,7 +251,15 @@ export function MandalaNatal({
   unavailableLabel,
 }) {
   const uid = useId().replace(/:/g, '')
-  const dados = prepararDadosMandala(mapaNatal, planetas)
+  const listaPontosNatal = [...(Array.isArray(mapaNatal?.planetas) ? mapaNatal.planetas : []), ...planetas]
+  const vistosPontos = new Set()
+  const pontosNatal = listaPontosNatal.filter((p) => {
+    const chave = p?.key || p?.nome
+    if (!chave || vistosPontos.has(chave)) return false
+    vistosPontos.add(chave)
+    return true
+  })
+  const dados = prepararDadosMandala(mapaNatal, pontosNatal)
 
   const signosDestaque = useMemo(() => {
     const set = new Set()
