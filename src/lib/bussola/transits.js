@@ -106,6 +106,7 @@ export function calcularTransitosMes({
   }
 
   return [...mapa.values()]
+    .filter((transito, index, lista) => lista.findIndex((outro) => outro.id === transito.id) === index)
     .map((t) => {
       const diaExacto = t.diasActivos.reduce((best, cur) => (cur.orbe < best.orbe ? cur : best), t.diasActivos[0])
       return { ...t, diaExacto: diaExacto.dia, orbeMin: diaExacto.orbe }
@@ -117,6 +118,7 @@ export function calcularTransitosMes({
 /** Eventos colectivos do mês (ingressos e retrógrados). */
 export function eventosColectivosMes(motor, ano, mes, lang) {
   const eventos = []
+  const retrogrados = new Map()
   const dias = diasNoMes(ano, mes)
 
   for (const pl of PLANETAS_TRANSITO) {
@@ -137,15 +139,18 @@ export function eventosColectivosMes(motor, ano, mes, lang) {
         simbolo: pl.simbolo,
       })
     }
-    if (lonFim.retrogrado) {
-      eventos.push({
-        tipo: 'retrogrado',
-        planeta: pl.nome,
-        signo: signoFim,
-        simbolo: pl.simbolo,
-      })
+    for (let d = 1; d <= dias; d++) {
+      const posicao = posicoesPlanetas(motor, dataUTC(ano, mes, d, 12)).find((p) => p.key === pl.key)
+      if (posicao?.retrogrado) {
+        retrogrados.set(pl.key, { planeta: pl.nome, signo: signoDeLongitude(posicao.longitude, lang) })
+      }
     }
   }
 
   return eventos
+    .concat(retrogrados.size ? [{
+      tipo: 'retrogradosGrupo',
+      planetas: [...retrogrados.values()].map((evento) => evento.planeta),
+      signo: [...retrogrados.values()][0].signo,
+    }] : [])
 }

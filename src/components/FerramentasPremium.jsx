@@ -7,12 +7,12 @@
  */
 import { useState, useEffect, useMemo, useCallback, useRef } from 'react'
 import { useLanguage } from '../lib/i18n/LanguageContext.jsx'
-import { dateLocale, isPt } from '../lib/i18n/langUtil.js'
+import { dateLocale } from '../lib/i18n/langUtil.js'
 import {
   calcularBussolaAsync, TIPO_ICO, IMPACTO_COR,
 } from '../lib/bussolaCosmica.js'
 import { calcularSinastriaCompleta } from '../lib/sinastriaEngine.js'
-import { montarRelatorioSinastria, montarResumoGratis, montarSecoesPremium, EIXOS } from '../lib/sinastriaInterpretacao.js'
+import { montarRelatorioSinastria, montarResumoGratis, montarSecoesPremium } from '../lib/sinastriaInterpretacao.js'
 import { RadarAfinidades } from './RadarAfinidades.jsx'
 import { ToolInlinePaywall } from './ToolInlinePaywall.jsx'
 import { getSinastriaPaywallItems } from '../lib/paywallToolBenefits.js'
@@ -218,9 +218,9 @@ export function BussolaCosmica({ mapaNatal, planetasNatal, onVoltar }) {
 
           {mesSel.eventos?.length > 0 && (
             <div style={{display:'flex',flexWrap:'wrap',gap:8,marginBottom:16}}>
-              {mesSel.eventos.map((ev, i) => (
+                  {mesSel.eventos.map((ev, i) => (
                 <span key={i} style={{fontSize:11,padding:'4px 10px',borderRadius:8,background:'rgba(255,255,255,0.05)',border:'1px solid rgba(255,255,255,0.1)',color:CORES.brancoMuted}}>
-                  {TIPO_ICO[ev.tipo] || '•'} {tp(ev.planeta)} {ev.tipo === 'ingresso' ? t('ferramentasPremium.bussola.ingress', { signo: ts(ev.signo) }) : t('ferramentasPremium.bussola.retrograde')} {ev.tipo === 'retrogrado' ? `· ${ts(ev.signo)}` : ''}
+                  {TIPO_ICO[ev.tipo] || '•'} {ev.tipo === 'retrogradosGrupo' ? `Planetas em Revisão: ${ev.planetas.map((p) => tp(p)).join(', ')}. Fase de revisão, desaceleração e reavaliação interna nas áreas afetadas.` : `${tp(ev.planeta)} ${ev.tipo === 'ingresso' ? t('ferramentasPremium.bussola.ingress', { signo: ts(ev.signo) }).replace(/^Ingresso em/i, 'entra em') : t('ferramentasPremium.bussola.retrograde')} ${ev.tipo === 'retrogrado' ? `· ${ts(ev.signo)}` : ''}`}
                 </span>
               ))}
             </div>
@@ -251,7 +251,7 @@ export function BussolaCosmica({ mapaNatal, planetasNatal, onVoltar }) {
                           {tp(tr.planetaTransito)} {ts(tr.signoTransito)} → {tpo(tr.pontoNatal)}
                         </div>
                         <div style={{fontSize:11,color:CORES.brancoMuted,marginTop:2}}>
-                          {t('ferramentasPremium.bussola.houseActivation')}: {th(tr.casaTransit)} · {th(tr.casaNatal)}
+                          {t('ferramentasPremium.bussola.houseActivation')}: {th(tr.casaTransit)}{tr.casaTransit === tr.casaNatal ? '' : ` · ${th(tr.casaNatal)}`}
                         </div>
                       </div>
                       <span style={{

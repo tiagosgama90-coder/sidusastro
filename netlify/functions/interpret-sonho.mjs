@@ -6,7 +6,6 @@ import {
   parseRespostaSonhos,
   gerarInterpretacaoLocal,
   reforcoInstrucaoSonhosIA,
-  respostaSonhosNoIdioma,
 } from '../../src/lib/sonhosPrompt.js'
 
 const corsHeaders = {
@@ -46,20 +45,17 @@ export default async (req) => {
       mapaNatal,
     })
 
-    const callIa = (retry = false) => chatCompletion({
-      system: retry ? `${system}\n\n${reforcoInstrucaoSonhosIA(lang, true)}` : system,
+    const callIa = () => chatCompletion({
+      system: `${system}\n\n${reforcoInstrucaoSonhosIA(lang, true)}`,
       messages: [{ role: 'user', content: userPrompt }],
       maxTokens: 720,
-      temperature: retry ? 0.55 : 0.68,
+      temperature: 0.62,
       tier: 'free',
       escopo: 'sonhos',
       lang,
     })
 
-    let raw = await callIa(false)
-    if (raw && !respostaSonhosNoIdioma(raw, lang)) {
-      raw = await callIa(true)
-    }
+    const raw = await callIa()
 
     const simbolos = simbolosDetectados.map((s) => ({ tema: s.tema, resumo: s.resumo }))
     let seccoes = raw ? parseRespostaSonhos(raw, lang) : null

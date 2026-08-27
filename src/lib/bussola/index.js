@@ -38,7 +38,7 @@ function montarMes({
   const mesLabel = meses[mes - 1]
 
   const eclipsesRaw = eclipsesNoMes(ano, mes)
-  const eclipses = enriquecerEclipses(eclipsesRaw, mapaNatal, lang).map((e) => ({
+  const eclipses = enriquecerEclipses(eclipsesRaw, mapaNatal, lang, planetasNatal).map((e) => ({
     ...e,
     texto: textoAlertaEclipse(e, lang),
     icone: e.tipo === 'solar' ? TIPO_ICO.eclipseSolar : TIPO_ICO.eclipseLunar,

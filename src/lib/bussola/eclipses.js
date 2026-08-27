@@ -121,12 +121,29 @@ export function eclipsesNoMes(ano, mes) {
   return procurarEclipsesIntervalo(inicio, fim).filter((e) => eclipseSignificativo(e.kind, e.tipo))
 }
 
-export function enriquecerEclipses(eclipses, mapaNatal, lang) {
+export function enriquecerEclipses(eclipses, mapaNatal, lang, planetasNatal = []) {
   const ascLon = mapaNatal?.ascendente?.longitude ?? mapaNatal?.ascendant?.longitude
+  const pontosNatais = [
+    ...(Array.isArray(mapaNatal?.planetas) ? mapaNatal.planetas : []),
+    ...(Array.isArray(mapaNatal?.planetasNatal) ? mapaNatal.planetasNatal : []),
+    ...(Array.isArray(planetasNatal) ? planetasNatal : []),
+  ]
   return eclipses.map((e) => {
     const signo = signoDeLongitude(e.longitude, lang)
     const casa = ascLon != null ? casaWholeSign(e.longitude, ascLon) : null
     const tema = casa ? getTemaCasa(casa, lang) : null
+    const impactoDireto = pontosNatais
+      .filter((p) => p?.longitude != null)
+      .map((p) => ({ ...p, distancia: Math.abs(((e.longitude - p.longitude + 540) % 360) - 180) }))
+      .filter((p) => p.distancia <= 3)
+      .sort((a, b) => a.distancia - b.distancia)[0] || null
+    const nodoNorte = pontosNatais.find((p) => /nodo norte|north node/i.test(p?.nome || p?.key || ''))
+    const nodoSul = pontosNatais.find((p) => /nodo sul|south node/i.test(p?.nome || p?.key || ''))
+    const nodo = [nodoNorte, nodoSul]
+      .filter(Boolean)
+      .map((p) => ({ ...p, distancia: Math.abs(((e.longitude - p.longitude + 540) % 360) - 180) }))
+      .filter((p) => p.distancia <= 3)
+      .sort((a, b) => a.distancia - b.distancia)[0] || null
     return {
       ...e,
       signo,
@@ -135,6 +152,10 @@ export function enriquecerEclipses(eclipses, mapaNatal, lang) {
       temaFoco: tema?.foco || null,
       kindLabel: kindLabel(e.kind, lang),
       prioridade: e.kind === EclipseKind.Total ? 10 : e.kind === EclipseKind.Annular ? 9 : 7,
+      casaNatal: casa,
+      casaOposta: casa ? (casa <= 6 ? casa + 6 : casa - 6) : null,
+      impactoDireto: impactoDireto ? { planeta: impactoDireto.nome, orbe: impactoDireto.distancia } : null,
+      nodo: nodo ? { tipo: /nodo norte|north node/i.test(nodo.nome || nodo.key || '') ? 'norte' : 'sul', orbe: nodo.distancia } : null,
     }
   })
 }

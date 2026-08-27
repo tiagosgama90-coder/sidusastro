@@ -35,13 +35,14 @@ function activacaoCasa(transito, lang) {
   const casaN = translateHouseLabel(transito.casaNatal, lang)
   const ponto = translatePontoNatal(transito.pontoNatal, lang)
 
+  const mesmaCasa = transito.casaTransit === transito.casaNatal
   const templates = {
-    pt: `A energia de ${tp} manifesta-se na ${casaT} (${temaT?.nome}: ${temaT?.foco}). Simultaneamente activa a ${casaN} ligada ao ${ponto} (${temaN?.nome}: ${temaN?.foco}).`,
-    en: `${tp}'s energy manifests in the ${casaT} (${temaT?.nome}: ${temaT?.foco}). It simultaneously activates the ${casaN} linked to natal ${ponto} (${temaN?.nome}: ${temaN?.foco}).`,
-    es: `La energía de ${tp} se manifiesta en la ${casaT} (${temaT?.nome}: ${temaT?.foco}). Activa simultáneamente la ${casaN} ligada al ${ponto} (${temaN?.nome}: ${temaN?.foco}).`,
-    it: `L'energia di ${tp} si manifesta nella ${casaT} (${temaT?.nome}: ${temaT?.foco}). Attiva simultaneamente la ${casaN} legata al ${ponto} (${temaN?.nome}: ${temaN?.foco}).`,
-    de: `Die Energie von ${tp} zeigt sich im ${casaT} (${temaT?.nome}: ${temaT?.foco}). Gleichzeitig aktiviert sie das ${casaN} des natalen ${ponto} (${temaN?.nome}: ${temaN?.foco}).`,
-    fr: `L'énergie de ${tp} se manifeste en ${casaT} (${temaT?.nome}: ${temaT?.foco}). Elle active simultanément la ${casaN} liée au ${ponto} (${temaN?.nome}: ${temaN?.foco}).`,
+    pt: mesmaCasa ? `A energia de ${tp} activa a ${casaT} (${temaT?.nome}: ${temaT?.foco}), ligada ao ${ponto} natal.` : `A energia de ${tp} manifesta-se na ${casaT} (${temaT?.nome}: ${temaT?.foco}). Simultaneamente activa a ${casaN} ligada ao ${ponto} (${temaN?.nome}: ${temaN?.foco}).`,
+    en: mesmaCasa ? `${tp}'s energy activates the ${casaT} (${temaT?.nome}: ${temaT?.foco}), linked to natal ${ponto}.` : `${tp}'s energy manifests in the ${casaT} (${temaT?.nome}: ${temaT?.foco}). It simultaneously activates the ${casaN} linked to natal ${ponto} (${temaN?.nome}: ${temaN?.foco}).`,
+    es: mesmaCasa ? `La energía de ${tp} activa la ${casaT} (${temaT?.nome}: ${temaT?.foco}), ligada al ${ponto} natal.` : `La energía de ${tp} se manifiesta en la ${casaT} (${temaT?.nome}: ${temaT?.foco}). Activa simultáneamente la ${casaN} ligada al ${ponto} (${temaN?.nome}: ${temaN?.foco}).`,
+    it: mesmaCasa ? `L'energia di ${tp} attiva la ${casaT} (${temaT?.nome}: ${temaT?.foco}), legata al ${ponto} natale.` : `L'energia di ${tp} si manifesta nella ${casaT} (${temaT?.nome}: ${temaT?.foco}). Attiva simultaneamente la ${casaN} legata al ${ponto} (${temaN?.nome}: ${temaN?.foco}).`,
+    de: mesmaCasa ? `Die Energie von ${tp} aktiviert das ${casaT} (${temaT?.nome}: ${temaT?.foco}), verbunden mit ${ponto} im Geburtshoroskop.` : `Die Energie von ${tp} zeigt sich im ${casaT} (${temaT?.nome}: ${temaT?.foco}). Gleichzeitig aktiviert sie das ${casaN} des natalen ${ponto} (${temaN?.nome}: ${temaN?.foco}).`,
+    fr: mesmaCasa ? `L'énergie de ${tp} active la ${casaT} (${temaT?.nome}: ${temaT?.foco}), liée au ${ponto} natal.` : `L'énergie de ${tp} se manifeste en ${casaT} (${temaT?.nome}: ${temaT?.foco}). Elle active simultanément la ${casaN} liée au ${ponto} natal (${temaN?.nome}: ${temaN?.foco}).`,
   }
   return templates[lang] || templates.en
 }
@@ -181,6 +182,16 @@ const CONSELHO_BASE = {
   },
 }
 
+const MATRIZ_PLANETA_PONTO = {
+  'Saturno|Descendente': 'Testes de maturidade e triagem nas tuas relações. Parcerias superficiais afastam-se; laços sólidos tornam-se mais sérios.',
+  'Saturno|Fundo do Céu': 'Responsabilidades acrescidas no teu lar ou família. Período que exige paciência e reestruturação da tua base emocional.',
+  'Saturno|Meio-Céu': 'Fase de esforço e cobrança na carreira. O sucesso profissional vai exigir disciplina, resiliência e foco a longo prazo.',
+  'Plutão|Sol': 'Uma das configurações mais transformadoras. Morte e renascimento da tua identidade e autoimagem. Hora de recuperar o teu poder pessoal.',
+  'Júpiter|Sol': 'Lufada de ar fresco, maior optimismo e vitalidade. O universo abre caminhos para o teu crescimento pessoal.',
+  'Júpiter|Ascendente': 'Lufada de ar fresco, maior optimismo e vitalidade. O universo abre caminhos para o teu crescimento pessoal.',
+  'Marte|Meio-Céu': 'Muita ambição e energia focada no trabalho, mas cuidado com conflitos ou reacções impulsivas com figuras de autoridade.',
+}
+
 const DEFAULT_CONSELHO = {
   pt: 'Observa onde este aspecto se manifesta no corpo, nas emoções e nas decisões práticas. A consciência transforma qualquer trânsito em oportunidade de crescimento.',
   en: 'Notice where this aspect shows in body, emotions, and practical decisions. Awareness turns any transit into growth opportunity.',
@@ -193,6 +204,8 @@ const DEFAULT_CONSELHO = {
 function conselho(transito, lang) {
   const planeta = transito.planetaTransito
   const asp = transito.aspecto
+  const matriz = MATRIZ_PLANETA_PONTO[`${planeta}|${transito.pontoNatal}`]
+  if (matriz && lang === 'pt') return matriz
   const base = CONSELHO_BASE[planeta]?.[asp]
   if (base) return base[lang] || base.en || base.pt
 
@@ -254,8 +267,11 @@ export function textoAlertaEclipse(eclipse, lang) {
     return fallback[lang] || fallback.en
   }
 
+  const eixo = eclipse.casaOposta ? ` Como este evento activa a tua Casa ${eclipse.casa}, vai exigir que encontres um equilíbrio com a área oposta, a tua Casa ${eclipse.casaOposta}.` : ''
+  const impacto = eclipse.impactoDireto ? ` ALERTA VERMELHO DE IMPACTO DIRECTO: toca ${eclipse.impactoDireto.planeta} natal com orbe de ${eclipse.impactoDireto.orbe.toFixed(1)}°.` : ''
+  const nodo = eclipse.nodo ? (eclipse.nodo.tipo === 'norte' ? ' Está próximo do teu Nodo Norte: abre caminhos de crescimento e futuro.' : ' Está próximo do teu Nodo Sul: favorece desapego e encerramento de ciclos.') : ''
   const templates = {
-    pt: `${titulo} a ${eclipse.graus}° em ${eclipse.signo} na tua ${casaLabel} (${eclipse.temaNome}). Área activada: ${eclipse.temaFoco}. Capítulo acelerado - mudanças neste domínio podem desenrolar-se nos 6 a 18 meses seguintes.`,
+    pt: `${titulo} a ${eclipse.graus}° em ${eclipse.signo} na tua ${casaLabel} (${eclipse.temaNome}). Área activada: ${eclipse.temaFoco}.${eixo}${impacto}${nodo} Capítulo acelerado - mudanças neste domínio podem desenrolar-se nos 6 a 18 meses seguintes.`,
     en: `${titulo} at ${eclipse.graus}° in ${eclipse.signo} in your ${casaLabel} (${eclipse.temaNome}). Activated area: ${eclipse.temaFoco}. Accelerated chapter - changes in this domain may unfold over the next 6 to 18 months.`,
     es: `${titulo} a ${eclipse.graus}° en ${eclipse.signo} en tu ${casaLabel} (${eclipse.temaNome}). Área activada: ${eclipse.temaFoco}. Capítulo acelerado: los cambios en este dominio pueden desplegarse en los próximos 6 a 18 meses.`,
     it: `${titulo} a ${eclipse.graus}° in ${eclipse.signo} nella tua ${casaLabel} (${eclipse.temaNome}). Area attivata: ${eclipse.temaFoco}. Capitolo accelerato: i cambiamenti in questo dominio possono svilupparsi nei prossimi 6-18 mesi.`,

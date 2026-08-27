@@ -132,7 +132,7 @@ import { labelBarraCurto, tituloSecaoMapa } from './lib/i18n/labelUtil.js'
 import { getFerramentas } from './lib/i18n/ferramentasData.js'
 import {
   validarPerguntaOracle, gerarRespostaOracle,
-  getChatGreeting, getOracleLimitMessage,
+  getChatGreeting,
 } from './lib/i18n/oracle.js'
 import { consultarOracleServidor, interpretarMapaServidor } from './lib/apiAi.js'
 import { formatSkyPosition } from './lib/i18n/astro.js'
@@ -2875,13 +2875,7 @@ function Chat({ mapaNatal, isPremium, userId, oracleRemotas, onOracleUsada, onUp
   }
 
   const restantes = isPremium ? Infinity : Math.max(0, MAX_ORACLE_GRATIS - perguntasUsadas)
-  const limiteAtingido = !isPremium && perguntasUsadas >= MAX_ORACLE_GRATIS
-  const [paywallVisivel, setPaywallVisivel] = useState(limiteAtingido)
-
-  useEffect(() => {
-    if (limiteAtingido) setPaywallVisivel(true)
-    else setPaywallVisivel(false)
-  }, [limiteAtingido])
+  const [paywallVisivel, setPaywallVisivel] = useState(false)
 
   useEffect(() => {
     const el = listaRef.current
@@ -2907,13 +2901,6 @@ function Chat({ mapaNatal, isPremium, userId, oracleRemotas, onOracleUsada, onUp
     if (!texto.trim() || digitando) return
 
     const q = texto.trim()
-
-    if (limiteAtingido) {
-      setMensagens((prev) => [...prev, { id: Date.now(), autor: 'user', texto: q }])
-      setTexto('')
-      abrirPaywall()
-      return
-    }
 
     const erroValidacao = validarPerguntaOracle(q, lang)
     if (erroValidacao) {
@@ -2943,22 +2930,6 @@ function Chat({ mapaNatal, isPremium, userId, oracleRemotas, onOracleUsada, onUp
           idToken = retry
         }
       }
-    }
-
-    if (resultado?.limite && !isPremium) {
-      const total = resultado.usadas ?? MAX_ORACLE_GRATIS
-      const synced = sincronizarOraclePerguntas(userId, total)
-      setPerguntasUsadas(synced)
-      onOracleUsada?.(synced)
-      setDigitando(false)
-      setMensagens((prev) => [...prev, {
-        id: Date.now() + 1,
-        autor: 'ia',
-        aviso: true,
-        texto: getOracleLimitMessage(MAX_ORACLE_GRATIS, lang),
-      }])
-      abrirPaywall()
-      return
     }
 
     const recusado = resultado?.recusado === true
@@ -2992,15 +2963,6 @@ function Chat({ mapaNatal, isPremium, userId, oracleRemotas, onOracleUsada, onUp
       setPerguntasUsadas(total)
       onOracleUsada?.(total)
 
-      if (total >= MAX_ORACLE_GRATIS) {
-        setMensagens((prev) => [...prev, {
-          id: Date.now() + 99,
-          autor: 'ia',
-          aviso: true,
-          texto: getOracleLimitMessage(MAX_ORACLE_GRATIS, lang),
-        }])
-        abrirPaywall()
-      }
     }
   }
 
@@ -3554,7 +3516,7 @@ export default function App() {
     if (destino === 'onboarding' && utilizador && contaConfigurada) {
       destino = 'home'
     }
-    if ((destino === 'bussola' || destino === 'numerologia') && !acessoVip) {
+    if (destino === 'numerologia' && !acessoVip) {
       setPaywallTool(destino)
       destino = 'paywall'
     } else if (destino === 'paywall' && tool) {

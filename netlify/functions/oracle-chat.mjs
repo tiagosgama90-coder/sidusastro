@@ -42,18 +42,6 @@ export default async (req) => {
     const { uid, isPremium, usadas, degradado } = acesso
     const premiumActivo = isPremium || (degradado === true && clientPremium === true)
 
-    if (!premiumActivo && usadas >= MAX_ORACLE_GRATIS) {
-      return new Response(JSON.stringify({
-        limite: true,
-        usadas,
-        max: MAX_ORACLE_GRATIS,
-        resposta: null,
-      }), {
-        status: 402,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      })
-    }
-
     const erroValidacao = validarPerguntaOracle(pergunta.trim(), lang)
     if (erroValidacao) {
       return new Response(JSON.stringify({ resposta: erroValidacao, recusado: true }), {
@@ -108,9 +96,7 @@ export default async (req) => {
       fonte = 'emergencia'
     }
 
-    if (!premiumActivo) {
-      await incrementarOraclePergunta(uid)
-    }
+    await incrementarOraclePergunta(uid)
 
     return new Response(JSON.stringify({
       resposta: respostaFinal,

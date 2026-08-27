@@ -92,19 +92,19 @@ function fetchComTimeout(url, options = {}, timeoutMs = 10000) {
   return fetch(url, { ...options, signal: controller.signal }).finally(() => clearTimeout(timer))
 }
 
-/** Corre todas as tarefas em paralelo e devolve a primeira resposta não-nula. */
+/** Corre tarefas em paralelo e termina assim que chega a primeira resposta válida. */
 async function primeiraResposta(tarefas) {
   if (!tarefas.length) return null
-  const resultados = await Promise.all(
-    tarefas.map(async (t) => {
-      try {
-        return await t()
-      } catch {
-        return null
-      }
-    }),
-  )
-  return resultados.find(Boolean) || null
+  const respostas = tarefas.map(async (t) => {
+    const resposta = await t()
+    if (!resposta) throw new Error('Resposta vazia')
+    return resposta
+  })
+  try {
+    return await Promise.any(respostas)
+  } catch {
+    return null
+  }
 }
 
 // ── Orquestração ─────────────────────────────────────────────────────────────

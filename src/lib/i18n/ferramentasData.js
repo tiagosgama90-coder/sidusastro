@@ -3,7 +3,7 @@ import { PythagoreanStarIcon } from '../../components/icons/PythagoreanStarIcon.
 import { contentForLang } from './langUtil.js'
 
 const FERRAMENTAS_PT = [
-  { id: 'bussola', nome: 'Bússola Cósmica', sub: 'Trânsitos reais · eclipses por casa natal', icon: Compass, premium: true },
+  { id: 'bussola', nome: 'Bússola Cósmica', sub: 'Trânsitos reais · eclipses por casa natal', icon: Compass, premium: false },
   { id: 'sinastria', nome: 'Radar de Afinidades', sub: 'Prévia grátis · Sinastria Pro', icon: Heart, premium: false },
   { id: 'numerologia', nome: 'Numerologia', sub: 'Vibração espiritual do nome', icon: PythagoreanStarIcon, premium: true },
   { id: 'sonhos', nome: 'Interpretação de Sonhos', sub: 'Incluída em todos os planos', icon: Moon, premium: false },
@@ -13,7 +13,7 @@ const FERRAMENTAS_PT = [
 ]
 
 const FERRAMENTAS_EN = [
-  { id: 'bussola', nome: 'Cosmic Compass', sub: 'Real transits · eclipses by natal house', icon: Compass, premium: true },
+  { id: 'bussola', nome: 'Cosmic Compass', sub: 'Real transits · eclipses by natal house', icon: Compass, premium: false },
   { id: 'sinastria', nome: 'Affinity Radar', sub: 'Free preview · Pro synastry', icon: Heart, premium: false },
   { id: 'numerologia', nome: 'Numerology', sub: 'Spiritual name vibration', icon: PythagoreanStarIcon, premium: true },
   { id: 'sonhos', nome: 'Dream Interpretation', sub: 'Included in all plans', icon: Moon, premium: false },
@@ -23,7 +23,7 @@ const FERRAMENTAS_EN = [
 ]
 
 const FERRAMENTAS_ES = [
-  { id: 'bussola', nome: 'Brújula Cósmica', sub: 'Tránsitos reales · eclipses por casa natal', icon: Compass, premium: true },
+  { id: 'bussola', nome: 'Brújula Cósmica', sub: 'Tránsitos reales · eclipses por casa natal', icon: Compass, premium: false },
   { id: 'sinastria', nome: 'Radar de Afinidades', sub: 'Vista previa gratis · Sinastría Pro', icon: Heart, premium: false },
   { id: 'numerologia', nome: 'Numerología', sub: 'Vibración espiritual del nombre', icon: PythagoreanStarIcon, premium: true },
   { id: 'sonhos', nome: 'Interpretación de Sueños', sub: 'Regalo de bienvenida gratis', icon: Moon, premium: false },
@@ -33,7 +33,7 @@ const FERRAMENTAS_ES = [
 ]
 
 const FERRAMENTAS_IT = [
-  { id: 'bussola', nome: 'Bussola Cosmica', sub: 'Transiti reali · eclissi per casa natale', icon: Compass, premium: true },
+  { id: 'bussola', nome: 'Bussola Cosmica', sub: 'Transiti reali · eclissi per casa natale', icon: Compass, premium: false },
   { id: 'sinastria', nome: 'Radar delle Affinità', sub: 'Anteprima gratis · Sinastria Pro', icon: Heart, premium: false },
   { id: 'numerologia', nome: 'Numerologia', sub: 'Vibrazione spirituale del nome', icon: PythagoreanStarIcon, premium: true },
   { id: 'sonhos', nome: 'Interpretazione dei Sogni', sub: 'Regalo di benvenuto gratis', icon: Moon, premium: false },
@@ -43,7 +43,7 @@ const FERRAMENTAS_IT = [
 ]
 
 const FERRAMENTAS_DE = [
-  { id: 'bussola', nome: 'Kosmischer Kompass', sub: 'Echte Transite · Finsternisse nach Geburtshaus', icon: Compass, premium: true },
+  { id: 'bussola', nome: 'Kosmischer Kompass', sub: 'Echte Transite · Finsternisse nach Geburtshaus', icon: Compass, premium: false },
   { id: 'sinastria', nome: 'Affinitäts-Radar', sub: 'Kostenlose Vorschau · Pro-Synastrie', icon: Heart, premium: false },
   { id: 'numerologia', nome: 'Numerologie', sub: 'Spirituelle Namensschwingung', icon: PythagoreanStarIcon, premium: true },
   { id: 'sonhos', nome: 'Traumdeutung', sub: 'Kostenloses Willkommensgeschenk', icon: Moon, premium: false },
@@ -53,7 +53,7 @@ const FERRAMENTAS_DE = [
 ]
 
 const FERRAMENTAS_FR = [
-  { id: 'bussola', nome: 'Boussole Cosmique', sub: 'Transits réels · éclipses par maison natale', icon: Compass, premium: true },
+  { id: 'bussola', nome: 'Boussole Cosmique', sub: 'Transits réels · éclipses par maison natale', icon: Compass, premium: false },
   { id: 'sinastria', nome: 'Radar d\'Affinités', sub: 'Aperçu gratuit · Synastrie Pro', icon: Heart, premium: false },
   { id: 'numerologia', nome: 'Numérologie', sub: 'Vibration spirituelle du nom', icon: PythagoreanStarIcon, premium: true },
   { id: 'sonhos', nome: 'Interprétation des Rêves', sub: 'Cadeau de bienvenue gratuit', icon: Moon, premium: false },
