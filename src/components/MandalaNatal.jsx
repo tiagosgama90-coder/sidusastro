@@ -304,7 +304,7 @@ export function MandalaNatal({
   const rHouseIn = rOuter * 0.52
   const rPlanet = rOuter * 0.655
   const rTick = rOuter * 0.895
-  const rAspect = rOuter * 0.34
+  const rAspect = rOuter * 0.30
   const rCenter = rOuter * 0.09
 
   const planetasVisiveis = separarPlanetasSobrepostos(todosPontos, ascLon, 5)
@@ -503,7 +503,7 @@ export function MandalaNatal({
             let span = normalizarLongitude(cuspNext - cusp)
             if (span <= 0) span += 360
             const midLon = normalizarLongitude(cusp + span / 2)
-            const numPt = polarParaXY(anguloCarta(midLon, ascLon), rHouseIn + (rHouseOut - rHouseIn) * 0.42, cx, cy)
+            const numPt = polarParaXY(anguloCarta(midLon, ascLon), rHouseIn * 0.68, cx, cy)
             const isAngle = i === 0 || i === 3 || i === 6 || i === 9
             return (
               <g key={`casa-${i}`}>
@@ -573,7 +573,7 @@ export function MandalaNatal({
             const cor = corPonto(p.nome)
             const isLuminar = p.nome === 'Sol' || p.nome === 'Lua'
             const isAngular = p.isAngular
-            const rGlyph = isAngular ? size * 0.028 : isLuminar ? size * 0.03 : size * 0.024
+            const rGlyph = isAngular ? size * 0.022 : isLuminar ? size * 0.024 : size * 0.018
             return (
               <g key={p.key || p.nome} filter={isLuminar || isAngular ? `url(#${uid}_glow)` : undefined}>
                 <line x1={tickIn.x} y1={tickIn.y} x2={tickOut.x} y2={tickOut.y} stroke={cor} strokeWidth="0.8" opacity="0.7" />
@@ -591,7 +591,7 @@ export function MandalaNatal({
                   textAnchor="middle"
                   dominantBaseline="middle"
                   fill={isAngular ? cor : CORES.branco}
-                  fontSize={isAngular ? size * 0.028 : isLuminar ? size * 0.042 : size * 0.036}
+                  fontSize={isAngular ? size * 0.024 : isLuminar ? size * 0.034 : size * 0.029}
                   fontFamily={isAngular ? 'system-ui, sans-serif' : 'Georgia, serif'}
                   fontWeight={isAngular ? 800 : 400}
                 >
@@ -603,7 +603,7 @@ export function MandalaNatal({
                   textAnchor="middle"
                   dominantBaseline="middle"
                   fill={cor}
-                  fontSize={size * 0.019}
+                  fontSize={size * 0.016}
                   fontFamily="system-ui, sans-serif"
                   opacity="0.85"
                 >

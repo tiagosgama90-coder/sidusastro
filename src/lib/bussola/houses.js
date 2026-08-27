@@ -21,11 +21,15 @@ export function casaWholeSign(longitude, ascLongitude) {
 /** Pontos natais para activação por trânsito. */
 export function construirPontosNatais(mapaNatal, planetasNatal) {
   const pontos = []
+  const vistos = new Set()
   const ascLon = mapaNatal?.ascendente?.longitude ?? mapaNatal?.ascendant?.longitude
 
   if (Array.isArray(planetasNatal)) {
     for (const p of planetasNatal) {
       if (p?.longitude == null) continue
+      const chave = p.key || p.nome
+      if (!chave || vistos.has(chave)) continue
+      vistos.add(chave)
       pontos.push({
         tipo: 'planeta',
         nome: p.nome,
