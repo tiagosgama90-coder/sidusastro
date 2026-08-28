@@ -55,7 +55,10 @@ export default async (req) => {
       lang,
     })
 
-    const raw = await callIa()
+    const raw = await Promise.race([
+      callIa(),
+      new Promise((resolve) => setTimeout(() => resolve(null), 900)),
+    ])
 
     const simbolos = simbolosDetectados.map((s) => ({ tema: s.tema, resumo: s.resumo }))
     let seccoes = raw ? parseRespostaSonhos(raw, lang) : null

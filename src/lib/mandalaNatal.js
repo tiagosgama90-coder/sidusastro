@@ -94,7 +94,16 @@ export function enriquecerPlanetaLongitude(planeta) {
   if (!planeta) return null
   const lon = garantirLongitudePrecisa(planeta)
   if (lon == null) return null
-  return { ...planeta, longitude: lon }
+  const key = planeta.key || ''
+  const nomeNormalizado = /^(lilith|lua negra|black moon|mean apogee)$/i.test(planeta.nome || '') || key === 'lilith'
+    ? 'Lilith'
+    : /^(nodo|north node|nodo norte)$/i.test(planeta.nome || '') || key === 'nodo'
+      ? 'Nodo Norte'
+      : /^(quiron|chiron)$/i.test(planeta.nome || '') || key === 'quiron'
+        ? 'Quíron'
+        : planeta.nome
+  const simbolo = nomeNormalizado === 'Lilith' ? '⚸' : nomeNormalizado === 'Nodo Norte' ? '☊' : nomeNormalizado === 'Quíron' ? '⚷' : planeta.simbolo
+  return { ...planeta, nome: nomeNormalizado, simbolo, longitude: lon }
 }
 
 /** Garante longitudes e cúspides em float completo (mapas em cache antigos). */

@@ -59,7 +59,7 @@ export default async (req) => {
       { role: 'user', content: pergunta.trim() },
     ]
 
-    const resposta = await chatCompletion({
+    const respostaIa = chatCompletion({
       system,
       messages,
       maxTokens: premiumActivo ? 550 : 300,
@@ -68,6 +68,10 @@ export default async (req) => {
       escopo: 'astrologia',
       lang,
     })
+    const resposta = await Promise.race([
+      respostaIa,
+      new Promise((resolve) => setTimeout(() => resolve(null), 900)),
+    ])
 
     if (resposta && respostaPareceForaEscopoAstrologia(resposta, lang)) {
       return new Response(JSON.stringify({ resposta: mensagemForaEscopo(lang), recusado: true }), {
