@@ -1245,36 +1245,6 @@ export function InterpretacaoSonhos({ mapaNatal, onVoltar }) {
     }
   }, [mapaNatal])
 
-  useEffect(() => {
-    if (!resultado) return
-    const textoEfetivo = sonho.trim() || chipsSel.join(', ')
-    if (!textoEfetivo) return
-    const id = ++pedidoRef.current
-    setAInterpretar(true)
-    interpretarSonhoRemoto(textoEfetivo, mapaNatal, lang, feeling, chipsSel)
-      .then((res) => {
-        if (id !== pedidoRef.current) return
-        if (res?.seccoes?.some((s) => s.texto?.length > 15) && respostaSonhosNoIdioma(res.seccoes.map((s) => s.texto).join('\n'), lang)) {
-          setResultado(res)
-          setErro(null)
-          return
-        }
-        const local = gerarLocal(textoEfetivo, lang, feeling, chipsSel)
-        if (local) {
-          setResultado({ ...local, fonte: 'local' })
-          setErro(null)
-        }
-      })
-      .catch(() => {
-        if (id !== pedidoRef.current) return
-        const local = gerarLocal(textoEfetivo, lang, feeling, chipsSel)
-        if (local) setResultado({ ...local, fonte: 'local' })
-      })
-      .finally(() => {
-        if (id === pedidoRef.current) setAInterpretar(false)
-      })
-  }, [lang, mapaNatal, gerarLocal])
-
   const interpretar = async () => {
     const textoEfetivo = sonho.trim() || chipsSel.join(', ')
     if (!textoEfetivo) return

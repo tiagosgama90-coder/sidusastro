@@ -133,20 +133,6 @@ Write all four sections in ${oracleRespondLanguage(lang)}. Use the exact section
 
 const SEC_KEYS = ['section1', 'section2', 'section3', 'section4']
 
-const SEC_PATTERNS_PT = [
-  /1\.?\s*Análise do Estado da Alma\s*[:\n]+([\s\S]*?)(?=2\.?\s*O Alerta Interno|$)/i,
-  /2\.?\s*O Alerta Interno\s*[:\n]+([\s\S]*?)(?=3\.?\s*O Caminho de Cura|$)/i,
-  /3\.?\s*O Caminho de Cura Espiritual\s*[:\n]+([\s\S]*?)(?=4\.?\s*Pergunta para Meditação|$)/i,
-  /4\.?\s*Pergunta para Meditação\s*[:\n]+([\s\S]*?)$/i,
-]
-
-const SEC_PATTERNS_EN = [
-  /1\.?\s*Analysis of the Soul'?s State\s*[:\n]+([\s\S]*?)(?=2\.?\s*The Inner Alert|$)/i,
-  /2\.?\s*The Inner Alert\s*[:\n]+([\s\S]*?)(?=3\.?\s*The Path of Spiritual|$)/i,
-  /3\.?\s*The Path of Spiritual Healing\s*[:\n]+([\s\S]*?)(?=4\.?\s*Question for Meditation|$)/i,
-  /4\.?\s*Question for Meditation\s*[:\n]+([\s\S]*?)$/i,
-]
-
 function parseWithHeaders(texto, headerLang) {
   const headers = SEC_HEADERS[headerLang] || SEC_HEADERS.en
   const patterns = headers.map((header, i) => {
@@ -190,13 +176,19 @@ export function gerarInterpretacaoLocal(texto, lang, feelingLabel, simbolosDetec
   })
   const temas = simbolosDetectados.map((s) => s.tema).join(', ') || temasDefault
   const medo = /medo|terror|pavor|fear|terror|nightmare|pesadelo|miedo|paura|angst|peur/i.test(texto + feelingLabel)
-  const detalhes = simbolosDetectados.slice(0, 4)
+  const detalhes = simbolosDetectados.slice(0, 6)
     .map((s) => {
       const leitura = expandirSimboloMetodologia(s.tema, s.resumo, medo)
       if (isPt(lang) || !looksPortuguese(s.resumo)) return `${s.tema}: ${s.resumo} (${leitura})`
       return `${s.tema}: ${leitura}`
     })
     .join(' ')
+  const pergunta = isPt(lang)
+    ? 'Que situação concreta da tua vida está a pedir atenção, cuidado ou uma decisão que tens adiado?'
+    : 'What concrete situation in your life is asking for attention, care, or a decision you have postponed?'
+  const integracao = isPt(lang)
+    ? `Lê este sonho como um convite à integração, não como uma previsão. O sentimento de ${feelingLabel} é uma pista sobre a forma como estás a viver ${temas}. Hoje, escolhe uma conversa honesta, um limite claro ou dez minutos de silêncio que aproximem a imagem do sonho da tua realidade.`
+    : `Read this dream as an invitation to integration, not a prediction. The feeling of ${feelingLabel} is a clue to how you are living ${temas}. Today, choose one honest conversation, clear boundary, or ten minutes of silence that brings the dream image closer to reality.`
   const solar = mapaNatal?.solar?.nome ? translateSigno(mapaNatal.solar.nome, lang) : null
   const lunar = mapaNatal?.lunar?.nome ? translateSigno(mapaNatal.lunar.nome, lang) : null
   const astro = solar && lunar
@@ -211,7 +203,7 @@ export function gerarInterpretacaoLocal(texto, lang, feelingLabel, simbolosDetec
     : ''
 
   const s1 = contentForLang(lang, {
-    pt: `O teu sonho ("${excerto}") não é adivinhação - espelha o processamento actual da alma. Sentimento: ${feelingLabel}. Símbolos emergentes: ${temas}. ${detalhes}${astro}`,
+    pt: `O teu relato revela ${temas} como núcleos de atenção interior. O sentimento dominante é ${feelingLabel}, e a interpretação deve partir da relação entre essas imagens e a tua vida desperta, não de um significado fixo. ${detalhes}${astro}`,
     en: `Your dream ("${excerto}") is not fortune-telling - it mirrors your soul's current processing. Feeling noted: ${feelingLabel}. Symbols emerging: ${temas}. ${detalhes}${astro}`,
     es: `Tu sueño ("${excerto}") no es adivinación: refleja el procesamiento actual del alma. Sentimiento: ${feelingLabel}. Símbolos emergentes: ${temas}. ${detalhes}${astro}`,
     it: `Il tuo sogno ("${excerto}") non è divinazione: rispecchia l'elaborazione attuale dell'anima. Sentimento: ${feelingLabel}. Simboli emergenti: ${temas}. ${detalhes}${astro}`,
@@ -221,7 +213,7 @@ export function gerarInterpretacaoLocal(texto, lang, feelingLabel, simbolosDetec
 
   const s2 = medo
     ? contentForLang(lang, {
-      pt: `No relato "${excerto}", a tensão ou qualidade de pesadelo é um alerta misericordioso - não castigo. Algo evitado na vida acordada regressa simbolicamente para o enfrentares com honestidade, não controlo. Os símbolos centrais são ${temas}.`,
+      pt: `A tensão do relato funciona como um alerta interior, não como castigo nem presságio. Algo na vida acordada pode estar a pedir reconhecimento: observa o que estás a evitar, o que precisas de aceitar e onde é necessário assumir responsabilidade. Os símbolos centrais são ${temas}. ${pergunta}`,
       en: `In the report "${excerto}", the tension or nightmare quality is a merciful alert - not punishment. Something avoided in waking life returns symbolically so you may face it with honesty rather than control. The central symbols are ${temas}.`,
       es: `En el relato "${excerto}", la tensión o calidad de pesadilla es una alerta misericordiosa, no castigo. Algo evitado en la vida despierta regresa simbólicamente para enfrentarlo con honestidad, no control. Los símbolos centrales son ${temas}.`,
       it: `Nel racconto "${excerto}", la tensione o qualità dell'incubo è un allerta misericordiosa, non punizione. Qualcosa evitato nella vita sveglia ritorna simbolicamente per affrontarlo con onestà, non controllo. I simboli centrali sono ${temas}.`,
@@ -238,7 +230,7 @@ export function gerarInterpretacaoLocal(texto, lang, feelingLabel, simbolosDetec
     })
 
   const s3 = contentForLang(lang, {
-    pt: `Para este sonho ("${excerto}"), caminho prático: (1) Nomeia honestamente o que sentes hoje. (2) Dez minutos de silêncio ou escrita sobre ${temas}. (3) Um pequeno gesto de reconciliação - contigo ou com quem o sonho tocou. Sem números da sorte; a cura vem pela atitude e quietude.`,
+    pt: `Para este sonho, caminho prático: (1) Nomeia honestamente o que sentes. (2) Escreve duas linhas sobre a situação acordada ligada a ${temas}. (3) Faz um gesto verificável de cuidado, limite ou reconciliação. ${integracao}`,
     en: `For this dream ("${excerto}"), practical path: (1) Name honestly what you feel today. (2) Ten minutes of silence or journaling about ${temas}. (3) One small reconciling gesture - with yourself or someone the dream touched. No lucky numbers; healing comes through attitude and quietude.`,
     es: 'Camino práctico: (1) Nombra honestamente lo que sientes hoy sobre este sueño. (2) Diez minutos de silencio o escritura. (3) Un pequeño gesto de reconciliación, contigo o con quien el sueño tocó. Sin números de la suerte; la cura viene por actitud y quietud.',
     it: 'Percorso pratico: (1) Nomina onestamente ciò che senti oggi su questo sogno. (2) Dieci minuti di silenzio o scrittura. (3) Un piccolo gesto di riconciliazione, con te o con chi il sogno ha toccato. Niente numeri fortunati; la guarigione viene da atteggiamento e quiete.',
@@ -247,7 +239,7 @@ export function gerarInterpretacaoLocal(texto, lang, feelingLabel, simbolosDetec
   })
 
   const s4 = contentForLang(lang, {
-    pt: `Que imagem de "${excerto}" te pede um olhar mais suave sobre ti - não respostas, mas compaixão?`,
+    pt: `Que aspecto da tua vida está reflectido em ${temas} e que resposta concreta, compassiva e responsável podes dar-lhe esta semana?`,
     en: `Which image from "${excerto}" asks you for a softer gaze upon yourself - not answers, but compassion?`,
     es: `¿Qué imagen de "${excerto}" te pide una mirada más suave sobre ti, no respuestas, sino compasión?`,
     it: `Quale immagine di "${excerto}" ti chiede uno sguardo più dolce su te stesso/a, non risposte, ma compassione?`,
