@@ -94,7 +94,7 @@ export function enriquecerPlanetaLongitude(planeta) {
   if (!planeta) return null
   const lon = garantirLongitudePrecisa(planeta)
   if (lon == null) return null
-  const key = planeta.key || ''
+  const key = String(planeta.key || '').toLowerCase()
   const nomeNormalizado = /^(lilith|lua negra|black moon|mean apogee)$/i.test(planeta.nome || '') || key === 'lilith'
     ? 'Lilith'
     : /^(nodo|north node|nodo norte)$/i.test(planeta.nome || '') || key === 'nodo'

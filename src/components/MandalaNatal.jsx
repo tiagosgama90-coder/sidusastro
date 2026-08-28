@@ -38,6 +38,18 @@ function linhaCuspide(cx, cy, r0, r1, longitude, asc) {
   return { x1: p0.x, y1: p0.y, x2: p1.x, y2: p1.y, angle: a }
 }
 
+function LilithGlyph({ x, y, size, color }) {
+  const moonSize = size * 0.32
+  const crossTop = y + size * 0.08
+  return (
+    <g aria-label="Lilith, Lua Negra">
+      <text x={x} y={y - size * 0.08} textAnchor="middle" dominantBaseline="middle" fill={color} fontSize={moonSize} fontFamily="Georgia, serif">☾</text>
+      <line x1={x} y1={crossTop} x2={x} y2={y + size * 0.34} stroke={color} strokeWidth={Math.max(0.7, size * 0.06)} />
+      <line x1={x - size * 0.15} y1={y + size * 0.19} x2={x + size * 0.15} y2={y + size * 0.19} stroke={color} strokeWidth={Math.max(0.7, size * 0.06)} />
+    </g>
+  )
+}
+
 function GrelhaAspectos({ pontos, matriz, cellSize = 22 }) {
   const n = pontos.length
   const headerH = cellSize + 4
@@ -62,7 +74,7 @@ function GrelhaAspectos({ pontos, matriz, cellSize = 22 }) {
               fontSize={cellSize * 0.55}
               fontFamily="Georgia, serif"
             >
-              {p.isAngular ? p.abrev : p.simbolo}
+              {p.nome === 'Lilith' ? <LilithGlyph x={x} y={headerH - 6} size={cellSize} color={cor} /> : (p.isAngular ? p.abrev : p.simbolo)}
             </text>
           )
         })}
@@ -80,7 +92,7 @@ function GrelhaAspectos({ pontos, matriz, cellSize = 22 }) {
               fontSize={cellSize * 0.55}
               fontFamily="Georgia, serif"
             >
-              {p.isAngular ? p.abrev : p.simbolo}
+              {p.nome === 'Lilith' ? <LilithGlyph x={labelW - 6} y={y} size={cellSize} color={cor} /> : (p.isAngular ? p.abrev : p.simbolo)}
             </text>
           )
         })}
@@ -159,7 +171,7 @@ function TabelaPosicoes({ pontos, translateSign }) {
             return (
               <tr key={p.key || p.nome} style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
                 <td style={{ padding: '5px 8px' }}>
-                  <span style={{ color: cor, fontFamily: 'Georgia, serif', fontSize: 13, marginRight: 6 }}>{glyph}</span>
+                  {p.nome === 'Lilith' ? <svg width="22" height="24" viewBox="0 0 22 24" style={{ verticalAlign: 'middle', marginRight: 6 }}><LilithGlyph x={11} y={8} size={18} color={cor} /></svg> : <span style={{ color: cor, fontFamily: 'Georgia, serif', fontSize: 13, marginRight: 6 }}>{glyph}</span>}
                   <span style={{ color: CORES.branco, fontWeight: p.isAngular ? 700 : 500 }}>{label}</span>
                   {p.retrograde && <span style={{ color: '#F87171', marginLeft: 4, fontSize: 10 }}>℞</span>}
                 </td>
@@ -596,7 +608,7 @@ export function MandalaNatal({
                   fontFamily={isAngular ? 'system-ui, sans-serif' : 'Georgia, serif'}
                   fontWeight={isAngular ? 800 : 400}
                 >
-                  {isAngular ? p.abrev : p.simbolo}
+                  {p.nome === 'Lilith' ? <LilithGlyph x={pt.x} y={pt.y} size={size * 0.9} color={cor} /> : (isAngular ? p.abrev : p.simbolo)}
                 </text>
                 <text
                   x={labelPt.x}
